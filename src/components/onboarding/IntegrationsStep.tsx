@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 import ProgressIndicator from "./ProgressIndicator";
+import PriorityGroupsPicker from "./PriorityGroupsPicker";
 
 interface IntegrationOption {
   id: string;
@@ -28,6 +29,7 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
   ]);
   
   const [connected, setConnected] = useState<Record<string, boolean>>({});
+  const [hasContacts, setHasContacts] = useState(false);
   
   const toggleConnection = (id: string) => {
     if (!integrations.find(i => i.id === id)?.available) return;
@@ -43,6 +45,7 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
   };
   
   const hasAnyConnection = Object.values(connected).some(value => value);
+  const canContinue = hasAnyConnection || hasContacts;
 
   return (
     <div className="space-y-6">
@@ -73,11 +76,16 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
           </div>
         ))}
       </div>
+
+      {/* Priority Groups Picker */}
+      <div className="mt-8 pt-4 border-t">
+        <PriorityGroupsPicker onContactsAdded={setHasContacts} />
+      </div>
       
       <TooltipProvider>
         <div className="flex items-center gap-2 text-sm text-neutral-gray">
           <Info size={16} />
-          <span>Select at least one integration</span>
+          <span>Select at least one integration or add priority contacts</span>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="sm" className="p-0 h-auto">
@@ -85,7 +93,7 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>You can add more integrations later.</p>
+              <p>You can add more integrations and contacts later.</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -95,7 +103,7 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
         <Button variant="ghost" onClick={onBack}>Back</Button>
         <Button 
           onClick={handleContinue} 
-          disabled={!hasAnyConnection}
+          disabled={!canContinue}
           className="bg-indigo hover:bg-indigo/90 text-white"
         >
           Continue
