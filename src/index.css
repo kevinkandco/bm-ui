@@ -1,10 +1,11 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 240 30% 99%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -13,16 +14,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 240 100% 62%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 240 10% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 262 83% 74%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -30,24 +31,17 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 240 100% 62%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -97,5 +91,47 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-md border border-white/20 shadow-glass rounded-xl;
+  }
+  
+  .progress-bar {
+    @apply h-1.5 bg-gradient-primary rounded-full transition-all duration-300 ease-out;
+  }
+  
+  .integration-card {
+    @apply relative flex items-center justify-center p-4 rounded-xl border border-border bg-white/80 
+           hover:bg-white/90 transition-all duration-200 cursor-pointer;
+  }
+  
+  .integration-card.connected {
+    @apply border-indigo bg-indigo/5;
+  }
+  
+  .integration-card.disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+  
+  .preference-chip {
+    @apply px-4 py-2 rounded-full border border-border bg-white/80
+           hover:bg-white/90 transition-all duration-200 cursor-pointer;
+  }
+  
+  .preference-chip.selected {
+    @apply border-indigo bg-indigo/5;
+  }
+  
+  .delivery-card {
+    @apply relative p-4 rounded-xl border border-border bg-white/80
+           hover:bg-white/90 transition-all duration-200 cursor-pointer;
+  }
+  
+  .delivery-card.selected {
+    @apply border-indigo bg-indigo/5;
   }
 }
