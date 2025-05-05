@@ -10,6 +10,8 @@ import DeliveryPreferencesStep from "@/components/onboarding/DeliveryPreferences
 import FinalizeSetupStep from "@/components/onboarding/FinalizeSetupStep";
 import SuccessModal from "@/components/onboarding/SuccessModal";
 
+type DeliveryMethod = "email" | "audio" | "both";
+
 const Onboarding = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -18,7 +20,7 @@ const Onboarding = () => {
     purpose: "",
     integrations: [],
     priorityContacts: [],
-    deliveryMethod: "email",
+    deliveryMethod: "email" as DeliveryMethod,
     briefTime: "08:00",
     ignoreKeywords: []
   });
