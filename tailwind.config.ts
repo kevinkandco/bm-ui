@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -82,6 +83,9 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
 				xl: '16px',
+			},
+			transitionDuration: {
+				'400': '400ms',  // Adding the missing duration-400
 			},
 			keyframes: {
 				'accordion-down': {

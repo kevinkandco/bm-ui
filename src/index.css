@@ -117,7 +117,7 @@
   
   .integration-card {
     @apply relative flex items-center justify-center p-4 rounded-xl border border-cool-slate/20 bg-canvas-black/80 
-           hover:bg-deep-plum/30 transition-all duration-400 ease-in-out cursor-pointer;
+           hover:bg-deep-plum/30 transition-all duration-300 ease-in-out cursor-pointer;
   }
   
   .integration-card.connected {
@@ -130,7 +130,7 @@
   
   .preference-chip {
     @apply px-4 py-2 rounded-full border border-cool-slate/20 bg-canvas-black/80
-           hover:bg-deep-plum/30 transition-all duration-400 ease-in-out cursor-pointer;
+           hover:bg-deep-plum/30 transition-all duration-300 ease-in-out cursor-pointer;
   }
   
   .preference-chip.selected {
@@ -139,7 +139,7 @@
   
   .delivery-card {
     @apply relative p-4 rounded-xl border border-cool-slate/20 bg-canvas-black/80
-           hover:bg-deep-plum/30 transition-all duration-400 ease-in-out cursor-pointer;
+           hover:bg-deep-plum/30 transition-all duration-300 ease-in-out cursor-pointer;
   }
   
   .delivery-card.selected {
@@ -149,12 +149,12 @@
   /* New components for the redesign */
   .neon-button {
     @apply bg-electric-teal text-canvas-black font-medium px-6 py-3 rounded-xl hover:bg-hot-coral 
-           transition-all duration-400 ease-in-out shadow-neon transform hover:-translate-y-0.5;
+           transition-all duration-300 ease-in-out shadow-neon transform hover:-translate-y-0.5;
   }
   
   .neon-outline-button {
     @apply border-2 border-ice-grey text-ice-grey px-6 py-2.5 rounded-xl hover:border-cool-slate hover:text-cool-slate
-           transition-all duration-400 ease-in-out shadow-subtle;
+           transition-all duration-300 ease-in-out shadow-subtle;
   }
   
   .neon-shape {
