@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -82,12 +81,6 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
 
   body {
     @apply bg-background text-foreground;
@@ -133,5 +126,204 @@
   
   .delivery-card.selected {
     @apply border-indigo bg-indigo/5;
+  }
+}
+
+@layer utilities {
+  
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-5px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-500px) rotate(720deg);
+    opacity: 0;
+  }
+}
+/* Original light theme variables kept for reference */
+    /* New dark theme variables */
+    --canvas-black: 240 10% 6%; /* #0E0E10 */
+    --deep-plum: 291 72% 16%; /* #3D0B46 */
+    --cranberry: 336 100% 22%; /* #6E0039 */
+    --electric-teal: 177 100% 44%; /* #00E0D5 */
+    --hot-coral: 348 100% 65%; /* #FF4F6D */
+    --ice-grey: 220 40% 97%; /* #F5F7FA */
+    --cool-slate: 225 11% 72%; /* #B0B3BE */
+  }
+
+  body {
+    @apply bg-canvas-black text-ice-grey;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tighter font-semibold;
+  }
+
+  p {
+    @apply leading-relaxed max-w-lg;
+  }
+}
+
+@layer components {
+  /* Update existing components with new styling */
+  .glass-card {
+    @apply bg-canvas-black/60 backdrop-blur-md border border-cool-slate/10 shadow-neo rounded-xl;
+  }
+  
+  .progress-bar {
+    @apply h-1.5 bg-gradient-neon rounded-full transition-all duration-300 ease-out;
+  }
+  
+  .integration-card {
+    @apply relative flex items-center justify-center p-4 rounded-xl border border-cool-slate/20 bg-canvas-black/80 
+           hover:bg-deep-plum/30 transition-all duration-400 ease-in-out cursor-pointer;
+  }
+  
+  .integration-card.connected {
+    @apply border-electric-teal bg-deep-plum/30;
+  }
+  
+  .integration-card.disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+  
+  .preference-chip {
+    @apply px-4 py-2 rounded-full border border-cool-slate/20 bg-canvas-black/80
+           hover:bg-deep-plum/30 transition-all duration-400 ease-in-out cursor-pointer;
+  }
+  
+  .preference-chip.selected {
+    @apply border-electric-teal bg-deep-plum/30;
+  }
+  
+  .delivery-card {
+    @apply relative p-4 rounded-xl border border-cool-slate/20 bg-canvas-black/80
+           hover:bg-deep-plum/30 transition-all duration-400 ease-in-out cursor-pointer;
+  }
+  
+  .delivery-card.selected {
+    @apply border-electric-teal bg-deep-plum/30;
+  }
+
+  /* New components for the redesign */
+  .neon-button {
+    @apply bg-electric-teal text-canvas-black font-medium px-6 py-3 rounded-xl hover:bg-hot-coral 
+           transition-all duration-400 ease-in-out shadow-neon transform hover:-translate-y-0.5;
+  }
+  
+  .neon-outline-button {
+    @apply border-2 border-ice-grey text-ice-grey px-6 py-2.5 rounded-xl hover:border-cool-slate hover:text-cool-slate
+           transition-all duration-400 ease-in-out shadow-subtle;
+  }
+  
+  .neon-shape {
+    @apply absolute pointer-events-none filter blur-sm opacity-80;
+    animation: pulse 8s infinite ease-in-out;
+  }
+
+  .radial-gradient-bg {
+    @apply absolute inset-0 pointer-events-none;
+    background: radial-gradient(circle at center, theme('colors.deep-plum') 0%, theme('colors.cranberry') 40%, transparent 70%);
+    opacity: 0.4;
+  }
+
+  .progress-dot {
+    @apply w-2 h-2 rounded-full transition-all duration-300;
+  }
+
+  .progress-dot.active {
+    @apply bg-electric-teal;
+  }
+
+  .progress-dot.inactive {
+    @apply bg-cool-slate/50;
+  }
+}
+
+@layer utilities {
+  .shadow-neo {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 224, 213, 0.1);
+  }
+  
+  .shadow-neon {
+    box-shadow: 0 0 15px rgba(0, 224, 213, 0.4);
+  }
+  
+  .shadow-subtle {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .text-gradient-neon {
+    @apply bg-gradient-to-r from-electric-teal to-hot-coral bg-clip-text text-transparent;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: brightness(1) blur(3px);
+  }
+  50% {
+    filter: brightness(1.2) blur(4px);
   }
 }

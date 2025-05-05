@@ -49,17 +49,25 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
   };
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <ProgressIndicator currentStep={3} totalSteps={3} />
       
-      <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-foreground">Set your preferences</h2>
-        <p className="text-neutral-gray">Customize how your brief works for you.</p>
+      {/* Concentric circles visual element */}
+      <div className="relative h-24 w-full flex items-center justify-center overflow-hidden mb-4">
+        <div className="w-80 h-80 rounded-full border border-electric-teal/10 absolute animate-pulse" />
+        <div className="w-60 h-60 rounded-full border border-electric-teal/20 absolute animate-pulse" style={{animationDelay: '0.5s'}} />
+        <div className="w-40 h-40 rounded-full border border-electric-teal/30 absolute animate-pulse" style={{animationDelay: '1s'}} />
+        <div className="w-20 h-20 rounded-full border border-electric-teal/40 absolute animate-pulse" style={{animationDelay: '1.5s'}} />
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-3">
+        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Set your preferences</h2>
+        <p className="text-cool-slate">Customize how your brief works for you.</p>
+      </div>
+      
+      <div className="space-y-6">
         <div className="space-y-3">
-          <Label>High-priority contacts</Label>
+          <Label className="text-ice-grey">High-priority contacts</Label>
           <div className="flex flex-wrap gap-2">
             {priorities.map((priority) => (
               <div
@@ -67,27 +75,29 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
                 className={`preference-chip flex items-center gap-2 ${selectedPriorities.includes(priority.id) ? 'selected' : ''}`}
                 onClick={() => togglePriority(priority.id)}
               >
-                <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-xs font-medium">
+                <div className="w-6 h-6 rounded-full bg-deep-plum/50 flex items-center justify-center text-xs font-medium text-electric-teal">
                   {priority.avatar}
                 </div>
-                <span>{priority.name}</span>
+                <span className="text-ice-grey">{priority.name}</span>
               </div>
             ))}
           </div>
         </div>
         
         <div className="space-y-3">
-          <Label>Ignore keywords/channels</Label>
+          <Label className="text-ice-grey">Ignore keywords/channels</Label>
           <div className="flex gap-2">
             <Input
               value={ignoreKeyword}
               onChange={(e) => setIgnoreKeyword(e.target.value)}
               placeholder="Add keywords to ignore"
               onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
+              className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey placeholder:text-cool-slate/70 focus-visible:ring-electric-teal"
             />
             <Button 
               onClick={addKeyword}
               variant="outline"
+              className="border-cool-slate/20 text-ice-grey hover:bg-deep-plum/30 hover:text-electric-teal"
             >
               Add
             </Button>
@@ -95,9 +105,9 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
           {ignoreKeywords.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-1">
               {ignoreKeywords.map(keyword => (
-                <div key={keyword} className="flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm">
+                <div key={keyword} className="flex items-center gap-1 px-3 py-1 rounded-full bg-deep-plum/30 border border-electric-teal/20 text-sm text-ice-grey">
                   {keyword}
-                  <button onClick={() => removeKeyword(keyword)} className="ml-1 focus:outline-none">
+                  <button onClick={() => removeKeyword(keyword)} className="ml-1 focus:outline-none text-cool-slate hover:text-hot-coral">
                     <X size={14} />
                   </button>
                 </div>
@@ -107,17 +117,17 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
         </div>
         
         <div className="space-y-3">
-          <Label>Delivery method</Label>
+          <Label className="text-ice-grey">Delivery method</Label>
           <div className="grid grid-cols-3 gap-3">
             <div 
               className={`delivery-card ${deliveryMethod === 'email' ? 'selected' : ''}`}
               onClick={() => setDeliveryMethod('email')}
             >
               <div className="flex flex-col items-center gap-1">
-                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-deep-plum/50 flex items-center justify-center text-electric-teal">
                   ✉️
                 </div>
-                <span className="font-medium">Email</span>
+                <span className="font-medium text-ice-grey">Email</span>
               </div>
             </div>
             <div 
@@ -125,10 +135,10 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
               onClick={() => setDeliveryMethod('audio')}
             >
               <div className="flex flex-col items-center gap-1">
-                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-deep-plum/50 flex items-center justify-center text-electric-teal">
                   🎧
                 </div>
-                <span className="font-medium">Audio</span>
+                <span className="font-medium text-ice-grey">Audio</span>
               </div>
             </div>
             <div 
@@ -136,38 +146,48 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
               onClick={() => setDeliveryMethod('both')}
             >
               <div className="flex flex-col items-center gap-1">
-                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-deep-plum/50 flex items-center justify-center text-electric-teal">
                   ⚡
                 </div>
-                <span className="font-medium">Both</span>
+                <span className="font-medium text-ice-grey">Both</span>
               </div>
             </div>
           </div>
         </div>
         
         <div className="space-y-3">
-          <Label htmlFor="brief-time">Send my brief at</Label>
+          <Label htmlFor="brief-time" className="text-ice-grey">Send my brief at</Label>
           <Input
             id="brief-time"
             type="time"
             value={briefTime}
             onChange={(e) => setBriefTime(e.target.value)}
+            className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal"
           />
         </div>
       </div>
       
       <div className="flex justify-between pt-2">
-        <Button variant="ghost" onClick={onBack}>Back</Button>
+        <Button 
+          onClick={onBack} 
+          className="neon-outline-button"
+        >
+          Back
+        </Button>
         <Button 
           onClick={handleSubmit}
-          className="bg-indigo hover:bg-indigo/90 text-white"
+          className="neon-button"
         >
           Generate my first brief
         </Button>
       </div>
       
       <div className="flex justify-center">
-        <Button variant="link" onClick={onNext} className="text-sm text-neutral-gray">
+        <Button 
+          variant="link" 
+          onClick={onNext} 
+          className="text-sm text-cool-slate hover:text-ice-grey"
+        >
           Skip for now
         </Button>
       </div>

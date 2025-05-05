@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,7 +62,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				indigo: "#3B3BFF",
+				// New dark theme colors
+				'canvas-black': '#0E0E10',
+				'deep-plum': '#3D0B46',
+				'cranberry': '#6E0039',
+				'electric-teal': '#00E0D5',
+				'hot-coral': '#FF4F6D',
+				'ice-grey': '#F5F7FA',
+				'cool-slate': '#B0B3BE',
+				// Keep legacy colors
+				"indigo": "#3B3BFF",
 				"neutral-gray": "#8E9196",
 				"teal-blue": "#3B83F5",
 				"purple-light": "#9b87f5",
@@ -140,6 +148,32 @@ export default {
 						transform: 'translateY(-500px) rotate(720deg)',
 						opacity: '0'
 					}
+				},
+				'pulse': {
+					'0%, 100%': {
+						opacity: '0.7',
+						transform: 'scale(1)'
+					},
+					'50%': {
+						opacity: '0.9',
+						transform: 'scale(1.05)'
+					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-10px)'
+					}
+				},
+				'glow': {
+					'0%, 100%': {
+						filter: 'brightness(1) blur(3px)'
+					},
+					'50%': {
+						filter: 'brightness(1.2) blur(4px)'
+					}
 				}
 			},
 			animation: {
@@ -149,14 +183,22 @@ export default {
 				'slide-in': 'slide-in 0.3s ease-out',
 				'bounce-light': 'bounce-light 1s infinite',
 				'shake': 'shake 0.5s ease-in-out',
-				'confetti': 'confetti 2s ease-out forwards'
+				'confetti': 'confetti 2s ease-out forwards',
+				'pulse': 'pulse 8s infinite ease-in-out',
+				'float': 'float 6s infinite ease-in-out',
+				'glow': 'glow 3s infinite ease-in-out'
 			},
 			boxShadow: {
 				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
-				'elevated': '0 10px 30px rgba(0, 0, 0, 0.08)'
+				'elevated': '0 10px 30px rgba(0, 0, 0, 0.08)',
+				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 224, 213, 0.1)',
+				'neon': '0 0 15px rgba(0, 224, 213, 0.4)',
+				'subtle': '0 2px 10px rgba(0, 0, 0, 0.2)'
 			},
 			backgroundImage: {
-				'gradient-primary': 'linear-gradient(90deg, #3B83F5, #9b87f5)'
+				'gradient-primary': 'linear-gradient(90deg, #3B83F5, #9b87f5)',
+				'gradient-neon': 'linear-gradient(90deg, #00E0D5, #FF4F6D)',
+				'gradient-dark': 'radial-gradient(circle at center, #3D0B46 0%, #6E0039 40%, #0E0E10 80%)'
 			}
 		}
 	},

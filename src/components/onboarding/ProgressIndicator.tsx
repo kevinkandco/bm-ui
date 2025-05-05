@@ -16,15 +16,22 @@ const ProgressIndicator = ({
   
   return (
     <div className={cn("w-full space-y-2", className)}>
-      <div className="flex justify-between text-xs text-neutral-gray">
+      <div className="flex justify-between text-xs text-cool-slate">
         <span>Step {currentStep} of {totalSteps}</span>
         <span>{Math.round(percentage)}%</span>
       </div>
-      <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden">
-        <div 
-          className="progress-bar" 
-          style={{ width: `${percentage}%` }}
-        />
+      
+      {/* Progress dots instead of bar */}
+      <div className="flex items-center justify-center gap-2 py-1">
+        {[...Array(totalSteps)].map((_, index) => (
+          <div 
+            key={index}
+            className={cn(
+              "progress-dot transition-all duration-300",
+              index < currentStep ? "active" : "inactive"
+            )}
+          />
+        ))}
       </div>
     </div>
   );
