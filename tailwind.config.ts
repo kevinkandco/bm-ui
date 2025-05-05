@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -68,7 +69,7 @@ export default {
 				'cranberry': '#6E0039',
 				'electric-teal': '#00E0D5',
 				'hot-coral': '#FF4F6D',
-				'ice-grey': '#F5F7FA',
+				'ice-grey': '#E0E4EA', // Updated for better contrast (was #F5F7FA)
 				'cool-slate': '#B0B3BE',
 				// Light theme colors
 				'canvas-light': '#F8F9FC',
