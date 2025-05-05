@@ -37,12 +37,12 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar Navigation */}
-      <div className="hidden md:flex flex-col w-16 hover:w-64 group transition-all duration-300 ease-in-out bg-white border-r border-border shadow-sm z-10">
+      <div className="hidden md:flex flex-col w-16 hover:w-64 group transition-all duration-300 ease-in-out bg-sidebar border-r border-sidebar-border shadow-sm z-10">
         <div className="p-4 flex items-center justify-center md:justify-start">
-          <div className="h-8 w-8 bg-gradient-primary rounded-md flex items-center justify-center">
-            <span className="font-bold text-white text-lg">B</span>
+          <div className="h-8 w-8 bg-gradient-neon rounded-md flex items-center justify-center">
+            <span className="font-bold text-canvas-black text-lg">B</span>
           </div>
-          <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Brief.me</span>
+          <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-sidebar-foreground">Brief.me</span>
         </div>
         
         <div className="flex-1 py-6 flex flex-col gap-1">
@@ -53,8 +53,8 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
               className={cn(
                 "flex items-center px-4 py-3 text-sm relative group/item transition-colors",
                 currentPage === id 
-                  ? "bg-primary/10 text-primary font-medium" 
-                  : "text-neutral-gray hover:bg-secondary hover:text-foreground"
+                  ? "bg-sidebar-accent text-sidebar-primary font-medium" 
+                  : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-primary-foreground"
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
@@ -62,7 +62,7 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
                 {label}
               </span>
               {badge && (
-                <span className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-indigo text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-electric-teal dark:bg-electric-teal text-canvas-black text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {badge}
                 </span>
               )}
@@ -70,9 +70,9 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
           ))}
         </div>
         
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-sidebar-border">
           <button 
-            className="flex items-center w-full text-neutral-gray hover:text-foreground text-sm"
+            className="flex items-center w-full text-sidebar-foreground hover:text-sidebar-primary text-sm"
             onClick={() => toast({
               title: "Help",
               description: "Opening help & feedback panel",
@@ -87,14 +87,14 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       </div>
       
       {/* Mobile Bottom Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t md:hidden flex justify-around z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-sidebar border-t border-sidebar-border md:hidden flex justify-around z-10">
         {navItems.slice(0, 5).map(({ icon: Icon, id }) => (
           <button
             key={id}
             onClick={() => handleNavClick(id)}
             className={cn(
               "p-3 flex flex-col items-center justify-center",
-              currentPage === id ? "text-primary" : "text-neutral-gray"
+              currentPage === id ? "text-electric-teal dark:text-electric-teal" : "text-sidebar-foreground"
             )}
           >
             <Icon className="h-5 w-5" />
@@ -104,6 +104,7 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       
       {/* Main Content */}
       <div className={cn("flex-1 overflow-auto pb-16 md:pb-0", className)}>
+        <div className="radial-gradient-bg opacity-30" />
         {children}
       </div>
     </div>
