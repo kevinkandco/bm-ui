@@ -10,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-electric-teal text-canvas-black hover:bg-hot-coral transition-colors duration-400",
+        default: "bg-electric-teal text-canvas-black hover:bg-hot-coral transition-colors duration-300",
         destructive:
           "bg-hot-coral text-canvas-black hover:bg-hot-coral/90",
         outline:
