@@ -1,35 +1,78 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 import ProgressIndicator from "./ProgressIndicator";
-import PriorityGroupsPicker from "./PriorityGroupsPicker";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface IntegrationOption {
   id: string;
   name: string;
   icon: string;
   available: boolean;
+  description: string;
 }
 
 interface IntegrationsStepProps {
   onNext: () => void;
   onBack: () => void;
+  onSkip: () => void;
+  updateUserData: (data: any) => void;
+  userData: {
+    integrations: string[];
+    [key: string]: any;
+  };
 }
 
-const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
-  const [integrations, setIntegrations] = useState<IntegrationOption[]>([
-    { id: "slack", name: "Slack", icon: "S", available: true },
-    { id: "gmail", name: "Gmail", icon: "G", available: true },
-    { id: "calendar", name: "Google Calendar", icon: "C", available: true },
-    { id: "asana", name: "Asana", icon: "A", available: false },
-    { id: "notion", name: "Notion", icon: "N", available: false },
-    { id: "zoom", name: "Zoom/Meet", icon: "Z", available: false },
+const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: IntegrationsStepProps) => {
+  const [integrations] = useState<IntegrationOption[]>([
+    { 
+      id: "slack", 
+      name: "Slack", 
+      icon: "S", 
+      available: true, 
+      description: "Connect to your workspaces and channels" 
+    },
+    { 
+      id: "gmail", 
+      name: "Gmail", 
+      icon: "G", 
+      available: true, 
+      description: "Sync important emails and avoid spam" 
+    },
+    { 
+      id: "calendar", 
+      name: "Google Calendar", 
+      icon: "C", 
+      available: true, 
+      description: "Stay on top of meetings and events" 
+    },
+    { 
+      id: "asana", 
+      name: "Asana", 
+      icon: "A", 
+      available: false, 
+      description: "Track your tasks and projects (coming soon)" 
+    },
+    { 
+      id: "notion", 
+      name: "Notion", 
+      icon: "N", 
+      available: false, 
+      description: "Link your notes and documents (coming soon)" 
+    },
+    { 
+      id: "zoom", 
+      name: "Zoom/Meet", 
+      icon: "Z", 
+      available: false, 
+      description: "Never miss important meetings (coming soon)" 
+    },
   ]);
   
-  const [connected, setConnected] = useState<Record<string, boolean>>({});
-  const [hasContacts, setHasContacts] = useState(false);
+  const [connected, setConnected] = useState<Record<string, boolean>>(
+    userData.integrations.reduce((acc, id) => ({ ...acc, [id]: true }), {})
+  );
   
   const toggleConnection = (id: string) => {
     if (!integrations.find(i => i.id === id)?.available) return;
@@ -41,15 +84,19 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
   };
   
   const handleContinue = () => {
+    const selectedIntegrations = Object.entries(connected)
+      .filter(([_, isConnected]) => isConnected)
+      .map(([id]) => id);
+    
+    updateUserData({ integrations: selectedIntegrations });
     onNext();
   };
   
   const hasAnyConnection = Object.values(connected).some(value => value);
-  const canContinue = hasAnyConnection || hasContacts;
 
   return (
     <div className="space-y-8">
-      <ProgressIndicator currentStep={2} totalSteps={3} />
+      <ProgressIndicator currentStep={3} totalSteps={6} />
       
       {/* Pyramid neon visual element */}
       <div className="relative h-24 w-full flex items-center justify-center overflow-hidden mb-4">
@@ -67,12 +114,12 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
       </div>
       
       <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Connect your tools</h2>
-        <p className="text-cool-slate">Brief.me will monitor these tools to create your personalized brief.</p>
+        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Choose your tools</h2>
+        <p className="text-cool-slate">Brief.me will monitor these sources to create your personalized brief.</p>
       </div>
       
-      <div className="grid grid-cols-2 gap-3">
-        {integrations.map((integration) => (
+      <div className="grid grid-cols-2 gap-4">
+        {integrations.slice(0, 4).map((integration) => (
           <div 
             key={integration.id}
             className={`integration-card ${connected[integration.id] ? 'connected' : ''} ${!integration.available ? 'disabled' : ''}`}
@@ -85,22 +132,18 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
               <span className="font-medium text-ice-grey">{integration.name}</span>
               <span className="text-xs text-cool-slate">
                 {!integration.available ? 'Coming soon' : 
-                  connected[integration.id] ? 'Linked ✓' : 'Tap to connect'}
+                  connected[integration.id] ? 'Connected ✓' : 'Tap to connect'}
               </span>
+              <p className="text-xs text-cool-slate text-center mt-1">{integration.description}</p>
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Priority Groups Picker */}
-      <div className="mt-8 pt-4 border-t border-cool-slate/10">
-        <PriorityGroupsPicker onContactsAdded={setHasContacts} />
       </div>
       
       <TooltipProvider>
         <div className="flex items-center gap-2 text-sm text-cool-slate">
           <Info size={16} className="text-electric-teal" />
-          <span>Select at least one integration or add priority contacts</span>
+          <span>You'll be able to add more tools later</span>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="sm" className="p-0 h-auto text-cool-slate">
@@ -108,7 +151,7 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
               </Button>
             </TooltipTrigger>
             <TooltipContent className="bg-canvas-black border border-cool-slate/20 text-ice-grey">
-              <p>You can add more integrations and contacts later.</p>
+              <p>You can modify your integrations anytime from settings</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -123,7 +166,7 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
         </Button>
         <Button 
           onClick={handleContinue} 
-          disabled={!canContinue}
+          disabled={!hasAnyConnection}
           className="neon-button disabled:opacity-50 disabled:pointer-events-none"
         >
           Continue
@@ -133,7 +176,7 @@ const IntegrationsStep = ({ onNext, onBack }: IntegrationsStepProps) => {
       <div className="flex justify-center">
         <Button 
           variant="link" 
-          onClick={onNext} 
+          onClick={onSkip} 
           className="text-sm text-cool-slate hover:text-ice-grey"
         >
           Skip for now
