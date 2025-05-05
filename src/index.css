@@ -5,6 +5,7 @@
 
 @layer base {
   :root {
+    /* Light theme variables (default) */
     --background: 240 30% 99%;
     --foreground: 222.2 84% 4.9%;
 
@@ -43,15 +44,6 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    
-    /* New dark theme variables */
-    --canvas-black: 240 10% 6%; /* #0E0E10 */
-    --deep-plum: 291 72% 16%; /* #3D0B46 */
-    --cranberry: 336 100% 22%; /* #6E0039 */
-    --electric-teal: 177 100% 44%; /* #00E0D5 */
-    --hot-coral: 348 100% 65%; /* #FF4F6D */
-    --ice-grey: 220 40% 97%; /* #F5F7FA */
-    --cool-slate: 225 11% 72%; /* #B0B3BE */
   }
 
   .dark {
@@ -92,9 +84,15 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Default to light mode */
   body {
-    @apply bg-canvas-black text-ice-grey;
+    @apply bg-canvas-light text-deep-navy;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Dark mode */
+  .dark body {
+    @apply bg-canvas-black text-ice-grey;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -107,20 +105,53 @@
 }
 
 @layer components {
+  /* Glass card component */
   .glass-card {
-    @apply bg-canvas-black/60 backdrop-blur-md border border-cool-slate/10 shadow-neo rounded-xl;
+    @apply backdrop-blur-md rounded-xl;
+  }
+
+  /* Light mode styles */
+  .glass-card {
+    @apply bg-white/80 border border-slate-grey/10 shadow-light-neo;
+  }
+
+  /* Dark mode styles */
+  .dark .glass-card {
+    @apply bg-canvas-black/60 border border-cool-slate/10 shadow-neo;
   }
   
+  /* Progress bar */
   .progress-bar {
-    @apply h-1.5 bg-gradient-neon rounded-full transition-all duration-300 ease-out;
+    @apply h-1.5 rounded-full transition-all duration-300 ease-out;
+  }
+
+  .progress-bar {
+    @apply bg-gradient-primary;
+  }
+
+  .dark .progress-bar {
+    @apply bg-gradient-neon;
+  }
+  
+  /* Integration card */
+  .integration-card {
+    @apply relative flex items-center justify-center p-4 rounded-xl border 
+           transition-all duration-300 ease-in-out cursor-pointer;
   }
   
   .integration-card {
-    @apply relative flex items-center justify-center p-4 rounded-xl border border-cool-slate/20 bg-canvas-black/80 
-           hover:bg-deep-plum/30 transition-all duration-300 ease-in-out cursor-pointer;
+    @apply border-slate-grey/20 bg-white/90 hover:bg-soft-plum/30;
+  }
+
+  .dark .integration-card {
+    @apply border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/30;
   }
   
   .integration-card.connected {
+    @apply border-bright-teal bg-soft-plum/20;
+  }
+
+  .dark .integration-card.connected {
     @apply border-electric-teal bg-deep-plum/30;
   }
   
@@ -128,33 +159,75 @@
     @apply opacity-50 cursor-not-allowed;
   }
   
+  /* Preference chip */
   .preference-chip {
-    @apply px-4 py-2 rounded-full border border-cool-slate/20 bg-canvas-black/80
-           hover:bg-deep-plum/30 transition-all duration-300 ease-in-out cursor-pointer;
+    @apply px-4 py-2 rounded-full border
+           transition-all duration-300 ease-in-out cursor-pointer;
+  }
+  
+  .preference-chip {
+    @apply border-slate-grey/20 bg-white/90 hover:bg-soft-plum/30;
+  }
+
+  .dark .preference-chip {
+    @apply border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/30;
   }
   
   .preference-chip.selected {
+    @apply border-bright-teal bg-soft-plum/20;
+  }
+
+  .dark .preference-chip.selected {
     @apply border-electric-teal bg-deep-plum/30;
   }
   
+  /* Delivery card */
   .delivery-card {
-    @apply relative p-4 rounded-xl border border-cool-slate/20 bg-canvas-black/80
-           hover:bg-deep-plum/30 transition-all duration-300 ease-in-out cursor-pointer;
+    @apply relative p-4 rounded-xl border
+           transition-all duration-300 ease-in-out cursor-pointer;
+  }
+  
+  .delivery-card {
+    @apply border-slate-grey/20 bg-white/90 hover:bg-soft-plum/30;
+  }
+
+  .dark .delivery-card {
+    @apply border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/30;
   }
   
   .delivery-card.selected {
+    @apply border-bright-teal bg-soft-plum/20;
+  }
+
+  .dark .delivery-card.selected {
     @apply border-electric-teal bg-deep-plum/30;
   }
 
   /* New components for the redesign */
   .neon-button {
-    @apply bg-electric-teal text-canvas-black font-medium px-6 py-3 rounded-xl hover:bg-hot-coral 
-           transition-all duration-300 ease-in-out shadow-neon transform hover:-translate-y-0.5;
+    @apply font-medium px-6 py-3 rounded-xl 
+           transition-all duration-300 ease-in-out transform hover:-translate-y-0.5;
+  }
+  
+  .neon-button {
+    @apply bg-bright-teal text-deep-navy hover:bg-warm-coral shadow-light-neon;
+  }
+
+  .dark .neon-button {
+    @apply bg-electric-teal text-canvas-black hover:bg-hot-coral shadow-neon;
   }
   
   .neon-outline-button {
-    @apply border-2 border-ice-grey text-ice-grey px-6 py-2.5 rounded-xl hover:border-cool-slate hover:text-cool-slate
-           transition-all duration-300 ease-in-out shadow-subtle;
+    @apply border-2 px-6 py-2.5 rounded-xl
+           transition-all duration-300 ease-in-out;
+  }
+  
+  .neon-outline-button {
+    @apply border-deep-navy text-deep-navy hover:border-slate-grey hover:text-slate-grey shadow-light-subtle;
+  }
+
+  .dark .neon-outline-button {
+    @apply border-ice-grey text-ice-grey hover:border-cool-slate hover:text-cool-slate shadow-subtle;
   }
   
   .neon-shape {
@@ -164,6 +237,14 @@
 
   .radial-gradient-bg {
     @apply absolute inset-0 pointer-events-none;
+  }
+
+  .radial-gradient-bg {
+    background: radial-gradient(circle at center, theme('colors.soft-plum') 0%, theme('colors.light-rose') 40%, transparent 70%);
+    opacity: 0.4;
+  }
+
+  .dark .radial-gradient-bg {
     background: radial-gradient(circle at center, theme('colors.deep-plum') 0%, theme('colors.cranberry') 40%, transparent 70%);
     opacity: 0.4;
   }
@@ -173,11 +254,32 @@
   }
 
   .progress-dot.active {
+    @apply bg-bright-teal;
+  }
+
+  .dark .progress-dot.active {
     @apply bg-electric-teal;
   }
 
   .progress-dot.inactive {
+    @apply bg-slate-grey/50;
+  }
+
+  .dark .progress-dot.inactive {
     @apply bg-cool-slate/50;
+  }
+
+  /* Theme toggle */
+  .theme-toggle {
+    @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors;
+  }
+
+  .theme-toggle {
+    @apply bg-canvas-light text-deep-navy hover:bg-soft-plum/30;
+  }
+
+  .dark .theme-toggle {
+    @apply bg-canvas-black text-ice-grey hover:bg-deep-plum/30;
   }
 }
 
@@ -194,8 +296,28 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
 
+  .shadow-light-neo {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 209, 198, 0.1);
+  }
+  
+  .shadow-light-neon {
+    box-shadow: 0 0 15px rgba(0, 209, 198, 0.3);
+  }
+  
+  .shadow-light-subtle {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
   .text-gradient-neon {
-    @apply bg-gradient-to-r from-electric-teal to-hot-coral bg-clip-text text-transparent;
+    @apply bg-gradient-to-r bg-clip-text text-transparent;
+  }
+
+  .text-gradient-neon {
+    @apply from-bright-teal to-warm-coral;
+  }
+
+  .dark .text-gradient-neon {
+    @apply from-electric-teal to-hot-coral;
   }
 }
 

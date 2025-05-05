@@ -33,25 +33,25 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-canvas-black text-ice-grey flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Radial gradient background */}
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Radial gradient background - styled in CSS based on theme */}
       <div className="radial-gradient-bg" />
       
-      {/* Neon shapes */}
-      <div className="neon-shape w-64 h-64 rounded-full bg-deep-plum/30 top-1/4 -left-20" data-speed="0.5" />
-      <div className="neon-shape w-80 h-80 rounded-full bg-cranberry/20 bottom-0 right-0" data-speed="0.7" />
-      <div className="neon-shape w-40 h-40 rounded-full bg-electric-teal/10 top-10 right-20 animate-float" data-speed="1.2" />
+      {/* Light theme shapes */}
+      <div className="neon-shape w-64 h-64 rounded-full bg-soft-plum/30 top-1/4 -left-20" data-speed="0.5" />
+      <div className="neon-shape w-80 h-80 rounded-full bg-light-rose/20 bottom-0 right-0" data-speed="0.7" />
+      <div className="neon-shape w-40 h-40 rounded-full bg-bright-teal/10 top-10 right-20 animate-float" data-speed="1.2" />
       
       <div 
         className={cn(
-          "w-full max-w-md md:max-w-lg z-10 p-8 animate-fade-in rounded-xl border border-cool-slate/10 bg-canvas-black/60 backdrop-blur-md shadow-neo",
+          "w-full max-w-md md:max-w-lg z-10 p-8 animate-fade-in glass-card",
           className
         )}
       >
         {children}
       </div>
       
-      <div className="mt-4 text-xs text-cool-slate z-10">
+      <div className="mt-4 text-xs z-10">
         You control what Brief.me monitors. Change anytime.
       </div>
     </div>

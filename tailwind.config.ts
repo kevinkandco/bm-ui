@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,7 +62,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// New dark theme colors
+				// Dark theme colors
 				'canvas-black': '#0E0E10',
 				'deep-plum': '#3D0B46',
 				'cranberry': '#6E0039',
@@ -71,6 +70,14 @@ export default {
 				'hot-coral': '#FF4F6D',
 				'ice-grey': '#F5F7FA',
 				'cool-slate': '#B0B3BE',
+				// Light theme colors
+				'canvas-light': '#F8F9FC',
+				'soft-plum': '#E8D9F0',
+				'light-rose': '#FFE4EB',
+				'bright-teal': '#00D1C6',
+				'warm-coral': '#FF6B85',
+				'deep-navy': '#1A1A2E',
+				'slate-grey': '#696E79',
 				// Keep legacy colors
 				"indigo": "#3B3BFF",
 				"neutral-gray": "#8E9196",
@@ -197,12 +204,16 @@ export default {
 				'elevated': '0 10px 30px rgba(0, 0, 0, 0.08)',
 				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 224, 213, 0.1)',
 				'neon': '0 0 15px rgba(0, 224, 213, 0.4)',
-				'subtle': '0 2px 10px rgba(0, 0, 0, 0.2)'
+				'subtle': '0 2px 10px rgba(0, 0, 0, 0.2)',
+				'light-neo': '0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 209, 198, 0.1)',
+				'light-neon': '0 0 15px rgba(0, 209, 198, 0.3)',
+				'light-subtle': '0 2px 10px rgba(0, 0, 0, 0.1)'
 			},
 			backgroundImage: {
 				'gradient-primary': 'linear-gradient(90deg, #3B83F5, #9b87f5)',
 				'gradient-neon': 'linear-gradient(90deg, #00E0D5, #FF4F6D)',
-				'gradient-dark': 'radial-gradient(circle at center, #3D0B46 0%, #6E0039 40%, #0E0E10 80%)'
+				'gradient-dark': 'radial-gradient(circle at center, #3D0B46 0%, #6E0039 40%, #0E0E10 80%)',
+				'gradient-light': 'radial-gradient(circle at center, #E8D9F0 0%, #FFE4EB 40%, #F8F9FC 80%)'
 			}
 		}
 	},
