@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -42,6 +43,15 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* New dark theme variables */
+    --canvas-black: 240 10% 6%; /* #0E0E10 */
+    --deep-plum: 291 72% 16%; /* #3D0B46 */
+    --cranberry: 336 100% 22%; /* #6E0039 */
+    --electric-teal: 177 100% 44%; /* #00E0D5 */
+    --hot-coral: 348 100% 65%; /* #FF4F6D */
+    --ice-grey: 220 40% 97%; /* #F5F7FA */
+    --cool-slate: 225 11% 72%; /* #B0B3BE */
   }
 
   .dark {
@@ -83,115 +93,6 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
-@layer components {
-  .glass-card {
-    @apply bg-white/60 backdrop-blur-md border border-white/20 shadow-glass rounded-xl;
-  }
-  
-  .progress-bar {
-    @apply h-1.5 bg-gradient-primary rounded-full transition-all duration-300 ease-out;
-  }
-  
-  .integration-card {
-    @apply relative flex items-center justify-center p-4 rounded-xl border border-border bg-white/80 
-           hover:bg-white/90 transition-all duration-200 cursor-pointer;
-  }
-  
-  .integration-card.connected {
-    @apply border-indigo bg-indigo/5;
-  }
-  
-  .integration-card.disabled {
-    @apply opacity-50 cursor-not-allowed;
-  }
-  
-  .preference-chip {
-    @apply px-4 py-2 rounded-full border border-border bg-white/80
-           hover:bg-white/90 transition-all duration-200 cursor-pointer;
-  }
-  
-  .preference-chip.selected {
-    @apply border-indigo bg-indigo/5;
-  }
-  
-  .delivery-card {
-    @apply relative p-4 rounded-xl border border-border bg-white/80
-           hover:bg-white/90 transition-all duration-200 cursor-pointer;
-  }
-  
-  .delivery-card.selected {
-    @apply border-indigo bg-indigo/5;
-  }
-}
-
-@layer utilities {
-  
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  20%,
-  60% {
-    transform: translateX(-5px);
-  }
-
-  40%,
-  80% {
-    transform: translateX(5px);
-  }
-}
-
-@keyframes confetti {
-  0% {
-    transform: translateY(0) rotate(0);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(-500px) rotate(720deg);
-    opacity: 0;
-  }
-}
-/* Original light theme variables kept for reference */
-    /* New dark theme variables */
-    --canvas-black: 240 10% 6%; /* #0E0E10 */
-    --deep-plum: 291 72% 16%; /* #3D0B46 */
-    --cranberry: 336 100% 22%; /* #6E0039 */
-    --electric-teal: 177 100% 44%; /* #00E0D5 */
-    --hot-coral: 348 100% 65%; /* #FF4F6D */
-    --ice-grey: 220 40% 97%; /* #F5F7FA */
-    --cool-slate: 225 11% 72%; /* #B0B3BE */
-  }
-
-  body {
     @apply bg-canvas-black text-ice-grey;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
@@ -206,7 +107,6 @@
 }
 
 @layer components {
-  /* Update existing components with new styling */
   .glass-card {
     @apply bg-canvas-black/60 backdrop-blur-md border border-cool-slate/10 shadow-neo rounded-xl;
   }
@@ -299,14 +199,12 @@
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.7;
-    transform: scale(1);
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.05);
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -316,6 +214,43 @@
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  20%, 60% {
+    transform: translateX(-5px);
+  }
+
+  40%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-500px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
   }
 }
 
