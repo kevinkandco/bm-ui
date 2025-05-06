@@ -45,9 +45,14 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange/80 via-hot-coral/30 to-transparent"></div>
       </div>
       
+      {/* Aurora Ribbon Effect */}
+      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
+        <div className="aurora-ribbon"></div>
+      </div>
+      
       {/* Floating glass orbs with enhanced visibility */}
-      <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border border-glass-blue/40 animate-float shadow-neon"></div>
-      <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/20 animate-float-delay shadow-subtle"></div>
+      <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border border-glass-blue/40 animate-float shadow-neon z-[2]"></div>
+      <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/20 animate-float-delay shadow-subtle z-[2]"></div>
       
       <div 
         className={cn(

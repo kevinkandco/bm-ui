@@ -307,6 +307,30 @@
     opacity: 0.1;
     z-index: 1;
   }
+
+  /* Aurora Ribbon Effect */
+  .aurora-ribbon {
+    position: absolute;
+    width: 200%;
+    height: 80%;
+    top: 10%;
+    left: -50%;
+    transform: rotate(25deg);
+    background: linear-gradient(
+      90deg,
+      rgba(76, 209, 227, 0.3) 0%,
+      rgba(86, 179, 212, 0.3) 20%, 
+      rgba(155, 135, 245, 0.3) 40%,
+      rgba(255, 128, 103, 0.3) 60%,
+      rgba(255, 189, 103, 0.3) 80%,
+      rgba(76, 209, 227, 0.3) 100%
+    );
+    background-size: 200% 100%;
+    filter: blur(25px);
+    z-index: 1;
+    opacity: 0.6;
+    animation: aurora-flow 15s linear infinite;
+  }
 }
 
 @layer utilities {
@@ -409,5 +433,15 @@
   100% {
     opacity: 0.09;
     transform: translateX(0.5px);
+  }
+}
+
+/* Aurora effect animation */
+@keyframes aurora-flow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
   }
 }
