@@ -107,6 +107,7 @@ const PriorityPeopleStep = memo(({ onNext, onBack, updateUserData, userData }: P
           addPerson={addPerson}
           removePerson={removePerson}
           designateContact={designateContact}
+          addLabel={addLabel}
           searchQuery={searchQuery}
         />
       </div>
