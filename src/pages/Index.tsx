@@ -65,7 +65,8 @@ const Index = () => {
       </Card>
 
       {/* Custom pulse animation style */}
-      <style jsx>{`
+      <style>
+        {`
         @keyframes smoothPulse {
           0%, 100% {
             opacity: 0.7;
@@ -80,7 +81,8 @@ const Index = () => {
         .pulse-55bpm {
           animation: smoothPulse 1.09s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
