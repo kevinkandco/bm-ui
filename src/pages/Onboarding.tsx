@@ -16,6 +16,15 @@ import SuccessModal from "@/components/onboarding/SuccessModal";
 type DeliveryMethod = "email" | "audio" | "both";
 type ScheduleTime = "morning" | "midday" | "evening" | "custom";
 
+interface BriefSchedule {
+  id: string;
+  name: string;
+  deliveryMethod: DeliveryMethod;
+  scheduleTime: ScheduleTime;
+  briefTime: string;
+  enabled: boolean;
+}
+
 const Onboarding = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -35,16 +44,23 @@ const Onboarding = () => {
     ignoreKeywords: [],
     includeIgnoredInSummary: false,
     
-    // Brief preferences
-    deliveryMethod: "email" as DeliveryMethod,
-    scheduleTime: "morning" as ScheduleTime,
-    briefTime: "08:00",
+    // Brief preferences - now an array of scheduled briefs
+    briefSchedules: [
+      {
+        id: "default",
+        name: "Daily Brief",
+        deliveryMethod: "email" as DeliveryMethod,
+        scheduleTime: "morning" as ScheduleTime,
+        briefTime: "08:00",
+        enabled: true
+      }
+    ],
     
     // Connected integrations
     integrations: []
   });
   
-  const totalSteps = 9; // Updated total steps
+  const totalSteps = 9;
   
   const updateUserData = (data: Partial<typeof userData>) => {
     setUserData(prev => ({ ...prev, ...data }));
