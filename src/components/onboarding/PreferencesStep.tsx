@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import ProgressIndicator from "./ProgressIndicator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Sun, Coffee, Moon } from "lucide-react";
 
 interface PreferencesStepProps {
   onNext: () => void;
@@ -22,6 +25,7 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
   
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
   const [deliveryMethod, setDeliveryMethod] = useState<"email" | "audio" | "both">("email");
+  const [selectedTimes, setSelectedTimes] = useState<string[]>(["morning"]); // Default to morning
   const [briefTime, setBriefTime] = useState("08:00");
   const [ignoreKeyword, setIgnoreKeyword] = useState("");
   const [ignoreKeywords, setIgnoreKeywords] = useState<string[]>([]);
@@ -34,6 +38,18 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
     );
   };
   
+  const toggleTimeSelection = (time: string) => {
+    setSelectedTimes(prev => {
+      if (prev.includes(time)) {
+        // Don't remove if it's the last selected time
+        if (prev.length === 1) return prev;
+        return prev.filter(t => t !== time);
+      } else {
+        return [...prev, time];
+      }
+    });
+  };
+
   const addKeyword = () => {
     if (!ignoreKeyword.trim()) return;
     setIgnoreKeywords(prev => [...prev, ignoreKeyword.trim()]);
@@ -156,14 +172,87 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
         </div>
         
         <div className="space-y-3">
-          <Label htmlFor="brief-time" className="text-ice-grey">Send my brief at</Label>
+          <Label className="text-ice-grey">Schedule your briefs</Label>
+          <p className="text-sm text-cool-slate -mt-1">Select when you'd like to receive your briefs.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
+            {/* Morning schedule option */}
+            <div 
+              className={`schedule-card flex flex-col items-center justify-center p-6 rounded-xl border transition-all cursor-pointer
+                ${selectedTimes.includes('morning') 
+                  ? 'border-electric-teal bg-deep-teal/30 shadow-glow' 
+                  : 'border-cool-slate/20 bg-deep-teal/10 hover:bg-deep-teal/20'
+                }`}
+              onClick={() => toggleTimeSelection('morning')}
+            >
+              <div className="relative h-14 w-full flex items-center justify-center">
+                <Sun size={28} className="text-electric-teal" />
+                <div className="absolute right-1 top-1">
+                  <Checkbox 
+                    checked={selectedTimes.includes('morning')}
+                    className="data-[state=checked]:bg-electric-teal data-[state=checked]:border-electric-teal"
+                  />
+                </div>
+              </div>
+              <h3 className="text-lg font-medium text-ice-grey mt-2">Morning</h3>
+              <p className="text-cool-slate mt-1">8:00 AM</p>
+            </div>
+            
+            {/* Midday schedule option */}
+            <div 
+              className={`schedule-card flex flex-col items-center justify-center p-6 rounded-xl border transition-all cursor-pointer
+                ${selectedTimes.includes('midday') 
+                  ? 'border-electric-teal bg-deep-teal/30 shadow-glow' 
+                  : 'border-cool-slate/20 bg-deep-teal/10 hover:bg-deep-teal/20'
+                }`}
+              onClick={() => toggleTimeSelection('midday')}
+            >
+              <div className="relative h-14 w-full flex items-center justify-center">
+                <Coffee size={28} className="text-electric-teal" />
+                <div className="absolute right-1 top-1">
+                  <Checkbox 
+                    checked={selectedTimes.includes('midday')}
+                    className="data-[state=checked]:bg-electric-teal data-[state=checked]:border-electric-teal"
+                  />
+                </div>
+              </div>
+              <h3 className="text-lg font-medium text-ice-grey mt-2">Midday</h3>
+              <p className="text-cool-slate mt-1">12:00 PM</p>
+            </div>
+            
+            {/* Evening schedule option */}
+            <div 
+              className={`schedule-card flex flex-col items-center justify-center p-6 rounded-xl border transition-all cursor-pointer
+                ${selectedTimes.includes('evening') 
+                  ? 'border-electric-teal bg-deep-teal/30 shadow-glow' 
+                  : 'border-cool-slate/20 bg-deep-teal/10 hover:bg-deep-teal/20'
+                }`}
+              onClick={() => toggleTimeSelection('evening')}
+            >
+              <div className="relative h-14 w-full flex items-center justify-center">
+                <Moon size={28} className="text-electric-teal" />
+                <div className="absolute right-1 top-1">
+                  <Checkbox 
+                    checked={selectedTimes.includes('evening')}
+                    className="data-[state=checked]:bg-electric-teal data-[state=checked]:border-electric-teal"
+                  />
+                </div>
+              </div>
+              <h3 className="text-lg font-medium text-ice-grey mt-2">Evening</h3>
+              <p className="text-cool-slate mt-1">5:00 PM</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          <Label htmlFor="brief-time" className="text-ice-grey">Custom time (optional)</Label>
           <Input
             id="brief-time"
             type="time"
             value={briefTime}
             onChange={(e) => setBriefTime(e.target.value)}
-            className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal"
+            className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal max-w-xs"
           />
+          <p className="text-sm text-cool-slate">You can set a custom time in addition to the scheduled times.</p>
         </div>
       </div>
       

@@ -39,7 +39,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
   }, [isMobile]);
 
   // Add CSS for the wave icon pulse animation at 55bpm
-  const pulseAnimationCSS = `
+  const styleCSS = `
     @keyframes pulse55bpm {
       0% { transform: scale(0.96); opacity: 0.85; }
       50% { transform: scale(1.04); opacity: 1; }
@@ -48,11 +48,62 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
     .wave-pulse {
       animation: pulse55bpm 1.091s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* 55bpm = 1.091s per beat */
     }
+    
+    /* Schedule card styles */
+    .schedule-card {
+      transition: all 0.2s ease-out;
+    }
+    .schedule-card:hover {
+      transform: translateY(-2px);
+    }
+    .schedule-card.selected {
+      border-color: var(--electric-teal);
+      background-color: rgba(0, 200, 200, 0.1);
+    }
+    
+    /* Glowing shadow effect for selected cards */
+    .shadow-glow {
+      box-shadow: 0 0 15px rgba(0, 200, 200, 0.3);
+    }
+    
+    /* Custom preference chip styles */
+    .preference-chip {
+      padding: 0.5rem 0.75rem;
+      border-radius: 9999px;
+      background-color: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .preference-chip:hover {
+      background-color: rgba(30, 41, 59, 0.7);
+    }
+    .preference-chip.selected {
+      background-color: rgba(0, 200, 200, 0.15);
+      border-color: rgba(0, 200, 200, 0.4);
+    }
+    
+    /* Custom delivery card styles */
+    .delivery-card {
+      padding: 1rem;
+      border-radius: 0.75rem;
+      background-color: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .delivery-card:hover {
+      background-color: rgba(30, 41, 59, 0.7);
+    }
+    .delivery-card.selected {
+      background-color: rgba(0, 200, 200, 0.15);
+      border-color: rgba(0, 200, 200, 0.4);
+    }
   `;
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-6 relative overflow-hidden bg-deep-teal">
-      <style>{pulseAnimationCSS}</style>
+      <style>{styleCSS}</style>
       
       {/* Background with teal/coral gradient and grain texture - enhanced contrast */}
       <div className="absolute inset-0 w-full h-full">
