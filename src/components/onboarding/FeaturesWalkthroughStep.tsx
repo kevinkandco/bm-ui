@@ -21,7 +21,7 @@ const FeaturesWalkthroughStep = ({
   const features = [{
     id: "daily-briefings",
     title: "Automated Daily Briefs",
-    description: "Get a personalized summary of your communications, meetings, and tasks first thing in the morning.",
+    description: "Get a personalized summary of key conversations, threads, meetings, and tasks.",
     icon: <Inbox className="h-10 w-10 text-neon-mint" />,
     detail: "Brief.me monitors your connected apps while you're away and delivers a concise summary of what happened."
   }, {
