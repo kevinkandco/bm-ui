@@ -8,14 +8,20 @@ const Index = () => {
   
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-forest-green">
-      {/* Background landscape image */}
-      <div className="absolute inset-0 w-full h-full">
-        <img 
-          src="/lovable-uploads/4b9500ea-4db3-4394-bd97-efce6e561797.png" 
-          alt="Mountain landscape" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/10 backdrop-filter backdrop-blur-[1px]"></div>
+      {/* Background with CSS gradient instead of image */}
+      <div className="absolute inset-0 w-full h-full bg-grain">
+        <div className="absolute inset-0 bg-gradient-to-t from-forest-green via-lake-blue to-peach opacity-90"></div>
+        
+        {/* Foreground silhouette of pine trees */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/3">
+          <svg viewBox="0 0 1200 300" preserveAspectRatio="none" className="w-full h-full">
+            <path 
+              d="M0,300 L0,150 L50,200 L100,120 L150,180 L200,100 L250,160 L300,80 L350,140 L400,60 L450,150 L500,90 L550,160 L600,110 L650,170 L700,100 L750,150 L800,80 L850,140 L900,90 L950,160 L1000,100 L1050,170 L1100,120 L1150,180 L1200,110 L1200,300 Z" 
+              fill="#0A291D" 
+              opacity="0.9"
+            />
+          </svg>
+        </div>
       </div>
       
       {/* Floating glass orbs */}

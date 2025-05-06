@@ -78,6 +78,12 @@ export default {
 				'warm-coral': '#FF6B85',
 				'deep-navy': '#1A1A2E',
 				'slate-grey': '#696E79',
+				// New colors for the landing page
+				'forest-green': '#18382A',
+				'lake-blue': '#3DB2D5',
+				'peach': '#FFCBA3',
+				'off-white': '#F5F5F2',
+				'neon-mint': '#36FFAF',
 				// Keep legacy colors
 				"indigo": "#3B3BFF",
 				"neutral-gray": "#8E9196",
