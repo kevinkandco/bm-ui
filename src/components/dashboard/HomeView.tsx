@@ -6,14 +6,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
+  onOpenBriefModal: () => void;
 }
 
-const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp }: HomeViewProps) => {
+const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBriefModal }: HomeViewProps) => {
   const { toast } = useToast();
   
   const showBriefDetails = () => {
@@ -56,6 +58,32 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp }: HomeVie
         <div className="lg:col-span-8">
           {/* Combined Card with Sections and Dividers */}
           <div className="backdrop-blur-md border border-white/40 rounded-3xl overflow-hidden shadow-lg">
+            {/* Latest Brief Section - Moved to top */}
+            <div className="p-6 hover:bg-white/10 transition-colors cursor-pointer" onClick={onOpenBriefModal}>
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-deep-teal text-lg font-medium">Latest Brief</h2>
+                <span className="text-sm text-deep-teal/80">Today, 8:00 AM</span>
+              </div>
+              <p className="text-deep-teal/90 mb-4 text-sm">Quick summary of your morning updates</p>
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-2 flex-1">
+                  <Mail className="h-5 w-5 text-glass-blue" />
+                  <span className="text-sm font-medium text-deep-teal">5 emails reviewed</span>
+                </div>
+                
+                <div className="flex items-center gap-2 flex-1">
+                  <MessageSquare className="h-5 w-5 text-glass-blue" />
+                  <span className="text-sm font-medium text-deep-teal">12 Slack messages</span>
+                </div>
+                
+                <Button variant="outline" size="sm" className="ml-auto border-glass-blue/40 text-glass-blue hover:bg-white/50 hover:text-glass-blue shadow-sm">
+                  View Full Brief
+                </Button>
+              </div>
+            </div>
+
+            <Separator className="bg-white/20" />
+            
             {/* Urgent Threads Section */}
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -82,54 +110,92 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp }: HomeVie
 
             <Separator className="bg-white/20" />
             
-            {/* Latest Brief Section */}
-            <div className="p-6 hover:bg-white/10 transition-colors cursor-pointer" onClick={showBriefDetails}>
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-deep-teal text-lg font-medium">Latest Brief</h2>
-                <span className="text-sm text-deep-teal/80">Today, 8:00 AM</span>
-              </div>
-              <p className="text-deep-teal/90 mb-4 text-sm">Quick summary of your morning updates</p>
-              <div className="flex flex-wrap gap-4 items-center">
-                <div className="flex items-center gap-2 flex-1">
-                  <Mail className="h-5 w-5 text-glass-blue" />
-                  <span className="text-sm font-medium text-deep-teal">5 emails reviewed</span>
-                </div>
-                
-                <div className="flex items-center gap-2 flex-1">
-                  <MessageSquare className="h-5 w-5 text-glass-blue" />
-                  <span className="text-sm font-medium text-deep-teal">12 Slack messages</span>
-                </div>
-                
-                <Button variant="outline" size="sm" className="ml-auto border-glass-blue/40 text-glass-blue hover:bg-white/50 hover:text-glass-blue shadow-sm">
-                  View Full Brief
-                </Button>
-              </div>
-            </div>
-
-            <Separator className="bg-white/20" />
-            
-            {/* Upcoming Meetings Section */}
+            {/* Connected Channels Section */}
             <div className="p-6">
-              <h2 className="text-lg text-deep-teal flex items-center mb-3">
-                <Calendar className="mr-2 h-5 w-5 text-glass-blue" />
-                Upcoming Meetings
+              <h2 className="text-deep-teal text-lg flex items-center mb-2">
+                <Wifi className="mr-2 h-5 w-5 text-glass-blue" />
+                Connected Channels
               </h2>
+              <p className="text-deep-teal/80 text-sm mb-3">
+                Monitoring 5 channels across 3 platforms
+              </p>
               <div className="space-y-3">
                 {[
-                  { time: "10:00 AM", title: "Weekly Standup", participants: 4 },
-                  { time: "1:30 PM", title: "Product Review", participants: 6 },
-                  { time: "3:00 PM", title: "Client Call", participants: 2 }
-                ].map((meeting, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 bg-white/60 border border-white/40 rounded-lg shadow-sm">
-                    <div className="bg-white/60 rounded p-1.5 h-8 w-8 flex items-center justify-center">
-                      <Calendar className="h-4 w-4 text-glass-blue" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-sm text-deep-teal">{meeting.title}</p>
-                      <div className="flex items-center justify-between mt-1">
-                        <span className="text-xs text-deep-teal/80">{meeting.time}</span>
-                        <span className="text-xs text-deep-teal/80">{meeting.participants} attendees</span>
+                  { name: "Slack", channels: ["#product", "#team-updates", "#general"], icon: MessageSquare, active: true },
+                  { name: "Email", channels: ["Work Inbox", "Personal"], icon: Mail, active: true },
+                  { name: "Calendar", channels: ["Work", "Personal"], icon: Calendar, active: true }
+                ].map((platform, i) => (
+                  <div key={i} className="rounded-lg p-3 hover:bg-white/20 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <platform.icon className="h-4 w-4 text-glass-blue mr-2" />
+                        <h3 className="text-sm font-medium text-deep-teal">{platform.name}</h3>
                       </div>
+                      <span className={`h-2 w-2 rounded-full ${platform.active ? "bg-glass-blue" : "bg-gray-300"}`}></span>
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {platform.channels.map((channel, j) => (
+                        <span key={j} className="text-xs text-deep-teal/80 bg-white/40 px-2 py-0.5 rounded border border-white/30">
+                          {channel}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <Separator className="bg-white/20" />
+            
+            {/* Priority People Section */}
+            <div className="p-6">
+              <h2 className="text-deep-teal text-lg flex items-center mb-2">
+                <User className="mr-2 h-5 w-5 text-glass-blue" />
+                Priority People
+              </h2>
+              <p className="text-deep-teal/80 text-sm mb-3">
+                2 people with recent activity
+              </p>
+              <div className="space-y-1">
+                {[
+                  { 
+                    name: "Sandra Chen", 
+                    title: "Product Manager", 
+                    lastActivity: "15m ago", 
+                    platform: "Email",
+                    active: true 
+                  },
+                  { 
+                    name: "Alex Johnson", 
+                    title: "Engineering Lead", 
+                    lastActivity: "2h ago", 
+                    platform: "Slack",
+                    active: true 
+                  },
+                  { 
+                    name: "Michael Lee", 
+                    title: "CEO", 
+                    lastActivity: "1d ago", 
+                    platform: "Calendar",
+                    active: false 
+                  }
+                ].map((person, i) => (
+                  <div key={i} className={`p-2 rounded-lg ${person.active ? "hover:bg-white/20" : "hover:bg-white/10"} transition-colors`}>
+                    <div className="flex items-center">
+                      <div className="h-6 w-6 rounded-full bg-white/70 border border-white/50 flex items-center justify-center text-deep-teal font-medium text-xs">
+                        {person.name.charAt(0)}
+                      </div>
+                      <div className="ml-2 flex-1">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-medium text-deep-teal">{person.name}</h3>
+                          <div className="flex items-center text-xs text-deep-teal/70">
+                            <span>{person.platform}</span>
+                            <span className="mx-1">•</span>
+                            <span>{person.lastActivity}</span>
+                          </div>
+                        </div>
+                      </div>
+                      {person.active && <span className="h-2 w-2 rounded-full bg-glass-blue ml-1"></span>}
                     </div>
                   </div>
                 ))}
@@ -140,8 +206,8 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp }: HomeVie
         
         {/* Right Section - Col 9-12 */}
         <div className="lg:col-span-4 space-y-6">
-          {/* Next Brief - No Background */}
-          <div className="p-6">
+          {/* Next Brief Section */}
+          <div>
             <h2 className="text-deep-teal text-lg flex items-center mb-3">
               <Clock className="mr-2 h-5 w-5 text-glass-blue" />
               Next Brief
@@ -167,134 +233,32 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp }: HomeVie
             </div>
           </div>
           
-          {/* Connected Channels - No Background */}
-          <div className="p-6">
-            <h2 className="text-deep-teal text-lg flex items-center mb-2">
-              <Wifi className="mr-2 h-5 w-5 text-glass-blue" />
-              Connected Channels
+          {/* Upcoming Meetings Section - Moved from left to right */}
+          <div>
+            <h2 className="text-lg text-deep-teal flex items-center mb-3">
+              <Calendar className="mr-2 h-5 w-5 text-glass-blue" />
+              Upcoming Meetings
             </h2>
-            <p className="text-deep-teal/80 text-sm mb-3">
-              Monitoring 5 channels across 3 platforms
-            </p>
             <div className="space-y-3">
               {[
-                { name: "Slack", channels: ["#product", "#team-updates", "#general"], icon: MessageSquare, active: true },
-                { name: "Email", channels: ["Work Inbox", "Personal"], icon: Mail, active: true },
-                { name: "Calendar", channels: ["Work", "Personal"], icon: Calendar, active: true }
-              ].map((platform, i) => (
-                <div key={i} className="border border-white/40 rounded-lg p-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <platform.icon className="h-4 w-4 text-glass-blue mr-2" />
-                      <h3 className="text-sm font-medium text-deep-teal">{platform.name}</h3>
-                    </div>
-                    <span className={`h-2 w-2 rounded-full ${platform.active ? "bg-glass-blue" : "bg-gray-300"}`}></span>
+                { time: "10:00 AM", title: "Weekly Standup", participants: 4 },
+                { time: "1:30 PM", title: "Product Review", participants: 6 },
+                { time: "3:00 PM", title: "Client Call", participants: 2 }
+              ].map((meeting, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 border border-white/40 rounded-lg">
+                  <div className="rounded p-1.5 h-8 w-8 flex items-center justify-center border border-white/30">
+                    <Calendar className="h-4 w-4 text-glass-blue" />
                   </div>
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {platform.channels.map((channel, j) => (
-                      <span key={j} className="text-xs text-deep-teal/80 bg-white/40 px-2 py-0.5 rounded border border-white/30">
-                        {channel}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-3">
-              <Button variant="outline" size="sm" className="text-glass-blue border-white/40 hover:bg-white/50 shadow-sm">
-                Manage Connections
-              </Button>
-            </div>
-          </div>
-          
-          {/* Priority People - No Background */}
-          <div className="p-6">
-            <h2 className="text-deep-teal text-lg flex items-center mb-2">
-              <User className="mr-2 h-5 w-5 text-glass-blue" />
-              Priority People
-            </h2>
-            <p className="text-deep-teal/80 text-sm mb-3">
-              2 people with recent activity
-            </p>
-            <div className="space-y-2">
-              {[
-                { 
-                  name: "Sandra Chen", 
-                  title: "Product Manager", 
-                  lastActivity: "15m ago", 
-                  platform: "Email",
-                  active: true 
-                },
-                { 
-                  name: "Alex Johnson", 
-                  title: "Engineering Lead", 
-                  lastActivity: "2h ago", 
-                  platform: "Slack",
-                  active: true 
-                },
-                { 
-                  name: "Michael Lee", 
-                  title: "CEO", 
-                  lastActivity: "1d ago", 
-                  platform: "Calendar",
-                  active: false 
-                }
-              ].map((person, i) => (
-                <div key={i} className={`p-2 rounded-lg border ${person.active ? "border-glass-blue/30" : "border-white/40"}`}>
-                  <div className="flex items-center">
-                    <div className="h-8 w-8 rounded-full bg-white/70 border border-white/50 flex items-center justify-center text-deep-teal font-medium text-sm">
-                      {person.name.charAt(0)}
-                    </div>
-                    <div className="ml-2">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-medium text-deep-teal">{person.name}</h3>
-                        {person.active && <span className="h-2 w-2 rounded-full bg-glass-blue"></span>}
-                      </div>
-                      <div className="flex items-center text-xs text-deep-teal/70">
-                        <span>{person.platform}</span>
-                        <span className="mx-1">•</span>
-                        <span>{person.lastActivity}</span>
-                      </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm text-deep-teal">{meeting.title}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-xs text-deep-teal/80">{meeting.time}</span>
+                      <span className="text-xs text-deep-teal/80">{meeting.participants} attendees</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-          
-          {/* Task Radar - No Background */}
-          <div className="p-6">
-            <h2 className="text-lg text-deep-teal mb-3">Task Radar</h2>
-            <div className="flex justify-center">
-              <div className="relative w-28 h-28">
-                {/* Circle progress indicator */}
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" cy="50" r="45" 
-                    fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="10" 
-                  />
-                  <circle 
-                    cx="50" cy="50" r="45" 
-                    fill="none" 
-                    stroke="url(#gradient-stroke)" 
-                    strokeWidth="10" 
-                    strokeDasharray="283" strokeDashoffset="70" 
-                    transform="rotate(-90 50 50)"
-                  />
-                  <defs>
-                    <linearGradient id="gradient-stroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#36FFAF" />
-                      <stop offset="100%" stopColor="#4F99E9" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center flex-col">
-                  <span className="text-2xl font-bold text-deep-teal">75%</span>
-                  <span className="text-xs text-deep-teal/80">Complete</span>
-                </div>
-              </div>
-            </div>
-            <p className="text-center text-sm text-deep-teal/90 mt-2">6 of 8 tasks done</p>
           </div>
         </div>
       </div>
