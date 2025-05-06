@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface BriefSchedule {
   id: string;
@@ -229,11 +230,15 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
               onCheckedChange={(checked) => updateDailySchedule('weekendMode', checked)}
             />
             <Label htmlFor="weekend-mode" className="text-ice-grey">Include weekend briefs</Label>
-            <InfoIcon 
-              size={16} 
-              className="text-cool-slate cursor-help ml-1" 
-              title="Enable to receive briefs on weekends too"
-            />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <InfoIcon 
+                  size={16} 
+                  className="text-cool-slate cursor-help ml-1"
+                />
+              </TooltipTrigger>
+              <TooltipContent>Enable to receive briefs on weekends too</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </div>
