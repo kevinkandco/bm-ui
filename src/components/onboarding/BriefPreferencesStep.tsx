@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
-import { Mail, Headphones, Clock, Sun, Coffee, Moon, Plus, Trash2, InfoIcon } from "lucide-react";
+import { Mail, Headphones, Clock, Sun, Coffee, Moon, Plus, Trash2, InfoIcon, AlarmClock, Sunrise, Sunset } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 import { 
@@ -24,6 +24,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { Switch } from "@/components/ui/switch";
 
 interface BriefSchedule {
   id: string;
@@ -32,6 +42,13 @@ interface BriefSchedule {
   scheduleTime: "morning" | "midday" | "evening" | "custom";
   briefTime: string;
   enabled: boolean;
+  days: string[];
+}
+
+interface DailySchedule {
+  workdayStart: string;
+  workdayEnd: string;
+  weekendMode: boolean;
 }
 
 interface BriefPreferencesStepProps {
@@ -40,22 +57,40 @@ interface BriefPreferencesStepProps {
   updateUserData: (data: any) => void;
   userData: {
     briefSchedules: BriefSchedule[];
+    dailySchedule?: DailySchedule;
     [key: string]: any;
   };
 }
 
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const WEEKEND = ["Saturday", "Sunday"];
+
 const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: BriefPreferencesStepProps) => {
+  // Initialize brief schedules from userData or with defaults
   const [briefSchedules, setBriefSchedules] = useState<BriefSchedule[]>(
     userData.briefSchedules?.length 
-      ? userData.briefSchedules 
+      ? userData.briefSchedules.map(brief => ({
+          ...brief,
+          days: brief.days || [...WEEKDAYS]
+        }))
       : [{
           id: "default",
           name: "Daily Brief",
           deliveryMethod: "email",
           scheduleTime: "morning",
           briefTime: "08:00",
-          enabled: true
+          enabled: true,
+          days: [...WEEKDAYS]
         }]
+  );
+
+  // Initialize daily schedule from userData or with defaults
+  const [dailySchedule, setDailySchedule] = useState<DailySchedule>(
+    userData.dailySchedule || {
+      workdayStart: "09:00",
+      workdayEnd: "17:00",
+      weekendMode: false
+    }
   );
 
   const addNewBrief = () => {
@@ -65,7 +100,8 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
       deliveryMethod: "email",
       scheduleTime: "morning",
       briefTime: "08:00",
-      enabled: true
+      enabled: true,
+      days: [...WEEKDAYS]
     };
     
     setBriefSchedules([...briefSchedules, newBrief]);
@@ -108,14 +144,35 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
     });
   };
 
+  const toggleDay = (briefId: string, day: string) => {
+    const brief = briefSchedules.find(b => b.id === briefId);
+    if (!brief) return;
+    
+    const updatedDays = brief.days.includes(day)
+      ? brief.days.filter(d => d !== day)
+      : [...brief.days, day];
+    
+    updateBrief(briefId, { days: updatedDays });
+  };
+
+  const updateDailySchedule = (field: keyof DailySchedule, value: any) => {
+    setDailySchedule({
+      ...dailySchedule,
+      [field]: value
+    });
+  };
+
   const handleContinue = () => {
-    updateUserData({ briefSchedules });
+    updateUserData({ 
+      briefSchedules,
+      dailySchedule
+    });
     onNext();
   };
 
   return (
     <div className="space-y-8">
-      <ProgressIndicator currentStep={6} totalSteps={7} />
+      <ProgressIndicator currentStep={8} totalSteps={9} />
       
       {/* Clock visual element */}
       <div className="h-16 w-full flex items-center justify-center relative mb-4">
@@ -129,8 +186,61 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
         </p>
       </div>
       
+      {/* Daily schedule section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-ice-grey">Your Daily Schedule</h3>
+        <div className="border border-cool-slate/20 rounded-lg p-4 space-y-6 bg-deep-plum/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Sunrise size={18} className="text-electric-teal" />
+                <Label htmlFor="workdayStart" className="text-ice-grey">Workday Start</Label>
+              </div>
+              <Input
+                id="workdayStart"
+                type="time"
+                value={dailySchedule.workdayStart}
+                onChange={(e) => updateDailySchedule('workdayStart', e.target.value)}
+                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+              />
+              <p className="text-xs text-cool-slate">When do you typically start your workday?</p>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Sunset size={18} className="text-electric-teal" />
+                <Label htmlFor="workdayEnd" className="text-ice-grey">Workday End</Label>
+              </div>
+              <Input
+                id="workdayEnd"
+                type="time"
+                value={dailySchedule.workdayEnd}
+                onChange={(e) => updateDailySchedule('workdayEnd', e.target.value)}
+                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+              />
+              <p className="text-xs text-cool-slate">When do you typically end your workday?</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id="weekend-mode" 
+              checked={dailySchedule.weekendMode}
+              onCheckedChange={(checked) => updateDailySchedule('weekendMode', checked)}
+            />
+            <Label htmlFor="weekend-mode" className="text-ice-grey">Include weekend briefs</Label>
+            <InfoIcon 
+              size={16} 
+              className="text-cool-slate cursor-help ml-1" 
+              title="Enable to receive briefs on weekends too"
+            />
+          </div>
+        </div>
+      </div>
+      
       {/* Brief schedule list */}
       <div className="space-y-4">
+        <h3 className="text-lg font-medium text-ice-grey">Your Brief Schedules</h3>
         {briefSchedules.map((brief, index) => (
           <Collapsible 
             key={brief.id}
@@ -294,6 +404,56 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                     Your brief will be prepared and delivered at this time (in your local timezone)
                   </p>
                 </div>
+              </div>
+              
+              <div className="space-y-3">
+                <Label className="text-ice-grey">Days of the week</Label>
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {WEEKDAYS.map(day => (
+                      <Button
+                        key={`${brief.id}-${day}`}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "border border-cool-slate/30",
+                          brief.days.includes(day)
+                            ? "bg-electric-teal/20 text-electric-teal border-electric-teal/40"
+                            : "bg-canvas-black/50 text-cool-slate"
+                        )}
+                        onClick={() => toggleDay(brief.id, day)}
+                      >
+                        {day.substring(0, 3)}
+                      </Button>
+                    ))}
+                  </div>
+                  
+                  {dailySchedule.weekendMode && (
+                    <div className="flex flex-wrap gap-2">
+                      {WEEKEND.map(day => (
+                        <Button
+                          key={`${brief.id}-${day}`}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className={cn(
+                            "border border-cool-slate/30",
+                            brief.days.includes(day)
+                              ? "bg-electric-teal/20 text-electric-teal border-electric-teal/40"
+                              : "bg-canvas-black/50 text-cool-slate"
+                          )}
+                          onClick={() => toggleDay(brief.id, day)}
+                        >
+                          {day.substring(0, 3)}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-cool-slate">
+                  Select which days of the week this brief should be delivered
+                </p>
               </div>
             </CollapsibleContent>
           </Collapsible>

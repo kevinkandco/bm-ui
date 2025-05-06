@@ -23,6 +23,13 @@ interface BriefSchedule {
   scheduleTime: ScheduleTime;
   briefTime: string;
   enabled: boolean;
+  days: string[];
+}
+
+interface DailySchedule {
+  workdayStart: string;
+  workdayEnd: string;
+  weekendMode: boolean;
 }
 
 const Onboarding = () => {
@@ -52,9 +59,17 @@ const Onboarding = () => {
         deliveryMethod: "email" as DeliveryMethod,
         scheduleTime: "morning" as ScheduleTime,
         briefTime: "08:00",
-        enabled: true
+        enabled: true,
+        days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
       }
     ],
+    
+    // Daily schedule
+    dailySchedule: {
+      workdayStart: "09:00",
+      workdayEnd: "17:00",
+      weekendMode: false
+    },
     
     // Connected integrations
     integrations: []
