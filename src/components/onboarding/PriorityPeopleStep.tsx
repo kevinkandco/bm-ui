@@ -7,12 +7,6 @@ import ProgressIndicator from "./ProgressIndicator";
 import { User, Plus, X, Mail, Phone, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { 
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -208,113 +202,91 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
               </div>
               
               <div className="flex items-center gap-2">
-                {/* Role dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                {/* Role select - now just a badge if role is selected */}
+                {person.role ? (
+                  <span className="text-xs h-6 py-0 px-2 bg-electric-teal/20 border-electric-teal/40 text-white rounded-md">
+                    {person.role}
+                  </span>
+                ) : null}
+                
+                {/* Just the Select Person button - no more Designate */}
+                <Popover 
+                  open={activeRoleForContact === person.name}
+                  onOpenChange={(open) => {
+                    if (open) {
+                      setActiveRoleForContact(person.name);
+                      setContactSearchQuery('');
+                    } else {
+                      setActiveRoleForContact(null);
+                    }
+                  }}
+                >
+                  <PopoverTrigger asChild>
                     <Button 
                       size="sm" 
-                      variant="outline" 
+                      variant={person.contactName ? "secondary" : "outline"}
                       className={cn(
-                        "text-xs h-6 py-0 px-2", 
-                        person.role ? "bg-electric-teal/20 border-electric-teal/40 text-white" : "bg-white/10"
+                        "text-xs h-6 py-0 px-2",
+                        person.contactName 
+                          ? "bg-hot-coral/20 border-hot-coral/40 text-white" 
+                          : "bg-white/10 border-white/20 text-white/70"
                       )}
                     >
-                      {person.role || "Designate"}
+                      {person.contactName || "Select Person"}
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-deep-plum border-white/20">
-                    {roles.map((role) => (
-                      <DropdownMenuItem 
-                        key={role} 
-                        onClick={() => assignRole(person.name, role)}
-                        className="text-white hover:bg-white/10"
-                      >
-                        {role}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                
-                {/* Contact picker popover - only shown if a role is selected */}
-                {person.role && (
-                  <Popover 
-                    open={activeRoleForContact === person.name}
-                    onOpenChange={(open) => {
-                      if (open) {
-                        setActiveRoleForContact(person.name);
-                        setContactSearchQuery('');
-                      } else {
-                        setActiveRoleForContact(null);
-                      }
-                    }}
+                  </PopoverTrigger>
+                  <PopoverContent 
+                    className="w-64 p-0 bg-deep-plum border-white/20" 
+                    align="end"
                   >
-                    <PopoverTrigger asChild>
-                      <Button 
-                        size="sm" 
-                        variant={person.contactName ? "secondary" : "outline"}
-                        className={cn(
-                          "text-xs h-6 py-0 px-2",
-                          person.contactName 
-                            ? "bg-hot-coral/20 border-hot-coral/40 text-white" 
-                            : "bg-white/10 border-white/20 text-white/70"
-                        )}
-                      >
-                        {person.contactName || "Select Person"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent 
-                      className="w-64 p-0 bg-deep-plum border-white/20" 
-                      align="end"
-                    >
-                      <div className="p-2">
-                        <div className="relative mb-2">
-                          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40" />
-                          <Input
-                            placeholder={`Find ${person.role.toLowerCase()}...`}
-                            value={contactSearchQuery}
-                            onChange={(e) => setContactSearchQuery(e.target.value)}
-                            className="pl-7 py-1 h-8 bg-white/10 border-white/20 text-ice-grey placeholder:text-white/40 text-xs"
-                          />
-                        </div>
-                        
-                        <div className="max-h-52 overflow-y-auto">
-                          {filteredPlatformContacts.length > 0 ? (
-                            filteredPlatformContacts.map((contact) => (
-                              <div 
-                                key={contact.id}
-                                className="flex items-center justify-between p-2 hover:bg-white/10 rounded cursor-pointer"
-                                onClick={() => designateContact(person.name, contact)}
-                              >
-                                <div className="flex items-center">
-                                  <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full mr-2">
-                                    <User size={12} className="text-white" />
-                                  </div>
-                                  <div>
-                                    <p className="text-white text-xs">{contact.name}</p>
-                                    <p className="text-white/50 text-xs">{contact.email}</p>
-                                  </div>
+                    <div className="p-2">
+                      <div className="relative mb-2">
+                        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40" />
+                        <Input
+                          placeholder="Find a person..."
+                          value={contactSearchQuery}
+                          onChange={(e) => setContactSearchQuery(e.target.value)}
+                          className="pl-7 py-1 h-8 bg-white/10 border-white/20 text-ice-grey placeholder:text-white/40 text-xs"
+                        />
+                      </div>
+                      
+                      <div className="max-h-52 overflow-y-auto">
+                        {filteredPlatformContacts.length > 0 ? (
+                          filteredPlatformContacts.map((contact) => (
+                            <div 
+                              key={contact.id}
+                              className="flex items-center justify-between p-2 hover:bg-white/10 rounded cursor-pointer"
+                              onClick={() => designateContact(person.name, contact)}
+                            >
+                              <div className="flex items-center">
+                                <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full mr-2">
+                                  <User size={12} className="text-white" />
+                                </div>
+                                <div>
+                                  <p className="text-white text-xs">{contact.name}</p>
+                                  <p className="text-white/50 text-xs">{contact.email}</p>
                                 </div>
                               </div>
-                            ))
-                          ) : (
-                            <p className="text-white/50 text-xs p-2">No matching contacts found</p>
-                          )}
-                        </div>
-                        
-                        {person.contactName && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="w-full mt-2 text-xs h-7 text-hot-coral hover:text-hot-coral hover:bg-hot-coral/10"
-                            onClick={() => removeDesignation(person.name)}
-                          >
-                            <X size={12} className="mr-1" /> Remove designation
-                          </Button>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-white/50 text-xs p-2">No matching contacts found</p>
                         )}
                       </div>
-                    </PopoverContent>
-                  </Popover>
-                )}
+                      
+                      {person.contactName && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full mt-2 text-xs h-7 text-hot-coral hover:text-hot-coral hover:bg-hot-coral/10"
+                          onClick={() => removeDesignation(person.name)}
+                        >
+                          <X size={12} className="mr-1" /> Remove designation
+                        </Button>
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
                 
                 {/* Remove button */}
                 <Button 
