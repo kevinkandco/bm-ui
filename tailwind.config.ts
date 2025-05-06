@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -186,7 +185,15 @@ export default {
 					'50%': {
 						filter: 'brightness(1.2) blur(4px)'
 					}
-				}
+				},
+				'float-delay': {
+					'0%, 100%': {
+						transform: 'translateY(0px) translateX(0px)',
+					},
+					'50%': {
+						transform: 'translateY(-8px) translateX(5px)',
+					},
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -198,7 +205,8 @@ export default {
 				'confetti': 'confetti 2s ease-out forwards',
 				'pulse': 'pulse 8s infinite ease-in-out',
 				'float': 'float 6s infinite ease-in-out',
-				'glow': 'glow 3s infinite ease-in-out'
+				'glow': 'glow 3s infinite ease-in-out',
+				'float-delay': 'float-delay 8s infinite ease-in-out 1s',
 			},
 			boxShadow: {
 				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',

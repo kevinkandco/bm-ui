@@ -280,6 +280,33 @@
   .dark .theme-toggle {
     @apply bg-canvas-black text-ice-grey hover:bg-deep-plum/30;
   }
+
+  /* Film grain effect */
+  .bg-grain {
+    position: relative;
+  }
+  
+  .bg-grain::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.06;
+    z-index: 1;
+  }
+  
+  /* New glass card styles for the landing page */
+  .glass-landing-card {
+    @apply backdrop-blur-md rounded-3xl overflow-hidden border shadow-lg;
+  }
+
+  .glass-landing-card {
+    @apply bg-white/10 border-white/20;
+  }
 }
 
 @layer utilities {
