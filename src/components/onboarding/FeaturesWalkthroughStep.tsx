@@ -73,7 +73,7 @@ const FeaturesWalkthroughStep = ({
             <h3 className="text-xl font-medium text-off-white">
               {features[currentFeature].title}
             </h3>
-            <p className="text-off-white/70">{features[currentFeature].description}</p>
+            <p className="text-off-white/70 text-neutral-50">{features[currentFeature].description}</p>
             
             <div className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 mt-4">
               <p className="text-sm text-off-white/80">{features[currentFeature].detail}</p>
