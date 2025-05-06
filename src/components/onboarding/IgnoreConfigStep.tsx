@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -198,7 +197,8 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          className="neon-outline-button"
+          variant="plain"
+          size="none"
         >
           Back
         </Button>
