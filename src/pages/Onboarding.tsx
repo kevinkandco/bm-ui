@@ -5,7 +5,9 @@ import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import SignInStep from "@/components/onboarding/SignInStep";
 import FeaturesWalkthroughStep from "@/components/onboarding/FeaturesWalkthroughStep";
 import IntegrationsStep from "@/components/onboarding/IntegrationsStep";
-import PriorityConfigStep from "@/components/onboarding/PriorityConfigStep";
+import PriorityPeopleStep from "@/components/onboarding/PriorityPeopleStep";
+import PriorityChannelsStep from "@/components/onboarding/PriorityChannelsStep";
+import PriorityTopicsStep from "@/components/onboarding/PriorityTopicsStep";
 import IgnoreConfigStep from "@/components/onboarding/IgnoreConfigStep";
 import BriefPreferencesStep from "@/components/onboarding/BriefPreferencesStep";
 import GetStartedStep from "@/components/onboarding/GetStartedStep";
@@ -42,7 +44,7 @@ const Onboarding = () => {
     integrations: []
   });
   
-  const totalSteps = 7;
+  const totalSteps = 9; // Updated total steps
   
   const updateUserData = (data: Partial<typeof userData>) => {
     setUserData(prev => ({ ...prev, ...data }));
@@ -101,28 +103,42 @@ const Onboarding = () => {
             onSkip={handleSkip}
           />}
           
-          {currentStep === 4 && <PriorityConfigStep 
+          {currentStep === 4 && <PriorityPeopleStep 
             onNext={handleNext} 
             onBack={handleBack}
             updateUserData={updateUserData}
             userData={userData}
           />}
           
-          {currentStep === 5 && <IgnoreConfigStep 
+          {currentStep === 5 && <PriorityChannelsStep 
             onNext={handleNext} 
             onBack={handleBack}
             updateUserData={updateUserData}
             userData={userData}
           />}
           
-          {currentStep === 6 && <BriefPreferencesStep
+          {currentStep === 6 && <PriorityTopicsStep 
             onNext={handleNext} 
             onBack={handleBack}
             updateUserData={updateUserData}
             userData={userData}
           />}
           
-          {currentStep === 7 && <GetStartedStep 
+          {currentStep === 7 && <IgnoreConfigStep 
+            onNext={handleNext} 
+            onBack={handleBack}
+            updateUserData={updateUserData}
+            userData={userData}
+          />}
+          
+          {currentStep === 8 && <BriefPreferencesStep
+            onNext={handleNext} 
+            onBack={handleBack}
+            updateUserData={updateUserData}
+            userData={userData}
+          />}
+          
+          {currentStep === 9 && <GetStartedStep 
             onNext={handleNext} 
             onBack={handleBack}
             userData={userData}
