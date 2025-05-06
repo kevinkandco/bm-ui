@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
-import { Download, Smartphone, ChevronsRight, Sparkles, Sunrise, Sunset, Calendar } from "lucide-react";
+import { Download, Smartphone, ChevronsRight, Sparkles, Calendar, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface GetStartedStepProps {
@@ -98,21 +98,21 @@ const GetStartedStep = ({
   
   const summaryData = formatSummary();
   
-  return <div className="space-y-8">
+  return <div className="space-y-6">
       <ProgressIndicator currentStep={9} totalSteps={9} />
       
-      {/* Visual element */}
-      <div className="relative h-24 w-full flex items-center justify-center overflow-hidden mb-4">
-        <Sparkles size={48} className="text-electric-teal animate-float" />
+      {/* Visual element with reduced height */}
+      <div className="relative h-16 w-full flex items-center justify-center overflow-hidden mb-2">
+        <Sparkles size={40} className="text-electric-teal animate-float" />
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-2">
         <h2 className="text-2xl font-semibold text-off-white tracking-tighter">You're all set!</h2>
         <p className="text-off-white/90">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
       </div>
       
-      <div className="space-y-6">
-        <div className="space-y-4">
+      <div className="space-y-4">
+        <div className="space-y-3">
           <h3 className="text-lg font-medium text-off-white">Your Brief Setup</h3>
           
           <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
@@ -120,80 +120,51 @@ const GetStartedStep = ({
                 <span className="text-off-white/90">{section.title}</span>
                 <div className="text-right">
                   <span className="text-off-white font-medium">{section.value}</span>
-                  {section.detail && <p className="text-xs text-off-white/80 mt-1">{section.detail}</p>}
+                  {section.detail && <p className="text-xs text-off-white/80 mt-0.5">{section.detail}</p>}
                 </div>
               </div>)}
           </div>
         </div>
-
-        {/* Daily Schedule Card */}
-        {userData.dailySchedule && (
-          <div className="p-5 rounded-xl border border-white/30 bg-white/15 backdrop-blur-sm space-y-3">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-8 w-8 text-electric-teal" />
-              <h4 className="text-lg font-medium text-off-white">Your Daily Schedule</h4>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-2">
-                <Sunrise className="text-electric-teal h-5 w-5" />
-                <div>
-                  <p className="text-xs text-off-white/70">Start</p>
-                  <p className="text-off-white">{formatTimeString(userData.dailySchedule.workdayStart)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Sunset className="text-electric-teal h-5 w-5" />
-                <div>
-                  <p className="text-xs text-off-white/70">End</p>
-                  <p className="text-off-white">{formatTimeString(userData.dailySchedule.workdayEnd)}</p>
-                </div>
-              </div>
-            </div>
-            <p className="text-sm text-off-white/90">
-              {userData.dailySchedule.weekendMode 
-                ? "Your briefs will be delivered 7 days a week." 
-                : "Your briefs will be delivered on weekdays."}
-            </p>
-          </div>
-        )}
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           <h3 className="text-lg font-medium text-off-white">Get the full experience</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-5 rounded-xl border border-white/30 bg-white/15 backdrop-blur-sm space-y-3">
-              <div className="flex items-center gap-3">
-                <Download className="h-8 w-8 text-electric-teal" />
-                <h4 className="text-lg font-medium text-off-white">Desktop App</h4>
+          <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
+            <div className="flex justify-between items-center px-4 py-3">
+              <div className="flex items-center gap-2">
+                <Download className="h-6 w-6 text-electric-teal" />
+                <div>
+                  <span className="text-off-white">Desktop App</span>
+                  <p className="text-xs text-off-white/80">Get desktop notifications and quick access</p>
+                </div>
               </div>
-              <p className="text-sm text-off-white/90">
-                Get desktop notifications and quick access to your briefs from your taskbar.
-              </p>
-              <Button variant="outline" className="w-full neon-outline-button text-xs">Download Desktop App</Button>
+              <Button variant="outline" size="sm" className="neon-outline-button text-xs">
+                Download
+              </Button>
             </div>
             
-            <div className="p-5 rounded-xl border border-white/30 bg-white/15 backdrop-blur-sm space-y-3">
-              <div className="flex items-center gap-3">
-                <Smartphone className="h-8 w-8 text-electric-teal" />
-                <h4 className="text-lg font-medium text-off-white">Mobile App</h4>
+            <div className="flex justify-between items-center px-4 py-3">
+              <div className="flex items-center gap-2">
+                <Smartphone className="h-6 w-6 text-electric-teal" />
+                <div>
+                  <span className="text-off-white">Mobile App</span>
+                  <p className="text-xs text-off-white/80">Listen to briefs on the go</p>
+                </div>
               </div>
-              <p className="text-sm text-off-white/90">
-                Listen to your briefs on the go and stay in sync while mobile.
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="neon-outline-button text-xs">iOS</Button>
-                <Button variant="outline" className="neon-outline-button text-xs">Android</Button>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="neon-outline-button text-xs">iOS</Button>
+                <Button variant="outline" size="sm" className="neon-outline-button text-xs">Android</Button>
               </div>
             </div>
           </div>
           
-          <p className="text-xs text-off-white/80 text-center pt-2">
+          <p className="text-xs text-off-white/80 text-center">
             You can always download these apps later from your dashboard
           </p>
         </div>
       </div>
       
-      <div className="flex justify-between pt-4">
+      <div className="flex justify-between pt-3">
         <Button 
           onClick={onBack} 
           variant="plain"
