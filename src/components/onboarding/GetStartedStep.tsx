@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
 import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 interface GetStartedStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -11,6 +12,7 @@ interface GetStartedStepProps {
     [key: string]: any;
   };
 }
+
 const GetStartedStep = ({
   onNext,
   onBack,
@@ -71,7 +73,9 @@ const GetStartedStep = ({
     }
     return sections;
   };
+  
   const summaryData = formatSummary();
+  
   return <div className="space-y-8">
       <ProgressIndicator currentStep={7} totalSteps={7} />
       
@@ -137,7 +141,11 @@ const GetStartedStep = ({
       </div>
       
       <div className="flex justify-between pt-4">
-        <Button onClick={onBack} className="neon-outline-button">
+        <Button 
+          onClick={onBack} 
+          variant="plain"
+          size="none"
+        >
           Back
         </Button>
         <Button onClick={onNext} className="neon-button">
@@ -146,4 +154,5 @@ const GetStartedStep = ({
       </div>
     </div>;
 };
+
 export default GetStartedStep;
