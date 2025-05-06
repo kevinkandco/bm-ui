@@ -37,13 +37,11 @@ const Dashboard = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="p-6">
-        <div className="rounded-3xl overflow-hidden backdrop-blur-md bg-white/50 border border-white/30 shadow-md p-6">
-          <HomeView 
-            onOpenBrief={handleOpenBrief}
-            onToggleFocusMode={handleToggleFocusMode}
-            onToggleCatchMeUp={handleToggleCatchMeUp}
-          />
-        </div>
+        <HomeView 
+          onOpenBrief={handleOpenBrief}
+          onToggleFocusMode={handleToggleFocusMode}
+          onToggleCatchMeUp={handleToggleCatchMeUp}
+        />
       </div>
       
       <BriefDrawer 
