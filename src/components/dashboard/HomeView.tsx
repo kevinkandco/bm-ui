@@ -21,22 +21,22 @@ const HomeView = () => {
       {/* Hero Banner */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-off-white">Morning, Alex</h1>
-        <p className="text-off-white/80 mt-1">Here's what you missed</p>
+        <p className="text-off-white/90 mt-1">Here's what you missed</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Latest Brief - Column 1 */}
-        <Card className="md:col-span-2 backdrop-blur-md bg-white/15 border border-white/30 hover:shadow-neo transition-shadow cursor-pointer" onClick={showBriefDetails}>
+        <Card className="md:col-span-2 backdrop-blur-md bg-white/20 border border-white/30 hover:shadow-neo transition-shadow cursor-pointer" onClick={showBriefDetails}>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
               <CardTitle className="text-off-white">Latest Brief</CardTitle>
-              <span className="text-sm text-off-white/70">Today, 8:00 AM</span>
+              <span className="text-sm text-off-white/80">Today, 8:00 AM</span>
             </div>
-            <CardDescription className="text-off-white/80">3 important updates from your connected tools</CardDescription>
+            <CardDescription className="text-off-white/90">3 important updates from your connected tools</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="p-4 bg-white/20 rounded-lg border border-white/30">
+              <div className="p-4 bg-white/25 rounded-lg border border-white/30">
                 <div className="flex items-center gap-2">
                   <Mail className="h-4 w-4 text-neon-mint" />
                   <span className="text-sm font-medium text-off-white">Email</span>
@@ -44,7 +44,7 @@ const HomeView = () => {
                 <p className="mt-2 text-sm text-off-white/90">2 high priority emails from Sandra and Finance Team</p>
               </div>
               
-              <div className="p-4 bg-white/20 rounded-lg border border-white/30">
+              <div className="p-4 bg-white/25 rounded-lg border border-white/30">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 text-neon-mint" />
                   <span className="text-sm font-medium text-off-white">Slack</span>
@@ -55,9 +55,9 @@ const HomeView = () => {
               <div className="flex justify-between items-center mt-4">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 bg-neon-mint rounded-full"></span>
-                  <span className="text-sm text-off-white/80">Audio version available</span>
+                  <span className="text-sm text-off-white/90">Audio version available</span>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="border-white/30 text-off-white hover:bg-white/25 hover:text-off-white">
                   View Full Brief
                 </Button>
               </div>
@@ -66,7 +66,7 @@ const HomeView = () => {
         </Card>
         
         {/* Upcoming Meetings - Column 2 */}
-        <Card className="md:col-span-1 backdrop-blur-md bg-white/15 border border-white/30">
+        <Card className="md:col-span-1 backdrop-blur-md bg-white/20 border border-white/30">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg text-off-white">Upcoming Meetings</CardTitle>
           </CardHeader>
@@ -78,14 +78,14 @@ const HomeView = () => {
                 { time: "3:00 PM", title: "Client Call", participants: 2 }
               ].map((meeting, i) => (
                 <div key={i} className="flex items-start gap-3 py-2 border-b border-white/20 last:border-b-0">
-                  <div className="bg-white/20 rounded p-1.5 h-8 w-8 flex items-center justify-center">
+                  <div className="bg-white/25 rounded p-1.5 h-8 w-8 flex items-center justify-center">
                     <Calendar className="h-4 w-4 text-neon-mint" />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm text-off-white">{meeting.title}</p>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs text-off-white/70">{meeting.time}</span>
-                      <span className="text-xs text-off-white/70">{meeting.participants} attendees</span>
+                      <span className="text-xs text-off-white/80">{meeting.time}</span>
+                      <span className="text-xs text-off-white/80">{meeting.participants} attendees</span>
                     </div>
                   </div>
                 </div>
@@ -95,7 +95,7 @@ const HomeView = () => {
         </Card>
         
         {/* Urgent Threads & Task Radar - Column 3 */}
-        <Card className="md:col-span-1 backdrop-blur-md bg-white/15 border border-white/30">
+        <Card className="md:col-span-1 backdrop-blur-md bg-white/20 border border-white/30">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg text-off-white">Urgent Threads</CardTitle>
           </CardHeader>
@@ -105,9 +105,9 @@ const HomeView = () => {
                 { channel: "# product", message: "New designs ready for review" },
                 { channel: "Sandra", message: "About the quarterly report" }
               ].map((thread, i) => (
-                <div key={i} className="px-3 py-2 rounded-full bg-white/20 border border-white/30 text-sm flex items-center justify-between">
+                <div key={i} className="px-3 py-2 rounded-full bg-white/25 border border-white/30 text-sm flex items-center justify-between">
                   <span className="font-medium text-off-white">{thread.channel}</span>
-                  <span className="text-off-white/80 truncate ml-2" style={{maxWidth: "120px"}}>{thread.message}</span>
+                  <span className="text-off-white/90 truncate ml-2" style={{maxWidth: "120px"}}>{thread.message}</span>
                 </div>
               ))}
             </div>
@@ -120,7 +120,7 @@ const HomeView = () => {
                   <svg className="w-full h-full" viewBox="0 0 100 100">
                     <circle 
                       cx="50" cy="50" r="45" 
-                      fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="10" 
+                      fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="10" 
                     />
                     <circle 
                       cx="50" cy="50" r="45" 
@@ -139,11 +139,11 @@ const HomeView = () => {
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center flex-col">
                     <span className="text-2xl font-bold text-off-white">75%</span>
-                    <span className="text-xs text-off-white/70">Complete</span>
+                    <span className="text-xs text-off-white/80">Complete</span>
                   </div>
                 </div>
               </div>
-              <p className="text-center text-sm text-off-white/80 mt-2">6 of 8 tasks done</p>
+              <p className="text-center text-sm text-off-white/90 mt-2">6 of 8 tasks done</p>
             </div>
           </CardContent>
         </Card>

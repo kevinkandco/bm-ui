@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
@@ -80,46 +81,46 @@ const GetStartedStep = ({
       </div>
       
       <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">You're all set!</h2>
-        <p className="text-cool-slate text-zinc-50">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
+        <h2 className="text-2xl font-semibold text-off-white tracking-tighter">You're all set!</h2>
+        <p className="text-off-white/90">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
       </div>
       
       <div className="space-y-6">
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-ice-grey">Your Brief Setup</h3>
+          <h3 className="text-lg font-medium text-off-white">Your Brief Setup</h3>
           
-          <div className="border border-cool-slate/20 rounded-lg divide-y divide-cool-slate/10">
+          <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
             {summaryData.map((section, index) => <div key={index} className="flex justify-between px-4 py-3">
-                <span className="text-cool-slate">{section.title}</span>
+                <span className="text-off-white/90">{section.title}</span>
                 <div className="text-right">
-                  <span className="text-ice-grey font-medium">{section.value}</span>
-                  {section.detail && <p className="text-xs text-cool-slate mt-1">{section.detail}</p>}
+                  <span className="text-off-white font-medium">{section.value}</span>
+                  {section.detail && <p className="text-xs text-off-white/80 mt-1">{section.detail}</p>}
                 </div>
               </div>)}
           </div>
         </div>
         
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-ice-grey">Get the full experience</h3>
+          <h3 className="text-lg font-medium text-off-white">Get the full experience</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-5 rounded-xl border border-cool-slate/20 bg-canvas-black/80 space-y-3">
+            <div className="p-5 rounded-xl border border-white/30 bg-white/15 backdrop-blur-sm space-y-3">
               <div className="flex items-center gap-3">
                 <Download className="h-8 w-8 text-electric-teal" />
-                <h4 className="text-lg font-medium text-ice-grey">Desktop App</h4>
+                <h4 className="text-lg font-medium text-off-white">Desktop App</h4>
               </div>
-              <p className="text-sm text-cool-slate">
+              <p className="text-sm text-off-white/90">
                 Get desktop notifications and quick access to your briefs from your taskbar.
               </p>
               <Button variant="outline" className="w-full neon-outline-button text-xs">Download Desktop App</Button>
             </div>
             
-            <div className="p-5 rounded-xl border border-cool-slate/20 bg-canvas-black/80 space-y-3">
+            <div className="p-5 rounded-xl border border-white/30 bg-white/15 backdrop-blur-sm space-y-3">
               <div className="flex items-center gap-3">
                 <Smartphone className="h-8 w-8 text-electric-teal" />
-                <h4 className="text-lg font-medium text-ice-grey">Mobile App</h4>
+                <h4 className="text-lg font-medium text-off-white">Mobile App</h4>
               </div>
-              <p className="text-sm text-cool-slate">
+              <p className="text-sm text-off-white/90">
                 Listen to your briefs on the go and stay in sync while mobile.
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -129,7 +130,7 @@ const GetStartedStep = ({
             </div>
           </div>
           
-          <p className="text-xs text-cool-slate text-center pt-2">
+          <p className="text-xs text-off-white/80 text-center pt-2">
             You can always download these apps later from your dashboard
           </p>
         </div>

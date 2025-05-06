@@ -47,14 +47,14 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
         <h1 className="text-4xl font-semibold text-off-white tracking-tighter">
           Stay in sync. Skip the scroll.
         </h1>
-        <p className="text-off-white/70 max-w-sm mx-auto">
+        <p className="text-off-white/90 max-w-sm mx-auto">
           Get caught up on what matters most to you in less than 3 minutes a day.
         </p>
       </div>
       
       <div className="space-y-4 pt-4">
         <Button 
-          className="w-full bg-white/10 hover:bg-white/20 text-off-white border border-white/20 shadow-subtle flex items-center justify-center gap-3 rounded-xl py-3 transition-all duration-400"
+          className="w-full bg-white/15 hover:bg-white/25 text-off-white border border-white/30 shadow-subtle flex items-center justify-center gap-3 rounded-xl py-3 transition-all duration-400"
           onClick={() => handleSignIn('google')}
           disabled={signingIn}
         >

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
@@ -58,7 +59,7 @@ const FeaturesWalkthroughStep = ({
         <h2 className="text-2xl font-semibold text-off-white tracking-tighter">
           How Brief.me works
         </h2>
-        <p className="text-off-white/70 max-w-lg mx-auto text-slate-50">
+        <p className="text-off-white/90 max-w-lg mx-auto">
           Brief.me helps you stay informed without the information overload.
         </p>
       </div>
@@ -73,10 +74,10 @@ const FeaturesWalkthroughStep = ({
             <h3 className="text-xl font-medium text-off-white">
               {features[currentFeature].title}
             </h3>
-            <p className="text-off-white/70 text-neutral-50">{features[currentFeature].description}</p>
+            <p className="text-off-white/90">{features[currentFeature].description}</p>
             
-            <div className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 mt-4">
-              <p className="text-sm text-off-white/80">{features[currentFeature].detail}</p>
+            <div className="p-4 bg-white/15 backdrop-blur-sm rounded-lg border border-white/30 mt-4">
+              <p className="text-sm text-off-white/90">{features[currentFeature].detail}</p>
             </div>
           </div>
         </div>
@@ -87,10 +88,10 @@ const FeaturesWalkthroughStep = ({
       </div>
 
       <div className="flex justify-between pt-4">
-        <Button onClick={prevFeature} variant="outline">
+        <Button onClick={prevFeature} className="neon-outline-button">
           Back
         </Button>
-        <Button onClick={nextFeature}>
+        <Button onClick={nextFeature} className="neon-button">
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>

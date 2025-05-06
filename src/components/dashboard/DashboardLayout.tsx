@@ -36,9 +36,12 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
   
   return (
     <div className="flex min-h-screen bg-forest-green relative">
-      {/* Background with CSS gradient */}
+      {/* Background with warm gradient and grain texture */}
       <div className="absolute inset-0 w-full h-full bg-grain">
         <div className="absolute inset-0 bg-gradient-to-t from-forest-green via-lake-blue/30 to-peach/20 opacity-90"></div>
+        
+        {/* Warm gradient overlay at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#18382A] via-[#FEC6A1]/20 to-transparent"></div>
         
         {/* Floating glass orbs */}
         <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 animate-float hidden lg:block"></div>
