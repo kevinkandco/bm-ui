@@ -16,7 +16,7 @@ const ProgressIndicator = ({
         <span className="text-gray-800">{Math.round(percentage)}%</span>
       </div>
       
-      <div className="w-full bg-cool-slate/20 h-1.5 rounded-full overflow-hidden">
+      <div className="w-full bg-cool-slate/20 h-1.5 rounded-full overflow-hidden bg-[#000a0e]/[0.07]">
         <div className="bg-electric-teal h-full rounded-full transition-all duration-500 ease-out" style={{
         width: `${percentage}%`
       }} />
