@@ -114,7 +114,7 @@ const DeliveryPreferencesStep = ({ onNext, onBack, updateUserData, userData }: D
               type="time"
               value={briefTime}
               onChange={handleTimeChange}
-              className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal"
+              className="bg-white/15 border-white/20 text-ice-grey focus-visible:ring-electric-teal"
             />
             <p className="text-xs text-cool-slate mt-2">
               Your brief will be prepared and delivered at this time each day (in your local timezone)
