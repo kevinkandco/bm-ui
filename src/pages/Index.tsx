@@ -11,8 +11,12 @@ const Index = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-deep-teal">
       {/* Background with warm gradient and grain texture */}
-      <div className="absolute inset-0 w-full h-full bg-grain">
+      <div className="absolute inset-0 w-full h-full">
         <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue/70 to-hot-coral/40 opacity-80"></div>
+        
+        {/* TV noise texture overlay */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-texture"></div>
+        
         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange/80 via-hot-coral/30 to-transparent"></div>
       </div>
       
@@ -21,7 +25,7 @@ const Index = () => {
       <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/20 animate-float-delay shadow-subtle"></div>
       
       {/* Glass card */}
-      <Card className="max-w-md w-full rounded-3xl overflow-hidden backdrop-blur-md bg-white/15 border border-white/30 shadow-xl relative z-10">
+      <Card className="max-w-md w-full rounded-3xl overflow-hidden backdrop-blur-xl bg-white/15 border border-white/30 shadow-xl relative z-10">
         <CardContent className="px-6 py-8 flex flex-col items-center text-center">
           {/* Neon orb visual element */}
           <div className="h-40 w-full flex items-center justify-center relative mb-8">

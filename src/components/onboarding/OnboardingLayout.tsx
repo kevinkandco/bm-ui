@@ -35,8 +35,11 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden bg-deep-teal">
       {/* Background with teal/coral gradient and grain texture - enhanced contrast */}
-      <div className="absolute inset-0 w-full h-full bg-grain">
+      <div className="absolute inset-0 w-full h-full">
         <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue/70 to-hot-coral/40 opacity-80"></div>
+        
+        {/* TV noise texture overlay */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-texture"></div>
         
         {/* Warm gradient overlay at bottom - increased contrast */}
         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange/80 via-hot-coral/30 to-transparent"></div>
@@ -48,7 +51,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
       
       <div 
         className={cn(
-          "w-full max-w-md md:max-w-lg z-10 p-8 backdrop-blur-md bg-white/15 rounded-3xl border border-white/30 shadow-xl",
+          "w-full max-w-md md:max-w-lg z-10 p-8 backdrop-blur-xl bg-white/15 rounded-3xl border border-white/30 shadow-xl",
           className
         )}
       >
