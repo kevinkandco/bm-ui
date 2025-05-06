@@ -6,19 +6,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-160 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 btn-ripple",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-warm-coral text-off-white hover:bg-cranberry transition-colors dark:bg-hot-coral dark:text-canvas-black dark:hover:bg-hot-coral/90",
+        default: "bg-neon-mint text-forest-green hover:bg-off-white transition-colors duration-300",
         destructive:
-          "bg-cranberry text-off-white hover:bg-cranberry/90 dark:bg-hot-coral dark:text-canvas-black dark:hover:bg-hot-coral/90",
+          "bg-hot-coral text-off-white hover:bg-hot-coral/90",
         outline:
-          "border border-deep-plum/30 bg-white/60 hover:bg-white/70 backdrop-blur-[30px] text-deep-plum hover:text-deep-plum dark:border-light-rose/30 dark:bg-slate-grey/30 dark:hover:bg-slate-grey/40 dark:text-light-rose dark:hover:text-light-rose",
+          "border border-white/30 bg-white/10 hover:bg-white/20 backdrop-blur-md text-off-white hover:text-off-white",
         secondary:
-          "bg-white/60 backdrop-blur-[30px] text-deep-plum hover:bg-white/70 dark:bg-slate-grey/30 dark:text-light-rose dark:hover:bg-slate-grey/40",
-        ghost: "hover:bg-white/30 hover:text-deep-plum text-deep-plum/70 dark:hover:bg-slate-grey/30 dark:hover:text-light-rose dark:text-light-rose/70",
-        link: "text-deep-plum underline-offset-4 hover:text-warm-coral dark:text-light-rose dark:hover:text-hot-coral",
+          "bg-white/20 backdrop-blur-md text-off-white hover:bg-white/30",
+        ghost: "hover:bg-white/10 hover:text-off-white text-off-white/70",
+        link: "text-off-white underline-offset-4 hover:text-neon-mint",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-xl",

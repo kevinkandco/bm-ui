@@ -62,28 +62,28 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Updated warm color palette
-				'canvas-black': '#111111',
-				'deep-plum': '#3E224C',
-				'cranberry': '#F26B6B',
-				'electric-teal': '#67D9D0',
-				'hot-coral': '#FF8275',
-				'ice-grey': '#F4F4F4',
-				'cool-slate': '#DDDDDD',
+				// Dark theme colors
+				'canvas-black': '#0E0E10',
+				'deep-plum': '#3D0B46',
+				'cranberry': '#6E0039',
+				'electric-teal': '#00E0D5',
+				'hot-coral': '#FF4F6D',
+				'ice-grey': '#E0E4EA', // Updated for better contrast (was #F5F7FA)
+				'cool-slate': '#B0B3BE',
 				// Light theme colors
-				'canvas-light': '#FAFAF7',
-				'soft-plum': '#F9EEFF',
-				'light-rose': '#FFE8E5',
-				'bright-teal': '#67D9D0',
-				'warm-coral': '#F26B6B',
-				'deep-navy': '#2B2B2B',
-				'slate-grey': '#3C3C3C',
+				'canvas-light': '#F8F9FC',
+				'soft-plum': '#E8D9F0',
+				'light-rose': '#FFE4EB',
+				'bright-teal': '#00D1C6',
+				'warm-coral': '#FF6B85',
+				'deep-navy': '#1A1A2E',
+				'slate-grey': '#696E79',
 				// New colors for the landing page
-				'forest-green': '#3E224C', // Updated to match deep-plum
-				'lake-blue': '#FDFDFB', // Updated to surfaceTint
-				'peach': '#FFE8E5', // Updated to soft complementary tint
-				'off-white': '#FDFDFB', // Updated to surfaceTint
-				'neon-mint': '#F26B6B', // Updated to accentPrimary
+				'forest-green': '#18382A',
+				'lake-blue': '#3DB2D5',
+				'peach': '#FFCBA3',
+				'off-white': '#F5F5F2',
+				'neon-mint': '#36FFAF',
 				// Keep legacy colors
 				"indigo": "#3B3BFF",
 				"neutral-gray": "#8E9196",
@@ -99,7 +99,6 @@ export default {
 			},
 			transitionDuration: {
 				'400': '400ms',  // Adding the missing duration-400
-				'160': '160ms',  // Adding 160ms for micro-interactions
 			},
 			keyframes: {
 				'accordion-down': {

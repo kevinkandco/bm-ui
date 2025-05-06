@@ -4,158 +4,128 @@
 
 @layer base {
   :root {
-    /* Light theme variables (default) - updated for warmth and better readability */
-    --background: 60 30% 98%; /* #FAFAF7 */
-    --foreground: 280 43% 22%; /* #3E224C */
+    /* Light theme variables (default) */
+    --background: 240 30% 99%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 60 30% 98%; /* #FAFAF7 */
-    --card-foreground: 280 43% 22%; /* #3E224C */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 60 30% 98%;
-    --popover-foreground: 280 43% 22%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 0 83% 69%; /* #F26B6B */
-    --primary-foreground: 60 30% 98%;
+    --primary: 240 100% 62%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 60 10% 95%;
-    --secondary-foreground: 280 43% 22%;
+    --secondary: 240 10% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 60 5% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 0 100% 94%;
-    --accent-foreground: 280 43% 22%;
+    --accent: 262 83% 74%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 30% 98%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 30 33% 93%;
-    --input: 30 33% 93%;
-    --ring: 0 83% 69%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 240 100% 62%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    --sidebar-background: 60 30% 98%;
-    --sidebar-foreground: 280 43% 22%;
-    --sidebar-primary: 0 83% 69%;
-    --sidebar-primary-foreground: 60 30% 98%;
-    --sidebar-accent: 60 10% 95%;
-    --sidebar-accent-foreground: 280 43% 22%;
-    --sidebar-border: 20 13% 91%;
-    --sidebar-ring: 0 83% 69%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 0 0% 7%; /* #111111 */
-    --foreground: 10 100% 91%; /* #FFE8E5 */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 7%;
-    --card-foreground: 10 100% 91%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 10 100% 91%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 6 100% 73%; /* #FF8275 */
-    --primary-foreground: 0 0% 7%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 0 0% 17%; /* #2B2B2B */
-    --secondary-foreground: 10 100% 91%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 0 0% 24%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 0 0% 24%;
-    --accent-foreground: 10 100% 91%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 10 100% 91%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 0 0% 24%;
-    --input: 0 0% 24%;
-    --ring: 6 100% 73%;
-    
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 10 100% 91%;
-    --sidebar-primary: 6 100% 73%;
-    --sidebar-primary-foreground: 0 0% 7%;
-    --sidebar-accent: 0 0% 17%;
-    --sidebar-accent-foreground: 10 100% 91%;
-    --sidebar-border: 0 0% 17%;
-    --sidebar-ring: 6 100% 73%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   /* Default to light mode */
   body {
-    @apply bg-canvas-light text-deep-plum;
+    @apply bg-canvas-light text-deep-navy;
     font-feature-settings: "rlig" 1, "calt" 1;
-    line-height: 1.45;
-    font-size: 15px;
   }
 
   /* Dark mode */
   .dark body {
-    @apply bg-canvas-black text-light-rose;
+    @apply bg-canvas-black text-ice-grey;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply tracking-[-0.01em] font-semibold text-deep-plum;
-    line-height: 1.3;
-  }
-  
-  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-    @apply text-light-rose;
+    @apply tracking-tighter font-semibold text-off-white;
   }
 
   p {
-    @apply leading-relaxed text-deep-plum/90;
-  }
-  
-  .dark p {
-    @apply text-light-rose/90;
+    @apply leading-relaxed max-w-lg text-off-white/90;
   }
 }
 
 @layer components {
-  /* Glass card component - improved with better blur and opacity */
+  /* Glass card component */
   .glass-card {
-    @apply backdrop-blur-[30px] rounded-3xl border border-white/14 shadow-md bg-white/60;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.06);
-    transition: all 160ms ease-out;
-  }
-  
-  .glass-card:active {
-    @apply backdrop-blur-[20px] bg-white/65;
-  }
-
-  .dark .glass-card {
-    @apply bg-slate-grey/30 border-white/10;
+    @apply backdrop-blur-md rounded-3xl border border-white/30 shadow-xl bg-white/20;
   }
 
   /* Progress bar */
   .progress-bar {
-    @apply h-1.5 rounded-full transition-all duration-300 ease-out bg-warm-coral;
+    @apply h-1.5 rounded-full transition-all duration-300 ease-out bg-neon-mint;
   }
   
   /* Integration card */
   .integration-card {
     @apply relative flex items-center justify-center p-4 rounded-xl border 
-           transition-all duration-160 ease-out cursor-pointer;
+           transition-all duration-300 ease-in-out cursor-pointer;
   }
   
   .integration-card {
-    @apply border-white/14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
-  }
-
-  .dark .integration-card {
-    @apply border-white/10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/20 bg-white/15 hover:bg-white/25;
   }
 
   .integration-card.connected {
-    @apply border-warm-coral bg-light-rose/40;
-  }
-
-  .dark .integration-card.connected {
-    @apply border-hot-coral bg-hot-coral/10;
+    @apply border-neon-mint bg-neon-mint/10;
   }
 
   .integration-card.disabled {
@@ -165,72 +135,48 @@
   /* Preference chip */
   .preference-chip {
     @apply px-4 py-2 rounded-full border
-           transition-all duration-160 ease-out cursor-pointer;
+           transition-all duration-300 ease-in-out cursor-pointer;
   }
   
   .preference-chip {
-    @apply border-white/14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
-  }
-  
-  .dark .preference-chip {
-    @apply border-white/10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/20 bg-white/15 hover:bg-white/25;
   }
   
   .preference-chip.selected {
-    @apply border-warm-coral bg-light-rose/40;
-  }
-  
-  .dark .preference-chip.selected {
-    @apply border-hot-coral bg-hot-coral/10;
+    @apply border-neon-mint bg-neon-mint/10;
   }
   
   /* Delivery card */
   .delivery-card {
     @apply relative p-4 rounded-xl border
-           transition-all duration-160 ease-out cursor-pointer;
+           transition-all duration-300 ease-in-out cursor-pointer;
   }
   
   .delivery-card {
-    @apply border-white/14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
-  }
-  
-  .dark .delivery-card {
-    @apply border-white/10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/20 bg-white/15 hover:bg-white/25;
   }
   
   .delivery-card.selected {
-    @apply border-warm-coral bg-light-rose/40;
-  }
-  
-  .dark .delivery-card.selected {
-    @apply border-hot-coral bg-hot-coral/10;
+    @apply border-neon-mint bg-neon-mint/10;
   }
 
   /* New components for the redesign */
   .neon-button {
     @apply font-medium px-6 py-3 rounded-xl 
-           transition-all duration-300 ease-out transform hover:-translate-y-0.5;
+           transition-all duration-300 ease-in-out transform hover:-translate-y-0.5;
   }
   
   .neon-button {
-    @apply bg-warm-coral text-off-white hover:bg-cranberry;
-  }
-  
-  .dark .neon-button {
-    @apply bg-hot-coral text-canvas-black hover:bg-hot-coral/90;
+    @apply bg-neon-mint text-forest-green hover:bg-off-white;
   }
   
   .neon-outline-button {
     @apply border-2 px-6 py-2.5 rounded-xl
-           transition-all duration-300 ease-out;
+           transition-all duration-300 ease-in-out;
   }
   
   .neon-outline-button {
-    @apply border-deep-plum text-deep-plum hover:border-deep-plum/70 hover:text-deep-plum/70;
-  }
-  
-  .dark .neon-outline-button {
-    @apply border-light-rose text-light-rose hover:border-light-rose/70 hover:text-light-rose/70;
+    @apply border-off-white text-off-white hover:border-off-white/70 hover:text-off-white/70;
   }
   
   .neon-shape {
@@ -243,13 +189,8 @@
   }
 
   .radial-gradient-bg {
-    background: radial-gradient(circle at center, theme('colors.light-rose') 0%, theme('colors.soft-plum') 40%, transparent 70%);
-    opacity: 0.6;
-  }
-
-  .dark .radial-gradient-bg {
-    background: radial-gradient(circle at center, theme('colors.hot-coral') 0%, theme('colors.deep-plum') 40%, transparent 70%);
-    opacity: 0.3;
+    background: radial-gradient(circle at center, theme('colors.lake-blue') 0%, theme('colors.peach') 40%, transparent 70%);
+    opacity: 0.4;
   }
 
   .progress-dot {
@@ -257,15 +198,11 @@
   }
 
   .progress-dot.active {
-    @apply bg-warm-coral;
-  }
-  
-  .dark .progress-dot.active {
-    @apply bg-hot-coral;
+    @apply bg-neon-mint;
   }
 
   .progress-dot.inactive {
-    @apply bg-cool-slate/50;
+    @apply bg-off-white/30;
   }
 
   /* Theme toggle */
@@ -274,15 +211,10 @@
   }
 
   .theme-toggle {
-    @apply bg-white/40 text-deep-plum hover:bg-white/60 backdrop-blur-[30px];
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .dark .theme-toggle {
-    @apply bg-slate-grey/40 text-light-rose hover:bg-slate-grey/50;
+    @apply bg-white/10 text-off-white hover:bg-white/20;
   }
 
-  /* Film grain effect - refined for subtlety */
+  /* Film grain effect */
   .bg-grain {
     position: relative;
   }
@@ -296,56 +228,26 @@
     height: 100%;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
     pointer-events: none;
-    opacity: 0.07; /* Reduced opacity for subtlety */
+    opacity: 0.1;
     z-index: 1;
   }
 }
 
 @layer utilities {
   .shadow-neo {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(54, 255, 175, 0.1);
   }
   
   .shadow-neon {
-    box-shadow: 0 0 15px rgba(242, 107, 107, 0.2);
-  }
-  
-  .dark .shadow-neon {
-    box-shadow: 0 0 15px rgba(255, 130, 117, 0.2);
+    box-shadow: 0 0 15px rgba(54, 255, 175, 0.4);
   }
   
   .shadow-subtle {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
 
   .text-gradient-neon {
-    @apply bg-gradient-to-r bg-clip-text text-transparent from-warm-coral to-cranberry;
-  }
-  
-  .dark .text-gradient-neon {
-    @apply from-hot-coral to-cranberry;
-  }
-  
-  .btn-ripple {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .btn-ripple::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120%;
-    height: 120%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(242, 107, 107, 0.12) 0%, rgba(242, 107, 107, 0) 70%);
-    transform: translate(-50%, -50%) scale(0);
-    transition: transform 0.5s ease-out;
-  }
-  
-  .btn-ripple:active::after {
-    transform: translate(-50%, -50%) scale(1);
+    @apply bg-gradient-to-r bg-clip-text text-transparent from-neon-mint to-lake-blue;
   }
 }
 
