@@ -84,6 +84,21 @@ export default {
 				'peach': '#FFCBA3',
 				'off-white': '#F5F5F2',
 				'neon-mint': '#36FFAF',
+				// Explicitly define white with alpha support
+				'white': {
+					DEFAULT: '#FFFFFF',
+					10: 'rgba(255, 255, 255, 0.1)',
+					14: 'rgba(255, 255, 255, 0.14)',
+					20: 'rgba(255, 255, 255, 0.2)',
+					25: 'rgba(255, 255, 255, 0.25)',
+					30: 'rgba(255, 255, 255, 0.3)',
+					40: 'rgba(255, 255, 255, 0.4)',
+					50: 'rgba(255, 255, 255, 0.5)',
+					60: 'rgba(255, 255, 255, 0.6)',
+					70: 'rgba(255, 255, 255, 0.7)',
+					80: 'rgba(255, 255, 255, 0.8)',
+					90: 'rgba(255, 255, 255, 0.9)',
+				},
 				// Keep legacy colors
 				"indigo": "#3B3BFF",
 				"neutral-gray": "#8E9196",
@@ -99,6 +114,7 @@ export default {
 			},
 			transitionDuration: {
 				'400': '400ms',  // Adding the missing duration-400
+				'160': '160ms',  // Adding the missing duration-160
 			},
 			keyframes: {
 				'accordion-down': {

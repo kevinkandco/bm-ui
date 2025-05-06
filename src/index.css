@@ -104,28 +104,46 @@
 }
 
 @layer components {
-  /* Glass card component */
+  /* Glass card component - improved with better blur and opacity */
   .glass-card {
-    @apply backdrop-blur-md rounded-3xl border border-white/30 shadow-xl bg-white/20;
+    @apply backdrop-blur-[30px] rounded-3xl border border-white-14 shadow-md bg-white-60;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.06);
+    transition: all 160ms ease-out;
+  }
+  
+  .glass-card:active {
+    @apply backdrop-blur-[20px] bg-white-65;
+  }
+
+  .dark .glass-card {
+    @apply bg-slate-grey/30 border-white-10;
   }
 
   /* Progress bar */
   .progress-bar {
-    @apply h-1.5 rounded-full transition-all duration-300 ease-out bg-neon-mint;
+    @apply h-1.5 rounded-full transition-all duration-300 ease-out bg-warm-coral;
   }
   
   /* Integration card */
   .integration-card {
     @apply relative flex items-center justify-center p-4 rounded-xl border 
-           transition-all duration-300 ease-in-out cursor-pointer;
+           transition-all duration-160 ease-out cursor-pointer;
   }
   
   .integration-card {
-    @apply border-white/20 bg-white/15 hover:bg-white/25;
+    @apply border-white-14 bg-white-60 hover:bg-white-70 backdrop-blur-[30px];
+  }
+
+  .dark .integration-card {
+    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
   }
 
   .integration-card.connected {
-    @apply border-neon-mint bg-neon-mint/10;
+    @apply border-warm-coral bg-light-rose/40;
+  }
+
+  .dark .integration-card.connected {
+    @apply border-hot-coral bg-hot-coral/10;
   }
 
   .integration-card.disabled {
@@ -135,48 +153,72 @@
   /* Preference chip */
   .preference-chip {
     @apply px-4 py-2 rounded-full border
-           transition-all duration-300 ease-in-out cursor-pointer;
+           transition-all duration-160 ease-out cursor-pointer;
   }
   
   .preference-chip {
-    @apply border-white/20 bg-white/15 hover:bg-white/25;
+    @apply border-white-14 bg-white-60 hover:bg-white-70 backdrop-blur-[30px];
+  }
+  
+  .dark .preference-chip {
+    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
   }
   
   .preference-chip.selected {
-    @apply border-neon-mint bg-neon-mint/10;
+    @apply border-warm-coral bg-light-rose/40;
+  }
+  
+  .dark .preference-chip.selected {
+    @apply border-hot-coral bg-hot-coral/10;
   }
   
   /* Delivery card */
   .delivery-card {
     @apply relative p-4 rounded-xl border
-           transition-all duration-300 ease-in-out cursor-pointer;
+           transition-all duration-160 ease-out cursor-pointer;
   }
   
   .delivery-card {
-    @apply border-white/20 bg-white/15 hover:bg-white/25;
+    @apply border-white-14 bg-white-60 hover:bg-white-70 backdrop-blur-[30px];
+  }
+  
+  .dark .delivery-card {
+    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
   }
   
   .delivery-card.selected {
-    @apply border-neon-mint bg-neon-mint/10;
+    @apply border-warm-coral bg-light-rose/40;
+  }
+  
+  .dark .delivery-card.selected {
+    @apply border-hot-coral bg-hot-coral/10;
   }
 
   /* New components for the redesign */
   .neon-button {
     @apply font-medium px-6 py-3 rounded-xl 
-           transition-all duration-300 ease-in-out transform hover:-translate-y-0.5;
+           transition-all duration-300 ease-out transform hover:-translate-y-0.5;
   }
   
   .neon-button {
-    @apply bg-neon-mint text-forest-green hover:bg-off-white;
+    @apply bg-warm-coral text-off-white hover:bg-cranberry;
+  }
+  
+  .dark .neon-button {
+    @apply bg-hot-coral text-canvas-black hover:bg-hot-coral/90;
   }
   
   .neon-outline-button {
     @apply border-2 px-6 py-2.5 rounded-xl
-           transition-all duration-300 ease-in-out;
+           transition-all duration-300 ease-out;
   }
   
   .neon-outline-button {
-    @apply border-off-white text-off-white hover:border-off-white/70 hover:text-off-white/70;
+    @apply border-deep-plum text-deep-plum hover:border-deep-plum/70 hover:text-deep-plum/70;
+  }
+  
+  .dark .neon-outline-button {
+    @apply border-light-rose text-light-rose hover:border-light-rose/70 hover:text-light-rose/70;
   }
   
   .neon-shape {
@@ -189,8 +231,13 @@
   }
 
   .radial-gradient-bg {
-    background: radial-gradient(circle at center, theme('colors.lake-blue') 0%, theme('colors.peach') 40%, transparent 70%);
-    opacity: 0.4;
+    background: radial-gradient(circle at center, theme('colors.light-rose') 0%, theme('colors.soft-plum') 40%, transparent 70%);
+    opacity: 0.6;
+  }
+
+  .dark .radial-gradient-bg {
+    background: radial-gradient(circle at center, theme('colors.hot-coral') 0%, theme('colors.deep-plum') 40%, transparent 70%);
+    opacity: 0.3;
   }
 
   .progress-dot {
@@ -198,11 +245,15 @@
   }
 
   .progress-dot.active {
-    @apply bg-neon-mint;
+    @apply bg-warm-coral;
+  }
+  
+  .dark .progress-dot.active {
+    @apply bg-hot-coral;
   }
 
   .progress-dot.inactive {
-    @apply bg-off-white/30;
+    @apply bg-cool-slate/50;
   }
 
   /* Theme toggle */
@@ -211,7 +262,12 @@
   }
 
   .theme-toggle {
-    @apply bg-white/10 text-off-white hover:bg-white/20;
+    @apply bg-white-40 text-deep-plum hover:bg-white-60 backdrop-blur-[30px];
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .theme-toggle {
+    @apply bg-slate-grey/40 text-light-rose hover:bg-slate-grey/50;
   }
 
   /* Film grain effect */
