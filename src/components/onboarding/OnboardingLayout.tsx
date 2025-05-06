@@ -122,17 +122,17 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
       </div>
       
       {/* Floating glass orbs with enhanced visibility - reduced size on mobile */}
-      <div className={`absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-full backdrop-blur-md border-t border-l border-white/20 animate-float z-[2] glass-reflection`} style={{background: 'linear-gradient(180deg, rgba(69, 175, 201, 0.25) 0%, rgba(38, 118, 146, 0.15) 100%)'}}></div>
-      <div className={`absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-full backdrop-blur-md border-t border-l border-white/20 animate-float-delay z-[2] glass-reflection`} style={{background: 'linear-gradient(180deg, rgba(69, 175, 201, 0.2) 0%, rgba(38, 118, 146, 0.1) 100%)'}}></div>
+      <div className={`absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-full backdrop-blur-md border border-white/20 animate-float z-[2] glass-reflection`} style={{background: 'rgba(69, 175, 201, 0.2)'}}></div>
+      <div className={`absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-full backdrop-blur-md border border-white/20 animate-float-delay z-[2] glass-reflection`} style={{background: 'rgba(69, 175, 201, 0.15)'}}></div>
       
       <div 
         className={cn(
-          "w-full max-w-md z-10 p-6 sm:p-8 backdrop-blur-xl rounded-3xl border-t border-l border-white/20 shadow-lg glass-reflection",
+          "w-full max-w-md z-10 p-6 sm:p-8 backdrop-blur-xl rounded-3xl border border-white/20 shadow-lg glass-reflection",
           className
         )}
         style={{
-          background: 'linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%)', 
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2)'
+          background: 'rgba(69, 175, 201, 0.25)', 
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
         }}
       >
         {children}
