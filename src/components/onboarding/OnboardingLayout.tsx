@@ -66,26 +66,6 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
       <div className="mt-4 text-xs text-white/90 z-10">
         You control what Brief.me monitors. Change anytime.
       </div>
-
-      {/* Custom breathing pulse effect for the sound wave icon */}
-      <style>
-        {`
-        @keyframes smoothPulse {
-          0%, 100% {
-            opacity: 0.7;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.08);
-          }
-        }
-        
-        .pulse-55bpm {
-          animation: smoothPulse 1.09s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        `}
-      </style>
     </div>
   );
 };
