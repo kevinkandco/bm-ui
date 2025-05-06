@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
@@ -197,91 +196,88 @@ const IntegrationsStep = ({
     }
   };
 
-  return <div className="space-y-8">
+  return <div className="space-y-6">
       <ProgressIndicator currentStep={3} totalSteps={7} />
       
-      {/* Pyramid neon visual element */}
-      <div className="relative h-16 w-full flex items-center justify-center overflow-hidden mb-4">
+      {/* Reduce height of pyramid neon visual */}
+      <div className="relative h-12 w-full flex items-center justify-center overflow-hidden mb-2">
         <div className="w-0 h-0 animate-float" style={{
-        borderLeft: '20px solid transparent',
-        borderRight: '20px solid transparent',
-        borderBottom: '40px solid rgba(0, 224, 213, 0.3)'
+        borderLeft: '16px solid transparent',
+        borderRight: '16px solid transparent',
+        borderBottom: '32px solid rgba(0, 224, 213, 0.3)'
       }} />
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-2">
         <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Connect your tools</h2>
         <p className="text-cool-slate text-zinc-100">Brief.me will monitor these sources to create your personalized brief.</p>
       </div>
       
-      {/* V1 Integrations - More compact list layout */}
-      <div className="space-y-5">
-        <h3 className="text-lg font-medium text-ice-grey">Available Now</h3>
-        <div className="flex flex-col space-y-2">
+      {/* Combined integrations list */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-ice-grey">Integrations</h3>
+        <div className="flex flex-col space-y-1.5">
+          {/* Available integrations */}
           {groupedIntegrations.V1?.map(integration => 
             <div 
               key={integration.id}
               onClick={() => toggleConnection(integration.id)}
               className={cn(
-                "integration-list-item flex items-center p-3 rounded-xl cursor-pointer transition-all duration-300",
+                "integration-list-item flex items-center py-2 px-3 rounded-lg cursor-pointer transition-all duration-300",
                 connected[integration.id]
                   ? "border-2 border-electric-teal bg-white/20 backdrop-blur-md shadow-neo"
                   : "border border-white/30 bg-white/15 hover:bg-white/25 backdrop-blur-md"
               )}
             >
               <div className={cn(
-                "w-10 h-10 flex items-center justify-center rounded-full mr-4",
+                "w-8 h-8 flex items-center justify-center rounded-full mr-3",
                 connected[integration.id] ? "bg-electric-teal/80" : "bg-deep-plum"
               )}>
                 {renderIcon(integration.id, integration.icon)}
               </div>
               
               <div className="flex-grow">
-                <h4 className="text-lg font-medium text-white">{integration.name}</h4>
+                <h4 className="text-base font-medium text-white">{integration.name}</h4>
               </div>
               
               <div className="ml-2">
                 {connected[integration.id] && (
-                  <span className="text-sm px-3 py-1 rounded-full bg-electric-teal/20 text-white">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-electric-teal/20 text-white">
                     Connected ✓
                   </span>
                 )}
               </div>
             </div>
           )}
-        </div>
-      </div>
-      
-      {/* V2 Integrations - More compact list layout */}
-      <div className="space-y-5">
-        <h3 className="text-lg font-medium text-ice-grey flex items-center gap-2">
-          Coming Soon (V2)
-          <span className="text-xs px-2 py-1 bg-deep-plum/30 rounded-full text-electric-teal">Early Q3</span>
-        </h3>
-        <div className="flex flex-col space-y-2">
+
+          {/* Coming soon integrations with indicator in the same line */}
           {groupedIntegrations.V2?.map(integration => 
             <div 
               key={integration.id}
-              className="integration-list-item flex items-center p-3 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
+              className="integration-list-item flex items-center py-2 px-3 rounded-lg border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
             >
-              <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/70 rounded-full mr-4">
+              <div className="w-8 h-8 flex items-center justify-center bg-deep-plum/70 rounded-full mr-3">
                 <span className="text-white/80 font-bold">{integration.icon}</span>
               </div>
               
               <div className="flex-grow">
-                <h4 className="text-lg font-medium text-white/90">{integration.name}</h4>
+                <h4 className="text-base font-medium text-white/90">{integration.name}</h4>
               </div>
+
+              <span className="text-xs px-2 py-0.5 bg-deep-plum/30 rounded-full text-electric-teal whitespace-nowrap">
+                Coming Soon
+              </span>
             </div>
           )}
         </div>
       </div>
       
-      {/* Additional coming soon integrations */}
-      <div className="p-4 bg-white/10 backdrop-blur-md rounded-lg border border-white/20">
-        <h4 className="text-sm font-medium text-ice-grey mb-2">More integrations coming soon:</h4>
-        <div className="flex flex-wrap gap-2">
+      {/* Additional coming soon integrations - more compact */}
+      <div className="p-3 bg-white/10 backdrop-blur-md rounded-lg border border-white/20">
+        <h4 className="text-xs font-medium text-ice-grey mb-2">More integrations coming soon:</h4>
+        <div className="flex flex-wrap gap-1.5">
           {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => 
-            <span key={integration.id} className="text-xs px-2 py-1 bg-white/15 rounded-full text-white/80">
+            <span key={integration.id} className="text-xs px-2 py-0.5 bg-white/15 rounded-full text-white/80">
               {integration.name}
             </span>
           )}
@@ -289,13 +285,13 @@ const IntegrationsStep = ({
       </div>
       
       <TooltipProvider>
-        <div className="flex items-center gap-2 text-sm text-cool-slate">
-          <Info size={16} className="text-electric-teal" />
+        <div className="flex items-center gap-2 text-xs text-cool-slate">
+          <Info size={14} className="text-electric-teal" />
           <span>You'll be able to add more tools later</span>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="sm" className="p-0 h-auto text-cool-slate">
-                <Info size={14} />
+                <Info size={12} />
               </Button>
             </TooltipTrigger>
             <TooltipContent className="bg-canvas-black border border-cool-slate/20 text-ice-grey">
