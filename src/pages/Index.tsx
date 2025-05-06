@@ -23,7 +23,7 @@ const Index = () => {
       
       {/* Glass card - updated to match onboarding style */}
       <Card className="max-w-md w-full rounded-3xl overflow-hidden backdrop-blur-md bg-white/15 border border-white/30 shadow-xl relative z-10">
-        <CardContent className="px-6 py-8 flex flex-col items-center">
+        <CardContent className="px-6 py-8 flex flex-col items-center text-center">
           {/* Neon orb visual element - matching onboarding */}
           <div className="h-40 w-full flex items-center justify-center relative mb-8">
             <div className="w-32 h-32 rounded-full bg-[#49a5ac20] animate-pulse absolute"></div>
@@ -42,11 +42,11 @@ const Index = () => {
             <span className="text-gradient-neon font-medium text-xl">Brief.me</span>
           </div>
           
-          <h1 className="text-4xl font-semibold text-off-white tracking-tighter mb-2">
+          <h1 className="text-4xl font-semibold text-off-white tracking-tighter mb-2 text-center">
             Stay informed, not overwhelmed.
           </h1>
           
-          <p className="text-off-white/90 text-center mb-8">
+          <p className="text-off-white/90 text-center mb-8 mx-auto">
             Brief.me delivers personalized summaries of what matters most. Get caught up in minutes, not hours.
           </p>
 
