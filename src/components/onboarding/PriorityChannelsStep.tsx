@@ -156,7 +156,6 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
           onClick={onBack} 
           variant="plain"
           size="none"
-          className="text-off-white hover:text-electric-teal transition-colors"
         >
           Back
         </Button>

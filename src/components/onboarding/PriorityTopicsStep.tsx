@@ -186,7 +186,8 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          className="neon-outline-button"
+          variant="plain"
+          size="none"
         >
           Back
         </Button>

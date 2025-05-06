@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-white/20 backdrop-blur-md text-off-white hover:bg-white/30",
         ghost: "hover:bg-white/10 hover:text-off-white text-off-white/70",
         link: "text-off-white underline-offset-4 hover:text-neon-mint",
-        plain: "bg-transparent text-off-white hover:text-electric-teal p-0",
+        plain: "bg-transparent text-off-white hover:text-electric-teal p-0 border-none",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-xl",
