@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
+
 interface SignInStepProps {
   onNext: () => void;
   updateUserData: (data: any) => void;
@@ -11,12 +12,14 @@ interface SignInStepProps {
     [key: string]: any;
   };
 }
+
 const SignInStep = ({
   onNext,
   updateUserData,
   userData
 }: SignInStepProps) => {
   const [signingIn, setSigningIn] = useState(false);
+
   const handleSignIn = (provider: 'google' | 'slack') => {
     setSigningIn(true);
     // Simulate authentication
@@ -29,6 +32,7 @@ const SignInStep = ({
       onNext();
     }, 1000);
   };
+
   return <div className="space-y-8 relative">
       <ProgressIndicator currentStep={1} totalSteps={7} />
       
@@ -36,7 +40,13 @@ const SignInStep = ({
       <div className="h-40 w-full flex items-center justify-center relative mb-8">
         <div className="w-32 h-32 rounded-full bg-[#49a5ac20] animate-pulse absolute"></div>
         <div className="w-24 h-24 rounded-full bg-[#49a5ac30] animate-glow absolute"></div>
-        <div className="w-16 h-16 rounded-full bg-[#49a5ac45] absolute"></div>
+        <div className="w-16 h-16 rounded-full bg-[#49a5ac45] absolute flex items-center justify-center">
+          <img 
+            src="/lovable-uploads/432a0bc4-376f-4766-864d-ff5f206b8068.png" 
+            alt="Sound wave" 
+            className="w-10 h-10 opacity-90"
+          />
+        </div>
       </div>
       
       <div className="space-y-4 text-center">
@@ -71,4 +81,5 @@ const SignInStep = ({
       </div>
     </div>;
 };
+
 export default SignInStep;
