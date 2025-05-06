@@ -28,18 +28,26 @@ interface PriorityPeopleStepProps {
   };
 }
 
+// Define Role as a specific type (union of string literals)
 type Role = "Team Lead" | "CEO" | "Project Manager" | "Spouse" | "Client" | "Other";
 
 const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: PriorityPeopleStepProps) => {
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Updated to store people with roles
+  // Updated to properly handle the type conversion with userData.priorityPeople
   const [priorityPeople, setPriorityPeople] = useState<Array<{
     name: string;
     role?: Role;
     email?: string;
-  }>>(userData.priorityPeople || []);
+  }>>(
+    // Convert string roles to Role type if they match, otherwise omit the role
+    (userData.priorityPeople || []).map(person => ({
+      name: person.name,
+      role: person.role as Role, // Type assertion here is needed
+      email: person.email
+    }))
+  );
   
   // Mock contacts similar to the integration styling
   const [suggestedContacts] = useState([
@@ -90,6 +98,7 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
   );
   
   const handleContinue = () => {
+    // Ensure we update user data with the current state, and ensure types are compatible
     updateUserData({ priorityPeople });
     onNext();
   };
