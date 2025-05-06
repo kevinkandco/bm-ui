@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
 import { Hash, Plus, X, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
 
 interface PriorityChannelsStepProps {
   onNext: () => void;
@@ -24,7 +23,6 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   const [priorityChannels, setPriorityChannels] = useState<string[]>(userData.priorityChannels || []);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [filteredChannels, setFilteredChannels] = useState<string[]>([]);
-  const { toast } = useToast();
   
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -65,33 +63,16 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
     
     // Check if channel already exists
     if (priorityChannels.includes(inputValue.trim())) {
-      toast({
-        title: "Channel already added",
-        description: `${inputValue.trim()} is already in your priority channels.`,
-      });
       return;
     }
     
     setPriorityChannels(prev => [...prev, inputValue.trim()]);
     setInputValue("");
-    toast({
-      title: "Channel added",
-      description: `${inputValue.trim()} added to your priority channels.`,
-    });
   };
   
   const selectChannel = (channel: string) => {
     if (!priorityChannels.includes(channel)) {
       setPriorityChannels(prev => [...prev, channel]);
-      toast({
-        title: "Channel added",
-        description: `${channel} added to your priority channels.`,
-      });
-    } else {
-      toast({
-        title: "Channel already added",
-        description: `${channel} is already in your priority channels.`,
-      });
     }
     setInputValue("");
     setFilteredChannels([]);
@@ -100,10 +81,6 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   
   const removeChannel = (channel: string) => {
     setPriorityChannels(prev => prev.filter(item => item !== channel));
-    toast({
-      title: "Channel removed",
-      description: `${channel} removed from your priority channels.`,
-    });
   };
   
   const handleContinue = () => {

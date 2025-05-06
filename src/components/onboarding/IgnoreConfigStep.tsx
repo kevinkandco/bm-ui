@@ -7,7 +7,6 @@ import { Switch } from "@/components/ui/switch";
 import ProgressIndicator from "./ProgressIndicator";
 import { X, Plus, BellOff, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
 
 interface IgnoreConfigStepProps {
   onNext: () => void;
@@ -33,7 +32,6 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
   const [includeInSummary, setIncludeInSummary] = useState<boolean>(userData.includeIgnoredInSummary || false);
   
   const inputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
   
   // Mock Slack channels - in a real app, these would be fetched from Slack API
   const [slackChannels] = useState([
@@ -64,33 +62,17 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
     if (selectedTab === "channel") {
       // Check if channel already exists
       if (ignoreChannels.includes(inputValue.trim())) {
-        toast({
-          title: "Channel already added",
-          description: `${inputValue.trim()} is already in your ignored channels.`,
-        });
         return;
       }
       
       setIgnoreChannels(prev => [...prev, inputValue.trim()]);
-      toast({
-        title: "Channel added",
-        description: `${inputValue.trim()} added to ignored channels.`,
-      });
     } else if (selectedTab === "keyword") {
       // Check if keyword already exists
       if (ignoreKeywords.includes(inputValue.trim())) {
-        toast({
-          title: "Keyword already added",
-          description: `${inputValue.trim()} is already in your ignored keywords.`,
-        });
         return;
       }
       
       setIgnoreKeywords(prev => [...prev, inputValue.trim()]);
-      toast({
-        title: "Keyword added",
-        description: `${inputValue.trim()} added to ignored keywords.`,
-      });
     }
     
     setInputValue("");
@@ -99,15 +81,6 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
   const selectChannel = (channel: string) => {
     if (!ignoreChannels.includes(channel)) {
       setIgnoreChannels(prev => [...prev, channel]);
-      toast({
-        title: "Channel added",
-        description: `${channel} added to ignored channels.`,
-      });
-    } else {
-      toast({
-        title: "Channel already added",
-        description: `${channel} is already in your ignored channels.`,
-      });
     }
     setInputValue("");
     setSearchResults([]);
@@ -116,16 +89,8 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
   const removeItem = (type: "channel" | "keyword", value: string) => {
     if (type === "channel") {
       setIgnoreChannels(prev => prev.filter(item => item !== value));
-      toast({
-        title: "Channel removed",
-        description: `${value} removed from ignored channels.`,
-      });
     } else if (type === "keyword") {
       setIgnoreKeywords(prev => prev.filter(item => item !== value));
-      toast({
-        title: "Keyword removed",
-        description: `${value} removed from ignored keywords.`,
-      });
     }
   };
   
