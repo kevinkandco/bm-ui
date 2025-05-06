@@ -1,9 +1,12 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
 import ProgressIndicator from "./ProgressIndicator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Slack, Mail, Calendar } from "lucide-react";
+
 interface IntegrationOption {
   id: string;
   name: string;
@@ -12,6 +15,7 @@ interface IntegrationOption {
   description: string;
   version: "V1" | "V2" | "V3" | "Future";
 }
+
 interface IntegrationsStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -22,6 +26,7 @@ interface IntegrationsStepProps {
     [key: string]: any;
   };
 }
+
 const IntegrationsStep = ({
   onNext,
   onBack,
@@ -143,10 +148,12 @@ const IntegrationsStep = ({
     description: "Monitor your service desk (coming soon)",
     version: "Future"
   }]);
+  
   const [connected, setConnected] = useState<Record<string, boolean>>(userData.integrations.reduce((acc: Record<string, boolean>, id: string) => ({
     ...acc,
     [id]: true
   }), {}));
+  
   const toggleConnection = (id: string) => {
     if (!integrations.find(i => i.id === id)?.available) return;
     setConnected(prev => ({
@@ -154,6 +161,7 @@ const IntegrationsStep = ({
       [id]: !prev[id]
     }));
   };
+  
   const handleContinue = () => {
     const selectedIntegrations = Object.entries(connected).filter(([_, isConnected]) => isConnected).map(([id]) => id);
     updateUserData({
@@ -161,6 +169,7 @@ const IntegrationsStep = ({
     });
     onNext();
   };
+  
   const hasAnyConnection = Object.values(connected).some(value => value);
 
   // Group integrations by version
@@ -171,6 +180,23 @@ const IntegrationsStep = ({
     groups[integration.version].push(integration);
     return groups;
   }, {} as Record<string, IntegrationOption[]>);
+  
+  // Helper function to render the appropriate icon based on integration ID
+  const renderIcon = (id: string, iconText: string) => {
+    switch(id) {
+      case "slack":
+        return <Slack className="text-white" />;
+      case "gmail":
+        return <Mail className="text-white" />;
+      case "outlook":
+        return <Mail className="text-white" />;
+      case "calendar":
+        return <Calendar className="text-white" />;
+      default:
+        return <span className="text-white font-bold">{iconText}</span>;
+    }
+  };
+
   return <div className="space-y-8">
       <ProgressIndicator currentStep={3} totalSteps={7} />
       
@@ -188,63 +214,70 @@ const IntegrationsStep = ({
         <p className="text-cool-slate text-zinc-100">Brief.me will monitor these sources to create your personalized brief.</p>
       </div>
       
-      {/* V1 Integrations */}
+      {/* V1 Integrations - Changed to list layout */}
       <div className="space-y-5">
         <h3 className="text-lg font-medium text-ice-grey">Available Now</h3>
-        <div className="grid grid-cols-2 gap-4">
-          {groupedIntegrations.V1?.map(integration => <div key={integration.id} 
-              className={cn(
-                "integration-card flex flex-col p-5 rounded-xl cursor-pointer transition-all duration-300",
-                connected[integration.id] 
-                  ? "border-electric-teal bg-white/20 backdrop-blur-md shadow-neo" 
-                  : "border-white/30 bg-white/15 hover:bg-white/25 backdrop-blur-md"
-              )} 
+        <div className="flex flex-col space-y-3">
+          {groupedIntegrations.V1?.map(integration => 
+            <div 
+              key={integration.id}
               onClick={() => toggleConnection(integration.id)}
+              className={cn(
+                "integration-list-item flex items-center p-4 rounded-xl cursor-pointer transition-all duration-300",
+                connected[integration.id]
+                  ? "border-2 border-electric-teal bg-white/20 backdrop-blur-md shadow-neo"
+                  : "border border-white/30 bg-white/15 hover:bg-white/25 backdrop-blur-md"
+              )}
             >
-              <div className="flex items-start gap-3">
-                <div className={cn(
-                  "w-10 h-10 flex items-center justify-center rounded-full font-bold text-white",
-                  connected[integration.id] ? "bg-electric-teal/80" : "bg-deep-plum"
-                )}>
-                  {integration.icon}
-                </div>
-                <div>
-                  <h4 className="text-lg font-medium text-white">{integration.name}</h4>
-                  <p className="text-sm text-white/90">{integration.description}</p>
-                  <span className={cn(
-                    "text-xs mt-2 inline-block px-2 py-0.5 rounded-full",
-                    connected[integration.id] 
-                      ? "bg-electric-teal/20 text-white" 
-                      : "bg-white/10 text-white/70"
-                  )}>
-                    {connected[integration.id] ? 'Connected ✓' : 'Tap to connect'}
-                  </span>
-                </div>
+              <div className={cn(
+                "w-12 h-12 flex items-center justify-center rounded-full mr-4",
+                connected[integration.id] ? "bg-electric-teal/80" : "bg-deep-plum"
+              )}>
+                {renderIcon(integration.id, integration.icon)}
               </div>
-            </div>)}
+              
+              <div className="flex-grow">
+                <h4 className="text-lg font-medium text-white">{integration.name}</h4>
+                <p className="text-sm text-white/90">{integration.description}</p>
+              </div>
+              
+              <div className="ml-2">
+                <span className={cn(
+                  "text-sm px-3 py-1 rounded-full",
+                  connected[integration.id] 
+                    ? "bg-electric-teal/20 text-white" 
+                    : "bg-white/10 text-white/70"
+                )}>
+                  {connected[integration.id] ? 'Connected ✓' : 'Tap to connect'}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       
-      {/* V2 Integrations */}
+      {/* V2 Integrations - Changed to list layout */}
       <div className="space-y-5">
         <h3 className="text-lg font-medium text-ice-grey flex items-center gap-2">
           Coming Soon (V2)
           <span className="text-xs px-2 py-1 bg-deep-plum/30 rounded-full text-electric-teal">Early Q3</span>
         </h3>
-        <div className="grid grid-cols-2 gap-4">
-          {groupedIntegrations.V2?.map(integration => <div key={integration.id} 
-              className="integration-card flex flex-col p-5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
+        <div className="flex flex-col space-y-3">
+          {groupedIntegrations.V2?.map(integration => 
+            <div 
+              key={integration.id}
+              className="integration-list-item flex items-center p-4 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
             >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/70 rounded-full font-bold text-white/80">
-                  {integration.icon}
-                </div>
-                <div>
-                  <h4 className="text-lg font-medium text-white/90">{integration.name}</h4>
-                  <p className="text-sm text-white/80">{integration.description}</p>
-                </div>
+              <div className="w-12 h-12 flex items-center justify-center bg-deep-plum/70 rounded-full mr-4">
+                <span className="text-white/80 font-bold">{integration.icon}</span>
               </div>
-            </div>)}
+              
+              <div className="flex-grow">
+                <h4 className="text-lg font-medium text-white/90">{integration.name}</h4>
+                <p className="text-sm text-white/80">{integration.description}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       
@@ -252,9 +285,11 @@ const IntegrationsStep = ({
       <div className="p-4 bg-white/10 backdrop-blur-md rounded-lg border border-white/20">
         <h4 className="text-sm font-medium text-ice-grey mb-2">More integrations coming soon:</h4>
         <div className="flex flex-wrap gap-2">
-          {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => <span key={integration.id} className="text-xs px-2 py-1 bg-white/15 rounded-full text-white/80">
+          {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => 
+            <span key={integration.id} className="text-xs px-2 py-1 bg-white/15 rounded-full text-white/80">
               {integration.name}
-            </span>)}
+            </span>
+          )}
         </div>
       </div>
       
@@ -291,4 +326,5 @@ const IntegrationsStep = ({
       </div>
     </div>;
 };
+
 export default IntegrationsStep;
