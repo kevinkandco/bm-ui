@@ -2,50 +2,57 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Hash, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Plus, Search } from "lucide-react";
 
 interface ChannelInputProps {
-  onAddChannel: (channelName: string) => void;
-  onSelectChannel: (channelName: string) => void;
+  onAddChannel: (channel: string) => void;
+  onSelectChannel: (channel: string) => void;
   existingChannels: string[];
   availableChannels: string[];
+  searchQuery?: string;
+  setSearchQuery?: (query: string) => void;
 }
 
-export const ChannelInput = ({ 
-  onAddChannel, 
-  onSelectChannel, 
-  existingChannels, 
-  availableChannels 
+export const ChannelInput = ({
+  onAddChannel,
+  onSelectChannel,
+  existingChannels,
+  availableChannels,
+  searchQuery = "",
+  setSearchQuery
 }: ChannelInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [filteredChannels, setFilteredChannels] = useState<string[]>([]);
-  
+  const [searchResults, setSearchResults] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
-  
+
   // Filter channels based on input
   useEffect(() => {
-    if (isInputFocused) {
+    if (inputValue) {
       const filtered = availableChannels.filter(
         channel => channel.toLowerCase().includes(inputValue.toLowerCase())
       );
-      setFilteredChannels(filtered);
+      setSearchResults(filtered);
     } else {
-      setFilteredChannels([]);
+      setSearchResults([]);
     }
-  }, [inputValue, isInputFocused, availableChannels]);
-  
-  const handleAddChannel = () => {
+  }, [inputValue, availableChannels]);
+
+  // Handle adding a channel
+  const addChannel = () => {
     if (!inputValue.trim()) return;
     
-    // Check if channel already exists
-    if (existingChannels.includes(inputValue.trim())) {
-      return;
-    }
-    
-    onAddChannel(inputValue.trim());
+    onAddChannel(inputValue);
     setInputValue("");
+    setSearchResults([]);
+  };
+
+  // Handle selecting a channel from suggestions
+  const selectChannel = (channel: string) => {
+    onSelectChannel(channel);
+    setInputValue("");
+    setSearchResults([]);
+    setIsInputFocused(false);
   };
 
   // Handle click outside to close dropdown
@@ -61,44 +68,58 @@ export const ChannelInput = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
+  // Handle input changes for search query if provided
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (setSearchQuery) {
+      setSearchQuery(value);
+    }
+    setInputValue(value);
+  };
+
   return (
-    <div className="flex gap-2 relative">
-      <div className="relative flex-grow">
-        <Input
-          ref={inputRef}
-          id="priority-channel"
-          placeholder="Enter channel name (e.g. #random)"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleAddChannel()}
-          onFocus={() => setIsInputFocused(true)}
-          className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70 w-full focus:border-glass-blue/50 focus:ring-glass-blue/30"
-        />
-        
-        {isInputFocused && filteredChannels.length > 0 && (
-          <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
-            {filteredChannels.map((channel) => (
-              <div
-                key={channel}
-                onClick={() => onSelectChannel(channel)}
-                className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
-              >
-                <Hash size={14} className="text-glass-blue" />
-                <span className="text-off-white">{channel}</span>
-              </div>
-            ))}
+    <div className="space-y-2">
+      <div className="flex gap-2 relative">
+        <div className="relative flex-grow">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2">
+            <Search size={16} className="text-white/30" />
           </div>
-        )}
+          <Input
+            ref={inputRef}
+            placeholder="Search or add channel (e.g. #marketing)"
+            value={inputValue}
+            onChange={handleSearchChange}
+            onFocus={() => setIsInputFocused(true)}
+            onKeyPress={(e) => e.key === 'Enter' && addChannel()}
+            className="pl-10 bg-white/15 border-white/20 text-off-white placeholder:text-white/50"
+          />
+          
+          {isInputFocused && searchResults.length > 0 && (
+            <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+              {searchResults.map(channel => (
+                <div
+                  key={channel}
+                  onClick={() => selectChannel(channel)}
+                  className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 cursor-pointer"
+                >
+                  <span className="text-off-white">{channel}</span>
+                  {existingChannels.includes(channel) && (
+                    <span className="text-xs text-neon-mint ml-auto">Added</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <Button 
+          onClick={addChannel}
+          className="shrink-0"
+        >
+          <Plus size={16} className="mr-2" />
+          Add
+        </Button>
       </div>
-      <Button 
-        onClick={handleAddChannel}
-        variant="outline"
-        className="shrink-0"
-      >
-        <Plus size={16} />
-        Add
-      </Button>
     </div>
   );
 };

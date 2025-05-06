@@ -8,6 +8,7 @@ import { SlackChannelsList } from "./priority-channels/SlackChannelsList";
 import { ChannelInput } from "./priority-channels/ChannelInput";
 import { SelectedChannels } from "./priority-channels/SelectedChannels";
 import { usePriorityChannelsState } from "./priority-channels/usePriorityChannelsState";
+import { useState } from "react";
 
 const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: PriorityChannelsStepProps) => {
   const {
@@ -17,6 +18,14 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
     selectChannel,
     removeChannel
   } = usePriorityChannelsState(userData.priorityChannels || []);
+  
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Filter channels based on search query
+  const filteredChannels = searchQuery 
+    ? slackChannels.filter(channel => 
+        channel.toLowerCase().includes(searchQuery.toLowerCase()))
+    : slackChannels;
   
   const hasSlackIntegration = userData.integrations?.some(
     (integration: any) => integration.type === "slack" || integration === "slack"
@@ -48,6 +57,8 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
             onSelectChannel={selectChannel}
             existingChannels={priorityChannels}
             availableChannels={slackChannels}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
           />
           
           <SelectedChannels 
@@ -70,7 +81,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
             </p>
             
             <SlackChannelsList
-              slackChannels={slackChannels}
+              slackChannels={filteredChannels}
               priorityChannels={priorityChannels}
               onSelectChannel={selectChannel}
             />
