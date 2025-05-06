@@ -87,7 +87,7 @@ const FeaturesWalkthroughStep = ({
       </div>
 
       <div className="flex justify-between pt-4">
-        <Button onClick={prevFeature} className="neon-outline-button bg-emerald-500 hover:bg-emerald-400 text-white-DEFAULT">
+        <Button onClick={prevFeature} className="neon-outline-button text-white-DEFAULT bg-transparent rounded-sm">
           Back
         </Button>
         <Button onClick={nextFeature} className="neon-button text-[#ffffff] bg-[#4db4f7]/[0.44]">
