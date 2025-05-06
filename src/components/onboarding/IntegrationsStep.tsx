@@ -214,23 +214,23 @@ const IntegrationsStep = ({
         <p className="text-cool-slate text-zinc-100">Brief.me will monitor these sources to create your personalized brief.</p>
       </div>
       
-      {/* V1 Integrations - Changed to list layout */}
+      {/* V1 Integrations - More compact list layout */}
       <div className="space-y-5">
         <h3 className="text-lg font-medium text-ice-grey">Available Now</h3>
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-2">
           {groupedIntegrations.V1?.map(integration => 
             <div 
               key={integration.id}
               onClick={() => toggleConnection(integration.id)}
               className={cn(
-                "integration-list-item flex items-center p-4 rounded-xl cursor-pointer transition-all duration-300",
+                "integration-list-item flex items-center p-3 rounded-xl cursor-pointer transition-all duration-300",
                 connected[integration.id]
                   ? "border-2 border-electric-teal bg-white/20 backdrop-blur-md shadow-neo"
                   : "border border-white/30 bg-white/15 hover:bg-white/25 backdrop-blur-md"
               )}
             >
               <div className={cn(
-                "w-12 h-12 flex items-center justify-center rounded-full mr-4",
+                "w-10 h-10 flex items-center justify-center rounded-full mr-4",
                 connected[integration.id] ? "bg-electric-teal/80" : "bg-deep-plum"
               )}>
                 {renderIcon(integration.id, integration.icon)}
@@ -238,43 +238,38 @@ const IntegrationsStep = ({
               
               <div className="flex-grow">
                 <h4 className="text-lg font-medium text-white">{integration.name}</h4>
-                <p className="text-sm text-white/90">{integration.description}</p>
               </div>
               
               <div className="ml-2">
-                <span className={cn(
-                  "text-sm px-3 py-1 rounded-full",
-                  connected[integration.id] 
-                    ? "bg-electric-teal/20 text-white" 
-                    : "bg-white/10 text-white/70"
-                )}>
-                  {connected[integration.id] ? 'Connected ✓' : 'Tap to connect'}
-                </span>
+                {connected[integration.id] && (
+                  <span className="text-sm px-3 py-1 rounded-full bg-electric-teal/20 text-white">
+                    Connected ✓
+                  </span>
+                )}
               </div>
             </div>
           )}
         </div>
       </div>
       
-      {/* V2 Integrations - Changed to list layout */}
+      {/* V2 Integrations - More compact list layout */}
       <div className="space-y-5">
         <h3 className="text-lg font-medium text-ice-grey flex items-center gap-2">
           Coming Soon (V2)
           <span className="text-xs px-2 py-1 bg-deep-plum/30 rounded-full text-electric-teal">Early Q3</span>
         </h3>
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-2">
           {groupedIntegrations.V2?.map(integration => 
             <div 
               key={integration.id}
-              className="integration-list-item flex items-center p-4 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
+              className="integration-list-item flex items-center p-3 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
             >
-              <div className="w-12 h-12 flex items-center justify-center bg-deep-plum/70 rounded-full mr-4">
+              <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/70 rounded-full mr-4">
                 <span className="text-white/80 font-bold">{integration.icon}</span>
               </div>
               
               <div className="flex-grow">
                 <h4 className="text-lg font-medium text-white/90">{integration.name}</h4>
-                <p className="text-sm text-white/80">{integration.description}</p>
               </div>
             </div>
           )}
