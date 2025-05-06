@@ -12,7 +12,7 @@ import IgnoreConfigStep from "@/components/onboarding/IgnoreConfigStep";
 import BriefPreferencesStep from "@/components/onboarding/BriefPreferencesStep";
 import GetStartedStep from "@/components/onboarding/GetStartedStep";
 import SuccessModal from "@/components/onboarding/SuccessModal";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 
 const OnboardingContent = memo(({ 
   currentStep, 
@@ -33,6 +33,11 @@ const OnboardingContent = memo(({
   handleSkip: () => void;
   handleComplete: () => void;
 }) => {
+  // Scroll to top when step changes for better mobile experience
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentStep, showSuccess]);
+
   if (showSuccess) {
     return <SuccessModal onComplete={handleComplete} />;
   }
@@ -142,6 +147,18 @@ const Onboarding = () => {
     // Navigate to dashboard
     navigate("/dashboard");
   };
+
+  // Disable body scroll when modals are open for better mobile experience
+  useEffect(() => {
+    if (showSuccess) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showSuccess]);
 
   return (
     <OnboardingLayout>

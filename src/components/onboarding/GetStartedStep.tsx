@@ -1,8 +1,7 @@
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
-import { Download, Smartphone, ChevronsRight, Sparkles, Calendar, ExternalLink } from "lucide-react";
+import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface GetStartedStepProps {
@@ -98,85 +97,92 @@ const GetStartedStep = ({
   
   const summaryData = formatSummary();
   
-  return <div className="space-y-6">
+  return (
+    <div className="space-y-4 sm:space-y-6">
       <ProgressIndicator currentStep={9} totalSteps={9} />
       
       {/* Visual element with reduced height */}
-      <div className="relative h-16 w-full flex items-center justify-center overflow-hidden mb-2">
-        <Sparkles size={40} className="text-electric-teal animate-float" />
+      <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
+        <Sparkles size={32} className="text-electric-teal animate-float" />
       </div>
       
-      <div className="space-y-2">
-        <h2 className="text-2xl font-semibold text-off-white tracking-tighter">You're all set!</h2>
-        <p className="text-off-white/90">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
+      <div className="space-y-1 sm:space-y-2">
+        <h2 className="text-xl sm:text-2xl font-semibold text-off-white tracking-tighter">You're all set!</h2>
+        <p className="text-xs sm:text-sm text-off-white/90">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
       </div>
       
-      <div className="space-y-4">
-        <div className="space-y-3">
-          <h3 className="text-lg font-medium text-off-white">Your Brief Setup</h3>
+      <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="text-base sm:text-lg font-medium text-off-white">Your Brief Setup</h3>
           
           <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
-            {summaryData.map((section, index) => <div key={index} className="flex justify-between px-4 py-3">
-                <span className="text-off-white/90">{section.title}</span>
+            {summaryData.map((section, index) => (
+              <div key={index} className="flex justify-between px-3 sm:px-4 py-2 sm:py-3">
+                <span className="text-xs sm:text-sm text-off-white/90">{section.title}</span>
                 <div className="text-right">
-                  <span className="text-off-white font-medium">{section.value}</span>
-                  {section.detail && <p className="text-xs text-off-white/80 mt-0.5">{section.detail}</p>}
+                  <span className="text-xs sm:text-sm text-off-white font-medium">{section.value}</span>
+                  {section.detail && (
+                    <p className="text-[10px] sm:text-xs text-off-white/80 mt-0.5">{section.detail}</p>
+                  )}
                 </div>
-              </div>)}
+              </div>
+            ))}
           </div>
         </div>
         
-        <div className="space-y-3">
-          <h3 className="text-lg font-medium text-off-white">Get the full experience</h3>
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="text-base sm:text-lg font-medium text-off-white">Get the full experience</h3>
           
           <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
-            <div className="flex justify-between items-center px-4 py-3">
+            <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
               <div className="flex items-center gap-2">
-                <Download className="h-6 w-6 text-electric-teal" />
+                <Download className="h-5 sm:h-6 w-5 sm:w-6 text-electric-teal" />
                 <div>
-                  <span className="text-off-white">Desktop App</span>
-                  <p className="text-xs text-off-white/80">Get desktop notifications and quick access</p>
+                  <span className="text-xs sm:text-sm text-off-white">Desktop App</span>
+                  <p className="text-[10px] sm:text-xs text-off-white/80">Get desktop notifications and quick access</p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="neon-outline-button text-xs">
+              <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">
                 Download
               </Button>
             </div>
             
-            <div className="flex justify-between items-center px-4 py-3">
+            <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
               <div className="flex items-center gap-2">
-                <Smartphone className="h-6 w-6 text-electric-teal" />
+                <Smartphone className="h-5 sm:h-6 w-5 sm:w-6 text-electric-teal" />
                 <div>
-                  <span className="text-off-white">Mobile App</span>
-                  <p className="text-xs text-off-white/80">Listen to briefs on the go</p>
+                  <span className="text-xs sm:text-sm text-off-white">Mobile App</span>
+                  <p className="text-[10px] sm:text-xs text-off-white/80">Listen to briefs on the go</p>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="neon-outline-button text-xs">iOS</Button>
-                <Button variant="outline" size="sm" className="neon-outline-button text-xs">Android</Button>
+              <div className="flex gap-1 sm:gap-2">
+                <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">iOS</Button>
+                <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">Android</Button>
               </div>
             </div>
           </div>
           
-          <p className="text-xs text-off-white/80 text-center">
+          <p className="text-[10px] sm:text-xs text-off-white/80 text-center">
             You can always download these apps later from your dashboard
           </p>
         </div>
       </div>
       
-      <div className="flex justify-between pt-3">
+      <div className="flex justify-between pt-2 sm:pt-3">
         <Button 
           onClick={onBack} 
           variant="plain"
           size="none"
+          className="text-sm"
         >
           Back
         </Button>
-        <Button onClick={onNext} className="neon-button">
+        <Button onClick={onNext} className="neon-button py-2 sm:py-3 px-3 sm:px-4 text-sm">
           Go to Dashboard <ChevronsRight className="ml-1" size={16} />
         </Button>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default GetStartedStep;
