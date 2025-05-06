@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
@@ -33,8 +34,8 @@ const SignInStep = ({
       
       {/* Neon orb visual element */}
       <div className="h-40 w-full flex items-center justify-center relative mb-8">
-        <div className="w-32 h-32 rounded-full bg-neon-mint/20 animate-pulse absolute"></div>
-        <div className="w-24 h-24 rounded-full bg-neon-mint/30 animate-glow absolute"></div>
+        <div className="w-32 h-32 rounded-full bg-[#49a5ac20] animate-pulse absolute"></div>
+        <div className="w-24 h-24 rounded-full bg-[#49a5ac30] animate-glow absolute"></div>
         <div className="w-16 h-16 rounded-full bg-[#49a5ac45] absolute"></div>
       </div>
       
