@@ -49,6 +49,9 @@ export const SuggestedContacts = ({
           const isAdded = priorityPeople.some(p => p.name === contact.name);
           const person = isAdded ? priorityPeople.find(p => p.name === contact.name) : null;
           
+          // Format display name - use contactName if available, otherwise use contact.name
+          const displayName = person?.contactName || contact.name;
+          
           return (
             <div 
               key={contact.id}
@@ -70,7 +73,10 @@ export const SuggestedContacts = ({
                 </div>
                 
                 <div>
-                  <p className="text-white text-sm font-medium">{contact.name}</p>
+                  {person?.label && (
+                    <p className="text-white text-sm font-medium">{person.label}</p>
+                  )}
+                  <p className="text-white text-sm font-medium">{displayName}</p>
                   <div className="text-xs text-white/50 flex items-center gap-1">
                     <Mail size={10} /> {contact.email}
                   </div>
@@ -88,55 +94,53 @@ export const SuggestedContacts = ({
                   </Button>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button 
-                          size="sm" 
-                          variant={person?.contactName ? "secondary" : "outline"}
-                          className={cn(
-                            "text-xs",
-                            person?.contactName 
-                              ? "bg-hot-coral/20 border-hot-coral/40 text-white" 
-                              : "bg-white/10 border-white/20 text-white/70"
-                          )}
-                        >
-                          {person?.contactName || "Select Person"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-64 p-0 bg-deep-plum border-white/20">
-                        <div className="p-2">
-                          <div className="relative mb-2">
-                            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40" />
-                            <Input
-                              placeholder="Find a person..."
-                              value={contactSearchQuery}
-                              onChange={(e) => setContactSearchQuery(e.target.value)}
-                              className="pl-7 py-1 h-8 bg-white/10 border-white/20 text-ice-grey placeholder:text-white/40 text-xs"
-                            />
-                          </div>
-                          
-                          <div className="max-h-52 overflow-y-auto">
-                            {filteredPlatformContacts.map((platformContact) => (
-                              <div 
-                                key={platformContact.id}
-                                className="flex items-center justify-between p-2 hover:bg-white/10 rounded cursor-pointer"
-                                onClick={() => designateContact(contact.name, platformContact)}
-                              >
-                                <div className="flex items-center">
-                                  <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full mr-2">
-                                    <User size={12} className="text-white" />
-                                  </div>
-                                  <div>
-                                    <p className="text-white text-xs">{platformContact.name}</p>
-                                    <p className="text-white/50 text-xs">{platformContact.email}</p>
+                    {/* Only show Select Person button if no contact is assigned */}
+                    {!person?.contactName && (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="bg-white/10 border-white/20 text-white/70 text-xs"
+                          >
+                            Select Person
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64 p-0 bg-deep-plum border-white/20">
+                          <div className="p-2">
+                            <div className="relative mb-2">
+                              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40" />
+                              <Input
+                                placeholder="Find a person..."
+                                value={contactSearchQuery}
+                                onChange={(e) => setContactSearchQuery(e.target.value)}
+                                className="pl-7 py-1 h-8 bg-white/10 border-white/20 text-ice-grey placeholder:text-white/40 text-xs"
+                              />
+                            </div>
+                            
+                            <div className="max-h-52 overflow-y-auto">
+                              {filteredPlatformContacts.map((platformContact) => (
+                                <div 
+                                  key={platformContact.id}
+                                  className="flex items-center justify-between p-2 hover:bg-white/10 rounded cursor-pointer"
+                                  onClick={() => designateContact(contact.name, platformContact)}
+                                >
+                                  <div className="flex items-center">
+                                    <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full mr-2">
+                                      <User size={12} className="text-white" />
+                                    </div>
+                                    <div>
+                                      <p className="text-white text-xs">{platformContact.name}</p>
+                                      <p className="text-white/50 text-xs">{platformContact.email}</p>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+                        </PopoverContent>
+                      </Popover>
+                    )}
                     
                     <Button 
                       size="sm" 

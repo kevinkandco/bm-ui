@@ -41,6 +41,14 @@ export const ManualInputSection = ({
     "Other"
   ];
 
+  const handleAdd = () => {
+    // Add the person with the current input value
+    if (inputValue.trim()) {
+      addPerson(inputValue);
+      setInputValue("");
+    }
+  };
+
   return (
     <div className="relative">
       <DropdownMenu 
@@ -55,7 +63,7 @@ export const ManualInputSection = ({
               onChange={(e) => setInputValue(e.target.value)}
               className="bg-white/15 border-white/20 text-ice-grey placeholder:text-white/50"
               onFocus={() => setShowContactsDropdown(true)}
-              onKeyPress={(e) => e.key === 'Enter' && addPerson(inputValue)}
+              onKeyPress={(e) => e.key === 'Enter' && handleAdd()}
             />
             <Select
               value={selectedLabel}
@@ -72,14 +80,14 @@ export const ManualInputSection = ({
                 <SelectValue placeholder="Add label..." />
               </SelectTrigger>
               <SelectContent className="bg-deep-plum text-ice-grey border-white/20">
-                <SelectItem value="none">No label</SelectItem>
+                <SelectItem value="">No label</SelectItem>
                 {labels.map((label) => (
                   <SelectItem key={label} value={label}>{label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Button 
-              onClick={() => addPerson(inputValue)}
+              onClick={handleAdd}
               variant="outline"
               className="shrink-0"
               disabled={!inputValue.trim()}
