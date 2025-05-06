@@ -258,7 +258,7 @@ const IntegrationsStep = ({
       </TooltipProvider>
       
       <div className="flex justify-between pt-2">
-        <Button onClick={onBack} className="neon-outline-button">
+        <Button onClick={onBack} variant="plain" size="none">
           Back
         </Button>
         <Button onClick={handleContinue} disabled={!hasAnyConnection} className="neon-button disabled:opacity-50 disabled:pointer-events-none">
