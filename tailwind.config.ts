@@ -62,29 +62,28 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Dark theme colors
-				'canvas-black': '#0E0E10',
-				'deep-plum': '#3D0B46',
-				'cranberry': '#6E0039',
-				'electric-teal': '#00E0D5',
-				'hot-coral': '#FF4F6D',
-				'ice-grey': '#E0E4EA', // Updated for better contrast (was #F5F7FA)
-				'cool-slate': '#B0B3BE',
-				// Light theme colors
-				'canvas-light': '#F8F9FC',
-				'soft-plum': '#E8D9F0',
-				'light-rose': '#FFE4EB',
-				'bright-teal': '#00D1C6',
-				'warm-coral': '#FF6B85',
-				'deep-navy': '#1A1A2E',
-				'slate-grey': '#696E79',
-				// New colors for the landing page
-				'forest-green': '#18382A',
-				'lake-blue': '#3DB2D5',
-				'peach': '#FFCBA3',
-				'off-white': '#F5F5F2',
-				'neon-mint': '#36FFAF',
-				// Keep legacy colors
+				// Her-inspired palette (Light theme)
+				'surface-tint': '#FDFDFB', // frosted panels & backgrounds
+				'accent-primary': '#F26B6B', // CTAs, switches, progress, links
+				'accent-primary-hover': '#D95050', // pressed / hover states
+				'neutral-light': '#F4F4F4', // secondary panels, cards
+				'neutral-medium': '#DDDDDD', // borders, dividers, disabled
+				'dark-emphasis': '#3E224C', // critical text, dark-mode accent
+				
+				// Dark theme versions
+				'surface-tint-dark': '#111111', // surfaces in dark mode
+				'accent-primary-dark': '#FF8275', // accent in dark mode
+				'neutral-light-dark': '#2B2B2B', // darker neutral
+				'neutral-medium-dark': '#3C3C3C', // medium neutral in dark mode
+				
+				// Keep legacy colors but update them
+				'forest-green': '#3E224C', // replaced with dark-emphasis
+				'lake-blue': '#F26B6B', // replaced with accent-primary
+				'peach': '#FDFDFB', // replaced with surface-tint
+				'off-white': '#F4F4F4', // replaced with neutral-light
+				'neon-mint': '#F26B6B', // replaced with accent-primary
+				
+				// Keep other legacy colors
 				"indigo": "#3B3BFF",
 				"neutral-gray": "#8E9196",
 				"teal-blue": "#3B83F5",
