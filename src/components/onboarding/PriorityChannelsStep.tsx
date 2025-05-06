@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -181,7 +182,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
               {slackChannels.map(channel => (
                 <button
                   key={channel}
-                  onClick={() => addChannel(channel)}
+                  onClick={() => selectChannel(channel)}
                   className={cn(
                     "flex items-center justify-between p-3 rounded-lg border text-left",
                     priorityChannels.includes(channel)
