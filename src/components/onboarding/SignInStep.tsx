@@ -35,12 +35,12 @@ const SignInStep = ({
       <div className="h-40 w-full flex items-center justify-center relative mb-8">
         <div className="w-32 h-32 rounded-full bg-neon-mint/20 animate-pulse absolute"></div>
         <div className="w-24 h-24 rounded-full bg-neon-mint/30 animate-glow absolute"></div>
-        <div className="w-16 h-16 rounded-full bg-neon-mint/50 absolute"></div>
+        <div className="w-16 h-16 rounded-full bg-neon-mint/50 absolute bg-[#49a5ac]/[0.27]"></div>
       </div>
       
       <div className="space-y-4 text-center">
         <div className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs">
-          <span className="text-gradient-neon font-medium">Welcome to Brief.me</span>
+          <span className="text-gradient-neon font-medium text-xl">Welcome to Brief.me</span>
         </div>
         <h1 className="text-4xl font-semibold text-off-white tracking-tighter">
           Stay in sync. Skip the scroll.
