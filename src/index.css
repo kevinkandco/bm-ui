@@ -104,19 +104,22 @@
 }
 
 @layer components {
-  /* Glass card component - improved with better blur and opacity */
+  /* Glass card component - improved with better blur and gradient */
   .glass-card {
-    @apply backdrop-blur-[30px] rounded-3xl border border-white-14 shadow-md bg-white-60;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.06);
+    @apply backdrop-blur-[30px] rounded-3xl border-t border-l border-white/20 shadow-lg;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
     transition: all 160ms ease-out;
   }
   
   .glass-card:active {
-    @apply backdrop-blur-[20px] bg-white-65;
+    @apply backdrop-blur-[20px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.45) 0%, rgba(38, 118, 146, 0.35) 50%, rgba(28, 60, 75, 0.4) 100%);
   }
 
   .dark .glass-card {
-    @apply bg-slate-grey/30 border-white-10;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
   }
 
   /* Progress bar */
@@ -126,26 +129,38 @@
   
   /* Integration card */
   .integration-card {
-    @apply relative flex items-center justify-center p-4 rounded-xl border 
+    @apply relative flex items-center justify-center p-4 rounded-xl border-t border-l
            transition-all duration-160 ease-out cursor-pointer;
   }
   
   .integration-card {
-    @apply border-white/30 bg-white/20 hover:bg-white/30 backdrop-blur-[30px];
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+    @apply border-white/20 backdrop-blur-[30px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .integration-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
   }
 
   .dark .integration-card {
-    @apply border-white/20 bg-white/15 hover:bg-white/25;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.25);
+    @apply border-white/20;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .integration-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
   }
 
   .integration-card.connected {
-    @apply border-glass-blue bg-glass-blue/20;
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
   }
 
   .dark .integration-card.connected {
-    @apply border-glass-blue bg-glass-blue/20;
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
   }
 
   .integration-card.disabled {
@@ -154,46 +169,74 @@
   
   /* Preference chip */
   .preference-chip {
-    @apply px-4 py-2 rounded-full border
+    @apply px-4 py-2 rounded-full border-t border-l
            transition-all duration-160 ease-out cursor-pointer;
   }
   
   .preference-chip {
-    @apply border-white-14 bg-white-60 hover:bg-white-70 backdrop-blur-[30px];
+    @apply border-white/20 backdrop-blur-[30px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .preference-chip:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
   }
   
   .dark .preference-chip {
-    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/20;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .preference-chip:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
   }
   
   .preference-chip.selected {
-    @apply border-glass-blue bg-glass-blue/20;
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
   }
   
   .dark .preference-chip.selected {
-    @apply border-glass-blue bg-glass-blue/10;
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
   }
   
   /* Delivery card */
   .delivery-card {
-    @apply relative p-4 rounded-xl border
+    @apply relative p-4 rounded-xl border-t border-l
            transition-all duration-160 ease-out cursor-pointer;
   }
   
   .delivery-card {
-    @apply border-white-14 bg-white-60 hover:bg-white-70 backdrop-blur-[30px];
+    @apply border-white/20 backdrop-blur-[30px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .delivery-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
   }
   
   .dark .delivery-card {
-    @apply border-white-10 bg-white/10 hover:bg-white/15;
+    @apply border-white/20;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .delivery-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
   }
   
   .delivery-card.selected {
-    @apply border-glass-blue bg-glass-blue/10;
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
   }
   
   .dark .delivery-card.selected {
-    @apply border-glass-blue bg-glass-blue/10;
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
   }
 
   /* New components for the redesign */
@@ -344,11 +387,34 @@
   }
   
   .shadow-subtle {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
   }
 
   .text-gradient-neon {
     @apply bg-gradient-to-r bg-clip-text text-transparent from-glass-blue to-lake-blue;
+  }
+  
+  /* New glass effect utilities */
+  .glass-reflection {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-reflection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(-25deg);
+    pointer-events: none;
   }
 }
 

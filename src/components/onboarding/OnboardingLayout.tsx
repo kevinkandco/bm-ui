@@ -105,15 +105,15 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-6 relative overflow-hidden bg-deep-teal">
       <style>{styleCSS}</style>
       
-      {/* Background with teal/coral gradient and grain texture - enhanced contrast */}
+      {/* Background with enhanced teal gradient */}
       <div className="absolute inset-0 w-full h-full">
-        <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue/70 to-hot-coral/40 opacity-80"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue/70 to-hot-coral/20 opacity-80"></div>
         
         {/* TV noise texture overlay */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-texture"></div>
         
         {/* Warm gradient overlay at bottom - increased contrast */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange/80 via-hot-coral/30 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-bright-orange/40 to-transparent"></div>
       </div>
       
       {/* Fluid Aurora Ribbon Effect */}
@@ -122,14 +122,18 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
       </div>
       
       {/* Floating glass orbs with enhanced visibility - reduced size on mobile */}
-      <div className={`absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-full bg-white/20 backdrop-blur-md border border-glass-blue/40 animate-float shadow-neon z-[2]`}></div>
-      <div className={`absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-full bg-white/15 backdrop-blur-md border border-white/20 animate-float-delay shadow-subtle z-[2]`}></div>
+      <div className={`absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-full backdrop-blur-md border-t border-l border-white/20 animate-float z-[2] glass-reflection`} style={{background: 'linear-gradient(180deg, rgba(69, 175, 201, 0.25) 0%, rgba(38, 118, 146, 0.15) 100%)'}}></div>
+      <div className={`absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-full backdrop-blur-md border-t border-l border-white/20 animate-float-delay z-[2] glass-reflection`} style={{background: 'linear-gradient(180deg, rgba(69, 175, 201, 0.2) 0%, rgba(38, 118, 146, 0.1) 100%)'}}></div>
       
       <div 
         className={cn(
-          "w-full max-w-md z-10 p-6 sm:p-8 backdrop-blur-xl bg-white/15 rounded-3xl border border-white/30 shadow-xl",
+          "w-full max-w-md z-10 p-6 sm:p-8 backdrop-blur-xl rounded-3xl border-t border-l border-white/20 shadow-lg glass-reflection",
           className
         )}
+        style={{
+          background: 'linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%)', 
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2)'
+        }}
       >
         {children}
       </div>
