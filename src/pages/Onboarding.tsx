@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
@@ -97,8 +98,8 @@ const Onboarding = () => {
   };
   
   const handleComplete = () => {
-    // Navigate to dashboard (for now redirect to home)
-    navigate("/");
+    // Navigate to dashboard
+    navigate("/dashboard");
   };
 
   const handleSkip = () => {
