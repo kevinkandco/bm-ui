@@ -45,6 +45,7 @@ const SignInStep = ({
             src="/lovable-uploads/dca4b5e7-bb9e-417f-89cf-82d8f8ed93e3.png" 
             alt="Sound wave" 
             className="w-10 h-10 opacity-90"
+            style={{ background: 'transparent' }}
           />
         </div>
       </div>

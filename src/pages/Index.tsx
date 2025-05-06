@@ -37,6 +37,7 @@ const Index = () => {
                 alt="Sound wave" 
                 className="w-10 h-10 opacity-90"
                 loading="eager"
+                style={{ background: 'transparent' }}
               />
             </div>
           </div>
