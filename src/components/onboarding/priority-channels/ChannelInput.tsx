@@ -92,7 +92,7 @@ export const ChannelInput = ({
             onChange={handleSearchChange}
             onFocus={() => setIsInputFocused(true)}
             onKeyPress={(e) => e.key === 'Enter' && addChannel()}
-            className="pl-10 bg-white/15 border-white/20 text-off-white placeholder:text-white/50"
+            className="pl-10 bg-white/15 border-white/20 text-off-white placeholder:text-white/50 h-12"
           />
           
           {isInputFocused && searchResults.length > 0 && (
@@ -103,6 +103,7 @@ export const ChannelInput = ({
                   onClick={() => selectChannel(channel)}
                   className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 cursor-pointer"
                 >
+                  <Hash size={14} className="text-white/80" />
                   <span className="text-off-white">{channel}</span>
                   {existingChannels.includes(channel) && (
                     <span className="text-xs text-neon-mint ml-auto">Added</span>
@@ -114,7 +115,7 @@ export const ChannelInput = ({
         </div>
         <Button 
           onClick={addChannel}
-          className="shrink-0"
+          className="shrink-0 bg-cyan-500 hover:bg-cyan-600 h-12 px-6 rounded-full"
         >
           <Plus size={16} className="mr-2" />
           Add

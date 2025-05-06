@@ -13,13 +13,20 @@ export const SelectedChannels = ({ channels, onRemoveChannel }: SelectedChannels
   }
 
   return (
-    <div className="flex flex-wrap gap-2 pt-3 mt-2 pb-2">
+    <div className="flex flex-wrap gap-3 pt-3 mt-2 pb-2">
       {channels.map(channel => (
-        <div key={channel} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
-          <Hash size={14} className="text-glass-blue" />
-          {channel}
-          <button onClick={() => onRemoveChannel(channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
-            <X size={14} />
+        <div 
+          key={channel} 
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 border border-white/30 text-white"
+        >
+          <Hash size={18} className="text-white/70" />
+          <span>{channel}</span>
+          <button 
+            onClick={() => onRemoveChannel(channel)} 
+            className="ml-1 p-1 focus:outline-none text-white/70 hover:text-white transition-colors rounded-full"
+            aria-label={`Remove ${channel}`}
+          >
+            <X size={16} />
           </button>
         </div>
       ))}

@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
-import { Hash, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { PriorityChannelsStepProps } from "./priority-channels/types";
 import { SlackChannelsList } from "./priority-channels/SlackChannelsList";
 import { ChannelInput } from "./priority-channels/ChannelInput";
