@@ -56,6 +56,11 @@ export const SuggestedContacts = ({
     contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
   );
 
+  // Check if a contact is already in priority people
+  const isContactAdded = (contact: Contact) => {
+    return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
+  };
+
   // Handle designation and label selection
   const handleDesignate = (contact: Contact) => {
     // Toggle label selector for this contact
@@ -64,13 +69,15 @@ export const SuggestedContacts = ({
 
   // Handle label selection
   const handleLabelSelect = (contactId: string, label: string) => {
-    // First add person if not already added
+    // Find the contact
     const contact = suggestedContacts.find(c => c.id === contactId);
     if (contact) {
-      // Add the person first
-      addPerson(contact.name, contact.email);
+      // Add the person first if not already added
+      if (!isContactAdded(contact)) {
+        addPerson(contact.name, contact.email);
+      }
       
-      // Then add the label (with a slight delay to ensure person is added first)
+      // Then add the label with a slight delay to ensure person is added first
       setTimeout(() => {
         addLabel(contact.name, label);
         setShowLabelSelector(null);
@@ -84,11 +91,9 @@ export const SuggestedContacts = ({
       <h3 className="text-sm font-medium text-ice-grey mb-2">Suggested Contacts</h3>
       <div className="space-y-1.5">
         {filteredContacts.map(contact => {
-          const isAdded = priorityPeople.some(p => p.name === contact.name);
-          const person = isAdded ? priorityPeople.find(p => p.name === contact.name) : null;
-          
-          // Format display name - use contactName if available, otherwise use contact.name
-          const displayName = person?.contactName || contact.name;
+          const isAdded = isContactAdded(contact);
+          const person = isAdded ? 
+            priorityPeople.find(p => p.name === contact.name || p.email === contact.email) : null;
           
           return (
             <div 
@@ -111,13 +116,13 @@ export const SuggestedContacts = ({
                 </div>
                 
                 <div>
-                  {person?.label && (
-                    <p className="text-white text-sm font-medium">{person.label}</p>
-                  )}
-                  <p className="text-white text-sm font-medium">{displayName}</p>
+                  <p className="text-white text-sm font-medium">{contact.name}</p>
                   <div className="text-xs text-white/50 flex items-center gap-1">
                     <Mail size={10} /> {contact.email}
                   </div>
+                  {person?.label && (
+                    <p className="text-xs text-electric-teal mt-0.5">{person.label}</p>
+                  )}
                 </div>
               </div>
               
@@ -143,18 +148,43 @@ export const SuggestedContacts = ({
                             <div 
                               key={label}
                               className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
-                              onClick={() => {
-                                if (label === "Other") {
-                                  // Show custom label input field
-                                  // This would be implemented with a state toggle
-                                } else {
-                                  handleLabelSelect(contact.id, label);
-                                }
-                              }}
+                              onClick={() => handleLabelSelect(contact.id, label)}
                             >
                               <span className="text-white text-xs">{label}</span>
                             </div>
                           ))}
+                          {showLabelInput && (
+                            <div className="p-2">
+                              <Input
+                                placeholder="Custom label..."
+                                value={customLabel}
+                                onChange={(e) => setCustomLabel(e.target.value)}
+                                className="h-8 text-xs mb-2"
+                                autoFocus
+                              />
+                              <div className="flex gap-2">
+                                <Button 
+                                  size="sm" 
+                                  className="text-xs h-7"
+                                  onClick={() => {
+                                    if (customLabel) {
+                                      handleLabelSelect(contact.id, customLabel);
+                                    }
+                                  }}
+                                >
+                                  Save
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="ghost"
+                                  className="text-xs h-7"
+                                  onClick={() => setShowLabelInput(false)}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          )}
                           <div 
                             className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
                             onClick={() => handleLabelSelect(contact.id, "")}
@@ -167,41 +197,42 @@ export const SuggestedContacts = ({
                   </Popover>
                 ) : (
                   <div className="flex items-center gap-2">
-                    {/* Only show Add Label button if no label is set */}
-                    {!person?.label && (
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            className="bg-white/10 border-white/20 text-white/70 text-xs"
-                          >
-                            Add Label
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
-                          <div className="p-2">
-                            <div className="space-y-1">
-                              {labels.map((label) => (
-                                <div 
-                                  key={label}
-                                  className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
-                                  onClick={() => {
-                                    if (label === "Other") {
-                                      // Show custom label input field
-                                    } else {
-                                      addLabel(contact.name, label);
-                                    }
-                                  }}
-                                >
-                                  <span className="text-white text-xs">{label}</span>
-                                </div>
-                              ))}
-                            </div>
+                    {/* Label management button */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="bg-white/10 border-white/20 text-white/70 text-xs"
+                        >
+                          {person?.label ? "Update Label" : "Add Label"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
+                        <div className="p-2">
+                          <div className="space-y-1">
+                            {labels.map((label) => (
+                              <div 
+                                key={label}
+                                className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                                onClick={() => addLabel(contact.name, label)}
+                              >
+                                <span className="text-white text-xs">{label}</span>
+                              </div>
+                            ))}
+                            {/* Option to remove label if one exists */}
+                            {person?.label && (
+                              <div 
+                                className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                                onClick={() => addLabel(contact.name, "")}
+                              >
+                                <span className="text-white/70 text-xs">Remove Label</span>
+                              </div>
+                            )}
                           </div>
-                        </PopoverContent>
-                      </Popover>
-                    )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     
                     <Button 
                       size="sm" 

@@ -18,13 +18,13 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
     { id: "p6", name: "Robin Zhang", email: "robin@team.com" },
   ]);
   
-  // Mock contacts similar to the integration styling
+  // Suggested contacts - using actual contacts instead of roles
   const [suggestedContacts] = useState<Contact[]>([
-    { id: "c1", name: "Team Lead", email: "lead@company.com" },
-    { id: "c2", name: "CEO", email: "ceo@company.com" },
-    { id: "c3", name: "Project Manager", email: "pm@company.com" },
-    { id: "c4", name: "Spouse", email: "spouse@email.com" },
-    { id: "c5", name: "Client", email: "client@client.com" },
+    { id: "c1", name: "Morgan Freeman", email: "morgan@company.com" },
+    { id: "c2", name: "Emma Watson", email: "emma@company.com" },
+    { id: "c3", name: "Chris Evans", email: "chris@company.com" },
+    { id: "c4", name: "Jennifer Lopez", email: "jlo@email.com" },
+    { id: "c5", name: "Ryan Reynolds", email: "ryan@client.com" },
   ]);
 
   // Get filtered contacts based on input value
