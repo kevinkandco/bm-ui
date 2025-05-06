@@ -20,42 +20,42 @@ const HomeView = () => {
     <div className="container p-4 md:p-6 max-w-7xl mx-auto">
       {/* Hero Banner */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Morning, Alex</h1>
-        <p className="text-muted-foreground mt-1">Here's what you missed</p>
+        <h1 className="text-3xl font-bold text-off-white">Morning, Alex</h1>
+        <p className="text-off-white/80 mt-1">Here's what you missed</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Latest Brief - Column 1 */}
-        <Card className="md:col-span-2 glass-card hover:shadow-neo dark:hover:shadow-neo transition-shadow cursor-pointer" onClick={showBriefDetails}>
+        <Card className="md:col-span-2 backdrop-blur-md bg-white/15 border border-white/30 hover:shadow-neo transition-shadow cursor-pointer" onClick={showBriefDetails}>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
-              <CardTitle>Latest Brief</CardTitle>
-              <span className="text-sm text-muted-foreground">Today, 8:00 AM</span>
+              <CardTitle className="text-off-white">Latest Brief</CardTitle>
+              <span className="text-sm text-off-white/70">Today, 8:00 AM</span>
             </div>
-            <CardDescription>3 important updates from your connected tools</CardDescription>
+            <CardDescription className="text-off-white/80">3 important updates from your connected tools</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="p-4 bg-background/50 dark:bg-canvas-black/50 rounded-lg border border-border">
+              <div className="p-4 bg-white/20 rounded-lg border border-white/30">
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-bright-teal dark:text-electric-teal" />
-                  <span className="text-sm font-medium">Email</span>
+                  <Mail className="h-4 w-4 text-neon-mint" />
+                  <span className="text-sm font-medium text-off-white">Email</span>
                 </div>
-                <p className="mt-2 text-sm">2 high priority emails from Sandra and Finance Team</p>
+                <p className="mt-2 text-sm text-off-white/90">2 high priority emails from Sandra and Finance Team</p>
               </div>
               
-              <div className="p-4 bg-background/50 dark:bg-canvas-black/50 rounded-lg border border-border">
+              <div className="p-4 bg-white/20 rounded-lg border border-white/30">
                 <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-soft-plum dark:text-deep-plum" />
-                  <span className="text-sm font-medium">Slack</span>
+                  <MessageSquare className="h-4 w-4 text-neon-mint" />
+                  <span className="text-sm font-medium text-off-white">Slack</span>
                 </div>
-                <p className="mt-2 text-sm">5 mentions in #product-roadmap and #team-updates</p>
+                <p className="mt-2 text-sm text-off-white/90">5 mentions in #product-roadmap and #team-updates</p>
               </div>
               
               <div className="flex justify-between items-center mt-4">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 bg-bright-teal dark:bg-electric-teal rounded-full"></span>
-                  <span className="text-sm text-muted-foreground">Audio version available</span>
+                  <span className="h-2 w-2 bg-neon-mint rounded-full"></span>
+                  <span className="text-sm text-off-white/80">Audio version available</span>
                 </div>
                 <Button variant="outline" size="sm">
                   View Full Brief
@@ -66,9 +66,9 @@ const HomeView = () => {
         </Card>
         
         {/* Upcoming Meetings - Column 2 */}
-        <Card className="md:col-span-1 glass-card">
+        <Card className="md:col-span-1 backdrop-blur-md bg-white/15 border border-white/30">
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Upcoming Meetings</CardTitle>
+            <CardTitle className="text-lg text-off-white">Upcoming Meetings</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -77,15 +77,15 @@ const HomeView = () => {
                 { time: "1:30 PM", title: "Product Review", participants: 6 },
                 { time: "3:00 PM", title: "Client Call", participants: 2 }
               ].map((meeting, i) => (
-                <div key={i} className="flex items-start gap-3 py-2 border-b last:border-b-0">
-                  <div className="bg-background dark:bg-deep-plum/30 rounded p-1.5 h-8 w-8 flex items-center justify-center">
-                    <Calendar className="h-4 w-4 text-slate-grey dark:text-cool-slate" />
+                <div key={i} className="flex items-start gap-3 py-2 border-b border-white/20 last:border-b-0">
+                  <div className="bg-white/20 rounded p-1.5 h-8 w-8 flex items-center justify-center">
+                    <Calendar className="h-4 w-4 text-neon-mint" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-sm">{meeting.title}</p>
+                    <p className="font-medium text-sm text-off-white">{meeting.title}</p>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs text-muted-foreground">{meeting.time}</span>
-                      <span className="text-xs text-muted-foreground">{meeting.participants} attendees</span>
+                      <span className="text-xs text-off-white/70">{meeting.time}</span>
+                      <span className="text-xs text-off-white/70">{meeting.participants} attendees</span>
                     </div>
                   </div>
                 </div>
@@ -95,9 +95,9 @@ const HomeView = () => {
         </Card>
         
         {/* Urgent Threads & Task Radar - Column 3 */}
-        <Card className="md:col-span-1 glass-card">
+        <Card className="md:col-span-1 backdrop-blur-md bg-white/15 border border-white/30">
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Urgent Threads</CardTitle>
+            <CardTitle className="text-lg text-off-white">Urgent Threads</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 mb-4">
@@ -105,22 +105,22 @@ const HomeView = () => {
                 { channel: "# product", message: "New designs ready for review" },
                 { channel: "Sandra", message: "About the quarterly report" }
               ].map((thread, i) => (
-                <div key={i} className="px-3 py-2 rounded-full bg-background/70 dark:bg-canvas-black/60 border border-border text-sm flex items-center justify-between">
-                  <span className="font-medium">{thread.channel}</span>
-                  <span className="text-slate-grey dark:text-cool-slate truncate ml-2" style={{maxWidth: "120px"}}>{thread.message}</span>
+                <div key={i} className="px-3 py-2 rounded-full bg-white/20 border border-white/30 text-sm flex items-center justify-between">
+                  <span className="font-medium text-off-white">{thread.channel}</span>
+                  <span className="text-off-white/80 truncate ml-2" style={{maxWidth: "120px"}}>{thread.message}</span>
                 </div>
               ))}
             </div>
             
             <div className="mt-6">
-              <h3 className="text-sm font-medium mb-3">Task Radar</h3>
+              <h3 className="text-sm font-medium mb-3 text-off-white">Task Radar</h3>
               <div className="flex justify-center">
                 <div className="relative w-28 h-28">
                   {/* Circle progress indicator */}
                   <svg className="w-full h-full" viewBox="0 0 100 100">
                     <circle 
                       cx="50" cy="50" r="45" 
-                      fill="none" stroke="#e6e6e6" strokeWidth="10" 
+                      fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="10" 
                     />
                     <circle 
                       cx="50" cy="50" r="45" 
@@ -132,18 +132,18 @@ const HomeView = () => {
                     />
                     <defs>
                       <linearGradient id="gradient-stroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" className="text-bright-teal dark:text-electric-teal" stopColor="currentColor" />
-                        <stop offset="100%" className="text-warm-coral dark:text-hot-coral" stopColor="currentColor" />
+                        <stop offset="0%" stopColor="#36FFAF" />
+                        <stop offset="100%" stopColor="#FFCBA3" />
                       </linearGradient>
                     </defs>
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center flex-col">
-                    <span className="text-2xl font-bold">75%</span>
-                    <span className="text-xs text-muted-foreground">Complete</span>
+                    <span className="text-2xl font-bold text-off-white">75%</span>
+                    <span className="text-xs text-off-white/70">Complete</span>
                   </div>
                 </div>
               </div>
-              <p className="text-center text-sm text-muted-foreground mt-2">6 of 8 tasks done</p>
+              <p className="text-center text-sm text-off-white/80 mt-2">6 of 8 tasks done</p>
             </div>
           </CardContent>
         </Card>
@@ -151,7 +151,7 @@ const HomeView = () => {
       
       {/* Floating Action Button */}
       <div className="fixed bottom-20 right-6 md:bottom-8 md:right-8">
-        <Button className="neon-button rounded-full h-14 w-14 shadow-light-neon dark:shadow-neon hover:shadow-xl transition-all hover:-translate-y-1" onClick={() => toast({
+        <Button className="neon-button rounded-full h-14 w-14 shadow-light-neon hover:shadow-xl transition-all hover:-translate-y-1" onClick={() => toast({
           title: "Catch Me Up",
           description: "Opening catch-up generator",
         })}>

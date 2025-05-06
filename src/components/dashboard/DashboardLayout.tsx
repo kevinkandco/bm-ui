@@ -46,9 +46,9 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       </div>
       
       {/* Sidebar Navigation */}
-      <div className="hidden md:flex flex-col w-16 hover:w-64 group transition-all duration-300 ease-in-out bg-white/10 backdrop-blur-md border-r border-white/20 shadow-xl z-10">
+      <div className="hidden md:flex flex-col w-16 hover:w-64 group transition-all duration-300 ease-in-out bg-white/15 backdrop-blur-md border-r border-white/30 shadow-xl z-10">
         <div className="p-4 flex items-center justify-center md:justify-start">
-          <div className="h-8 w-8 bg-gradient-to-br from-electric-teal to-hot-coral rounded-md flex items-center justify-center">
+          <div className="h-8 w-8 bg-gradient-to-br from-neon-mint to-lake-blue rounded-md flex items-center justify-center">
             <span className="font-bold text-off-white text-lg">B</span>
           </div>
           <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-off-white">Brief.me</span>
@@ -62,8 +62,8 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
               className={cn(
                 "flex items-center px-4 py-3 text-sm relative group/item transition-colors",
                 currentPage === id 
-                  ? "bg-white/20 text-neon-mint font-medium" 
-                  : "text-off-white hover:bg-white/10 hover:text-neon-mint"
+                  ? "bg-white/25 text-neon-mint font-medium" 
+                  : "text-off-white hover:bg-white/20 hover:text-neon-mint"
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
@@ -79,9 +79,9 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
           ))}
         </div>
         
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/20">
           <button 
-            className="flex items-center w-full text-off-white/70 hover:text-neon-mint text-sm"
+            className="flex items-center w-full text-off-white/80 hover:text-neon-mint text-sm"
             onClick={() => toast({
               title: "Help",
               description: "Opening help & feedback panel",
@@ -96,7 +96,7 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       </div>
       
       {/* Mobile Bottom Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 md:hidden flex justify-around z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/15 backdrop-blur-md border-t border-white/30 md:hidden flex justify-around z-10">
         {navItems.slice(0, 5).map(({ icon: Icon, id }) => (
           <button
             key={id}

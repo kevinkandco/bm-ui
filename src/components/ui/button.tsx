@@ -14,9 +14,9 @@ const buttonVariants = cva(
         destructive:
           "bg-hot-coral text-off-white hover:bg-hot-coral/90",
         outline:
-          "border border-off-white bg-transparent hover:border-off-white/70 text-off-white hover:text-off-white/70",
+          "border border-white/30 bg-white/10 hover:bg-white/20 backdrop-blur-md text-off-white hover:text-off-white",
         secondary:
-          "bg-white/10 backdrop-blur-md text-off-white hover:bg-white/20",
+          "bg-white/20 backdrop-blur-md text-off-white hover:bg-white/30",
         ghost: "hover:bg-white/10 hover:text-off-white text-off-white/70",
         link: "text-off-white underline-offset-4 hover:text-neon-mint",
       },
