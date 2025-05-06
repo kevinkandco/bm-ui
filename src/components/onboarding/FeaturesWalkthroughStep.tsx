@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
@@ -21,7 +20,7 @@ const FeaturesWalkthroughStep = ({
   const [currentFeature, setCurrentFeature] = useState(0);
   const features = [{
     id: "daily-briefings",
-    title: "Daily Briefings",
+    title: "Automated Daily Briefs",
     description: "Get a personalized summary of your communications, meetings, and tasks first thing in the morning.",
     icon: <Inbox className="h-10 w-10 text-neon-mint" />,
     detail: "Brief.me monitors your connected apps while you're away and delivers a concise summary of what happened."
