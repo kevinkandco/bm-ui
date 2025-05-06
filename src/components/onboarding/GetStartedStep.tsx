@@ -111,9 +111,7 @@ const GetStartedStep = ({
               <p className="text-sm text-cool-slate">
                 Get desktop notifications and quick access to your briefs from your taskbar.
               </p>
-              <Button variant="outline" className="w-full neon-outline-button">
-                Download for Mac/Windows
-              </Button>
+              <Button variant="outline" className="w-full neon-outline-button text-xs">Download Desktop App</Button>
             </div>
             
             <div className="p-5 rounded-xl border border-cool-slate/20 bg-canvas-black/80 space-y-3">
@@ -125,12 +123,8 @@ const GetStartedStep = ({
                 Listen to your briefs on the go and stay in sync while mobile.
               </p>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="text-sm neon-outline-button">
-                  App Store
-                </Button>
-                <Button variant="outline" className="text-sm neon-outline-button">
-                  Google Play
-                </Button>
+                <Button variant="outline" className="neon-outline-button text-xs">iOS</Button>
+                <Button variant="outline" className="neon-outline-button text-xs">Android</Button>
               </div>
             </div>
           </div>
