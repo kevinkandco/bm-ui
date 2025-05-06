@@ -1,8 +1,12 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle } from "lucide-react";
+import { 
+  Home, Archive, CheckSquare, Video, 
+  Zap, Settings, HelpCircle, Menu, Clock, 
+  Headphones, Calendar
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +19,7 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children, className, currentPage = "home" }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const navItems = [
     { icon: Home, label: "Home", path: "/dashboard", id: "home" },
@@ -35,26 +40,51 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
   };
   
   return (
-    <div className="flex min-h-screen bg-forest-green relative">
+    <div className="flex min-h-screen bg-white relative">
       {/* Background with warm gradient and grain texture */}
       <div className="absolute inset-0 w-full h-full bg-grain">
-        <div className="absolute inset-0 bg-gradient-to-t from-forest-green via-lake-blue/30 to-peach/20 opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-lake-blue/5 to-peach/5 opacity-90"></div>
         
         {/* Warm gradient overlay at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#18382A] via-[#FEC6A1]/20 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#F7F9FC] via-[#FEC6A1]/10 to-transparent"></div>
         
         {/* Floating glass orbs */}
         <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 animate-float hidden lg:block"></div>
         <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float-delay hidden lg:block"></div>
       </div>
       
+      {/* Sidebar Navigation Toggle Button */}
+      <div className="fixed top-4 left-4 z-30 md:hidden">
+        <Button 
+          size="icon" 
+          variant="outline" 
+          onClick={() => setSidebarOpen(!sidebarOpen)} 
+          className="bg-white/30 backdrop-blur-md border border-white/30"
+        >
+          <Menu className="h-5 w-5 text-deep-teal" />
+        </Button>
+      </div>
+      
       {/* Sidebar Navigation */}
-      <div className="hidden md:flex flex-col w-16 hover:w-64 group transition-all duration-300 ease-in-out bg-white/15 backdrop-blur-md border-r border-white/30 shadow-xl z-10">
+      <div className={cn(
+        "fixed top-0 bottom-0 md:relative flex flex-col w-64 md:w-16 md:hover:w-64 group transition-all duration-300 ease-in-out bg-white/25 backdrop-blur-md border-r border-white/30 shadow-xl z-20",
+        sidebarOpen ? "left-0" : "-left-64 md:left-0"
+      )}>
         <div className="p-4 flex items-center justify-center md:justify-start">
           <div className="h-8 w-8 bg-gradient-to-br from-neon-mint to-lake-blue rounded-md flex items-center justify-center">
-            <span className="font-bold text-off-white text-lg">B</span>
+            <span className="font-bold text-deep-teal text-lg">B</span>
           </div>
-          <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-off-white">Brief.me</span>
+          <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-deep-teal">Brief.me</span>
+          
+          {/* Close button for mobile */}
+          <Button 
+            size="icon" 
+            variant="outline" 
+            onClick={() => setSidebarOpen(false)} 
+            className="ml-auto md:hidden bg-white/30 backdrop-blur-md border border-white/30"
+          >
+            <Menu className="h-5 w-5 text-deep-teal" />
+          </Button>
         </div>
         
         <div className="flex-1 py-6 flex flex-col gap-1">
@@ -65,16 +95,22 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
               className={cn(
                 "flex items-center px-4 py-3 text-sm relative group/item transition-colors",
                 currentPage === id 
-                  ? "bg-white/25 text-neon-mint font-medium" 
-                  : "text-off-white hover:bg-white/20 hover:text-neon-mint"
+                  ? "bg-white/35 text-glass-blue font-medium" 
+                  : "text-deep-teal hover:bg-white/25 hover:text-glass-blue"
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
-              <span className="ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+              <span className={cn(
+                "ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap",
+                sidebarOpen && "md:opacity-100"
+              )}>
                 {label}
               </span>
               {badge && (
-                <span className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-neon-mint text-forest-green text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className={cn(
+                  "absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-neon-mint text-forest-green text-xs rounded-full h-5 w-5 flex items-center justify-center",
+                  sidebarOpen && "md:opacity-100"
+                )}>
                   {badge}
                 </span>
               )}
@@ -84,14 +120,17 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
         
         <div className="p-4 border-t border-white/20">
           <button 
-            className="flex items-center w-full text-off-white/80 hover:text-neon-mint text-sm"
+            className="flex items-center w-full text-deep-teal/80 hover:text-glass-blue text-sm"
             onClick={() => toast({
               title: "Help",
               description: "Opening help & feedback panel",
             })}
           >
             <HelpCircle className="h-5 w-5" />
-            <span className="ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            <span className={cn(
+              "ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap",
+              sidebarOpen && "md:opacity-100"
+            )}>
               Help & Feedback
             </span>
           </button>
@@ -99,14 +138,14 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       </div>
       
       {/* Mobile Bottom Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/15 backdrop-blur-md border-t border-white/30 md:hidden flex justify-around z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/25 backdrop-blur-md border-t border-white/30 md:hidden flex justify-around z-10">
         {navItems.slice(0, 5).map(({ icon: Icon, id }) => (
           <button
             key={id}
             onClick={() => handleNavClick(id)}
             className={cn(
               "p-3 flex flex-col items-center justify-center",
-              currentPage === id ? "text-neon-mint" : "text-off-white"
+              currentPage === id ? "text-glass-blue" : "text-deep-teal"
             )}
           >
             <Icon className="h-5 w-5" />
