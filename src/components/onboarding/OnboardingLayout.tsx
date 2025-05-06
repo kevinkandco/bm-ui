@@ -34,28 +34,28 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden bg-deep-teal">
-      {/* Background with teal/coral gradient and grain texture */}
+      {/* Background with teal/coral gradient and grain texture - enhanced contrast */}
       <div className="absolute inset-0 w-full h-full bg-grain">
-        <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue to-hot-coral/30 opacity-70"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue/70 to-hot-coral/40 opacity-80"></div>
         
-        {/* Warm gradient overlay at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange via-hot-coral/20 to-transparent"></div>
+        {/* Warm gradient overlay at bottom - increased contrast */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange/80 via-hot-coral/30 to-transparent"></div>
       </div>
       
-      {/* Floating glass orbs */}
-      <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-glass-blue/30 animate-float"></div>
-      <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float-delay"></div>
+      {/* Floating glass orbs with enhanced visibility */}
+      <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border border-glass-blue/40 animate-float shadow-neon"></div>
+      <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/20 animate-float-delay shadow-subtle"></div>
       
       <div 
         className={cn(
-          "w-full max-w-md md:max-w-lg z-10 p-8 backdrop-blur-md bg-white/10 rounded-3xl border border-white/20 shadow-xl",
+          "w-full max-w-md md:max-w-lg z-10 p-8 backdrop-blur-md bg-white/15 rounded-3xl border border-white/30 shadow-xl",
           className
         )}
       >
         {children}
       </div>
       
-      <div className="mt-4 text-xs text-off-white/80 z-10">
+      <div className="mt-4 text-xs text-white/90 z-10">
         You control what Brief.me monitors. Change anytime.
       </div>
     </div>

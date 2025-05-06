@@ -131,11 +131,13 @@
   }
   
   .integration-card {
-    @apply border-white-14 bg-white-60 hover:bg-white-70 backdrop-blur-[30px];
+    @apply border-white/30 bg-white/20 hover:bg-white/30 backdrop-blur-[30px];
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
   }
 
   .dark .integration-card {
-    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/20 bg-white/15 hover:bg-white/25;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.25);
   }
 
   .integration-card.connected {
@@ -143,7 +145,7 @@
   }
 
   .dark .integration-card.connected {
-    @apply border-glass-blue bg-glass-blue/10;
+    @apply border-glass-blue bg-glass-blue/20;
   }
 
   .integration-card.disabled {

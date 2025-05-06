@@ -192,15 +192,31 @@ const IntegrationsStep = ({
       <div className="space-y-5">
         <h3 className="text-lg font-medium text-ice-grey">Available Now</h3>
         <div className="grid grid-cols-2 gap-4">
-          {groupedIntegrations.V1?.map(integration => <div key={integration.id} className={cn("integration-card flex flex-col p-5 rounded-xl border transition-all duration-300 cursor-pointer", connected[integration.id] ? "border-electric-teal bg-deep-plum/30" : "border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20")} onClick={() => toggleConnection(integration.id)}>
+          {groupedIntegrations.V1?.map(integration => <div key={integration.id} 
+              className={cn(
+                "integration-card flex flex-col p-5 rounded-xl cursor-pointer transition-all duration-300",
+                connected[integration.id] 
+                  ? "border-electric-teal bg-white/20 backdrop-blur-md shadow-neo" 
+                  : "border-white/30 bg-white/15 hover:bg-white/25 backdrop-blur-md"
+              )} 
+              onClick={() => toggleConnection(integration.id)}
+            >
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/50 rounded-full font-bold text-electric-teal">
+                <div className={cn(
+                  "w-10 h-10 flex items-center justify-center rounded-full font-bold text-white",
+                  connected[integration.id] ? "bg-electric-teal/80" : "bg-deep-plum"
+                )}>
                   {integration.icon}
                 </div>
                 <div>
-                  <h4 className="text-lg font-medium text-ice-grey">{integration.name}</h4>
-                  <p className="text-sm text-cool-slate">{integration.description}</p>
-                  <span className="text-xs text-cool-slate">
+                  <h4 className="text-lg font-medium text-white">{integration.name}</h4>
+                  <p className="text-sm text-white/90">{integration.description}</p>
+                  <span className={cn(
+                    "text-xs mt-2 inline-block px-2 py-0.5 rounded-full",
+                    connected[integration.id] 
+                      ? "bg-electric-teal/20 text-white" 
+                      : "bg-white/10 text-white/70"
+                  )}>
                     {connected[integration.id] ? 'Connected ✓' : 'Tap to connect'}
                   </span>
                 </div>
@@ -216,14 +232,16 @@ const IntegrationsStep = ({
           <span className="text-xs px-2 py-1 bg-deep-plum/30 rounded-full text-electric-teal">Early Q3</span>
         </h3>
         <div className="grid grid-cols-2 gap-4">
-          {groupedIntegrations.V2?.map(integration => <div key={integration.id} className="integration-card flex flex-col p-5 rounded-xl border border-cool-slate/20 bg-canvas-black/80 opacity-70">
+          {groupedIntegrations.V2?.map(integration => <div key={integration.id} 
+              className="integration-card flex flex-col p-5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
+            >
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/30 rounded-full font-bold text-cool-slate">
+                <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/70 rounded-full font-bold text-white/80">
                   {integration.icon}
                 </div>
                 <div>
-                  <h4 className="text-lg font-medium text-ice-grey">{integration.name}</h4>
-                  <p className="text-sm text-cool-slate">{integration.description}</p>
+                  <h4 className="text-lg font-medium text-white/90">{integration.name}</h4>
+                  <p className="text-sm text-white/80">{integration.description}</p>
                 </div>
               </div>
             </div>)}
@@ -231,10 +249,10 @@ const IntegrationsStep = ({
       </div>
       
       {/* Additional coming soon integrations */}
-      <div className="p-4 bg-deep-plum/10 rounded-lg border border-cool-slate/10">
+      <div className="p-4 bg-white/10 backdrop-blur-md rounded-lg border border-white/20">
         <h4 className="text-sm font-medium text-ice-grey mb-2">More integrations coming soon:</h4>
         <div className="flex flex-wrap gap-2">
-          {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => <span key={integration.id} className="text-xs px-2 py-1 bg-deep-plum/20 rounded-full text-cool-slate">
+          {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => <span key={integration.id} className="text-xs px-2 py-1 bg-white/15 rounded-full text-white/80">
               {integration.name}
             </span>)}
         </div>
