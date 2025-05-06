@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
 import { Hash, Plus, X, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface PriorityChannelsStepProps {
   onNext: () => void;
@@ -23,6 +24,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   const [priorityChannels, setPriorityChannels] = useState<string[]>(userData.priorityChannels || []);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [filteredChannels, setFilteredChannels] = useState<string[]>([]);
+  const { toast } = useToast();
   
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -61,13 +63,35 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   const addChannel = () => {
     if (!inputValue.trim()) return;
     
+    // Check if channel already exists
+    if (priorityChannels.includes(inputValue.trim())) {
+      toast({
+        title: "Channel already added",
+        description: `${inputValue.trim()} is already in your priority channels.`,
+      });
+      return;
+    }
+    
     setPriorityChannels(prev => [...prev, inputValue.trim()]);
     setInputValue("");
+    toast({
+      title: "Channel added",
+      description: `${inputValue.trim()} added to your priority channels.`,
+    });
   };
   
   const selectChannel = (channel: string) => {
     if (!priorityChannels.includes(channel)) {
       setPriorityChannels(prev => [...prev, channel]);
+      toast({
+        title: "Channel added",
+        description: `${channel} added to your priority channels.`,
+      });
+    } else {
+      toast({
+        title: "Channel already added",
+        description: `${channel} is already in your priority channels.`,
+      });
     }
     setInputValue("");
     setFilteredChannels([]);
@@ -76,6 +100,10 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   
   const removeChannel = (channel: string) => {
     setPriorityChannels(prev => prev.filter(item => item !== channel));
+    toast({
+      title: "Channel removed",
+      description: `${channel} removed from your priority channels.`,
+    });
   };
   
   const handleContinue = () => {
@@ -122,7 +150,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addChannel()}
                 onFocus={() => setIsInputFocused(true)}
-                className="bg-white/15 border-white/20 text-off-white placeholder:text-white/70 w-full focus:border-glass-blue/50 focus:ring-glass-blue/30"
+                className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70 w-full focus:border-glass-blue/50 focus:ring-glass-blue/30"
               />
               
               {isInputFocused && filteredChannels.length > 0 && (
@@ -151,12 +179,12 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
           </div>
           
           {priorityChannels.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap gap-2 pt-3 mt-2 pb-2">
               {priorityChannels.map(channel => (
-                <div key={channel} className="flex items-center gap-1 px-3 py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+                <div key={channel} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
                   <Hash size={14} className="text-glass-blue" />
                   {channel}
-                  <button onClick={() => removeChannel(channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange">
+                  <button onClick={() => removeChannel(channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
                     <X size={14} />
                   </button>
                 </div>

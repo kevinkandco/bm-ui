@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import ProgressIndicator from "./ProgressIndicator";
 import { X, Plus, BellOff, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface IgnoreConfigStepProps {
   onNext: () => void;
@@ -32,6 +33,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
   const [includeInSummary, setIncludeInSummary] = useState<boolean>(userData.includeIgnoredInSummary || false);
   
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
   
   // Mock Slack channels - in a real app, these would be fetched from Slack API
   const [slackChannels] = useState([
@@ -60,9 +62,35 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
     if (!inputValue.trim()) return;
     
     if (selectedTab === "channel") {
+      // Check if channel already exists
+      if (ignoreChannels.includes(inputValue.trim())) {
+        toast({
+          title: "Channel already added",
+          description: `${inputValue.trim()} is already in your ignored channels.`,
+        });
+        return;
+      }
+      
       setIgnoreChannels(prev => [...prev, inputValue.trim()]);
+      toast({
+        title: "Channel added",
+        description: `${inputValue.trim()} added to ignored channels.`,
+      });
     } else if (selectedTab === "keyword") {
+      // Check if keyword already exists
+      if (ignoreKeywords.includes(inputValue.trim())) {
+        toast({
+          title: "Keyword already added",
+          description: `${inputValue.trim()} is already in your ignored keywords.`,
+        });
+        return;
+      }
+      
       setIgnoreKeywords(prev => [...prev, inputValue.trim()]);
+      toast({
+        title: "Keyword added",
+        description: `${inputValue.trim()} added to ignored keywords.`,
+      });
     }
     
     setInputValue("");
@@ -71,6 +99,15 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
   const selectChannel = (channel: string) => {
     if (!ignoreChannels.includes(channel)) {
       setIgnoreChannels(prev => [...prev, channel]);
+      toast({
+        title: "Channel added",
+        description: `${channel} added to ignored channels.`,
+      });
+    } else {
+      toast({
+        title: "Channel already added",
+        description: `${channel} is already in your ignored channels.`,
+      });
     }
     setInputValue("");
     setSearchResults([]);
@@ -79,8 +116,16 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
   const removeItem = (type: "channel" | "keyword", value: string) => {
     if (type === "channel") {
       setIgnoreChannels(prev => prev.filter(item => item !== value));
+      toast({
+        title: "Channel removed",
+        description: `${value} removed from ignored channels.`,
+      });
     } else if (type === "keyword") {
       setIgnoreKeywords(prev => prev.filter(item => item !== value));
+      toast({
+        title: "Keyword removed",
+        description: `${value} removed from ignored keywords.`,
+      });
     }
   };
   
@@ -167,16 +212,16 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addItem()}
                   onFocus={() => setIsInputFocused(true)}
-                  className="bg-white/15 border-white/20 text-off-white placeholder:text-white/50 w-full"
+                  className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70 w-full"
                 />
                 
                 {isInputFocused && searchResults.length > 0 && (
-                  <div className="absolute z-10 mt-1 w-full bg-deep-plum border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+                  <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
                     {searchResults.map((channel) => (
                       <div
                         key={channel}
                         onClick={() => selectChannel(channel)}
-                        className="px-3 py-2 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
+                        className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
                       >
                         <Hash size={14} className="text-glass-blue/80" />
                         <span className="text-off-white">{channel}</span>
@@ -196,12 +241,12 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             </div>
             
             {ignoreChannels.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-2">
+              <div className="flex flex-wrap gap-2 pt-3 mt-2">
                 {ignoreChannels.map(channel => (
-                  <div key={channel} className="flex items-center gap-1 px-3 py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+                  <div key={channel} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
                     <Hash size={14} className="text-glass-blue/80" />
                     <span className="line-through">{channel}</span>
-                    <button onClick={() => removeItem("channel", channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange">
+                    <button onClick={() => removeItem("channel", channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
                       <X size={14} />
                     </button>
                   </div>
@@ -224,7 +269,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addItem()}
-                className="bg-white/10 border-white/20 text-off-white placeholder:text-off-white/50"
+                className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70"
               />
               <Button 
                 onClick={addItem}
@@ -237,12 +282,12 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             </div>
             
             {ignoreKeywords.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-2">
+              <div className="flex flex-wrap gap-2 pt-3 mt-2">
                 {ignoreKeywords.map(keyword => (
-                  <div key={keyword} className="flex items-center gap-1 px-3 py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+                  <div key={keyword} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
                     <BellOff size={14} className="text-glass-blue/80" />
                     <span className="line-through">{keyword}</span>
-                    <button onClick={() => removeItem("keyword", keyword)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange">
+                    <button onClick={() => removeItem("keyword", keyword)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
                       <X size={14} />
                     </button>
                   </div>
