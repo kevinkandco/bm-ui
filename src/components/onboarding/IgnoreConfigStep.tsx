@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,15 +62,15 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
       <ProgressIndicator currentStep={5} totalSteps={7} />
       
       <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Configure what to ignore</h2>
-        <p className="text-cool-slate">Tell us what to filter out from your briefs to keep them focused on what matters.</p>
+        <h2 className="text-2xl font-semibold text-off-white tracking-tighter">Configure what to ignore</h2>
+        <p className="text-off-white/80">Tell us what to filter out from your briefs to keep them focused on what matters.</p>
       </div>
       
-      <div className="flex border-b border-cool-slate/20">
+      <div className="flex border-b border-white/20">
         <button
           className={cn(
             "py-3 px-4 focus:outline-none relative",
-            selectedTab === "channel" ? "text-electric-teal" : "text-cool-slate hover:text-ice-grey"
+            selectedTab === "channel" ? "text-glass-blue" : "text-off-white/70 hover:text-off-white"
           )}
           onClick={() => setSelectedTab("channel")}
         >
@@ -78,14 +79,14 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             <span>Channels</span>
           </div>
           {selectedTab === "channel" && (
-            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-electric-teal" />
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-glass-blue" />
           )}
         </button>
         
         <button
           className={cn(
             "py-3 px-4 focus:outline-none relative",
-            selectedTab === "keyword" ? "text-electric-teal" : "text-cool-slate hover:text-ice-grey"
+            selectedTab === "keyword" ? "text-glass-blue" : "text-off-white/70 hover:text-off-white"
           )}
           onClick={() => setSelectedTab("keyword")}
         >
@@ -94,7 +95,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             <span>Keywords</span>
           </div>
           {selectedTab === "keyword" && (
-            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-electric-teal" />
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-glass-blue" />
           )}
         </button>
       </div>
@@ -102,8 +103,8 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
       <div className="space-y-6">
         {selectedTab === "channel" && (
           <div className="space-y-3">
-            <Label htmlFor="ignore-channel" className="text-ice-grey">Ignore channels</Label>
-            <p className="text-sm text-cool-slate -mt-1">
+            <Label htmlFor="ignore-channel" className="text-off-white">Ignore channels</Label>
+            <p className="text-sm text-off-white/70 -mt-1">
               We'll exclude these Slack channels or email folders from your brief (like #random or social updates).
             </p>
             <div className="flex gap-2">
@@ -113,7 +114,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addItem()}
-                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+                className="bg-white/10 border-white/20 text-off-white placeholder:text-off-white/50"
               />
               <Button 
                 onClick={addItem}
@@ -128,10 +129,10 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             {ignoreChannels.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
                 {ignoreChannels.map(channel => (
-                  <div key={channel} className="flex items-center gap-1 px-3 py-1 rounded-full bg-deep-plum/30 border border-cool-slate/40 text-sm text-ice-grey">
-                    <Hash size={14} className="text-cool-slate" />
+                  <div key={channel} className="flex items-center gap-1 px-3 py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+                    <Hash size={14} className="text-glass-blue/80" />
                     <span className="line-through">{channel}</span>
-                    <button onClick={() => removeItem("channel", channel)} className="ml-1 focus:outline-none text-cool-slate hover:text-hot-coral">
+                    <button onClick={() => removeItem("channel", channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange">
                       <X size={14} />
                     </button>
                   </div>
@@ -143,8 +144,8 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
         
         {selectedTab === "keyword" && (
           <div className="space-y-3">
-            <Label htmlFor="ignore-keyword" className="text-ice-grey">Ignore keywords</Label>
-            <p className="text-sm text-cool-slate -mt-1">
+            <Label htmlFor="ignore-keyword" className="text-off-white">Ignore keywords</Label>
+            <p className="text-sm text-off-white/70 -mt-1">
               We'll filter out messages containing these keywords or phrases.
             </p>
             <div className="flex gap-2">
@@ -154,7 +155,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addItem()}
-                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+                className="bg-white/10 border-white/20 text-off-white placeholder:text-off-white/50"
               />
               <Button 
                 onClick={addItem}
@@ -169,10 +170,10 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             {ignoreKeywords.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
                 {ignoreKeywords.map(keyword => (
-                  <div key={keyword} className="flex items-center gap-1 px-3 py-1 rounded-full bg-deep-plum/30 border border-cool-slate/40 text-sm text-ice-grey">
-                    <BellOff size={14} className="text-cool-slate" />
+                  <div key={keyword} className="flex items-center gap-1 px-3 py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+                    <BellOff size={14} className="text-glass-blue/80" />
                     <span className="line-through">{keyword}</span>
-                    <button onClick={() => removeItem("keyword", keyword)} className="ml-1 focus:outline-none text-cool-slate hover:text-hot-coral">
+                    <button onClick={() => removeItem("keyword", keyword)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange">
                       <X size={14} />
                     </button>
                   </div>
@@ -187,8 +188,9 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             id="include-in-summary"
             checked={includeInSummary}
             onCheckedChange={setIncludeInSummary}
+            className="data-[state=checked]:bg-glass-blue"
           />
-          <Label htmlFor="include-in-summary" className="text-cool-slate cursor-pointer">
+          <Label htmlFor="include-in-summary" className="text-off-white/80 cursor-pointer">
             Still include ignored items in summaries (but with lower priority)
           </Label>
         </div>

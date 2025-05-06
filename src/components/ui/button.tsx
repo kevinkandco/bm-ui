@@ -10,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-neon-mint text-forest-green hover:bg-off-white transition-colors duration-300",
+        default: "bg-glass-blue text-deep-teal hover:bg-lake-blue transition-colors duration-300",
         destructive:
           "bg-hot-coral text-off-white hover:bg-hot-coral/90",
         outline:
@@ -18,8 +18,8 @@ const buttonVariants = cva(
         secondary:
           "bg-white/20 backdrop-blur-md text-off-white hover:bg-white/30",
         ghost: "hover:bg-white/10 hover:text-off-white text-off-white/70",
-        link: "text-off-white underline-offset-4 hover:text-neon-mint",
-        plain: "bg-transparent text-off-white hover:text-electric-teal p-0 border-none",
+        link: "text-off-white underline-offset-4 hover:text-glass-blue",
+        plain: "bg-transparent text-off-white hover:text-glass-blue p-0 border-none",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-xl",

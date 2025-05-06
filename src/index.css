@@ -91,7 +91,7 @@
 
   /* Dark mode */
   .dark body {
-    @apply bg-canvas-black text-ice-grey;
+    @apply bg-deep-teal text-off-white;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -121,7 +121,7 @@
 
   /* Progress bar */
   .progress-bar {
-    @apply h-1.5 rounded-full transition-all duration-300 ease-out bg-warm-coral;
+    @apply h-1.5 rounded-full transition-all duration-300 ease-out bg-glass-blue;
   }
   
   /* Integration card */
@@ -139,11 +139,11 @@
   }
 
   .integration-card.connected {
-    @apply border-warm-coral bg-light-rose/40;
+    @apply border-glass-blue bg-glass-blue/20;
   }
 
   .dark .integration-card.connected {
-    @apply border-hot-coral bg-hot-coral/10;
+    @apply border-glass-blue bg-glass-blue/10;
   }
 
   .integration-card.disabled {
@@ -165,11 +165,11 @@
   }
   
   .preference-chip.selected {
-    @apply border-warm-coral bg-light-rose/40;
+    @apply border-glass-blue bg-glass-blue/20;
   }
   
   .dark .preference-chip.selected {
-    @apply border-hot-coral bg-hot-coral/10;
+    @apply border-glass-blue bg-glass-blue/10;
   }
   
   /* Delivery card */
@@ -183,15 +183,15 @@
   }
   
   .dark .delivery-card {
-    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white-10 bg-white/10 hover:bg-white/15;
   }
   
   .delivery-card.selected {
-    @apply border-warm-coral bg-light-rose/40;
+    @apply border-glass-blue bg-glass-blue/10;
   }
   
   .dark .delivery-card.selected {
-    @apply border-hot-coral bg-hot-coral/10;
+    @apply border-glass-blue bg-glass-blue/10;
   }
 
   /* New components for the redesign */
@@ -201,11 +201,11 @@
   }
   
   .neon-button {
-    @apply bg-warm-coral text-off-white hover:bg-cranberry;
+    @apply bg-peach text-off-white hover:bg-bright-orange;
   }
   
   .dark .neon-button {
-    @apply bg-hot-coral text-canvas-black hover:bg-hot-coral/90;
+    @apply bg-bright-orange text-off-white hover:bg-bright-orange/90;
   }
   
   .neon-outline-button {
@@ -214,11 +214,11 @@
   }
   
   .neon-outline-button {
-    @apply border-deep-plum text-deep-plum hover:border-deep-plum/70 hover:text-deep-plum/70;
+    @apply border-glass-blue text-glass-blue hover:border-glass-blue/70 hover:text-glass-blue/70;
   }
   
   .dark .neon-outline-button {
-    @apply border-light-rose text-light-rose hover:border-light-rose/70 hover:text-light-rose/70;
+    @apply border-glass-blue text-glass-blue hover:border-glass-blue/70 hover:text-glass-blue/70;
   }
   
   .neon-shape {
@@ -231,13 +231,13 @@
   }
 
   .radial-gradient-bg {
-    background: radial-gradient(circle at center, theme('colors.light-rose') 0%, theme('colors.soft-plum') 40%, transparent 70%);
+    background: radial-gradient(circle at center, theme('colors.hot-coral') 0%, theme('colors.lake-blue') 40%, transparent 70%);
     opacity: 0.6;
   }
 
   .dark .radial-gradient-bg {
-    background: radial-gradient(circle at center, theme('colors.hot-coral') 0%, theme('colors.deep-plum') 40%, transparent 70%);
-    opacity: 0.3;
+    background: radial-gradient(circle at center, theme('colors.hot-coral') 0%, theme('colors.lake-blue') 40%, transparent 70%);
+    opacity: 0.4;
   }
 
   .progress-dot {
@@ -245,11 +245,11 @@
   }
 
   .progress-dot.active {
-    @apply bg-[#6BFFE4];
+    @apply bg-glass-blue;
   }
   
   .dark .progress-dot.active {
-    @apply bg-[#6BFFE4];
+    @apply bg-glass-blue;
   }
 
   .progress-dot.inactive {
@@ -262,12 +262,12 @@
   }
 
   .theme-toggle {
-    @apply bg-white-40 text-deep-plum hover:bg-white-60 backdrop-blur-[30px];
+    @apply bg-white-40 text-deep-teal hover:bg-white-60 backdrop-blur-[30px];
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
   
   .dark .theme-toggle {
-    @apply bg-slate-grey/40 text-light-rose hover:bg-slate-grey/50;
+    @apply bg-slate-grey/40 text-glass-blue hover:bg-slate-grey/50;
   }
 
   /* Film grain effect */
@@ -291,11 +291,11 @@
 
 @layer utilities {
   .shadow-neo {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(54, 255, 175, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(48, 216, 232, 0.1);
   }
   
   .shadow-neon {
-    box-shadow: 0 0 15px rgba(54, 255, 175, 0.4);
+    box-shadow: 0 0 15px rgba(48, 216, 232, 0.4);
   }
   
   .shadow-subtle {
@@ -303,7 +303,7 @@
   }
 
   .text-gradient-neon {
-    @apply bg-gradient-to-r bg-clip-text text-transparent from-neon-mint to-lake-blue;
+    @apply bg-gradient-to-r bg-clip-text text-transparent from-glass-blue to-lake-blue;
   }
 }
 

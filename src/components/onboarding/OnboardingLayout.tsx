@@ -33,22 +33,22 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden bg-forest-green">
-      {/* Background with warm gradient and grain texture */}
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden bg-deep-teal">
+      {/* Background with teal/coral gradient and grain texture */}
       <div className="absolute inset-0 w-full h-full bg-grain">
-        <div className="absolute inset-0 bg-gradient-to-t from-forest-green via-lake-blue to-peach opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue to-hot-coral/30 opacity-70"></div>
         
         {/* Warm gradient overlay at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#18382A] via-[#FEC6A1]/20 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange via-hot-coral/20 to-transparent"></div>
       </div>
       
       {/* Floating glass orbs */}
-      <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/20 backdrop-blur-md border border-white/30 animate-float"></div>
-      <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 animate-float-delay"></div>
+      <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-glass-blue/30 animate-float"></div>
+      <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float-delay"></div>
       
       <div 
         className={cn(
-          "w-full max-w-md md:max-w-lg z-10 p-8 backdrop-blur-md bg-white/20 rounded-3xl border border-white/30 shadow-xl",
+          "w-full max-w-md md:max-w-lg z-10 p-8 backdrop-blur-md bg-white/10 rounded-3xl border border-white/20 shadow-xl",
           className
         )}
       >

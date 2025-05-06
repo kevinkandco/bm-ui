@@ -62,28 +62,32 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Dark theme colors
+				// Updated dark theme colors based on the image
 				'canvas-black': '#0E0E10',
 				'deep-plum': '#3D0B46',
 				'cranberry': '#6E0039',
-				'electric-teal': '#00E0D5',
-				'hot-coral': '#FF4F6D',
-				'ice-grey': '#E0E4EA', // Updated for better contrast (was #F5F7FA)
+				'electric-teal': '#2FBECF',  // Updated to match image
+				'hot-coral': '#FF7A5A',      // Updated to match image
+				'ice-grey': '#E0E4EA',
 				'cool-slate': '#B0B3BE',
 				// Light theme colors
 				'canvas-light': '#F8F9FC',
 				'soft-plum': '#E8D9F0',
 				'light-rose': '#FFE4EB',
-				'bright-teal': '#00D1C6',
-				'warm-coral': '#FF6B85',
+				'bright-teal': '#2FBECF',    // Updated to match image
+				'warm-coral': '#FF7A5A',     // Updated to match image
 				'deep-navy': '#1A1A2E',
 				'slate-grey': '#696E79',
-				// New colors for the landing page
-				'forest-green': '#18382A',
-				'lake-blue': '#3DB2D5',
-				'peach': '#FFCBA3',
+				// New colors for the landing page - updated based on image
+				'forest-green': '#143D4D',    // Darker teal from image
+				'lake-blue': '#2FBECF',       // Brighter teal from image
+				'peach': '#FF7A5A',           // Orange/coral from image
 				'off-white': '#F5F5F2',
-				'neon-mint': '#36FFAF',
+				'neon-mint': '#30D8E8',       // Brighter blue from image
+				// Additional colors from the image
+				'deep-teal': '#143D4D',       // Deep teal background color
+				'bright-orange': '#FF5F37',   // Bright orange/coral from bottom of image
+				'glass-blue': '#30D8E8',      // Glass-like blue highlight
 				// Explicitly define white with alpha support
 				'white': {
 					DEFAULT: '#FFFFFF',
@@ -113,8 +117,8 @@ export default {
 				xl: '16px',
 			},
 			transitionDuration: {
-				'400': '400ms',  // Adding the missing duration-400
-				'160': '160ms',  // Adding the missing duration-160
+				'400': '400ms',
+				'160': '160ms',
 			},
 			keyframes: {
 				'accordion-down': {
