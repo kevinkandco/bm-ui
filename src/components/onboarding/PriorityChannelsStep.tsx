@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
 import { Hash, Plus, X, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface PriorityChannelsStepProps {
   onNext: () => void;
@@ -155,6 +156,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
             </Button>
           </div>
           
+          {/* Selected channels display */}
           {priorityChannels.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-3 mt-2 pb-2">
               {priorityChannels.map(channel => (

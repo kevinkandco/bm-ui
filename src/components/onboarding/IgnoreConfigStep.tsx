@@ -84,6 +84,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
     }
     setInputValue("");
     setSearchResults([]);
+    setIsInputFocused(false);
   };
   
   const removeItem = (type: "channel" | "keyword", value: string) => {
@@ -205,6 +206,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
               </Button>
             </div>
             
+            {/* Selected ignore channels display */}
             {ignoreChannels.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-3 mt-2">
                 {ignoreChannels.map(channel => (
@@ -246,6 +248,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
               </Button>
             </div>
             
+            {/* Selected ignore keywords display */}
             {ignoreKeywords.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-3 mt-2">
                 {ignoreKeywords.map(keyword => (
