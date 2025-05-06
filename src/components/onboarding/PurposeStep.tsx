@@ -102,7 +102,9 @@ const PurposeStep = ({ onNext, onBack, updateUserData, userData }: PurposeStepPr
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack}
-          className="neon-outline-button"
+          variant="plain"
+          size="none"
+          className="text-off-white hover:text-electric-teal transition-colors"
         >
           Back
         </Button>

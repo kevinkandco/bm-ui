@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -108,7 +107,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
           )}
         </div>
         
-        {/* Slack channels section - only shown if Slack is integrated */}
+        {/* Slack channels section */}
         {hasSlackIntegration || true /* Forcing true for demo purposes */ && (
           <div className="space-y-3 pt-2">
             <h3 className="text-lg font-medium text-off-white">
@@ -155,7 +154,9 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          variant="outline"
+          variant="plain"
+          size="none"
+          className="text-off-white hover:text-electric-teal transition-colors"
         >
           Back
         </Button>
