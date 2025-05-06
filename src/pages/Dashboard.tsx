@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import HomeView from "@/components/dashboard/HomeView";
 import BriefDrawer from "@/components/dashboard/BriefDrawer";
@@ -8,38 +8,83 @@ import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import BriefModal from "@/components/dashboard/BriefModal";
 
 const Dashboard = () => {
-  const [briefDrawerOpen, setBriefDrawerOpen] = useState(false);
-  const [selectedBrief, setSelectedBrief] = useState<number | null>(null);
-  const [focusModeOpen, setFocusModeOpen] = useState(false);
-  const [catchMeUpOpen, setCatchMeUpOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [briefModalOpen, setBriefModalOpen] = useState(false);
+  const [uiState, setUiState] = useState({
+    briefDrawerOpen: false,
+    selectedBrief: null,
+    focusModeOpen: false,
+    catchMeUpOpen: false,
+    sidebarOpen: true,
+    briefModalOpen: false
+  });
 
-  const handleOpenBrief = (briefId: number) => {
-    setSelectedBrief(briefId);
-    setBriefDrawerOpen(true);
-  };
+  const handleOpenBrief = useCallback((briefId: number) => {
+    setUiState(prev => ({
+      ...prev,
+      selectedBrief: briefId,
+      briefDrawerOpen: true
+    }));
+  }, []);
 
-  const handleToggleFocusMode = () => {
-    setFocusModeOpen(!focusModeOpen);
-  };
+  const handleToggleFocusMode = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      focusModeOpen: !prev.focusModeOpen
+    }));
+  }, []);
 
-  const handleToggleCatchMeUp = () => {
-    setCatchMeUpOpen(!catchMeUpOpen);
-  };
+  const handleToggleCatchMeUp = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      catchMeUpOpen: !prev.catchMeUpOpen
+    }));
+  }, []);
 
-  const handleToggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  const handleToggleSidebar = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      sidebarOpen: !prev.sidebarOpen
+    }));
+  }, []);
 
-  const handleOpenBriefModal = () => {
-    setBriefModalOpen(true);
-  };
+  const handleOpenBriefModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      briefModalOpen: true
+    }));
+  }, []);
+
+  const handleCloseBriefDrawer = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      briefDrawerOpen: false
+    }));
+  }, []);
+
+  const handleCloseFocusMode = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      focusModeOpen: false
+    }));
+  }, []);
+
+  const handleCloseCatchMeUp = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      catchMeUpOpen: false
+    }));
+  }, []);
+
+  const handleCloseBriefModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      briefModalOpen: false
+    }));
+  }, []);
 
   return (
     <DashboardLayout 
       currentPage="home" 
-      sidebarOpen={sidebarOpen} 
+      sidebarOpen={uiState.sidebarOpen} 
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="p-6">
@@ -52,27 +97,27 @@ const Dashboard = () => {
       </div>
       
       <BriefDrawer 
-        open={briefDrawerOpen} 
-        briefId={selectedBrief}
-        onClose={() => setBriefDrawerOpen(false)} 
+        open={uiState.briefDrawerOpen} 
+        briefId={uiState.selectedBrief}
+        onClose={handleCloseBriefDrawer} 
       />
       
       <FocusMode
-        open={focusModeOpen}
-        onClose={() => setFocusModeOpen(false)}
+        open={uiState.focusModeOpen}
+        onClose={handleCloseFocusMode}
       />
 
       <CatchMeUp 
-        open={catchMeUpOpen}
-        onClose={() => setCatchMeUpOpen(false)}
+        open={uiState.catchMeUpOpen}
+        onClose={handleCloseCatchMeUp}
       />
 
       <BriefModal
-        open={briefModalOpen}
-        onClose={() => setBriefModalOpen(false)}
+        open={uiState.briefModalOpen}
+        onClose={handleCloseBriefModal}
       />
     </DashboardLayout>
   );
 };
 
-export default Dashboard;
+export default React.memo(Dashboard);
