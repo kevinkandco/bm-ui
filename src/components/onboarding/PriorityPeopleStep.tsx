@@ -478,7 +478,8 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
                     <SelectValue placeholder="Add label..." />
                   </SelectTrigger>
                   <SelectContent className="bg-deep-plum text-ice-grey border-white/20">
-                    <SelectItem value="">No label</SelectItem>
+                    {/* Here's the fix: change empty string to "none" */}
+                    <SelectItem value="none">No label</SelectItem>
                     {labels.map((label) => (
                       <SelectItem key={label} value={label}>{label}</SelectItem>
                     ))}
