@@ -44,10 +44,6 @@ export const PriorityPersonCard = ({
     contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
   );
   
-  const removeDesignation = () => {
-    designateContact(person.name, { id: "", name: "", email: "" });
-  };
-
   // Format display name - use contactName if available, otherwise use person.name
   const displayName = person.contactName || person.name;
 
@@ -76,131 +72,87 @@ export const PriorityPersonCard = ({
       </div>
       
       <div className="flex items-center gap-2">
-        {/* Contact designation button - only if no contact is selected yet */}
-        {!person.contactName && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="text-xs h-6 py-0 px-2 bg-white/10 border-white/20 text-white/70"
-              >
-                Select Person
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-64 p-0 bg-deep-plum border-white/20" align="end">
-              <div className="p-2">
-                <div className="relative mb-2">
-                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40" />
-                  <Input
-                    placeholder="Find a person..."
-                    value={contactSearchQuery}
-                    onChange={(e) => setContactSearchQuery(e.target.value)}
-                    className="pl-7 py-1 h-8 bg-white/10 border-white/20 text-ice-grey placeholder:text-white/40 text-xs"
-                  />
-                </div>
+        {/* Label button - show "Add Label" or "Update Label" based on whether a label exists */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button 
+              size="sm" 
+              variant="outline"
+              className="text-xs h-6 py-0 px-2 bg-white/10 border-white/20 text-white/70"
+            >
+              {person.label ? "Update Label" : "Add Label"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
+            <div className="p-2">
+              <div className="space-y-1">
+                {labels.map((label) => (
+                  <div 
+                    key={label}
+                    className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                    onClick={() => {
+                      if (label === "Other") {
+                        setShowLabelInput(true);
+                      } else {
+                        addLabel(person.name, label);
+                      }
+                    }}
+                  >
+                    <span className="text-white text-xs">{label}</span>
+                  </div>
+                ))}
                 
-                <div className="max-h-52 overflow-y-auto">
-                  {filteredContacts.length > 0 ? (
-                    filteredContacts.map((contact) => (
-                      <div 
-                        key={contact.id}
-                        className="flex items-center justify-between p-2 hover:bg-white/10 rounded cursor-pointer"
-                        onClick={() => designateContact(person.name, contact)}
-                      >
-                        <div className="flex items-center">
-                          <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full mr-2">
-                            <User size={12} className="text-white" />
-                          </div>
-                          <div>
-                            <p className="text-white text-xs">{contact.name}</p>
-                            <p className="text-white/50 text-xs">{contact.email}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-white/50 text-xs p-2">No matching contacts found</p>
-                  )}
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-        )}
-        
-        {/* Label button - only show if no label is set */}
-        {!person.label && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="text-xs h-6 py-0 px-2 bg-white/10 border-white/20 text-white/70"
-              >
-                Add Label
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
-              <div className="p-2">
-                <div className="space-y-1">
-                  {labels.map((label) => (
-                    <div 
-                      key={label}
-                      className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
-                      onClick={() => {
-                        if (label === "Other") {
-                          setShowLabelInput(true);
-                        } else {
-                          addLabel(person.name, label);
-                        }
-                      }}
-                    >
-                      <span className="text-white text-xs">{label}</span>
-                    </div>
-                  ))}
-                  
-                  {showLabelInput && (
-                    <div className="p-2">
-                      <Input
-                        placeholder="Custom label..."
-                        value={customLabel}
-                        onChange={(e) => setCustomLabel(e.target.value)}
-                        className="h-8 text-xs mb-2"
-                        autoFocus
-                      />
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          className="text-xs h-7"
-                          onClick={() => {
-                            if (customLabel) {
-                              addLabel(person.name, customLabel);
-                              setShowLabelInput(false);
-                              setCustomLabel("");
-                            }
-                          }}
-                        >
-                          Save
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="ghost"
-                          className="text-xs h-7"
-                          onClick={() => {
+                {showLabelInput && (
+                  <div className="p-2">
+                    <Input
+                      placeholder="Custom label..."
+                      value={customLabel}
+                      onChange={(e) => setCustomLabel(e.target.value)}
+                      className="h-8 text-xs mb-2"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        className="text-xs h-7"
+                        onClick={() => {
+                          if (customLabel) {
+                            addLabel(person.name, customLabel);
                             setShowLabelInput(false);
                             setCustomLabel("");
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
+                          }
+                        }}
+                      >
+                        Save
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        className="text-xs h-7"
+                        onClick={() => {
+                          setShowLabelInput(false);
+                          setCustomLabel("");
+                        }}
+                      >
+                        Cancel
+                      </Button>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
+                
+                {/* Option to remove label if one exists */}
+                {person.label && (
+                  <div 
+                    className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                    onClick={() => addLabel(person.name, "")}
+                  >
+                    <span className="text-white/70 text-xs">Remove Label</span>
+                  </div>
+                )}
               </div>
-            </PopoverContent>
-          </Popover>
-        )}
+            </div>
+          </PopoverContent>
+        </Popover>
         
         {/* Remove button */}
         <Button 

@@ -15,7 +15,7 @@ interface ManualInputSectionProps {
   setInputValue: (value: string) => void;
   selectedLabel: ContactLabel | "";
   setSelectedLabel: (value: ContactLabel | "") => void;
-  addPerson: (name: string) => void;
+  addPerson: (name: string, email?: string) => void;
   filteredManualContacts: Contact[];
 }
 
@@ -31,6 +31,7 @@ export const ManualInputSection = ({
   const [showLabelInput, setShowLabelInput] = useState(false);
   const [customLabel, setCustomLabel] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   
   // Available labels for contacts
   const labels: ContactLabel[] = [
@@ -43,14 +44,6 @@ export const ManualInputSection = ({
     "Other"
   ];
 
-  const handleDesignate = () => {
-    // Add the person with the current input value
-    if (inputValue.trim()) {
-      addPerson(inputValue);
-      setInputValue("");
-    }
-  };
-
   // Filter contacts based on search query
   const displayedContacts = searchQuery.trim() 
     ? filteredManualContacts.filter(contact => 
@@ -58,6 +51,28 @@ export const ManualInputSection = ({
         contact.email.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : filteredManualContacts;
+    
+  // Handle contact selection and then show label selection
+  const handleContactSelect = (contact: Contact) => {
+    setSelectedContact(contact);
+    setInputValue(contact.name);
+    setShowLabelInput(true);
+  };
+  
+  // Handle final designation with optional label
+  const handleDesignate = () => {
+    if (selectedContact) {
+      addPerson(selectedContact.name, selectedContact.email);
+      if (selectedLabel) {
+        // The label will be added in the parent component based on selectedLabel
+      }
+      // Reset after adding
+      setSelectedContact(null);
+      setInputValue("");
+      setSelectedLabel("");
+      setShowLabelInput(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -90,13 +105,7 @@ export const ManualInputSection = ({
                   <div 
                     key={contact.id}
                     className="flex items-center gap-2 p-2 hover:bg-white/10 rounded cursor-pointer"
-                    onClick={() => {
-                      setInputValue(contact.name);
-                      addPerson(contact.name);
-                      
-                      // Show label selection after selecting user
-                      setShowLabelInput(true);
-                    }}
+                    onClick={() => handleContactSelect(contact)}
                   >
                     <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full">
                       <User size={12} className="text-white" />
@@ -120,21 +129,18 @@ export const ManualInputSection = ({
       </Popover>
 
       {/* Optional label selection after user has been designated */}
-      {showLabelInput && (
+      {showLabelInput && selectedContact && (
         <div className="mt-2 p-3 border border-white/20 rounded-md bg-white/10">
           <Label className="text-white text-sm mb-1">Add a label (optional)</Label>
           <Select
             value={selectedLabel}
             onValueChange={(value) => {
               if (value === "Other") {
-                setShowLabelInput(true);
                 setCustomLabel("");
               } else if (value === "_none") {
                 setSelectedLabel("");
-                setShowLabelInput(false);
               } else {
                 setSelectedLabel(value as ContactLabel);
-                setShowLabelInput(false);
               }
             }}
           >
@@ -163,7 +169,6 @@ export const ManualInputSection = ({
                   onClick={() => {
                     if (customLabel) {
                       setSelectedLabel(customLabel as ContactLabel);
-                      setShowLabelInput(false);
                     }
                   }}
                 >
@@ -173,7 +178,6 @@ export const ManualInputSection = ({
                   size="sm" 
                   variant="outline"
                   onClick={() => {
-                    setShowLabelInput(false);
                     setSelectedLabel("");
                     setCustomLabel("");
                   }}
@@ -183,6 +187,26 @@ export const ManualInputSection = ({
               </div>
             </>
           )}
+          
+          <div className="flex justify-between mt-3">
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => {
+                setShowLabelInput(false);
+                setSelectedContact(null);
+                setInputValue("");
+                setSelectedLabel("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleDesignate}
+            >
+              Designate
+            </Button>
+          </div>
         </div>
       )}
     </div>

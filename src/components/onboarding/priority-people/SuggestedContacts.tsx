@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { Contact, PriorityPerson } from "./types";
+import { Contact, PriorityPerson, Label } from "./types";
 
 interface SuggestedContactsProps {
   suggestedContacts: Contact[];
@@ -15,6 +15,7 @@ interface SuggestedContactsProps {
   addPerson: (name: string, email?: string) => void;
   removePerson: (name: string) => void;
   designateContact: (personName: string, contact: Contact) => void;
+  addLabel: (personName: string, label: string) => void;
   searchQuery: string;
 }
 
@@ -25,9 +26,23 @@ export const SuggestedContacts = ({
   addPerson,
   removePerson,
   designateContact,
+  addLabel,
   searchQuery
 }: SuggestedContactsProps) => {
   const [contactSearchQuery, setContactSearchQuery] = useState("");
+  const [showLabelSelector, setShowLabelSelector] = useState<string | null>(null);
+  const [customLabel, setCustomLabel] = useState("");
+  
+  // Available labels for contacts
+  const labels: Label[] = [
+    "Spouse", 
+    "Manager", 
+    "Collaborator", 
+    "CFO", 
+    "Team Member", 
+    "Client", 
+    "Other"
+  ];
   
   // Filtered contacts based on search query
   const filteredContacts = suggestedContacts.filter(contact => 
@@ -40,6 +55,29 @@ export const SuggestedContacts = ({
     contact.name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
     contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
   );
+
+  // Handle designation and label selection
+  const handleDesignate = (contact: Contact) => {
+    // Toggle label selector for this contact
+    setShowLabelSelector(prev => prev === contact.id ? null : contact.id);
+  };
+
+  // Handle label selection
+  const handleLabelSelect = (contactId: string, label: string) => {
+    // First add person if not already added
+    const contact = suggestedContacts.find(c => c.id === contactId);
+    if (contact) {
+      // Add the person first
+      addPerson(contact.name, contact.email);
+      
+      // Then add the label (with a slight delay to ensure person is added first)
+      setTimeout(() => {
+        addLabel(contact.name, label);
+        setShowLabelSelector(null);
+        setCustomLabel("");
+      }, 100);
+    }
+  };
 
   return (
     <div className="pt-2">
@@ -85,17 +123,52 @@ export const SuggestedContacts = ({
               
               <div className="flex items-center gap-2">
                 {!isAdded ? (
-                  <Button 
-                    size="sm"
-                    className="bg-white/10 text-white hover:bg-white/20"
-                    onClick={() => addPerson(contact.name, contact.email)}
-                  >
-                    <Plus size={14} className="mr-1" /> Designate
-                  </Button>
+                  <Popover open={showLabelSelector === contact.id} onOpenChange={(open) => {
+                    if (!open) setShowLabelSelector(null);
+                  }}>
+                    <PopoverTrigger asChild>
+                      <Button 
+                        size="sm"
+                        className="bg-white/10 text-white hover:bg-white/20"
+                        onClick={() => handleDesignate(contact)}
+                      >
+                        <Plus size={14} className="mr-1" /> Designate
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
+                      <div className="p-2">
+                        <p className="text-xs text-white/70 p-2">Add a label (optional)</p>
+                        <div className="space-y-1">
+                          {labels.map((label) => (
+                            <div 
+                              key={label}
+                              className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                              onClick={() => {
+                                if (label === "Other") {
+                                  // Show custom label input field
+                                  // This would be implemented with a state toggle
+                                } else {
+                                  handleLabelSelect(contact.id, label);
+                                }
+                              }}
+                            >
+                              <span className="text-white text-xs">{label}</span>
+                            </div>
+                          ))}
+                          <div 
+                            className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                            onClick={() => handleLabelSelect(contact.id, "")}
+                          >
+                            <span className="text-white text-xs">No Label</span>
+                          </div>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 ) : (
                   <div className="flex items-center gap-2">
-                    {/* Only show Select Person button if no contact is assigned */}
-                    {!person?.contactName && (
+                    {/* Only show Add Label button if no label is set */}
+                    {!person?.label && (
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button 
@@ -103,37 +176,25 @@ export const SuggestedContacts = ({
                             variant="outline"
                             className="bg-white/10 border-white/20 text-white/70 text-xs"
                           >
-                            Select Person
+                            Add Label
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-64 p-0 bg-deep-plum border-white/20">
+                        <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
                           <div className="p-2">
-                            <div className="relative mb-2">
-                              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40" />
-                              <Input
-                                placeholder="Find a person..."
-                                value={contactSearchQuery}
-                                onChange={(e) => setContactSearchQuery(e.target.value)}
-                                className="pl-7 py-1 h-8 bg-white/10 border-white/20 text-ice-grey placeholder:text-white/40 text-xs"
-                              />
-                            </div>
-                            
-                            <div className="max-h-52 overflow-y-auto">
-                              {filteredPlatformContacts.map((platformContact) => (
+                            <div className="space-y-1">
+                              {labels.map((label) => (
                                 <div 
-                                  key={platformContact.id}
-                                  className="flex items-center justify-between p-2 hover:bg-white/10 rounded cursor-pointer"
-                                  onClick={() => designateContact(contact.name, platformContact)}
+                                  key={label}
+                                  className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                                  onClick={() => {
+                                    if (label === "Other") {
+                                      // Show custom label input field
+                                    } else {
+                                      addLabel(contact.name, label);
+                                    }
+                                  }}
                                 >
-                                  <div className="flex items-center">
-                                    <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full mr-2">
-                                      <User size={12} className="text-white" />
-                                    </div>
-                                    <div>
-                                      <p className="text-white text-xs">{platformContact.name}</p>
-                                      <p className="text-white/50 text-xs">{platformContact.email}</p>
-                                    </div>
-                                  </div>
+                                  <span className="text-white text-xs">{label}</span>
                                 </div>
                               ))}
                             </div>
