@@ -245,11 +245,11 @@
   }
 
   .progress-dot.active {
-    @apply bg-warm-coral;
+    @apply bg-[#6BFFE4];
   }
   
   .dark .progress-dot.active {
-    @apply bg-hot-coral;
+    @apply bg-[#6BFFE4];
   }
 
   .progress-dot.inactive {
