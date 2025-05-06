@@ -90,6 +90,20 @@ export default {
 				"teal-blue": "#3B83F5",
 				"purple-light": "#9b87f5",
 				"soft-gray": "#F1F0FB",
+				// Add white with opacity support
+				"white": {
+					DEFAULT: "#FFFFFF",
+					"10": "rgba(255, 255, 255, 0.1)",
+					"14": "rgba(255, 255, 255, 0.14)",
+					"20": "rgba(255, 255, 255, 0.2)",
+					"30": "rgba(255, 255, 255, 0.3)",
+					"40": "rgba(255, 255, 255, 0.4)",
+					"50": "rgba(255, 255, 255, 0.5)",
+					"60": "rgba(255, 255, 255, 0.6)",
+					"70": "rgba(255, 255, 255, 0.7)",
+					"80": "rgba(255, 255, 255, 0.8)",
+					"90": "rgba(255, 255, 255, 0.9)",
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
