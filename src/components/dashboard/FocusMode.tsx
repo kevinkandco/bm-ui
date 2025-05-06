@@ -45,7 +45,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white/75 backdrop-blur-md border border-white/30 max-w-md">
+      <DialogContent className="bg-white/75 backdrop-blur-md border border-white/30 shadow-md max-w-md">
         <DialogHeader>
           <DialogTitle className="text-deep-teal flex items-center">
             <Headphones className="mr-2 h-5 w-5 text-glass-blue" />
@@ -57,7 +57,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
         </DialogHeader>
         
         <div className="space-y-4 py-2">
-          <div>
+          <div className="bg-white/50 rounded-lg border border-white/40 p-4">
             <h4 className="text-sm font-medium text-deep-teal mb-2">Focus Duration</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
@@ -91,7 +91,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
           <div className="space-y-3 pt-2">
             <h4 className="text-sm font-medium text-deep-teal">Options</h4>
             
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
               <div className="flex items-center space-x-2">
                 <Wifi className="h-4 w-4 text-glass-blue" />
                 <Label htmlFor="update-status">Update status on connected apps</Label>
@@ -103,7 +103,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
               />
             </div>
             
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
               <div className="flex items-center space-x-2">
                 <Monitor className="h-4 w-4 text-glass-blue" />
                 <Label htmlFor="close-apps">Close distracting applications</Label>
@@ -115,7 +115,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
               />
             </div>
             
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
               <div className="flex items-center space-x-2">
                 <Headphones className="h-4 w-4 text-glass-blue" />
                 <Label htmlFor="enable-dnd">Enable Do Not Disturb</Label>
@@ -127,7 +127,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
               />
             </div>
             
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
               <div className="flex items-center space-x-2">
                 <Wifi className="h-4 w-4 text-glass-blue" />
                 <Label htmlFor="monitor-notifs">Continue monitoring for urgent messages</Label>
@@ -142,10 +142,10 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} className="shadow-sm">
             <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
-          <Button onClick={handleStartFocus}>
+          <Button onClick={handleStartFocus} className="shadow-sm">
             <Headphones className="mr-2 h-4 w-4" /> Start Focus
           </Button>
         </DialogFooter>

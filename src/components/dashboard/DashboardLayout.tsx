@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { 
   Home, Archive, CheckSquare, Video, 
   Zap, Settings, HelpCircle, Menu, Clock, 
-  Headphones, Calendar
+  Headphones, Calendar, ChevronRight, ChevronLeft
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -14,13 +14,20 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
   className?: string;
   currentPage?: string;
+  sidebarOpen: boolean;
+  onToggleSidebar: () => void;
 }
 
-const DashboardLayout = ({ children, className, currentPage = "home" }: DashboardLayoutProps) => {
+const DashboardLayout = ({ 
+  children, 
+  className, 
+  currentPage = "home", 
+  sidebarOpen, 
+  onToggleSidebar 
+}: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
+  
   const navItems = [
     { icon: Home, label: "Home", path: "/dashboard", id: "home" },
     { icon: Archive, label: "Briefs", path: "/dashboard/briefs", id: "briefs", badge: 3 },
@@ -58,7 +65,7 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
         <Button 
           size="icon" 
           variant="outline" 
-          onClick={() => setSidebarOpen(!sidebarOpen)} 
+          onClick={onToggleSidebar} 
           className="bg-white/30 backdrop-blur-md border border-white/30"
         >
           <Menu className="h-5 w-5 text-deep-teal" />
@@ -67,23 +74,28 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       
       {/* Sidebar Navigation */}
       <div className={cn(
-        "fixed top-0 bottom-0 md:relative flex flex-col w-64 md:w-16 md:hover:w-64 group transition-all duration-300 ease-in-out bg-white/25 backdrop-blur-md border-r border-white/30 shadow-xl z-20",
-        sidebarOpen ? "left-0" : "-left-64 md:left-0"
+        "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out bg-white/25 backdrop-blur-md border-r border-white/30 shadow-xl z-20",
+        sidebarOpen ? "w-64 left-0" : "w-16 left-0",
+        "md:left-0"
       )}>
-        <div className="p-4 flex items-center justify-center md:justify-start">
-          <div className="h-8 w-8 bg-gradient-to-br from-neon-mint to-lake-blue rounded-md flex items-center justify-center">
-            <span className="font-bold text-deep-teal text-lg">B</span>
+        <div className="p-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="h-8 w-8 bg-gradient-to-br from-neon-mint to-lake-blue rounded-md flex items-center justify-center">
+              <span className="font-bold text-deep-teal text-lg">B</span>
+            </div>
+            {sidebarOpen && (
+              <span className="ml-3 font-semibold text-lg text-deep-teal">Brief.me</span>
+            )}
           </div>
-          <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-deep-teal">Brief.me</span>
           
-          {/* Close button for mobile */}
+          {/* Toggle sidebar button */}
           <Button 
             size="icon" 
-            variant="outline" 
-            onClick={() => setSidebarOpen(false)} 
-            className="ml-auto md:hidden bg-white/30 backdrop-blur-md border border-white/30"
+            variant="ghost" 
+            onClick={onToggleSidebar} 
+            className="text-deep-teal"
           >
-            <Menu className="h-5 w-5 text-deep-teal" />
+            {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
           </Button>
         </div>
         
@@ -93,24 +105,18 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
               key={id}
               onClick={() => handleNavClick(path)}
               className={cn(
-                "flex items-center px-4 py-3 text-sm relative group/item transition-colors",
+                "flex items-center px-4 py-3 text-sm relative transition-colors",
                 currentPage === id 
                   ? "bg-white/35 text-glass-blue font-medium" 
                   : "text-deep-teal hover:bg-white/25 hover:text-glass-blue"
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
-              <span className={cn(
-                "ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap",
-                sidebarOpen && "md:opacity-100"
-              )}>
-                {label}
-              </span>
-              {badge && (
-                <span className={cn(
-                  "absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-neon-mint text-forest-green text-xs rounded-full h-5 w-5 flex items-center justify-center",
-                  sidebarOpen && "md:opacity-100"
-                )}>
+              {sidebarOpen && (
+                <span className="ml-4 whitespace-nowrap">{label}</span>
+              )}
+              {badge && sidebarOpen && (
+                <span className="absolute right-3 bg-neon-mint text-forest-green text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {badge}
                 </span>
               )}
@@ -127,12 +133,9 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
             })}
           >
             <HelpCircle className="h-5 w-5" />
-            <span className={cn(
-              "ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap",
-              sidebarOpen && "md:opacity-100"
-            )}>
-              Help & Feedback
-            </span>
+            {sidebarOpen && (
+              <span className="ml-4 whitespace-nowrap">Help & Feedback</span>
+            )}
           </button>
         </div>
       </div>
