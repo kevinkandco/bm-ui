@@ -118,6 +118,41 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
     };
   }, []);
 
+  // Render selected items based on current tab
+  const renderSelectedItems = () => {
+    if (selectedTab === "channel" && ignoreChannels.length > 0) {
+      return (
+        <div className="flex flex-wrap gap-2 pt-3 mt-2">
+          {ignoreChannels.map(channel => (
+            <div key={channel} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+              <Hash size={14} className="text-glass-blue/80" />
+              <span className="line-through">{channel}</span>
+              <button onClick={() => removeItem("channel", channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
+      );
+    } else if (selectedTab === "keyword" && ignoreKeywords.length > 0) {
+      return (
+        <div className="flex flex-wrap gap-2 pt-3 mt-2">
+          {ignoreKeywords.map(keyword => (
+            <div key={keyword} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+              <BellOff size={14} className="text-glass-blue/80" />
+              <span className="line-through">{keyword}</span>
+              <button onClick={() => removeItem("keyword", keyword)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
   return (
     <div className="space-y-8">
       <ProgressIndicator currentStep={5} totalSteps={7} />
@@ -206,20 +241,8 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
               </Button>
             </div>
             
-            {/* Selected ignore channels display */}
-            {ignoreChannels.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-3 mt-2">
-                {ignoreChannels.map(channel => (
-                  <div key={channel} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
-                    <Hash size={14} className="text-glass-blue/80" />
-                    <span className="line-through">{channel}</span>
-                    <button onClick={() => removeItem("channel", channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Always render selected channels for immediate feedback */}
+            {renderSelectedItems()}
           </div>
         )}
         
@@ -248,20 +271,8 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
               </Button>
             </div>
             
-            {/* Selected ignore keywords display */}
-            {ignoreKeywords.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-3 mt-2">
-                {ignoreKeywords.map(keyword => (
-                  <div key={keyword} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
-                    <BellOff size={14} className="text-glass-blue/80" />
-                    <span className="line-through">{keyword}</span>
-                    <button onClick={() => removeItem("keyword", keyword)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Always render selected keywords for immediate feedback */}
+            {renderSelectedItems()}
           </div>
         )}
         
