@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
@@ -10,8 +10,8 @@ const Index = () => {
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   
-  // Add CSS for the wave icon pulse animation at 55bpm
-  const pulseAnimationCSS = `
+  // Memoize the CSS string to prevent unnecessary re-creation on re-renders
+  const pulseAnimationCSS = useMemo(() => `
     @keyframes pulse55bpm {
       0% { transform: scale(0.96); opacity: 0.85; }
       50% { transform: scale(1.04); opacity: 1; }
@@ -43,7 +43,27 @@ const Index = () => {
       transform: rotate(-25deg);
       pointer-events: none;
     }
-  `;
+  `, []);
+  
+  // Memoize the floating orb properties based on mobile state
+  const floatingOrbsProps = useMemo(() => ({
+    firstOrb: {
+      className: `absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-full border border-white/20 animate-float glass-reflection`,
+      style: {
+        background: 'rgba(69, 175, 201, 0.25)', 
+        backdropFilter: 'blur(12px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+      }
+    },
+    secondOrb: {
+      className: `absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-full border border-white/20 animate-float-delay glass-reflection`,
+      style: {
+        background: 'rgba(69, 175, 201, 0.15)', 
+        backdropFilter: 'blur(12px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
+      }
+    }
+  }), [isMobile]);
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-deep-teal">
@@ -60,14 +80,8 @@ const Index = () => {
       </div>
       
       {/* Floating glass orbs - smaller on mobile */}
-      <div className={`absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-full border border-white/20 animate-float glass-reflection`} 
-           style={{background: 'rgba(69, 175, 201, 0.25)', 
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'}}></div>
-      <div className={`absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-full border border-white/20 animate-float-delay glass-reflection`} 
-           style={{background: 'rgba(69, 175, 201, 0.15)', 
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'}}></div>
+      <div {...floatingOrbsProps.firstOrb}></div>
+      <div {...floatingOrbsProps.secondOrb}></div>
       
       {/* Glass card */}
       <div className="w-full max-w-md mx-auto z-10">

@@ -1,17 +1,18 @@
 
+import React, { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const NotFound = () => {
   const location = useLocation();
+  const currentPath = useMemo(() => location.pathname, [location.pathname]);
 
   useEffect(() => {
     console.error(
       "404 Error: User attempted to access non-existent route:",
-      location.pathname
+      currentPath
     );
-  }, [location.pathname]);
+  }, [currentPath]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -26,4 +27,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default React.memo(NotFound);

@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import HomeView from "@/components/dashboard/HomeView";
 import BriefDrawer from "@/components/dashboard/BriefDrawer";
@@ -8,6 +8,7 @@ import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import BriefModal from "@/components/dashboard/BriefModal";
 
 const Dashboard = () => {
+  // Initialize state once, avoid unnecessary re-renders
   const [uiState, setUiState] = useState({
     briefDrawerOpen: false,
     selectedBrief: null,
@@ -17,6 +18,7 @@ const Dashboard = () => {
     briefModalOpen: false
   });
 
+  // Optimized callbacks to prevent re-creation on each render
   const handleOpenBrief = useCallback((briefId: number) => {
     setUiState(prev => ({
       ...prev,
@@ -81,6 +83,36 @@ const Dashboard = () => {
     }));
   }, []);
 
+  // Memoize drawer props to prevent unnecessary re-renders
+  const briefDrawerProps = useMemo(() => ({
+    open: uiState.briefDrawerOpen,
+    briefId: uiState.selectedBrief,
+    onClose: handleCloseBriefDrawer
+  }), [uiState.briefDrawerOpen, uiState.selectedBrief, handleCloseBriefDrawer]);
+
+  const focusModeProps = useMemo(() => ({
+    open: uiState.focusModeOpen,
+    onClose: handleCloseFocusMode
+  }), [uiState.focusModeOpen, handleCloseFocusMode]);
+
+  const catchMeUpProps = useMemo(() => ({
+    open: uiState.catchMeUpOpen,
+    onClose: handleCloseCatchMeUp
+  }), [uiState.catchMeUpOpen, handleCloseCatchMeUp]);
+
+  const briefModalProps = useMemo(() => ({
+    open: uiState.briefModalOpen,
+    onClose: handleCloseBriefModal
+  }), [uiState.briefModalOpen, handleCloseBriefModal]);
+
+  // Memoize HomeView props
+  const homeViewProps = useMemo(() => ({
+    onOpenBrief: handleOpenBrief,
+    onToggleFocusMode: handleToggleFocusMode,
+    onToggleCatchMeUp: handleToggleCatchMeUp,
+    onOpenBriefModal: handleOpenBriefModal
+  }), [handleOpenBrief, handleToggleFocusMode, handleToggleCatchMeUp, handleOpenBriefModal]);
+
   return (
     <DashboardLayout 
       currentPage="home" 
@@ -88,34 +120,13 @@ const Dashboard = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="p-6">
-        <HomeView 
-          onOpenBrief={handleOpenBrief}
-          onToggleFocusMode={handleToggleFocusMode}
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onOpenBriefModal={handleOpenBriefModal}
-        />
+        <HomeView {...homeViewProps} />
       </div>
       
-      <BriefDrawer 
-        open={uiState.briefDrawerOpen} 
-        briefId={uiState.selectedBrief}
-        onClose={handleCloseBriefDrawer} 
-      />
-      
-      <FocusMode
-        open={uiState.focusModeOpen}
-        onClose={handleCloseFocusMode}
-      />
-
-      <CatchMeUp 
-        open={uiState.catchMeUpOpen}
-        onClose={handleCloseCatchMeUp}
-      />
-
-      <BriefModal
-        open={uiState.briefModalOpen}
-        onClose={handleCloseBriefModal}
-      />
+      <BriefDrawer {...briefDrawerProps} />
+      <FocusMode {...focusModeProps} />
+      <CatchMeUp {...catchMeUpProps} />
+      <BriefModal {...briefModalProps} />
     </DashboardLayout>
   );
 };
