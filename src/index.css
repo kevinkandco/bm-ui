@@ -311,25 +311,26 @@
   /* Subtle Aurora Ribbon Effect */
   .aurora-ribbon {
     position: absolute;
-    width: 250%;
-    height: 100%;
+    width: 300%;
+    height: 120%;
     top: 15%;
-    left: -75%;
+    left: -100%;
     transform: rotate(20deg);
     background: linear-gradient(
       90deg,
-      rgba(76, 209, 227, 0.15) 0%,
-      rgba(86, 179, 212, 0.12) 20%, 
-      rgba(155, 135, 245, 0.15) 40%,
-      rgba(255, 128, 103, 0.12) 60%,
-      rgba(255, 189, 103, 0.15) 80%,
-      rgba(76, 209, 227, 0.15) 100%
+      rgba(76, 209, 227, 0.08) 0%,
+      rgba(86, 179, 212, 0.07) 16%, 
+      rgba(155, 135, 245, 0.09) 33%,
+      rgba(255, 128, 103, 0.07) 50%,
+      rgba(255, 189, 103, 0.09) 67%,
+      rgba(76, 209, 227, 0.08) 84%,
+      rgba(86, 179, 212, 0.07) 100%
     );
     background-size: 200% 100%;
-    filter: blur(45px);
+    filter: blur(70px);
     z-index: 1;
-    opacity: 0.35;
-    animation: aurora-flow 25s linear infinite;
+    opacity: 0.3;
+    animation: aurora-flow 35s ease-in-out infinite;
   }
 }
 
@@ -436,17 +437,25 @@
   }
 }
 
-/* Aurora effect animation - more gentle and fluid */
+/* Aurora effect animation - extra smooth and fluid */
 @keyframes aurora-flow {
   0% {
     background-position: 0% 0%;
+    opacity: 0.25;
+  }
+  25% {
     opacity: 0.3;
   }
   50% {
-    opacity: 0.4;
+    opacity: 0.35;
+    transform: rotate(19.5deg) translateY(2px);
+  }
+  75% {
+    opacity: 0.3;
   }
   100% {
     background-position: 200% 0%;
-    opacity: 0.3;
+    opacity: 0.25;
+    transform: rotate(20deg) translateY(0px);
   }
 }

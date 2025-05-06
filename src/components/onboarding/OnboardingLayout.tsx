@@ -45,7 +45,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-bright-orange/80 via-hot-coral/30 to-transparent"></div>
       </div>
       
-      {/* Subtle Aurora Ribbon Effect */}
+      {/* Fluid Aurora Ribbon Effect */}
       <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
         <div className="aurora-ribbon"></div>
       </div>
