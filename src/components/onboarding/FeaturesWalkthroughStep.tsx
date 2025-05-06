@@ -90,7 +90,7 @@ const FeaturesWalkthroughStep = ({
         <Button onClick={prevFeature} className="neon-outline-button text-white-DEFAULT bg-transparent rounded-2xl">
           Back
         </Button>
-        <Button onClick={nextFeature} className="neon-button text-[#ffffff] bg-[#4db4f7]/[0.44]">
+        <Button onClick={nextFeature} className="neon-button text-[#ffffff] bg-teal-500 hover:bg-teal-400">
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>
