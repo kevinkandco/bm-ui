@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Hash } from "lucide-react";
 
 interface ChannelInputProps {
   onAddChannel: (channel: string) => void;
