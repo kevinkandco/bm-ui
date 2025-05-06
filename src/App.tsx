@@ -1,10 +1,10 @@
 
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { lazy, Suspense, useState, useEffect } from "react";
 import { ThemeProvider } from "./hooks/use-theme";
 import { ThemeToggle } from "./components/theme/ThemeToggle";
 
@@ -30,7 +30,6 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       retry: 1,
       gcTime: 300 * 1000, // 5 minutes - improve garbage collection
-      cacheTime: 300 * 1000, // 5 minutes
     }
   }
 });
