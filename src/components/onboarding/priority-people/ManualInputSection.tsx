@@ -80,7 +80,7 @@ export const ManualInputSection = ({
                 <SelectValue placeholder="Add label..." />
               </SelectTrigger>
               <SelectContent className="bg-deep-plum text-ice-grey border-white/20">
-                <SelectItem value="">No label</SelectItem>
+                <SelectItem value="_none">No label</SelectItem>
                 {labels.map((label) => (
                   <SelectItem key={label} value={label}>{label}</SelectItem>
                 ))}
