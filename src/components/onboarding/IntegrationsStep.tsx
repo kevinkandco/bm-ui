@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
 import ProgressIndicator from "./ProgressIndicator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-
 interface IntegrationOption {
   id: string;
   name: string;
@@ -14,7 +12,6 @@ interface IntegrationOption {
   description: string;
   version: "V1" | "V2" | "V3" | "Future";
 }
-
 interface IntegrationsStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -25,160 +22,145 @@ interface IntegrationsStepProps {
     [key: string]: any;
   };
 }
-
-const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: IntegrationsStepProps) => {
+const IntegrationsStep = ({
+  onNext,
+  onBack,
+  onSkip,
+  updateUserData,
+  userData
+}: IntegrationsStepProps) => {
   const [integrations] = useState<IntegrationOption[]>([
-    // V1 integrations
-    { 
-      id: "slack", 
-      name: "Slack", 
-      icon: "S", 
-      available: true, 
-      description: "Connect to your workspaces and channels",
-      version: "V1"
-    },
-    { 
-      id: "gmail", 
-      name: "Gmail", 
-      icon: "G", 
-      available: true, 
-      description: "Sync important emails and avoid spam",
-      version: "V1"
-    },
-    { 
-      id: "outlook", 
-      name: "Outlook", 
-      icon: "O", 
-      available: true, 
-      description: "Connect your Outlook email account",
-      version: "V1"
-    },
-    { 
-      id: "calendar", 
-      name: "Google Calendar", 
-      icon: "C", 
-      available: true, 
-      description: "Stay on top of meetings and events",
-      version: "V1"
-    },
-    
-    // V2 integrations (coming soon)
-    { 
-      id: "asana", 
-      name: "Asana", 
-      icon: "A", 
-      available: false, 
-      description: "Track your tasks and projects (coming soon)",
-      version: "V2"
-    },
-    { 
-      id: "notion", 
-      name: "Notion", 
-      icon: "N", 
-      available: false, 
-      description: "Link your notes and documents (coming soon)",
-      version: "V2"
-    },
-    { 
-      id: "zoom", 
-      name: "Zoom/Meet", 
-      icon: "Z", 
-      available: false, 
-      description: "Never miss important meetings (coming soon)",
-      version: "V2"
-    },
-    
-    // V3 integrations (coming soon)
-    { 
-      id: "teams", 
-      name: "Microsoft Teams", 
-      icon: "T", 
-      available: false, 
-      description: "Connect your Teams workspace (coming soon)",
-      version: "V3"
-    },
-    { 
-      id: "salesforce", 
-      name: "Salesforce", 
-      icon: "SF", 
-      available: false, 
-      description: "Monitor your CRM data (coming soon)",
-      version: "V3"
-    },
-    { 
-      id: "hubspot", 
-      name: "Hubspot", 
-      icon: "H", 
-      available: false, 
-      description: "Track your marketing data (coming soon)",
-      version: "V3"
-    },
-    { 
-      id: "jira", 
-      name: "Jira", 
-      icon: "J", 
-      available: false, 
-      description: "Stay on top of issues and tickets (coming soon)",
-      version: "V3"
-    },
-    { 
-      id: "confluence", 
-      name: "Confluence", 
-      icon: "CF", 
-      available: false, 
-      description: "Connect your knowledge base (coming soon)",
-      version: "V3"
-    },
-    
-    // Future integrations
-    { 
-      id: "github", 
-      name: "GitHub/GitLab", 
-      icon: "GH", 
-      available: false, 
-      description: "Monitor your repositories (coming soon)",
-      version: "Future"
-    },
-    { 
-      id: "zendesk", 
-      name: "Zendesk", 
-      icon: "ZD", 
-      available: false, 
-      description: "Track customer support tickets (coming soon)",
-      version: "Future"
-    },
-    { 
-      id: "servicenow", 
-      name: "ServiceNow", 
-      icon: "SN", 
-      available: false, 
-      description: "Monitor your service desk (coming soon)",
-      version: "Future"
-    }
-  ]);
-  
-  const [connected, setConnected] = useState<Record<string, boolean>>(
-    userData.integrations.reduce((acc: Record<string, boolean>, id: string) => ({ ...acc, [id]: true }), {})
-  );
-  
+  // V1 integrations
+  {
+    id: "slack",
+    name: "Slack",
+    icon: "S",
+    available: true,
+    description: "Connect to your workspaces and channels",
+    version: "V1"
+  }, {
+    id: "gmail",
+    name: "Gmail",
+    icon: "G",
+    available: true,
+    description: "Sync important emails and avoid spam",
+    version: "V1"
+  }, {
+    id: "outlook",
+    name: "Outlook",
+    icon: "O",
+    available: true,
+    description: "Connect your Outlook email account",
+    version: "V1"
+  }, {
+    id: "calendar",
+    name: "Google Calendar",
+    icon: "C",
+    available: true,
+    description: "Stay on top of meetings and events",
+    version: "V1"
+  },
+  // V2 integrations (coming soon)
+  {
+    id: "asana",
+    name: "Asana",
+    icon: "A",
+    available: false,
+    description: "Track your tasks and projects (coming soon)",
+    version: "V2"
+  }, {
+    id: "notion",
+    name: "Notion",
+    icon: "N",
+    available: false,
+    description: "Link your notes and documents (coming soon)",
+    version: "V2"
+  }, {
+    id: "zoom",
+    name: "Zoom/Meet",
+    icon: "Z",
+    available: false,
+    description: "Never miss important meetings (coming soon)",
+    version: "V2"
+  },
+  // V3 integrations (coming soon)
+  {
+    id: "teams",
+    name: "Microsoft Teams",
+    icon: "T",
+    available: false,
+    description: "Connect your Teams workspace (coming soon)",
+    version: "V3"
+  }, {
+    id: "salesforce",
+    name: "Salesforce",
+    icon: "SF",
+    available: false,
+    description: "Monitor your CRM data (coming soon)",
+    version: "V3"
+  }, {
+    id: "hubspot",
+    name: "Hubspot",
+    icon: "H",
+    available: false,
+    description: "Track your marketing data (coming soon)",
+    version: "V3"
+  }, {
+    id: "jira",
+    name: "Jira",
+    icon: "J",
+    available: false,
+    description: "Stay on top of issues and tickets (coming soon)",
+    version: "V3"
+  }, {
+    id: "confluence",
+    name: "Confluence",
+    icon: "CF",
+    available: false,
+    description: "Connect your knowledge base (coming soon)",
+    version: "V3"
+  },
+  // Future integrations
+  {
+    id: "github",
+    name: "GitHub/GitLab",
+    icon: "GH",
+    available: false,
+    description: "Monitor your repositories (coming soon)",
+    version: "Future"
+  }, {
+    id: "zendesk",
+    name: "Zendesk",
+    icon: "ZD",
+    available: false,
+    description: "Track customer support tickets (coming soon)",
+    version: "Future"
+  }, {
+    id: "servicenow",
+    name: "ServiceNow",
+    icon: "SN",
+    available: false,
+    description: "Monitor your service desk (coming soon)",
+    version: "Future"
+  }]);
+  const [connected, setConnected] = useState<Record<string, boolean>>(userData.integrations.reduce((acc: Record<string, boolean>, id: string) => ({
+    ...acc,
+    [id]: true
+  }), {}));
   const toggleConnection = (id: string) => {
     if (!integrations.find(i => i.id === id)?.available) return;
-    
     setConnected(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
   };
-  
   const handleContinue = () => {
-    const selectedIntegrations = Object.entries(connected)
-      .filter(([_, isConnected]) => isConnected)
-      .map(([id]) => id);
-    
-    updateUserData({ integrations: selectedIntegrations });
+    const selectedIntegrations = Object.entries(connected).filter(([_, isConnected]) => isConnected).map(([id]) => id);
+    updateUserData({
+      integrations: selectedIntegrations
+    });
     onNext();
   };
-  
   const hasAnyConnection = Object.values(connected).some(value => value);
 
   // Group integrations by version
@@ -189,38 +171,28 @@ const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: 
     groups[integration.version].push(integration);
     return groups;
   }, {} as Record<string, IntegrationOption[]>);
-
-  return (
-    <div className="space-y-8">
+  return <div className="space-y-8">
       <ProgressIndicator currentStep={3} totalSteps={7} />
       
       {/* Pyramid neon visual element */}
       <div className="relative h-16 w-full flex items-center justify-center overflow-hidden mb-4">
-        <div className="w-0 h-0 animate-float" style={{ 
-          borderLeft: '20px solid transparent',
-          borderRight: '20px solid transparent',
-          borderBottom: '40px solid rgba(0, 224, 213, 0.3)'
-        }} />
+        <div className="w-0 h-0 animate-float" style={{
+        borderLeft: '20px solid transparent',
+        borderRight: '20px solid transparent',
+        borderBottom: '40px solid rgba(0, 224, 213, 0.3)'
+      }} />
       </div>
       
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Connect your tools</h2>
-        <p className="text-cool-slate">Brief.me will monitor these sources to create your personalized brief.</p>
+        <p className="text-cool-slate text-zinc-100">Brief.me will monitor these sources to create your personalized brief.</p>
       </div>
       
       {/* V1 Integrations */}
       <div className="space-y-5">
         <h3 className="text-lg font-medium text-ice-grey">Available Now</h3>
         <div className="grid grid-cols-2 gap-4">
-          {groupedIntegrations.V1?.map((integration) => (
-            <div 
-              key={integration.id}
-              className={cn(
-                "integration-card flex flex-col p-5 rounded-xl border transition-all duration-300 cursor-pointer",
-                connected[integration.id] ? "border-electric-teal bg-deep-plum/30" : "border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20"
-              )}
-              onClick={() => toggleConnection(integration.id)}
-            >
+          {groupedIntegrations.V1?.map(integration => <div key={integration.id} className={cn("integration-card flex flex-col p-5 rounded-xl border transition-all duration-300 cursor-pointer", connected[integration.id] ? "border-electric-teal bg-deep-plum/30" : "border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20")} onClick={() => toggleConnection(integration.id)}>
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/50 rounded-full font-bold text-electric-teal">
                   {integration.icon}
@@ -233,8 +205,7 @@ const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: 
                   </span>
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
         </div>
       </div>
       
@@ -245,11 +216,7 @@ const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: 
           <span className="text-xs px-2 py-1 bg-deep-plum/30 rounded-full text-electric-teal">Early Q3</span>
         </h3>
         <div className="grid grid-cols-2 gap-4">
-          {groupedIntegrations.V2?.map((integration) => (
-            <div 
-              key={integration.id}
-              className="integration-card flex flex-col p-5 rounded-xl border border-cool-slate/20 bg-canvas-black/80 opacity-70"
-            >
+          {groupedIntegrations.V2?.map(integration => <div key={integration.id} className="integration-card flex flex-col p-5 rounded-xl border border-cool-slate/20 bg-canvas-black/80 opacity-70">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 flex items-center justify-center bg-deep-plum/30 rounded-full font-bold text-cool-slate">
                   {integration.icon}
@@ -259,8 +226,7 @@ const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: 
                   <p className="text-sm text-cool-slate">{integration.description}</p>
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
         </div>
       </div>
       
@@ -268,11 +234,9 @@ const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: 
       <div className="p-4 bg-deep-plum/10 rounded-lg border border-cool-slate/10">
         <h4 className="text-sm font-medium text-ice-grey mb-2">More integrations coming soon:</h4>
         <div className="flex flex-wrap gap-2">
-          {[...groupedIntegrations.V3 || [], ...groupedIntegrations.Future || []].map((integration) => (
-            <span key={integration.id} className="text-xs px-2 py-1 bg-deep-plum/20 rounded-full text-cool-slate">
+          {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => <span key={integration.id} className="text-xs px-2 py-1 bg-deep-plum/20 rounded-full text-cool-slate">
               {integration.name}
-            </span>
-          ))}
+            </span>)}
         </div>
       </div>
       
@@ -294,32 +258,19 @@ const IntegrationsStep = ({ onNext, onBack, onSkip, updateUserData, userData }: 
       </TooltipProvider>
       
       <div className="flex justify-between pt-2">
-        <Button 
-          onClick={onBack} 
-          className="neon-outline-button"
-        >
+        <Button onClick={onBack} className="neon-outline-button">
           Back
         </Button>
-        <Button 
-          onClick={handleContinue} 
-          disabled={!hasAnyConnection}
-          className="neon-button disabled:opacity-50 disabled:pointer-events-none"
-        >
+        <Button onClick={handleContinue} disabled={!hasAnyConnection} className="neon-button disabled:opacity-50 disabled:pointer-events-none">
           Continue
         </Button>
       </div>
       
       <div className="flex justify-center">
-        <Button 
-          variant="link" 
-          onClick={onSkip} 
-          className="text-sm text-cool-slate hover:text-ice-grey"
-        >
+        <Button variant="link" onClick={onSkip} className="text-sm text-cool-slate hover:text-ice-grey">
           Skip for now
         </Button>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default IntegrationsStep;
