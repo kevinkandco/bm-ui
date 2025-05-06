@@ -32,6 +32,7 @@ export const SuggestedContacts = ({
   const [contactSearchQuery, setContactSearchQuery] = useState("");
   const [showLabelSelector, setShowLabelSelector] = useState<string | null>(null);
   const [customLabel, setCustomLabel] = useState("");
+  const [showLabelInput, setShowLabelInput] = useState(false);
   
   // Available labels for contacts
   const labels: Label[] = [
