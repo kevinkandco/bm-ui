@@ -118,7 +118,7 @@
 @layer components {
   /* Glass card component - improved with better blur and opacity */
   .glass-card {
-    @apply backdrop-blur-[30px] rounded-3xl border border-white-14 shadow-md bg-white/60;
+    @apply backdrop-blur-[30px] rounded-3xl border border-white/14 shadow-md bg-white/60;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 16px 32px rgba(0, 0, 0, 0.06);
     transition: all 160ms ease-out;
   }
@@ -128,7 +128,7 @@
   }
 
   .dark .glass-card {
-    @apply bg-slate-grey/30 border-white-10;
+    @apply bg-slate-grey/30 border-white/10;
   }
 
   /* Progress bar */
@@ -143,11 +143,11 @@
   }
   
   .integration-card {
-    @apply border-white-14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
+    @apply border-white/14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
   }
 
   .dark .integration-card {
-    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/10 bg-slate-grey/30 hover:bg-slate-grey/40;
   }
 
   .integration-card.connected {
@@ -169,11 +169,11 @@
   }
   
   .preference-chip {
-    @apply border-white-14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
+    @apply border-white/14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
   }
   
   .dark .preference-chip {
-    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/10 bg-slate-grey/30 hover:bg-slate-grey/40;
   }
   
   .preference-chip.selected {
@@ -191,11 +191,11 @@
   }
   
   .delivery-card {
-    @apply border-white-14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
+    @apply border-white/14 bg-white/60 hover:bg-white/70 backdrop-blur-[30px];
   }
   
   .dark .delivery-card {
-    @apply border-white-10 bg-slate-grey/30 hover:bg-slate-grey/40;
+    @apply border-white/10 bg-slate-grey/30 hover:bg-slate-grey/40;
   }
   
   .delivery-card.selected {
