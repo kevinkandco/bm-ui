@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,7 @@ interface IgnoreConfigStepProps {
     ignoreChannels: string[];
     ignoreKeywords: string[];
     includeIgnoredInSummary: boolean;
+    integrations: any[];
     [key: string]: any;
   };
 }
@@ -23,10 +24,37 @@ interface IgnoreConfigStepProps {
 const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreConfigStepProps) => {
   const [selectedTab, setSelectedTab] = useState<"channel" | "keyword">("channel");
   const [inputValue, setInputValue] = useState("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [searchResults, setSearchResults] = useState<string[]>([]);
   
   const [ignoreChannels, setIgnoreChannels] = useState<string[]>(userData.ignoreChannels || []);
   const [ignoreKeywords, setIgnoreKeywords] = useState<string[]>(userData.ignoreKeywords || []);
   const [includeInSummary, setIncludeInSummary] = useState<boolean>(userData.includeIgnoredInSummary || false);
+  
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Mock Slack channels - in a real app, these would be fetched from Slack API
+  const [slackChannels] = useState([
+    "#general", "#random", "#announcements", "#team-dev", 
+    "#marketing", "#sales", "#support", "#watercooler", 
+    "#project-alpha", "#design", "#engineering", "#hr"
+  ]);
+  
+  const hasSlackIntegration = userData.integrations?.some(
+    (integration: any) => integration.type === "slack" || integration === "slack"
+  );
+  
+  // Filter channels based on input
+  useEffect(() => {
+    if (selectedTab === "channel" && isInputFocused) {
+      const filtered = slackChannels.filter(
+        channel => channel.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setSearchResults(filtered);
+    } else {
+      setSearchResults([]);
+    }
+  }, [inputValue, isInputFocused, selectedTab, slackChannels]);
   
   const addItem = () => {
     if (!inputValue.trim()) return;
@@ -38,6 +66,14 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
     }
     
     setInputValue("");
+  };
+  
+  const selectChannel = (channel: string) => {
+    if (!ignoreChannels.includes(channel)) {
+      setIgnoreChannels(prev => [...prev, channel]);
+    }
+    setInputValue("");
+    setSearchResults([]);
   };
   
   const removeItem = (type: "channel" | "keyword", value: string) => {
@@ -56,6 +92,20 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
     });
     onNext();
   };
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+        setIsInputFocused(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -107,15 +157,34 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
             <p className="text-sm text-off-white/70 -mt-1">
               We'll exclude these Slack channels or email folders from your brief (like #random or social updates).
             </p>
-            <div className="flex gap-2">
-              <Input
-                id="ignore-channel"
-                placeholder="Enter channel name (e.g. #random)"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addItem()}
-                className="bg-white/10 border-white/20 text-off-white placeholder:text-off-white/50"
-              />
+            <div className="flex gap-2 relative">
+              <div className="relative flex-grow">
+                <Input
+                  ref={inputRef}
+                  id="ignore-channel"
+                  placeholder="Enter channel name (e.g. #random)"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addItem()}
+                  onFocus={() => setIsInputFocused(true)}
+                  className="bg-white/15 border-white/20 text-off-white placeholder:text-white/50 w-full"
+                />
+                
+                {isInputFocused && searchResults.length > 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-deep-plum border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+                    {searchResults.map((channel) => (
+                      <div
+                        key={channel}
+                        onClick={() => selectChannel(channel)}
+                        className="px-3 py-2 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
+                      >
+                        <Hash size={14} className="text-glass-blue/80" />
+                        <span className="text-off-white">{channel}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
               <Button 
                 onClick={addItem}
                 variant="outline"
