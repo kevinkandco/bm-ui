@@ -17,9 +17,9 @@ const ProgressIndicator = ({
       </div>
       
       <div className="w-full bg-cool-slate/20 h-1.5 rounded-full overflow-hidden bg-[#000a0e]/[0.07]">
-        <div className="bg-electric-teal h-full rounded-full transition-all duration-500 ease-out" style={{
+        <div style={{
         width: `${percentage}%`
-      }} />
+      }} className="bg-electric-teal h-full rounded-full transition-all duration-500 ease-out bg-stone-300" />
       </div>
       
       {/* Progress dots instead of bar */}
