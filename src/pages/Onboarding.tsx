@@ -2,30 +2,47 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
-import WelcomeStep from "@/components/onboarding/WelcomeStep";
-import PurposeStep from "@/components/onboarding/PurposeStep";
+import SignInStep from "@/components/onboarding/SignInStep";
+import FeaturesWalkthroughStep from "@/components/onboarding/FeaturesWalkthroughStep";
 import IntegrationsStep from "@/components/onboarding/IntegrationsStep";
-import PriorityContactsStep from "@/components/onboarding/PriorityContactsStep";
-import DeliveryPreferencesStep from "@/components/onboarding/DeliveryPreferencesStep";
-import FinalizeSetupStep from "@/components/onboarding/FinalizeSetupStep";
+import PriorityConfigStep from "@/components/onboarding/PriorityConfigStep";
+import IgnoreConfigStep from "@/components/onboarding/IgnoreConfigStep";
+import BriefPreferencesStep from "@/components/onboarding/BriefPreferencesStep";
+import GetStartedStep from "@/components/onboarding/GetStartedStep";
 import SuccessModal from "@/components/onboarding/SuccessModal";
 
 type DeliveryMethod = "email" | "audio" | "both";
+type ScheduleTime = "morning" | "midday" | "evening" | "custom";
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState({
-    purpose: "",
-    integrations: [],
-    priorityContacts: [],
+    // Auth data
+    isSignedIn: false,
+    authProvider: "",
+    
+    // User preferences 
+    priorityPeople: [],
+    priorityChannels: [],
+    priorityTopics: [],
+    
+    // Ignore settings
+    ignoreChannels: [],
+    ignoreKeywords: [],
+    includeIgnoredInSummary: false,
+    
+    // Brief preferences
     deliveryMethod: "email" as DeliveryMethod,
+    scheduleTime: "morning" as ScheduleTime,
     briefTime: "08:00",
-    ignoreKeywords: []
+    
+    // Connected integrations
+    integrations: []
   });
   
-  const totalSteps = 6;
+  const totalSteps = 7;
   
   const updateUserData = (data: Partial<typeof userData>) => {
     setUserData(prev => ({ ...prev, ...data }));
@@ -63,13 +80,19 @@ const Onboarding = () => {
         <SuccessModal onComplete={handleComplete} />
       ) : (
         <>
-          {currentStep === 1 && <WelcomeStep onNext={handleNext} />}
-          {currentStep === 2 && <PurposeStep 
+          {currentStep === 1 && <SignInStep 
+            onNext={handleNext} 
+            updateUserData={updateUserData}
+            userData={userData}
+          />}
+          
+          {currentStep === 2 && <FeaturesWalkthroughStep 
             onNext={handleNext} 
             onBack={handleBack}
             updateUserData={updateUserData}
             userData={userData}
           />}
+          
           {currentStep === 3 && <IntegrationsStep 
             onNext={handleNext} 
             onBack={handleBack} 
@@ -77,19 +100,29 @@ const Onboarding = () => {
             userData={userData}
             onSkip={handleSkip}
           />}
-          {currentStep === 4 && <PriorityContactsStep 
+          
+          {currentStep === 4 && <PriorityConfigStep 
             onNext={handleNext} 
             onBack={handleBack}
             updateUserData={updateUserData}
             userData={userData}
           />}
-          {currentStep === 5 && <DeliveryPreferencesStep 
+          
+          {currentStep === 5 && <IgnoreConfigStep 
             onNext={handleNext} 
             onBack={handleBack}
             updateUserData={updateUserData}
             userData={userData}
           />}
-          {currentStep === 6 && <FinalizeSetupStep 
+          
+          {currentStep === 6 && <BriefPreferencesStep
+            onNext={handleNext} 
+            onBack={handleBack}
+            updateUserData={updateUserData}
+            userData={userData}
+          />}
+          
+          {currentStep === 7 && <GetStartedStep 
             onNext={handleNext} 
             onBack={handleBack}
             userData={userData}
