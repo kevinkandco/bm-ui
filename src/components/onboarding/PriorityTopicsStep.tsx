@@ -63,14 +63,14 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
       <ProgressIndicator currentStep={6} totalSteps={9} />
       
       <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">What topics matter most?</h2>
-        <p className="text-cool-slate">Add keywords or topics that are important across your communications. We'll flag any messages containing these keywords.</p>
+        <h2 className="text-2xl font-semibold text-off-white tracking-tighter">What topics matter most?</h2>
+        <p className="text-off-white/70">Add keywords or topics that are important across your communications. We'll flag any messages containing these keywords.</p>
       </div>
       
       <div className="space-y-6">
         <div className="space-y-3">
-          <Label htmlFor="priority-topic" className="text-ice-grey">Add important topics</Label>
-          <p className="text-sm text-cool-slate -mt-1">
+          <Label htmlFor="priority-topic" className="text-off-white">Add important topics</Label>
+          <p className="text-sm text-off-white/70 -mt-1">
             Enter keywords like "urgent", "site down", or specific project names that should be highlighted.
           </p>
           <div className="flex gap-2">
@@ -80,7 +80,7 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addTopic()}
-              className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+              className="bg-white/15 border-white/20 text-off-white placeholder:text-white/50"
             />
             <Button 
               onClick={addTopic}
@@ -95,10 +95,10 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
           {priorityTopics.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-2">
               {priorityTopics.map(topic => (
-                <div key={topic} className="flex items-center gap-1 px-3 py-1 rounded-full bg-deep-plum/30 border border-electric-teal/20 text-sm text-ice-grey">
-                  <Tag size={14} className="text-electric-teal" />
+                <div key={topic} className="flex items-center gap-1 px-3 py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
+                  <Tag size={14} className="text-glass-blue/80" />
                   {topic}
-                  <button onClick={() => removeTopic(topic)} className="ml-1 focus:outline-none text-cool-slate hover:text-hot-coral">
+                  <button onClick={() => removeTopic(topic)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange">
                     <X size={14} />
                   </button>
                 </div>
@@ -109,8 +109,8 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
         
         {/* Suggested topics section */}
         <div className="space-y-3 pt-2">
-          <h3 className="text-lg font-medium text-ice-grey">Common Topics</h3>
-          <p className="text-sm text-cool-slate">
+          <h3 className="text-lg font-medium text-off-white">Common Topics</h3>
+          <p className="text-sm text-off-white/70">
             Click to add these suggested topics to your priority list.
           </p>
           
@@ -122,8 +122,8 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
                 className={cn(
                   "px-3 py-1.5 rounded-full border text-sm",
                   priorityTopics.includes(topic.name)
-                    ? "bg-deep-plum/40 border-electric-teal/30 text-electric-teal"
-                    : "bg-canvas-black/50 border-cool-slate/20 text-ice-grey hover:border-cool-slate/40"
+                    ? "bg-glass-blue/10 border-glass-blue/40 text-glass-blue"
+                    : "bg-white/10 border-white/20 text-off-white hover:border-white/40"
                 )}
               >
                 <div className="flex items-center gap-1.5">
@@ -137,7 +137,7 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
           {/* Topics by category */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div className="space-y-2">
-              <h4 className="text-sm font-medium text-cool-slate">Priority & Work</h4>
+              <h4 className="text-sm font-medium text-off-white/80">Priority & Work</h4>
               <div className="flex flex-wrap gap-2">
                 {suggestedTopics
                   .filter(t => t.category === "Priority" || t.category === "Work")
@@ -148,8 +148,8 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
                       className={cn(
                         "px-2.5 py-1 rounded-full text-xs",
                         priorityTopics.includes(topic.name)
-                          ? "bg-deep-plum/40 border border-electric-teal/30 text-electric-teal"
-                          : "bg-deep-plum/20 text-cool-slate hover:text-ice-grey"
+                          ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
+                          : "bg-white/10 text-off-white/70 hover:text-off-white"
                       )}
                     >
                       {topic.name}
@@ -159,7 +159,7 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
             </div>
             
             <div className="space-y-2">
-              <h4 className="text-sm font-medium text-cool-slate">Technical</h4>
+              <h4 className="text-sm font-medium text-off-white/80">Technical</h4>
               <div className="flex flex-wrap gap-2">
                 {suggestedTopics
                   .filter(t => t.category === "Technical")
@@ -170,8 +170,8 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
                       className={cn(
                         "px-2.5 py-1 rounded-full text-xs",
                         priorityTopics.includes(topic.name)
-                          ? "bg-deep-plum/40 border border-electric-teal/30 text-electric-teal"
-                          : "bg-deep-plum/20 text-cool-slate hover:text-ice-grey"
+                          ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
+                          : "bg-white/10 text-off-white/70 hover:text-off-white"
                       )}
                     >
                       {topic.name}
