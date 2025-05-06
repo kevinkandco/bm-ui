@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
@@ -88,7 +87,7 @@ const FeaturesWalkthroughStep = ({
       </div>
 
       <div className="flex justify-between pt-4">
-        <Button onClick={prevFeature} className="neon-outline-button">
+        <Button onClick={prevFeature} className="neon-outline-button bg-emerald-500 hover:bg-emerald-400 text-white-DEFAULT">
           Back
         </Button>
         <Button onClick={nextFeature} className="neon-button">
