@@ -90,7 +90,7 @@ export const SuggestedContacts = ({
                     className="bg-white/10 text-white hover:bg-white/20"
                     onClick={() => addPerson(contact.name, contact.email)}
                   >
-                    <Plus size={14} className="mr-1" /> Add
+                    <Plus size={14} className="mr-1" /> Designate
                   </Button>
                 ) : (
                   <div className="flex items-center gap-2">

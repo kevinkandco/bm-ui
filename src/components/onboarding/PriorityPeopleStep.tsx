@@ -65,7 +65,7 @@ const PriorityPeopleStep = memo(({ onNext, onBack, updateUserData, userData }: P
       
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Who are your priority people?</h2>
-        <p className="text-white/70">Add important people who should be able to break through Brief-Me barriers.</p>
+        <p className="text-white/70">Designate important people who should be able to break through Brief-Me barriers.</p>
       </div>
       
       <div className="space-y-4">
