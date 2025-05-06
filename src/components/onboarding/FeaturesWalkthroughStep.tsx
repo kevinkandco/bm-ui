@@ -27,21 +27,21 @@ const FeaturesWalkthroughStep = ({
       id: "daily-briefings",
       title: "Daily Briefings",
       description: "Get a personalized summary of your communications, meetings, and tasks first thing in the morning.",
-      icon: <Inbox className="h-10 w-10 text-electric-teal" />,
+      icon: <Inbox className="h-10 w-10 text-neon-mint" />,
       detail: "Brief.me monitors your connected apps while you're away and delivers a concise summary of what happened."
     },
     {
       id: "catch-me-up",
       title: "Catch Me Up",
       description: "Get caught up on specific topics, channels, or conversations with a single click.",
-      icon: <Clock className="h-10 w-10 text-electric-teal" />,
+      icon: <Clock className="h-10 w-10 text-neon-mint" />,
       detail: "Need to know what happened in a specific Slack channel? Just ask Brief.me to catch you up."
     },
     {
       id: "vacation-mode",
       title: "Vacation Mode",
       description: "Stay completely disconnected while away, then get a comprehensive summary when you return.",
-      icon: <Plane className="h-10 w-10 text-electric-teal" />,
+      icon: <Plane className="h-10 w-10 text-neon-mint" />,
       detail: "Brief.me will monitor everything while you're gone, then give you exactly what you need to know when you're back."
     }
   ];
@@ -67,10 +67,10 @@ const FeaturesWalkthroughStep = ({
       <ProgressIndicator currentStep={2} totalSteps={7} />
 
       <div className="text-center space-y-3">
-        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">
+        <h2 className="text-2xl font-semibold text-off-white tracking-tighter">
           How Brief.me works
         </h2>
-        <p className="text-cool-slate max-w-lg mx-auto">
+        <p className="text-off-white/70 max-w-lg mx-auto">
           Brief.me helps you stay informed without the information overload.
         </p>
       </div>
@@ -82,13 +82,13 @@ const FeaturesWalkthroughStep = ({
           </div>
           
           <div className="text-center space-y-3">
-            <h3 className="text-xl font-medium text-ice-grey">
+            <h3 className="text-xl font-medium text-off-white">
               {features[currentFeature].title}
             </h3>
-            <p className="text-cool-slate">{features[currentFeature].description}</p>
+            <p className="text-off-white/70">{features[currentFeature].description}</p>
             
-            <div className="p-4 bg-deep-plum/20 rounded-lg border border-electric-teal/20 mt-4">
-              <p className="text-sm text-ice-grey">{features[currentFeature].detail}</p>
+            <div className="p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 mt-4">
+              <p className="text-sm text-off-white/80">{features[currentFeature].detail}</p>
             </div>
           </div>
         </div>
@@ -101,8 +101,8 @@ const FeaturesWalkthroughStep = ({
             className={cn(
               "w-2 h-2 rounded-full cursor-pointer transition-all",
               index === currentFeature
-                ? "bg-electric-teal w-4"
-                : "bg-cool-slate/30 hover:bg-cool-slate/50"
+                ? "bg-neon-mint w-4"
+                : "bg-off-white/30 hover:bg-off-white/50"
             )}
             onClick={() => setCurrentFeature(index)}
           />
@@ -110,10 +110,10 @@ const FeaturesWalkthroughStep = ({
       </div>
 
       <div className="flex justify-between pt-4">
-        <Button onClick={prevFeature} className="neon-outline-button">
+        <Button onClick={prevFeature} variant="outline">
           Back
         </Button>
-        <Button onClick={nextFeature} className="neon-button">
+        <Button onClick={nextFeature}>
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>

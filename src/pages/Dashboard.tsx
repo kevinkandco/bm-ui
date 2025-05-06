@@ -6,7 +6,11 @@ import HomeView from "@/components/dashboard/HomeView";
 const Dashboard = () => {
   return (
     <DashboardLayout currentPage="home">
-      <HomeView />
+      <div className="p-6">
+        <div className="rounded-3xl overflow-hidden backdrop-blur-md bg-white/10 border border-white/20 shadow-xl p-6">
+          <HomeView />
+        </div>
+      </div>
     </DashboardLayout>
   );
 };

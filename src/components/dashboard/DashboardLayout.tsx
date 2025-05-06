@@ -35,14 +35,23 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
   };
   
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-forest-green relative">
+      {/* Background with CSS gradient */}
+      <div className="absolute inset-0 w-full h-full bg-grain">
+        <div className="absolute inset-0 bg-gradient-to-t from-forest-green via-lake-blue/30 to-peach/20 opacity-90"></div>
+        
+        {/* Floating glass orbs */}
+        <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 animate-float hidden lg:block"></div>
+        <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float-delay hidden lg:block"></div>
+      </div>
+      
       {/* Sidebar Navigation */}
-      <div className="hidden md:flex flex-col w-16 hover:w-64 group transition-all duration-300 ease-in-out bg-sidebar border-r border-sidebar-border shadow-sm z-10">
+      <div className="hidden md:flex flex-col w-16 hover:w-64 group transition-all duration-300 ease-in-out bg-white/10 backdrop-blur-md border-r border-white/20 shadow-xl z-10">
         <div className="p-4 flex items-center justify-center md:justify-start">
-          <div className="h-8 w-8 bg-gradient-neon rounded-md flex items-center justify-center">
-            <span className="font-bold text-canvas-black text-lg">B</span>
+          <div className="h-8 w-8 bg-gradient-to-br from-electric-teal to-hot-coral rounded-md flex items-center justify-center">
+            <span className="font-bold text-off-white text-lg">B</span>
           </div>
-          <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-sidebar-foreground">Brief.me</span>
+          <span className="ml-3 font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-off-white">Brief.me</span>
         </div>
         
         <div className="flex-1 py-6 flex flex-col gap-1">
@@ -53,8 +62,8 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
               className={cn(
                 "flex items-center px-4 py-3 text-sm relative group/item transition-colors",
                 currentPage === id 
-                  ? "bg-sidebar-accent text-sidebar-primary font-medium" 
-                  : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-primary-foreground"
+                  ? "bg-white/20 text-neon-mint font-medium" 
+                  : "text-off-white hover:bg-white/10 hover:text-neon-mint"
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
@@ -62,7 +71,7 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
                 {label}
               </span>
               {badge && (
-                <span className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-electric-teal dark:bg-electric-teal text-canvas-black text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-neon-mint text-forest-green text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {badge}
                 </span>
               )}
@@ -70,9 +79,9 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
           ))}
         </div>
         
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-white/10">
           <button 
-            className="flex items-center w-full text-sidebar-foreground hover:text-sidebar-primary text-sm"
+            className="flex items-center w-full text-off-white/70 hover:text-neon-mint text-sm"
             onClick={() => toast({
               title: "Help",
               description: "Opening help & feedback panel",
@@ -87,14 +96,14 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       </div>
       
       {/* Mobile Bottom Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-sidebar border-t border-sidebar-border md:hidden flex justify-around z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 md:hidden flex justify-around z-10">
         {navItems.slice(0, 5).map(({ icon: Icon, id }) => (
           <button
             key={id}
             onClick={() => handleNavClick(id)}
             className={cn(
               "p-3 flex flex-col items-center justify-center",
-              currentPage === id ? "text-electric-teal dark:text-electric-teal" : "text-sidebar-foreground"
+              currentPage === id ? "text-neon-mint" : "text-off-white"
             )}
           >
             <Icon className="h-5 w-5" />
@@ -103,8 +112,7 @@ const DashboardLayout = ({ children, className, currentPage = "home" }: Dashboar
       </div>
       
       {/* Main Content */}
-      <div className={cn("flex-1 overflow-auto pb-16 md:pb-0", className)}>
-        <div className="radial-gradient-bg opacity-30" />
+      <div className={cn("flex-1 overflow-auto pb-16 md:pb-0 z-10", className)}>
         {children}
       </div>
     </div>

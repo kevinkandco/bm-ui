@@ -64,14 +64,14 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <ProgressIndicator currentStep={5} totalSteps={9} />
       
       <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Which channels are critical?</h2>
-        <p className="text-cool-slate">Mark your most important channels. We'll highlight updates from these channels in your brief.</p>
+        <h2 className="text-2xl font-semibold text-off-white tracking-tighter">Which channels are critical?</h2>
+        <p className="text-off-white/70">Mark your most important channels. We'll highlight updates from these channels in your brief.</p>
       </div>
       
       <div className="space-y-6">
         <div className="space-y-3">
-          <Label htmlFor="priority-channel" className="text-ice-grey">Add important channels</Label>
-          <p className="text-sm text-cool-slate -mt-1">
+          <Label htmlFor="priority-channel" className="text-off-white">Add important channels</Label>
+          <p className="text-sm text-off-white/50 -mt-1">
             Add critical Slack channels, email folders, or other message sources you need to monitor closely.
           </p>
           <div className="flex gap-2">
@@ -81,7 +81,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addChannel()}
-              className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+              className="bg-white/10 border-white/20 text-off-white"
             />
             <Button 
               onClick={addChannel}
@@ -96,10 +96,10 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
           {priorityChannels.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-2">
               {priorityChannels.map(channel => (
-                <div key={channel} className="flex items-center gap-1 px-3 py-1 rounded-full bg-deep-plum/30 border border-electric-teal/20 text-sm text-ice-grey">
-                  <Hash size={14} className="text-electric-teal" />
+                <div key={channel} className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm text-off-white">
+                  <Hash size={14} className="text-neon-mint" />
                   {channel}
-                  <button onClick={() => removeChannel(channel)} className="ml-1 focus:outline-none text-cool-slate hover:text-hot-coral">
+                  <button onClick={() => removeChannel(channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-off-white">
                     <X size={14} />
                   </button>
                 </div>
@@ -111,13 +111,13 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
         {/* Slack channels section - only shown if Slack is integrated */}
         {hasSlackIntegration || true /* Forcing true for demo purposes */ && (
           <div className="space-y-3 pt-2">
-            <h3 className="text-lg font-medium text-ice-grey">
+            <h3 className="text-lg font-medium text-off-white">
               <span className="flex items-center gap-2">
-                <MessageSquare size={18} className="text-electric-teal" />
+                <MessageSquare size={18} className="text-neon-mint" />
                 Your Slack Channels
               </span>
             </h3>
-            <p className="text-sm text-cool-slate">
+            <p className="text-sm text-off-white/50">
               Select channels from your Slack workspace to prioritize.
             </p>
             
@@ -129,21 +129,21 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
                   className={cn(
                     "flex items-center justify-between p-3 rounded-lg border text-left",
                     priorityChannels.includes(`#${channel.name}`)
-                      ? "bg-deep-plum/40 border-electric-teal/30 text-electric-teal"
-                      : "bg-canvas-black/50 border-cool-slate/20 text-ice-grey hover:border-cool-slate/40"
+                      ? "bg-white/20 border-neon-mint/30 text-neon-mint"
+                      : "bg-white/5 border-white/20 text-off-white hover:bg-white/10"
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-deep-plum/50 flex items-center justify-center text-electric-teal">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-neon-mint">
                       <Hash size={20} />
                     </div>
                     <div>
                       <div className="font-medium">#{channel.name}</div>
-                      <div className="text-sm text-cool-slate">{channel.description}</div>
+                      <div className="text-sm text-off-white/50">{channel.description}</div>
                     </div>
                   </div>
                   {priorityChannels.includes(`#${channel.name}`) && (
-                    <div className="text-electric-teal">Added</div>
+                    <div className="text-neon-mint">Added</div>
                   )}
                 </button>
               ))}
@@ -155,13 +155,12 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          className="neon-outline-button"
+          variant="outline"
         >
           Back
         </Button>
         <Button 
           onClick={handleContinue}
-          className="neon-button"
         >
           Continue
         </Button>

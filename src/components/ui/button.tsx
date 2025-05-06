@@ -10,15 +10,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-electric-teal text-canvas-black hover:bg-hot-coral transition-colors duration-300",
+        default: "bg-neon-mint text-forest-green hover:bg-off-white transition-colors duration-300",
         destructive:
-          "bg-hot-coral text-canvas-black hover:bg-hot-coral/90",
+          "bg-hot-coral text-off-white hover:bg-hot-coral/90",
         outline:
-          "border border-ice-grey bg-transparent hover:border-cool-slate text-ice-grey hover:text-cool-slate",
+          "border border-off-white bg-transparent hover:border-off-white/70 text-off-white hover:text-off-white/70",
         secondary:
-          "bg-deep-plum/30 text-ice-grey hover:bg-deep-plum/50",
-        ghost: "hover:bg-deep-plum/20 hover:text-ice-grey text-cool-slate",
-        link: "text-ice-grey underline-offset-4 hover:text-electric-teal",
+          "bg-white/10 backdrop-blur-md text-off-white hover:bg-white/20",
+        ghost: "hover:bg-white/10 hover:text-off-white text-off-white/70",
+        link: "text-off-white underline-offset-4 hover:text-neon-mint",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-xl",
