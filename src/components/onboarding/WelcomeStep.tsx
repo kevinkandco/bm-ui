@@ -23,11 +23,18 @@ const WelcomeStep = ({ onNext }: WelcomeStepProps) => {
     <div className="space-y-8 relative">
       <ProgressIndicator currentStep={1} totalSteps={3} />
       
-      {/* Neon orb visual element */}
+      {/* Neon orb visual element - with 55 BPM pulse */}
       <div className="h-40 w-full flex items-center justify-center relative mb-8">
-        <div className="w-32 h-32 rounded-full bg-electric-teal/20 animate-pulse absolute" />
-        <div className="w-24 h-24 rounded-full bg-electric-teal/30 animate-glow absolute" />
-        <div className="w-16 h-16 rounded-full bg-electric-teal/50 absolute" />
+        <div className="w-32 h-32 rounded-full bg-electric-teal/20 pulse-55bpm absolute" />
+        <div className="w-24 h-24 rounded-full bg-electric-teal/30 pulse-55bpm absolute" style={{animationDelay: '0.2s'}} />
+        <div className="w-16 h-16 rounded-full bg-electric-teal/50 absolute flex items-center justify-center">
+          <img 
+            src="/lovable-uploads/dca4b5e7-bb9e-417f-89cf-82d8f8ed93e3.png" 
+            alt="Sound wave" 
+            className="w-10 h-10 opacity-90"
+            loading="eager"
+          />
+        </div>
       </div>
       
       <div className="space-y-4 text-center">

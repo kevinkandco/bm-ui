@@ -27,13 +27,13 @@ const Index = () => {
       {/* Glass card */}
       <Card className="max-w-md w-full rounded-3xl overflow-hidden backdrop-blur-xl bg-white/15 border border-white/30 shadow-xl relative z-10">
         <CardContent className="px-6 py-8 flex flex-col items-center text-center">
-          {/* Neon orb visual element */}
+          {/* Neon orb visual element with 55 BPM pulse */}
           <div className="h-40 w-full flex items-center justify-center relative mb-8">
-            <div className="w-32 h-32 rounded-full bg-[#49a5ac20] animate-pulse absolute"></div>
-            <div className="w-24 h-24 rounded-full bg-[#49a5ac30] animate-glow absolute"></div>
+            <div className="w-32 h-32 rounded-full bg-[#49a5ac20] pulse-55bpm absolute"></div>
+            <div className="w-24 h-24 rounded-full bg-[#49a5ac30] pulse-55bpm absolute" style={{animationDelay: '0.2s'}}></div>
             <div className="w-16 h-16 rounded-full bg-[#49a5ac45] absolute flex items-center justify-center">
               <img 
-                src="/lovable-uploads/432a0bc4-376f-4766-864d-ff5f206b8068.png" 
+                src="/lovable-uploads/dca4b5e7-bb9e-417f-89cf-82d8f8ed93e3.png" 
                 alt="Sound wave" 
                 className="w-10 h-10 opacity-90"
                 loading="eager"
@@ -63,6 +63,24 @@ const Index = () => {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Custom pulse animation style */}
+      <style jsx>{`
+        @keyframes smoothPulse {
+          0%, 100% {
+            opacity: 0.7;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.08);
+          }
+        }
+        
+        .pulse-55bpm {
+          animation: smoothPulse 1.09s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
     </div>
   );
 };
