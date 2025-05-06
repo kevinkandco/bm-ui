@@ -112,11 +112,11 @@ const PriorityContactsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Who matters most?</h2>
-        <p className="text-cool-slate">Never miss messages from your highest priority contacts.</p>
+        <p className="text-white/70">Never miss messages from your highest priority contacts.</p>
       </div>
       
       <div className="space-y-5">
-        {/* Add contact input */}
+        {/* Add contact input - updated with lighter background */}
         <div className="relative">
           <Input
             type="text"
@@ -124,12 +124,12 @@ const PriorityContactsStep = ({ onNext, onBack, updateUserData, userData }: Prio
             value={searchTerm}
             onChange={handleSearchChange}
             onFocus={handleSearchFocus}
-            className="pl-10 bg-canvas-black/80 border-cool-slate/20 text-ice-grey placeholder:text-cool-slate/70"
+            className="pl-10 bg-white/15 border-white/20 text-ice-grey placeholder:text-white/50"
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-cool-slate" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/50" />
           
           {showResults && searchTerm && (
-            <div className="absolute z-10 w-full mt-1 bg-canvas-black border border-cool-slate/20 rounded-md shadow-md max-h-60 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-1 bg-canvas-black border border-white/20 rounded-md shadow-md max-h-60 overflow-y-auto">
               {filteredContacts.length > 0 ? (
                 filteredContacts.map(contact => (
                   <div 
@@ -144,7 +144,7 @@ const PriorityContactsStep = ({ onNext, onBack, updateUserData, userData }: Prio
                     </Avatar>
                     <div>
                       <p className="text-ice-grey">{contact.name}</p>
-                      <p className="text-xs text-cool-slate">{contact.email}</p>
+                      <p className="text-xs text-white/50">{contact.email}</p>
                     </div>
                   </div>
                 ))
@@ -163,20 +163,20 @@ const PriorityContactsStep = ({ onNext, onBack, updateUserData, userData }: Prio
           )}
         </div>
         
-        {/* Selected contacts */}
+        {/* Selected contacts - updated styling to match integration cards */}
         <div>
-          <h3 className="text-sm font-medium text-cool-slate mb-3">Priority Contacts ({contacts.length})</h3>
+          <h3 className="text-sm font-medium text-white/70 mb-3">Priority Contacts ({contacts.length})</h3>
           
           {contacts.length === 0 ? (
-            <div className="text-center py-6 border border-dashed border-cool-slate/20 rounded-lg">
-              <p className="text-cool-slate">Add people you never want to miss</p>
+            <div className="text-center py-6 border border-dashed border-white/20 rounded-lg">
+              <p className="text-white/70">Add people you never want to miss</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="flex flex-col space-y-1.5">
               {contacts.map(contact => (
                 <div 
                   key={contact.id}
-                  className="flex items-center justify-between px-4 py-3 border border-cool-slate/20 rounded-lg bg-canvas-black/80"
+                  className="flex items-center justify-between py-2 px-3 rounded-lg border border-white/30 bg-white/15 backdrop-blur-md"
                 >
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
@@ -186,13 +186,13 @@ const PriorityContactsStep = ({ onNext, onBack, updateUserData, userData }: Prio
                     </Avatar>
                     <div>
                       <p className="text-ice-grey">{contact.name}</p>
-                      <p className="text-xs text-cool-slate">{contact.email}</p>
+                      <p className="text-xs text-white/50">{contact.email}</p>
                     </div>
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="h-8 w-8 p-0 text-cool-slate hover:text-hot-coral hover:bg-transparent"
+                    className="h-8 w-8 p-0 text-white/50 hover:text-hot-coral hover:bg-transparent"
                     onClick={() => removeContact(contact.id)}
                   >
                     <X size={16} />

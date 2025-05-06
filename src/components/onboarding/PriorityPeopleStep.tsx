@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,13 +59,13 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
       
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Who are your priority people?</h2>
-        <p className="text-cool-slate">Add important people who should be able to break through Brief-Me barriers. We'll prioritize messages from these contacts.</p>
+        <p className="text-white/70">Add important people who should be able to break through Brief-Me barriers. We'll prioritize messages from these contacts.</p>
       </div>
       
       <div className="space-y-6">
         <div className="space-y-3">
           <Label htmlFor="priority-person" className="text-ice-grey">Add important people</Label>
-          <p className="text-sm text-cool-slate -mt-1">
+          <p className="text-sm text-white/70 -mt-1">
             Add your boss, spouse, team members, or anyone else whose messages should always be flagged.
           </p>
           <div className="flex gap-2">
@@ -74,7 +75,7 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addPerson()}
-              className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+              className="bg-white/15 border-white/20 text-ice-grey placeholder:text-white/50"
             />
             <Button 
               onClick={addPerson}
@@ -92,7 +93,7 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
                 <div key={person} className="flex items-center gap-1 px-3 py-1 rounded-full bg-deep-plum/30 border border-electric-teal/20 text-sm text-ice-grey">
                   <User size={14} className="text-electric-teal" />
                   {person}
-                  <button onClick={() => removePerson(person)} className="ml-1 focus:outline-none text-cool-slate hover:text-hot-coral">
+                  <button onClick={() => removePerson(person)} className="ml-1 focus:outline-none text-white/50 hover:text-hot-coral">
                     <X size={14} />
                   </button>
                 </div>
@@ -101,10 +102,10 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
           )}
         </div>
         
-        {/* Contacts suggestion section */}
+        {/* Contacts suggestion section - updated styling to match integration cards */}
         <div className="space-y-3 pt-2">
           <h3 className="text-lg font-medium text-ice-grey">Suggested Contacts</h3>
-          <p className="text-sm text-cool-slate">
+          <p className="text-sm text-white/70">
             Select from your recent contacts or connected accounts.
           </p>
           
@@ -117,7 +118,7 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
                   "flex items-center justify-between p-3 rounded-lg border text-left",
                   priorityPeople.includes(contact.name)
                     ? "bg-deep-plum/40 border-electric-teal/30 text-electric-teal"
-                    : "bg-canvas-black/50 border-cool-slate/20 text-ice-grey hover:border-cool-slate/40"
+                    : "bg-white/15 border-white/30 backdrop-blur-md text-ice-grey hover:border-white/40"
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -126,7 +127,7 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
                   </div>
                   <div>
                     <div className="font-medium">{contact.name}</div>
-                    <div className="text-sm text-cool-slate flex items-center gap-1">
+                    <div className="text-sm text-white/50 flex items-center gap-1">
                       <Mail size={12} /> {contact.email}
                     </div>
                   </div>
@@ -141,7 +142,7 @@ const PriorityPeopleStep = ({ onNext, onBack, updateUserData, userData }: Priori
           <div className="text-center mt-4">
             <Button 
               variant="ghost" 
-              className="text-cool-slate hover:text-ice-grey"
+              className="text-white/50 hover:text-ice-grey"
             >
               <Phone size={16} className="mr-2" />
               Import from contacts
