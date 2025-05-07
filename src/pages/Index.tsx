@@ -66,7 +66,7 @@ const Index = () => {
   }), [isMobile]);
   
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center p-4 relative overflow-hidden bg-deep-teal">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-deep-teal">
       <style>{pulseAnimationCSS}</style>
       
       {/* Background with enhanced teal gradient */}
