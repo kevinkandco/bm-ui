@@ -51,20 +51,22 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system">
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <ThemeToggle />
-        <BrowserRouter>
-          <Suspense fallback={<MemoizedLoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
+        <div className="min-h-screen flex flex-col justify-center">
+          <Toaster />
+          <Sonner />
+          <ThemeToggle />
+          <BrowserRouter>
+            <Suspense fallback={<MemoizedLoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </div>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

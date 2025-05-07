@@ -102,7 +102,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
   `;
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-6 relative overflow-hidden bg-deep-teal">
+    <div className="min-h-[80vh] w-full flex flex-col items-center justify-center px-4 py-6 relative overflow-hidden bg-deep-teal">
       <style>{styleCSS}</style>
       
       {/* Background with enhanced teal gradient */}
