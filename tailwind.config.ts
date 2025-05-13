@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -78,7 +79,7 @@ export default {
 				
 				// Additional colors for compatibility with existing code
 				'canvas-black': '#1A1A1C',
-				'deep-plum': '#3D0B46',
+				'deep-plum': '#222222',  // Changed from purple to greyish black
 				'cranberry': '#6E0039',
 				'electric-teal': '#2B88FF',  // Mapped to accent-primary
 				'hot-coral': '#6BA5FF',      // Mapped to accent-secondary
