@@ -17,15 +17,15 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
     if (isMobile) return;
     
     const handleMouseMove = (e: MouseEvent) => {
-      const shapes = document.querySelectorAll('.neon-shape');
+      const shapes = document.querySelectorAll('.glow-shape');
       const x = e.clientX / window.innerWidth;
       const y = e.clientY / window.innerHeight;
       
       shapes.forEach((shape: Element) => {
         const shapeElement = shape as HTMLElement;
         const speed = parseFloat(shapeElement.getAttribute('data-speed') || '1');
-        const xOffset = (x - 0.5) * 20 * speed;
-        const yOffset = (y - 0.5) * 20 * speed;
+        const xOffset = (x - 0.5) * 30 * speed;
+        const yOffset = (y - 0.5) * 30 * speed;
         
         shapeElement.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
       });
@@ -38,107 +38,58 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
     };
   }, [isMobile]);
 
-  // Add CSS for the wave icon pulse animation at 55bpm
-  const styleCSS = `
-    @keyframes pulse55bpm {
-      0% { transform: scale(0.96); opacity: 0.85; }
-      50% { transform: scale(1.04); opacity: 1; }
-      100% { transform: scale(0.96); opacity: 0.85; }
-    }
-    .wave-pulse {
-      animation: pulse55bpm 1.091s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* 55bpm = 1.091s per beat */
-    }
-    
-    /* Schedule card styles */
-    .schedule-card {
-      transition: all 0.2s ease-out;
-    }
-    .schedule-card:hover {
-      transform: translateY(-2px);
-    }
-    .schedule-card.selected {
-      border-color: var(--electric-teal);
-      background-color: rgba(0, 200, 200, 0.1);
-    }
-    
-    /* Glowing shadow effect for selected cards */
-    .shadow-glow {
-      box-shadow: 0 0 15px rgba(0, 200, 200, 0.3);
-    }
-    
-    /* Custom preference chip styles */
-    .preference-chip {
-      padding: 0.5rem 0.75rem;
-      border-radius: 9999px;
-      background-color: rgba(30, 41, 59, 0.5);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .preference-chip:hover {
-      background-color: rgba(30, 41, 59, 0.7);
-    }
-    .preference-chip.selected {
-      background-color: rgba(0, 200, 200, 0.15);
-      border-color: rgba(0, 200, 200, 0.4);
-    }
-    
-    /* Custom delivery card styles */
-    .delivery-card {
-      padding: 1rem;
-      border-radius: 0.75rem;
-      background-color: rgba(30, 41, 59, 0.5);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .delivery-card:hover {
-      background-color: rgba(30, 41, 59, 0.7);
-    }
-    .delivery-card.selected {
-      background-color: rgba(0, 200, 200, 0.15);
-      border-color: rgba(0, 200, 200, 0.4);
-    }
-  `;
-
   return (
-    <div className="min-h-[80vh] w-full flex flex-col items-center justify-center px-4 py-6 relative overflow-hidden bg-deep-teal">
-      <style>{styleCSS}</style>
-      
-      {/* Background with enhanced teal gradient */}
+    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-6 relative overflow-hidden bg-surface">
+      {/* Background with dark gradient */}
       <div className="absolute inset-0 w-full h-full">
-        <div className="absolute inset-0 bg-gradient-to-t from-deep-teal via-lake-blue/70 to-hot-coral/20 opacity-80"></div>
+        <div className="absolute inset-0 bg-gradient-dark opacity-80"></div>
         
-        {/* TV noise texture overlay */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-texture"></div>
+        {/* Horizontal glow line */}
+        <div className="absolute top-20 left-0 right-0 h-px bg-glow-line shadow-neon"></div>
         
-        {/* Warm gradient overlay at bottom - increased contrast */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-bright-orange/40 to-transparent"></div>
+        {/* Subtle radial gradient for depth */}
+        <div className="absolute inset-0 bg-gradient-radial from-surface-raised/20 to-transparent opacity-50"></div>
       </div>
       
-      {/* Fluid Aurora Ribbon Effect */}
-      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
-        <div className="aurora-ribbon"></div>
-      </div>
+      {/* Glow shapes */}
+      <div className="glow-shape absolute -top-20 -left-20 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-40" data-speed="0.5"></div>
+      <div className="glow-shape absolute top-1/3 -right-20 w-96 h-96 rounded-full bg-accent-secondary/5 filter blur-3xl opacity-30" data-speed="0.8"></div>
+      <div className="glow-shape absolute -bottom-40 left-1/4 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-30" data-speed="0.6"></div>
       
-      {/* Floating glass orbs with enhanced visibility - reduced size on mobile */}
-      <div className={`absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-full backdrop-blur-md border border-white/20 animate-float z-[2] glass-reflection`} style={{background: 'rgba(69, 175, 201, 0.2)'}}></div>
-      <div className={`absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-full backdrop-blur-md border border-white/20 animate-float-delay z-[2] glass-reflection`} style={{background: 'rgba(69, 175, 201, 0.15)'}}></div>
+      {/* Floating glass panels - reduced size on mobile */}
+      <div 
+        className={`absolute left-1/4 top-1/3 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-xl glass-reflection z-[2] opacity-20`}
+        style={{
+          background: 'rgba(43, 136, 255, 0.05)', 
+          backdropFilter: 'blur(12px)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+          border: '1px solid rgba(255, 255, 255, 0.1)'
+        }}
+      ></div>
+      <div 
+        className={`absolute right-1/4 bottom-1/3 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-xl glass-reflection animate-float-delay z-[2]`}
+        style={{
+          background: 'rgba(43, 136, 255, 0.03)', 
+          backdropFilter: 'blur(12px)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          border: '1px solid rgba(255, 255, 255, 0.05)'
+        }}
+      ></div>
       
       <div 
         className={cn(
-          "w-full max-w-md z-10 p-6 sm:p-8 backdrop-blur-xl rounded-3xl border border-white/20 shadow-lg glass-reflection",
+          "w-full max-w-md z-10 p-6 sm:p-8 backdrop-blur-xl rounded-3xl border border-border-subtle glass-reflection",
           className
         )}
         style={{
-          background: 'rgba(69, 175, 201, 0.25)', 
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
+          background: 'rgba(35, 35, 38, 0.75)', 
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
         }}
       >
         {children}
       </div>
       
-      <div className="mt-4 text-xs text-white/90 z-10 px-4 text-center">
+      <div className="mt-4 text-xs text-text-secondary z-10 px-4 text-center">
         You control what Brief.me monitors. Change anytime.
       </div>
     </div>

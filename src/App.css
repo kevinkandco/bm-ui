@@ -1,42 +1,51 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Global light glow effect for interactive elements */
+.glow-hover:hover {
+  box-shadow: 0 0 15px rgba(43, 136, 255, 0.4);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Animated elements */
+.animate-float {
+  animation: float 6s infinite ease-in-out;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.animate-float-delay {
+  animation: float-delay 8s infinite ease-in-out 1s;
 }
 
-.card {
-  padding: 2em;
+.animate-glow {
+  animation: glow 3s infinite ease-in-out;
 }
 
-.read-the-docs {
-  color: #888;
+.animate-pulse {
+  animation: pulse 8s infinite ease-in-out;
+}
+
+/* Specialized blur effects */
+.backdrop-blur-glass {
+  backdrop-filter: blur(16px);
+}
+
+/* Dark design system specific adjustments */
+.text-gradient {
+  background: linear-gradient(90deg, #2B88FF, #6BA5FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glass-border {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Improved readability for text on dark backgrounds */
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }

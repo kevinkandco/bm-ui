@@ -1,32 +1,38 @@
 
-import { cn } from "@/lib/utils";
+import React from "react";
+
 interface ProgressIndicatorProps {
   currentStep: number;
   totalSteps: number;
-  className?: string;
 }
+
 const ProgressIndicator = ({
   currentStep,
-  totalSteps,
-  className
+  totalSteps
 }: ProgressIndicatorProps) => {
-  const percentage = currentStep / totalSteps * 100;
-  return <div className={cn("w-full space-y-2", className)}>
-      <div className="flex justify-between text-xs text-cool-slate">
-        <span className="text-gray-800">Step {currentStep} of {totalSteps}</span>
-        <span className="text-gray-800">{Math.round(percentage)}%</span>
+  const progress = (currentStep / totalSteps) * 100;
+
+  return (
+    <div className="w-full space-y-2">
+      {/* Progress bar */}
+      <div className="w-full h-1 bg-surface-raised rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-accent-primary rounded-full"
+          style={{ width: `${progress}%` }}
+        ></div>
       </div>
       
-      <div className="w-full bg-cool-slate/20 h-1.5 rounded-full overflow-hidden bg-[#000a0e]/[0.07]">
-        <div style={{
-        width: `${percentage}%`
-      }} className="bg-electric-teal h-full rounded-full transition-all duration-500 ease-out bg-stone-300" />
+      {/* Step indicator */}
+      <div className="flex justify-between items-center">
+        <span className="text-xs text-text-secondary">
+          Step {currentStep} of {totalSteps}
+        </span>
+        <span className="text-xs text-text-secondary">
+          {Math.round(progress)}%
+        </span>
       </div>
-      
-      {/* Progress dots instead of bar */}
-      <div className="flex items-center justify-center gap-2 py-1">
-        {[...Array(totalSteps)].map((_, index) => <div key={index} className={cn("progress-dot transition-all duration-300", index < currentStep ? "active" : "inactive")} />)}
-      </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ProgressIndicator;

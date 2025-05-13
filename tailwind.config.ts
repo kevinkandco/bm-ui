@@ -62,33 +62,33 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Updated dark theme colors based on the image
-				'canvas-black': '#0E0E10',
+				
+				// Dark glass morphism design system colors
+				'surface': '#1A1A1C',
+				'surface-raised': '#232326',
+				'surface-overlay': 'rgba(35, 35, 38, 0.85)',
+				'accent-primary': '#2B88FF',
+				'accent-secondary': '#6BA5FF',
+				'text-primary': '#FFFFFF',
+				'text-secondary': 'rgba(255, 255, 255, 0.8)',
+				'text-muted': 'rgba(255, 255, 255, 0.5)',
+				'border-subtle': 'rgba(255, 255, 255, 0.12)',
+				'glow-highlight': 'rgba(255, 255, 255, 0.1)',
+				'glow-line': 'rgba(255, 255, 255, 0.25)',
+				
+				// Additional colors for compatibility with existing code
+				'canvas-black': '#1A1A1C',
 				'deep-plum': '#3D0B46',
 				'cranberry': '#6E0039',
-				'electric-teal': '#2FBECF',  // Updated to match image
-				'hot-coral': '#FF7A5A',      // Updated to match image
+				'electric-teal': '#2B88FF',  // Mapped to accent-primary
+				'hot-coral': '#6BA5FF',      // Mapped to accent-secondary
 				'ice-grey': '#E0E4EA',
 				'cool-slate': '#B0B3BE',
-				// Light theme colors
-				'canvas-light': '#F8F9FC',
-				'soft-plum': '#E8D9F0',
-				'light-rose': '#FFE4EB',
-				'bright-teal': '#2FBECF',    // Updated to match image
-				'warm-coral': '#FF7A5A',     // Updated to match image
-				'deep-navy': '#1A1A2E',
 				'slate-grey': '#696E79',
-				// New colors for the landing page - updated based on image
-				'forest-green': '#143D4D',    // Darker teal from image
-				'lake-blue': '#2FBECF',       // Brighter teal from image
-				'peach': '#FF7A5A',           // Orange/coral from image
-				'off-white': '#F5F5F2',
-				'neon-mint': '#30D8E8',       // Brighter blue from image
-				// Additional colors from the image
-				'deep-teal': '#143D4D',       // Deep teal background color
-				'bright-orange': '#FF5F37',   // Bright orange/coral from bottom of image
-				'glass-blue': '#30D8E8',      // Glass-like blue highlight
-				// Explicitly define white with alpha support
+				'glass-blue': '#2B88FF',
+				'deep-teal': '#1A1A1C',
+				'lake-blue': '#2B88FF',
+				'bright-orange': '#FF5F37',
 				'white': {
 					DEFAULT: '#FFFFFF',
 					10: 'rgba(255, 255, 255, 0.1)',
@@ -235,20 +235,16 @@ export default {
 				'float-delay': 'float-delay 8s infinite ease-in-out 1s',
 			},
 			boxShadow: {
-				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
-				'elevated': '0 10px 30px rgba(0, 0, 0, 0.08)',
-				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 224, 213, 0.1)',
-				'neon': '0 0 15px rgba(0, 224, 213, 0.4)',
-				'subtle': '0 2px 10px rgba(0, 0, 0, 0.2)',
-				'light-neo': '0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 209, 198, 0.1)',
-				'light-neon': '0 0 15px rgba(0, 209, 198, 0.3)',
-				'light-subtle': '0 2px 10px rgba(0, 0, 0, 0.1)'
+				'glass': '0 4px 30px rgba(0, 0, 0, 0.2)',
+				'elevated': '0 10px 30px rgba(0, 0, 0, 0.15)',
+				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(43, 136, 255, 0.1)',
+				'neon': '0 0 15px rgba(43, 136, 255, 0.4)',
+				'subtle': '0 8px 32px rgba(0, 0, 0, 0.2)',
 			},
 			backgroundImage: {
-				'gradient-primary': 'linear-gradient(90deg, #3B83F5, #9b87f5)',
-				'gradient-neon': 'linear-gradient(90deg, #00E0D5, #FF4F6D)',
-				'gradient-dark': 'radial-gradient(circle at center, #3D0B46 0%, #6E0039 40%, #0E0E10 80%)',
-				'gradient-light': 'radial-gradient(circle at center, #E8D9F0 0%, #FFE4EB 40%, #F8F9FC 80%)'
+				'gradient-primary': 'linear-gradient(90deg, #2B88FF, #6BA5FF)',
+				'gradient-neon': 'linear-gradient(90deg, #2B88FF, #6BA5FF)',
+				'gradient-dark': 'radial-gradient(circle at center, #232326 0%, #1A1A1C 100%)',
 			}
 		}
 	},

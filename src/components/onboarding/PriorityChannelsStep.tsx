@@ -41,14 +41,14 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <ProgressIndicator currentStep={5} totalSteps={9} />
       
       <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-off-white tracking-tighter">Which channels are critical?</h2>
-        <p className="text-off-white/70">Mark your most important channels. We'll highlight updates from these channels in your brief.</p>
+        <h2 className="text-2xl font-semibold text-text-primary tracking-tighter">Which channels are critical?</h2>
+        <p className="text-text-secondary">Mark your most important channels. We'll highlight updates from these channels in your brief.</p>
       </div>
       
       <div className="space-y-6">
         <div className="space-y-3">
-          <Label htmlFor="priority-channel" className="text-off-white">Add important channels</Label>
-          <p className="text-sm text-off-white/70 -mt-1">
+          <Label htmlFor="priority-channel" className="text-text-primary">Add important channels</Label>
+          <p className="text-sm text-text-secondary -mt-1">
             Add critical Slack channels, email folders, or other message sources you need to monitor closely.
           </p>
           
@@ -70,13 +70,13 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
         {/* Slack channels section */}
         {(hasSlackIntegration || true) && (
           <div className="space-y-3 pt-2">
-            <h3 className="text-lg font-medium text-off-white">
+            <h3 className="text-lg font-medium text-text-primary">
               <span className="flex items-center gap-2">
-                <MessageSquare size={18} className="text-neon-mint" />
+                <MessageSquare size={18} className="text-accent-primary" />
                 Your Slack Channels
               </span>
             </h3>
-            <p className="text-sm text-off-white/50">
+            <p className="text-sm text-text-secondary">
               Select channels from your Slack workspace to prioritize.
             </p>
             
@@ -92,13 +92,14 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          variant="plain"
-          size="none"
+          variant="outline"
+          className="border-border-subtle text-text-secondary hover:bg-surface-raised hover:text-text-primary"
         >
           Back
         </Button>
         <Button 
           onClick={handleContinue}
+          className="bg-accent-primary hover:bg-accent-primary/90 text-text-primary"
         >
           Continue
         </Button>
