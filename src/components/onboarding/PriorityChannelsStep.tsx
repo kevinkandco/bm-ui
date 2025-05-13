@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
@@ -99,7 +98,8 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
         </Button>
         <Button 
           onClick={handleContinue}
-          className="bg-accent-primary hover:bg-accent-primary/90 text-text-primary"
+          variant="glow"
+          size="pill"
         >
           Continue
         </Button>

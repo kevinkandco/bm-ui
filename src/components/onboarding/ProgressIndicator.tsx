@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Progress } from "@/components/ui/progress";
 
 interface ProgressIndicatorProps {
   currentStep: number;
@@ -14,12 +15,13 @@ const ProgressIndicator = ({
 
   return (
     <div className="w-full space-y-2">
-      {/* Progress bar */}
-      <div className="w-full h-1 bg-surface-raised rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-accent-primary rounded-full"
-          style={{ width: `${progress}%` }}
-        ></div>
+      {/* Progress bar with glow effect */}
+      <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+        <Progress 
+          value={progress} 
+          className="h-1 bg-white/10" 
+          variant="glow"
+        />
       </div>
       
       {/* Step indicator */}

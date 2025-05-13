@@ -177,7 +177,12 @@ const GetStartedStep = ({
         >
           Back
         </Button>
-        <Button onClick={onNext} className="neon-button py-2 sm:py-3 px-3 sm:px-4 text-sm">
+        <Button 
+          onClick={onNext} 
+          variant="glow" 
+          size="pill"
+          className="py-2 sm:py-3 px-3 sm:px-4 text-sm"
+        >
           Go to Dashboard <ChevronsRight className="ml-1" size={16} />
         </Button>
       </div>

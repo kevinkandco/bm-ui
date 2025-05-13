@@ -20,6 +20,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-white/15 hover:text-white text-white/80",
         link: "text-white underline-offset-4 hover:text-glass-blue",
         plain: "bg-transparent text-white hover:text-glass-blue p-0 border-none",
+        glow: "bg-black/80 text-white hover:bg-black/70 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-white/10",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-xl",
@@ -27,6 +28,7 @@ const buttonVariants = cva(
         lg: "h-11 rounded-xl px-8",
         icon: "h-10 w-10 rounded-full",
         none: "h-auto p-0",
+        pill: "h-10 px-6 py-2 rounded-full",
       },
     },
     defaultVariants: {

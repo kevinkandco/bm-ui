@@ -111,7 +111,12 @@ const FeaturesWalkthroughStep = ({
         <Button onClick={prevFeature} variant="plain" size="none" className="text-sm sm:text-base">
           Back
         </Button>
-        <Button onClick={nextFeature} className="neon-button text-[#ffffff] bg-teal-500 hover:bg-teal-400 text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6">
+        <Button 
+          onClick={nextFeature} 
+          variant="glow" 
+          size="pill" 
+          className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6"
+        >
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>

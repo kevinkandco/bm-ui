@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -115,6 +114,19 @@
     transform: rotate(-25deg);
     pointer-events: none;
   }
+
+  /* New glow effect for progress bar */
+  .glow-progress {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Button glow effect */
+  .glow-button {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 9999px;
+  }
 }
 
 @layer components {
@@ -167,9 +179,9 @@
            focus:outline-none focus:ring-1 focus:ring-accent-primary focus:border-accent-primary;
   }
   
-  /* Progress bar */
-  .progress-bar {
-    @apply h-1 rounded-full transition-all duration-300 ease-out bg-accent-primary;
+  /* Progress bar with glow */
+  .progress-bar-glow {
+    @apply h-1 rounded-full transition-all duration-300 ease-out bg-white shadow-[0_0_10px_rgba(255,255,255,0.7)];
   }
   
   /* Progress dot indicators */
