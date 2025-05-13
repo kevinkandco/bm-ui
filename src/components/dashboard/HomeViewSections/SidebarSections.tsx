@@ -10,23 +10,23 @@ interface NextBriefSectionProps {
 export const NextBriefSection = React.memo(({ onUpdateSchedule }: NextBriefSectionProps) => {
   return (
     <div>
-      <h2 className="text-deep-teal text-lg flex items-center mb-3">
-        <Clock className="mr-2 h-5 w-5 text-glass-blue" />
+      <h2 className="text-text-primary text-lg flex items-center mb-3">
+        <Clock className="mr-2 h-5 w-5 text-accent-primary" />
         Next Brief
       </h2>
-      <div className="border border-white/40 rounded-lg p-3">
+      <div className="border border-border-subtle rounded-lg p-3 bg-surface-raised/10">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-medium text-deep-teal">Midday Brief</h3>
-            <p className="text-xs text-deep-teal/80">Today at 12:30 PM</p>
+            <h3 className="font-medium text-text-primary">Midday Brief</h3>
+            <p className="text-xs text-text-secondary">Today at 12:30 PM</p>
           </div>
-          <Calendar className="h-5 w-5 text-glass-blue" />
+          <Calendar className="h-5 w-5 text-accent-primary" />
         </div>
         <div className="mt-2">
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full text-glass-blue border-white/40 hover:bg-white/50 shadow-sm"
+            className="w-full text-text-primary border-border-subtle hover:bg-surface-raised/20 shadow-subtle"
             onClick={onUpdateSchedule}
           >
             Update Schedule
@@ -46,21 +46,21 @@ export const UpcomingMeetingsSection = React.memo(() => {
 
   return (
     <div>
-      <h2 className="text-lg text-deep-teal flex items-center mb-3">
-        <Calendar className="mr-2 h-5 w-5 text-glass-blue" />
+      <h2 className="text-lg text-text-primary flex items-center mb-3">
+        <Calendar className="mr-2 h-5 w-5 text-accent-primary" />
         Upcoming Meetings
       </h2>
       <div className="space-y-3">
         {meetings.map((meeting, i) => (
-          <div key={i} className="flex items-start gap-3 p-3 border border-white/40 rounded-lg">
-            <div className="rounded p-1.5 h-8 w-8 flex items-center justify-center border border-white/30">
-              <Calendar className="h-4 w-4 text-glass-blue" />
+          <div key={i} className="flex items-start gap-3 p-3 border border-border-subtle rounded-lg bg-surface-raised/10">
+            <div className="rounded p-1.5 h-8 w-8 flex items-center justify-center border border-border-subtle bg-surface-overlay">
+              <Calendar className="h-4 w-4 text-accent-primary" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-sm text-deep-teal">{meeting.title}</p>
+              <p className="font-medium text-sm text-text-primary">{meeting.title}</p>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-xs text-deep-teal/80">{meeting.time}</span>
-                <span className="text-xs text-deep-teal/80">{meeting.participants} attendees</span>
+                <span className="text-xs text-text-secondary">{meeting.time}</span>
+                <span className="text-xs text-text-secondary">{meeting.participants} attendees</span>
               </div>
             </div>
           </div>

@@ -50,7 +50,7 @@ const DashboardLayout = ({
   // Memoize sidebar classes to prevent recalculation on every render
   const sidebarClasses = useMemo(() => 
     cn(
-      "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out bg-white/25 backdrop-blur-md border-r border-white/30 shadow-xl z-20",
+      "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl bg-surface-overlay border-r border-border-subtle shadow-xl z-20",
       sidebarOpen ? "w-64 left-0" : "w-16 left-0",
       "md:left-0"
     ), [sidebarOpen]
@@ -72,8 +72,8 @@ const DashboardLayout = ({
           className={cn(
             "flex items-center px-4 py-3 text-sm relative transition-colors",
             currentPage === id 
-              ? "bg-white/35 text-glass-blue font-medium" 
-              : "text-deep-teal hover:bg-white/25 hover:text-glass-blue"
+              ? "bg-white/10 text-accent-primary font-medium" 
+              : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
           )}
         >
           <Icon className="h-5 w-5 shrink-0" />
@@ -81,7 +81,7 @@ const DashboardLayout = ({
             <span className="ml-4 whitespace-nowrap">{label}</span>
           )}
           {badge && sidebarOpen && (
-            <span className="absolute right-3 bg-neon-mint text-forest-green text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            <span className="absolute right-3 bg-accent-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               {badge}
             </span>
           )}
@@ -92,14 +92,14 @@ const DashboardLayout = ({
   
   // Memoize mobile navigation to prevent unnecessary re-renders
   const MobileNav = useMemo(() => (
-    <div className="fixed bottom-0 left-0 right-0 bg-white/25 backdrop-blur-md border-t border-white/30 md:hidden flex justify-around z-10">
+    <div className="fixed bottom-0 left-0 right-0 bg-surface-overlay backdrop-blur-xl border-t border-border-subtle md:hidden flex justify-around z-10">
       {navItems.slice(0, 5).map(({ icon: Icon, id }) => (
         <button
           key={id}
           onClick={() => handleNavClick(id)}
           className={cn(
             "p-3 flex flex-col items-center justify-center",
-            currentPage === id ? "text-glass-blue" : "text-deep-teal"
+            currentPage === id ? "text-accent-primary" : "text-text-secondary"
           )}
         >
           <Icon className="h-5 w-5" />
@@ -109,16 +109,13 @@ const DashboardLayout = ({
   ), [currentPage, handleNavClick]);
   
   return (
-    <div className="flex min-h-screen bg-white relative">
-      {/* Background with warm gradient and grain texture */}
+    <div className="flex min-h-screen bg-surface relative">
+      {/* Background with gradient and grain texture */}
       <div className="absolute inset-0 w-full h-full bg-grain">
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-lake-blue/5 to-peach/5 opacity-90"></div>
-        
-        {/* Warm gradient overlay at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#F7F9FC] via-[#FEC6A1]/10 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-surface via-surface-raised to-surface opacity-90"></div>
         
         {/* Floating glass orbs */}
-        <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 animate-float hidden lg:block"></div>
+        <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float hidden lg:block"></div>
         <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float-delay hidden lg:block"></div>
       </div>
       
@@ -128,9 +125,9 @@ const DashboardLayout = ({
           size="icon" 
           variant="outline" 
           onClick={onToggleSidebar} 
-          className="bg-white/30 backdrop-blur-md border border-white/30"
+          className="bg-surface-overlay backdrop-blur-md border border-border-subtle"
         >
-          <Menu className="h-5 w-5 text-deep-teal" />
+          <Menu className="h-5 w-5 text-text-primary" />
         </Button>
       </div>
       
@@ -138,11 +135,11 @@ const DashboardLayout = ({
       <div className={sidebarClasses}>
         <div className="p-4 flex items-center justify-between">
           <div className="flex items-center">
-            <div className="h-8 w-8 bg-gradient-to-br from-neon-mint to-lake-blue rounded-md flex items-center justify-center">
-              <span className="font-bold text-deep-teal text-lg">B</span>
+            <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
+              <span className="font-bold text-white text-lg">B</span>
             </div>
             {sidebarOpen && (
-              <span className="ml-3 font-semibold text-lg text-deep-teal">Brief.me</span>
+              <span className="ml-3 font-semibold text-lg text-text-primary">Brief.me</span>
             )}
           </div>
           
@@ -151,7 +148,7 @@ const DashboardLayout = ({
             size="icon" 
             variant="ghost" 
             onClick={onToggleSidebar} 
-            className="text-deep-teal"
+            className="text-text-secondary hover:text-text-primary"
           >
             {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
           </Button>
@@ -159,9 +156,9 @@ const DashboardLayout = ({
         
         {NavItems}
         
-        <div className="p-4 border-t border-white/20">
+        <div className="p-4 border-t border-border-subtle">
           <button 
-            className="flex items-center w-full text-deep-teal/80 hover:text-glass-blue text-sm"
+            className="flex items-center w-full text-text-secondary hover:text-text-primary text-sm"
             onClick={() => toast({
               title: "Help",
               description: "Opening help & feedback panel",

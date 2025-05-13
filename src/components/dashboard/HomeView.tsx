@@ -37,19 +37,20 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
   const HeroSection = React.memo(() => (
     <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 className="text-3xl font-bold text-deep-teal">Morning, Alex</h1>
-        <p className="text-deep-teal/90 mt-1">Here's what you missed</p>
+        <h1 className="text-3xl font-bold text-text-primary">Morning, Alex</h1>
+        <p className="text-text-secondary mt-1">Here's what you missed</p>
       </div>
       <div className="flex gap-3 mt-4 md:mt-0">
         <Button 
           onClick={onToggleCatchMeUp}
-          className="rounded-full shadow-sm hover:shadow-md transition-all bg-lake-blue text-white"
+          className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
         >
           <Zap className="mr-2 h-5 w-5" /> Catch Me Up
         </Button>
         <Button 
           onClick={onToggleFocusMode}
-          className="rounded-full shadow-sm hover:shadow-md transition-all bg-glass-blue text-white"
+          variant="outline"
+          className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle backdrop-blur-md"
         >
           <Headphones className="mr-2 h-5 w-5" /> Focus Mode
         </Button>
@@ -65,21 +66,21 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
         {/* Left Section - Col 1-8 */}
         <div className="lg:col-span-8">
           {/* Combined Card with Sections and Dividers */}
-          <div className="backdrop-blur-md border border-white/40 rounded-3xl overflow-hidden shadow-lg">
+          <div className="glass-card rounded-3xl overflow-hidden">
             {/* Latest Brief Section - Moved to top */}
             <LatestBriefSection onClick={onOpenBriefModal} />
 
-            <Separator className="bg-white/20" />
+            <Separator className="bg-border-subtle" />
             
             {/* Urgent Threads Section */}
             <UrgentThreadsSection />
 
-            <Separator className="bg-white/20" />
+            <Separator className="bg-border-subtle" />
             
             {/* Connected Channels Section */}
             <ConnectedChannelsSection />
             
-            <Separator className="bg-white/20" />
+            <Separator className="bg-border-subtle" />
             
             {/* Priority People Section */}
             <PriorityPeopleSection />
@@ -89,10 +90,14 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
         {/* Right Section - Col 9-12 */}
         <div className="lg:col-span-4 space-y-6">
           {/* Next Brief Section */}
-          <NextBriefSection onUpdateSchedule={handleUpdateSchedule} />
+          <div className="glass-card rounded-3xl p-6">
+            <NextBriefSection onUpdateSchedule={handleUpdateSchedule} />
+          </div>
           
           {/* Upcoming Meetings Section */}
-          <UpcomingMeetingsSection />
+          <div className="glass-card rounded-3xl p-6">
+            <UpcomingMeetingsSection />
+          </div>
         </div>
       </div>
     </div>
