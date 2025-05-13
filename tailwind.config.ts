@@ -29,6 +29,9 @@ export default {
 				'text-secondary': '#6B6B6B', // Subcopy / meta
 				'text-muted': '#9E9E9E',     // Placeholder hints
 				'slider-track': '#E7E7E7',   // Slider track color
+                'slate-grey': '#aaadb0',     // Added for dark mode theme toggle
+                'white-40': 'rgba(255, 255, 255, 0.4)', // Added for light mode theme toggle
+                'white-60': 'rgba(255, 255, 255, 0.6)', // Added for hover state
 
 				// Keep existing shadcn colors for compatibility
 				border: 'hsl(var(--border))',
@@ -80,6 +83,8 @@ export default {
 				"teal-blue": "#FF7847",
 				"purple-light": "#F7F8F9",
 				"soft-gray": "#F7F8F9",
+                "glass-blue": "#49a5ac", // Added for theme toggle text
+                "deep-teal": "#333333", // Added for theme toggle text
 			},
 			boxShadow: {
 				// Neumorphic shadows
