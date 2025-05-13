@@ -1,263 +1,306 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Neumorphic UI CSS Variables */
-    --surface: #F7F8F9;
-    --surface-raised: #FFFFFF;
-    --shadow-light: rgba(255, 255, 255, 0.85);
-    --shadow-dark: rgba(0, 0, 0, 0.07);
-    --accent-primary: #FF7847;
-    --text-primary: #333333;
-    --text-secondary: #6B6B6B;
-    --text-muted: #9E9E9E;
-    --slider-track: #E7E7E7;
-    
-    /* Standard radius */
-    --radius: 20px;
+    /* Light theme variables (default) */
+    --background: 240 30% 99%;
+    --foreground: 222.2 84% 4.9%;
 
-    /* Keep shadcn variables but update to match our design system */
-    --background: 0 0% 98%;  /* #F7F8F9 */
-    --foreground: 0 0% 20%;  /* #333333 */
-    --card: 0 0% 100%;       /* #FFFFFF */
-    --card-foreground: 0 0% 20%;  /* #333333 */
-    --popover: 0 0% 100%;    /* #FFFFFF */
-    --popover-foreground: 0 0% 20%;  /* #333333 */
-    --primary: 15 100% 64%; /* #FF7847 */
-    --primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 0 0% 97%; /* Light version of surface */
-    --secondary-foreground: 0 0% 20%; /* #333333 */
-    --muted: 0 0% 96.1%; /* Similar to slider-track */
-    --muted-foreground: 0 0% 62%; /* #9E9E9E */
-    --accent: 15 100% 64%; /* #FF7847 */
-    --accent-foreground: 0 0% 20%; /* #333333 */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 92%; /* Light border */
-    --input: 0 0% 92%;
-    --ring: 15 100% 64%; /* #FF7847 */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 240 100% 62%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 240 10% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 262 83% 74%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 240 100% 62%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* Default to light neumorphic mode */
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* Default to light mode */
   body {
-    @apply bg-surface text-text-primary font-sans;
+    @apply bg-canvas-light text-deep-navy;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-}
 
-@layer utilities {
-  /* Neumorphic effect utilities - MOVED TO TOP of utilities */
-  .shadow-neu-inner {
-    box-shadow: inset 2px 2px 5px var(--shadow-dark), 
-                inset -2px -2px 5px var(--shadow-light);
-  }
-  
-  .shadow-neu-outer {
-    box-shadow: 2px 2px 12px var(--shadow-dark), 
-                -2px -2px 12px var(--shadow-light);
-  }
-  
-  .shadow-neu-pressed {
-    box-shadow: inset 2px 2px 5px var(--shadow-dark), 
-                inset -2px -2px 5px var(--shadow-light);
-  }
-  
-  .shadow-neu-focus {
-    box-shadow: 0 0 0 2px var(--accent-primary);
-  }
-  
-  /* Dotted scale marks for sliders and dials */
-  .dotted-scale {
-    background-image: radial-gradient(circle, var(--text-muted) 1px, transparent 1px);
-    background-size: 8px 8px;
-    background-position: center;
+  /* Dark mode */
+  .dark body {
+    @apply bg-deep-teal text-off-white;
   }
 
-  /* Keep other existing utilities */
-  .shadow-neo {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(48, 216, 232, 0.1);
-  }
-  
-  .shadow-neon {
-    box-shadow: 0 0 15px rgba(48, 216, 232, 0.4);
-  }
-  
-  .shadow-subtle {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tighter font-semibold text-off-white;
   }
 
-  .text-gradient-neon {
-    @apply bg-gradient-to-r bg-clip-text text-transparent from-glass-blue to-lake-blue;
-  }
-  
-  /* New glass effect utilities */
-  .glass-reflection {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .glass-reflection::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    transform: rotate(-25deg);
-    pointer-events: none;
+  p {
+    @apply leading-relaxed max-w-lg text-off-white/90;
   }
 }
 
 @layer components {
-  /* Neumorphic Card Component */
-  .neu-card {
-    @apply bg-surface-raised rounded-xl shadow-neu-raised transition-all duration-150 ease-out;
+  /* Glass card component - improved with better blur and gradient */
+  .glass-card {
+    @apply backdrop-blur-[30px] rounded-3xl border-t border-l border-white/20 shadow-lg;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    transition: all 160ms ease-out;
   }
   
-  .neu-card:hover {
-    @apply shadow-neu-hover transform -translate-y-1;
-  }
-  
-  /* Neumorphic Button */
-  .neu-button {
-    @apply bg-surface-raised text-text-primary rounded-full py-3 px-6 
-           shadow-neu-raised transition-all duration-150 ease-out font-medium;
-  }
-  
-  .neu-button:hover {
-    @apply shadow-neu-hover transform -translate-y-1;
-  }
-  
-  .neu-button:active {
-    @apply shadow-neu-pressed transform translate-y-0;
-  }
-  
-  /* Neumorphic Primary Button */
-  .neu-button-primary {
-    @apply bg-accent-primary text-white rounded-full py-3 px-6
-           shadow-neu-raised transition-all duration-150 ease-out font-medium;
-  }
-  
-  .neu-button-primary:hover {
-    @apply shadow-neu-hover transform -translate-y-1;
-  }
-  
-  .neu-button-primary:active {
-    @apply shadow-neu-pressed transform translate-y-0;
-  }
-  
-  /* Neumorphic Secondary Button */
-  .neu-button-secondary {
-    @apply bg-transparent text-text-secondary rounded-full py-3 px-6
-           transition-all duration-150 ease-out font-medium;
-  }
-  
-  .neu-button-secondary:hover {
-    @apply text-text-primary;
-  }
-  
-  /* Neumorphic Input */
-  .neu-input {
-    @apply bg-surface border border-surface rounded-lg px-4 py-2
-           shadow-neu-pressed transition-all duration-150 ease-out
-           focus:outline-none focus:ring-1 focus:ring-accent-primary;
-  }
-  
-  /* Neumorphic Progress Bar */
-  .neu-progress-track {
-    @apply bg-slider-track h-1 rounded-full shadow-neu-pressed overflow-hidden;
-  }
-  
-  .neu-progress-bar {
-    @apply bg-accent-primary h-full rounded-full transition-all duration-300 ease-out;
-  }
-  
-  /* Neumorphic Toggle Switch Track */
-  .neu-switch-track {
-    @apply bg-slider-track rounded-full shadow-neu-pressed
-           w-11 h-6 transition-all duration-150 ease-out;
-  }
-  
-  /* Neumorphic Toggle Switch Thumb */
-  .neu-switch-thumb {
-    @apply bg-surface-raised rounded-full shadow-neu-raised
-           w-5 h-5 transform translate-x-1 transition-transform duration-150 ease-out;
-  }
-  
-  .neu-switch-thumb[data-state="checked"] {
-    @apply transform translate-x-5 bg-accent-primary;
-  }
-  
-  /* Neumorphic Slider */
-  .neu-slider-track {
-    @apply bg-slider-track h-1 rounded-full shadow-neu-pressed;
-  }
-  
-  .neu-slider-range {
-    @apply bg-accent-primary h-full rounded-full;
-  }
-  
-  .neu-slider-thumb {
-    @apply bg-surface-raised rounded-full w-5 h-5 border border-gray-200
-           shadow-neu-raised flex items-center justify-center
-           focus:outline-none focus:ring-2 focus:ring-accent-primary;
-  }
-  
-  .neu-slider-thumb:before {
-    content: '';
-    @apply w-1 h-1 bg-text-primary rounded-full;
-  }
-  
-  /* Neumorphic Typography */
-  .headline-xl {
-    @apply text-4xl font-bold tracking-tighter text-text-primary;
-  }
-  
-  .headline-m {
-    @apply text-2xl font-semibold tracking-tighter text-text-primary;
-  }
-  
-  .body-l {
-    @apply text-base font-medium text-text-primary;
-  }
-  
-  .body-s {
-    @apply text-sm font-normal text-text-secondary;
+  .glass-card:active {
+    @apply backdrop-blur-[20px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.45) 0%, rgba(38, 118, 146, 0.35) 50%, rgba(28, 60, 75, 0.4) 100%);
   }
 
-  /* Progress Indicators */
-  .neu-dot {
-    @apply w-2 h-2 rounded-full transition-all duration-150;
+  .dark .glass-card {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
   }
-  
-  .neu-dot.active {
-    @apply bg-accent-primary;
-  }
-  
-  .neu-dot.inactive {
-    @apply bg-slider-track shadow-neu-pressed;
-  }
-  
-  /* Glass card component - replaced with neumorphic styling */
-  .glass-card {
-    @apply neu-card;
-  }
-  
-  /* Progress bar - updated to neumorphic style */
+
+  /* Progress bar */
   .progress-bar {
-    @apply h-1 rounded-full transition-all duration-300 ease-out bg-accent-primary;
+    @apply h-1.5 rounded-full transition-all duration-300 ease-out bg-glass-blue;
   }
   
-  /* Keep some existing component styles that don't need to be fully replaced */
+  /* Integration card */
+  .integration-card {
+    @apply relative flex items-center justify-center p-4 rounded-xl border-t border-l
+           transition-all duration-160 ease-out cursor-pointer;
+  }
+  
+  .integration-card {
+    @apply border-white/20 backdrop-blur-[30px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .integration-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
+  }
+
+  .dark .integration-card {
+    @apply border-white/20;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .integration-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
+  }
+
+  .integration-card.connected {
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+  }
+
+  .dark .integration-card.connected {
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+  }
+
+  .integration-card.disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+  
+  /* Preference chip */
+  .preference-chip {
+    @apply px-4 py-2 rounded-full border-t border-l
+           transition-all duration-160 ease-out cursor-pointer;
+  }
+  
+  .preference-chip {
+    @apply border-white/20 backdrop-blur-[30px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .preference-chip:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
+  }
+  
+  .dark .preference-chip {
+    @apply border-white/20;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .preference-chip:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
+  }
+  
+  .preference-chip.selected {
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+  }
+  
+  .dark .preference-chip.selected {
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+  }
+  
+  /* Delivery card */
+  .delivery-card {
+    @apply relative p-4 rounded-xl border-t border-l
+           transition-all duration-160 ease-out cursor-pointer;
+  }
+  
+  .delivery-card {
+    @apply border-white/20 backdrop-blur-[30px];
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .delivery-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
+  }
+  
+  .dark .delivery-card {
+    @apply border-white/20;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.3) 0%, rgba(38, 118, 146, 0.2) 50%, rgba(28, 60, 75, 0.25) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .delivery-card:hover {
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.35) 0%, rgba(38, 118, 146, 0.25) 50%, rgba(28, 60, 75, 0.3) 100%);
+  }
+  
+  .delivery-card.selected {
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+  }
+  
+  .dark .delivery-card.selected {
+    @apply border-glass-blue;
+    background: linear-gradient(180deg, rgba(69, 175, 201, 0.4) 0%, rgba(38, 118, 146, 0.3) 50%, rgba(28, 60, 75, 0.35) 100%);
+  }
+
+  /* New components for the redesign */
+  .neon-button {
+    @apply font-medium px-6 py-3 rounded-xl 
+           transition-all duration-300 ease-out transform hover:-translate-y-0.5;
+  }
+  
+  .neon-button {
+    @apply bg-peach text-off-white hover:bg-bright-orange;
+  }
+  
+  .dark .neon-button {
+    @apply bg-bright-orange text-off-white hover:bg-bright-orange/90;
+  }
+  
+  .neon-outline-button {
+    @apply border-2 px-6 py-2.5 rounded-xl
+           transition-all duration-300 ease-out;
+  }
+  
+  .neon-outline-button {
+    @apply border-glass-blue text-glass-blue hover:border-glass-blue/70 hover:text-glass-blue/70;
+  }
+  
+  .dark .neon-outline-button {
+    @apply border-glass-blue text-glass-blue hover:border-glass-blue/70 hover:text-glass-blue/70;
+  }
+  
+  .neon-shape {
+    @apply absolute pointer-events-none filter blur-sm opacity-80;
+    animation: pulse 8s infinite ease-in-out;
+  }
+
+  .radial-gradient-bg {
+    @apply absolute inset-0 pointer-events-none;
+  }
+
+  .radial-gradient-bg {
+    background: radial-gradient(circle at center, theme('colors.hot-coral') 0%, theme('colors.lake-blue') 40%, transparent 70%);
+    opacity: 0.6;
+  }
+
+  .dark .radial-gradient-bg {
+    background: radial-gradient(circle at center, theme('colors.hot-coral') 0%, theme('colors.lake-blue') 40%, transparent 70%);
+    opacity: 0.4;
+  }
+
+  .progress-dot {
+    @apply w-2 h-2 rounded-full transition-all duration-300;
+  }
+
+  .progress-dot.active {
+    @apply bg-glass-blue;
+  }
+  
+  .dark .progress-dot.active {
+    @apply bg-glass-blue;
+  }
+
+  .progress-dot.inactive {
+    @apply bg-cool-slate/50;
+  }
+
   /* Theme toggle */
   .theme-toggle {
     @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors;
@@ -334,7 +377,47 @@
   }
 }
 
-/* ... keep existing code (animations and keyframes) */
+@layer utilities {
+  .shadow-neo {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(48, 216, 232, 0.1);
+  }
+  
+  .shadow-neon {
+    box-shadow: 0 0 15px rgba(48, 216, 232, 0.4);
+  }
+  
+  .shadow-subtle {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .text-gradient-neon {
+    @apply bg-gradient-to-r bg-clip-text text-transparent from-glass-blue to-lake-blue;
+  }
+  
+  /* New glass effect utilities */
+  .glass-reflection {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-reflection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(-25deg);
+    pointer-events: none;
+  }
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

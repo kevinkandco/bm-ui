@@ -42,84 +42,81 @@ const DeliveryPreferencesStep = ({ onNext, onBack, updateUserData, userData }: D
       
       {/* Clock visual element */}
       <div className="h-24 w-full flex items-center justify-center relative mb-8">
-        <div className="p-5 rounded-full shadow-neu-outer bg-surface">
-          <Clock size={48} className="text-accent-primary" />
+        <div className="relative">
+          <Clock size={48} className="text-electric-teal opacity-70" />
+          <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-hot-coral flex items-center justify-center text-xs text-canvas-black font-bold">
+            !
+          </div>
         </div>
       </div>
       
       <div className="space-y-3">
-        <h2 className="headline-m">How will you get your brief?</h2>
-        <p className="body-s">Customize your preferred delivery method and timing.</p>
+        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">How will you get your brief?</h2>
+        <p className="text-cool-slate">Customize your preferred delivery method and timing.</p>
       </div>
       
       <div className="space-y-6">
         <div className="space-y-3">
-          <Label className="text-text-primary">Delivery method</Label>
+          <Label className="text-ice-grey">Delivery method</Label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div 
               className={cn(
-                "flex flex-col items-center gap-3 py-6 rounded-xl bg-surface-raised transition-all duration-150",
-                deliveryMethod === 'email' 
-                  ? 'shadow-neu-pressed border-2 border-accent-primary' 
-                  : 'shadow-neu-raised hover:shadow-neu-hover hover:-translate-y-1 cursor-pointer'
+                "delivery-card flex flex-col items-center gap-3 py-6",
+                deliveryMethod === 'email' ? 'selected' : ''
               )}
               onClick={() => handleMethodChange('email')}
             >
-              <Mail size={28} className="text-accent-primary" />
+              <Mail size={28} className="text-electric-teal" />
               <div className="text-center">
-                <div className="font-medium text-lg text-text-primary">Email</div>
-                <p className="text-xs text-text-secondary mt-1">Receive your brief in a daily email</p>
+                <div className="font-medium text-lg text-ice-grey">Email</div>
+                <p className="text-xs text-cool-slate mt-1">Receive your brief in a daily email</p>
               </div>
             </div>
             
             <div 
               className={cn(
-                "flex flex-col items-center gap-3 py-6 rounded-xl bg-surface-raised transition-all duration-150",
-                deliveryMethod === 'audio' 
-                  ? 'shadow-neu-pressed border-2 border-accent-primary' 
-                  : 'shadow-neu-raised hover:shadow-neu-hover hover:-translate-y-1 cursor-pointer'
+                "delivery-card flex flex-col items-center gap-3 py-6",
+                deliveryMethod === 'audio' ? 'selected' : ''
               )}
               onClick={() => handleMethodChange('audio')}
             >
-              <Headphones size={28} className="text-accent-primary" />
+              <Headphones size={28} className="text-electric-teal" />
               <div className="text-center">
-                <div className="font-medium text-lg text-text-primary">Audio</div>
-                <p className="text-xs text-text-secondary mt-1">Listen to your brief on any device</p>
+                <div className="font-medium text-lg text-ice-grey">Audio</div>
+                <p className="text-xs text-cool-slate mt-1">Listen to your brief on any device</p>
               </div>
             </div>
             
             <div 
               className={cn(
-                "flex flex-col items-center gap-3 py-6 rounded-xl bg-surface-raised transition-all duration-150",
-                deliveryMethod === 'both' 
-                  ? 'shadow-neu-pressed border-2 border-accent-primary' 
-                  : 'shadow-neu-raised hover:shadow-neu-hover hover:-translate-y-1 cursor-pointer'
+                "delivery-card flex flex-col items-center gap-3 py-6",
+                deliveryMethod === 'both' ? 'selected' : ''
               )}
               onClick={() => handleMethodChange('both')}
             >
               <div className="flex">
-                <Mail size={28} className="text-accent-primary mr-1" />
-                <Headphones size={28} className="text-accent-primary" />
+                <Mail size={28} className="text-electric-teal mr-1" />
+                <Headphones size={28} className="text-electric-teal" />
               </div>
               <div className="text-center">
-                <div className="font-medium text-lg text-text-primary">Both</div>
-                <p className="text-xs text-text-secondary mt-1">Get email and audio delivery</p>
+                <div className="font-medium text-lg text-ice-grey">Both</div>
+                <p className="text-xs text-cool-slate mt-1">Get email and audio delivery</p>
               </div>
             </div>
           </div>
         </div>
         
         <div className="space-y-3">
-          <Label htmlFor="brief-time" className="text-text-primary">When should we deliver your brief?</Label>
+          <Label htmlFor="brief-time" className="text-ice-grey">When should we deliver your brief?</Label>
           <div className="max-w-xs">
             <Input
               id="brief-time"
               type="time"
               value={briefTime}
               onChange={handleTimeChange}
-              className="neu-input text-text-primary"
+              className="bg-white/15 border-white/20 text-ice-grey focus-visible:ring-electric-teal"
             />
-            <p className="text-xs text-text-secondary mt-2">
+            <p className="text-xs text-cool-slate mt-2">
               Your brief will be prepared and delivered at this time each day (in your local timezone)
             </p>
           </div>
@@ -129,14 +126,14 @@ const DeliveryPreferencesStep = ({ onNext, onBack, updateUserData, userData }: D
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          variant="ghost"
+          variant="plain"
           size="none"
         >
           Back
         </Button>
         <Button 
           onClick={handleContinue}
-          variant="primary"
+          className="neon-button"
         >
           Continue
         </Button>
