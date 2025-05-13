@@ -103,26 +103,28 @@ const GetStartedStep = ({
       
       {/* Visual element with reduced height */}
       <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
-        <Sparkles size={32} className="text-electric-teal animate-float" />
+        <div className="p-3 rounded-full shadow-neu-outer bg-surface">
+          <Sparkles size={32} className="text-accent-primary" />
+        </div>
       </div>
       
       <div className="space-y-1 sm:space-y-2">
-        <h2 className="text-xl sm:text-2xl font-semibold text-off-white tracking-tighter">You're all set!</h2>
-        <p className="text-xs sm:text-sm text-off-white/90">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
+        <h2 className="headline-m">You're all set!</h2>
+        <p className="body-s">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
       </div>
       
       <div className="space-y-3 sm:space-y-4">
         <div className="space-y-2 sm:space-y-3">
-          <h3 className="text-base sm:text-lg font-medium text-off-white">Your Brief Setup</h3>
+          <h3 className="text-base sm:text-lg font-medium text-text-primary">Your Brief Setup</h3>
           
-          <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
+          <div className="rounded-lg bg-surface-raised shadow-neu-raised divide-y divide-slider-track">
             {summaryData.map((section, index) => (
               <div key={index} className="flex justify-between px-3 sm:px-4 py-2 sm:py-3">
-                <span className="text-xs sm:text-sm text-off-white/90">{section.title}</span>
+                <span className="text-xs sm:text-sm text-text-secondary">{section.title}</span>
                 <div className="text-right">
-                  <span className="text-xs sm:text-sm text-off-white font-medium">{section.value}</span>
+                  <span className="text-xs sm:text-sm text-text-primary font-medium">{section.value}</span>
                   {section.detail && (
-                    <p className="text-[10px] sm:text-xs text-off-white/80 mt-0.5">{section.detail}</p>
+                    <p className="text-[10px] sm:text-xs text-text-secondary mt-0.5">{section.detail}</p>
                   )}
                 </div>
               </div>
@@ -131,38 +133,42 @@ const GetStartedStep = ({
         </div>
         
         <div className="space-y-2 sm:space-y-3">
-          <h3 className="text-base sm:text-lg font-medium text-off-white">Get the full experience</h3>
+          <h3 className="text-base sm:text-lg font-medium text-text-primary">Get the full experience</h3>
           
-          <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
+          <div className="rounded-lg bg-surface-raised shadow-neu-raised divide-y divide-slider-track">
             <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
               <div className="flex items-center gap-2">
-                <Download className="h-5 sm:h-6 w-5 sm:w-6 text-electric-teal" />
+                <div className="p-2 rounded-full shadow-neu-inner bg-surface">
+                  <Download className="h-4 sm:h-5 w-4 sm:w-5 text-accent-primary" />
+                </div>
                 <div>
-                  <span className="text-xs sm:text-sm text-off-white">Desktop App</span>
-                  <p className="text-[10px] sm:text-xs text-off-white/80">Get desktop notifications and quick access</p>
+                  <span className="text-xs sm:text-sm text-text-primary">Desktop App</span>
+                  <p className="text-[10px] sm:text-xs text-text-secondary">Get desktop notifications and quick access</p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">
+              <Button variant="primary" size="sm" className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">
                 Download
               </Button>
             </div>
             
             <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
               <div className="flex items-center gap-2">
-                <Smartphone className="h-5 sm:h-6 w-5 sm:w-6 text-electric-teal" />
+                <div className="p-2 rounded-full shadow-neu-inner bg-surface">
+                  <Smartphone className="h-4 sm:h-5 w-4 sm:w-5 text-accent-primary" />
+                </div>
                 <div>
-                  <span className="text-xs sm:text-sm text-off-white">Mobile App</span>
-                  <p className="text-[10px] sm:text-xs text-off-white/80">Listen to briefs on the go</p>
+                  <span className="text-xs sm:text-sm text-text-primary">Mobile App</span>
+                  <p className="text-[10px] sm:text-xs text-text-secondary">Listen to briefs on the go</p>
                 </div>
               </div>
               <div className="flex gap-1 sm:gap-2">
-                <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">iOS</Button>
-                <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">Android</Button>
+                <Button variant="outline" size="sm" className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">iOS</Button>
+                <Button variant="outline" size="sm" className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">Android</Button>
               </div>
             </div>
           </div>
           
-          <p className="text-[10px] sm:text-xs text-off-white/80 text-center">
+          <p className="text-[10px] sm:text-xs text-text-secondary text-center">
             You can always download these apps later from your dashboard
           </p>
         </div>
@@ -171,13 +177,13 @@ const GetStartedStep = ({
       <div className="flex justify-between pt-2 sm:pt-3">
         <Button 
           onClick={onBack} 
-          variant="plain"
+          variant="ghost"
           size="none"
           className="text-sm"
         >
           Back
         </Button>
-        <Button onClick={onNext} className="neon-button py-2 sm:py-3 px-3 sm:px-4 text-sm">
+        <Button onClick={onNext} variant="primary" className="py-2 sm:py-3 px-3 sm:px-4 text-sm">
           Go to Dashboard <ChevronsRight className="ml-1" size={16} />
         </Button>
       </div>

@@ -1,15 +1,25 @@
 
-import * as React from "react";
+import React from "react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
 
-// This component is intentionally empty as per user request to remove the theme toggle button
-export function ThemeToggle() {
-  const { setTheme } = useTheme();
+export const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
   
-  // Set default theme to dark and don't render any UI
-  React.useEffect(() => {
-    setTheme("dark");
-  }, [setTheme]);
-  
-  return null;
-}
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      className="rounded-full h-10 w-10 bg-surface-raised shadow-neu-raised"
+    >
+      {theme === "light" ? (
+        <Sun className="h-5 w-5 text-text-primary" />
+      ) : (
+        <Moon className="h-5 w-5 text-text-primary" />
+      )}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  );
+};

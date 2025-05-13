@@ -19,6 +19,18 @@ export default {
 		},
 		extend: {
 			colors: {
+				// Neumorphic UI colors based on design spec
+				'surface': '#F7F8F9',       // Primary background
+				'surface-raised': '#FFFFFF', // Cards / modules
+				'shadow-light': 'rgba(255, 255, 255, 0.85)', // Top-left inner shadow
+				'shadow-dark': 'rgba(0, 0, 0, 0.07)',  // Bottom-right outer shadow
+				'accent-primary': '#FF7847', // Interactive highlights, progress bar
+				'text-primary': '#333333',   // Main copy
+				'text-secondary': '#6B6B6B', // Subcopy / meta
+				'text-muted': '#9E9E9E',     // Placeholder hints
+				'slider-track': '#E7E7E7',   // Slider track color
+
+				// Keep existing shadcn colors for compatibility
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -62,63 +74,34 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Updated dark theme colors based on the image
-				'canvas-black': '#0E0E10',
-				'deep-plum': '#3D0B46',
-				'cranberry': '#6E0039',
-				'electric-teal': '#2FBECF',  // Updated to match image
-				'hot-coral': '#FF7A5A',      // Updated to match image
-				'ice-grey': '#E0E4EA',
-				'cool-slate': '#B0B3BE',
-				// Light theme colors
-				'canvas-light': '#F8F9FC',
-				'soft-plum': '#E8D9F0',
-				'light-rose': '#FFE4EB',
-				'bright-teal': '#2FBECF',    // Updated to match image
-				'warm-coral': '#FF7A5A',     // Updated to match image
-				'deep-navy': '#1A1A2E',
-				'slate-grey': '#696E79',
-				// New colors for the landing page - updated based on image
-				'forest-green': '#143D4D',    // Darker teal from image
-				'lake-blue': '#2FBECF',       // Brighter teal from image
-				'peach': '#FF7A5A',           // Orange/coral from image
-				'off-white': '#F5F5F2',
-				'neon-mint': '#30D8E8',       // Brighter blue from image
-				// Additional colors from the image
-				'deep-teal': '#143D4D',       // Deep teal background color
-				'bright-orange': '#FF5F37',   // Bright orange/coral from bottom of image
-				'glass-blue': '#30D8E8',      // Glass-like blue highlight
-				// Explicitly define white with alpha support
-				'white': {
-					DEFAULT: '#FFFFFF',
-					10: 'rgba(255, 255, 255, 0.1)',
-					14: 'rgba(255, 255, 255, 0.14)',
-					20: 'rgba(255, 255, 255, 0.2)',
-					25: 'rgba(255, 255, 255, 0.25)',
-					30: 'rgba(255, 255, 255, 0.3)',
-					40: 'rgba(255, 255, 255, 0.4)',
-					50: 'rgba(255, 255, 255, 0.5)',
-					60: 'rgba(255, 255, 255, 0.6)',
-					70: 'rgba(255, 255, 255, 0.7)',
-					80: 'rgba(255, 255, 255, 0.8)',
-					90: 'rgba(255, 255, 255, 0.9)',
-				},
-				// Keep legacy colors
-				"indigo": "#3B3BFF",
-				"neutral-gray": "#8E9196",
-				"teal-blue": "#3B83F5",
-				"purple-light": "#9b87f5",
-				"soft-gray": "#F1F0FB",
+				// Keep legacy colors but modify them to match new design system
+				"indigo": "#6B6B6B",
+				"neutral-gray": "#9E9E9E",
+				"teal-blue": "#FF7847",
+				"purple-light": "#F7F8F9",
+				"soft-gray": "#F7F8F9",
+			},
+			boxShadow: {
+				// Neumorphic shadows
+				'neu-raised': '2px 2px 12px rgba(0, 0, 0, 0.07), -2px -2px 12px rgba(255, 255, 255, 0.85)',
+				'neu-pressed': 'inset 2px 2px 5px rgba(0, 0, 0, 0.07), inset -2px -2px 5px rgba(255, 255, 255, 0.85)',
+				'neu-hover': '4px 4px 15px rgba(0, 0, 0, 0.1), -4px -4px 15px rgba(255, 255, 255, 0.9)',
+				'card': '2px 2px 12px rgba(0, 0, 0, 0.07)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
-				xl: '16px',
+				xl: '20px', // Standard card radius per design spec
 			},
 			transitionDuration: {
-				'400': '400ms',
-				'160': '160ms',
+				'150': '150ms', // Standard micro-interaction time
+			},
+			fontFamily: {
+				sans: ['Inter', 'SF Pro Display', 'Manrope', 'system-ui', 'sans-serif'],
+			},
+			letterSpacing: {
+				'tighter': '-0.25px', // Tighter headlines per design spec
 			},
 			keyframes: {
 				'accordion-down': {
