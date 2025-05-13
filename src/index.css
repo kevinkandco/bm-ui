@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -44,6 +45,75 @@
   body {
     @apply bg-surface text-text-primary font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  /* Neumorphic effect utilities - MOVED TO TOP of utilities */
+  .shadow-neu-inner {
+    box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                inset -2px -2px 5px var(--shadow-light);
+  }
+  
+  .shadow-neu-outer {
+    box-shadow: 2px 2px 12px var(--shadow-dark), 
+                -2px -2px 12px var(--shadow-light);
+  }
+  
+  .shadow-neu-pressed {
+    box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                inset -2px -2px 5px var(--shadow-light);
+  }
+  
+  .shadow-neu-focus {
+    box-shadow: 0 0 0 2px var(--accent-primary);
+  }
+  
+  /* Dotted scale marks for sliders and dials */
+  .dotted-scale {
+    background-image: radial-gradient(circle, var(--text-muted) 1px, transparent 1px);
+    background-size: 8px 8px;
+    background-position: center;
+  }
+
+  /* Keep other existing utilities */
+  .shadow-neo {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(48, 216, 232, 0.1);
+  }
+  
+  .shadow-neon {
+    box-shadow: 0 0 15px rgba(48, 216, 232, 0.4);
+  }
+  
+  .shadow-subtle {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .text-gradient-neon {
+    @apply bg-gradient-to-r bg-clip-text text-transparent from-glass-blue to-lake-blue;
+  }
+  
+  /* New glass effect utilities */
+  .glass-reflection {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-reflection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(-25deg);
+    pointer-events: none;
   }
 }
 
@@ -264,70 +334,7 @@
   }
 }
 
-@layer utilities {
-  /* Neumorphic effect utilities */
-  .shadow-neu-inner {
-    box-shadow: inset 2px 2px 5px var(--shadow-dark), 
-                inset -2px -2px 5px var(--shadow-light);
-  }
-  
-  .shadow-neu-outer {
-    box-shadow: 2px 2px 12px var(--shadow-dark), 
-                -2px -2px 12px var(--shadow-light);
-  }
-  
-  .shadow-neu-focus {
-    box-shadow: 0 0 0 2px var(--accent-primary);
-  }
-  
-  /* Dotted scale marks for sliders and dials */
-  .dotted-scale {
-    background-image: radial-gradient(circle, var(--text-muted) 1px, transparent 1px);
-    background-size: 8px 8px;
-    background-position: center;
-  }
-
-  /* Keep other existing utilities */
-  .shadow-neo {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(48, 216, 232, 0.1);
-  }
-  
-  .shadow-neon {
-    box-shadow: 0 0 15px rgba(48, 216, 232, 0.4);
-  }
-  
-  .shadow-subtle {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  }
-
-  .text-gradient-neon {
-    @apply bg-gradient-to-r bg-clip-text text-transparent from-glass-blue to-lake-blue;
-  }
-  
-  /* New glass effect utilities */
-  .glass-reflection {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .glass-reflection::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    transform: rotate(-25deg);
-    pointer-events: none;
-  }
-}
-
+/* ... keep existing code (animations and keyframes) */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
