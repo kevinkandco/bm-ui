@@ -39,7 +39,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
   }, [isMobile]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 pb-6 pt-2 relative overflow-hidden bg-surface">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 pb-6 pt-0 relative overflow-hidden bg-surface">
       {/* Background with dark gradient */}
       <div className="absolute inset-0 w-full h-full">
         <div className="absolute inset-0 bg-gradient-dark opacity-80"></div>
