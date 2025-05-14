@@ -1,4 +1,3 @@
-
 import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -27,18 +26,18 @@ const Index = () => {
       
       {/* Background with image overlay */}
       <div className="absolute inset-0 w-full h-full">
-        {/* Background image - less blurred */}
+        {/* Background image - minimal blur */}
         <div className="absolute inset-0 w-full h-full">
           <img 
             src="/lovable-uploads/8ea55fb5-fb6e-49d0-881c-5d96263e886d.png" 
             alt="Dashboard background" 
-            className="w-full h-full object-cover filter blur-md"
+            className="w-full h-full object-cover filter blur-sm"
             loading="eager"
           />
         </div>
         
         {/* Color overlay with reduced opacity */}
-        <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-70`}></div>
+        <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-60`}></div>
         
         {/* Horizontal glow line */}
         <div className="absolute top-20 left-0 right-0 h-px bg-glow-line shadow-neon"></div>
