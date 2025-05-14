@@ -6,26 +6,29 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-body font-medium transition-all ease-out duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-accent-blue text-white hover:-translate-y-1 hover:shadow-elevated",
-        destructive: "bg-destructive text-white hover:bg-destructive/90",
-        outline: "border border-divider bg-transparent text-text-body hover:text-text-headline",
-        secondary: "bg-surface text-text-body hover:text-text-headline",
-        ghost: "hover:bg-surface hover:text-text-headline",
-        link: "text-accent-blue underline-offset-4 hover:underline",
-        plain: "bg-transparent p-0 border-none text-text-body hover:text-text-headline",
-        glow: "bg-accent-blue text-white hover:-translate-y-1 hover:shadow-elevated",
+        default: "bg-glass-blue text-white hover:bg-lake-blue transition-colors duration-300 shadow-neon",
+        destructive:
+          "bg-hot-coral text-white hover:bg-hot-coral/90 shadow-sm",
+        outline:
+          "border border-white/40 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white hover:text-white",
+        secondary:
+          "bg-white/25 backdrop-blur-md text-white hover:bg-white/35 shadow-sm",
+        ghost: "hover:bg-white/15 hover:text-white text-white/80",
+        link: "text-white underline-offset-4 hover:text-glass-blue",
+        plain: "bg-transparent text-white hover:text-glass-blue p-0 border-none",
+        glow: "bg-black/80 text-white hover:bg-black/70 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-white/10",
       },
       size: {
-        default: "h-10 px-4 py-2 rounded-md",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10 rounded-md",
+        default: "h-10 px-4 py-2 rounded-xl",
+        sm: "h-9 rounded-lg px-3",
+        lg: "h-11 rounded-xl px-8",
+        icon: "h-10 w-10 rounded-full",
         none: "h-auto p-0",
-        pill: "h-11 rounded-full px-8",
+        pill: "h-10 px-6 py-2 rounded-full",
       },
     },
     defaultVariants: {

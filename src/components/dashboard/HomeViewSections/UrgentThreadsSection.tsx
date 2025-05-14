@@ -9,23 +9,23 @@ const UrgentThreadsSection = () => {
   ];
 
   return (
-    <div className="p-card-padding">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-heading-md text-text-headline font-medium flex items-center">
-          <Zap className="mr-2 h-5 w-5 text-icon" />
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-text-primary text-lg font-medium flex items-center">
+          <Zap className="mr-2 h-5 w-5 text-accent-primary" />
           Urgent Threads
         </h2>
-        <span className="text-meta text-text-secondary">
-          {urgentThreads.length} threads requiring attention
+        <span className="text-text-secondary text-sm">
+          {urgentThreads.length} threads requiring your attention
         </span>
       </div>
-      <div className="space-y-row-gap">
+      <div className="space-y-2 mt-4">
         {urgentThreads.map((thread, i) => (
           <div 
             key={i} 
-            className="px-4 py-3 rounded-md bg-card/50 text-body flex items-center justify-between shadow-card hover:bg-card transition-all duration-200 cursor-pointer"
+            className="px-4 py-3 rounded-lg bg-surface-raised/20 border border-border-subtle text-sm flex items-center justify-between shadow-subtle hover:shadow-glow hover:border-border-subtle/50 transition-all cursor-pointer"
           >
-            <span className="font-medium text-text-headline">{thread.channel}</span>
+            <span className="font-medium text-text-primary">{thread.channel}</span>
             <span className="text-text-secondary">{thread.message}</span>
           </div>
         ))}

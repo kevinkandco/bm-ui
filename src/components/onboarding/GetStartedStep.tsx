@@ -1,82 +1,189 @@
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
-import { Check } from "lucide-react";
+import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface GetStartedStepProps {
   onNext: () => void;
   onBack: () => void;
-  userData?: any; // Adding optional userData prop
+  userData: {
+    dailySchedule?: {
+      workdayStart: string;
+      workdayEnd: string;
+      weekendMode: boolean;
+    };
+    [key: string]: any;
+  };
 }
 
-const GetStartedStep = ({ onNext, onBack, userData }: GetStartedStepProps) => {
-  const [isStarting, setIsStarting] = useState(false);
-  
-  const handleGetStarted = () => {
-    setIsStarting(true);
-    // Simulate API call or loading
-    setTimeout(() => {
-      setIsStarting(false);
-      onNext();
-    }, 1000);
+const GetStartedStep = ({
+  onNext,
+  onBack,
+  userData
+}: GetStartedStepProps) => {
+  // Format time string to readable format (e.g., "09:00" to "9:00 AM")
+  const formatTimeString = (timeStr: string) => {
+    try {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+      return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+    } catch (e) {
+      return timeStr;
+    }
+  };
+
+  // Function to format data for the summary
+  const formatSummary = () => {
+    const sections = [];
+
+    // Connected integrations
+    const integrations = userData.integrations || [];
+    if (integrations.length > 0) {
+      sections.push({
+        title: "Connected Tools",
+        value: integrations.length.toString(),
+        detail: integrations.join(", ")
+      });
+    }
+
+    // Priority items
+    const priorityPeople = userData.priorityPeople || [];
+    const priorityChannels = userData.priorityChannels || [];
+    const priorityTopics = userData.priorityTopics || [];
+    const totalPriorities = priorityPeople.length + priorityChannels.length + priorityTopics.length;
+    if (totalPriorities > 0) {
+      sections.push({
+        title: "Priority Items",
+        value: totalPriorities.toString(),
+        detail: `${priorityPeople.length} people, ${priorityChannels.length} channels, ${priorityTopics.length} topics`
+      });
+    }
+
+    // Ignored items
+    const ignoreChannels = userData.ignoreChannels || [];
+    const ignoreKeywords = userData.ignoreKeywords || [];
+    const totalIgnored = ignoreChannels.length + ignoreKeywords.length;
+    if (totalIgnored > 0) {
+      sections.push({
+        title: "Ignored Items",
+        value: totalIgnored.toString(),
+        detail: `${ignoreChannels.length} channels, ${ignoreKeywords.length} keywords`
+      });
+    }
+
+    // Brief schedules
+    const briefSchedules = userData.briefSchedules || [];
+    if (briefSchedules.length > 0) {
+      sections.push({
+        title: "Brief Schedules",
+        value: briefSchedules.length.toString(),
+        detail: briefSchedules.map((brief: any) => brief.name).join(", ")
+      });
+    }
+
+    // Daily schedule
+    if (userData.dailySchedule) {
+      sections.push({
+        title: "Daily Schedule",
+        value: `${formatTimeString(userData.dailySchedule.workdayStart)} - ${formatTimeString(userData.dailySchedule.workdayEnd)}`,
+        detail: userData.dailySchedule.weekendMode ? "Including weekends" : "Weekdays only"
+      });
+    }
+    
+    return sections;
   };
   
-  const benefits = [
-    "Save up to 3 hours per week on information management",
-    "Never miss important updates from priority people",
-    "Stay in sync with your team without constant interruptions",
-    "Get personalized summaries on what matters to you"
-  ];
-
+  const summaryData = formatSummary();
+  
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <ProgressIndicator currentStep={1} totalSteps={7} />
+    <div className="space-y-4 sm:space-y-6">
+      <ProgressIndicator currentStep={9} totalSteps={9} />
       
-      <div className="text-center space-y-3 sm:space-y-4">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-text-headline tracking-tighter">
-          Let's get you set up
-        </h1>
-        <p className="text-sm sm:text-base text-text-body max-w-md mx-auto">
-          Brief-me works best when it knows what to prioritize. 
-          The next few steps will help us tailor your experience.
-        </p>
+      {/* Visual element with reduced height */}
+      <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
+        <Sparkles size={32} className="text-electric-teal animate-float" />
       </div>
       
-      <div className="bg-card border border-divider rounded-lg p-4 sm:p-6 space-y-4">
-        <h2 className="text-lg sm:text-xl font-medium text-text-headline">
-          Why Brief-me?
-        </h2>
-        
-        <ul className="space-y-3">
-          {benefits.map((benefit, index) => (
-            <li key={index} className="flex items-start gap-3">
-              <div className="mt-0.5 bg-accent-blue/10 rounded-full p-1">
-                <Check className="h-4 w-4 text-accent-blue" />
+      <div className="space-y-1 sm:space-y-2">
+        <h2 className="text-xl sm:text-2xl font-semibold text-off-white tracking-tighter">You're all set!</h2>
+        <p className="text-xs sm:text-sm text-off-white/90">Your Brief.me account is ready to go. Here's how to get the most out of it.</p>
+      </div>
+      
+      <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="text-base sm:text-lg font-medium text-off-white">Your Brief Setup</h3>
+          
+          <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
+            {summaryData.map((section, index) => (
+              <div key={index} className="flex justify-between px-3 sm:px-4 py-2 sm:py-3">
+                <span className="text-xs sm:text-sm text-off-white/90">{section.title}</span>
+                <div className="text-right">
+                  <span className="text-xs sm:text-sm text-off-white font-medium">{section.value}</span>
+                  {section.detail && (
+                    <p className="text-[10px] sm:text-xs text-off-white/80 mt-0.5">{section.detail}</p>
+                  )}
+                </div>
               </div>
-              <span className="text-sm sm:text-base text-text-body">{benefit}</span>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        </div>
+        
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="text-base sm:text-lg font-medium text-off-white">Get the full experience</h3>
+          
+          <div className="border border-white/30 rounded-lg divide-y divide-white/20 bg-white/15 backdrop-blur-sm">
+            <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
+              <div className="flex items-center gap-2">
+                <Download className="h-5 sm:h-6 w-5 sm:w-6 text-electric-teal" />
+                <div>
+                  <span className="text-xs sm:text-sm text-off-white">Desktop App</span>
+                  <p className="text-[10px] sm:text-xs text-off-white/80">Get desktop notifications and quick access</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">
+                Download
+              </Button>
+            </div>
+            
+            <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
+              <div className="flex items-center gap-2">
+                <Smartphone className="h-5 sm:h-6 w-5 sm:w-6 text-electric-teal" />
+                <div>
+                  <span className="text-xs sm:text-sm text-off-white">Mobile App</span>
+                  <p className="text-[10px] sm:text-xs text-off-white/80">Listen to briefs on the go</p>
+                </div>
+              </div>
+              <div className="flex gap-1 sm:gap-2">
+                <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">iOS</Button>
+                <Button variant="outline" size="sm" className="neon-outline-button text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">Android</Button>
+              </div>
+            </div>
+          </div>
+          
+          <p className="text-[10px] sm:text-xs text-off-white/80 text-center">
+            You can always download these apps later from your dashboard
+          </p>
+        </div>
       </div>
       
-      <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 pt-4">
+      <div className="flex justify-between pt-2 sm:pt-3">
         <Button 
-          onClick={onBack}
-          variant="outline"
-          className="order-2 sm:order-1"
+          onClick={onBack} 
+          variant="plain"
+          size="none"
+          className="text-sm"
         >
           Back
         </Button>
-        
         <Button 
-          onClick={handleGetStarted}
-          disabled={isStarting}
-          variant="default"
-          size="lg"
-          className="order-1 sm:order-2"
+          onClick={onNext} 
+          variant="glow" 
+          size="pill"
+          className="py-2 sm:py-3 px-3 sm:px-4 text-sm"
         >
-          {isStarting ? "Setting up..." : "Let's get started"}
+          Go to Dashboard <ChevronsRight className="ml-1" size={16} />
         </Button>
       </div>
     </div>

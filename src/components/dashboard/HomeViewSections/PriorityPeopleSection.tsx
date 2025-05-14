@@ -28,33 +28,32 @@ const PriorityPeopleSection = () => {
   ];
 
   return (
-    <div className="p-card-padding">
-      <h2 className="text-heading-md text-text-headline flex items-center mb-2">
-        <User className="mr-2 h-5 w-5 text-icon" />
+    <div className="p-6">
+      <h2 className="text-text-primary text-lg flex items-center mb-2">
+        <User className="mr-2 h-5 w-5 text-accent-primary" />
         Priority People
       </h2>
-      <p className="text-body text-text-secondary mb-4">
+      <p className="text-text-secondary text-sm mb-3">
         {priorityPeople.filter(p => p.active).length} people with recent activity
       </p>
       <div className="space-y-1">
         {priorityPeople.map((person, i) => (
-          <div key={i} className={`p-2 rounded-md ${person.active ? "hover:bg-card/30" : "hover:bg-card/20"} transition-all duration-200`}>
+          <div key={i} className={`p-2 rounded-lg ${person.active ? "hover:bg-surface-raised/20" : "hover:bg-surface-raised/10"} transition-colors`}>
             <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-card flex items-center justify-center text-text-headline font-medium text-sm">
+              <div className="h-6 w-6 rounded-full bg-surface-raised/30 border border-border-subtle flex items-center justify-center text-text-primary font-medium text-xs">
                 {person.name.charAt(0)}
               </div>
-              <div className="ml-3 flex-1">
+              <div className="ml-2 flex-1">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-body font-medium text-text-headline">{person.name}</h3>
+                  <h3 className="text-sm font-medium text-text-primary">{person.name}</h3>
                   <div className="flex items-center text-xs text-text-secondary">
                     <span>{person.platform}</span>
                     <span className="mx-1">•</span>
                     <span>{person.lastActivity}</span>
                   </div>
                 </div>
-                <p className="text-xs text-text-secondary">{person.title}</p>
               </div>
-              {person.active && <span className="h-2 w-2 rounded-full bg-accent-blue ml-1"></span>}
+              {person.active && <span className="h-2 w-2 rounded-full bg-accent-primary ml-1"></span>}
             </div>
           </div>
         ))}
