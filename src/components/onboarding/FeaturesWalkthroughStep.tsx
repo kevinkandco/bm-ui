@@ -78,18 +78,23 @@ const FeaturesWalkthroughStep = ({
       </div>
 
       <div className="py-4 sm:py-6">
-        <div className="feature-display space-y-4 sm:space-y-6">
-          <div className="flex items-center justify-center">
-            {features[currentFeature].icon}
-          </div>
-          
-          <div className="text-center space-y-2 sm:space-y-3">
-            <h3 className="text-lg sm:text-xl font-medium text-off-white">
-              {features[currentFeature].title}
-            </h3>
-            <p className="text-sm sm:text-base text-off-white/90">{features[currentFeature].description}</p>
+        <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 sm:p-8">
+          <div className="feature-display space-y-6 sm:space-y-8 text-center">
+            {/* Icon */}
+            <div className="flex items-center justify-center">
+              {features[currentFeature].icon}
+            </div>
             
-            <div className="p-3 sm:p-4 bg-white/15 backdrop-blur-sm rounded-lg border border-white/30 mt-4">
+            {/* Title and main description */}
+            <div className="space-y-2 sm:space-y-3">
+              <h3 className="text-lg sm:text-xl font-medium text-off-white">
+                {features[currentFeature].title}
+              </h3>
+              <p className="text-sm sm:text-base text-off-white/90">{features[currentFeature].description}</p>
+            </div>
+            
+            {/* Detail in card */}
+            <div className="bg-white/15 backdrop-blur-sm rounded-lg border border-white/30 p-3 sm:p-4">
               <p className="text-xs sm:text-sm text-off-white/90">{features[currentFeature].detail}</p>
             </div>
           </div>
