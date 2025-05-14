@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -292,8 +291,9 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          variant="plain"
+          variant="ghost"
           size="none"
+          className="text-text-secondary hover:text-text-primary"
         >
           Back
         </Button>

@@ -86,8 +86,9 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <div className="flex justify-between">
         <Button 
           onClick={onBack} 
-          variant="outline"
-          className="border-border-subtle text-text-secondary hover:bg-surface-raised hover:text-text-primary"
+          variant="ghost"
+          size="none"
+          className="text-text-secondary hover:text-text-primary"
         >
           Back
         </Button>
