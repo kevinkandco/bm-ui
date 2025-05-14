@@ -111,8 +111,9 @@ const PurposeStep = ({ onNext, onBack, updateUserData, userData }: PurposeStepPr
         <Button 
           onClick={handleContinue}
           disabled={!selectedPurpose}
-          className="bg-accent-primary hover:bg-accent-primary/90 text-white disabled:opacity-50 disabled:pointer-events-none"
-          size="sm"
+          variant="primary"
+          size="pill"
+          className="text-white disabled:opacity-50 disabled:pointer-events-none"
         >
           Continue
         </Button>

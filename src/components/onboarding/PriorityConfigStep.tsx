@@ -259,7 +259,8 @@ const PriorityConfigStep = ({ onNext, onBack, updateUserData, userData }: Priori
         </Button>
         <Button 
           onClick={handleContinue}
-          className="neon-button"
+          variant="primary"
+          size="pill"
         >
           Continue
         </Button>

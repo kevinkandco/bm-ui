@@ -316,7 +316,7 @@ const IntegrationsStep = ({
         <Button onClick={onBack} variant="plain" size="none" className="text-sm">
           Back
         </Button>
-        <Button onClick={handleContinue} disabled={!hasAnyConnection} className="neon-button disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-3 sm:px-4 text-sm">
+        <Button onClick={handleContinue} disabled={!hasAnyConnection} variant="primary" size="pill" className="disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-3 sm:px-4 text-sm">
           Continue
         </Button>
       </div>

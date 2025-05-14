@@ -122,7 +122,7 @@ const PriorityPeopleStep = memo(({ onNext, onBack, updateUserData, userData }: P
         </Button>
         <Button 
           onClick={handleContinue}
-          variant="black"
+          variant="primary"
           size="pill"
         >
           Continue

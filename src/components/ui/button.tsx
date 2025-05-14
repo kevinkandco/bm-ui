@@ -11,6 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-glass-blue text-white hover:bg-lake-blue transition-colors duration-300 shadow-neon",
+        primary: "bg-[#4285F4] text-white hover:bg-[#3b78e6] transition-colors duration-300 rounded-full",
         destructive:
           "bg-hot-coral text-white hover:bg-hot-coral/90 shadow-sm",
         outline:

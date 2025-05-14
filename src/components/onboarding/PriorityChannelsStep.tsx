@@ -93,7 +93,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
         </Button>
         <Button 
           onClick={handleContinue}
-          variant="black"
+          variant="primary"
           size="pill"
         >
           Continue

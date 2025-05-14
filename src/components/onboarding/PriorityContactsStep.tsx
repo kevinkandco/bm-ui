@@ -207,13 +207,14 @@ const PriorityContactsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <div className="flex justify-between pt-2">
         <Button 
           onClick={onBack} 
-          className="neon-outline-button"
+          variant="outline"
         >
           Back
         </Button>
         <Button 
           onClick={handleContinue} 
-          className="neon-button"
+          variant="primary"
+          size="pill"
         >
           Continue
         </Button>

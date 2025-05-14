@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -259,13 +258,14 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
       <div className="flex justify-between pt-2">
         <Button 
           onClick={onBack} 
-          className="neon-outline-button"
+          variant="outline"
         >
           Back
         </Button>
         <Button 
           onClick={handleSubmit}
-          className="neon-button"
+          variant="primary"
+          size="pill"
         >
           Generate my first brief
         </Button>
