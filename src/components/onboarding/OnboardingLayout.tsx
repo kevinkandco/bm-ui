@@ -39,13 +39,12 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
   }, [isMobile]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-6 relative overflow-hidden bg-surface">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 pb-6 pt-2 relative overflow-hidden bg-surface">
       {/* Background with dark gradient */}
       <div className="absolute inset-0 w-full h-full">
         <div className="absolute inset-0 bg-gradient-dark opacity-80"></div>
         
-        {/* Horizontal glow line */}
-        <div className="absolute top-20 left-0 right-0 h-px bg-glow-line shadow-neon"></div>
+        {/* Removed the horizontal glow line */}
         
         {/* Subtle radial gradient for depth */}
         <div className="absolute inset-0 bg-gradient-radial from-surface-raised/20 to-transparent opacity-50"></div>
