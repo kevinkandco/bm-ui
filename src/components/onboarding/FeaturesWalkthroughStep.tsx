@@ -62,9 +62,7 @@ const FeaturesWalkthroughStep = ({
 
       <div className="text-center space-y-2 sm:space-y-3">
         <h2 className="text-xl sm:text-2xl font-semibold text-off-white tracking-tighter">How Brief-me works</h2>
-        <p className="text-sm sm:text-base text-off-white/90 max-w-lg mx-auto">
-          Brief.me helps you stay informed without the information overload.
-        </p>
+        <p className="text-sm sm:text-base text-off-white/90 max-w-lg mx-auto">Brief-me helps you stay informed without the information overload.</p>
       </div>
 
       <div className="py-4 sm:py-6">
