@@ -1,15 +1,25 @@
 
 import * as React from "react";
 import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
+import { Sun, Moon } from "lucide-react";
 
-// This component enforces dark theme as per the new design system
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   
-  // Set default theme to dark on component mount and don't render any UI
-  React.useEffect(() => {
-    setTheme("dark");
-  }, [setTheme]);
-  
-  return null;
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="theme-toggle"
+      aria-label="Toggle theme"
+    >
+      {theme === "dark" ? (
+        <Sun className="h-4 w-4" />
+      ) : (
+        <Moon className="h-4 w-4" />
+      )}
+    </Button>
+  );
 }

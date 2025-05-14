@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./hooks/use-theme";
-import { ThemeToggle } from "./components/theme/ThemeToggle";
 
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
@@ -54,12 +53,11 @@ const MemoizedLoadingFallback = React.memo(LoadingFallback);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system">
+    <ThemeProvider defaultTheme="dark">
       <TooltipProvider>
         <div className="min-h-screen flex flex-col justify-center">
           <Toaster />
           <Sonner />
-          <ThemeToggle />
           <BrowserRouter>
             <Suspense fallback={<MemoizedLoadingFallback />}>
               <Routes>

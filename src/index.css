@@ -4,6 +4,45 @@
 
 @layer base {
   :root {
+    /* Light Glass Morphism CSS Variables */
+    --surface: #F5F5F7;
+    --surface-raised: #FFFFFF;
+    --surface-overlay: rgba(255, 255, 255, 0.85);
+    --glow-highlight: rgba(0, 0, 0, 0.05);
+    --glow-line: rgba(0, 0, 0, 0.15);
+    --accent-primary: #2B88FF;
+    --accent-secondary: #4E96FF;
+    --text-primary: #1A1A1C;
+    --text-secondary: rgba(26, 26, 28, 0.8);
+    --text-muted: rgba(26, 26, 28, 0.5);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    
+    /* Standard radius */
+    --radius: 16px;
+
+    /* Light mode shadcn variables */
+    --background: 240 10% 96%;  /* #F5F5F7 */
+    --foreground: 240 3% 10%;   /* #1A1A1C */
+    --card: 0 0% 100%;          /* #FFFFFF */
+    --card-foreground: 240 3% 10%;  /* #1A1A1C */
+    --popover: 0 0% 100%;       /* #FFFFFF */
+    --popover-foreground: 240 3% 10%;  /* #1A1A1C */
+    --primary: 216 100% 58%;    /* #2B88FF */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 0 0% 96%;      /* #F5F5F5 */
+    --secondary-foreground: 240 3% 10%; /* #1A1A1C */
+    --muted: 0 0% 92%;          /* #EBEBEB */
+    --muted-foreground: 240 3% 40%; /* rgba(26, 26, 28, 0.8) */
+    --accent: 216 100% 58%;     /* #2B88FF */
+    --accent-foreground: 0 0% 100%; /* #FFFFFF */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 10% 90%;      /* #E5E5EA */
+    --input: 240 10% 90%;       /* #E5E5EA */
+    --ring: 216 100% 58%;       /* #2B88FF */
+  }
+
+  .dark {
     /* Dark Glass Morphism CSS Variables */
     --surface: #1A1A1C;
     --surface-raised: #232326;
@@ -16,11 +55,8 @@
     --text-secondary: rgba(255, 255, 255, 0.8);
     --text-muted: rgba(255, 255, 255, 0.5);
     --border-subtle: rgba(255, 255, 255, 0.08);
-    
-    /* Standard radius */
-    --radius: 16px;
 
-    /* Update shadcn variables to match our new design system */
+    /* Update shadcn variables to match our dark design system */
     --background: 240 3% 10%;  /* #1A1A1C */
     --foreground: 0 0% 100%;   /* #FFFFFF */
     --card: 240 3% 14%;        /* #232326 */
@@ -130,14 +166,30 @@
 }
 
 @layer components {
-  /* Glass Card Component */
+  /* Glass Card Component - Light/Dark mode aware */
   .glass-card {
-    @apply bg-gradient-to-b from-surface-raised/70 to-surface/90 rounded-xl border border-white/10 backdrop-blur-md 
+    @apply bg-gradient-to-b from-surface-raised/70 to-surface/90 rounded-xl border backdrop-blur-md 
            shadow-subtle transition-all duration-300 ease-out overflow-hidden;
   }
   
+  .dark .glass-card {
+    @apply border-white/10;
+  }
+  
+  .light .glass-card {
+    @apply border-black/10;
+  }
+  
   .glass-card:hover {
-    @apply border-white/15 shadow-lg;
+    @apply shadow-lg;
+  }
+
+  .dark .glass-card:hover {
+    @apply border-white/15;
+  }
+  
+  .light .glass-card:hover {
+    @apply border-black/15;
   }
   
   /* Glass Button */
@@ -197,11 +249,19 @@
     @apply bg-text-muted;
   }
   
-  /* Theme toggle - keep for consistency */
+  /* Theme toggle - updated for both light and dark */
   .theme-toggle {
-    @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors;
-    @apply bg-surface-overlay text-text-primary hover:bg-accent-primary/20 backdrop-blur-xl;
+    @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors backdrop-blur-xl;
+  }
+  
+  .dark .theme-toggle {
+    @apply bg-surface-overlay text-text-primary hover:bg-accent-primary/20;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .light .theme-toggle {
+    @apply bg-white/80 text-text-primary hover:bg-accent-primary/10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 }
 

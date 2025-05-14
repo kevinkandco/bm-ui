@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { useTheme } from "@/hooks/use-theme";
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
   className?: string;
@@ -46,6 +49,7 @@ const navItems = [{
   path: "/dashboard/settings",
   id: "settings"
 }];
+
 const DashboardLayout = ({
   children,
   className,
@@ -54,47 +58,72 @@ const DashboardLayout = ({
   onToggleSidebar
 }: DashboardLayoutProps) => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const { theme } = useTheme();
+  
   const handleNavClick = useCallback((path: string) => {
     navigate(path);
   }, [navigate]);
 
   // Memoize sidebar classes to prevent recalculation on every render
-  const sidebarClasses = useMemo(() => cn("fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl bg-surface-overlay border-r border-border-subtle shadow-xl z-20", sidebarOpen ? "w-64 left-0" : "w-16 left-0", "md:left-0"), [sidebarOpen]);
+  const sidebarClasses = useMemo(() => cn(
+    "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl bg-surface-overlay border-r border-border-subtle shadow-xl z-20",
+    sidebarOpen ? "w-64 left-0" : "w-16 left-0",
+    "md:left-0"
+  ), [sidebarOpen]);
 
   // Memoize main content classes
-  const mainContentClasses = useMemo(() => cn("flex-1 overflow-auto pb-16 md:pb-0 z-10", className), [className]);
+  const mainContentClasses = useMemo(() => cn(
+    "flex-1 overflow-auto pb-16 md:pb-0 z-10",
+    className
+  ), [className]);
 
   // NavItems component to optimize render cycles
-  const NavItems = useMemo(() => <div className="flex-1 py-6 flex flex-col gap-1">
-      {navItems.map(({
-      icon: Icon,
-      label,
-      path,
-      id,
-      badge
-    }) => <button key={id} onClick={() => handleNavClick(path)} className={cn("flex items-center px-4 py-3 text-sm relative transition-colors", currentPage === id ? "bg-white/10 text-accent-primary font-medium" : "text-text-secondary hover:bg-white/5 hover:text-text-primary")}>
+  const NavItems = useMemo(() => (
+    <div className="flex-1 py-6 flex flex-col gap-1">
+      {navItems.map(({ icon: Icon, label, path, id, badge }) => (
+        <button
+          key={id}
+          onClick={() => handleNavClick(path)}
+          className={cn(
+            "flex items-center px-4 py-3 text-sm relative transition-colors",
+            currentPage === id 
+              ? "bg-white/10 text-accent-primary font-medium" 
+              : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+          )}
+        >
           <Icon className="h-5 w-5 shrink-0" />
           {sidebarOpen && <span className="ml-4 whitespace-nowrap">{label}</span>}
-          {badge && sidebarOpen && <span className="absolute right-3 bg-accent-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          {badge && sidebarOpen && (
+            <span className="absolute right-3 bg-accent-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               {badge}
-            </span>}
-        </button>)}
-    </div>, [sidebarOpen, currentPage, handleNavClick]);
+            </span>
+          )}
+        </button>
+      ))}
+    </div>
+  ), [sidebarOpen, currentPage, handleNavClick]);
 
   // Memoize mobile navigation to prevent unnecessary re-renders
-  const MobileNav = useMemo(() => <div className="fixed bottom-0 left-0 right-0 bg-surface-overlay backdrop-blur-xl border-t border-border-subtle md:hidden flex justify-around z-10">
-      {navItems.slice(0, 5).map(({
-      icon: Icon,
-      id,
-      path
-    }) => <button key={id} onClick={() => handleNavClick(path)} className={cn("p-3 flex flex-col items-center justify-center", currentPage === id ? "text-accent-primary" : "text-text-secondary")}>
+  const MobileNav = useMemo(() => (
+    <div className="fixed bottom-0 left-0 right-0 bg-surface-overlay backdrop-blur-xl border-t border-border-subtle md:hidden flex justify-around z-10">
+      {navItems.slice(0, 5).map(({ icon: Icon, id, path }) => (
+        <button
+          key={id}
+          onClick={() => handleNavClick(path)}
+          className={cn(
+            "p-3 flex flex-col items-center justify-center",
+            currentPage === id ? "text-accent-primary" : "text-text-secondary"
+          )}
+        >
           <Icon className="h-5 w-5" />
-        </button>)}
-    </div>, [currentPage, handleNavClick]);
-  return <div className="flex min-h-screen bg-surface relative">
+        </button>
+      ))}
+    </div>
+  ), [currentPage, handleNavClick]);
+
+  return (
+    <div className="flex min-h-screen bg-surface relative">
       {/* Background with gradient and grain texture */}
       <div className="absolute inset-0 w-full h-full bg-grain">
         <div className="absolute inset-0 bg-gradient-to-br from-surface via-surface-raised to-surface opacity-90"></div>
@@ -109,6 +138,11 @@ const DashboardLayout = ({
         <Button size="icon" variant="outline" onClick={onToggleSidebar} className="bg-surface-overlay backdrop-blur-md border border-border-subtle">
           <Menu className="h-5 w-5 text-text-primary" />
         </Button>
+      </div>
+      
+      {/* Theme Toggle - Add this near the top */}
+      <div className="fixed top-4 right-4 z-30">
+        <ThemeToggle />
       </div>
       
       {/* Sidebar Navigation */}
@@ -130,10 +164,13 @@ const DashboardLayout = ({
         {NavItems}
         
         <div className="p-4 border-t border-border-subtle">
-          <button className="flex items-center w-full text-text-secondary hover:text-text-primary text-sm" onClick={() => toast({
-          title: "Help",
-          description: "Opening help & feedback panel"
-        })}>
+          <button
+            className="flex items-center w-full text-text-secondary hover:text-text-primary text-sm"
+            onClick={() => toast({
+              title: "Help",
+              description: "Opening help & feedback panel"
+            })}
+          >
             <HelpCircle className="h-5 w-5" />
             {sidebarOpen && <span className="ml-4 whitespace-nowrap">Help & Feedback</span>}
           </button>
@@ -147,6 +184,8 @@ const DashboardLayout = ({
       <div className={mainContentClasses}>
         {children}
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default React.memo(DashboardLayout);
