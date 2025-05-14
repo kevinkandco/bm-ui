@@ -86,15 +86,15 @@ export const ManualInputSection = ({
             Designate
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0 bg-deep-plum border-white/20">
+        <PopoverContent className="w-full p-0 bg-card border-border">
           <div className="p-2 space-y-2">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 dark:text-white/40" />
               <Input
                 placeholder="Search users..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white/15 border-white/20 text-ice-grey placeholder:text-white/50"
+                className="pl-10 bg-white/20 dark:bg-white/15 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey placeholder:text-foreground/50 dark:placeholder:text-white/50"
                 autoFocus
               />
             </div>
@@ -104,23 +104,23 @@ export const ManualInputSection = ({
                 displayedContacts.map((contact) => (
                   <div 
                     key={contact.id}
-                    className="flex items-center gap-2 p-2 hover:bg-white/10 rounded cursor-pointer"
+                    className="flex items-center gap-2 p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
                     onClick={() => handleContactSelect(contact)}
                   >
                     <div className="w-6 h-6 flex items-center justify-center bg-hot-coral/30 rounded-full">
                       <User size={12} className="text-white" />
                     </div>
                     <div>
-                      <p className="text-white text-xs">{contact.name}</p>
-                      <p className="text-white/50 text-xs">{contact.email}</p>
+                      <p className="text-foreground dark:text-white text-xs">{contact.name}</p>
+                      <p className="text-foreground/60 dark:text-white/50 text-xs">{contact.email}</p>
                     </div>
                   </div>
                 ))
               ) : (
                 searchQuery.trim() ? (
-                  <div className="p-2 text-white/50 text-sm">No users found</div>
+                  <div className="p-2 text-foreground/60 dark:text-white/50 text-sm">No users found</div>
                 ) : (
-                  <div className="p-2 text-white/50 text-sm">Type to search for users</div>
+                  <div className="p-2 text-foreground/60 dark:text-white/50 text-sm">Type to search for users</div>
                 )
               )}
             </div>
@@ -130,8 +130,8 @@ export const ManualInputSection = ({
 
       {/* Optional label selection after user has been designated */}
       {showLabelInput && selectedContact && (
-        <div className="mt-2 p-3 border border-white/20 rounded-md bg-white/10">
-          <Label className="text-white text-sm mb-1">Add a label (optional)</Label>
+        <div className="mt-2 p-3 border border-black/30 dark:border-white/20 rounded-md bg-white/20 dark:bg-white/10 shadow-sm">
+          <Label className="text-foreground dark:text-white text-sm mb-1">Add a label (optional)</Label>
           <Select
             value={selectedLabel}
             onValueChange={(value) => {
@@ -144,10 +144,10 @@ export const ManualInputSection = ({
               }
             }}
           >
-            <SelectTrigger className="w-full bg-white/15 border-white/20 text-ice-grey mt-1 mb-2">
+            <SelectTrigger className="w-full bg-white/20 dark:bg-white/15 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey mt-1 mb-2">
               <SelectValue placeholder="Select a label..." />
             </SelectTrigger>
-            <SelectContent className="bg-deep-plum text-ice-grey border-white/20">
+            <SelectContent className="bg-card text-foreground dark:text-ice-grey border-border">
               <SelectItem value="_none">No label</SelectItem>
               {labels.map((label) => (
                 <SelectItem key={label} value={label}>{label}</SelectItem>
@@ -161,7 +161,7 @@ export const ManualInputSection = ({
                 placeholder="Enter custom label..."
                 value={customLabel}
                 onChange={(e) => setCustomLabel(e.target.value)}
-                className="bg-white/15 border-white/20 text-ice-grey min-h-[40px] mb-2"
+                className="bg-white/20 dark:bg-white/15 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey min-h-[40px] mb-2 placeholder:text-foreground/50 dark:placeholder:text-white/50"
               />
               <div className="flex gap-2">
                 <Button 

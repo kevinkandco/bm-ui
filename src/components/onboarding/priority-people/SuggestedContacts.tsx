@@ -91,7 +91,7 @@ export const SuggestedContacts = ({
 
   return (
     <div className="pt-2">
-      <h3 className="text-sm font-medium text-ice-grey mb-2">Suggested Contacts</h3>
+      <h3 className="text-sm font-medium text-foreground dark:text-ice-grey mb-2">Suggested Contacts</h3>
       <div className="space-y-1.5">
         {filteredContacts.map(contact => {
           const isAdded = isContactAdded(contact);
@@ -104,8 +104,8 @@ export const SuggestedContacts = ({
               className={cn(
                 "flex items-center justify-between py-2 px-3 rounded-lg transition-all duration-200",
                 isAdded
-                  ? "border-2 border-electric-teal bg-white/20 backdrop-blur-md shadow-neo"
-                  : "border border-white/30 bg-white/15 hover:bg-white/25 backdrop-blur-md"
+                  ? "border-2 border-electric-teal bg-white/30 dark:bg-white/20 backdrop-blur-md shadow-neo"
+                  : "border border-black/40 dark:border-white/30 bg-white/25 dark:bg-white/15 hover:bg-white/35 dark:hover:bg-white/25 backdrop-blur-md shadow-sm"
               )}
             >
               <div className="flex items-center">
@@ -113,14 +113,14 @@ export const SuggestedContacts = ({
                   "w-8 h-8 flex items-center justify-center rounded-full mr-3",
                   isAdded 
                     ? "bg-electric-teal/80" 
-                    : "bg-deep-plum"
+                    : "bg-foreground/90 dark:bg-deep-plum"
                 )}>
                   <User size={15} className="text-white" />
                 </div>
                 
                 <div>
-                  <p className="text-white text-sm font-medium">{contact.name}</p>
-                  <div className="text-xs text-white/50 flex items-center gap-1">
+                  <p className="text-foreground dark:text-white text-sm font-medium">{contact.name}</p>
+                  <div className="text-xs text-foreground/80 dark:text-white/50 flex items-center gap-1">
                     <Mail size={10} /> {contact.email}
                   </div>
                   {person?.label && (
@@ -144,17 +144,17 @@ export const SuggestedContacts = ({
                         <Plus size={14} className="mr-1" /> Designate
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
+                    <PopoverContent className="w-48 p-0 bg-card border-border">
                       <div className="p-2">
-                        <p className="text-xs text-white/70 p-2">Add a label (optional)</p>
+                        <p className="text-xs text-foreground/80 dark:text-white/70 p-2">Add a label (optional)</p>
                         <div className="space-y-1">
                           {labels.map((label) => (
                             <div 
                               key={label}
-                              className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                              className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
                               onClick={() => handleLabelSelect(contact.id, label)}
                             >
-                              <span className="text-white text-xs">{label}</span>
+                              <span className="text-foreground dark:text-white text-xs">{label}</span>
                             </div>
                           ))}
                           {showLabelInput && (
@@ -190,10 +190,10 @@ export const SuggestedContacts = ({
                             </div>
                           )}
                           <div 
-                            className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                            className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
                             onClick={() => handleLabelSelect(contact.id, "")}
                           >
-                            <span className="text-white text-xs">No Label</span>
+                            <span className="text-foreground dark:text-white text-xs">No Label</span>
                           </div>
                         </div>
                       </div>
@@ -207,30 +207,30 @@ export const SuggestedContacts = ({
                         <Button 
                           size="sm" 
                           variant="outline"
-                          className="bg-white/10 border-white/20 text-white/70 text-xs"
+                          className="bg-white/20 dark:bg-white/10 border-black/30 dark:border-white/20 text-foreground/80 dark:text-white/70 text-xs"
                         >
                           {person?.label ? "Update Label" : "Add Label"}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
+                      <PopoverContent className="w-48 p-0 bg-card border-border">
                         <div className="p-2">
                           <div className="space-y-1">
                             {labels.map((label) => (
                               <div 
                                 key={label}
-                                className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                                className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
                                 onClick={() => addLabel(contact.name, label)}
                               >
-                                <span className="text-white text-xs">{label}</span>
+                                <span className="text-foreground dark:text-white text-xs">{label}</span>
                               </div>
                             ))}
                             {/* Option to remove label if one exists */}
                             {person?.label && (
                               <div 
-                                className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
+                                className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
                                 onClick={() => addLabel(contact.name, "")}
                               >
-                                <span className="text-white/70 text-xs">Remove Label</span>
+                                <span className="text-foreground/70 dark:text-white/70 text-xs">Remove Label</span>
                               </div>
                             )}
                           </div>
@@ -241,7 +241,7 @@ export const SuggestedContacts = ({
                     <Button 
                       size="sm" 
                       variant="ghost" 
-                      className="h-8 w-8 p-0 text-white/50 hover:text-hot-coral"
+                      className="h-8 w-8 p-0 text-foreground/60 dark:text-white/50 hover:text-destructive"
                       onClick={() => removePerson(contact.name)}
                     >
                       <X size={14} />
@@ -257,7 +257,7 @@ export const SuggestedContacts = ({
       <div className="text-center mt-4">
         <Button 
           variant="ghost" 
-          className="text-white/50 hover:text-ice-grey"
+          className="text-foreground/60 dark:text-white/50 hover:text-foreground dark:hover:text-ice-grey"
         >
           <Search size={16} className="mr-2" />
           Import from contacts
