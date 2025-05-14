@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import ProgressIndicator from "./ProgressIndicator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -39,7 +38,7 @@ const SignInStep = ({
   
   return (
     <div className="space-y-6 sm:space-y-8 relative">
-      <ProgressIndicator currentStep={1} totalSteps={7} />
+      {/* Removed ProgressIndicator from here */}
       
       {/* Glow orb visual element - smaller on mobile */}
       <div className="h-28 sm:h-40 w-full flex items-center justify-center relative mb-4 sm:mb-8">

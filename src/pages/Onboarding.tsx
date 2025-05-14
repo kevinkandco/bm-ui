@@ -22,7 +22,9 @@ const OnboardingContent = memo(({
   handleNext,
   handleBack,
   handleSkip,
-  handleComplete
+  handleComplete,
+  totalSteps,
+  getProgressStep,
 }: {
   currentStep: number;
   showSuccess: boolean;
@@ -32,6 +34,8 @@ const OnboardingContent = memo(({
   handleBack: () => void;
   handleSkip: () => void;
   handleComplete: () => void;
+  totalSteps: number;
+  getProgressStep: (step: number) => number;
 }) => {
   // Scroll to top when step changes for better mobile experience
   useEffect(() => {
@@ -140,7 +144,9 @@ const Onboarding = () => {
     handleNext,
     handleBack,
     handleSkip,
-    setShowSuccess
+    setShowSuccess,
+    totalSteps,
+    getProgressStep
   } = useOnboardingState();
   
   const handleComplete = () => {
@@ -171,6 +177,8 @@ const Onboarding = () => {
         handleBack={handleBack}
         handleSkip={handleSkip}
         handleComplete={handleComplete}
+        totalSteps={totalSteps}
+        getProgressStep={getProgressStep}
       />
     </OnboardingLayout>
   );

@@ -83,14 +83,22 @@ export function useOnboardingState() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
   
-  const totalSteps = 9;
+  // The sign-in step is no longer counted in the total steps
+  const totalSteps = 8;
+  
+  // This function maps the UI step (1-based) to the actual progress step (0-based)
+  // where step 1 is the FeaturesWalkthroughStep (after sign in)
+  const getProgressStep = (uiStep: number) => {
+    // First step (sign in) doesn't count in the progress
+    return uiStep === 1 ? 0 : uiStep - 1;
+  };
   
   const updateUserData = (data: Partial<UserData>) => {
     setUserData(prev => ({ ...prev, ...data }));
   };
   
   const handleNext = () => {
-    if (currentStep < totalSteps) {
+    if (currentStep < totalSteps + 1) { // +1 because we have an extra step (sign-in)
       setCurrentStep(prev => prev + 1);
       window.scrollTo(0, 0);
     } else {
@@ -107,7 +115,7 @@ export function useOnboardingState() {
 
   const handleSkip = () => {
     // Skip to final step
-    setCurrentStep(totalSteps);
+    setCurrentStep(totalSteps + 1); // +1 because we have an extra step (sign-in)
   };
 
   return {
@@ -118,6 +126,7 @@ export function useOnboardingState() {
     userData,
     updateUserData,
     totalSteps,
+    getProgressStep,
     handleNext,
     handleBack,
     handleSkip
