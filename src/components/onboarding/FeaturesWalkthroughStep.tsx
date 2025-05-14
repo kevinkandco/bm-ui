@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
 import { Inbox, Clock, Plane, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 interface FeaturesWalkthroughStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -12,6 +12,7 @@ interface FeaturesWalkthroughStepProps {
     [key: string]: any;
   };
 }
+
 const FeaturesWalkthroughStep = ({
   onNext,
   onBack,
@@ -44,6 +45,7 @@ const FeaturesWalkthroughStep = ({
     icon: <Plane className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
     detail: "Brief-me will monitor everything while you're gone, then give you exactly what you need to know when you're back."
   }];
+  
   const nextFeature = () => {
     if (currentFeature < features.length - 1) {
       setCurrentFeature(currentFeature + 1);
@@ -51,6 +53,7 @@ const FeaturesWalkthroughStep = ({
       onNext();
     }
   };
+  
   const prevFeature = () => {
     if (currentFeature > 0) {
       setCurrentFeature(currentFeature - 1);
@@ -58,7 +61,9 @@ const FeaturesWalkthroughStep = ({
       onBack();
     }
   };
-  return <div className="space-y-6 sm:space-y-8">
+
+  return (
+    <div className="space-y-6 sm:space-y-8">
       <ProgressIndicator currentStep={2} totalSteps={7} />
 
       <div className="text-center space-y-2 sm:space-y-3">
@@ -91,17 +96,30 @@ const FeaturesWalkthroughStep = ({
       </div>
 
       <div className="flex justify-center gap-2 pt-2 sm:pt-4">
-        {features.map((_, index) => <div key={index} className={cn("w-2 h-2 rounded-full cursor-pointer transition-all", index === currentFeature ? "bg-neon-mint w-4" : "bg-off-white/30 hover:bg-off-white/50")} onClick={() => setCurrentFeature(index)} />)}
+        {features.map((_, index) => (
+          <div
+            key={index}
+            className={cn(
+              "w-2 h-2 rounded-full cursor-pointer transition-all",
+              index === currentFeature
+                ? "bg-neon-mint w-4"
+                : "bg-off-white/30 hover:bg-off-white/50"
+            )}
+            onClick={() => setCurrentFeature(index)}
+          />
+        ))}
       </div>
 
       <div className="flex justify-between pt-2 sm:pt-4">
-        <Button onClick={prevFeature} variant="plain" size="none" className="text-sm sm:text-base">
+        <Button onClick={prevFeature} variant="back" size="none">
           Back
         </Button>
         <Button onClick={nextFeature} variant="primary" size="pill" className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6">
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default FeaturesWalkthroughStep;

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
@@ -102,9 +101,8 @@ const PurposeStep = ({ onNext, onBack, updateUserData, userData }: PurposeStepPr
       <div className="flex justify-between pt-2 sm:pt-4">
         <Button 
           onClick={onBack}
-          variant="ghost"
-          size="sm"
-          className="text-sm text-white/70 hover:text-white transition-colors"
+          variant="back"
+          size="none"
         >
           Back
         </Button>

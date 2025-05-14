@@ -258,7 +258,8 @@ const PreferencesStep = ({ onNext, onBack }: PreferencesStepProps) => {
       <div className="flex justify-between pt-2">
         <Button 
           onClick={onBack} 
-          variant="outline"
+          variant="back"
+          size="none"
         >
           Back
         </Button>

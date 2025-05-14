@@ -115,7 +115,7 @@ const PriorityPeopleStep = memo(({ onNext, onBack, updateUserData, userData }: P
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          variant="plain"
+          variant="back"
           size="none"
         >
           Back

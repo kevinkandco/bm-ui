@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
@@ -86,9 +85,8 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <div className="flex justify-between">
         <Button 
           onClick={onBack} 
-          variant="ghost"
+          variant="back"
           size="none"
-          className="text-text-secondary hover:text-text-primary"
         >
           Back
         </Button>

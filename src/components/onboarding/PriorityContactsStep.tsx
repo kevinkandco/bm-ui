@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -207,7 +206,8 @@ const PriorityContactsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       <div className="flex justify-between pt-2">
         <Button 
           onClick={onBack} 
-          variant="outline"
+          variant="back"
+          size="none"
         >
           Back
         </Button>

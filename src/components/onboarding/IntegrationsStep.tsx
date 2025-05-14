@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
@@ -313,7 +312,7 @@ const IntegrationsStep = ({
       </TooltipProvider>
       
       <div className="flex justify-between pt-2">
-        <Button onClick={onBack} variant="plain" size="none" className="text-sm">
+        <Button onClick={onBack} variant="back" size="none">
           Back
         </Button>
         <Button onClick={handleContinue} disabled={!hasAnyConnection} variant="primary" size="pill" className="disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-3 sm:px-4 text-sm">
