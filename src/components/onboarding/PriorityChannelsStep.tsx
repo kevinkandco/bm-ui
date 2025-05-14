@@ -1,105 +1,114 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import ProgressIndicator from "./ProgressIndicator";
-import { MessageSquare } from "lucide-react";
-import { PriorityChannelsStepProps } from "./priority-channels/types";
-import { SlackChannelsList } from "./priority-channels/SlackChannelsList";
-import { ChannelInput } from "./priority-channels/ChannelInput";
-import { SelectedChannels } from "./priority-channels/SelectedChannels";
-import { usePriorityChannelsState } from "./priority-channels/usePriorityChannelsState";
-import { useState } from "react";
 
-const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: PriorityChannelsStepProps) => {
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import ProgressIndicator from "./ProgressIndicator";
+import { Info, Plus } from "lucide-react";
+import { usePriorityChannelsState } from "./priority-channels/usePriorityChannelsState";
+import SelectedChannels from "./priority-channels/SelectedChannels";
+import SlackChannelsList from "./priority-channels/SlackChannelsList";
+import ChannelInput from "./priority-channels/ChannelInput";
+
+interface PriorityChannelsStepProps {
+  onNext: () => void;
+  onBack: () => void;
+  updateUserData: (data: any) => void;
+  userData: {
+    priorityChannels: string[];
+    [key: string]: any;
+  };
+}
+
+const PriorityChannelsStep = ({
+  onNext,
+  onBack,
+  updateUserData,
+  userData
+}: PriorityChannelsStepProps) => {
   const {
-    priorityChannels,
-    slackChannels,
+    selectedChannels,
     addChannel,
-    selectChannel,
-    removeChannel
+    removeChannel,
+    availableChannels,
   } = usePriorityChannelsState(userData.priorityChannels || []);
-  
-  const [searchQuery, setSearchQuery] = useState("");
-  
-  // Filter channels based on search query
-  const filteredChannels = searchQuery 
-    ? slackChannels.filter(channel => 
-        channel.toLowerCase().includes(searchQuery.toLowerCase()))
-    : slackChannels;
-  
-  const hasSlackIntegration = userData.integrations?.some(
-    (integration: any) => integration.type === "slack" || integration === "slack"
-  );
-  
+
+  const [showTip, setShowTip] = useState(true);
+
   const handleContinue = () => {
-    updateUserData({ priorityChannels });
+    // Update user data with selected channels
+    updateUserData({
+      priorityChannels: selectedChannels
+    });
     onNext();
   };
 
   return (
-    <div className="space-y-8">
-      <ProgressIndicator currentStep={5} totalSteps={9} />
+    <div className="space-y-6">
+      <ProgressIndicator currentStep={4} totalSteps={7} />
       
-      <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-text-primary tracking-tighter">Which channels are critical?</h2>
-        <p className="text-text-secondary">Mark your most important channels. We'll highlight updates from these channels in your brief.</p>
+      <div className="text-center space-y-2">
+        <h2 className="text-xl sm:text-2xl font-semibold text-text-headline tracking-tighter">
+          Select priority channels
+        </h2>
+        <p className="text-sm text-text-body max-w-md mx-auto">
+          Which Slack channels contain the most important information for you?
+        </p>
       </div>
       
-      <div className="space-y-6">
-        <div className="space-y-3">
-          <Label htmlFor="priority-channel" className="text-text-primary">Add important channels</Label>
-          <p className="text-sm text-text-secondary -mt-1">
-            Add critical Slack channels, email folders, or other message sources you need to monitor closely.
-          </p>
-          
-          <ChannelInput 
-            onAddChannel={addChannel}
-            onSelectChannel={selectChannel}
-            existingChannels={priorityChannels}
-            availableChannels={slackChannels}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-          
-          <SelectedChannels 
-            channels={priorityChannels} 
-            onRemoveChannel={removeChannel} 
-          />
-        </div>
-        
-        {/* Slack channels section */}
-        {(hasSlackIntegration || true) && (
-          <div className="space-y-3 pt-2">
-            <h3 className="text-lg font-medium text-text-primary">
-              <span className="flex items-center gap-2">
-                <MessageSquare size={18} className="text-accent-primary" />
-                Your Slack Channels
-              </span>
-            </h3>
-            <p className="text-sm text-text-secondary">
-              Select channels from your Slack workspace to prioritize.
+      {showTip && (
+        <div className="bg-card border border-divider rounded-lg p-4 flex gap-3">
+          <Info className="h-5 w-5 text-text-secondary flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium text-text-headline">Tip</h3>
+            <p className="text-xs text-text-body">
+              Brief-me will prioritize updates from these channels in your daily briefings.
+              Choose 3-5 channels for the best results.
             </p>
-            
-            <SlackChannelsList
-              slackChannels={filteredChannels}
-              priorityChannels={priorityChannels}
-              onSelectChannel={selectChannel}
-            />
+            <button 
+              onClick={() => setShowTip(false)}
+              className="text-xs text-accent-blue hover:underline"
+            >
+              Got it
+            </button>
           </div>
-        )}
+        </div>
+      )}
+      
+      {/* Selected channels */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-medium text-text-headline">
+          Your priority channels ({selectedChannels.length})
+        </h3>
+        
+        <SelectedChannels 
+          selectedChannels={selectedChannels} 
+          removeChannel={removeChannel}
+        />
+        
+        {/* Channel input */}
+        <ChannelInput onAddChannel={addChannel} />
+      </div>
+      
+      {/* Available channels */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-medium text-text-headline">
+          Available channels
+        </h3>
+        
+        <SlackChannelsList 
+          channels={availableChannels}
+          onSelectChannel={addChannel}
+        />
       </div>
       
       <div className="flex justify-between pt-4">
-        <Button 
-          onClick={onBack} 
-          variant="outline"
-          className="border-border-subtle text-text-secondary hover:bg-surface-raised hover:text-text-primary"
-        >
+        <Button onClick={onBack} variant="plain">
           Back
         </Button>
         <Button 
-          onClick={handleContinue}
-          variant="glow"
-          size="pill"
+          onClick={handleContinue} 
+          disabled={selectedChannels.length === 0}
+          variant="default" 
+          size="lg"
         >
           Continue
         </Button>

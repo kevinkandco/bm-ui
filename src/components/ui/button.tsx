@@ -17,6 +17,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-surface hover:text-text-headline",
         link: "text-accent-blue underline-offset-4 hover:underline",
         plain: "bg-transparent p-0 border-none text-text-body hover:text-text-headline",
+        glow: "bg-accent-blue text-white hover:-translate-y-1 hover:shadow-elevated",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-md",
@@ -24,6 +25,7 @@ const buttonVariants = cva(
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10 rounded-md",
         none: "h-auto p-0",
+        pill: "h-11 rounded-full px-8",
       },
     },
     defaultVariants: {
