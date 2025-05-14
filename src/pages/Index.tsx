@@ -30,7 +30,7 @@ const Index = () => {
         {/* Background image - blurred */}
         <div className="absolute inset-0 w-full h-full">
           <img 
-            src="/lovable-uploads/4b9500ea-4db3-4394-bd97-efce6e561797.png" 
+            src="/lovable-uploads/8ea55fb5-fb6e-49d0-881c-5d96263e886d.png" 
             alt="Dashboard background" 
             className="w-full h-full object-cover filter blur-lg"
             loading="eager"
