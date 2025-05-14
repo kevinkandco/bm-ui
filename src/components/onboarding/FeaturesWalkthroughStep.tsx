@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
@@ -103,7 +104,12 @@ const FeaturesWalkthroughStep = ({
         <Button onClick={prevFeature} variant="plain" size="none" className="text-sm sm:text-base">
           Back
         </Button>
-        <Button onClick={nextFeature} variant="glow" size="pill" className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6">
+        <Button 
+          onClick={nextFeature} 
+          variant="glow" 
+          size="pill" 
+          className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 border border-transparent bg-gradient-to-b from-white/10 to-black/20 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-shadow duration-300 shadow-none"
+        >
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>
