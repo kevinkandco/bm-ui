@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -57,13 +58,8 @@ const DashboardLayout = ({
     toast
   } = useToast();
   const handleNavClick = useCallback((path: string) => {
-    if (path === currentPage) return;
-    // This would navigate in a real app, but we'll just show a toast for now
-    toast({
-      title: "Navigation",
-      description: `Navigating to ${path}`
-    });
-  }, [currentPage, toast]);
+    navigate(path);
+  }, [navigate]);
 
   // Memoize sidebar classes to prevent recalculation on every render
   const sidebarClasses = useMemo(() => cn("fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl bg-surface-overlay border-r border-border-subtle shadow-xl z-20", sidebarOpen ? "w-64 left-0" : "w-16 left-0", "md:left-0"), [sidebarOpen]);
@@ -92,8 +88,9 @@ const DashboardLayout = ({
   const MobileNav = useMemo(() => <div className="fixed bottom-0 left-0 right-0 bg-surface-overlay backdrop-blur-xl border-t border-border-subtle md:hidden flex justify-around z-10">
       {navItems.slice(0, 5).map(({
       icon: Icon,
-      id
-    }) => <button key={id} onClick={() => handleNavClick(id)} className={cn("p-3 flex flex-col items-center justify-center", currentPage === id ? "text-accent-primary" : "text-text-secondary")}>
+      id,
+      path
+    }) => <button key={id} onClick={() => handleNavClick(path)} className={cn("p-3 flex flex-col items-center justify-center", currentPage === id ? "text-accent-primary" : "text-text-secondary")}>
           <Icon className="h-5 w-5" />
         </button>)}
     </div>, [currentPage, handleNavClick]);
