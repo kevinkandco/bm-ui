@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Mail, MessageSquare, CheckSquare, Clock, ArrowUp, ArrowDown } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import Audio from "./Audio";
+import useAudioPlayer from "@/hooks/useAudioPlayer";
 
 interface BriefModalProps {
   open: boolean;
@@ -17,6 +19,19 @@ interface BriefModalProps {
 }
 
 const BriefModal = ({ open, onClose }: BriefModalProps) => {
+    const {
+			audioRef,
+			isPlaying,
+			currentTime,
+			duration,
+			handleTimeUpdate,
+			handlePlayPause,
+			formatDuration,
+			barRef,
+			handleSeekStart,
+			handleSeekEnd,
+			handleSeekMove,
+		} = useAudioPlayer();
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto bg-white/80 backdrop-blur-md border border-white/30">
@@ -66,7 +81,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                 <p className="text-deep-teal/80 text-sm">2:00 PM - 4:30 PM Updates</p>
               </div>
               <span className="text-xs bg-glass-blue/10 text-glass-blue px-2 py-1 rounded-full">
-                1.25 hrs summarized in 1:03
+                1.25 hrs summarized in {formatDuration(duration)}
               </span>
             </div>
             
@@ -77,23 +92,36 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
             
             {/* Audio timeline */}
             <div className="mb-4 relative">
-              <div className="h-6 flex items-center">
-                {Array.from({ length: 40 }).map((_, index) => (
-                  <div 
-                    key={index} 
-                    className={`w-1 mx-0.5 rounded-full ${index < 28 ? 'bg-glass-blue h-4' : 'bg-gray-300/50 h-2'}`}
+              <div
+                className="h-6 flex items-center"
+                onMouseDown={handleSeekStart}
+                onMouseMove={handleSeekMove}
+                onMouseUp={handleSeekEnd}
+                onMouseLeave={handleSeekEnd}
+                ref={barRef}
+              >
+                {Array.from({ length: 100 }).map((_, index) => (
+                  <div
+                    key={index}
+                    data-value={index + 1}
+                    className={`w-1 mx-0.5 rounded-full ${
+                      index <= Math.floor((currentTime / duration) * 100)
+                        ? 'bg-glass-blue h-4'
+                        : 'bg-gray-300/50 h-2'
+                    }`}
                   />
                 ))}
+                <Audio audioSrc="public/audio.mp3" audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
               </div>
               
               <div className="flex justify-between text-xs text-deep-teal/70 mt-1">
-                <div>00:00</div>
+                <div>{formatDuration(currentTime)}</div>
                 <div className="flex-1 flex justify-around">
                   <div className="text-glass-blue">Q4 Planning</div>
                   <div className="text-green-500">Project Deadlines</div>
                   <div className="text-red-400">Urgent Email</div>
                 </div>
-                <div>01:03</div>
+                <div>{formatDuration(duration)}</div>
               </div>
             </div>
             
@@ -110,7 +138,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                 <Button size="icon" variant="outline" className="h-8 w-8 border-white/30">
                   <ArrowUp className="h-4 w-4 text-deep-teal" />
                 </Button>
-                <Button size="icon" variant="outline" className="h-10 w-10 rounded-full border-glass-blue bg-glass-blue/10">
+                <Button size="icon" variant="outline" className="h-10 w-10 rounded-full border-glass-blue bg-glass-blue/10" onClick={handlePlayPause}>
                   <div className="h-3 w-3 bg-glass-blue rounded-full"></div>
                 </Button>
                 <Button size="icon" variant="outline" className="h-8 w-8 border-white/30">
@@ -121,7 +149,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                 </Button>
               </div>
               
-              <span className="text-sm font-medium text-deep-teal">01:03</span>
+              <span className="text-sm font-medium text-deep-teal">{formatDuration(duration)}</span>
             </div>
             
             <div className="mt-4 text-right">
