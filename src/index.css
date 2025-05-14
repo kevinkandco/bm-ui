@@ -1,245 +1,111 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Dark Glass Morphism CSS Variables */
-    --surface: #1A1A1C;
-    --surface-raised: #232326;
-    --surface-overlay: rgba(35, 35, 38, 0.85);
-    --glow-highlight: rgba(255, 255, 255, 0.1);
-    --glow-line: rgba(255, 255, 255, 0.25);
-    --accent-primary: #2B88FF;
-    --accent-secondary: #6BA5FF;
-    --text-primary: #FFFFFF;
-    --text-secondary: rgba(255, 255, 255, 0.8);
-    --text-muted: rgba(255, 255, 255, 0.5);
-    --border-subtle: rgba(255, 255, 255, 0.12);
+    /* Base modern dark mode variables */
+    --background: #0F0F0F;
+    --surface: #1A1A1A;
+    --card: #2B2B2B;
+    
+    /* Text colors */
+    --text-headline: rgba(255, 255, 255, 0.9);
+    --text-body: rgba(255, 255, 255, 0.75);
+    --text-secondary: rgba(255, 255, 255, 0.5);
+    
+    /* Accent color */
+    --accent-color: #2EA7FF;
+    --divider-color: #262626;
     
     /* Standard radius */
-    --radius: 16px;
+    --radius: 12px;
 
     /* Update shadcn variables to match our new design system */
-    --background: 240 3% 10%;  /* #1A1A1C */
-    --foreground: 0 0% 100%;   /* #FFFFFF */
-    --card: 240 3% 14%;        /* #232326 */
-    --card-foreground: 0 0% 100%;  /* #FFFFFF */
-    --popover: 240 3% 14%;     /* #232326 */
-    --popover-foreground: 0 0% 100%;  /* #FFFFFF */
-    --primary: 216 100% 58%;   /* #2B88FF */
+    --background: 0 0% 6%;        /* #0F0F0F */
+    --foreground: 0 0% 90%;       /* 90% white */
+    --card: 0 0% 17%;             /* #2B2B2B */
+    --card-foreground: 0 0% 90%;  /* 90% white */
+    --popover: 0 0% 17%;          /* #2B2B2B */
+    --popover-foreground: 0 0% 90%; /* 90% white */
+    --primary: 203 100% 59%;      /* #2EA7FF */
     --primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 240 3% 14%;   /* #232326 */
-    --secondary-foreground: 0 0% 100%; /* #FFFFFF */
-    --muted: 240 3% 18%;       /* #2D2D31 */
-    --muted-foreground: 0 0% 80%; /* rgba(255, 255, 255, 0.8) */
-    --accent: 216 100% 58%;    /* #2B88FF */
+    --secondary: 0 0% 10%;        /* #1A1A1A */
+    --secondary-foreground: 0 0% 90%; /* 90% white */
+    --muted: 0 0% 15%;            /* Slightly lighter than surface */
+    --muted-foreground: 0 0% 50%; /* 50% white */
+    --accent: 203 100% 59%;       /* #2EA7FF */
     --accent-foreground: 0 0% 100%; /* #FFFFFF */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3% 25%;      /* #3D3D43 */
-    --input: 240 3% 25%;       /* #3D3D43 */
-    --ring: 216 100% 58%;      /* #2B88FF */
+    --destructive: 0 62.8% 30.6%; /* Keep original destructive */
+    --destructive-foreground: 0 0% 98%; /* Keep original destructive foreground */
+    --border: 0 0% 15%;           /* #262626 */
+    --input: 0 0% 15%;            /* #262626 */
+    --ring: 203 100% 59%;         /* #2EA7FF */
   }
 
-  /* Default to dark glass morphism mode */
+  /* Default to dark mode */
   body {
-    @apply bg-surface text-text-primary font-sans;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
-@layer utilities {
-  /* Glass effect utilities */
-  .glass-panel {
-    background: var(--surface-overlay);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
-  
-  .glow-text {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-  }
-  
-  .glow-border {
-    box-shadow: 0 0 15px rgba(43, 136, 255, 0.4);
-    border: 1px solid var(--accent-primary);
-  }
-  
-  .glow-line {
-    height: 1px;
-    background: linear-gradient(
-      to right, 
-      rgba(255, 255, 255, 0),
-      var(--glow-line),
-      rgba(255, 255, 255, 0)
-    );
-  }
-
-  /* Shadow utilities */
-  .shadow-subtle {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  }
-
-  .shadow-glow {
-    box-shadow: 0 0 20px rgba(43, 136, 255, 0.4);
-  }
-
-  /* Text gradient */
-  .text-gradient-blue {
-    @apply bg-gradient-to-r bg-clip-text text-transparent from-accent-primary to-accent-secondary;
-  }
-  
-  /* Glass reflection effect */
-  .glass-reflection {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .glass-reflection::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.05) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    transform: rotate(-25deg);
-    pointer-events: none;
-  }
-
-  /* New glow effect for progress bar */
-  .glow-progress {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-  }
-  
-  /* Button glow effect */
-  .glow-button {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 9999px;
+    @apply bg-base text-text-headline font-sans;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
 }
 
 @layer components {
-  /* Glass Card Component */
-  .glass-card {
-    @apply bg-surface-raised rounded-xl border border-border-subtle backdrop-blur-xl 
-           shadow-subtle transition-all duration-300 ease-out overflow-hidden;
+  /* Card Component */
+  .card {
+    @apply bg-surface rounded-card border border-divider py-card-padding px-card-padding shadow-card;
   }
   
-  .glass-card:hover {
-    @apply shadow-glow border-accent-primary;
+  /* Button styles */
+  .button-primary {
+    @apply bg-accent-blue text-white rounded-md py-2 px-4 transition-all duration-200 ease-out;
   }
   
-  /* Glass Button */
-  .glass-button {
-    @apply bg-surface-overlay text-text-primary rounded-full py-3 px-6 
-           border border-border-subtle backdrop-blur-xl transition-all 
-           duration-300 ease-out font-medium;
+  .button-primary:hover {
+    @apply transform -translate-y-1 shadow-elevated;
   }
   
-  .glass-button:hover {
-    @apply border-accent-primary shadow-glow transform -translate-y-1;
+  .button-secondary {
+    @apply bg-transparent border border-divider text-text-body rounded-md py-2 px-4 transition-all duration-200 ease-out;
+  }
+
+  .button-secondary:hover {
+    @apply text-text-headline;
   }
   
-  /* Primary Button */
-  .glass-button-primary {
-    @apply bg-accent-primary text-white rounded-full py-3 px-6
-           transition-all duration-300 ease-out font-medium shadow-subtle;
+  /* Dividers */
+  .divider {
+    @apply h-px w-full bg-divider my-row-gap;
   }
   
-  .glass-button-primary:hover {
-    @apply shadow-glow transform -translate-y-1;
+  /* Stat widgets */
+  .stat-widget {
+    @apply bg-card bg-opacity-50 rounded-card p-card-padding flex items-center;
   }
   
-  /* Secondary Button */
-  .glass-button-secondary {
-    @apply bg-surface-overlay text-text-secondary rounded-full py-3 px-6
-           border border-border-subtle backdrop-blur-xl transition-all 
-           duration-300 ease-out font-medium;
+  .stat-value {
+    @apply text-heading-md text-text-headline font-medium;
   }
   
-  .glass-button-secondary:hover {
-    @apply text-text-primary border-accent-primary;
+  .stat-label {
+    @apply text-meta text-text-secondary;
   }
   
-  /* Glass Input */
-  .glass-input {
-    @apply bg-surface-overlay border border-border-subtle rounded-lg px-4 py-2
-           backdrop-blur-xl transition-all duration-300 ease-out text-text-primary
-           focus:outline-none focus:ring-1 focus:ring-accent-primary focus:border-accent-primary;
+  /* Icons */
+  .icon {
+    @apply text-icon;
   }
   
-  /* Progress bar with glow */
-  .progress-bar-glow {
-    @apply h-1 rounded-full transition-all duration-300 ease-out bg-white shadow-[0_0_10px_rgba(255,255,255,0.7)];
+  .icon-active {
+    @apply text-accent-blue;
   }
   
-  /* Progress dot indicators */
-  .progress-dot {
-    @apply w-2 h-2 rounded-full transition-all duration-300;
-  }
-  
-  .progress-dot.active {
-    @apply bg-accent-primary;
-  }
-  
-  .progress-dot.inactive {
-    @apply bg-text-muted;
-  }
-  
-  /* Theme toggle - keep for consistency */
-  .theme-toggle {
-    @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors;
-    @apply bg-surface-overlay text-text-primary hover:bg-accent-primary/20 backdrop-blur-xl;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  /* Focus states for accessibility */
+  .focus-visible:focus {
+    @apply outline-none ring-2 ring-accent-blue ring-offset-2 ring-offset-background;
   }
 }
 
-/* Animation keyframes */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.7;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    filter: brightness(1) blur(3px);
-  }
-  50% {
-    filter: brightness(1.2) blur(4px);
-  }
-}
-
-@keyframes float-delay {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(-8px) translateX(5px);
-  }
-}
+/* Clean up unused styles from the previous version */
+/* Remove animations that don't align with the new design direction */

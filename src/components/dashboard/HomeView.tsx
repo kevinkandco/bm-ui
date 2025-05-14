@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Zap, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -37,50 +37,49 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
   const HeroSection = React.memo(() => (
     <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 className="text-3xl font-bold text-text-primary">Morning, Alex</h1>
-        <p className="text-text-secondary mt-1">Here's what you missed</p>
+        <h1 className="text-heading-lg text-text-headline font-medium">Morning, Alex</h1>
+        <p className="text-body text-text-secondary mt-1">Here's what you missed</p>
       </div>
       <div className="flex gap-3 mt-4 md:mt-0">
         <Button 
           onClick={onToggleCatchMeUp}
-          className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
+          className="rounded-md shadow-card"
         >
-          <Zap className="mr-2 h-5 w-5" /> Catch Me Up
+          <Zap className="h-5 w-5" /> Catch Me Up
         </Button>
         <Button 
           onClick={onToggleFocusMode}
           variant="outline"
-          className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle backdrop-blur-md"
         >
-          <Headphones className="mr-2 h-5 w-5" /> Focus Mode
+          <Headphones className="h-5 w-5" /> Focus Mode
         </Button>
       </div>
     </div>
   ));
   
   return (
-    <div className="container p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="container p-shell max-w-7xl mx-auto">
       <HeroSection />
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-card-gap">
         {/* Left Section - Col 1-8 */}
         <div className="lg:col-span-8">
-          {/* Combined Card with Sections and Dividers */}
-          <div className="glass-card rounded-3xl overflow-hidden">
-            {/* Latest Brief Section - Moved to top */}
+          {/* Main card with sections and dividers */}
+          <div className="rounded-card bg-surface border border-divider shadow-card overflow-hidden">
+            {/* Latest Brief Section */}
             <LatestBriefSection onClick={onOpenBriefModal} />
 
-            <Separator className="bg-border-subtle" />
+            <div className="h-px w-full bg-divider" />
             
             {/* Urgent Threads Section */}
             <UrgentThreadsSection />
 
-            <Separator className="bg-border-subtle" />
+            <div className="h-px w-full bg-divider" />
             
             {/* Connected Channels Section */}
             <ConnectedChannelsSection />
             
-            <Separator className="bg-border-subtle" />
+            <div className="h-px w-full bg-divider" />
             
             {/* Priority People Section */}
             <PriorityPeopleSection />
@@ -88,14 +87,14 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
         </div>
         
         {/* Right Section - Col 9-12 */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-card-gap">
           {/* Next Brief Section */}
-          <div className="glass-card rounded-3xl p-6">
+          <div className="rounded-card bg-surface border border-divider shadow-card p-card-padding">
             <NextBriefSection onUpdateSchedule={handleUpdateSchedule} />
           </div>
           
           {/* Upcoming Meetings Section */}
-          <div className="glass-card rounded-3xl p-6">
+          <div className="rounded-card bg-surface border border-divider shadow-card p-card-padding">
             <UpcomingMeetingsSection />
           </div>
         </div>
