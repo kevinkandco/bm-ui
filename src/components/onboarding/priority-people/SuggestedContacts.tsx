@@ -46,10 +46,12 @@ export const SuggestedContacts = ({
   ];
   
   // Filtered contacts based on search query
-  const filteredContacts = suggestedContacts.filter(contact => 
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contact.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredContacts = searchQuery.trim() 
+    ? suggestedContacts.filter(contact => 
+        contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contact.email.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : suggestedContacts;
 
   // Filter platform contacts based on contact search query
   const filteredPlatformContacts = platformContacts.filter(contact =>
@@ -135,7 +137,8 @@ export const SuggestedContacts = ({
                     <PopoverTrigger asChild>
                       <Button 
                         size="sm"
-                        className="bg-white/10 text-white hover:bg-white/20"
+                        variant="black"
+                        className="rounded-full"
                         onClick={() => handleDesignate(contact)}
                       >
                         <Plus size={14} className="mr-1" /> Designate

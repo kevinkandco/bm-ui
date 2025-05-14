@@ -79,11 +79,11 @@ export const ManualInputSection = ({
       <Popover>
         <PopoverTrigger asChild>
           <Button 
-            variant="outline" 
-            className="w-full justify-start text-left font-normal bg-white/15 border-white/20 text-ice-grey"
+            variant="black" 
+            className="w-full justify-start text-left font-normal"
           >
-            <Search className="mr-2 h-4 w-4" />
-            Designate someone manually
+            <Plus className="mr-2 h-4 w-4" />
+            Designate
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0 bg-deep-plum border-white/20">

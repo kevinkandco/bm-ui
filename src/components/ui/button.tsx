@@ -20,7 +20,8 @@ const buttonVariants = cva(
         ghost: "hover:bg-white/15 hover:text-text-primary text-text-secondary",
         link: "text-text-primary underline-offset-4 hover:text-accent-primary",
         plain: "bg-transparent text-text-primary hover:text-accent-primary p-0 border-none",
-        glow: "bg-black/80 text-white hover:bg-black/70 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-white/10 dark:text-white light:text-text-primary",
+        glow: "bg-black/80 text-white hover:bg-black/70 transition-all duration-300 shadow-none hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-white/10 dark:text-white light:text-text-primary",
+        black: "bg-black text-white hover:bg-black/90 rounded-full border border-white/10 transition-all duration-300 shadow-none hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-xl",
