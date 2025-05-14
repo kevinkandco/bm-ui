@@ -50,14 +50,14 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
         <div className="absolute inset-0 bg-gradient-radial from-surface-raised/20 to-transparent opacity-50"></div>
       </div>
       
-      {/* Glow shapes - Moved them closer to the main content */}
-      <div className="glow-shape absolute top-10 -left-20 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-40" data-speed="0.5"></div>
-      <div className="glow-shape absolute top-1/4 -right-20 w-96 h-96 rounded-full bg-accent-secondary/5 filter blur-3xl opacity-30" data-speed="0.8"></div>
-      <div className="glow-shape absolute -bottom-20 left-1/4 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-30" data-speed="0.6"></div>
+      {/* Glow shapes - Moved them to not take vertical space */}
+      <div className="glow-shape absolute top-0 -left-20 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-40" data-speed="0.5"></div>
+      <div className="glow-shape absolute top-1/5 -right-20 w-96 h-96 rounded-full bg-accent-secondary/5 filter blur-3xl opacity-30" data-speed="0.8"></div>
+      <div className="glow-shape absolute -bottom-10 left-1/4 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-30" data-speed="0.6"></div>
       
-      {/* Floating glass panels - reduced size on mobile */}
+      {/* Floating glass panels - moved up */}
       <div 
-        className={`absolute left-1/4 top-1/4 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-xl glass-reflection z-[2] opacity-20`}
+        className={`absolute left-1/4 top-10 ${isMobile ? 'w-16 h-16' : 'w-24 h-24'} rounded-xl glass-reflection z-[2] opacity-20`}
         style={{
           background: 'rgba(43, 136, 255, 0.05)', 
           backdropFilter: 'blur(12px)',
@@ -66,7 +66,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
         }}
       ></div>
       <div 
-        className={`absolute right-1/4 bottom-1/4 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-xl glass-reflection animate-float-delay z-[2]`}
+        className={`absolute right-1/4 bottom-1/5 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'} rounded-xl glass-reflection animate-float-delay z-[2]`}
         style={{
           background: 'rgba(43, 136, 255, 0.03)', 
           backdropFilter: 'blur(12px)',
@@ -77,7 +77,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
       
       <div 
         className={cn(
-          "w-full max-w-md z-10 p-6 sm:p-8 backdrop-blur-xl rounded-3xl border border-border-subtle glass-reflection",
+          "w-full max-w-md z-10 p-6 sm:p-8 mt-0 backdrop-blur-xl rounded-3xl border border-border-subtle glass-reflection",
           className
         )}
         style={{
@@ -88,7 +88,7 @@ const OnboardingLayout = ({ children, className }: OnboardingLayoutProps) => {
         {children}
       </div>
       
-      <div className="mt-4 text-xs text-text-secondary z-10 px-4 text-center">
+      <div className="mt-3 text-xs text-text-secondary z-10 px-4 text-center">
         You control what Brief.me monitors. Change anytime.
       </div>
     </div>
