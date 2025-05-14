@@ -10,8 +10,9 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl bg-gradient-to-b from-surface-raised/70 to-surface/90 backdrop-blur-md border shadow-subtle",
+      "rounded-xl backdrop-blur-md border shadow-subtle",
       "dark:border-white/10 dark:text-white light:border-black/10 light:text-text-primary",
+      "glass-card", // Use our custom glass-card class that has the gradient defined in CSS
       className
     )}
     {...props}

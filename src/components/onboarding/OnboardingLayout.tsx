@@ -58,17 +58,7 @@ const OnboardingLayout = ({
         <ThemeToggle />
       </div>
       
-      <div 
-        className={cn("w-full max-w-md z-10 p-6 sm:p-8 mt-0 rounded-xl glass-card", className)} 
-        style={{
-          background: theme === 'dark' 
-            ? 'linear-gradient(180deg, rgba(35, 35, 38, 0.75) 0%, rgba(26, 26, 28, 0.9) 100%)'
-            : 'linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(245, 245, 247, 0.95) 100%)',
-          boxShadow: theme === 'dark'
-            ? '0 4px 20px rgba(0, 0, 0, 0.25)'
-            : '0 4px 20px rgba(0, 0, 0, 0.1)'
-        }}
-      >
+      <div className={cn("w-full max-w-md z-10 p-6 sm:p-8 mt-0 rounded-xl glass-card", className)}>
         {children}
       </div>
       
