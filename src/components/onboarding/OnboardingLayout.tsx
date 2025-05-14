@@ -70,7 +70,7 @@ const OnboardingLayout = ({
         {children}
       </div>
       
-      <div className="mt-3 text-xs text-text-secondary z-10 px-4 text-center">You control what Brief-me monitors. Change anytime.</div>
+      <div className="mt-3 text-xs text-text-secondary z-10 px-4 text-center font-medium">You control what Brief-me monitors. Change anytime.</div>
     </div>
   );
 };

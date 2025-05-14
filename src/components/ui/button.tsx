@@ -11,7 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-glass-blue text-white hover:bg-lake-blue transition-colors duration-300 shadow-neon",
-        primary: "bg-[#4285F4] text-white hover:bg-[#3b78e6] transition-colors duration-300 rounded-full",
+        primary: "bg-[#0F6FDD] text-white hover:bg-[#0E66C8] transition-colors duration-300 rounded-full", // Darker blue for better contrast
         destructive:
           "bg-hot-coral text-white hover:bg-hot-coral/90 shadow-sm",
         outline:
@@ -19,11 +19,11 @@ const buttonVariants = cva(
         secondary:
           "bg-white/25 backdrop-blur-md text-text-primary hover:bg-white/35 shadow-sm",
         ghost: "hover:bg-white/15 hover:text-text-primary text-text-secondary",
-        link: "text-text-primary underline-offset-4 hover:text-accent-primary",
+        link: "text-text-secondary underline-offset-4 hover:text-accent-primary",
         plain: "bg-transparent text-text-primary hover:text-accent-primary p-0 border-none",
         glow: "bg-black/80 text-white hover:bg-black/70 transition-all duration-300 shadow-none hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-white/10 dark:text-white light:text-text-primary",
         black: "bg-black text-white hover:bg-black/90 rounded-full border border-white/10 transition-all duration-300 shadow-none hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]",
-        back: "bg-transparent text-white hover:text-[#33C3F0] p-0 border-none transition-colors",
+        back: "bg-transparent text-white hover:text-[#0F6FDD] p-0 border-none transition-colors", // Changed hover color to match darker primary
       },
       size: {
         default: "h-10 px-4 py-2 rounded-xl",

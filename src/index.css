@@ -7,47 +7,47 @@
     /* Light Glass Morphism CSS Variables */
     --surface: #F5F5F7;
     --surface-raised: #FFFFFF;
-    --surface-overlay: rgba(255, 255, 255, 0.85);
+    --surface-overlay: rgba(255, 255, 255, 0.95);
     --glow-highlight: rgba(0, 0, 0, 0.05);
     --glow-line: rgba(0, 0, 0, 0.15);
-    --accent-primary: #2B88FF;
+    --accent-primary: #0F6FDD;
     --accent-secondary: #4E96FF;
     --text-primary: #1A1A1C;
-    --text-secondary: rgba(26, 26, 28, 0.8);
-    --text-muted: rgba(26, 26, 28, 0.5);
-    --border-subtle: rgba(0, 0, 0, 0.08);
+    --text-secondary: rgba(26, 26, 28, 0.85);
+    --text-muted: rgba(26, 26, 28, 0.65);
+    --border-subtle: rgba(0, 0, 0, 0.12);
     
     /* Standard radius */
     --radius: 16px;
 
     /* Light mode shadcn variables */
-    --background: 0 0% 98%;    /* #fafafa - Lighter background */
-    --foreground: 240 3% 10%;   /* #1A1A1C */
-    --card: 0 0% 100%;          /* #FFFFFF */
-    --card-foreground: 240 3% 10%;  /* #1A1A1C */
-    --popover: 0 0% 100%;       /* #FFFFFF */
-    --popover-foreground: 240 3% 10%;  /* #1A1A1C */
-    --primary: 216 100% 58%;    /* #2B88FF */
+    --background: 0 0% 96%;    /* #f5f5f5 - Slightly darker background */
+    --foreground: 240 3% 8%;   /* #151517 - Darker text for better contrast */
+    --card: 0 0% 100%;         /* #FFFFFF */
+    --card-foreground: 240 3% 8%;  /* #151517 */
+    --popover: 0 0% 100%;      /* #FFFFFF */
+    --popover-foreground: 240 3% 8%;  /* #151517 */
+    --primary: 216 100% 46%;   /* #0F6FDD - Darker blue for better contrast */
     --primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 0 0% 96%;      /* #F5F5F5 */
-    --secondary-foreground: 240 3% 10%; /* #1A1A1C */
-    --muted: 0 0% 92%;          /* #EBEBEB */
-    --muted-foreground: 240 3% 40%; /* rgba(26, 26, 28, 0.8) */
-    --accent: 216 100% 58%;     /* #2B88FF */
+    --secondary: 0 0% 92%;     /* #EAEAEA */
+    --secondary-foreground: 240 3% 8%; /* #151517 */
+    --muted: 0 0% 88%;         /* #E0E0E0 */
+    --muted-foreground: 240 3% 25%; /* rgba(26, 26, 28, 0.8) - Darker for better contrast */
+    --accent: 216 100% 46%;    /* #0F6FDD */
     --accent-foreground: 0 0% 100%; /* #FFFFFF */
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 50%;  /* Darker red */
     --destructive-foreground: 0 0% 98%;
-    --border: 240 10% 90%;      /* #E5E5EA */
-    --input: 240 10% 90%;       /* #E5E5EA */
-    --ring: 216 100% 58%;       /* #2B88FF */
+    --border: 240 10% 84%;     /* #D5D5DA - Darker border */
+    --input: 240 10% 84%;      /* #D5D5DA */
+    --ring: 216 100% 46%;      /* #0F6FDD */
     
     /* Surface with opacity variations for gradients */
-    --surface-raised-70: rgba(255, 255, 255, 0.7);
-    --surface-90: rgba(245, 245, 247, 0.9);
+    --surface-raised-70: rgba(255, 255, 255, 0.85);
+    --surface-90: rgba(245, 245, 247, 0.95);
     
     /* Accent colors with opacity for hover states */
-    --accent-primary-hover: rgba(43, 136, 255, 0.2);
-    --accent-primary-hover-light: rgba(43, 136, 255, 0.1);
+    --accent-primary-hover: rgba(15, 111, 221, 0.2);
+    --accent-primary-hover-light: rgba(15, 111, 221, 0.1);
   }
 
   .dark {
@@ -102,12 +102,13 @@
 
   /* Light mode specific styles */
   :root:not(.dark) {
-    --surface: #f8f8fa; /* Much lighter background */
+    --surface: #f0f0f2; /* Even slightly darker background */
     --surface-raised: #FFFFFF;
-    --surface-overlay: rgba(255, 255, 255, 0.9);
-    --text-primary: #2A2A2A; /* Darker text for better contrast */
-    --text-secondary: rgba(42, 42, 42, 0.8);
-    --text-muted: rgba(42, 42, 42, 0.6);
+    --surface-overlay: rgba(255, 255, 255, 0.95);
+    --text-primary: #171717; /* Much darker text */
+    --text-secondary: rgba(23, 23, 23, 0.85); /* Higher contrast text */
+    --text-muted: rgba(23, 23, 23, 0.65); /* Higher contrast muted text */
+    --border-subtle: rgba(0, 0, 0, 0.15); /* Darker border for contrast */
   }
 }
 
@@ -208,7 +209,8 @@
   }
   
   .light .glass-card {
-    @apply border-black/10;
+    @apply border-black/15; /* Darker border in light mode */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Stronger shadow for better visibility */
   }
   
   .glass-card:hover {
@@ -220,7 +222,8 @@
   }
   
   .light .glass-card:hover {
-    @apply border-black/15;
+    @apply border-black/25; /* Darker hover border */
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15); /* Stronger hover shadow */
   }
   
   /* Glass Button */
@@ -297,8 +300,8 @@
   
   .light .theme-toggle {
     @apply text-text-primary;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Stronger shadow */
   }
   
   .light .theme-toggle:hover {
