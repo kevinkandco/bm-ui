@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
-import { Inbox, Clock, Plane } from "lucide-react";
+import { Inbox, Clock, Plane, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FeaturesWalkthroughStepProps {
@@ -36,6 +36,13 @@ const FeaturesWalkthroughStep = ({
       description: "Get caught up on specific topics, channels, or conversations with a single click.",
       icon: <Clock className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
       detail: "Need to know what happened in a specific Slack channel? Just ask Brief.me to catch you up."
+    },
+    {
+      id: "onboarding-companion",
+      title: "New-Hire Onboarding Companion",
+      description: "Help new team members get up to speed faster with automated onboarding briefs.",
+      icon: <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
+      detail: "Auto-curates an \"Onboarding Brief\" from your knowledge base, wiki, and recent team activity. Daily \"Ramp-Up Digest\" summarizes relevant Slack threads, project updates, and jargon explanations so new teammates never feel lost."
     }, 
     {
       id: "vacation-mode",
