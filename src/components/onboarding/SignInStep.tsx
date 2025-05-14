@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSearchParams } from "react-router-dom";
+import { useTheme } from "@/hooks/use-theme";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -20,6 +21,7 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
   const [searchParams] = useSearchParams();
   const [signingIn, setSigningIn] = useState(false);
   const isMobile = useIsMobile();
+  const { theme } = useTheme();
 
   const handleSignIn = (provider: "google" | "slack") => {
     try {
@@ -61,20 +63,20 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
         <div className="w-24 sm:w-32 h-24 sm:h-32 rounded-full bg-accent-primary/5 animate-pulse absolute"></div>
         <div className="w-18 sm:w-24 h-18 sm:h-24 rounded-full bg-accent-primary/10 animate-glow absolute"></div>
         <div className="w-12 sm:w-16 h-12 sm:h-16 rounded-full bg-accent-primary/15 absolute flex items-center justify-center">
-          <img
-            src="/lovable-uploads/432a0bc4-376f-4766-864d-ff5f206b8068.png"
-            alt="Sound wave"
-            className="w-8 sm:w-10 h-8 sm:h-10 opacity-90 wave-pulse"
-            style={{ filter: "brightness(0) invert(1)" }}
+          <img 
+            src="/lovable-uploads/432a0bc4-376f-4766-864d-ff5f206b8068.png" 
+            alt="Sound wave" 
+            className="w-8 sm:w-10 h-8 sm:h-10 opacity-90 wave-pulse" 
+            style={{
+              filter: theme === 'dark' ? "brightness(0) invert(1)" : "brightness(0.2)"
+            }} 
           />
         </div>
       </div>
 
       <div className="space-y-3 sm:space-y-4 text-center">
         <div className="inline-flex items-center justify-center px-3 py-1 rounded-full">
-          <span className="text-gradient-blue font-medium text-lg sm:text-xl">
-            Welcome to Brief.me
-          </span>
+          <span className="text-gradient-blue font-medium text-lg sm:text-xl">Welcome to Brief-me</span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-semibold text-text-primary tracking-tighter leading-tight">
           Stay in sync. Skip the scroll.
@@ -86,9 +88,9 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
       </div>
 
       <div className="space-y-4 pt-2 sm:pt-4">
-        <Button
-          className="w-full bg-surface-overlay hover:bg-surface-raised text-text-primary border border-border-subtle shadow-subtle flex items-center justify-center gap-2 sm:gap-3 rounded-xl py-2.5 sm:py-3 text-sm sm:text-base transition-all duration-400"
-          onClick={() => handleSignIn("google")}
+        <Button 
+          className="w-full bg-surface-overlay hover:bg-surface-raised text-text-primary border border-border-subtle shadow-subtle flex items-center justify-center gap-2 sm:gap-3 rounded-xl py-2.5 sm:py-3 text-sm sm:text-base transition-all duration-400" 
+          onClick={() => handleSignIn('google')} 
           disabled={signingIn}
         >
           <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24">

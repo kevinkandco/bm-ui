@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,25 +64,25 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				
-				// Dark glass morphism design system colors
-				'surface': '#1A1A1C',
-				'surface-raised': '#232326',
-				'surface-overlay': 'rgba(35, 35, 38, 0.85)',
-				'accent-primary': '#2B88FF',
-				'accent-secondary': '#6BA5FF',
-				'text-primary': '#FFFFFF',
-				'text-secondary': 'rgba(255, 255, 255, 0.8)',
-				'text-muted': 'rgba(255, 255, 255, 0.5)',
-				'border-subtle': 'rgba(255, 255, 255, 0.12)',
-				'glow-highlight': 'rgba(255, 255, 255, 0.1)',
-				'glow-line': 'rgba(255, 255, 255, 0.25)',
+				// Glass morphism design system colors - referenced by CSS variables to be theme aware
+				'surface': 'var(--surface)',
+				'surface-raised': 'var(--surface-raised)',
+				'surface-overlay': 'var(--surface-overlay)',
+				'accent-primary': 'var(--accent-primary)',
+				'accent-secondary': 'var(--accent-secondary)',
+				'text-primary': 'var(--text-primary)',
+				'text-secondary': 'var(--text-secondary)',
+				'text-muted': 'var(--text-muted)',
+				'border-subtle': 'var(--border-subtle)',
+				'glow-highlight': 'var(--glow-highlight)',
+				'glow-line': 'var(--glow-line)',
 				
 				// Additional colors for compatibility with existing code
 				'canvas-black': '#1A1A1C',
-				'deep-plum': '#3D0B46',
+				'deep-plum': '#222222',  
 				'cranberry': '#6E0039',
-				'electric-teal': '#2B88FF',  // Mapped to accent-primary
-				'hot-coral': '#6BA5FF',      // Mapped to accent-secondary
+				'electric-teal': '#2B88FF',  
+				'hot-coral': '#6BA5FF',     
 				'ice-grey': '#E0E4EA',
 				'cool-slate': '#B0B3BE',
 				'slate-grey': '#696E79',
@@ -109,6 +110,15 @@ export default {
 				"teal-blue": "#3B83F5",
 				"purple-light": "#9b87f5",
 				"soft-gray": "#F1F0FB",
+				
+				// Light mode colors
+				"light-surface": "#F5F5F7",
+				"light-raised": "#FFFFFF",
+				"light-overlay": "rgba(255, 255, 255, 0.85)",
+				"light-text-primary": "#1A1A1C",
+				"light-text-secondary": "rgba(26, 26, 28, 0.8)",
+				"light-text-muted": "rgba(26, 26, 28, 0.5)",
+				"light-border-subtle": "rgba(0, 0, 0, 0.08)",
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -240,11 +250,13 @@ export default {
 				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(43, 136, 255, 0.1)',
 				'neon': '0 0 15px rgba(43, 136, 255, 0.4)',
 				'subtle': '0 8px 32px rgba(0, 0, 0, 0.2)',
+				'light-subtle': '0 8px 32px rgba(0, 0, 0, 0.1)',
 			},
 			backgroundImage: {
 				'gradient-primary': 'linear-gradient(90deg, #2B88FF, #6BA5FF)',
 				'gradient-neon': 'linear-gradient(90deg, #2B88FF, #6BA5FF)',
 				'gradient-dark': 'radial-gradient(circle at center, #232326 0%, #1A1A1C 100%)',
+				'gradient-light': 'radial-gradient(circle at center, #FFFFFF 0%, #F5F5F7 100%)',
 			}
 		}
 	},

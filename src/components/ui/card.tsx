@@ -10,7 +10,9 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl backdrop-blur-xl bg-lake-blue/30 border border-white/20 shadow-lg text-white",
+      "rounded-xl backdrop-blur-md border shadow-subtle",
+      "dark:border-white/10 dark:text-white light:border-black/10 light:text-text-primary",
+      "glass-card", // Use our custom glass-card class that has the gradient defined in CSS
       className
     )}
     {...props}
@@ -37,7 +39,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight text-white",
+      "text-2xl font-semibold leading-none tracking-tight text-text-primary",
       className
     )}
     {...props}
@@ -51,7 +53,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-white/90", className)}
+    className={cn("text-sm text-text-secondary", className)}
     {...props}
   />
 ))

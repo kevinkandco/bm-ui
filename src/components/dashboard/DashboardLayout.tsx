@@ -2,13 +2,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { 
-  Home, Archive, CheckSquare, Video, 
-  Zap, Settings, HelpCircle, Menu, Clock, 
-  Headphones, Calendar, ChevronRight, ChevronLeft
-} from "lucide-react";
+import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { useTheme } from "@/hooks/use-theme";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,48 +17,66 @@ interface DashboardLayoutProps {
 }
 
 // Optimize by memoizing static data
-const navItems = [
-  { icon: Home, label: "Home", path: "/dashboard", id: "home" },
-  { icon: Archive, label: "Briefs", path: "/dashboard/briefs", id: "briefs", badge: 3 },
-  { icon: CheckSquare, label: "Tasks", path: "/dashboard/tasks", id: "tasks" },
-  { icon: Video, label: "Meetings", path: "/dashboard/meetings", id: "meetings" },
-  { icon: Zap, label: "Catch Me Up", path: "/dashboard/catch-up", id: "catch-up" },
-  { icon: Settings, label: "Settings", path: "/dashboard/settings", id: "settings" },
-];
+const navItems = [{
+  icon: Home,
+  label: "Home",
+  path: "/dashboard",
+  id: "home"
+}, {
+  icon: Archive,
+  label: "Briefs",
+  path: "/dashboard/briefs",
+  id: "briefs",
+  badge: 3
+}, {
+  icon: CheckSquare,
+  label: "Tasks",
+  path: "/dashboard/tasks",
+  id: "tasks"
+}, {
+  icon: Video,
+  label: "Meetings",
+  path: "/dashboard/meetings",
+  id: "meetings"
+}, {
+  icon: Zap,
+  label: "Catch Me Up",
+  path: "/dashboard/catch-up",
+  id: "catch-up"
+}, {
+  icon: Settings,
+  label: "Settings",
+  path: "/dashboard/settings",
+  id: "settings"
+}];
 
-const DashboardLayout = ({ 
-  children, 
-  className, 
-  currentPage = "home", 
-  sidebarOpen, 
-  onToggleSidebar 
+const DashboardLayout = ({
+  children,
+  className,
+  currentPage = "home",
+  sidebarOpen,
+  onToggleSidebar
 }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { theme } = useTheme();
   
   const handleNavClick = useCallback((path: string) => {
-    if (path === currentPage) return;
-    // This would navigate in a real app, but we'll just show a toast for now
-    toast({
-      title: "Navigation",
-      description: `Navigating to ${path}`,
-    });
-  }, [currentPage, toast]);
-  
+    navigate(path);
+  }, [navigate]);
+
   // Memoize sidebar classes to prevent recalculation on every render
-  const sidebarClasses = useMemo(() => 
-    cn(
-      "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl bg-surface-overlay border-r border-border-subtle shadow-xl z-20",
-      sidebarOpen ? "w-64 left-0" : "w-16 left-0",
-      "md:left-0"
-    ), [sidebarOpen]
-  );
-  
+  const sidebarClasses = useMemo(() => cn(
+    "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl bg-surface-overlay border-r border-border-subtle shadow-xl z-20",
+    sidebarOpen ? "w-64 left-0" : "w-16 left-0",
+    "md:left-0"
+  ), [sidebarOpen]);
+
   // Memoize main content classes
-  const mainContentClasses = useMemo(() => 
-    cn("flex-1 overflow-auto pb-16 md:pb-0 z-10", className), 
-    [className]
-  );
+  const mainContentClasses = useMemo(() => cn(
+    "flex-1 overflow-auto pb-16 md:pb-0 z-10",
+    className
+  ), [className]);
 
   // NavItems component to optimize render cycles
   const NavItems = useMemo(() => (
@@ -77,9 +93,7 @@ const DashboardLayout = ({
           )}
         >
           <Icon className="h-5 w-5 shrink-0" />
-          {sidebarOpen && (
-            <span className="ml-4 whitespace-nowrap">{label}</span>
-          )}
+          {sidebarOpen && <span className="ml-4 whitespace-nowrap">{label}</span>}
           {badge && sidebarOpen && (
             <span className="absolute right-3 bg-accent-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               {badge}
@@ -89,14 +103,14 @@ const DashboardLayout = ({
       ))}
     </div>
   ), [sidebarOpen, currentPage, handleNavClick]);
-  
+
   // Memoize mobile navigation to prevent unnecessary re-renders
   const MobileNav = useMemo(() => (
     <div className="fixed bottom-0 left-0 right-0 bg-surface-overlay backdrop-blur-xl border-t border-border-subtle md:hidden flex justify-around z-10">
-      {navItems.slice(0, 5).map(({ icon: Icon, id }) => (
+      {navItems.slice(0, 5).map(({ icon: Icon, id, path }) => (
         <button
           key={id}
-          onClick={() => handleNavClick(id)}
+          onClick={() => handleNavClick(path)}
           className={cn(
             "p-3 flex flex-col items-center justify-center",
             currentPage === id ? "text-accent-primary" : "text-text-secondary"
@@ -107,7 +121,7 @@ const DashboardLayout = ({
       ))}
     </div>
   ), [currentPage, handleNavClick]);
-  
+
   return (
     <div className="flex min-h-screen bg-surface relative">
       {/* Background with gradient and grain texture */}
@@ -121,14 +135,14 @@ const DashboardLayout = ({
       
       {/* Sidebar Navigation Toggle Button */}
       <div className="fixed top-4 left-4 z-30 md:hidden">
-        <Button 
-          size="icon" 
-          variant="outline" 
-          onClick={onToggleSidebar} 
-          className="bg-surface-overlay backdrop-blur-md border border-border-subtle"
-        >
+        <Button size="icon" variant="outline" onClick={onToggleSidebar} className="bg-surface-overlay backdrop-blur-md border border-border-subtle">
           <Menu className="h-5 w-5 text-text-primary" />
         </Button>
+      </div>
+      
+      {/* Theme Toggle - Add this near the top */}
+      <div className="fixed top-4 right-4 z-30">
+        <ThemeToggle />
       </div>
       
       {/* Sidebar Navigation */}
@@ -138,18 +152,11 @@ const DashboardLayout = ({
             <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
               <span className="font-bold text-white text-lg">B</span>
             </div>
-            {sidebarOpen && (
-              <span className="ml-3 font-semibold text-lg text-text-primary">Brief.me</span>
-            )}
+            {sidebarOpen && <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>}
           </div>
           
           {/* Toggle sidebar button */}
-          <Button 
-            size="icon" 
-            variant="ghost" 
-            onClick={onToggleSidebar} 
-            className="text-text-secondary hover:text-text-primary"
-          >
+          <Button size="icon" variant="ghost" onClick={onToggleSidebar} className="text-text-secondary hover:text-text-primary">
             {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
           </Button>
         </div>
@@ -157,17 +164,15 @@ const DashboardLayout = ({
         {NavItems}
         
         <div className="p-4 border-t border-border-subtle">
-          <button 
+          <button
             className="flex items-center w-full text-text-secondary hover:text-text-primary text-sm"
             onClick={() => toast({
               title: "Help",
-              description: "Opening help & feedback panel",
+              description: "Opening help & feedback panel"
             })}
           >
             <HelpCircle className="h-5 w-5" />
-            {sidebarOpen && (
-              <span className="ml-4 whitespace-nowrap">Help & Feedback</span>
-            )}
+            {sidebarOpen && <span className="ml-4 whitespace-nowrap">Help & Feedback</span>}
           </button>
         </div>
       </div>

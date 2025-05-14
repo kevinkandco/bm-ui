@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
-import { Inbox, Clock, Plane } from "lucide-react";
+import { Inbox, Clock, Plane, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FeaturesWalkthroughStepProps {
@@ -28,21 +27,28 @@ const FeaturesWalkthroughStep = ({
       title: "Automated Daily Briefs",
       description: "Get a personalized summary of key conversations, threads, meetings, and tasks.",
       icon: <Inbox className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
-      detail: "Brief.me monitors your connected apps while you're away and delivers a concise summary of what happened."
+      detail: "Brief-me monitors your connected apps while you're away and delivers a concise summary of what happened."
     }, 
     {
       id: "catch-me-up",
       title: "Catch Me Up",
       description: "Get caught up on specific topics, channels, or conversations with a single click.",
       icon: <Clock className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
-      detail: "Need to know what happened in a specific Slack channel? Just ask Brief.me to catch you up."
+      detail: "Need to know what happened in a specific Slack channel? Just ask Brief-me to catch you up."
+    },
+    {
+      id: "onboarding-companion",
+      title: "New-Hire Onboarding Companion",
+      description: "Help new team members get up to speed faster with automated onboarding briefs.",
+      icon: <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
+      detail: "Brief-me creates personalized onboarding briefings from your knowledge base and delivers daily ramp-up digests with relevant team activity and terminology."
     }, 
     {
       id: "vacation-mode",
       title: "Vacation Mode",
       description: "Stay completely disconnected while away, then get a comprehensive summary when you return.",
       icon: <Plane className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
-      detail: "Brief.me will monitor everything while you're gone, then give you exactly what you need to know when you're back."
+      detail: "Brief-me will monitor everything while you're gone, then give you exactly what you need to know when you're back."
     }
   ];
   
@@ -61,18 +67,13 @@ const FeaturesWalkthroughStep = ({
       onBack();
     }
   };
-
-  return (
-    <div className="space-y-6 sm:space-y-8">
+  
+  return <div className="space-y-6 sm:space-y-8">
       <ProgressIndicator currentStep={2} totalSteps={7} />
 
       <div className="text-center space-y-2 sm:space-y-3">
-        <h2 className="text-xl sm:text-2xl font-semibold text-off-white tracking-tighter">
-          How Brief.me works
-        </h2>
-        <p className="text-sm sm:text-base text-off-white/90 max-w-lg mx-auto">
-          Brief.me helps you stay informed without the information overload.
-        </p>
+        <h2 className="text-xl sm:text-2xl font-semibold text-off-white tracking-tighter">How Brief-me works</h2>
+        <p className="text-sm sm:text-base text-off-white/90 max-w-lg mx-auto">Brief-me helps you stay informed without the information overload.</p>
       </div>
 
       <div className="py-4 sm:py-6">
@@ -95,16 +96,7 @@ const FeaturesWalkthroughStep = ({
       </div>
 
       <div className="flex justify-center gap-2 pt-2 sm:pt-4">
-        {features.map((_, index) => (
-          <div 
-            key={index} 
-            className={cn(
-              "w-2 h-2 rounded-full cursor-pointer transition-all", 
-              index === currentFeature ? "bg-neon-mint w-4" : "bg-off-white/30 hover:bg-off-white/50"
-            )} 
-            onClick={() => setCurrentFeature(index)} 
-          />
-        ))}
+        {features.map((_, index) => <div key={index} className={cn("w-2 h-2 rounded-full cursor-pointer transition-all", index === currentFeature ? "bg-neon-mint w-4" : "bg-off-white/30 hover:bg-off-white/50")} onClick={() => setCurrentFeature(index)} />)}
       </div>
 
       <div className={`flex ${currentFeature > 0 ? 'justify-between'  : 'justify-end'} pt-2 sm:pt-4`}>
@@ -122,8 +114,7 @@ const FeaturesWalkthroughStep = ({
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>
-    </div>
-  );
+    </div>;
 };
 
 export default FeaturesWalkthroughStep;

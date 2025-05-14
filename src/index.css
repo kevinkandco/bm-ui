@@ -4,23 +4,75 @@
 
 @layer base {
   :root {
+    /* Light Glass Morphism CSS Variables */
+    --surface: #F5F5F7;
+    --surface-raised: #FFFFFF;
+    --surface-overlay: rgba(255, 255, 255, 0.85);
+    --glow-highlight: rgba(0, 0, 0, 0.05);
+    --glow-line: rgba(0, 0, 0, 0.15);
+    --accent-primary: #2B88FF;
+    --accent-secondary: #4E96FF;
+    --text-primary: #1A1A1C;
+    --text-secondary: rgba(26, 26, 28, 0.8);
+    --text-muted: rgba(26, 26, 28, 0.5);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    
+    /* Standard radius */
+    --radius: 16px;
+
+    /* Light mode shadcn variables */
+    --background: 0 0% 98%;    /* #fafafa - Lighter background */
+    --foreground: 240 3% 10%;   /* #1A1A1C */
+    --card: 0 0% 100%;          /* #FFFFFF */
+    --card-foreground: 240 3% 10%;  /* #1A1A1C */
+    --popover: 0 0% 100%;       /* #FFFFFF */
+    --popover-foreground: 240 3% 10%;  /* #1A1A1C */
+    --primary: 216 100% 58%;    /* #2B88FF */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 0 0% 96%;      /* #F5F5F5 */
+    --secondary-foreground: 240 3% 10%; /* #1A1A1C */
+    --muted: 0 0% 92%;          /* #EBEBEB */
+    --muted-foreground: 240 3% 40%; /* rgba(26, 26, 28, 0.8) */
+    --accent: 216 100% 58%;     /* #2B88FF */
+    --accent-foreground: 0 0% 100%; /* #FFFFFF */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 10% 90%;      /* #E5E5EA */
+    --input: 240 10% 90%;       /* #E5E5EA */
+    --ring: 216 100% 58%;       /* #2B88FF */
+    
+    /* Surface with opacity variations for gradients */
+    --surface-raised-70: rgba(255, 255, 255, 0.7);
+    --surface-90: rgba(245, 245, 247, 0.9);
+    
+    /* Accent colors with opacity for hover states */
+    --accent-primary-hover: rgba(43, 136, 255, 0.2);
+    --accent-primary-hover-light: rgba(43, 136, 255, 0.1);
+  }
+
+  .dark {
     /* Dark Glass Morphism CSS Variables */
     --surface: #1A1A1C;
     --surface-raised: #232326;
     --surface-overlay: rgba(35, 35, 38, 0.85);
-    --glow-highlight: rgba(255, 255, 255, 0.1);
-    --glow-line: rgba(255, 255, 255, 0.25);
+    --glow-highlight: rgba(255, 255, 255, 0.05);
+    --glow-line: rgba(255, 255, 255, 0.15);
     --accent-primary: #2B88FF;
     --accent-secondary: #6BA5FF;
     --text-primary: #FFFFFF;
     --text-secondary: rgba(255, 255, 255, 0.8);
     --text-muted: rgba(255, 255, 255, 0.5);
-    --border-subtle: rgba(255, 255, 255, 0.12);
+    --border-subtle: rgba(255, 255, 255, 0.08);
     
-    /* Standard radius */
-    --radius: 16px;
+    /* Surface with opacity variations for gradients */
+    --surface-raised-70: rgba(35, 35, 38, 0.7);
+    --surface-90: rgba(26, 26, 28, 0.9);
+    
+    /* Accent colors with opacity for hover states */
+    --accent-primary-hover: rgba(43, 136, 255, 0.2);
+    --accent-primary-hover-light: rgba(43, 136, 255, 0.1);
 
-    /* Update shadcn variables to match our new design system */
+    /* Update shadcn variables to match our dark design system */
     --background: 240 3% 10%;  /* #1A1A1C */
     --foreground: 0 0% 100%;   /* #FFFFFF */
     --card: 240 3% 14%;        /* #232326 */
@@ -46,6 +98,16 @@
   body {
     @apply bg-surface text-text-primary font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Light mode specific styles */
+  :root:not(.dark) {
+    --surface: #f8f8fa; /* Much lighter background */
+    --surface-raised: #FFFFFF;
+    --surface-overlay: rgba(255, 255, 255, 0.9);
+    --text-primary: #2A2A2A; /* Darker text for better contrast */
+    --text-secondary: rgba(42, 42, 42, 0.8);
+    --text-muted: rgba(42, 42, 42, 0.6);
   }
 }
 
@@ -80,7 +142,7 @@
 
   /* Shadow utilities */
   .shadow-subtle {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   }
 
   .shadow-glow {
@@ -108,7 +170,7 @@
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.03) 50%,
       rgba(255, 255, 255, 0) 100%
     );
     transform: rotate(-25deg);
@@ -130,14 +192,30 @@
 }
 
 @layer components {
-  /* Glass Card Component */
+  /* Glass Card Component - Light/Dark mode aware */
   .glass-card {
-    @apply bg-surface-raised rounded-xl border border-border-subtle backdrop-blur-xl 
-           shadow-subtle transition-all duration-300 ease-out overflow-hidden;
+    @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
+    background: linear-gradient(to bottom, var(--surface-raised-70), var(--surface-90));
+  }
+  
+  .dark .glass-card {
+    @apply border-white/10;
+  }
+  
+  .light .glass-card {
+    @apply border-black/10;
   }
   
   .glass-card:hover {
-    @apply shadow-glow border-accent-primary;
+    @apply shadow-lg;
+  }
+
+  .dark .glass-card:hover {
+    @apply border-white/15;
+  }
+  
+  .light .glass-card:hover {
+    @apply border-black/15;
   }
   
   /* Glass Button */
@@ -197,11 +275,29 @@
     @apply bg-text-muted;
   }
   
-  /* Theme toggle - keep for consistency */
+  /* Theme toggle - updated for both light and dark */
   .theme-toggle {
-    @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors;
-    @apply bg-surface-overlay text-text-primary hover:bg-accent-primary/20 backdrop-blur-xl;
+    @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors backdrop-blur-xl;
+  }
+  
+  .dark .theme-toggle {
+    @apply bg-surface-overlay text-text-primary;
+    background-color: var(--surface-overlay);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark .theme-toggle:hover {
+    background-color: var(--accent-primary-hover);
+  }
+  
+  .light .theme-toggle {
+    @apply text-text-primary;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .light .theme-toggle:hover {
+    background-color: var(--accent-primary-hover-light);
   }
 }
 

@@ -236,7 +236,7 @@ const IntegrationsStep = ({
             >
               <div className={cn(
                 "w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center rounded-full mr-2 sm:mr-3",
-                connected[integration.id] ? "bg-electric-teal/80" : "bg-deep-plum"
+                connected[integration.id] ? "bg-electric-teal/80" : "bg-gray-800/90"
               )}>
                 {renderIcon(integration.id, integration.icon)}
               </div>
@@ -267,7 +267,7 @@ const IntegrationsStep = ({
               key={integration.id}
               className="integration-list-item flex items-center py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
             >
-              <div className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center bg-deep-plum/70 rounded-full mr-2 sm:mr-3">
+              <div className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center bg-gray-800/80 rounded-full mr-2 sm:mr-3">
                 <span className="text-white/80 font-bold text-xs sm:text-sm">{integration.icon}</span>
               </div>
               
@@ -275,7 +275,7 @@ const IntegrationsStep = ({
                 <h4 className="text-sm sm:text-base font-medium text-white/90">{integration.name}</h4>
               </div>
 
-              <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-deep-plum/30 rounded-full text-electric-teal whitespace-nowrap">
+              <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-gray-800/60 rounded-full text-electric-teal whitespace-nowrap">
                 Coming Soon
               </span>
             </div>

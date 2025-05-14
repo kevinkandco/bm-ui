@@ -23,7 +23,7 @@ const ThemeProviderContext = React.createContext<ThemeProviderState>(initialStat
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "dark", // Change default to dark to match our app
   storageKey = "brief-me-theme",
   ...props
 }: ThemeProviderProps) {

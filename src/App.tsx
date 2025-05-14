@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./hooks/use-theme";
-import { ThemeToggle } from "./components/theme/ThemeToggle";
 
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
@@ -20,6 +19,11 @@ const lazyImport = (importFn) => {
 const Index = lazyImport(() => import("./pages/Index"));
 const Onboarding = lazyImport(() => import("./pages/Onboarding"));
 const Dashboard = lazyImport(() => import("./pages/Dashboard"));
+const BriefsList = lazyImport(() => import("./pages/BriefsList"));
+const TasksList = lazyImport(() => import("./pages/TasksList"));
+const MeetingsList = lazyImport(() => import("./pages/MeetingsList"));
+const CatchUpPage = lazyImport(() => import("./pages/CatchUpPage"));
+const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
 
 // Create QueryClient with optimized settings
@@ -49,18 +53,22 @@ const MemoizedLoadingFallback = React.memo(LoadingFallback);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system">
+    <ThemeProvider defaultTheme="dark">
       <TooltipProvider>
         <div className="min-h-screen flex flex-col justify-center">
           <Toaster />
           <Sonner />
-          <ThemeToggle />
           <BrowserRouter>
             <Suspense fallback={<MemoizedLoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/briefs" element={<BriefsList />} />
+                <Route path="/dashboard/tasks" element={<TasksList />} />
+                <Route path="/dashboard/meetings" element={<MeetingsList />} />
+                <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
+                <Route path="/dashboard/settings" element={<SettingsPage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
