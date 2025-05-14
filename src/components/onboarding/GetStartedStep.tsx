@@ -7,9 +7,10 @@ import { Check } from "lucide-react";
 interface GetStartedStepProps {
   onNext: () => void;
   onBack: () => void;
+  userData?: any; // Adding optional userData prop
 }
 
-const GetStartedStep = ({ onNext, onBack }: GetStartedStepProps) => {
+const GetStartedStep = ({ onNext, onBack, userData }: GetStartedStepProps) => {
   const [isStarting, setIsStarting] = useState(false);
   
   const handleGetStarted = () => {

@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
 import { Info, Plus } from "lucide-react";
 import { usePriorityChannelsState } from "./priority-channels/usePriorityChannelsState";
-import SelectedChannels from "./priority-channels/SelectedChannels";
-import SlackChannelsList from "./priority-channels/SlackChannelsList";
-import ChannelInput from "./priority-channels/ChannelInput";
+import { SelectedChannels } from "./priority-channels/SelectedChannels";
+import { SlackChannelsList } from "./priority-channels/SlackChannelsList";
+import { ChannelInput } from "./priority-channels/ChannelInput";
 
 interface PriorityChannelsStepProps {
   onNext: () => void;
@@ -25,10 +25,11 @@ const PriorityChannelsStep = ({
   userData
 }: PriorityChannelsStepProps) => {
   const {
-    selectedChannels,
+    priorityChannels,
     addChannel,
     removeChannel,
-    availableChannels,
+    slackChannels,
+    selectChannel
   } = usePriorityChannelsState(userData.priorityChannels || []);
 
   const [showTip, setShowTip] = useState(true);
@@ -36,7 +37,7 @@ const PriorityChannelsStep = ({
   const handleContinue = () => {
     // Update user data with selected channels
     updateUserData({
-      priorityChannels: selectedChannels
+      priorityChannels: priorityChannels
     });
     onNext();
   };
@@ -76,16 +77,21 @@ const PriorityChannelsStep = ({
       {/* Selected channels */}
       <div className="space-y-3">
         <h3 className="text-sm font-medium text-text-headline">
-          Your priority channels ({selectedChannels.length})
+          Your priority channels ({priorityChannels.length})
         </h3>
         
         <SelectedChannels 
-          selectedChannels={selectedChannels} 
-          removeChannel={removeChannel}
+          channels={priorityChannels} 
+          onRemoveChannel={removeChannel}
         />
         
         {/* Channel input */}
-        <ChannelInput onAddChannel={addChannel} />
+        <ChannelInput 
+          onAddChannel={addChannel}
+          onSelectChannel={selectChannel}
+          existingChannels={priorityChannels}
+          availableChannels={slackChannels}
+        />
       </div>
       
       {/* Available channels */}
@@ -95,8 +101,9 @@ const PriorityChannelsStep = ({
         </h3>
         
         <SlackChannelsList 
-          channels={availableChannels}
-          onSelectChannel={addChannel}
+          slackChannels={slackChannels}
+          priorityChannels={priorityChannels}
+          onSelectChannel={selectChannel}
         />
       </div>
       
@@ -106,7 +113,7 @@ const PriorityChannelsStep = ({
         </Button>
         <Button 
           onClick={handleContinue} 
-          disabled={selectedChannels.length === 0}
+          disabled={priorityChannels.length === 0}
           variant="default" 
           size="lg"
         >
