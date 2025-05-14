@@ -44,6 +44,10 @@
     /* Surface with opacity variations for gradients */
     --surface-raised-70: rgba(255, 255, 255, 0.7);
     --surface-90: rgba(245, 245, 247, 0.9);
+    
+    /* Accent colors with opacity for hover states */
+    --accent-primary-hover: rgba(43, 136, 255, 0.2);
+    --accent-primary-hover-light: rgba(43, 136, 255, 0.1);
   }
 
   .dark {
@@ -63,6 +67,10 @@
     /* Surface with opacity variations for gradients */
     --surface-raised-70: rgba(35, 35, 38, 0.7);
     --surface-90: rgba(26, 26, 28, 0.9);
+    
+    /* Accent colors with opacity for hover states */
+    --accent-primary-hover: rgba(43, 136, 255, 0.2);
+    --accent-primary-hover-light: rgba(43, 136, 255, 0.1);
 
     /* Update shadcn variables to match our dark design system */
     --background: 240 3% 10%;  /* #1A1A1C */
@@ -263,13 +271,23 @@
   }
   
   .dark .theme-toggle {
-    @apply bg-surface-overlay text-text-primary hover:bg-accent-primary/20;
+    @apply bg-surface-overlay text-text-primary;
+    background-color: var(--surface-overlay);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
   
+  .dark .theme-toggle:hover {
+    background-color: var(--accent-primary-hover);
+  }
+  
   .light .theme-toggle {
-    @apply bg-white/80 text-text-primary hover:bg-accent-primary/10;
+    @apply text-text-primary;
+    background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .light .theme-toggle:hover {
+    background-color: var(--accent-primary-hover-light);
   }
 }
 
