@@ -181,9 +181,9 @@ const GetStartedStep = ({
       <div className="flex justify-between pt-2 sm:pt-3">
         <Button 
           onClick={onBack} 
-          variant="plain"
+          variant="ghost"
           size="none"
-          className="text-sm"
+          className="text-sm text-text-secondary hover:text-text-primary"
         >
           Back
         </Button>
