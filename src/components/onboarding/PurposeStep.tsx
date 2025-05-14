@@ -79,10 +79,10 @@ const PurposeStep = ({ onNext, onBack, updateUserData, userData }: PurposeStepPr
           <div 
             key={purpose.id}
             className={cn(
-              "purpose-card flex flex-col p-4 sm:p-5 rounded-xl border transition-all duration-300 cursor-pointer",
+              "purpose-card flex flex-col p-4 sm:p-5 rounded-xl border transition-all duration-300 cursor-pointer backdrop-blur-sm",
               selectedPurpose === purpose.id 
-                ? "border-electric-teal bg-deep-plum/30" 
-                : "border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20"
+                ? "border-white/15 bg-gradient-to-b from-surface-raised/80 to-surface/95 shadow-lg" 
+                : "border-white/10 bg-gradient-to-b from-surface-raised/60 to-surface/80 hover:bg-surface-raised/70"
             )}
             onClick={() => handleSelectPurpose(purpose.id)}
           >
@@ -102,16 +102,17 @@ const PurposeStep = ({ onNext, onBack, updateUserData, userData }: PurposeStepPr
       <div className="flex justify-between pt-2 sm:pt-4">
         <Button 
           onClick={onBack}
-          variant="plain"
-          size="none"
-          className="text-sm sm:text-base text-off-white hover:text-electric-teal transition-colors"
+          variant="ghost"
+          size="sm"
+          className="text-sm text-white/70 hover:text-white transition-colors"
         >
           Back
         </Button>
         <Button 
           onClick={handleContinue}
           disabled={!selectedPurpose}
-          className="neon-button disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-base"
+          className="bg-accent-primary hover:bg-accent-primary/90 text-white disabled:opacity-50 disabled:pointer-events-none"
+          size="sm"
         >
           Continue
         </Button>
