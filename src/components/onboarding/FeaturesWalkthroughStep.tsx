@@ -1,10 +1,8 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
 import { Inbox, Clock, Plane, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 interface FeaturesWalkthroughStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -13,7 +11,6 @@ interface FeaturesWalkthroughStepProps {
     [key: string]: any;
   };
 }
-
 const FeaturesWalkthroughStep = ({
   onNext,
   onBack,
@@ -21,38 +18,31 @@ const FeaturesWalkthroughStep = ({
   userData
 }: FeaturesWalkthroughStepProps) => {
   const [currentFeature, setCurrentFeature] = useState(0);
-  
-  const features = [
-    {
-      id: "daily-briefings",
-      title: "Automated Daily Briefs",
-      description: "Get a personalized summary of key conversations, threads, meetings, and tasks.",
-      icon: <Inbox className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
-      detail: "Brief-me monitors your connected apps while you're away and delivers a concise summary of what happened."
-    }, 
-    {
-      id: "catch-me-up",
-      title: "Catch Me Up",
-      description: "Get caught up on specific topics, channels, or conversations with a single click.",
-      icon: <Clock className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
-      detail: "Need to know what happened in a specific Slack channel? Just ask Brief-me to catch you up."
-    },
-    {
-      id: "onboarding-companion",
-      title: "New-Hire Onboarding Companion",
-      description: "Help new team members get up to speed faster with automated onboarding briefs.",
-      icon: <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
-      detail: "Brief-me creates personalized onboarding briefings from your knowledge base and delivers daily ramp-up digests with relevant team activity and terminology."
-    }, 
-    {
-      id: "vacation-mode",
-      title: "Vacation Mode",
-      description: "Stay completely disconnected while away, then get a comprehensive summary when you return.",
-      icon: <Plane className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
-      detail: "Brief-me will monitor everything while you're gone, then give you exactly what you need to know when you're back."
-    }
-  ];
-  
+  const features = [{
+    id: "daily-briefings",
+    title: "Automated Daily Briefs",
+    description: "Get a personalized summary of key conversations, threads, meetings, and tasks.",
+    icon: <Inbox className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
+    detail: "Brief-me monitors your connected apps while you're away and delivers a concise summary of what happened."
+  }, {
+    id: "catch-me-up",
+    title: "Catch Me Up",
+    description: "Get caught up on specific topics, channels, or conversations with a single click.",
+    icon: <Clock className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
+    detail: "Need to know what happened in a specific Slack channel? Just ask Brief-me to catch you up."
+  }, {
+    id: "onboarding-companion",
+    title: "New-Hire Onboarding Companion",
+    description: "Help new team members get up to speed faster with automated onboarding briefs.",
+    icon: <UserPlus className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
+    detail: "Brief-me creates personalized onboarding briefings from your knowledge base and delivers daily ramp-up digests with relevant team activity and terminology."
+  }, {
+    id: "vacation-mode",
+    title: "Vacation Mode",
+    description: "Stay completely disconnected while away, then get a comprehensive summary when you return.",
+    icon: <Plane className="h-8 sm:h-10 w-8 sm:w-10 text-neon-mint" />,
+    detail: "Brief-me will monitor everything while you're gone, then give you exactly what you need to know when you're back."
+  }];
   const nextFeature = () => {
     if (currentFeature < features.length - 1) {
       setCurrentFeature(currentFeature + 1);
@@ -60,7 +50,6 @@ const FeaturesWalkthroughStep = ({
       onNext();
     }
   };
-  
   const prevFeature = () => {
     if (currentFeature > 0) {
       setCurrentFeature(currentFeature - 1);
@@ -68,7 +57,6 @@ const FeaturesWalkthroughStep = ({
       onBack();
     }
   };
-  
   return <div className="space-y-6 sm:space-y-8">
       <ProgressIndicator currentStep={2} totalSteps={7} />
 
@@ -109,16 +97,10 @@ const FeaturesWalkthroughStep = ({
         <Button onClick={prevFeature} variant="plain" size="none" className="text-sm sm:text-base">
           Back
         </Button>
-        <Button 
-          onClick={nextFeature} 
-          variant="glow" 
-          size="pill" 
-          className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 border border-transparent bg-gradient-to-b from-white/10 to-black/20 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-shadow duration-300 shadow-none"
-        >
+        <Button onClick={nextFeature} variant="glow" size="pill" className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 border border-transparent bg-gradient-to-b from-white/10 to-black/20 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)] transition-shadow duration-300 shadow-none">
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>
     </div>;
 };
-
 export default FeaturesWalkthroughStep;
