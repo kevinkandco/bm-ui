@@ -21,7 +21,7 @@
     --radius: 16px;
 
     /* Light mode shadcn variables */
-    --background: 240 10% 96%;  /* #F5F5F7 */
+    --background: 0 0% 98%;    /* #fafafa - Lighter background */
     --foreground: 240 3% 10%;   /* #1A1A1C */
     --card: 0 0% 100%;          /* #FFFFFF */
     --card-foreground: 240 3% 10%;  /* #1A1A1C */
@@ -98,6 +98,16 @@
   body {
     @apply bg-surface text-text-primary font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Light mode specific styles */
+  :root:not(.dark) {
+    --surface: #f8f8fa; /* Much lighter background */
+    --surface-raised: #FFFFFF;
+    --surface-overlay: rgba(255, 255, 255, 0.9);
+    --text-primary: #2A2A2A; /* Darker text for better contrast */
+    --text-secondary: rgba(42, 42, 42, 0.8);
+    --text-muted: rgba(42, 42, 42, 0.6);
   }
 }
 

@@ -43,7 +43,7 @@ const OnboardingLayout = ({
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 pb-6 pt-0 relative overflow-hidden bg-surface">
       {/* Background with gradient */}
       <div className="absolute inset-0 w-full h-full">
-        <div className="absolute inset-0 bg-gradient-dark opacity-80"></div>
+        <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-80`}></div>
         
         {/* Subtle radial gradient for depth */}
         <div className="absolute inset-0 bg-gradient-radial from-surface-raised/10 to-transparent opacity-30"></div>
