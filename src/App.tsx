@@ -1,5 +1,5 @@
 
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, Suspense, useState, useEffect, memo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -39,17 +39,16 @@ const queryClient = new QueryClient({
 });
 
 // Better loading fallback with optimized re-renders
-const LoadingFallback = () => (
+const LoadingFallback = memo(() => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-pulse text-center">
       <div className="h-12 w-12 mx-auto mb-4 rounded-full bg-blue-200"></div>
       <p className="text-gray-500">Loading...</p>
     </div>
   </div>
-);
+));
 
-// Memoized loading fallback to prevent unnecessary re-renders
-const MemoizedLoadingFallback = React.memo(LoadingFallback);
+LoadingFallback.displayName = 'LoadingFallback';
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -59,7 +58,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Suspense fallback={<MemoizedLoadingFallback />}>
+            <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/onboarding" element={<Onboarding />} />

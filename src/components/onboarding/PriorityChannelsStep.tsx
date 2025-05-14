@@ -1,3 +1,5 @@
+
+import React, { useState, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
@@ -7,7 +9,6 @@ import { SlackChannelsList } from "./priority-channels/SlackChannelsList";
 import { ChannelInput } from "./priority-channels/ChannelInput";
 import { SelectedChannels } from "./priority-channels/SelectedChannels";
 import { usePriorityChannelsState } from "./priority-channels/usePriorityChannelsState";
-import { useState } from "react";
 
 const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: PriorityChannelsStepProps) => {
   const {
@@ -20,20 +21,23 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Filter channels based on search query
-  const filteredChannels = searchQuery 
-    ? slackChannels.filter(channel => 
-        channel.toLowerCase().includes(searchQuery.toLowerCase()))
-    : slackChannels;
+  // Memoize filtered channels to prevent unnecessary recalculation
+  const filteredChannels = useMemo(() => 
+    searchQuery 
+      ? slackChannels.filter(channel => 
+          channel.toLowerCase().includes(searchQuery.toLowerCase()))
+      : slackChannels,
+    [searchQuery, slackChannels]
+  );
   
   const hasSlackIntegration = userData.integrations?.some(
     (integration: any) => integration.type === "slack" || integration === "slack"
   );
   
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     updateUserData({ priorityChannels });
     onNext();
-  };
+  }, [priorityChannels, updateUserData, onNext]);
 
   return (
     <div className="space-y-6">
@@ -102,4 +106,4 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   );
 };
 
-export default PriorityChannelsStep;
+export default React.memo(PriorityChannelsStep);

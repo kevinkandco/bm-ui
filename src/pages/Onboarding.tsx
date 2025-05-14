@@ -12,8 +12,9 @@ import IgnoreConfigStep from "@/components/onboarding/IgnoreConfigStep";
 import BriefPreferencesStep from "@/components/onboarding/BriefPreferencesStep";
 import GetStartedStep from "@/components/onboarding/GetStartedStep";
 import SuccessModal from "@/components/onboarding/SuccessModal";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useCallback } from "react";
 
+// Each step component is memoized to prevent unnecessary re-renders
 const OnboardingContent = memo(({ 
   currentStep, 
   showSuccess,
@@ -46,6 +47,7 @@ const OnboardingContent = memo(({
     return <SuccessModal onComplete={handleComplete} />;
   }
 
+  // Only render the current step to reduce DOM elements and improve performance
   switch (currentStep) {
     case 1:
       return (
@@ -149,10 +151,10 @@ const Onboarding = () => {
     getProgressStep
   } = useOnboardingState();
   
-  const handleComplete = () => {
+  const handleComplete = useCallback(() => {
     // Navigate to dashboard
     navigate("/dashboard");
-  };
+  }, [navigate]);
 
   // Disable body scroll when modals are open for better mobile experience
   useEffect(() => {
@@ -184,4 +186,4 @@ const Onboarding = () => {
   );
 };
 
-export default Onboarding;
+export default memo(Onboarding);

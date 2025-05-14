@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -21,10 +21,12 @@ const OnboardingLayout = ({
   useEffect(() => {
     // Skip parallax on mobile for better performance
     if (isMobile) return;
+    
     const handleMouseMove = (e: MouseEvent) => {
       const shapes = document.querySelectorAll('.glow-shape');
       const x = e.clientX / window.innerWidth;
       const y = e.clientY / window.innerHeight;
+      
       shapes.forEach((shape: Element) => {
         const shapeElement = shape as HTMLElement;
         const speed = parseFloat(shapeElement.getAttribute('data-speed') || '1');
@@ -33,17 +35,23 @@ const OnboardingLayout = ({
         shapeElement.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
       });
     };
+    
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [isMobile]);
 
+  const gradientClassName = useMemo(() => 
+    theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light",
+    [theme]
+  );
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 pb-6 pt-0 relative overflow-hidden bg-surface">
       {/* Background with gradient */}
       <div className="absolute inset-0 w-full h-full">
-        <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-80`}></div>
+        <div className={`absolute inset-0 ${gradientClassName} opacity-80`}></div>
         
         {/* Subtle radial gradient for depth */}
         <div className="absolute inset-0 bg-gradient-radial from-surface-raised/10 to-transparent opacity-30"></div>
@@ -67,4 +75,4 @@ const OnboardingLayout = ({
   );
 };
 
-export default OnboardingLayout;
+export default React.memo(OnboardingLayout);
