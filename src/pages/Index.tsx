@@ -1,13 +1,13 @@
+
 import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 const Index = () => {
-  const {
-    theme
-  } = useTheme();
+  const { theme } = useTheme();
   const isMobile = useIsMobile();
 
   // Memoize the CSS string to prevent unnecessary re-creation on re-renders
@@ -21,12 +21,24 @@ const Index = () => {
       animation: pulse55bpm 1.091s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* 55bpm = 1.091s per beat */
     }
   `, []);
+  
   return <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-surface">
       <style>{pulseAnimationCSS}</style>
       
-      {/* Background with dark gradient */}
+      {/* Background with image overlay */}
       <div className="absolute inset-0 w-full h-full">
-        <div className="absolute inset-0 bg-gradient-dark opacity-80"></div>
+        {/* Background image - blurred */}
+        <div className="absolute inset-0 w-full h-full">
+          <img 
+            src="/lovable-uploads/4b9500ea-4db3-4394-bd97-efce6e561797.png" 
+            alt="Dashboard background" 
+            className="w-full h-full object-cover filter blur-lg"
+            loading="eager"
+          />
+        </div>
+        
+        {/* Color overlay with dark gradient */}
+        <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-85`}></div>
         
         {/* Horizontal glow line */}
         <div className="absolute top-20 left-0 right-0 h-px bg-glow-line shadow-neon"></div>

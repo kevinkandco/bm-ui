@@ -189,6 +189,11 @@
     background: rgba(0, 0, 0, 0.8);
     border-radius: 9999px;
   }
+  
+  /* Opacity utility classes */
+  .opacity-85 {
+    opacity: 0.85;
+  }
 }
 
 @layer components {
