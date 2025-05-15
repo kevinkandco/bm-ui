@@ -48,7 +48,7 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
       );
       console.log(response);
       if (response) {
-        setAllSlackChannels(response?.data?.data?.map((c: { name: any; }) => c.name));
+        setAllSlackChannels(response?.data?.map((c: { name: any }) =>  c.name));
       } else {
         console.error("Failed to fetch user data");
       }

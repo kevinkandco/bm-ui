@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -20,128 +19,127 @@ interface PriorityPeopleStepProps {
   };
 }
 
-const PriorityPeopleStep = memo(({ onNext, onBack, updateUserData, userData }: PriorityPeopleStepProps) => {
-  // Get the state and functions from the custom hook
-  const {
-    inputValue,
-    setInputValue,
-    searchQuery,
-    setSearchQuery,
-    selectedLabel,
-    setSelectedLabel,
-    priorityPeople,
-    platformContacts,
-    suggestedContacts,
-    filteredManualContacts,
-    addPerson,
-    removePerson,
-    designateContact,
-    addLabel
-  } = usePriorityPeopleState(
-    // Convert userData.priorityPeople to the correct type
-    (userData.priorityPeople || []).map(person => ({
-      name: person.name,
-      role: person.role,
-      email: person.email,
-      contactName: person.contactName,
-      label: person.label
-    }))
-  );
-  
-  const handleContinue = () => {
-    // Update user data with the current priority people list
-    updateUserData({ priorityPeople });
-    onNext();
-  };
+const PriorityPeopleStep = memo(
+  ({ onNext, onBack, updateUserData, userData }: PriorityPeopleStepProps) => {
+    // Get the state and functions from the custom hook
+    const {
+      inputValue,
+      setInputValue,
+      searchQuery,
+      setSearchQuery,
+      selectedLabel,
+      setSelectedLabel,
+      priorityPeople,
+      platformContacts,
+      suggestedContacts,
+      filteredManualContacts,
+      addPerson,
+      removePerson,
+      designateContact,
+      addLabel,
+    } = usePriorityPeopleState(
+      // Convert userData.priorityPeople to the correct type
+      (userData.priorityPeople || []).map((person) => ({
+        name: person.name,
+        role: person.role,
+        email: person.email,
+        contactName: person.contactName,
+        label: person.label,
+      }))
+    );
 
-  const handleSkip = () => {
-    // Just proceed to next step without saving any priority people
-    onNext();
-  };
+    const handleContinue = () => {
+      // Update user data with the current priority people list
+      updateUserData({ priorityPeople });
+      onNext();
+    };
 
-  return (
-    <div className="space-y-6">
-      <ProgressIndicator currentStep={4} totalSteps={9} />
-      
-      <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-foreground tracking-tighter">Who are your priority people?</h2>
-        <p className="text-foreground/70 dark:text-white/70">Designate important people who should be able to break through Brief-Me barriers.</p>
-      </div>
-      
-      <div className="space-y-4">
-        {/* Search input */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50 dark:text-white/40" />
-          <Input
-            placeholder="Search contacts..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white/20 dark:bg-white/10 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey placeholder:text-foreground/60 dark:placeholder:text-white/50"
+    const handleSkip = () => {
+      // Just proceed to next step without saving any priority people
+      onNext();
+    };
+
+    return (
+      <div className="space-y-6">
+        <ProgressIndicator currentStep={4} totalSteps={9} />
+
+        <div className="space-y-3">
+          <h2 className="text-2xl font-semibold text-foreground tracking-tighter">
+            Who are your priority people?
+          </h2>
+          <p className="text-foreground/70 dark:text-white/70">
+            Designate important people who should be able to break through
+            Brief-Me barriers.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {/* Search input */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50 dark:text-white/40" />
+            <Input
+              placeholder="Search contacts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-white/20 dark:bg-white/10 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey placeholder:text-foreground/60 dark:placeholder:text-white/50"
+            />
+          </div>
+
+          {/* Added people list */}
+          <PriorityPeopleList
+            priorityPeople={priorityPeople}
+            removePerson={removePerson}
+            designateContact={designateContact}
+            addLabel={addLabel}
+            contacts={platformContacts}
+          />
+
+          {/* Manual input with dropdown */}
+          <ManualInputSection
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            selectedLabel={selectedLabel}
+            setSelectedLabel={setSelectedLabel}
+            addPerson={addPerson}
+            filteredManualContacts={filteredManualContacts}
+          />
+
+          {/* Suggested contacts */}
+          <SuggestedContacts
+            suggestedContacts={suggestedContacts}
+            priorityPeople={priorityPeople}
+            platformContacts={platformContacts}
+            addPerson={addPerson}
+            removePerson={removePerson}
+            designateContact={designateContact}
+            addLabel={addLabel}
+            searchQuery={searchQuery}
           />
         </div>
-        
-        {/* Added people list */}
-        <PriorityPeopleList
-          priorityPeople={priorityPeople}
-          removePerson={removePerson}
-          designateContact={designateContact}
-          addLabel={addLabel}
-          contacts={platformContacts}
-        />
-        
-        {/* Manual input with dropdown */}
-        <ManualInputSection
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          selectedLabel={selectedLabel}
-          setSelectedLabel={setSelectedLabel}
-          addPerson={addPerson}
-          filteredManualContacts={filteredManualContacts}
-        />
 
-        {/* Suggested contacts */}
-        <SuggestedContacts
-          suggestedContacts={suggestedContacts}
-          priorityPeople={priorityPeople}
-          platformContacts={platformContacts}
-          addPerson={addPerson}
-          removePerson={removePerson}
-          designateContact={designateContact}
-          addLabel={addLabel}
-          searchQuery={searchQuery}
-        />
-      </div>
-      
-      <div className="flex justify-between pt-4">
-        <Button 
-          onClick={onBack} 
-          variant="back"
-          size="none"
-        >
-          Back
-        </Button>
-        <Button 
-          onClick={handleContinue}
-          variant="primary"
-          size="pill"
-        >
-          Continue
-        </Button>
-      </div>
-      
-      <div className="text-center">
-        <Button
-          variant="link"
-          onClick={handleSkip}
-          className="text-foreground/60 dark:text-white/50 hover:text-primary dark:hover:text-white"
-        >
-          Skip this step
-        </Button>
-      </div>
-    </div>
-  );
-});
+        <div className="flex justify-between pt-4">
+          <Button onClick={onBack} variant="back" size="none">
+            Back
+          </Button>
+          <Button onClick={handleContinue} variant="primary" size="pill">
+            Continue
+          </Button>
+        </div>
 
-PriorityPeopleStep.displayName = 'PriorityPeopleStep';
+        <div className="text-center">
+          <Button
+            variant="link"
+            onClick={handleSkip}
+            className="text-foreground/60 dark:text-white/50 hover:text-primary dark:hover:text-white"
+          >
+            Skip this step
+          </Button>
+        </div>
+      </div>
+    );
+  }
+);
+
+PriorityPeopleStep.displayName = "PriorityPeopleStep";
 
 export default PriorityPeopleStep;
