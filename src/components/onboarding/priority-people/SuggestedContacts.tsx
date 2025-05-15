@@ -47,14 +47,14 @@ export const SuggestedContacts = ({
   
   // Filtered contacts based on search query
   const filteredContacts = searchQuery.trim() 
-    ? suggestedContacts.filter(contact => 
+    ? suggestedContacts?.filter(contact => 
         contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         contact.email.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : suggestedContacts;
 
   // Filter platform contacts based on contact search query
-  const filteredPlatformContacts = platformContacts.filter(contact =>
+  const filteredPlatformContacts = platformContacts?.filter(contact =>
     contact.name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
     contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
   );

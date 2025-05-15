@@ -46,7 +46,7 @@ export const ManualInputSection = ({
 
   // Filter contacts based on search query
   const displayedContacts = searchQuery.trim() 
-    ? filteredManualContacts.filter(contact => 
+    ? filteredManualContacts?.filter(contact => 
         contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         contact.email.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -100,7 +100,7 @@ export const ManualInputSection = ({
             </div>
             
             <div className="max-h-52 overflow-y-auto">
-              {displayedContacts.length > 0 ? (
+              {displayedContacts?.length > 0 ? (
                 displayedContacts.map((contact) => (
                   <div 
                     key={contact.id}

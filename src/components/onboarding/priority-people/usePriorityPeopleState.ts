@@ -11,18 +11,19 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [selectedLabel, setSelectedLabel] = useState<Label | "">("");
   const [priorityPeople, setPriorityPeople] = useState<PriorityPerson[]>(initialPeople);
   const [suggestedContacts, setSuggestedContacts] = useState<Contact[] | null>(null);
+  const [platformContacts, setplatformContacts] = useState<Contact[] | null>(null);
 
 
   
   // Mock platform contacts for designation - moved to useMemo to prevent recreation on every render
-  const platformContacts = useMemo<Contact[]>(() => [
-    { id: "p1", name: "Alex Johnson", email: "alex@company.com" },
-    { id: "p2", name: "Taylor Swift", email: "taylor@email.com" },
-    { id: "p3", name: "Kelsey Smith", email: "kelsey@personal.com" },
-    { id: "p4", name: "Jordan Lee", email: "jordan@client.com" },
-    { id: "p5", name: "Pat Wilson", email: "pat@partner.com" },
-    { id: "p6", name: "Robin Zhang", email: "robin@team.com" },
-  ], []);
+  // const platformContacts = useMemo<Contact[]>(() => [
+  //   { id: "p1", name: "Alex Johnson", email: "alex@company.com" },
+  //   { id: "p2", name: "Taylor Swift", email: "taylor@email.com" },
+  //   { id: "p3", name: "Kelsey Smith", email: "kelsey@personal.com" },
+  //   { id: "p4", name: "Jordan Lee", email: "jordan@client.com" },
+  //   { id: "p5", name: "Pat Wilson", email: "pat@partner.com" },
+  //   { id: "p6", name: "Robin Zhang", email: "robin@team.com" },
+  // ], []);
   
   // Suggested contacts - using actual contacts instead of roles
   // const suggestedContacts = useMemo<Contact[]>(() => [
@@ -48,6 +49,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
       });
       if (response) { 
         setSuggestedContacts(response?.data?.contacts.map((contact: {id: number, name: string}, index: number) => ({ id: contact.id, name: contact.name, email: `${index}@gmail.com` })));
+        setplatformContacts(response?.data?.contacts.map((contact: {id: number, name: string}, index: number) => ({ id: contact.id, name: contact.name, email: `${index}@gmail.com` })));
       } else {
         console.error("Failed to fetch user data");
       }
@@ -62,7 +64,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
 
   // Get filtered contacts based on input value - memoized for performance
   const filteredManualContacts = useMemo(() => 
-    platformContacts.filter(contact =>
+    platformContacts?.filter(contact =>
       contact.name.toLowerCase().includes(inputValue.toLowerCase()) ||
       contact.email.toLowerCase().includes(inputValue.toLowerCase())
     ),
