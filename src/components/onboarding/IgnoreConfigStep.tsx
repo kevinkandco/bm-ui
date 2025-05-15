@@ -125,7 +125,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
           {ignoreChannels.map(channel => (
             <div key={channel} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
               <Hash size={14} className="text-glass-blue/80" />
-              <span className="line-through">{channel}</span>
+              <span>{channel}</span>
               <button onClick={() => removeItem("channel", channel)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
                 <X size={14} />
               </button>
@@ -139,7 +139,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
           {ignoreKeywords.map(keyword => (
             <div key={keyword} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white">
               <BellOff size={14} className="text-glass-blue/80" />
-              <span className="line-through">{keyword}</span>
+              <span>{keyword}</span>
               <button onClick={() => removeItem("keyword", keyword)} className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors">
                 <X size={14} />
               </button>
