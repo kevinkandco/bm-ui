@@ -14,7 +14,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "../../Http";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
-
 interface IntegrationOption {
   id: string;
   name: string;
@@ -23,7 +22,6 @@ interface IntegrationOption {
   description: string;
   version: "V1" | "V2" | "V3" | "Future";
 }
-
 interface IntegrationsStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -240,7 +238,7 @@ useEffect(() => {
 
   // Helper function to render the appropriate icon based on integration ID
   const renderIcon = (id: string, iconText: string) => {
-    switch(id) {
+    switch (id) {
       case "slack":
         return <Slack className="text-white" size={isMobile ? 16 : 20} />;
       case "gmail":
@@ -253,9 +251,7 @@ useEffect(() => {
         return <span className="text-white font-bold text-xs sm:text-sm">{iconText}</span>;
     }
   };
-
-  return (
-    <div className="space-y-4 sm:space-y-6">
+  return <div className="space-y-4 sm:space-y-6">
       <ProgressIndicator currentStep={3} totalSteps={7} />
 
       {/* Reduce height of pyramid neon visual */}
@@ -268,94 +264,69 @@ useEffect(() => {
       </div>
 
       <div className="space-y-1 sm:space-y-2">
-        <h2 className="text-xl sm:text-2xl font-semibold text-ice-grey tracking-tighter">Connect your tools</h2>
-        <p className="text-xs sm:text-sm text-cool-slate text-zinc-100">Brief.me will monitor these sources to create your personalized brief.</p>
+        <h2 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tighter">Connect your tools</h2>
+        <p className="text-sm sm:text-base text-text-secondary">Brief.me will monitor these sources to create your personalized brief.</p>
       </div>
 
       {/* Combined integrations list */}
       <div className="space-y-3 sm:space-y-4">
-        <h3 className="text-base sm:text-lg font-medium text-ice-grey">Integrations</h3>
+        <h3 className="text-base sm:text-lg font-medium text-text-primary">Integrations</h3>
         <div className="flex flex-col space-y-1 sm:space-y-1.5">
           {/* Available integrations */}
-          {groupedIntegrations.V1?.map(integration => 
-            <div
-              key={integration.id}
-              onClick={() => toggleConnection(integration.id)}
-              className={cn(
-                "integration-list-item flex items-center py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg cursor-pointer transition-all duration-300",
-                connected[integration.id]
-                  ? "border-2 border-electric-teal bg-white/20 backdrop-blur-md shadow-neo"
-                  : "border border-white/30 bg-white/15 hover:bg-white/25 backdrop-blur-md"
-              )}
-            >
-              <div className={cn(
-                  "w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center rounded-full mr-2 sm:mr-3",
-                connected[integration.id] ? "bg-electric-teal/80" : "bg-gray-800/90"
-              )}>
+          {groupedIntegrations.V1?.map(integration => <div key={integration.id} onClick={() => toggleConnection(integration.id)} className={cn("integration-list-item flex items-center py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg cursor-pointer transition-all duration-300", connected[integration.id] ? "border-2 border-electric-teal bg-white/20 backdrop-blur-md shadow-neo" : "border border-black/25 bg-white/15 hover:bg-white/25 backdrop-blur-md dark:border-white/30")}>
+              <div className={cn("w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center rounded-full mr-2 sm:mr-3", connected[integration.id] ? "bg-electric-teal/80" : "bg-gray-800/90")}>
                 {renderIcon(integration.id, integration.icon)}
               </div>
 
               <div className="flex-grow">
-                <h4 className="text-sm sm:text-base font-medium text-white">
+                <h4 className="text-sm sm:text-base font-medium text-text-primary">
                   {integration.name}
                 </h4>
-
-                {!isMobile && (
-                  <p className="text-xs text-white/70 hidden sm:block">{integration.description}</p>
-                )}
+                
+                {!isMobile && <p className="text-xs text-text-secondary hidden sm:block">{integration.description}</p>}
               </div>
 
               <div className="ml-2">
-                {connected[integration.id] && (
-                  <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-electric-teal/20 text-white whitespace-nowrap">
+                {connected[integration.id] && <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-electric-teal/20 text-text-primary whitespace-nowrap font-medium dark:text-white">
                     Connected ✓
-                  </span>
-                )}
+                  </span>}
               </div>
-            </div>
-          )}
+            </div>)}
 
           {/* Coming soon integrations with indicator in the same line */}
-          {groupedIntegrations.V2?.map(integration => 
-            <div
-              key={integration.id}
-              className="integration-list-item flex items-center py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg border border-white/20 bg-white/10 backdrop-blur-md opacity-70"
-            >
+          {groupedIntegrations.V2?.map(integration => <div key={integration.id} className="integration-list-item flex items-center py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg border border-black/20 bg-white/10 backdrop-blur-md opacity-70 dark:border-white/20">
               <div className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center bg-gray-800/80 rounded-full mr-2 sm:mr-3">
                 <span className="text-white/80 font-bold text-xs sm:text-sm">{integration.icon}</span>
               </div>
 
               <div className="flex-grow">
-                <h4 className="text-sm sm:text-base font-medium text-white/90">{integration.name}</h4>
+                <h4 className="text-sm sm:text-base font-medium text-text-primary/90">{integration.name}</h4>
               </div>
 
               <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-gray-800/60 rounded-full text-electric-teal whitespace-nowrap">
                 Coming Soon
               </span>
-            </div>
-          )}
+            </div>)}
         </div>
       </div>
 
       {/* Additional coming soon integrations - more compact */}
-      <div className="p-2 sm:p-3 bg-white/10 backdrop-blur-md rounded-lg border border-white/20">
-        <h4 className="text-[10px] sm:text-xs font-medium text-ice-grey mb-1 sm:mb-2">More integrations coming soon:</h4>
+      <div className="p-2 sm:p-3 bg-white/10 backdrop-blur-md rounded-lg border border-black/20 dark:border-white/20">
+        <h4 className="text-[10px] sm:text-xs font-medium text-text-primary mb-1 sm:mb-2">More integrations coming soon:</h4>
         <div className="flex flex-wrap gap-1 sm:gap-1.5">
-          {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => 
-            <span key={integration.id} className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-white/15 rounded-full text-white/80">
+          {[...(groupedIntegrations.V3 || []), ...(groupedIntegrations.Future || [])].map(integration => <span key={integration.id} className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-white/15 rounded-full text-text-primary/80 font-medium dark:text-white/80">
               {integration.name}
-            </span>
-          )}
+            </span>)}
         </div>
       </div>
 
       <TooltipProvider>
-        <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-cool-slate">
+        <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-text-secondary font-medium">
           <Info size={isMobile ? 12 : 14} className="text-electric-teal" />
           <span>You'll be able to add more tools later</span>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-0 h-auto text-cool-slate">
+              <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary">
                 <Info size={isMobile ? 10 : 12} />
               </Button>
             </TooltipTrigger>
@@ -367,21 +338,19 @@ useEffect(() => {
       </TooltipProvider>
 
       <div className="flex justify-between pt-2">
-        <Button onClick={onBack} variant="plain" size="none" className="text-sm">
+        <Button onClick={onBack} variant="back" size="none">
           Back
         </Button>
-        <Button onClick={handleContinue} disabled={!hasAnyConnection} className="neon-button disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-3 sm:px-4 text-sm">
+        <Button onClick={handleContinue} disabled={!hasAnyConnection} variant="primary" size="pill" className="disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-3 sm:px-4 text-sm">
           Continue
         </Button>
       </div>
 
       <div className="flex justify-center">
-        <Button variant="link" onClick={onSkip} className="text-xs sm:text-sm text-cool-slate hover:text-ice-grey">
+        <Button variant="link" onClick={onSkip} className="text-xs sm:text-sm text-text-secondary hover:text-text-primary font-medium">
           Skip for now
         </Button>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default IntegrationsStep;

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
 export interface UserData {
   // Auth data
@@ -83,32 +83,47 @@ export function useOnboardingState() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
   
-  const totalSteps = 9;
+  // The sign-in step is no longer counted in the total steps
+  const totalSteps = 8;
   
-  const updateUserData = (data: Partial<UserData>) => {
+  // This function maps the UI step (1-based) to the actual progress step (0-based)
+  // where step 1 is the FeaturesWalkthroughStep (after sign in)
+  const getProgressStep = useCallback((uiStep: number) => {
+    // First step (sign in) doesn't count in the progress
+    return uiStep === 1 ? 0 : uiStep - 1;
+  }, []);
+  
+  const updateUserData = useCallback((data: Partial<UserData>) => {
     setUserData(prev => ({ ...prev, ...data }));
-  };
+  }, []);
   
-  const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(prev => prev + 1);
-      window.scrollTo(0, 0);
-    } else {
-      setShowSuccess(true);
-    }
-  };
+  const handleNext = useCallback(() => {
+    setCurrentStep(prev => {
+      const nextStep = prev + 1;
+      if (nextStep <= totalSteps + 1) { // +1 because we have an extra step (sign-in)
+        window.scrollTo(0, 0);
+        return nextStep;
+      } else {
+        setShowSuccess(true);
+        return prev;
+      }
+    });
+  }, [totalSteps]);
   
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
-      window.scrollTo(0, 0);
-    }
-  };
+  const handleBack = useCallback(() => {
+    setCurrentStep(prev => {
+      if (prev > 1) {
+        window.scrollTo(0, 0);
+        return prev - 1;
+      }
+      return prev;
+    });
+  }, []);
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     // Skip to final step
-    setCurrentStep(totalSteps);
-  };
+    setCurrentStep(totalSteps + 1); // +1 because we have an extra step (sign-in)
+  }, [totalSteps]);
 
   return {
     currentStep,
@@ -118,6 +133,7 @@ export function useOnboardingState() {
     userData,
     updateUserData,
     totalSteps,
+    getProgressStep,
     handleNext,
     handleBack,
     handleSkip

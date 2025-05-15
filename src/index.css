@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,47 +8,47 @@
     /* Light Glass Morphism CSS Variables */
     --surface: #F5F5F7;
     --surface-raised: #FFFFFF;
-    --surface-overlay: rgba(255, 255, 255, 0.85);
+    --surface-overlay: rgba(255, 255, 255, 0.95);
     --glow-highlight: rgba(0, 0, 0, 0.05);
     --glow-line: rgba(0, 0, 0, 0.15);
-    --accent-primary: #2B88FF;
+    --accent-primary: #0F6FDD;
     --accent-secondary: #4E96FF;
     --text-primary: #1A1A1C;
-    --text-secondary: rgba(26, 26, 28, 0.8);
-    --text-muted: rgba(26, 26, 28, 0.5);
-    --border-subtle: rgba(0, 0, 0, 0.08);
+    --text-secondary: rgba(26, 26, 28, 0.85);
+    --text-muted: rgba(26, 26, 28, 0.65);
+    --border-subtle: rgba(0, 0, 0, 0.12);
     
     /* Standard radius */
     --radius: 16px;
 
-    /* Light mode shadcn variables */
-    --background: 0 0% 98%;    /* #fafafa - Lighter background */
-    --foreground: 240 3% 10%;   /* #1A1A1C */
+    /* Light mode shadcn variables - Improved contrast */
+    --background: 0 0% 96%;     /* #f5f5f5 */
+    --foreground: 240 3% 8%;    /* #151517 - Darker text for better contrast */
     --card: 0 0% 100%;          /* #FFFFFF */
-    --card-foreground: 240 3% 10%;  /* #1A1A1C */
+    --card-foreground: 240 3% 8%;  /* #151517 */
     --popover: 0 0% 100%;       /* #FFFFFF */
-    --popover-foreground: 240 3% 10%;  /* #1A1A1C */
-    --primary: 216 100% 58%;    /* #2B88FF */
+    --popover-foreground: 240 3% 8%;  /* #151517 */
+    --primary: 216 100% 46%;    /* #0F6FDD - Darker blue for better contrast */
     --primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 0 0% 96%;      /* #F5F5F5 */
-    --secondary-foreground: 240 3% 10%; /* #1A1A1C */
-    --muted: 0 0% 92%;          /* #EBEBEB */
-    --muted-foreground: 240 3% 40%; /* rgba(26, 26, 28, 0.8) */
-    --accent: 216 100% 58%;     /* #2B88FF */
+    --secondary: 0 0% 92%;      /* #EAEAEA */
+    --secondary-foreground: 240 3% 8%; /* #151517 */
+    --muted: 0 0% 88%;          /* #E0E0E0 */
+    --muted-foreground: 240 3% 25%; /* rgba(26, 26, 28, 0.8) - Darker for better contrast */
+    --accent: 216 100% 46%;     /* #0F6FDD */
     --accent-foreground: 0 0% 100%; /* #FFFFFF */
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 50%;   /* Darker red */
     --destructive-foreground: 0 0% 98%;
-    --border: 240 10% 90%;      /* #E5E5EA */
-    --input: 240 10% 90%;       /* #E5E5EA */
-    --ring: 216 100% 58%;       /* #2B88FF */
+    --border: 240 10% 84%;      /* #D5D5DA - Darker border */
+    --input: 240 10% 84%;       /* #D5D5DA */
+    --ring: 216 100% 46%;       /* #0F6FDD */
     
     /* Surface with opacity variations for gradients */
-    --surface-raised-70: rgba(255, 255, 255, 0.7);
-    --surface-90: rgba(245, 245, 247, 0.9);
+    --surface-raised-70: rgba(255, 255, 255, 0.85);
+    --surface-90: rgba(245, 245, 247, 0.95);
     
     /* Accent colors with opacity for hover states */
-    --accent-primary-hover: rgba(43, 136, 255, 0.2);
-    --accent-primary-hover-light: rgba(43, 136, 255, 0.1);
+    --accent-primary-hover: rgba(15, 111, 221, 0.2);
+    --accent-primary-hover-light: rgba(15, 111, 221, 0.1);
   }
 
   .dark {
@@ -100,14 +101,15 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Light mode specific styles */
+  /* Light mode specific styles - Improved contrast */
   :root:not(.dark) {
-    --surface: #f8f8fa; /* Much lighter background */
+    --surface: #eaeaec; /* Even darker background for more contrast */
     --surface-raised: #FFFFFF;
-    --surface-overlay: rgba(255, 255, 255, 0.9);
-    --text-primary: #2A2A2A; /* Darker text for better contrast */
-    --text-secondary: rgba(42, 42, 42, 0.8);
-    --text-muted: rgba(42, 42, 42, 0.6);
+    --surface-overlay: rgba(255, 255, 255, 0.95);
+    --text-primary: #111111; /* Even darker text for higher contrast */
+    --text-secondary: rgba(17, 17, 17, 0.85); /* Higher contrast text */
+    --text-muted: rgba(17, 17, 17, 0.65); /* Higher contrast muted text */
+    --border-subtle: rgba(0, 0, 0, 0.2); /* Darker border for better contrast */
   }
 }
 
@@ -140,9 +142,9 @@
     );
   }
 
-  /* Shadow utilities */
+  /* Shadow utilities - Improved for better contrast */
   .shadow-subtle {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .shadow-glow {
@@ -189,10 +191,15 @@
     background: rgba(0, 0, 0, 0.8);
     border-radius: 9999px;
   }
+  
+  /* Opacity utility classes */
+  .opacity-85 {
+    opacity: 0.85;
+  }
 }
 
 @layer components {
-  /* Glass Card Component - Light/Dark mode aware */
+  /* Glass Card Component - Light/Dark mode aware with improved contrast */
   .glass-card {
     @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
     background: linear-gradient(to bottom, var(--surface-raised-70), var(--surface-90));
@@ -203,7 +210,8 @@
   }
   
   .light .glass-card {
-    @apply border-black/10;
+    @apply border-black/25; /* Darker border in light mode for better contrast */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); /* Stronger shadow for better visibility */
   }
   
   .glass-card:hover {
@@ -215,7 +223,8 @@
   }
   
   .light .glass-card:hover {
-    @apply border-black/15;
+    @apply border-black/40; /* Even darker hover border for better contrast */
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2); /* Stronger hover shadow for better visibility */
   }
   
   /* Glass Button */
@@ -250,7 +259,7 @@
     @apply text-text-primary border-accent-primary;
   }
   
-  /* Glass Input */
+  /* Glass Input - Improved for better contrast */
   .glass-input {
     @apply bg-surface-overlay border border-border-subtle rounded-lg px-4 py-2
            backdrop-blur-xl transition-all duration-300 ease-out text-text-primary
@@ -275,7 +284,7 @@
     @apply bg-text-muted;
   }
   
-  /* Theme toggle - updated for both light and dark */
+  /* Theme toggle - updated for both light and dark with better contrast */
   .theme-toggle {
     @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors backdrop-blur-xl;
   }
@@ -292,12 +301,29 @@
   
   .light .theme-toggle {
     @apply text-text-primary;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for better visibility */
   }
   
   .light .theme-toggle:hover {
     background-color: var(--accent-primary-hover-light);
+  }
+
+  /* Additional light mode improvements for better contrast */
+  :root:not(.dark) .card {
+    @apply border-black/25 shadow-md;
+  }
+
+  :root:not(.dark) .input {
+    @apply border-black/30 text-foreground placeholder:text-foreground/60;
+  }
+
+  :root:not(.dark) .dropdown-menu {
+    @apply border-black/25 shadow-lg;
+  }
+  
+  :root:not(.dark) .popover {
+    @apply border-black/25 shadow-lg;
   }
 }
 

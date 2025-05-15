@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 export function usePriorityChannelsState(initialChannels: string[] = []) {
   const [priorityChannels, setPriorityChannels] = useState<string[]>(initialChannels);
   
-  // Mock Slack channels - in real implementation, would be fetched from Slack API
-  const [slackChannels] = useState([
+  // All available Slack channels
+  const [allSlackChannels] = useState([
     "#general",
     "#random",
     "#announcements",
@@ -19,6 +19,14 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
     "#engineering",
     "#hr"
   ]);
+  
+  // Filtered list of slack channels (excluding selected ones)
+  const [slackChannels, setSlackChannels] = useState<string[]>([]);
+  
+  // Update available channels whenever priority channels change
+  useEffect(() => {
+    setSlackChannels(allSlackChannels.filter(channel => !priorityChannels.includes(channel)));
+  }, [priorityChannels, allSlackChannels]);
   
   const addChannel = (channelName: string) => {
     if (!channelName.trim()) return;
@@ -44,6 +52,7 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
   return {
     priorityChannels,
     slackChannels,
+    allSlackChannels,
     addChannel,
     selectChannel,
     removeChannel

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import ProgressIndicator from "./ProgressIndicator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSearchParams } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
@@ -56,8 +55,8 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
 
   return (
     <div className="space-y-6 sm:space-y-8 relative">
-      <ProgressIndicator currentStep={1} totalSteps={7} />
-
+      {/* Removed ProgressIndicator from here */}
+      
       {/* Glow orb visual element - smaller on mobile */}
       <div className="h-28 sm:h-40 w-full flex items-center justify-center relative mb-4 sm:mb-8">
         <div className="w-24 sm:w-32 h-24 sm:h-32 rounded-full bg-accent-primary/5 animate-pulse absolute"></div>

@@ -4,10 +4,9 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 const Index = () => {
-  const {
-    theme
-  } = useTheme();
+  const { theme } = useTheme();
   const isMobile = useIsMobile();
 
   // Memoize the CSS string to prevent unnecessary re-creation on re-renders
@@ -21,15 +20,24 @@ const Index = () => {
       animation: pulse55bpm 1.091s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* 55bpm = 1.091s per beat */
     }
   `, []);
+  
   return <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-surface">
       <style>{pulseAnimationCSS}</style>
       
-      {/* Background with dark gradient */}
+      {/* Background with image overlay */}
       <div className="absolute inset-0 w-full h-full">
-        <div className="absolute inset-0 bg-gradient-dark opacity-80"></div>
+        {/* Background image - slightly increased blur */}
+        <div className="absolute inset-0 w-full h-full">
+          <img 
+            src="/lovable-uploads/8ea55fb5-fb6e-49d0-881c-5d96263e886d.png" 
+            alt="Dashboard background" 
+            className="w-full h-full object-cover filter blur"
+            loading="eager"
+          />
+        </div>
         
-        {/* Horizontal glow line */}
-        <div className="absolute top-20 left-0 right-0 h-px bg-glow-line shadow-neon"></div>
+        {/* Color overlay with reduced opacity */}
+        <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-60`}></div>
         
         {/* Noise texture overlay */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-texture"></div>
