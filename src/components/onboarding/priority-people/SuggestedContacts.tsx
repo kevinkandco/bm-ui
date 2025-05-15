@@ -93,7 +93,7 @@ export const SuggestedContacts = ({
     <div className="pt-2">
       <h3 className="text-sm font-medium text-foreground dark:text-ice-grey mb-2">Suggested Contacts</h3>
       <div className="space-y-1.5">
-        {filteredContacts.map(contact => {
+        {filteredContacts?.map(contact => {
           const isAdded = isContactAdded(contact);
           const person = isAdded ? 
             priorityPeople.find(p => p.name === contact.name || p.email === contact.email) : null;

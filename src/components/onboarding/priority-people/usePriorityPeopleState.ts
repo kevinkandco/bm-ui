@@ -1,12 +1,18 @@
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
+import Http from "@/Http";
+
+const BaseURL = import.meta.env.VITE_API_HOST;
 
 export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLabel, setSelectedLabel] = useState<Label | "">("");
   const [priorityPeople, setPriorityPeople] = useState<PriorityPerson[]>(initialPeople);
+  const [suggestedContacts, setSuggestedContacts] = useState<Contact[] | null>(null);
+
+
   
   // Mock platform contacts for designation - moved to useMemo to prevent recreation on every render
   const platformContacts = useMemo<Contact[]>(() => [
@@ -19,13 +25,43 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   ], []);
   
   // Suggested contacts - using actual contacts instead of roles
-  const suggestedContacts = useMemo<Contact[]>(() => [
-    { id: "c1", name: "Morgan Freeman", email: "morgan@company.com" },
-    { id: "c2", name: "Emma Watson", email: "emma@company.com" },
-    { id: "c3", name: "Chris Evans", email: "chris@company.com" },
-    { id: "c4", name: "Jennifer Lopez", email: "jlo@email.com" },
-    { id: "c5", name: "Ryan Reynolds", email: "ryan@client.com" },
-  ], []);
+  // const suggestedContacts = useMemo<Contact[]>(() => [
+  //   { id: "c1", name: "Morgan Freeman", email: "morgan@company.com" },
+  //   { id: "c2", name: "Emma Watson", email: "emma@company.com" },
+  //   { id: "c3", name: "Chris Evans", email: "chris@company.com" },
+  //   { id: "c4", name: "Jennifer Lopez", email: "jlo@email.com" },
+  //   { id: "c5", name: "Ryan Reynolds", email: "ryan@client.com" },
+  // ], []);
+
+  const getContact = useCallback(async (): Promise<void> => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No authorization token found");
+        return;
+      }
+      Http.setBearerToken(token);
+      console.log(BaseURL)
+      const response = await Http.callApi("get", `${BaseURL}/api/slack/dms/contacts`, null, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      console.log(response)
+      if (response) {
+        console.log(response?.data?.contacts, 'RESPONSE');
+        setSuggestedContacts(response?.data?.contacts.map((contact: {id: number, name: string}, index: number) => ({ id: contact.id, name: contact.name, email: `${index}@gmail.com` })));
+      } else {
+        console.error("Failed to fetch user data");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+		getContact();
+	}, [getContact]);
 
   // Get filtered contacts based on input value - memoized for performance
   const filteredManualContacts = useMemo(() => 
