@@ -159,7 +159,7 @@ const IgnoreConfigStep = ({
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
-        setIsInputFocused(false);
+        setTimeout(() => setIsInputFocused(false), 100);
       }
     };
 
