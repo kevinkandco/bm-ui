@@ -61,7 +61,8 @@ export const SuggestedContacts = ({
 
   // Check if a contact is already in priority people
   const isContactAdded = (contact: Contact) => {
-    return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
+    // return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
+    return priorityPeople.some(p => p.name === contact.name || (p.email != "N/A" && p.email === contact.email) );
   };
 
   // Handle designation and label selection

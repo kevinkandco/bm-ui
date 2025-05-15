@@ -11,7 +11,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [selectedLabel, setSelectedLabel] = useState<Label | "">("");
   const [priorityPeople, setPriorityPeople] = useState<PriorityPerson[]>(initialPeople);
   const [suggestedContacts, setSuggestedContacts] = useState<Contact[] | null>(null);
-  const [platformContacts, setplatformContacts] = useState<Contact[] | null>(null);
+  const [platformContacts, setPlatformContacts] = useState<Contact[] | null>(null);
 
 
   
@@ -48,8 +48,8 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
         },
       });
       if (response) { 
-        setSuggestedContacts(response?.data?.contacts.map((contact: {id: number, name: string}, index: number) => ({ id: contact.id, name: contact.name, email: `${index}@gmail.com` })));
-        setplatformContacts(response?.data?.contacts.map((contact: {id: number, name: string}, index: number) => ({ id: contact.id, name: contact.name, email: `${index}@gmail.com` })));
+        setPlatformContacts(response?.data?.contacts);
+        setSuggestedContacts(response?.data?.contacts);
       } else {
         console.error("Failed to fetch user data");
       }
