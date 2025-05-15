@@ -38,10 +38,17 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
 
       const response = await Http.callApi(
         "get",
-        `${BaseURL}/api/slack/channels`
+        `${BaseURL}/api/slack/channels`,
+        null,
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        }
       );
+      console.log(response);
       if (response) {
-        setAllSlackChannels(response?.data?.data.map((c: { name: any; }) => c.name));
+        setAllSlackChannels(response?.data?.data?.map((c: { name: any; }) => c.name));
       } else {
         console.error("Failed to fetch user data");
       }
@@ -60,7 +67,7 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
   // Update available channels whenever priority channels change
   useEffect(() => {
     setSlackChannels(
-      allSlackChannels.filter((channel) => !priorityChannels.includes(channel))
+      allSlackChannels?.filter((channel) => !priorityChannels.includes(channel))
     );
   }, [priorityChannels, allSlackChannels]);
 
@@ -82,7 +89,7 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
   };
 
   const removeChannel = (channel: string) => {
-    setPriorityChannels((prev) => prev.filter((item) => item !== channel));
+    setPriorityChannels((prev) => prev?.filter((item) => item !== channel));
   };
 
   return {

@@ -41,15 +41,12 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
         return;
       }
       Http.setBearerToken(token);
-      console.log(BaseURL)
       const response = await Http.callApi("get", `${BaseURL}/api/slack/dms/contacts`, null, {
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
       });
-      console.log(response)
-      if (response) {
-        console.log(response?.data?.contacts, 'RESPONSE');
+      if (response) { 
         setSuggestedContacts(response?.data?.contacts.map((contact: {id: number, name: string}, index: number) => ({ id: contact.id, name: contact.name, email: `${index}@gmail.com` })));
       } else {
         console.error("Failed to fetch user data");
