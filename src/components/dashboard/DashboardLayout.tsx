@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -6,9 +5,9 @@ import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clo
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useTheme } from "@/hooks/use-theme";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -152,21 +151,31 @@ const DashboardLayout = ({
         </div>
       </div>
       
-      {/* Mobile Navigation Hamburger Menu */}
-      <div className="fixed top-4 left-4 z-30 md:hidden">
+      {/* Mobile Navigation Hamburger Menu - Position fixed and improved z-index */}
+      <div className="fixed top-3 left-3 z-50 md:hidden">
         <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
           <SheetTrigger asChild>
-            <Button size="icon" variant="outline" className="bg-surface border border-border-subtle">
-              <Menu className="h-5 w-5 text-text-primary" />
+            <Button size="icon" variant="outline" className="h-9 w-9 bg-surface border border-border-subtle rounded-full">
+              <Menu className="h-4 w-4 text-text-primary" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-[85%] max-w-[280px] bg-surface border-border-subtle">
             <div className="flex flex-col h-full">
-              <div className="p-4 flex items-center">
-                <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
-                  <span className="font-bold text-white text-lg">B</span>
+              <div className="p-4 flex items-center justify-between border-b border-border-subtle">
+                <div className="flex items-center">
+                  <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
+                    <span className="font-bold text-white text-lg">B</span>
+                  </div>
+                  <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
                 </div>
-                <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
+                <Button 
+                  size="icon" 
+                  variant="ghost" 
+                  onClick={() => setMobileNavOpen(false)}
+                  className="h-8 w-8"
+                >
+                  <X className="h-5 w-5 text-text-secondary" />
+                </Button>
               </div>
               
               <NavItems />
@@ -208,12 +217,12 @@ const DashboardLayout = ({
             key={id}
             onClick={() => handleNavClick(path)}
             className={cn(
-              "p-3 flex flex-col items-center justify-center",
+              "p-2 flex flex-col items-center justify-center",
               currentPage === id ? "text-accent-primary" : "text-text-secondary"
             )}
           >
             <Icon className="h-5 w-5" />
-            <span className="text-xs mt-1">{id === "catch-up" ? "Catch Up" : id.charAt(0).toUpperCase() + id.slice(1)}</span>
+            <span className="text-[10px] mt-0.5">{id === "catch-up" ? "Catch Up" : id.charAt(0).toUpperCase() + id.slice(1)}</span>
           </button>
         ))}
       </div>
