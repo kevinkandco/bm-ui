@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BriefsFeed from "@/components/dashboard/BriefsFeed";
@@ -9,8 +10,6 @@ import StatusTimer from "@/components/dashboard/StatusTimer";
 import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
 import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
 import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
-import { Button } from "@/components/ui/button";
-import { Headphones, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
@@ -138,31 +137,16 @@ const Dashboard = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="container p-4 md:p-6 max-w-7xl mx-auto">
-        {/* Cleaner header with action buttons and status indicator in one row */}
-        <div className="flex flex-wrap items-center justify-between mb-6">
-          <StatusTimer status={uiState.userStatus} />
-          
-          <div className="flex items-center mt-4 sm:mt-0 gap-2">
-            <ConnectedAccounts />
-            
-            <div className="flex gap-2 ml-2">
-              <Button 
-                onClick={handleToggleCatchMeUp}
-                size="sm"
-                className="rounded-full bg-accent-primary text-white"
-              >
-                <Zap className="mr-1 h-4 w-4" /> Catch Up
-              </Button>
-              <Button 
-                onClick={handleToggleFocusMode}
-                size="sm"
-                variant="outline"
-                className="rounded-full border-border-subtle"
-              >
-                <Headphones className="mr-1 h-4 w-4" /> Focus
-              </Button>
-            </div>
-          </div>
+        {/* Timer and status section - updated to include buttons */}
+        <StatusTimer 
+          status={uiState.userStatus} 
+          onToggleFocusMode={handleToggleFocusMode} 
+          onToggleCatchMeUp={handleToggleCatchMeUp} 
+        />
+        
+        {/* Connected accounts and metrics section */}
+        <div className="pb-4 pt-2">
+          <ConnectedAccounts />
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
