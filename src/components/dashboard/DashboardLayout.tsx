@@ -151,15 +151,15 @@ const DashboardLayout = ({
         </div>
       </div>
       
-      {/* Mobile Navigation Hamburger Menu - Position fixed and improved z-index */}
-      <div className="fixed top-3 left-3 z-50 md:hidden">
+      {/* Mobile Navigation Hamburger Menu - Moved to right side */}
+      <div className="fixed top-3 right-3 z-50 md:hidden">
         <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
           <SheetTrigger asChild>
             <Button size="icon" variant="outline" className="h-9 w-9 bg-surface border border-border-subtle rounded-full">
               <Menu className="h-4 w-4 text-text-primary" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-[85%] max-w-[280px] bg-surface border-border-subtle">
+          <SheetContent side="right" className="p-0 w-full max-w-none bg-surface border-border-subtle">
             <div className="flex flex-col h-full">
               <div className="p-4 flex items-center justify-between border-b border-border-subtle">
                 <div className="flex items-center">
@@ -168,6 +168,7 @@ const DashboardLayout = ({
                   </div>
                   <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
                 </div>
+                {/* Single X button for closing the menu */}
                 <Button 
                   size="icon" 
                   variant="ghost" 
@@ -195,9 +196,9 @@ const DashboardLayout = ({
                   <span className="ml-4 whitespace-nowrap">Help & Feedback</span>
                 </button>
                 
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs text-text-secondary">Theme</span>
-                  <ThemeToggle />
+                {/* Theme toggle removed on mobile as requested */}
+                <div className="mt-4 flex items-center justify-between md:hidden">
+                  <span className="text-xs text-text-secondary">Version 1.0.0</span>
                 </div>
               </div>
             </div>

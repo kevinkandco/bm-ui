@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { Clock, Headphones, Zap, Plane, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -130,7 +129,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
               {onExitFocusMode && (
                 <Button 
                   onClick={onExitFocusMode}
@@ -160,7 +161,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
@@ -190,7 +193,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
@@ -219,17 +224,19 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />
+            <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
               
-              {!isMobile && onToggleFocusMode && (
+              {onToggleFocusMode && (
                 <Button 
                   onClick={onToggleFocusMode}
                   variant="outline"
                   size={isMobile ? "sm" : "default"}
                   className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <Headphones className="h-4 w-4 mr-2" /> Focus Mode
+                  <Headphones className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Focus</span>
                 </Button>
               )}
               
