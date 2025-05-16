@@ -18,9 +18,10 @@ import { Label } from "@/components/ui/label";
 interface CatchMeUpProps {
   open: boolean;
   onClose: () => void;
+  onGenerateSummary: (timeDescription: string) => void;
 }
 
-const CatchMeUp = ({ open, onClose }: CatchMeUpProps) => {
+const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const { toast } = useToast();
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
   const [customHours, setCustomHours] = useState(3);
@@ -35,30 +36,25 @@ const CatchMeUp = ({ open, onClose }: CatchMeUpProps) => {
   const handleGenerate = () => {
     const timeDescription = timePeriod === "auto" ? detectedTime : `${customHours} hours`;
     
-    toast({
-      title: "Catch Me Up Summary",
-      description: `Generating summary for the last ${timeDescription}`
-    });
-    
-    onClose();
+    onGenerateSummary(timeDescription);
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white/75 backdrop-blur-md border border-white/30 shadow-md max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-black/80 text-white backdrop-blur-xl border border-white/10">
         <DialogHeader>
-          <DialogTitle className="text-deep-teal flex items-center">
-            <Zap className="mr-2 h-5 w-5 text-glass-blue" />
+          <DialogTitle className="text-white flex items-center">
+            <Zap className="mr-2 h-5 w-5 text-blue-400" />
             Catch Me Up
           </DialogTitle>
-          <DialogDescription className="text-deep-teal/70">
+          <DialogDescription className="text-white/70">
             Get a summary of what you've missed while you were away
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-2">
-          <div className="bg-white/50 rounded-lg border border-white/40 p-4 text-deep-teal">
-            <p className="text-sm">We detected you've been offline for <span className="font-medium">{detectedTime}</span></p>
+          <div className="bg-white/10 rounded-lg border border-white/10 p-4 text-white">
+            <p className="text-sm">We detected you've been offline for <span className="font-medium text-blue-400">{detectedTime}</span></p>
           </div>
           
           <RadioGroup 
@@ -69,25 +65,25 @@ const CatchMeUp = ({ open, onClose }: CatchMeUpProps) => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="auto" id="auto" />
-              <Label htmlFor="auto">Use detected time ({detectedTime})</Label>
+              <Label htmlFor="auto" className="text-white">Use detected time ({detectedTime})</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="custom" id="custom" />
-              <Label htmlFor="custom">Set custom time period</Label>
+              <Label htmlFor="custom" className="text-white">Set custom time period</Label>
             </div>
           </RadioGroup>
           
           {timePeriod === "custom" && (
-            <div className="space-y-2 pt-2">
+            <div className="space-y-2 pt-2 bg-white/10 rounded-lg border border-white/10 p-4">
               <div className="flex justify-between">
-                <span className="text-sm text-deep-teal/70">Time period: {customHours} hours</span>
+                <span className="text-sm text-white/70">Time period: {customHours} hours</span>
                 <div className="flex gap-2">
                   {[1, 4, 24].map(time => (
                     <Button 
                       key={time} 
                       variant="outline"
                       size="sm"
-                      className={customHours === time ? "bg-glass-blue text-white border-glass-blue" : ""}
+                      className={`${customHours === time ? "bg-blue-500/20 text-blue-400 border-blue-500/50" : "bg-white/5 text-white/70 border-white/10"} hover:bg-white/10`}
                       onClick={() => setCustomHours(time)}
                     >
                       {time}
@@ -109,10 +105,10 @@ const CatchMeUp = ({ open, onClose }: CatchMeUpProps) => {
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white">
             <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
-          <Button onClick={handleGenerate}>
+          <Button onClick={handleGenerate} className="bg-blue-600 text-white hover:bg-blue-700">
             <Zap className="mr-2 h-4 w-4" /> Generate Summary
           </Button>
         </DialogFooter>

@@ -40,35 +40,36 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
       description: `Focus mode activated for ${focusTime} minutes`
     });
     
+    // Close the modal properly to update the parent state
     onClose();
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white/75 backdrop-blur-md border border-white/30 shadow-md max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-black/80 text-white backdrop-blur-xl border border-white/10">
         <DialogHeader>
-          <DialogTitle className="text-deep-teal flex items-center">
-            <Headphones className="mr-2 h-5 w-5 text-glass-blue" />
+          <DialogTitle className="text-white flex items-center">
+            <Headphones className="mr-2 h-5 w-5 text-blue-400" />
             Focus Mode
           </DialogTitle>
-          <DialogDescription className="text-deep-teal/70">
+          <DialogDescription className="text-white/70">
             Minimize distractions and focus on what matters most
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-2">
-          <div className="bg-white/50 rounded-lg border border-white/40 p-4">
-            <h4 className="text-sm font-medium text-deep-teal mb-2">Focus Duration</h4>
+          <div className="bg-white/10 rounded-lg border border-white/10 p-4">
+            <h4 className="text-sm font-medium text-white mb-2">Focus Duration</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm text-deep-teal/70">Time: {focusTime} minutes</span>
+                <span className="text-sm text-white/70">Time: {focusTime} minutes</span>
                 <div className="flex gap-2">
                   {[25, 50, 90].map(time => (
                     <Button 
                       key={time} 
                       variant="outline"
                       size="sm"
-                      className={focusTime === time ? "bg-glass-blue text-white border-glass-blue" : ""}
+                      className={`${focusTime === time ? "bg-blue-500/20 text-blue-400 border-blue-500/50" : "bg-white/5 text-white/70 border-white/10"} hover:bg-white/10`}
                       onClick={() => setFocusTime(time)}
                     >
                       {time}
@@ -89,12 +90,12 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
           </div>
           
           <div className="space-y-3 pt-2">
-            <h4 className="text-sm font-medium text-deep-teal">Options</h4>
+            <h4 className="text-sm font-medium text-white">Options</h4>
             
-            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg border border-white/10">
               <div className="flex items-center space-x-2">
-                <Wifi className="h-4 w-4 text-glass-blue" />
-                <Label htmlFor="update-status">Update status on connected apps</Label>
+                <Wifi className="h-4 w-4 text-blue-400" />
+                <Label htmlFor="update-status" className="text-white">Update status on connected apps</Label>
               </div>
               <Switch 
                 id="update-status"
@@ -103,10 +104,10 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
               />
             </div>
             
-            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg border border-white/10">
               <div className="flex items-center space-x-2">
-                <Monitor className="h-4 w-4 text-glass-blue" />
-                <Label htmlFor="close-apps">Close distracting applications</Label>
+                <Monitor className="h-4 w-4 text-blue-400" />
+                <Label htmlFor="close-apps" className="text-white">Close distracting applications</Label>
               </div>
               <Switch 
                 id="close-apps"
@@ -115,10 +116,10 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
               />
             </div>
             
-            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg border border-white/10">
               <div className="flex items-center space-x-2">
-                <Headphones className="h-4 w-4 text-glass-blue" />
-                <Label htmlFor="enable-dnd">Enable Do Not Disturb</Label>
+                <Headphones className="h-4 w-4 text-blue-400" />
+                <Label htmlFor="enable-dnd" className="text-white">Enable Do Not Disturb</Label>
               </div>
               <Switch 
                 id="enable-dnd"
@@ -127,10 +128,10 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
               />
             </div>
             
-            <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-white/40">
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg border border-white/10">
               <div className="flex items-center space-x-2">
-                <Wifi className="h-4 w-4 text-glass-blue" />
-                <Label htmlFor="monitor-notifs">Continue monitoring for urgent messages</Label>
+                <Wifi className="h-4 w-4 text-blue-400" />
+                <Label htmlFor="monitor-notifs" className="text-white">Continue monitoring for urgent messages</Label>
               </div>
               <Switch 
                 id="monitor-notifs"
@@ -142,10 +143,10 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="shadow-sm">
+          <Button variant="outline" onClick={onClose} className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white">
             <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
-          <Button onClick={handleStartFocus} className="shadow-sm">
+          <Button onClick={handleStartFocus} className="bg-blue-600 text-white hover:bg-blue-700">
             <Headphones className="mr-2 h-4 w-4" /> Start Focus
           </Button>
         </DialogFooter>

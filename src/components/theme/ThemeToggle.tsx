@@ -4,15 +4,18 @@ import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  className?: string;
+}
+
+export function ThemeToggle({ className }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   
   return (
     <Button
       variant="outline"
-      size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="theme-toggle"
+      className={`rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10 ${className}`}
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
