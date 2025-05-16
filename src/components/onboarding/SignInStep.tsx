@@ -31,27 +31,43 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
     }
   };
 
-  useEffect(() => {
-    const token = searchParams.get("token");
-    const provider = searchParams.get("provider");
+useEffect(() => {
+  const tokenFromUrl = searchParams.get("token");
+  const providerFromUrl = searchParams.get("provider");
 
-    if (token && provider) {
-      localStorage.setItem("token", token);
-      setSigningIn(true);
+  const localToken = localStorage.getItem("token");
 
-      // Simulate authentication
-      setTimeout(() => {
-        setSigningIn(false);
-        updateUserData({
-          isSignedIn: true,
-          authProvider: provider,
-        });
-        onNext();
-      }, 1000);
-    } else {
-      console.log("Authentication failed or token missing.");
-    }
-  }, [searchParams]);
+  if (tokenFromUrl && providerFromUrl) {
+    // Save token and clean URL
+    localStorage.setItem("token", tokenFromUrl);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("token");
+    url.searchParams.delete("provider");
+    window.history.replaceState({}, document.title, url.pathname + url.search);
+
+    // Proceed with sign-in
+    setSigningIn(true);
+    setTimeout(() => {
+      setSigningIn(false);
+      updateUserData({
+        isSignedIn: true,
+        authProvider: providerFromUrl,
+      });
+      onNext();
+    }, 1000);
+  } else if (localToken) {
+    // Token exists in localStorage, assume already signed in
+    updateUserData({
+      isSignedIn: true,
+      authProvider: "google", // or fetch this from localStorage too, if needed
+    });
+    onNext();
+  } else {
+    console.log("Authentication required.");
+    // Show sign-in page or stay on login
+  }
+}, [searchParams, onNext, updateUserData]);
+
 
   return (
     <div className="space-y-6 sm:space-y-8 relative">

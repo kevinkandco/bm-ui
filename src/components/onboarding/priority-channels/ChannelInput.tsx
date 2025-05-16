@@ -56,7 +56,7 @@ export const ChannelInput = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
-        setIsInputFocused(false);
+        setTimeout(() => setIsInputFocused(false), 100);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);

@@ -7,6 +7,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import { Tag, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import suggestedTopicsData from '@/data/suggestedTopics.json';
 
 interface PriorityTopicsStepProps {
   onNext: () => void;
@@ -24,18 +25,8 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
   const isMobile = useIsMobile();
   
   // Suggested topics based on common business priorities
-  const [suggestedTopics] = useState([
-    { id: "t1", name: "urgent", category: "Priority" },
-    { id: "t2", name: "site down", category: "Technical" },
-    { id: "t3", name: "deadline", category: "Project" },
-    { id: "t4", name: "critical", category: "Priority" },
-    { id: "t5", name: "meeting", category: "Work" },
-    { id: "t6", name: "review", category: "Project" },
-    { id: "t7", name: "error", category: "Technical" },
-    { id: "t8", name: "issue", category: "Technical" },
-    { id: "t9", name: "family", category: "Personal" },
-    { id: "t10", name: "weekend", category: "Personal" },
-  ]);
+
+  const [suggestedTopics] = useState(suggestedTopicsData);
   
   const addTopic = () => {
     if (!inputValue.trim()) return;

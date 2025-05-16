@@ -19,12 +19,12 @@ export const SlackChannelsList = ({
   // Show 10 channels by default instead of 5
   const displayedChannels = showAllChannels 
     ? slackChannels 
-    : slackChannels.slice(0, 10);
+    : slackChannels?.slice(0, 10);
 
   return (
     <div className="space-y-2">
       <div className="grid grid-cols-1 gap-1.5">
-        {displayedChannels.map(channel => (
+        {displayedChannels?.map(channel => (
           <button
             key={channel}
             onClick={() => onSelectChannel(channel)}
@@ -46,12 +46,12 @@ export const SlackChannelsList = ({
         ))}
       </div>
       
-      {!showAllChannels && slackChannels.length > 10 && (
+      {!showAllChannels && slackChannels?.length > 10 && (
         <button 
           onClick={() => setShowAllChannels(true)}
           className="w-full py-2 px-4 rounded-lg bg-white/5 hover:bg-white/10 text-off-white/70 hover:text-off-white text-sm transition-colors"
         >
-          Show all {slackChannels.length} channels
+          Show all {slackChannels?.length} channels
         </button>
       )}
     </div>

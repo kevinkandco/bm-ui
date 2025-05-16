@@ -39,7 +39,7 @@ export const PriorityPersonCard = ({
   ];
   
   // Filter platform contacts based on contact search query
-  const filteredContacts = contacts.filter(contact =>
+  const filteredContacts = contacts?.filter(contact =>
     contact.name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
     contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
   );

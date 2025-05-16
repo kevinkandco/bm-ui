@@ -110,11 +110,18 @@ const FeaturesWalkthroughStep = ({
         ))}
       </div>
 
-      <div className="flex justify-between pt-2 sm:pt-4">
-        <Button onClick={prevFeature} variant="back" size="none">
+      <div className={`flex ${currentFeature > 0 ? 'justify-between'  : 'justify-end'} pt-2 sm:pt-4`}>
+       {currentFeature > 0 && (
+        <Button onClick={prevFeature} variant="back" size="none" className="text-sm sm:text-base">
           Back
         </Button>
-        <Button onClick={nextFeature} variant="primary" size="pill" className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6">
+      )}
+        <Button 
+          onClick={nextFeature} 
+          variant="primary" 
+          size="pill" 
+          className="text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6"
+        >
           {currentFeature < features.length - 1 ? "Next Feature" : "Continue"}
         </Button>
       </div>

@@ -1,21 +1,24 @@
+import Http from "@/Http";
+import { useState, useCallback, useMemo } from "react";
 
-import { useState, useCallback, useMemo } from 'react';
+const BaseURL = import.meta.env.VITE_API_HOST;
+
 
 export interface UserData {
   // Auth data
   isSignedIn: boolean;
   authProvider: string;
-  
-  // User preferences 
+
+  // User preferences
   priorityPeople: any[];
   priorityChannels: string[];
   priorityTopics: string[];
-  
+
   // Ignore settings
   ignoreChannels: string[];
   ignoreKeywords: string[];
   includeIgnoredInSummary: boolean;
-  
+
   // Brief preferences
   briefSchedules: {
     id: string;
@@ -26,14 +29,14 @@ export interface UserData {
     enabled: boolean;
     days: string[];
   }[];
-  
+
   // Daily schedule
   dailySchedule: {
     workdayStart: string;
     workdayEnd: string;
     weekendMode: boolean;
   };
-  
+
   // Connected integrations
   integrations: any[];
   [key: string]: any;
@@ -43,17 +46,17 @@ export const defaultUserData: UserData = {
   // Auth data
   isSignedIn: false,
   authProvider: "",
-  
-  // User preferences 
+
+  // User preferences
   priorityPeople: [],
   priorityChannels: [],
   priorityTopics: [],
-  
+
   // Ignore settings
   ignoreChannels: [],
   ignoreKeywords: [],
   includeIgnoredInSummary: false,
-  
+
   // Brief preferences
   briefSchedules: [
     {
@@ -63,55 +66,84 @@ export const defaultUserData: UserData = {
       scheduleTime: "morning",
       briefTime: "08:00",
       enabled: true,
-      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    }
+      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    },
   ],
-  
+
   // Daily schedule
   dailySchedule: {
     workdayStart: "09:00",
     workdayEnd: "17:00",
-    weekendMode: false
+    weekendMode: false,
   },
-  
+
   // Connected integrations
-  integrations: []
+  integrations: [],
 };
 
 export function useOnboardingState() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
-  
+  console.log(userData, 'rrr');  
+
   // The sign-in step is no longer counted in the total steps
   const totalSteps = 8;
-  
+
   // This function maps the UI step (1-based) to the actual progress step (0-based)
   // where step 1 is the FeaturesWalkthroughStep (after sign in)
   const getProgressStep = useCallback((uiStep: number) => {
     // First step (sign in) doesn't count in the progress
     return uiStep === 1 ? 0 : uiStep - 1;
   }, []);
-  
+
   const updateUserData = useCallback((data: Partial<UserData>) => {
-    setUserData(prev => ({ ...prev, ...data }));
+    setUserData((prev) => ({ ...prev, ...data }));
   }, []);
-  
-  const handleNext = useCallback(() => {
-    setCurrentStep(prev => {
+
+  const handleNext = useCallback( () => {
+    setCurrentStep((prev) => {
       const nextStep = prev + 1;
-      if (nextStep <= totalSteps + 1) { // +1 because we have an extra step (sign-in)
+      if (nextStep == 10) {
+
+        try {
+              const token = localStorage.getItem("token");
+              if (!token) {
+                console.error("No authorization token found");
+                return;
+              }
+              Http.setBearerToken(token);
+              const response = Http.callApi("post", `${BaseURL}/api/slack/on-boarding`, { userData }, {
+                // headers: {
+                //   "ngrok-skip-browser-warning": "true",
+                // },
+              });
+              if (response) { 
+                console.log(response, 'response');
+                
+                // setUserData(response);
+              } else {
+                console.error("Failed to fetch user data");
+              }
+            } catch (error) {
+              console.error("Error fetching user data:", error);
+            }
+      }
+      if (nextStep <= totalSteps + 1) {
+        // +1 because we have an extra step (sign-in)
         window.scrollTo(0, 0);
         return nextStep;
       } else {
         setShowSuccess(true);
         return prev;
       }
+
+      
     });
-  }, [totalSteps]);
-  
+  }, [totalSteps, userData]);
+
   const handleBack = useCallback(() => {
-    setCurrentStep(prev => {
+    setCurrentStep((prev) => {
       if (prev > 1) {
         window.scrollTo(0, 0);
         return prev - 1;
@@ -136,6 +168,6 @@ export function useOnboardingState() {
     getProgressStep,
     handleNext,
     handleBack,
-    handleSkip
+    handleSkip,
   };
 }

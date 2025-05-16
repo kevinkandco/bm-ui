@@ -47,21 +47,22 @@ export const SuggestedContacts = ({
   
   // Filtered contacts based on search query
   const filteredContacts = searchQuery.trim() 
-    ? suggestedContacts.filter(contact => 
+    ? suggestedContacts?.filter(contact => 
         contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         contact.email.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : suggestedContacts;
 
   // Filter platform contacts based on contact search query
-  const filteredPlatformContacts = platformContacts.filter(contact =>
+  const filteredPlatformContacts = platformContacts?.filter(contact =>
     contact.name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
     contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
   );
 
   // Check if a contact is already in priority people
   const isContactAdded = (contact: Contact) => {
-    return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
+    // return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
+    return priorityPeople.some(p => p.name === contact.name || (p.email != "N/A" && p.email === contact.email) );
   };
 
   // Handle designation and label selection
@@ -93,7 +94,7 @@ export const SuggestedContacts = ({
     <div className="pt-2">
       <h3 className="text-sm font-medium text-foreground dark:text-ice-grey mb-2">Suggested Contacts</h3>
       <div className="space-y-1.5">
-        {filteredContacts.map(contact => {
+        {filteredContacts?.map(contact => {
           const isAdded = isContactAdded(contact);
           const person = isAdded ? 
             priorityPeople.find(p => p.name === contact.name || p.email === contact.email) : null;
