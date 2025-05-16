@@ -87,13 +87,13 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
                 >
                   <Zap className="mr-2 h-4 w-4" /> Catch Me Up
                 </Button>
@@ -115,13 +115,13 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
                 >
                   <Zap className="mr-2 h-4 w-4" /> Catch Me Up
                 </Button>
@@ -143,13 +143,13 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
                 >
                   <Zap className="mr-2 h-4 w-4" /> Catch Me Up
                 </Button>
@@ -171,13 +171,13 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
-              <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <ThemeToggle className="h-10 w-10" />
               {onToggleFocusMode && (
                 <Button 
                   onClick={onToggleFocusMode}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
                 >
                   <Headphones className="mr-2 h-4 w-4" /> Focus Mode
                 </Button>
@@ -186,7 +186,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white h-10"
                 >
                   <Zap className="mr-2 h-4 w-4" /> Catch Me Up
                 </Button>
