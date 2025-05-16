@@ -4,18 +4,17 @@ import { Settings, Clock, Calendar, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface ConnectedAccountsProps {}
 
 const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [showNudge, setShowNudge] = useState(true);
   
   const handleOpenSettings = () => {
-    toast({
-      title: "Channel Settings",
-      description: "Opening channel integration settings"
-    });
+    navigate("/dashboard/settings");
   };
 
   const handleDismissNudge = (e: React.MouseEvent) => {
