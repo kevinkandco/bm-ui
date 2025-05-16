@@ -18,9 +18,10 @@ import { Label } from "@/components/ui/label";
 interface CatchMeUpProps {
   open: boolean;
   onClose: () => void;
+  onGenerateSummary: (timeDescription: string) => void;
 }
 
-const CatchMeUp = ({ open, onClose }: CatchMeUpProps) => {
+const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const { toast } = useToast();
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
   const [customHours, setCustomHours] = useState(3);
@@ -35,12 +36,7 @@ const CatchMeUp = ({ open, onClose }: CatchMeUpProps) => {
   const handleGenerate = () => {
     const timeDescription = timePeriod === "auto" ? detectedTime : `${customHours} hours`;
     
-    toast({
-      title: "Catch Me Up Summary",
-      description: `Generating summary for the last ${timeDescription}`
-    });
-    
-    onClose();
+    onGenerateSummary(timeDescription);
   };
 
   return (

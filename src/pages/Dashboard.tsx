@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BriefsFeed from "@/components/dashboard/BriefsFeed";
@@ -13,11 +14,13 @@ import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
 import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
 const Dashboard = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   // Initialize state once, avoid unnecessary re-renders
   const [uiState, setUiState] = useState({
     briefDrawerOpen: false,
@@ -27,7 +30,8 @@ const Dashboard = () => {
     sidebarOpen: false, // Sidebar closed by default
     briefModalOpen: false,
     updateScheduleOpen: false,
-    endFocusModalOpen: false, // New state for end focus modal
+    endFocusModalOpen: false, // For focus mode end modal
+    catchUpModalOpen: false, // New state for catch me up modal
     userStatus: "active" as UserStatus
   });
 
@@ -92,7 +96,7 @@ const Dashboard = () => {
     }));
   }, []);
 
-  // New handler for exiting focus mode
+  // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -120,6 +124,31 @@ const Dashboard = () => {
       catchMeUpOpen: false
     }));
   }, []);
+
+  // New handler for generating catch me up summary
+  const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
+    setUiState(prev => ({
+      ...prev,
+      catchMeUpOpen: false,
+      catchUpModalOpen: true
+    }));
+  }, []);
+
+  // Handler for closing the catch up modal
+  const handleCloseCatchUpModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      catchUpModalOpen: false
+    }));
+    
+    toast({
+      title: "Catch Me Up Summary Ready",
+      description: "Your summary has been created and emailed to you"
+    });
+    
+    // Navigate to the catch-up page to show the summary
+    navigate("/dashboard/catch-up");
+  }, [toast, navigate]);
 
   const handleCloseBriefModal = useCallback(() => {
     setUiState(prev => ({
@@ -163,8 +192,9 @@ const Dashboard = () => {
 
   const catchMeUpProps = useMemo(() => ({
     open: uiState.catchMeUpOpen,
-    onClose: handleCloseCatchMeUp
-  }), [uiState.catchMeUpOpen, handleCloseCatchMeUp]);
+    onClose: handleCloseCatchMeUp,
+    onGenerateSummary: handleGenerateCatchMeUpSummary
+  }), [uiState.catchMeUpOpen, handleCloseCatchMeUp, handleGenerateCatchMeUpSummary]);
 
   const briefModalProps = useMemo(() => ({
     open: uiState.briefModalOpen,
@@ -178,8 +208,18 @@ const Dashboard = () => {
 
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
-    onClose: handleCloseEndFocusModal
+    onClose: handleCloseEndFocusModal,
+    title: "Creating Your Brief",
+    description: "We're preparing a summary of all updates during your focus session"
   }), [uiState.endFocusModalOpen, handleCloseEndFocusModal]);
+
+  const catchUpModalProps = useMemo(() => ({
+    open: uiState.catchUpModalOpen,
+    onClose: handleCloseCatchUpModal,
+    title: "Creating Your Summary",
+    description: "We're preparing a summary of what you've missed",
+    timeRemaining: 60 // Shorter time for catch-up summary (60 seconds)
+  }), [uiState.catchUpModalOpen, handleCloseCatchUpModal]);
 
   return (
     <DashboardLayout 
@@ -260,7 +300,8 @@ const Dashboard = () => {
       />
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
-        onClose={() => setUiState(prev => ({...prev, catchMeUpOpen: false}))}
+        onClose={handleCloseCatchMeUp}
+        onGenerateSummary={handleGenerateCatchMeUpSummary}
       />
       <BriefModal 
         open={uiState.briefModalOpen}
@@ -273,6 +314,15 @@ const Dashboard = () => {
       <EndFocusModal
         open={uiState.endFocusModalOpen}
         onClose={handleCloseEndFocusModal}
+        title="Creating Your Brief"
+        description="We're preparing a summary of all updates during your focus session"
+      />
+      <EndFocusModal
+        open={uiState.catchUpModalOpen}
+        onClose={handleCloseCatchUpModal}
+        title="Creating Your Summary" 
+        description="We're preparing a summary of what you've missed"
+        timeRemaining={60}
       />
     </DashboardLayout>
   );

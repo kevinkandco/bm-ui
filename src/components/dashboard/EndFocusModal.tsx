@@ -13,16 +13,25 @@ import { Loader } from "lucide-react";
 interface EndFocusModalProps {
   open: boolean;
   onClose: () => void;
+  title?: string;
+  description?: string;
+  timeRemaining?: number;
 }
 
-const EndFocusModal = ({ open, onClose }: EndFocusModalProps) => {
-  const [timeRemaining, setTimeRemaining] = useState(90); // 90 seconds = 1:30
+const EndFocusModal = ({ 
+  open, 
+  onClose, 
+  title = "Creating Your Brief", 
+  description = "We're preparing a summary of all updates during your focus session", 
+  timeRemaining: initialTimeRemaining = 90
+}: EndFocusModalProps) => {
+  const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining); // default 90 seconds = 1:30
 
   useEffect(() => {
     if (!open) return;
     
     // Reset timer when modal opens
-    setTimeRemaining(90);
+    setTimeRemaining(initialTimeRemaining);
     
     // Start countdown
     const timer = setInterval(() => {
@@ -37,7 +46,7 @@ const EndFocusModal = ({ open, onClose }: EndFocusModalProps) => {
     }, 1000);
     
     return () => clearInterval(timer);
-  }, [open, onClose]);
+  }, [open, onClose, initialTimeRemaining]);
   
   // Format time as mm:ss
   const formatTime = () => {
@@ -46,17 +55,17 @@ const EndFocusModal = ({ open, onClose }: EndFocusModalProps) => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
   
-  const progress = ((90 - timeRemaining) / 90) * 100;
+  const progress = ((initialTimeRemaining - timeRemaining) / initialTimeRemaining) * 100;
   
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-black/80 text-white backdrop-blur-xl border border-white/10">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center justify-center text-xl">
-            Creating Your Brief
+            {title}
           </DialogTitle>
           <DialogDescription className="text-white/70 text-center">
-            We're preparing a summary of all updates during your focus session
+            {description}
           </DialogDescription>
         </DialogHeader>
         
