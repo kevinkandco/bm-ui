@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BriefsFeed from "@/components/dashboard/BriefsFeed";
@@ -11,6 +10,7 @@ import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
 import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
 import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
