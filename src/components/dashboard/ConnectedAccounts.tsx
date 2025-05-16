@@ -1,10 +1,9 @@
 
 import React, { useState } from "react";
-import { Settings, Clock, Calendar, Bell, Slack, Mail } from "lucide-react";
+import { Settings, Clock, Calendar, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 
 interface ConnectedAccountsProps {}
 
@@ -24,128 +23,82 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
     setShowNudge(false);
   };
   
-  // Updated to match onboarding integrations style
-  const connectedPlatforms = [
-    { 
-      id: "slack", 
-      name: "Slack", 
-      active: true,
-      icon: <Slack className="h-5 w-5 text-white" />
-    },
-    { 
-      id: "gmail", 
-      name: "Gmail", 
-      active: true,
-      icon: <Mail className="h-5 w-5 text-white" />
-    },
-    { 
-      id: "calendar", 
-      name: "Google Calendar", 
-      active: true,
-      icon: <Calendar className="h-5 w-5 text-white" />
-    },
-  ];
-
-  // Productivity metrics with clearer labels
+  // Simplified productivity metrics with clearer labels
   const metrics = [
     {
       id: "focus-hours",
-      label: "Daily Focus Time Saved",
+      label: "Daily Focus",
       value: "3.5h",
       icon: <Clock className="h-4 w-4 text-accent-primary" />,
-      trend: "up",
-      description: "Additional productive hours gained"
+      trend: "positive",
+      description: "Focus time saved daily"
     },
     {
       id: "meetings-reduced",
-      label: "Meeting Load",
+      label: "Meetings",
       value: "-25%",
       icon: <Calendar className="h-4 w-4 text-accent-primary" />,
-      trend: "down",
+      trend: "negative",
       description: "Reduction in meeting time"
     }
   ];
   
   return (
-    <div className="flex flex-col gap-2">
-      {/* Work Pattern Nudge - more subtle now */}
+    <div className="flex justify-end gap-3 py-3">
+      {/* Work Pattern Nudge - even more subtle now */}
       {showNudge && (
         <div 
           onClick={() => toast({
-            title: "Work Pattern Recommendations",
-            description: "Opening detailed recommendations for healthier work patterns"
+            title: "Work Pattern",
+            description: "Opening work pattern recommendations"
           })}
-          className="flex items-center justify-between px-3 py-1.5 mb-1 bg-surface-overlay/20 backdrop-blur-sm border border-border-subtle rounded-md cursor-pointer hover:bg-surface-overlay/40 transition-colors"
+          className="flex items-center px-3 py-1.5 bg-surface-overlay/10 backdrop-blur-sm border border-border-subtle rounded-full cursor-pointer hover:bg-surface-overlay/20 transition-colors"
         >
-          <div className="flex items-center gap-1.5">
-            <Bell className="h-3.5 w-3.5 text-accent-primary" />
-            <p className="text-xs text-text-secondary">Take a break after 2h continuous work</p>
-          </div>
+          <Bell className="h-3.5 w-3.5 text-accent-primary mr-1.5" />
+          <p className="text-xs text-text-secondary">Break reminder</p>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-5 w-5" 
+            className="h-5 w-5 ml-1.5" 
             onClick={handleDismissNudge}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x text-text-secondary"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x text-text-secondary"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </Button>
         </div>
       )}
 
-      <div className="flex items-center gap-2">
-        {/* Productivity Metrics - clearer labels */}
+      {/* Streamlined Productivity Metrics */}
+      <TooltipProvider>
         {metrics.map(metric => (
           <Tooltip key={metric.id}>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-2 bg-surface-overlay/20 backdrop-blur-sm border border-border-subtle px-3 py-1.5 rounded-md hover:bg-surface-overlay/30 transition-all">
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${
+                metric.trend === 'positive' ? 'border-green-500/20 bg-green-500/10' : 'border-blue-500/20 bg-blue-500/10'
+              }`}>
                 {metric.icon}
-                <div className="flex flex-col">
-                  <span className="text-xs font-medium text-text-primary">{metric.label}</span>
-                  <span className={`text-sm font-bold ${metric.trend === 'up' ? 'text-green-500' : 'text-blue-500'}`}>
-                    {metric.value}
-                  </span>
-                </div>
+                <span className={`text-sm font-medium ${
+                  metric.trend === 'positive' ? 'text-green-500' : 'text-blue-500'
+                }`}>
+                  {metric.value}
+                </span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{metric.description}</p>
+              <p>{metric.label}: {metric.description}</p>
             </TooltipContent>
           </Tooltip>
         ))}
-
-        {/* Platform Icons - More compact and less prominent */}
-        <TooltipProvider>
-          <div className="flex items-center gap-1.5 ml-auto">
-            {connectedPlatforms.map((platform) => (
-              <Tooltip key={platform.id}>
-                <TooltipTrigger asChild>
-                  <div 
-                    className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                      platform.active 
-                        ? "bg-gray-800/90" 
-                        : "bg-gray-800/40 opacity-50"
-                    }`}
-                  >
-                    {platform.icon}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{platform.name} {platform.active ? "(Connected)" : "(Disconnected)"}</p>
-                </TooltipContent>
-              </Tooltip>
-            ))}
-            
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleOpenSettings}
-              className="h-8 w-8 rounded-full border-border-subtle hover:bg-surface-raised/30"
-            >
-              <Settings className="h-4 w-4 text-text-primary" />
-            </Button>
-          </div>
-        </TooltipProvider>
-      </div>
+        
+        {/* Settings button */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleOpenSettings}
+          className="h-8 w-8 rounded-full border-border-subtle hover:bg-surface-raised/30"
+        >
+          <Settings className="h-4 w-4 text-text-primary" />
+        </Button>
+      </TooltipProvider>
     </div>
   );
 });
