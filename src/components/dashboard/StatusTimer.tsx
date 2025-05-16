@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { Clock, Headphones, Zap, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -74,20 +76,33 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
     switch (status) {
       case "focus":
         return (
-          <div className="flex items-center">
-            <div className="bg-accent-primary text-white p-3 rounded-full mr-4">
-              <Headphones className="h-5 w-5" />
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              <div className="bg-accent-primary text-white p-3 rounded-full mr-4">
+                <Headphones className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-xl font-medium text-text-primary">Focus Mode</h3>
+                <p className="text-text-secondary">Time in focus: {timeElapsed}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-medium text-text-primary">Focus Mode</h3>
-              <p className="text-text-secondary">Time in focus: {timeElapsed}</p>
+            
+            <div className="flex items-center gap-3">
+              {onToggleCatchMeUp && (
+                <Button 
+                  onClick={onToggleCatchMeUp}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
+                >
+                  <Zap className="mr-2 h-5 w-5" /> Catch Me Up
+                </Button>
+              )}
             </div>
           </div>
         );
       
       case "away":
         return (
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <div className="bg-yellow-500 text-white p-3 rounded-full mr-4">
                 <Clock className="h-5 w-5" />
@@ -98,20 +113,22 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            {onToggleCatchMeUp && (
-              <Button 
-                onClick={onToggleCatchMeUp}
-                className="ml-0 md:ml-auto rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
-              >
-                <Zap className="mr-2 h-5 w-5" /> Catch Me Up
-              </Button>
-            )}
+            <div className="flex items-center gap-3">
+              {onToggleCatchMeUp && (
+                <Button 
+                  onClick={onToggleCatchMeUp}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
+                >
+                  <Zap className="mr-2 h-5 w-5" /> Catch Me Up
+                </Button>
+              )}
+            </div>
           </div>
         );
       
       case "vacation":
         return (
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <div className="bg-blue-500 text-white p-3 rounded-full mr-4">
                 <Plane className="h-5 w-5" />
@@ -122,20 +139,22 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            {onToggleCatchMeUp && (
-              <Button 
-                onClick={onToggleCatchMeUp}
-                className="ml-0 md:ml-auto rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
-              >
-                <Zap className="mr-2 h-5 w-5" /> Catch Me Up
-              </Button>
-            )}
+            <div className="flex items-center gap-3">
+              {onToggleCatchMeUp && (
+                <Button 
+                  onClick={onToggleCatchMeUp}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
+                >
+                  <Zap className="mr-2 h-5 w-5" /> Catch Me Up
+                </Button>
+              )}
+            </div>
           </div>
         );
       
       default: // Active status
         return (
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <div className="bg-accent-primary text-white p-3 rounded-full mr-4">
                 <Zap className="h-5 w-5" />
@@ -146,7 +165,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex gap-3 ml-0 md:ml-6">
+            <div className="flex items-center gap-3">
               {onToggleFocusMode && (
                 <Button 
                   onClick={onToggleFocusMode}

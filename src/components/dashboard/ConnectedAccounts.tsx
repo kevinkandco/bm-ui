@@ -46,21 +46,23 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
     },
   ];
 
-  // Productivity metrics
+  // Productivity metrics with clearer labels
   const metrics = [
     {
       id: "focus-hours",
-      label: "Focus Hours Gained",
+      label: "Daily Focus Time Saved",
       value: "3.5h",
       icon: <Clock className="h-4 w-4 text-accent-primary" />,
-      trend: "up"
+      trend: "up",
+      description: "Additional productive hours gained"
     },
     {
       id: "meetings-reduced",
-      label: "Meeting Load Reduced",
-      value: "25%",
+      label: "Meeting Load",
+      value: "-25%",
       icon: <Calendar className="h-4 w-4 text-accent-primary" />,
-      trend: "down"
+      trend: "down",
+      description: "Reduction in meeting time"
     }
   ];
   
@@ -91,18 +93,22 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
       )}
 
       <div className="flex items-center gap-2">
-        {/* Productivity Metrics - more compact now */}
+        {/* Productivity Metrics - clearer labels */}
         {metrics.map(metric => (
           <Tooltip key={metric.id}>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-1 bg-surface-overlay/20 backdrop-blur-sm border border-border-subtle px-2 py-1 rounded-md">
+              <div className="flex items-center gap-2 bg-surface-overlay/20 backdrop-blur-sm border border-border-subtle px-3 py-1.5 rounded-md hover:bg-surface-overlay/30 transition-all">
                 {metric.icon}
-                <span className="text-xs font-medium text-text-secondary">{metric.value}</span>
-                <span className={`h-1.5 w-1.5 rounded-full ${metric.trend === 'up' ? 'bg-green-500' : 'bg-blue-500'}`}></span>
+                <div className="flex flex-col">
+                  <span className="text-xs font-medium text-text-primary">{metric.label}</span>
+                  <span className={`text-sm font-bold ${metric.trend === 'up' ? 'text-green-500' : 'text-blue-500'}`}>
+                    {metric.value}
+                  </span>
+                </div>
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{metric.label}</p>
+              <p>{metric.description}</p>
             </TooltipContent>
           </Tooltip>
         ))}
