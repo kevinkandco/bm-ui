@@ -66,39 +66,39 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
   
   return (
     <div className="flex flex-col gap-2">
-      {/* Work Pattern Nudge */}
+      {/* Work Pattern Nudge - more subtle now */}
       {showNudge && (
         <div 
           onClick={() => toast({
             title: "Work Pattern Recommendations",
             description: "Opening detailed recommendations for healthier work patterns"
           })}
-          className="flex items-center justify-between px-4 py-2 mb-2 bg-surface-overlay/30 backdrop-blur-sm border border-border-subtle rounded-lg cursor-pointer hover:bg-surface-overlay/50 transition-colors"
+          className="flex items-center justify-between px-3 py-1.5 mb-1 bg-surface-overlay/20 backdrop-blur-sm border border-border-subtle rounded-md cursor-pointer hover:bg-surface-overlay/40 transition-colors"
         >
-          <div className="flex items-center gap-2">
-            <Bell className="h-4 w-4 text-accent-primary" />
-            <p className="text-xs text-text-primary">Take a break after 2h continuous work</p>
+          <div className="flex items-center gap-1.5">
+            <Bell className="h-3.5 w-3.5 text-accent-primary" />
+            <p className="text-xs text-text-secondary">Take a break after 2h continuous work</p>
           </div>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-6 w-6" 
+            className="h-5 w-5" 
             onClick={handleDismissNudge}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x text-text-secondary"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </Button>
         </div>
       )}
 
-      {/* Productivity Metrics */}
-      <div className="flex items-center gap-3 mr-4">
+      <div className="flex items-center gap-2">
+        {/* Productivity Metrics - more compact now */}
         {metrics.map(metric => (
           <Tooltip key={metric.id}>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-1 bg-surface-overlay/30 backdrop-blur-sm border border-border-subtle px-2 py-1 rounded-lg">
+              <div className="flex items-center gap-1 bg-surface-overlay/20 backdrop-blur-sm border border-border-subtle px-2 py-1 rounded-md">
                 {metric.icon}
-                <span className="text-xs font-medium text-text-primary">{metric.value}</span>
-                <span className={`h-2 w-2 rounded-full ${metric.trend === 'up' ? 'bg-green-500' : 'bg-blue-500'}`}></span>
+                <span className="text-xs font-medium text-text-secondary">{metric.value}</span>
+                <span className={`h-1.5 w-1.5 rounded-full ${metric.trend === 'up' ? 'bg-green-500' : 'bg-blue-500'}`}></span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -107,13 +107,14 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
           </Tooltip>
         ))}
 
+        {/* Platform Icons - More compact and less prominent */}
         <TooltipProvider>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 ml-auto">
             {connectedPlatforms.map((platform) => (
               <Tooltip key={platform.id}>
                 <TooltipTrigger asChild>
                   <div 
-                    className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                    className={`h-8 w-8 rounded-full flex items-center justify-center ${
                       platform.active 
                         ? "bg-gray-800/90" 
                         : "bg-gray-800/40 opacity-50"
@@ -132,9 +133,9 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
               variant="outline"
               size="icon"
               onClick={handleOpenSettings}
-              className="h-10 w-10 rounded-full border-border-subtle hover:bg-surface-raised/30"
+              className="h-8 w-8 rounded-full border-border-subtle hover:bg-surface-raised/30"
             >
-              <Settings className="h-5 w-5 text-text-primary" />
+              <Settings className="h-4 w-4 text-text-primary" />
             </Button>
           </div>
         </TooltipProvider>
