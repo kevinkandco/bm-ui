@@ -126,7 +126,7 @@ const PriorityPeopleStep = memo(
           </Button>
         </div>
 
-        <div className="text-center">
+        {/* <div className="text-center">
           <Button
             variant="link"
             onClick={handleSkip}
@@ -134,7 +134,7 @@ const PriorityPeopleStep = memo(
           >
             Skip this step
           </Button>
-        </div>
+        </div> */}
       </div>
     );
   }

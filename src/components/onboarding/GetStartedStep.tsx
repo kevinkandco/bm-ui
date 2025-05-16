@@ -140,7 +140,7 @@ const GetStartedStep = ({
           </div>
         </div>
         
-        <div className="space-y-2 sm:space-y-3">
+        {/* <div className="space-y-2 sm:space-y-3">
           <h3 className="text-base sm:text-lg font-medium text-text-primary">Get the full experience</h3>
           
           <div className={`border rounded-lg ${dividerClass} divide-y backdrop-blur-sm ${cardBgClass}`}>
@@ -175,7 +175,7 @@ const GetStartedStep = ({
           <p className="text-[10px] sm:text-xs text-text-secondary text-center">
             You can always download these apps later from your dashboard
           </p>
-        </div>
+        </div> */}
       </div>
       
       <div className="flex justify-between pt-2 sm:pt-3">
