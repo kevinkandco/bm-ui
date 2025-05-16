@@ -19,7 +19,7 @@ interface BriefModalProps {
 const BriefModal = ({ open, onClose }: BriefModalProps) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto bg-black/80 text-white backdrop-blur-xl border border-white/10">
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
         <DialogHeader>
           <DialogTitle className="text-lg font-medium text-white">Brief Details</DialogTitle>
         </DialogHeader>

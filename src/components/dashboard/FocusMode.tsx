@@ -46,7 +46,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-black/80 text-white backdrop-blur-xl border border-white/10">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center">
             <Headphones className="mr-2 h-5 w-5 text-blue-400" />

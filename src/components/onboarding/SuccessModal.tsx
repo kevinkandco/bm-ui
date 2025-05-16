@@ -17,7 +17,7 @@ const SuccessModal = ({ onComplete }: SuccessModalProps) => {
   };
   
   return (
-    <div className="text-center relative py-2 sm:py-4">
+    <div className="text-center relative py-2 sm:py-4 bg-background/80 backdrop-blur-xl border border-white/10 rounded-lg">
       <div id="confetti-container" className="absolute inset-0 overflow-hidden pointer-events-none" />
       
       <div className="inline-flex items-center justify-center h-16 sm:h-20 w-16 sm:w-20 rounded-full bg-neon-mint/20 mb-4 sm:mb-6">
