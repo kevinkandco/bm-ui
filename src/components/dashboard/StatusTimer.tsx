@@ -87,7 +87,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center space-x-3">
               <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
@@ -115,7 +115,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center space-x-3">
               <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
@@ -143,7 +143,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center space-x-3">
               <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
@@ -171,7 +171,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center space-x-3">
               <ThemeToggle />
               {onToggleFocusMode && (
                 <Button 

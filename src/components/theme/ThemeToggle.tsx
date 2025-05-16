@@ -14,9 +14,8 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
   return (
     <Button
       variant="outline"
-      size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className={`theme-toggle rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10 w-10 ${className}`}
+      className={`rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10 ${className}`}
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
