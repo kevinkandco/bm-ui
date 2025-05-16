@@ -40,6 +40,7 @@ const FocusMode = ({ open, onClose }: FocusModeProps) => {
       description: `Focus mode activated for ${focusTime} minutes`
     });
     
+    // Close the modal properly to update the parent state
     onClose();
   };
 

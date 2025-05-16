@@ -41,8 +41,8 @@ const Dashboard = () => {
   const handleToggleFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
-      focusModeOpen: !prev.focusModeOpen,
-      userStatus: prev.userStatus === "focus" ? "active" : "focus"
+      focusModeOpen: !prev.focusModeOpen
+      // Note: The status will be changed when focus mode is actually started
     }));
   }, []);
 
@@ -77,8 +77,16 @@ const Dashboard = () => {
   const handleCloseFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
+      focusModeOpen: false
+    }));
+  }, []);
+
+  // Add a separate handler for when focus mode is started (not just closed)
+  const handleStartFocusMode = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
       focusModeOpen: false,
-      userStatus: "active" as UserStatus
+      userStatus: "focus" as UserStatus
     }));
   }, []);
 
@@ -212,7 +220,13 @@ const Dashboard = () => {
       />
       <FocusMode 
         open={uiState.focusModeOpen}
-        onClose={() => setUiState(prev => ({...prev, focusModeOpen: false, userStatus: "active"}))}
+        onClose={() => {
+          setUiState(prev => ({
+            ...prev, 
+            focusModeOpen: false,
+            userStatus: "focus" // This changes the status when focus mode is started
+          }));
+        }}
       />
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
