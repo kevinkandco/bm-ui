@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+type UserStatus = "active" | "away" | "focus" | "vacation";
+
 const Dashboard = () => {
   const { toast } = useToast();
   // Initialize state once, avoid unnecessary re-renders
@@ -25,7 +27,7 @@ const Dashboard = () => {
     catchMeUpOpen: false,
     sidebarOpen: true,
     briefModalOpen: false,
-    userStatus: "active" // active, away, focus, vacation
+    userStatus: "active" as UserStatus // Explicitly type as UserStatus
   });
 
   // Optimized callbacks to prevent re-creation on each render
@@ -77,7 +79,7 @@ const Dashboard = () => {
     setUiState(prev => ({
       ...prev,
       focusModeOpen: false,
-      userStatus: "active"
+      userStatus: "active" as UserStatus
     }));
   }, []);
 
