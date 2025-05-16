@@ -5,6 +5,7 @@ import BriefDrawer from "@/components/dashboard/BriefDrawer";
 import FocusMode from "@/components/dashboard/FocusMode";
 import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import BriefModal from "@/components/dashboard/BriefModal";
+import UpdateScheduleModal from "@/components/dashboard/UpdateScheduleModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
 import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
@@ -24,6 +25,7 @@ const Dashboard = () => {
     catchMeUpOpen: false,
     sidebarOpen: false, // Sidebar closed by default
     briefModalOpen: false,
+    updateScheduleOpen: false,
     userStatus: "active" as UserStatus // Explicitly type as UserStatus
   });
 
@@ -95,11 +97,18 @@ const Dashboard = () => {
   }, []);
 
   const handleUpdateSchedule = useCallback(() => {
-    toast({
-      title: "Brief Schedule",
-      description: "Opening brief schedule settings",
-    });
-  }, [toast]);
+    setUiState(prev => ({
+      ...prev,
+      updateScheduleOpen: true
+    }));
+  }, []);
+
+  const handleCloseUpdateSchedule = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      updateScheduleOpen: false
+    }));
+  }, []);
 
   const handleUpdatePriorityPeople = useCallback(() => {
     toast({
@@ -130,6 +139,11 @@ const Dashboard = () => {
     onClose: handleCloseBriefModal
   }), [uiState.briefModalOpen, handleCloseBriefModal]);
 
+  const updateScheduleProps = useMemo(() => ({
+    open: uiState.updateScheduleOpen,
+    onClose: handleCloseUpdateSchedule
+  }), [uiState.updateScheduleOpen, handleCloseUpdateSchedule]);
+
   return (
     <DashboardLayout 
       currentPage="home" 
@@ -137,7 +151,7 @@ const Dashboard = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="container p-4 md:p-6 max-w-7xl mx-auto">
-        {/* Timer and status section - updated to include buttons */}
+        {/* Timer and status section */}
         <StatusTimer 
           status={uiState.userStatus} 
           onToggleFocusMode={handleToggleFocusMode} 
@@ -207,6 +221,10 @@ const Dashboard = () => {
       <BriefModal 
         open={uiState.briefModalOpen}
         onClose={() => setUiState(prev => ({...prev, briefModalOpen: false}))}
+      />
+      <UpdateScheduleModal 
+        open={uiState.updateScheduleOpen}
+        onClose={handleCloseUpdateSchedule}
       />
     </DashboardLayout>
   );
