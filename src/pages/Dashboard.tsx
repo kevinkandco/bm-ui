@@ -1,13 +1,22 @@
 
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import HomeView from "@/components/dashboard/HomeView";
+import BriefsFeed from "@/components/dashboard/BriefsFeed";
 import BriefDrawer from "@/components/dashboard/BriefDrawer";
 import FocusMode from "@/components/dashboard/FocusMode";
 import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import BriefModal from "@/components/dashboard/BriefModal";
+import StatusTimer from "@/components/dashboard/StatusTimer";
+import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
+import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
+import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
+  const { toast } = useToast();
   // Initialize state once, avoid unnecessary re-renders
   const [uiState, setUiState] = useState({
     briefDrawerOpen: false,
@@ -15,7 +24,8 @@ const Dashboard = () => {
     focusModeOpen: false,
     catchMeUpOpen: false,
     sidebarOpen: true,
-    briefModalOpen: false
+    briefModalOpen: false,
+    userStatus: "active" // active, away, focus, vacation
   });
 
   // Optimized callbacks to prevent re-creation on each render
@@ -30,7 +40,8 @@ const Dashboard = () => {
   const handleToggleFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
-      focusModeOpen: !prev.focusModeOpen
+      focusModeOpen: !prev.focusModeOpen,
+      userStatus: prev.userStatus === "focus" ? "active" : "focus"
     }));
   }, []);
 
@@ -65,7 +76,8 @@ const Dashboard = () => {
   const handleCloseFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
-      focusModeOpen: false
+      focusModeOpen: false,
+      userStatus: "active"
     }));
   }, []);
 
@@ -82,6 +94,20 @@ const Dashboard = () => {
       briefModalOpen: false
     }));
   }, []);
+
+  const handleUpdateSchedule = useCallback(() => {
+    toast({
+      title: "Brief Schedule",
+      description: "Opening brief schedule settings",
+    });
+  }, [toast]);
+
+  const handleUpdatePriorityPeople = useCallback(() => {
+    toast({
+      title: "Priority People",
+      description: "Opening priority people settings",
+    });
+  }, [toast]);
 
   // Memoize drawer props to prevent unnecessary re-renders
   const briefDrawerProps = useMemo(() => ({
@@ -105,22 +131,63 @@ const Dashboard = () => {
     onClose: handleCloseBriefModal
   }), [uiState.briefModalOpen, handleCloseBriefModal]);
 
-  // Memoize HomeView props
-  const homeViewProps = useMemo(() => ({
-    onOpenBrief: handleOpenBrief,
-    onToggleFocusMode: handleToggleFocusMode,
-    onToggleCatchMeUp: handleToggleCatchMeUp,
-    onOpenBriefModal: handleOpenBriefModal
-  }), [handleOpenBrief, handleToggleFocusMode, handleToggleCatchMeUp, handleOpenBriefModal]);
-
   return (
     <DashboardLayout 
       currentPage="home" 
       sidebarOpen={uiState.sidebarOpen} 
       onToggleSidebar={handleToggleSidebar}
     >
-      <div className="p-4 md:p-6">
-        <HomeView {...homeViewProps} />
+      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Main Feed Column */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Status Timer and Connected Accounts */}
+            <div className="flex flex-col md:flex-row gap-6 w-full">
+              <div className="md:flex-1">
+                <StatusTimer status={uiState.userStatus} />
+              </div>
+              <div className="mt-4 md:mt-0">
+                <ConnectedAccounts />
+              </div>
+            </div>
+            
+            {/* Briefs Feed */}
+            <BriefsFeed 
+              onOpenBrief={handleOpenBrief}
+              onCatchMeUp={handleToggleCatchMeUp}
+              onFocusMode={handleToggleFocusMode}
+            />
+          </div>
+          
+          {/* Right Sidebar */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Priority People */}
+            <Card className="p-6 border-border-subtle shadow-subtle rounded-3xl">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-text-primary font-medium">Priority People</h2>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  onClick={handleUpdatePriorityPeople} 
+                  className="h-8 w-8 rounded-full"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </div>
+              <PriorityPeopleWidget />
+            </Card>
+            
+            {/* Next Brief */}
+            <Card className="rounded-3xl p-6">
+              <NextBriefSection onUpdateSchedule={handleUpdateSchedule} />
+            </Card>
+            
+            {/* Upcoming Meetings */}
+            <Card className="rounded-3xl p-6">
+              <UpcomingMeetingsSection />
+            </Card>
+          </div>
+        </div>
       </div>
       
       <BriefDrawer {...briefDrawerProps} />
