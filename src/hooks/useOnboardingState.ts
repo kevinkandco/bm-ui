@@ -1,4 +1,8 @@
+import Http from "@/Http";
 import { useState, useCallback, useMemo } from "react";
+
+const BaseURL = import.meta.env.VITE_API_HOST;
+
 
 export interface UserData {
   // Auth data
@@ -81,7 +85,7 @@ export function useOnboardingState() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
-  console.log(userData);  
+  console.log(userData, 'rrr');  
 
   // The sign-in step is no longer counted in the total steps
   const totalSteps = 8;
@@ -97,9 +101,34 @@ export function useOnboardingState() {
     setUserData((prev) => ({ ...prev, ...data }));
   }, []);
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback( () => {
     setCurrentStep((prev) => {
       const nextStep = prev + 1;
+      if (nextStep == 10) {
+
+        try {
+              const token = localStorage.getItem("token");
+              if (!token) {
+                console.error("No authorization token found");
+                return;
+              }
+              Http.setBearerToken(token);
+              const response = Http.callApi("post", `${BaseURL}/api/slack/on-boarding`, { userData }, {
+                // headers: {
+                //   "ngrok-skip-browser-warning": "true",
+                // },
+              });
+              if (response) { 
+                console.log(response, 'response');
+                
+                // setUserData(response);
+              } else {
+                console.error("Failed to fetch user data");
+              }
+            } catch (error) {
+              console.error("Error fetching user data:", error);
+            }
+      }
       if (nextStep <= totalSteps + 1) {
         // +1 because we have an extra step (sign-in)
         window.scrollTo(0, 0);
@@ -108,8 +137,10 @@ export function useOnboardingState() {
         setShowSuccess(true);
         return prev;
       }
+
+      
     });
-  }, [totalSteps]);
+  }, [totalSteps, userData]);
 
   const handleBack = useCallback(() => {
     setCurrentStep((prev) => {
