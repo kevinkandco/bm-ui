@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Clock, Headphones, Zap, Plane } from "lucide-react";
-import { Card } from "@/components/ui/card";
 
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -86,9 +85,9 @@ const StatusTimer = React.memo(({ status }: StatusTimerProps) => {
   };
 
   return (
-    <Card className="p-4 md:p-6 border-border-subtle shadow-subtle rounded-3xl">
+    <div className="p-4 md:p-6 border-b border-border-subtle">
       {renderContent()}
-    </Card>
+    </div>
   );
 });
 

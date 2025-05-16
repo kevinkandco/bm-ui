@@ -14,7 +14,7 @@ export const NextBriefSection = React.memo(({ onUpdateSchedule }: NextBriefSecti
         <Clock className="mr-2 h-5 w-5 text-accent-primary" />
         Next Brief
       </h2>
-      <div className="border border-border-subtle rounded-lg p-3 bg-surface-raised/10">
+      <div className="border-b border-border-subtle pb-3">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-medium text-text-primary">Midday Brief</h3>
@@ -26,7 +26,7 @@ export const NextBriefSection = React.memo(({ onUpdateSchedule }: NextBriefSecti
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full text-text-primary border-border-subtle hover:bg-surface-raised/20 shadow-subtle"
+            className="w-full text-text-primary border-border-subtle hover:bg-surface-raised/20"
             onClick={onUpdateSchedule}
           >
             Update Schedule
@@ -52,7 +52,7 @@ export const UpcomingMeetingsSection = React.memo(() => {
       </h2>
       <div className="space-y-3">
         {meetings.map((meeting, i) => (
-          <div key={i} className="flex items-start gap-3 p-3 border border-border-subtle rounded-lg bg-surface-raised/10">
+          <div key={i} className="flex items-start gap-3 py-3 border-b border-border-subtle">
             <div className="rounded p-1.5 h-8 w-8 flex items-center justify-center border border-border-subtle bg-surface-overlay">
               <Calendar className="h-4 w-4 text-accent-primary" />
             </div>

@@ -53,18 +53,18 @@ const PriorityPeopleWidget = React.memo(({}: PriorityPeopleWidgetProps) => {
   
   return (
     <TooltipProvider>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-1">
         {priorityPeople.map((person) => (
           <Popover key={person.name}>
             <PopoverTrigger asChild>
               <div className="relative cursor-pointer">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Avatar className="h-12 w-12 border-2 border-background hover:scale-105 transition-transform">
+                    <Avatar className="h-8 w-8 border border-background hover:scale-105 transition-transform">
                       <AvatarImage src={person.image || undefined} />
                       <AvatarFallback className={`${
                         person.active ? "bg-accent-primary/20 text-accent-primary" : "bg-surface-raised/30 text-text-secondary"
-                      }`}>
+                      } text-xs`}>
                         {person.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
@@ -74,7 +74,7 @@ const PriorityPeopleWidget = React.memo(({}: PriorityPeopleWidgetProps) => {
                   </TooltipContent>
                 </Tooltip>
                 {person.active && (
-                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-accent-primary border-2 border-background"></span>
+                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-accent-primary border-2 border-background"></span>
                 )}
               </div>
             </PopoverTrigger>

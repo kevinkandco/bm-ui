@@ -1,8 +1,6 @@
 
 import React, { useMemo } from "react";
-import { Headphones, Zap, Archive, MessageSquare, Mail, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { MessageSquare, Mail, Calendar } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 interface BriefsFeedProps {
@@ -11,7 +9,7 @@ interface BriefsFeedProps {
   onFocusMode: () => void;
 }
 
-const BriefsFeed = React.memo(({ onOpenBrief, onCatchMeUp, onFocusMode }: BriefsFeedProps) => {
+const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
   // Sample briefs data - in a real app this would come from a data source
   const briefs = useMemo(() => [
     {
@@ -66,71 +64,46 @@ const BriefsFeed = React.memo(({ onOpenBrief, onCatchMeUp, onFocusMode }: Briefs
 
   return (
     <div className="space-y-4">
-      {/* Action Buttons */}
-      <div className="flex gap-3 mb-2">
-        <Button 
-          onClick={onCatchMeUp}
-          className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
-        >
-          <Zap className="mr-2 h-5 w-5" /> Catch Me Up
-        </Button>
-        <Button 
-          onClick={onFocusMode}
-          variant="outline"
-          className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle backdrop-blur-md"
-        >
-          <Headphones className="mr-2 h-5 w-5" /> Focus Mode
-        </Button>
-      </div>
+      <h2 className="text-xl font-semibold text-text-primary">Your Brief Feed</h2>
+      <p className="text-text-secondary mt-1 mb-4">Stay updated with your latest briefs</p>
       
-      <Card className="glass-card rounded-3xl overflow-hidden">
-        <div className="p-6 border-b border-border-subtle">
-          <h2 className="text-xl font-semibold text-text-primary">Your Brief Feed</h2>
-          <p className="text-text-secondary mt-1">Stay updated with your latest briefs</p>
-        </div>
-        
-        {briefs.map((brief, index) => (
-          <React.Fragment key={brief.id}>
-            <div 
-              className="p-6 hover:bg-surface-raised/30 transition-colors cursor-pointer" 
-              onClick={() => handleOpenBrief(brief.id)}
-            >
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-text-primary text-lg font-medium">{brief.title}</h3>
-                <span className="text-sm text-text-secondary">{brief.timestamp}</span>
-              </div>
-              <p className="text-text-secondary mb-4 text-sm">{brief.description}</p>
-              <div className="flex flex-wrap gap-4 items-center">
-                {brief.stats.emails > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-5 w-5 text-accent-primary" />
-                    <span className="text-sm font-medium text-text-primary">{brief.stats.emails} emails</span>
-                  </div>
-                )}
-                
-                {brief.stats.messages > 0 && (
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="h-5 w-5 text-accent-primary" />
-                    <span className="text-sm font-medium text-text-primary">{brief.stats.messages} messages</span>
-                  </div>
-                )}
-                
-                {brief.stats.meetings > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-accent-primary" />
-                    <span className="text-sm font-medium text-text-primary">{brief.stats.meetings} meetings</span>
-                  </div>
-                )}
-                
-                <Button variant="outline" size="sm" className="ml-auto border-border-subtle text-text-primary hover:bg-surface-raised/30 hover:text-accent-primary shadow-subtle">
-                  View Full Brief
-                </Button>
-              </div>
+      <div className="divide-y divide-border-subtle">
+        {briefs.map((brief) => (
+          <div 
+            key={brief.id}
+            className="py-6 hover:bg-surface-raised/30 transition-colors cursor-pointer" 
+            onClick={() => handleOpenBrief(brief.id)}
+          >
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-text-primary text-lg font-medium">{brief.title}</h3>
+              <span className="text-sm text-text-secondary">{brief.timestamp}</span>
             </div>
-            {index < briefs.length - 1 && <Separator className="bg-border-subtle" />}
-          </React.Fragment>
+            <p className="text-text-secondary mb-4 text-sm">{brief.description}</p>
+            <div className="flex flex-wrap gap-4 items-center">
+              {brief.stats.emails > 0 && (
+                <div className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-accent-primary" />
+                  <span className="text-sm font-medium text-text-primary">{brief.stats.emails} emails</span>
+                </div>
+              )}
+              
+              {brief.stats.messages > 0 && (
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-accent-primary" />
+                  <span className="text-sm font-medium text-text-primary">{brief.stats.messages} messages</span>
+                </div>
+              )}
+              
+              {brief.stats.meetings > 0 && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-accent-primary" />
+                  <span className="text-sm font-medium text-text-primary">{brief.stats.meetings} meetings</span>
+                </div>
+              )}
+            </div>
+          </div>
         ))}
-      </Card>
+      </div>
     </div>
   );
 });
