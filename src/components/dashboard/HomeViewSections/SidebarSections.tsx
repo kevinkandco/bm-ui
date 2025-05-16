@@ -50,15 +50,15 @@ export const UpcomingMeetingsSection = React.memo(() => {
         <Calendar className="mr-2 h-5 w-5 text-accent-primary" />
         Upcoming Meetings
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-2">
         {meetings.map((meeting, i) => (
-          <div key={i} className="flex items-start gap-3 py-3 border-b border-border-subtle">
+          <div key={i} className="flex items-start gap-3 py-2.5 border-b border-border-subtle">
             <div className="rounded p-1.5 h-8 w-8 flex items-center justify-center border border-border-subtle bg-surface-overlay">
               <Calendar className="h-4 w-4 text-accent-primary" />
             </div>
             <div className="flex-1">
               <p className="font-medium text-sm text-text-primary">{meeting.title}</p>
-              <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center justify-between mt-0.5">
                 <span className="text-xs text-text-secondary">{meeting.time}</span>
                 <span className="text-xs text-text-secondary">{meeting.participants} attendees</span>
               </div>

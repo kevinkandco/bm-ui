@@ -71,7 +71,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
         {briefs.map((brief) => (
           <div 
             key={brief.id}
-            className="py-6 hover:bg-surface-raised/30 transition-colors cursor-pointer" 
+            className="py-6 transition-colors cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-md px-3" 
             onClick={() => handleOpenBrief(brief.id)}
           >
             <div className="flex justify-between items-center mb-2">

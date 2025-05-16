@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Settings, MessageSquare, Mail, Calendar } from "lucide-react";
+import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -18,9 +18,24 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
   };
   
   const connectedPlatforms = [
-    { id: 1, name: "Slack", icon: MessageSquare, active: true },
-    { id: 2, name: "Email", icon: Mail, active: true },
-    { id: 3, name: "Calendar", icon: Calendar, active: true },
+    { 
+      id: 1, 
+      name: "Slack", 
+      active: true,
+      logo: "https://cdn.iconscout.com/icon/free/png-256/free-slack-4054995-3353973.png"
+    },
+    { 
+      id: 2, 
+      name: "Gmail", 
+      active: true,
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/512px-Gmail_icon_%282020%29.svg.png"
+    },
+    { 
+      id: 3, 
+      name: "Google Calendar", 
+      active: true,
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/512px-Google_Calendar_icon_%282020%29.svg.png"
+    },
   ];
   
   return (
@@ -32,11 +47,15 @@ const ConnectedAccounts = React.memo(({}: ConnectedAccountsProps) => {
               <div 
                 className={`h-10 w-10 rounded-full flex items-center justify-center ${
                   platform.active 
-                    ? "bg-accent-primary/20 text-accent-primary" 
-                    : "bg-surface-raised/30 text-text-secondary"
-                }`}
+                    ? "bg-white shadow-sm" 
+                    : "bg-surface-raised/30 opacity-50"
+                } overflow-hidden`}
               >
-                <platform.icon className="h-5 w-5" />
+                <img 
+                  src={platform.logo} 
+                  alt={platform.name} 
+                  className="h-8 w-8 object-contain"
+                />
               </div>
             </TooltipTrigger>
             <TooltipContent>
