@@ -104,7 +104,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                   <div
                     key={index}
                     data-value={index + 1}
-                    className={`w-1 mx-0.5 rounded-full ${
+                    className={`w-1 mx-0.5 rounded-full transition-all duration-200 ease-out ${
                       index <= Math.floor((currentTime / duration) * 100)
                         ? 'bg-glass-blue h-4'
                         : 'bg-gray-300/50 h-2'
