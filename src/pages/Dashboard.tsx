@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BriefsFeed from "@/components/dashboard/BriefsFeed";
@@ -11,6 +10,7 @@ import UpdateScheduleModal from "@/components/dashboard/UpdateScheduleModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
 import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
+import PriorityPeopleModal from "@/components/dashboard/PriorityPeopleModal";
 import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,7 @@ const Dashboard = () => {
     sidebarOpen: !isMobile, // Sidebar closed on mobile by default, open on desktop
     briefModalOpen: false,
     updateScheduleOpen: false,
+    priorityPeopleModalOpen: false,
     endFocusModalOpen: false,
     catchUpModalOpen: false,
     userStatus: "active" as UserStatus
@@ -173,12 +174,21 @@ const Dashboard = () => {
     }));
   }, []);
 
-  const handleUpdatePriorityPeople = useCallback(() => {
-    toast({
-      title: "Priority People",
-      description: "Opening priority people settings",
-    });
-  }, [toast]);
+  // New handler for priority people modal
+  const handleOpenPriorityPeopleModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      priorityPeopleModalOpen: true
+    }));
+  }, []);
+
+  // New handler for closing priority people modal
+  const handleClosePriorityPeopleModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      priorityPeopleModalOpen: false
+    }));
+  }, []);
 
   // Memoized props to prevent unnecessary re-renders
   const layoutProps = useMemo(() => ({
@@ -242,7 +252,7 @@ const Dashboard = () => {
                 <Button 
                   variant="outline" 
                   size="icon" 
-                  onClick={handleUpdatePriorityPeople} 
+                  onClick={handleOpenPriorityPeopleModal} 
                   className="h-7 w-7 rounded-full"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -286,6 +296,10 @@ const Dashboard = () => {
       <UpdateScheduleModal 
         open={uiState.updateScheduleOpen}
         onClose={handleCloseUpdateSchedule}
+      />
+      <PriorityPeopleModal
+        open={uiState.priorityPeopleModalOpen}
+        onClose={handleClosePriorityPeopleModal}
       />
       <EndFocusModal {...endFocusModalProps} />
       <EndFocusModal {...catchUpModalProps} />
