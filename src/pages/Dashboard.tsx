@@ -5,6 +5,7 @@ import BriefDrawer from "@/components/dashboard/BriefDrawer";
 import FocusMode from "@/components/dashboard/FocusMode";
 import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import BriefModal from "@/components/dashboard/BriefModal";
+import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import UpdateScheduleModal from "@/components/dashboard/UpdateScheduleModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
@@ -26,7 +27,8 @@ const Dashboard = () => {
     sidebarOpen: false, // Sidebar closed by default
     briefModalOpen: false,
     updateScheduleOpen: false,
-    userStatus: "active" as UserStatus // Explicitly type as UserStatus
+    endFocusModalOpen: false, // New state for end focus modal
+    userStatus: "active" as UserStatus
   });
 
   // Optimized callbacks to prevent re-creation on each render
@@ -81,7 +83,7 @@ const Dashboard = () => {
     }));
   }, []);
 
-  // Add a separate handler for when focus mode is started (not just closed)
+  // Handler for when focus mode is started
   const handleStartFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -89,6 +91,28 @@ const Dashboard = () => {
       userStatus: "focus" as UserStatus
     }));
   }, []);
+
+  // New handler for exiting focus mode
+  const handleExitFocusMode = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      endFocusModalOpen: true
+    }));
+  }, []);
+
+  // Handler for closing the end focus modal
+  const handleCloseEndFocusModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      endFocusModalOpen: false,
+      userStatus: "active" as UserStatus
+    }));
+    
+    toast({
+      title: "Focus Mode Ended",
+      description: "Your brief has been created and emailed to you"
+    });
+  }, [toast]);
 
   const handleCloseCatchMeUp = useCallback(() => {
     setUiState(prev => ({
@@ -152,6 +176,11 @@ const Dashboard = () => {
     onClose: handleCloseUpdateSchedule
   }), [uiState.updateScheduleOpen, handleCloseUpdateSchedule]);
 
+  const endFocusModalProps = useMemo(() => ({
+    open: uiState.endFocusModalOpen,
+    onClose: handleCloseEndFocusModal
+  }), [uiState.endFocusModalOpen, handleCloseEndFocusModal]);
+
   return (
     <DashboardLayout 
       currentPage="home" 
@@ -163,7 +192,8 @@ const Dashboard = () => {
         <StatusTimer 
           status={uiState.userStatus} 
           onToggleFocusMode={handleToggleFocusMode} 
-          onToggleCatchMeUp={handleToggleCatchMeUp} 
+          onToggleCatchMeUp={handleToggleCatchMeUp}
+          onExitFocusMode={handleExitFocusMode}
         />
         
         {/* Connected accounts and metrics section */}
@@ -239,6 +269,10 @@ const Dashboard = () => {
       <UpdateScheduleModal 
         open={uiState.updateScheduleOpen}
         onClose={handleCloseUpdateSchedule}
+      />
+      <EndFocusModal
+        open={uiState.endFocusModalOpen}
+        onClose={handleCloseEndFocusModal}
       />
     </DashboardLayout>
   );

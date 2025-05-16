@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useCallback } from "react";
-import { Clock, Headphones, Zap, Plane } from "lucide-react";
+import { Clock, Headphones, Zap, Plane, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -9,9 +8,10 @@ interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   onToggleCatchMeUp?: () => void;
   onToggleFocusMode?: () => void;
+  onExitFocusMode?: () => void;
 }
 
-const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }: StatusTimerProps) => {
+const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, onExitFocusMode }: StatusTimerProps) => {
   const { toast } = useToast();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
   const [timeUntilNextBrief, setTimeUntilNextBrief] = useState<string>("00:00:00");
@@ -122,21 +122,20 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
               <div>
                 <h3 className="text-lg font-medium text-text-primary">Focus Mode</h3>
-                <p className="text-sm text-text-secondary">Monitoring: Urgent messages, tasks</p>
-                <p className="text-sm text-text-secondary">Time remaining: {focusTimeRemaining}</p>
+                <p className="text-sm text-text-secondary">{focusTimeRemaining} remaining</p>
                 <p className="text-sm text-text-secondary">Next brief: {getNextBriefAfterFocus()}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-3">
               <ThemeToggle />
-              {onToggleCatchMeUp && (
+              {onExitFocusMode && (
                 <Button 
-                  onClick={onToggleCatchMeUp}
+                  onClick={onExitFocusMode}
                   variant="outline"
                   className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
                 >
-                  <Zap className="mr-2 h-4 w-4" /> Catch Me Up
+                  <X className="mr-2 h-4 w-4" /> Exit Focus
                 </Button>
               )}
             </div>
