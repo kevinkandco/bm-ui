@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
 import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
@@ -110,7 +109,7 @@ const GetStartedStep = ({
   
   return (
     <div className="space-y-4 sm:space-y-6">
-      <ProgressIndicator currentStep={9} totalSteps={9} />
+      <ProgressIndicator currentStep={8} totalSteps={8} />
       
       {/* Visual element with reduced height */}
       <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
@@ -182,9 +181,9 @@ const GetStartedStep = ({
       <div className="flex justify-between pt-2 sm:pt-3">
         <Button 
           onClick={onBack} 
-          variant="plain"
+          variant="ghost"
           size="none"
-          className="text-sm"
+          className="text-sm text-text-secondary hover:text-text-primary"
         >
           Back
         </Button>

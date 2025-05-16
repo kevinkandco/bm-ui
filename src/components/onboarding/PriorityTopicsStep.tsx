@@ -197,7 +197,9 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
         </Button>
         <Button 
           onClick={handleContinue}
-          className="neon-button py-2 sm:py-3 px-4 sm:px-6 text-sm"
+          variant="primary"
+          size="pill"
+          className="py-2 sm:py-3 px-4 sm:px-6 text-sm"
         >
           Continue
         </Button>

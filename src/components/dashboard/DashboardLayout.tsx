@@ -67,7 +67,7 @@ const DashboardLayout = ({
 
   // Memoize sidebar classes to prevent recalculation on every render
   const sidebarClasses = useMemo(() => cn(
-    "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl bg-surface-overlay border-r border-border-subtle shadow-xl z-20",
+    "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out bg-surface border-r border-border-subtle shadow-xl z-20",
     sidebarOpen ? "w-64 left-0" : "w-16 left-0",
     "md:left-0"
   ), [sidebarOpen]);
@@ -106,7 +106,7 @@ const DashboardLayout = ({
 
   // Memoize mobile navigation to prevent unnecessary re-renders
   const MobileNav = useMemo(() => (
-    <div className="fixed bottom-0 left-0 right-0 bg-surface-overlay backdrop-blur-xl border-t border-border-subtle md:hidden flex justify-around z-10">
+    <div className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border-subtle md:hidden flex justify-around z-10">
       {navItems.slice(0, 5).map(({ icon: Icon, id, path }) => (
         <button
           key={id}
@@ -124,26 +124,16 @@ const DashboardLayout = ({
 
   return (
     <div className="flex min-h-screen bg-surface relative">
-      {/* Background with gradient and grain texture */}
-      <div className="absolute inset-0 w-full h-full bg-grain">
-        <div className="absolute inset-0 bg-gradient-to-br from-surface via-surface-raised to-surface opacity-90"></div>
-        
-        {/* Floating glass orbs */}
-        <div className="absolute left-1/4 top-1/3 w-24 h-24 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float hidden lg:block"></div>
-        <div className="absolute right-1/4 bottom-1/3 w-16 h-16 rounded-full bg-white/5 backdrop-blur-md border border-white/10 animate-float-delay hidden lg:block"></div>
-      </div>
+      {/* Removed floating glass orbs */}
       
       {/* Sidebar Navigation Toggle Button */}
       <div className="fixed top-4 left-4 z-30 md:hidden">
-        <Button size="icon" variant="outline" onClick={onToggleSidebar} className="bg-surface-overlay backdrop-blur-md border border-border-subtle">
+        <Button size="icon" variant="outline" onClick={onToggleSidebar} className="bg-surface border border-border-subtle">
           <Menu className="h-5 w-5 text-text-primary" />
         </Button>
       </div>
       
-      {/* Theme Toggle - Add this near the top */}
-      <div className="fixed top-4 right-4 z-30">
-        <ThemeToggle />
-      </div>
+      {/* Remove Theme Toggle from here as we'll move it to StatusTimer */}
       
       {/* Sidebar Navigation */}
       <div className={sidebarClasses}>

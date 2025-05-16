@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -252,14 +251,15 @@ const PriorityConfigStep = ({ onNext, onBack, updateUserData, userData }: Priori
       <div className="flex justify-between pt-4">
         <Button 
           onClick={onBack} 
-          variant="plain"
+          variant="back"
           size="none"
         >
           Back
         </Button>
         <Button 
           onClick={handleContinue}
-          className="neon-button"
+          variant="primary"
+          size="pill"
         >
           Continue
         </Button>
