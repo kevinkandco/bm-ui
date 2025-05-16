@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EndFocusModalProps {
   open: boolean;
@@ -26,6 +27,7 @@ const EndFocusModal = ({
   timeRemaining: initialTimeRemaining = 90
 }: EndFocusModalProps) => {
   const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining); // default 90 seconds = 1:30
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!open) return;
@@ -59,7 +61,7 @@ const EndFocusModal = ({
   
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-black/80 text-white backdrop-blur-xl border border-white/10">
+      <DialogContent className={`sm:max-w-md bg-black/80 text-white backdrop-blur-xl border border-white/10 ${isMobile ? 'p-4' : 'p-6'}`}>
         <DialogHeader>
           <DialogTitle className="text-white flex items-center justify-center text-xl">
             {title}
@@ -69,13 +71,13 @@ const EndFocusModal = ({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="flex flex-col items-center justify-center py-8 space-y-6">
+        <div className="flex flex-col items-center justify-center py-6 space-y-6">
           <div className="relative flex items-center justify-center">
             <div className="absolute">
-              <Loader className="h-12 w-12 text-blue-400 animate-spin" />
+              <Loader className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400 animate-spin" />
             </div>
-            <div className="h-32 w-32 rounded-full flex items-center justify-center border-4 border-white/5">
-              <span className="text-2xl font-semibold">{formatTime()}</span>
+            <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full flex items-center justify-center border-4 border-white/5">
+              <span className="text-xl sm:text-2xl font-semibold">{formatTime()}</span>
             </div>
           </div>
           
@@ -88,7 +90,7 @@ const EndFocusModal = ({
             </div>
           </div>
           
-          <p className="text-sm text-white/70 text-center max-w-xs">
+          <p className="text-sm text-white/70 text-center max-w-xs px-2">
             Your brief will be ready soon. We'll also email you a copy when it's complete.
           </p>
         </div>

@@ -2,11 +2,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft } from "lucide-react";
+import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -60,16 +62,28 @@ const DashboardLayout = ({
   const navigate = useNavigate();
   const { toast } = useToast();
   const { theme } = useTheme();
+  const isMobile = useIsMobile();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  
+  // Close mobile nav when changing routes
+  useEffect(() => {
+    if (isMobile) {
+      setMobileNavOpen(false);
+    }
+  }, [currentPage, isMobile]);
   
   const handleNavClick = useCallback((path: string) => {
     navigate(path);
-  }, [navigate]);
+    if (isMobile) {
+      setMobileNavOpen(false);
+    }
+  }, [navigate, isMobile]);
 
   // Memoize sidebar classes to prevent recalculation on every render
   const sidebarClasses = useMemo(() => cn(
     "fixed top-0 bottom-0 md:relative flex flex-col transition-all duration-300 ease-in-out bg-surface border-r border-border-subtle shadow-xl z-20",
     sidebarOpen ? "w-64 left-0" : "w-16 left-0",
-    "md:left-0"
+    "md:left-0 hidden md:flex" // Hide on mobile, show on desktop
   ), [sidebarOpen]);
 
   // Memoize main content classes
@@ -79,7 +93,7 @@ const DashboardLayout = ({
   ), [className]);
 
   // NavItems component to optimize render cycles
-  const NavItems = useMemo(() => (
+  const NavItems = useCallback(() => (
     <div className="flex-1 py-6 flex flex-col gap-1">
       {navItems.map(({ icon: Icon, label, path, id, badge }) => (
         <button
@@ -93,8 +107,8 @@ const DashboardLayout = ({
           )}
         >
           <Icon className="h-5 w-5 shrink-0" />
-          {sidebarOpen && <span className="ml-4 whitespace-nowrap">{label}</span>}
-          {badge && sidebarOpen && (
+          {(sidebarOpen || isMobile) && <span className="ml-4 whitespace-nowrap">{label}</span>}
+          {badge && (sidebarOpen || isMobile) && (
             <span className="absolute right-3 bg-accent-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               {badge}
             </span>
@@ -102,40 +116,11 @@ const DashboardLayout = ({
         </button>
       ))}
     </div>
-  ), [sidebarOpen, currentPage, handleNavClick]);
-
-  // Memoize mobile navigation to prevent unnecessary re-renders
-  const MobileNav = useMemo(() => (
-    <div className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border-subtle md:hidden flex justify-around z-10">
-      {navItems.slice(0, 5).map(({ icon: Icon, id, path }) => (
-        <button
-          key={id}
-          onClick={() => handleNavClick(path)}
-          className={cn(
-            "p-3 flex flex-col items-center justify-center",
-            currentPage === id ? "text-accent-primary" : "text-text-secondary"
-          )}
-        >
-          <Icon className="h-5 w-5" />
-        </button>
-      ))}
-    </div>
-  ), [currentPage, handleNavClick]);
+  ), [sidebarOpen, currentPage, handleNavClick, isMobile]);
 
   return (
     <div className="flex min-h-screen bg-surface relative">
-      {/* Removed floating glass orbs */}
-      
-      {/* Sidebar Navigation Toggle Button */}
-      <div className="fixed top-4 left-4 z-30 md:hidden">
-        <Button size="icon" variant="outline" onClick={onToggleSidebar} className="bg-surface border border-border-subtle">
-          <Menu className="h-5 w-5 text-text-primary" />
-        </Button>
-      </div>
-      
-      {/* Remove Theme Toggle from here as we'll move it to StatusTimer */}
-      
-      {/* Sidebar Navigation */}
+      {/* Desktop Sidebar Navigation */}
       <div className={sidebarClasses}>
         <div className="p-4 flex items-center justify-between">
           <div className="flex items-center">
@@ -151,7 +136,7 @@ const DashboardLayout = ({
           </Button>
         </div>
         
-        {NavItems}
+        <NavItems />
         
         <div className="p-4 border-t border-border-subtle">
           <button
@@ -167,12 +152,70 @@ const DashboardLayout = ({
         </div>
       </div>
       
-      {/* Mobile Bottom Nav */}
-      {MobileNav}
+      {/* Mobile Navigation Hamburger Menu */}
+      <div className="fixed top-4 left-4 z-30 md:hidden">
+        <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+          <SheetTrigger asChild>
+            <Button size="icon" variant="outline" className="bg-surface border border-border-subtle">
+              <Menu className="h-5 w-5 text-text-primary" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-[85%] max-w-[280px] bg-surface border-border-subtle">
+            <div className="flex flex-col h-full">
+              <div className="p-4 flex items-center">
+                <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
+                  <span className="font-bold text-white text-lg">B</span>
+                </div>
+                <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
+              </div>
+              
+              <NavItems />
+              
+              <div className="mt-auto p-4 border-t border-border-subtle">
+                <button
+                  className="flex items-center w-full text-text-secondary hover:text-text-primary text-sm"
+                  onClick={() => {
+                    setMobileNavOpen(false);
+                    toast({
+                      title: "Help",
+                      description: "Opening help & feedback panel"
+                    });
+                  }}
+                >
+                  <HelpCircle className="h-5 w-5" />
+                  <span className="ml-4 whitespace-nowrap">Help & Feedback</span>
+                </button>
+                
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-xs text-text-secondary">Theme</span>
+                  <ThemeToggle />
+                </div>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
       
       {/* Main Content */}
       <div className={mainContentClasses}>
         {children}
+      </div>
+      
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border-subtle md:hidden flex justify-around z-10 h-16">
+        {navItems.slice(0, 5).map(({ icon: Icon, id, path }) => (
+          <button
+            key={id}
+            onClick={() => handleNavClick(path)}
+            className={cn(
+              "p-3 flex flex-col items-center justify-center",
+              currentPage === id ? "text-accent-primary" : "text-text-secondary"
+            )}
+          >
+            <Icon className="h-5 w-5" />
+            <span className="text-xs mt-1">{id === "catch-up" ? "Catch Up" : id.charAt(0).toUpperCase() + id.slice(1)}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Clock, Zap, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CatchMeUpProps {
   open: boolean;
@@ -23,6 +24,7 @@ interface CatchMeUpProps {
 
 const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
   const [customHours, setCustomHours] = useState(3);
   const [detectedTime, setDetectedTime] = useState("3 hours");
@@ -41,7 +43,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-black/80 text-white backdrop-blur-xl border border-white/10">
+      <DialogContent className={`sm:max-w-md max-h-[90vh] overflow-y-auto bg-black/80 text-white backdrop-blur-xl border border-white/10 ${isMobile ? 'p-4' : 'p-6'}`}>
         <DialogHeader>
           <DialogTitle className="text-white flex items-center">
             <Zap className="mr-2 h-5 w-5 text-blue-400" />
@@ -53,7 +55,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
         </DialogHeader>
         
         <div className="space-y-4 py-2">
-          <div className="bg-white/10 rounded-lg border border-white/10 p-4 text-white">
+          <div className="bg-white/10 rounded-lg border border-white/10 p-3 text-white">
             <p className="text-sm">We detected you've been offline for <span className="font-medium text-blue-400">{detectedTime}</span></p>
           </div>
           
@@ -74,10 +76,10 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
           </RadioGroup>
           
           {timePeriod === "custom" && (
-            <div className="space-y-2 pt-2 bg-white/10 rounded-lg border border-white/10 p-4">
-              <div className="flex justify-between">
+            <div className="space-y-2 pt-2 bg-white/10 rounded-lg border border-white/10 p-3">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <span className="text-sm text-white/70">Time period: {customHours} hours</span>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {[1, 4, 24].map(time => (
                     <Button 
                       key={time} 
@@ -104,11 +106,11 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
           )}
         </div>
         
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white">
+        <DialogFooter className={isMobile ? "flex-col gap-2" : ""}>
+          <Button variant="outline" onClick={onClose} className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white w-full sm:w-auto">
             <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
-          <Button onClick={handleGenerate} className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button onClick={handleGenerate} className="bg-blue-600 text-white hover:bg-blue-700 w-full sm:w-auto">
             <Zap className="mr-2 h-4 w-4" /> Generate Summary
           </Button>
         </DialogFooter>
