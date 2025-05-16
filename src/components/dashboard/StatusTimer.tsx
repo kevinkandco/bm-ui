@@ -16,6 +16,10 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
   const [timeUntilNextBrief, setTimeUntilNextBrief] = useState<string>("00:00:00");
   const [startTime] = useState<number>(Date.now());
+  const [focusTimeRemaining, setFocusTimeRemaining] = useState<string>("00:00:00");
+  
+  // For focus mode - default 30 minutes
+  const focusDuration = 30 * 60; // 30 minutes in seconds
   
   // Calculate time until next brief (9AM tomorrow if after 8AM, otherwise 8AM today)
   const calculateTimeUntilNextBrief = useCallback(() => {
@@ -41,11 +45,27 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
     return `${hours}:${minutes}:${seconds}`;
   }, []);
 
+  // Calculate remaining focus time
+  const calculateFocusTimeRemaining = useCallback(() => {
+    const now = Date.now();
+    const elapsedSeconds = Math.floor((now - startTime) / 1000);
+    const remainingSeconds = Math.max(0, focusDuration - elapsedSeconds);
+    
+    const hours = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
+    const minutes = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
+    const seconds = Math.floor(remainingSeconds % 60).toString().padStart(2, '0');
+    
+    return `${hours}:${minutes}:${seconds}`;
+  }, [startTime]);
+
   useEffect(() => {
     // Update countdown timer
     const countdownTimer = setInterval(() => {
       if (status === "active") {
         setTimeUntilNextBrief(calculateTimeUntilNextBrief());
+      } else if (status === "focus") {
+        setFocusTimeRemaining(calculateFocusTimeRemaining());
+        setTimeElapsed(`${focusTimeRemaining} remaining`);
       }
     }, 1000);
     
@@ -59,7 +79,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
         const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
         const seconds = Math.floor(diff % 60).toString().padStart(2, '0');
         
-        setTimeElapsed(`${hours}:${minutes}:${seconds}`);
+        if (status !== "focus") {
+          setTimeElapsed(`${hours}:${minutes}:${seconds}`);
+        }
       }, 1000);
       
       return () => {
@@ -69,7 +91,24 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
     }
     
     return () => clearInterval(countdownTimer);
-  }, [startTime, status, calculateTimeUntilNextBrief]);
+  }, [startTime, status, calculateTimeUntilNextBrief, calculateFocusTimeRemaining, focusTimeRemaining]);
+
+  // Calculate next brief time after focus mode
+  const getNextBriefAfterFocus = () => {
+    const now = new Date();
+    const focusEndTime = new Date(startTime + focusDuration * 1000);
+    
+    // If focus ends before 9 AM tomorrow, next brief at 9 AM
+    const nextBrief = new Date(focusEndTime);
+    if (focusEndTime.getHours() >= 9) {
+      nextBrief.setDate(nextBrief.getDate() + 1);
+    }
+    nextBrief.setHours(9, 0, 0, 0);
+    
+    return nextBrief.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + 
+           ' on ' + 
+           nextBrief.toLocaleDateString([], {month: 'short', day: 'numeric'});
+  };
 
   // Render different content based on user status - simplified design
   const renderContent = () => {
@@ -83,7 +122,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
               </div>
               <div>
                 <h3 className="text-lg font-medium text-text-primary">Focus Mode</h3>
-                <p className="text-sm text-text-secondary">{timeElapsed}</p>
+                <p className="text-sm text-text-secondary">Monitoring: Urgent messages, tasks</p>
+                <p className="text-sm text-text-secondary">Time remaining: {focusTimeRemaining}</p>
+                <p className="text-sm text-text-secondary">Next brief: {getNextBriefAfterFocus()}</p>
               </div>
             </div>
             
