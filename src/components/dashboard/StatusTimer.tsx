@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Clock, Headphones, Zap, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -87,6 +88,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
             </div>
             
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
@@ -114,6 +116,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
             </div>
             
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
@@ -141,6 +144,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
             </div>
             
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
@@ -168,6 +172,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode }
             </div>
             
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               {onToggleFocusMode && (
                 <Button 
                   onClick={onToggleFocusMode}

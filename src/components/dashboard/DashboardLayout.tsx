@@ -133,10 +133,7 @@ const DashboardLayout = ({
         </Button>
       </div>
       
-      {/* Theme Toggle - Add this near the top */}
-      <div className="fixed top-4 right-4 z-30">
-        <ThemeToggle />
-      </div>
+      {/* Remove Theme Toggle from here as we'll move it to StatusTimer */}
       
       {/* Sidebar Navigation */}
       <div className={sidebarClasses}>
