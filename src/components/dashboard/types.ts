@@ -14,4 +14,8 @@ export interface Summary {
   description?: string;
   timestamp?: string;
   stats?: Stats;
+  saved_time?: string;
+  messages: string[];
+  messages_count: number;
+  task_count: number;
 }
