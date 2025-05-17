@@ -15,11 +15,8 @@ import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboar
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
 import { Summary } from "@/components/dashboard/types";
-=======
 import { useIsMobile } from "@/hooks/use-mobile";
->>>>>>> main
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -49,12 +46,8 @@ const Dashboard = () => {
     setUiState(prev => ({
       ...prev,
       selectedBrief: briefId,
-<<<<<<< HEAD
       selectedBriefData: briefData,
-      briefModalOpen: true // Open modal instead of drawer
-=======
       briefModalOpen: true
->>>>>>> main
     }));
   }, []);
 
