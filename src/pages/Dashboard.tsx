@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BriefsFeed from "@/components/dashboard/BriefsFeed";
@@ -11,27 +10,32 @@ import UpdateScheduleModal from "@/components/dashboard/UpdateScheduleModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
 import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
+import PriorityPeopleModal from "@/components/dashboard/PriorityPeopleModal";
 import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  
   // Initialize state once, avoid unnecessary re-renders
   const [uiState, setUiState] = useState({
     briefDrawerOpen: false,
     selectedBrief: null,
     focusModeOpen: false,
     catchMeUpOpen: false,
-    sidebarOpen: false, // Sidebar closed by default
+    sidebarOpen: !isMobile, // Sidebar closed on mobile by default, open on desktop
     briefModalOpen: false,
     updateScheduleOpen: false,
-    endFocusModalOpen: false, // For focus mode end modal
-    catchUpModalOpen: false, // New state for catch me up modal
+    priorityPeopleModalOpen: false,
+    endFocusModalOpen: false,
+    catchUpModalOpen: false,
     userStatus: "active" as UserStatus
   });
 
@@ -40,7 +44,7 @@ const Dashboard = () => {
     setUiState(prev => ({
       ...prev,
       selectedBrief: briefId,
-      briefModalOpen: true // Open modal instead of drawer
+      briefModalOpen: true
     }));
   }, []);
 
@@ -48,7 +52,6 @@ const Dashboard = () => {
     setUiState(prev => ({
       ...prev,
       focusModeOpen: !prev.focusModeOpen
-      // Note: The status will be changed when focus mode is actually started
     }));
   }, []);
 
@@ -171,40 +174,41 @@ const Dashboard = () => {
     }));
   }, []);
 
-  const handleUpdatePriorityPeople = useCallback(() => {
-    toast({
-      title: "Priority People",
-      description: "Opening priority people settings",
-    });
-  }, [toast]);
+  // New handler for priority people modal
+  const handleOpenPriorityPeopleModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      priorityPeopleModalOpen: true
+    }));
+  }, []);
 
-  // Memoize drawer props to prevent unnecessary re-renders
-  const briefDrawerProps = useMemo(() => ({
-    open: uiState.briefDrawerOpen,
-    briefId: uiState.selectedBrief,
-    onClose: handleCloseBriefDrawer
-  }), [uiState.briefDrawerOpen, uiState.selectedBrief, handleCloseBriefDrawer]);
+  // New handler for closing priority people modal
+  const handleClosePriorityPeopleModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      priorityPeopleModalOpen: false
+    }));
+  }, []);
 
-  const focusModeProps = useMemo(() => ({
-    open: uiState.focusModeOpen,
-    onClose: handleCloseFocusMode
-  }), [uiState.focusModeOpen, handleCloseFocusMode]);
+  // Memoized props to prevent unnecessary re-renders
+  const layoutProps = useMemo(() => ({
+    currentPage: "home", 
+    sidebarOpen: uiState.sidebarOpen, 
+    onToggleSidebar: handleToggleSidebar
+  }), [uiState.sidebarOpen, handleToggleSidebar]);
 
-  const catchMeUpProps = useMemo(() => ({
-    open: uiState.catchMeUpOpen,
-    onClose: handleCloseCatchMeUp,
-    onGenerateSummary: handleGenerateCatchMeUpSummary
-  }), [uiState.catchMeUpOpen, handleCloseCatchMeUp, handleGenerateCatchMeUpSummary]);
+  const statusTimerProps = useMemo(() => ({
+    status: uiState.userStatus, 
+    onToggleFocusMode: handleToggleFocusMode, 
+    onToggleCatchMeUp: handleToggleCatchMeUp,
+    onExitFocusMode: handleExitFocusMode
+  }), [uiState.userStatus, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
 
-  const briefModalProps = useMemo(() => ({
-    open: uiState.briefModalOpen,
-    onClose: handleCloseBriefModal
-  }), [uiState.briefModalOpen, handleCloseBriefModal]);
-
-  const updateScheduleProps = useMemo(() => ({
-    open: uiState.updateScheduleOpen,
-    onClose: handleCloseUpdateSchedule
-  }), [uiState.updateScheduleOpen, handleCloseUpdateSchedule]);
+  const briefsFeedProps = useMemo(() => ({
+    onOpenBrief: handleOpenBrief,
+    onCatchMeUp: handleToggleCatchMeUp,
+    onFocusMode: handleToggleFocusMode
+  }), [handleOpenBrief, handleToggleCatchMeUp, handleToggleFocusMode]);
 
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
@@ -218,50 +222,37 @@ const Dashboard = () => {
     onClose: handleCloseCatchUpModal,
     title: "Creating Your Summary",
     description: "We're preparing a summary of what you've missed",
-    timeRemaining: 60 // Shorter time for catch-up summary (60 seconds)
+    timeRemaining: 60
   }), [uiState.catchUpModalOpen, handleCloseCatchUpModal]);
 
   return (
-    <DashboardLayout 
-      currentPage="home" 
-      sidebarOpen={uiState.sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
+    <DashboardLayout {...layoutProps}>
+      <div className="container px-4 py-4 md:p-6 max-w-7xl mx-auto">
         {/* Timer and status section */}
-        <StatusTimer 
-          status={uiState.userStatus} 
-          onToggleFocusMode={handleToggleFocusMode} 
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onExitFocusMode={handleExitFocusMode}
-        />
+        <StatusTimer {...statusTimerProps} />
         
         {/* Connected accounts and metrics section */}
         <div className="pb-4 pt-2">
           <ConnectedAccounts />
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
           {/* Main Feed Column */}
           <div className="lg:col-span-8">
             {/* Briefs Feed */}
-            <BriefsFeed 
-              onOpenBrief={handleOpenBrief}
-              onCatchMeUp={handleToggleCatchMeUp}
-              onFocusMode={handleToggleFocusMode}
-            />
+            <BriefsFeed {...briefsFeedProps} />
           </div>
           
           {/* Right Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-4 space-y-4 md:space-y-6">
             {/* Priority People */}
-            <div className="glass-card rounded-3xl p-4">
+            <div className="glass-card rounded-xl md:rounded-3xl p-3 md:p-4">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-text-primary font-medium">Priority People</h2>
                 <Button 
                   variant="outline" 
                   size="icon" 
-                  onClick={handleUpdatePriorityPeople} 
+                  onClick={handleOpenPriorityPeopleModal} 
                   className="h-7 w-7 rounded-full"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -271,32 +262,27 @@ const Dashboard = () => {
             </div>
             
             {/* Next Brief */}
-            <div className="glass-card rounded-3xl p-4">
+            <div className="glass-card rounded-xl md:rounded-3xl p-3 md:p-4">
               <NextBriefSection onUpdateSchedule={handleUpdateSchedule} />
             </div>
             
             {/* Upcoming Meetings */}
-            <div className="glass-card rounded-3xl p-4">
+            <div className="glass-card rounded-xl md:rounded-3xl p-3 md:p-4">
               <UpcomingMeetingsSection />
             </div>
           </div>
         </div>
       </div>
       
+      {/* Modals and sheets */}
       <BriefDrawer 
         open={uiState.briefDrawerOpen}
         briefId={uiState.selectedBrief}
-        onClose={() => setUiState(prev => ({...prev, briefDrawerOpen: false}))}
+        onClose={handleCloseBriefDrawer}
       />
       <FocusMode 
         open={uiState.focusModeOpen}
-        onClose={() => {
-          setUiState(prev => ({
-            ...prev, 
-            focusModeOpen: false,
-            userStatus: "focus" // This changes the status when focus mode is started
-          }));
-        }}
+        onClose={handleStartFocusMode}
       />
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
@@ -305,25 +291,18 @@ const Dashboard = () => {
       />
       <BriefModal 
         open={uiState.briefModalOpen}
-        onClose={() => setUiState(prev => ({...prev, briefModalOpen: false}))}
+        onClose={handleCloseBriefModal}
       />
       <UpdateScheduleModal 
         open={uiState.updateScheduleOpen}
         onClose={handleCloseUpdateSchedule}
       />
-      <EndFocusModal
-        open={uiState.endFocusModalOpen}
-        onClose={handleCloseEndFocusModal}
-        title="Creating Your Brief"
-        description="We're preparing a summary of all updates during your focus session"
+      <PriorityPeopleModal
+        open={uiState.priorityPeopleModalOpen}
+        onClose={handleClosePriorityPeopleModal}
       />
-      <EndFocusModal
-        open={uiState.catchUpModalOpen}
-        onClose={handleCloseCatchUpModal}
-        title="Creating Your Summary" 
-        description="We're preparing a summary of what you've missed"
-        timeRemaining={60}
-      />
+      <EndFocusModal {...endFocusModalProps} />
+      <EndFocusModal {...catchUpModalProps} />
     </DashboardLayout>
   );
 };
