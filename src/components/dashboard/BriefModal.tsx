@@ -1,5 +1,5 @@
 
-import React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import Audio from "./Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import { Summary } from "./types";
+import ViewTranscript from "./ViewTranscript";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -22,6 +23,7 @@ interface BriefModalProps {
 }
 
 const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
+    const [showTranscript, setShowTranscript] = useState(false);
     const {
 			audioRef,
 			isPlaying,
@@ -35,6 +37,14 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
 			handleSeekEnd,
 			handleSeekMove,
 		} = useAudioPlayer();
+
+    const handleClose = () => {
+      setShowTranscript(false);
+    }
+
+    const handleOpen = () => {
+      setShowTranscript(true);
+    }
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
@@ -49,13 +59,13 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Messages Analyzed</h3>
-              <p className="text-4xl font-medium text-white">349</p>
+              <p className="text-4xl font-medium text-white">{briefData?.messages_count}</p>
               <p className="text-white/70 text-sm">Emails, Threads, Messages</p>
             </div>
             
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Estimated Time Saved</h3>
-              <p className="text-4xl font-medium text-white">48 Minutes</p>
+              <p className="text-4xl font-medium text-white">{briefData?.saved_time}</p>
               <div className="flex gap-2 mt-1">
                 <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                   <span className="text-xs text-white/90">T</span>
@@ -71,7 +81,7 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
             
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Tasks Found</h3>
-              <p className="text-4xl font-medium text-white">4</p>
+              <p className="text-4xl font-medium text-white">{briefData?.task_count}</p>
               <p className="text-white/70 text-sm">Detected and Saved</p>
             </div>
           </div>
@@ -156,7 +166,7 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
             </div>
             
             <div className="mt-4 text-right">
-              <Button variant="link" className="text-blue-400 hover:text-blue-300">
+              <Button variant="link" className="text-blue-400 hover:text-blue-300" onClick={handleOpen}>
                 View Transcript
               </Button>
             </div>
@@ -251,6 +261,11 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
           </div>
         </div>
       </DialogContent>
+      <ViewTranscript
+        open={showTranscript}
+        briefData={briefData}
+        onClose={handleClose}
+      />
     </Dialog>
   );
 };
