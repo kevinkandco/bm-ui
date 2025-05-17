@@ -181,6 +181,16 @@ const [data, setData] = useState<UserData>({});
           window.open(`${BaseURL}/auth/redirect/slack`, "_self");
       }
     }
+    else if (id === 'gmail') {
+      if (data?.provider === 'google') {
+          setConnected(prev => ({
+            ...prev,
+            [id]: !prev[id],
+          }));
+      } else {
+          window.open(`${BaseURL}/auth/redirect/google`, "_self");
+      }
+    }
     else {
       if (!integrations.find((i) => i.id === id)?.available) return;
       setConnected((prev) => ({
