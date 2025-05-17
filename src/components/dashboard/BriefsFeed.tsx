@@ -6,6 +6,8 @@ import Http from "@/Http";
 import { Button } from "@/components/ui/button";
 import { Clock, Zap, X } from "lucide-react";
 import { Summary } from "./types";
+import { useToast } from "@/hooks/use-toast";
+
 interface BriefsFeedProps {
   onOpenBrief: (briefId: number, briefData: Summary) => void;
   onCatchMeUp: () => void;
@@ -16,9 +18,10 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 
 const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
   // Sample briefs data - in a real app this would come from a data source
+  const { toast } = useToast();
 
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   
   // const briefs = useMemo(() => [
   //   {
@@ -133,6 +136,10 @@ const handleGenerateSummary = async () => {
 
     if (response) {
       getBriefs();
+        toast({
+          title: "Create Summary",
+          description: response?.data?.message || "Summary generated successfully.",
+        });
     } else {
       console.error("Failed to fetch user data");
     }
