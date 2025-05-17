@@ -12,13 +12,16 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import Audio from "./Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
+import { Summary } from "./types";
 
+const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;
+  briefData: Summary;
 }
 
-const BriefModal = ({ open, onClose }: BriefModalProps) => {
+const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
     const {
 			audioRef,
 			isPlaying,
@@ -111,7 +114,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                     }`}
                   />
                 ))}
-                <Audio audioSrc="public/audio.mp3" audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
+                <Audio audioSrc={BaseURL + briefData.audio_path} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
               </div>
               
               <div className="flex justify-between text-xs text-deep-teal/70 mt-1">

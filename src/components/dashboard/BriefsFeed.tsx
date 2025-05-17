@@ -5,31 +5,14 @@ import { Separator } from "@/components/ui/separator";
 import Http from "@/Http";
 import { Button } from "@/components/ui/button";
 import { Clock, Zap, X } from "lucide-react";
+import { Summary } from "./types";
 interface BriefsFeedProps {
-  onOpenBrief: (briefId: number) => void;
+  onOpenBrief: (briefId: number, briefData: Summary) => void;
   onCatchMeUp: () => void;
   onFocusMode: () => void;
 }
 
 const BaseURL = import.meta.env.VITE_API_HOST;
-
-interface Stats {
-  emails?: number;
-  messages?: number;
-  meetings?: number;
-}
-
-interface Summary {
-  id: number;
-  user_id: number;
-  summary: string;
-  audio_path: string;
-  created_at: string;
-  title?: string;
-  description?: string;
-  timestamp?: string;
-  stats?: Stats;
-}
 
 const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
   // Sample briefs data - in a real app this would come from a data source
@@ -121,8 +104,8 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       getBriefs();
     }, [getBriefs]);
 
-  const handleOpenBrief = (briefId: number) => {
-    onOpenBrief(briefId);
+  const handleOpenBrief = (briefId: number, briefData: Summary) => {
+    onOpenBrief(briefId, briefData);
   };
 
 const handleGenerateSummary = async () => {
@@ -184,7 +167,7 @@ const handleGenerateSummary = async () => {
           <div 
             key={brief.id}
             className="py-6 transition-colors cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-md px-3" 
-            onClick={() => handleOpenBrief(brief.id)}
+            onClick={() => handleOpenBrief(brief.id, brief)}
           >
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-text-primary text-lg font-medium">{brief.title || 'Slack Channel Updates'}</h3>
