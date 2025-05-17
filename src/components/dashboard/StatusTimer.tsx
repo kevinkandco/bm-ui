@@ -3,6 +3,7 @@ import { Clock, Headphones, Zap, Plane, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -13,6 +14,7 @@ interface StatusTimerProps {
 
 const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, onExitFocusMode }: StatusTimerProps) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
   const [timeUntilNextBrief, setTimeUntilNextBrief] = useState<string>("00:00:00");
   const [startTime] = useState<number>(Date.now());
@@ -110,32 +112,35 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
            nextBrief.toLocaleDateString([], {month: 'short', day: 'numeric'});
   };
 
-  // Render different content based on user status - simplified design
+  // Render different content based on user status - improved mobile layout
   const renderContent = () => {
     switch (status) {
       case "focus":
         return (
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
-              <div className="bg-accent-primary text-white p-2.5 rounded-full mr-3">
+              <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
                 <Headphones className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-text-primary">Focus Mode</h3>
-                <p className="text-sm text-text-secondary">{focusTimeRemaining} remaining</p>
-                <p className="text-sm text-text-secondary">Next brief: {getNextBriefAfterFocus()}</p>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Focus Mode</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{focusTimeRemaining} remaining</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <ThemeToggle />
+            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
               {onExitFocusMode && (
                 <Button 
                   onClick={onExitFocusMode}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
+                  size={isMobile ? "sm" : "default"}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <X className="mr-2 h-4 w-4" /> Exit Focus
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Exit</span>
                 </Button>
               )}
             </div>
@@ -144,26 +149,30 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
       
       case "away":
         return (
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
-              <div className="bg-yellow-500 text-white p-2.5 rounded-full mr-3">
+              <div className="bg-yellow-500 text-white p-2 rounded-full mr-2">
                 <Clock className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-text-primary">Away</h3>
-                <p className="text-sm text-text-secondary">{timeElapsed}</p>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Away</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{timeElapsed}</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <ThemeToggle />
+            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
+                  size={isMobile ? "sm" : "default"}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <Zap className="mr-2 h-4 w-4" /> Catch Me Up
+                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
               )}
             </div>
@@ -172,63 +181,73 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
       
       case "vacation":
         return (
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
-              <div className="bg-blue-500 text-white p-2.5 rounded-full mr-3">
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-2">
                 <Plane className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-text-primary">Out of Office</h3>
-                <p className="text-sm text-text-secondary">{timeElapsed}</p>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Out of Office</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{timeElapsed}</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <ThemeToggle />
+            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
+                  size={isMobile ? "sm" : "default"}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <Zap className="mr-2 h-4 w-4" /> Catch Me Up
+                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
               )}
             </div>
           </div>
         );
       
-      default: // Active status - simplified
+      default: // Active status - improved mobile layout
         return (
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
-              <div className="bg-accent-primary text-white p-2.5 rounded-full mr-3">
+              <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
                 <Zap className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-text-primary">Next Brief</h3>
-                <p className="text-sm text-text-secondary">{timeUntilNextBrief}</p>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Next Brief</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{timeUntilNextBrief}</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <ThemeToggle />
+            <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
               {onToggleFocusMode && (
                 <Button 
                   onClick={onToggleFocusMode}
                   variant="outline"
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10"
+                  size={isMobile ? "sm" : "default"}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <Headphones className="mr-2 h-4 w-4" /> Focus Mode
+                  <Headphones className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Focus</span>
                 </Button>
               )}
               
               {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white h-10"
+                  size={isMobile ? "sm" : "default"}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
                 >
-                  <Zap className="mr-2 h-4 w-4" /> Catch Me Up
+                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
               )}
             </div>
@@ -238,7 +257,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
   };
 
   return (
-    <div className="py-4 px-6 border-b border-border-subtle">
+    <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
       {renderContent()}
     </div>
   );
