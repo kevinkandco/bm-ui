@@ -114,7 +114,7 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
                     }`}
                   />
                 ))}
-                <Audio audioSrc={BaseURL + briefData.audio_path} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
+                <Audio audioSrc={BaseURL + briefData?.audio_path} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
               </div>
               
               <div className="flex justify-between text-xs text-deep-teal/70 mt-1">

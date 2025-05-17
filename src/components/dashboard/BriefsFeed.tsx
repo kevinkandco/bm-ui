@@ -132,8 +132,7 @@ const handleGenerateSummary = async () => {
     );
 
     if (response) {
-      console.log(loading, 2);
-      console.log(response, "response");
+      getBriefs();
     } else {
       console.error("Failed to fetch user data");
     }
