@@ -15,6 +15,7 @@ import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboar
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Summary } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
@@ -28,6 +29,7 @@ const Dashboard = () => {
   const [uiState, setUiState] = useState({
     briefDrawerOpen: false,
     selectedBrief: null,
+    selectedBriefData: null,
     focusModeOpen: false,
     catchMeUpOpen: false,
     sidebarOpen: !isMobile, // Sidebar closed on mobile by default, open on desktop
@@ -40,10 +42,11 @@ const Dashboard = () => {
   });
 
   // Optimized callbacks to prevent re-creation on each render
-  const handleOpenBrief = useCallback((briefId: number) => {
+  const handleOpenBrief = useCallback((briefId: number, briefData: Summary) => {
     setUiState(prev => ({
       ...prev,
       selectedBrief: briefId,
+      selectedBriefData: briefData,
       briefModalOpen: true
     }));
   }, []);
@@ -291,6 +294,7 @@ const Dashboard = () => {
       />
       <BriefModal 
         open={uiState.briefModalOpen}
+        briefData={uiState.selectedBriefData}
         onClose={handleCloseBriefModal}
       />
       <UpdateScheduleModal 

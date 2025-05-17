@@ -1,5 +1,5 @@
 
-import React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,13 +10,41 @@ import { Button } from "@/components/ui/button";
 import { Mail, MessageSquare, CheckSquare, Clock, ArrowUp, ArrowDown } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import Audio from "./Audio";
+import useAudioPlayer from "@/hooks/useAudioPlayer";
+import { Summary } from "./types";
+import ViewTranscript from "./ViewTranscript";
 
+const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;
+  briefData: Summary;
 }
 
-const BriefModal = ({ open, onClose }: BriefModalProps) => {
+const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
+    const [showTranscript, setShowTranscript] = useState(false);
+    const {
+			audioRef,
+			isPlaying,
+			currentTime,
+			duration,
+			handleTimeUpdate,
+			handlePlayPause,
+			formatDuration,
+			barRef,
+			handleSeekStart,
+			handleSeekEnd,
+			handleSeekMove,
+		} = useAudioPlayer();
+
+    const handleClose = () => {
+      setShowTranscript(false);
+    }
+
+    const handleOpen = () => {
+      setShowTranscript(true);
+    }
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
@@ -31,13 +59,13 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Messages Analyzed</h3>
-              <p className="text-4xl font-medium text-white">349</p>
+              <p className="text-4xl font-medium text-white">{briefData?.messages_count}</p>
               <p className="text-white/70 text-sm">Emails, Threads, Messages</p>
             </div>
             
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Estimated Time Saved</h3>
-              <p className="text-4xl font-medium text-white">48 Minutes</p>
+              <p className="text-4xl font-medium text-white">{briefData?.saved_time}</p>
               <div className="flex gap-2 mt-1">
                 <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                   <span className="text-xs text-white/90">T</span>
@@ -53,7 +81,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
             
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Tasks Found</h3>
-              <p className="text-4xl font-medium text-white">4</p>
+              <p className="text-4xl font-medium text-white">{briefData?.task_count}</p>
               <p className="text-white/70 text-sm">Detected and Saved</p>
             </div>
           </div>
@@ -66,7 +94,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                 <p className="text-white/70 text-sm">2:00 PM - 4:30 PM Updates</p>
               </div>
               <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
-                1.25 hrs summarized in 1:03
+                1.25 hrs summarized in {formatDuration(duration)}
               </span>
             </div>
             
@@ -77,23 +105,36 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
             
             {/* Audio timeline */}
             <div className="mb-4 relative">
-              <div className="h-6 flex items-center">
-                {Array.from({ length: 40 }).map((_, index) => (
-                  <div 
-                    key={index} 
-                    className={`w-1 mx-0.5 rounded-full ${index < 28 ? 'bg-blue-500 h-4' : 'bg-white/20 h-2'}`}
+              <div
+                className="h-6 flex items-center"
+                onMouseDown={handleSeekStart}
+                onMouseMove={handleSeekMove}
+                onMouseUp={handleSeekEnd}
+                onMouseLeave={handleSeekEnd}
+                ref={barRef}
+              >
+                {Array.from({ length: 100 }).map((_, index) => (
+                  <div
+                    key={index}
+                    data-value={index + 1}
+                    className={`w-1 mx-0.5 rounded-full transition-all duration-200 ease-out ${
+                      index <= Math.floor((currentTime / duration) * 100)
+                        ? 'bg-glass-blue h-4'
+                        : 'bg-gray-300/50 h-2'
+                    }`}
                   />
                 ))}
+                <Audio audioSrc={BaseURL + briefData?.audio_path} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
               </div>
               
-              <div className="flex justify-between text-xs text-white/70 mt-1">
-                <div>00:00</div>
+              <div className="flex justify-between text-xs text-deep-teal/70 mt-1">
+                <div>{formatDuration(currentTime)}</div>
                 <div className="flex-1 flex justify-around">
                   <div className="text-blue-400">Q4 Planning</div>
                   <div className="text-green-400">Project Deadlines</div>
                   <div className="text-red-400">Urgent Email</div>
                 </div>
-                <div>01:03</div>
+                <div>{formatDuration(duration)}</div>
               </div>
             </div>
             
@@ -110,7 +151,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                 <Button size="icon" variant="outline" className="h-8 w-8 border-white/20 hover:bg-white/10">
                   <ArrowUp className="h-4 w-4 text-white" />
                 </Button>
-                <Button size="icon" variant="outline" className="h-10 w-10 rounded-full border-blue-500 bg-blue-500/20 hover:bg-blue-500/30">
+                <Button size="icon" variant="outline" className="h-10 w-10 rounded-full border-blue-500 bg-blue-500/20 hover:bg-blue-500/30" onClick={handlePlayPause}>
                   <div className="h-3 w-3 bg-blue-400 rounded-full"></div>
                 </Button>
                 <Button size="icon" variant="outline" className="h-8 w-8 border-white/20 hover:bg-white/10">
@@ -121,11 +162,11 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                 </Button>
               </div>
               
-              <span className="text-sm font-medium text-white">01:03</span>
+              <span className="text-sm font-medium text-white">{formatDuration(duration)}</span>
             </div>
             
             <div className="mt-4 text-right">
-              <Button variant="link" className="text-blue-400 hover:text-blue-300">
+              <Button variant="link" className="text-blue-400 hover:text-blue-300" onClick={handleOpen}>
                 View Transcript
               </Button>
             </div>
@@ -220,6 +261,11 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
           </div>
         </div>
       </DialogContent>
+      <ViewTranscript
+        open={showTranscript}
+        briefData={briefData}
+        onClose={handleClose}
+      />
     </Dialog>
   );
 };
