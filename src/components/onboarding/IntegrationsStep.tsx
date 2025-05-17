@@ -204,6 +204,11 @@ const getUser = async (): Promise<void> => {
     const response = await Http.callApi("get", `${BaseURL}/api/me`);
     if (response) {
       setData(response.data);
+      if (response?.data?.provider) 
+          setConnected(prev => ({
+            ...prev,
+            [response?.data?.provider]: true,
+          }));
     } else {
       console.error("Failed to fetch user data");
     }
