@@ -33,6 +33,7 @@ export const SuggestedContacts = ({
   const [showLabelSelector, setShowLabelSelector] = useState<string | null>(null);
   const [customLabel, setCustomLabel] = useState("");
   const [showLabelInput, setShowLabelInput] = useState(false);
+  const [showAllContents, setShowAllContents] = useState(false);
   
   // Available labels for contacts
   const labels: Label[] = [
@@ -53,17 +54,17 @@ export const SuggestedContacts = ({
       )
     : suggestedContacts;
 
-  // Filter platform contacts based on contact search query
-  const filteredPlatformContacts = platformContacts?.filter(contact =>
-    contact.name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
-    contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
-  );
-
-  // Check if a contact is already in priority people
-  const isContactAdded = (contact: Contact) => {
-    // return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
-    return priorityPeople.some(p => p.name === contact.name || (p.email != "N/A" && p.email === contact.email) );
-  };
+    // Filter platform contacts based on contact search query
+    const filteredPlatformContacts = platformContacts?.filter(contact =>
+      contact.name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
+      contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
+    );
+    
+    // Check if a contact is already in priority people
+    const isContactAdded = (contact: Contact) => {
+      // return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
+      return priorityPeople.some(p => p.name === contact.name || (p.email != "N/A" && p.email === contact.email) );
+    };
 
   // Handle designation and label selection
   const handleDesignate = (contact: Contact) => {
@@ -94,7 +95,7 @@ export const SuggestedContacts = ({
     <div className="pt-2">
       <h3 className="text-sm font-medium text-foreground dark:text-ice-grey mb-2">Suggested Contacts</h3>
       <div className="space-y-1.5">
-        {filteredContacts?.map(contact => {
+        {(showAllContents ? filteredContacts : filteredContacts?.slice(0, 5))?.map(contact => {
           const isAdded = isContactAdded(contact);
           const person = isAdded ? 
             priorityPeople.find(p => p.name === contact.name || p.email === contact.email) : null;
@@ -254,6 +255,18 @@ export const SuggestedContacts = ({
           );
         })}
       </div>
+
+      {filteredContacts?.length > 5 && (
+        <div className="text-center mt-4">
+          <Button 
+            variant="ghost" 
+            className="text-foreground/60 dark:text-white/50 hover:text-foreground dark:hover:text-ice-grey"
+            onClick={() => setShowAllContents(prev => !prev)}
+          >
+            {showAllContents ? "Show Less" : "Show More"}
+          </Button>
+        </div>
+      )}
       
       <div className="text-center mt-4">
         <Button 
