@@ -124,15 +124,9 @@ const handleGenerateSummary = async () => {
     }
 
     Http.setBearerToken(token);
-    const payload = {
-      messages: "testing message",
-    };
-
     const response = await Http.callApi(
       "post",
-      `${BaseURL}/api/generate-summary`,
-      payload
-    );
+      `${BaseURL}/api/generate-summary`);
 
     if (response) {
       getBriefs();
