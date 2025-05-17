@@ -91,7 +91,7 @@ useEffect(() => {
 
       <div className="space-y-3 sm:space-y-4 text-center">
         <div className="inline-flex items-center justify-center px-3 py-1 rounded-full">
-          <span className="text-gradient-blue font-medium text-lg sm:text-xl">Welcome to Brief-me</span>
+          <span className="text-gradient-blue font-medium text-lg sm:text-xl">Welcome to Brief-me -1</span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-semibold text-text-primary tracking-tighter leading-tight">
           Stay in sync. Skip the scroll.
