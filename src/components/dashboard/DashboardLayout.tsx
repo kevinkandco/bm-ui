@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X } from "lucide-react";
+import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X , LogOut} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
+import Http from "@/Http";
+
+const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -49,6 +52,12 @@ const navItems = [{
   label: "Settings",
   path: "/dashboard/settings",
   id: "settings"
+},
+{
+  icon: LogOut,
+  label: "LogOut",
+  path: "",
+  id: "logout"
 }];
 
 const DashboardLayout = ({
@@ -71,11 +80,58 @@ const DashboardLayout = ({
     }
   }, [currentPage, isMobile]);
   
-  const handleNavClick = useCallback((path: string) => {
-    navigate(path);
-    if (isMobile) {
-      setMobileNavOpen(false);
-    }
+  // const handleNavClick = useCallback((path: string) => {
+  //   navigate(path);
+  //   if (isMobile) {
+  //     setMobileNavOpen(false);
+  //   }
+  // }, [navigate, isMobile]);
+
+  const handleNavClick = useCallback(
+    async (path: string, id: string) => {
+      // if (id === "logout") {
+      //   try {
+      //     const token = localStorage.getItem("token");
+      //     if (!token) {
+      //       console.error("No authorization token found");
+      //       return;
+      //     }
+      //     Http.setBearerToken(token);
+      //     const response = await Http.callApi(
+      //       "get",
+      //       `${BaseURL}/api/logout`,
+      //       null,
+      //       {
+      //         headers: {
+      //           "ngrok-skip-browser-warning": "true",
+      //         },
+      //       }
+      //     );
+      //     if (response.ok) {
+      //       localStorage.removeItem("token");
+      //       navigate("/");
+      //     } else {
+      //       toast({
+      //         title: "Error",
+      //         description: "Failed to log out.",
+      //         variant: "destructive",
+      //       });
+      //     }
+      //   } catch (error) {
+      //     console.error("Error fetching user data:", error);
+      //   }
+      //   return;
+      // }
+
+      if (id === "logout") {
+        localStorage.removeItem("token");
+        navigate("/");
+      }
+
+      navigate(path);
+      if (isMobile) {
+        setMobileNavOpen(false);
+      }
   }, [navigate, isMobile]);
 
   // Memoize sidebar classes to prevent recalculation on every render
@@ -97,7 +153,7 @@ const DashboardLayout = ({
       {navItems.map(({ icon: Icon, label, path, id, badge }) => (
         <button
           key={id}
-          onClick={() => handleNavClick(path)}
+          onClick={() => handleNavClick(path, id)}
           className={cn(
             "flex items-center px-4 py-3 text-sm relative transition-colors",
             currentPage === id 
