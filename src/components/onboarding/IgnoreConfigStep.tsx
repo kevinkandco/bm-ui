@@ -7,6 +7,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import { X, Plus, BellOff, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Http from "@/Http";
+import suggestedTopicsData from '@/data/suggestedTopics.json';
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -50,6 +51,7 @@ const IgnoreConfigStep = ({
 
   // Mock Slack channels - in a real app, these would be fetched from Slack API
   const [slackChannels, setSlackChannels] = useState<string[] | []>([]);
+  const [suggestedTopics] = useState(suggestedTopicsData.map((topic) => topic.name));
 
   const getAllChannel = async (): Promise<void> => {
     try {
@@ -97,12 +99,34 @@ const IgnoreConfigStep = ({
     if (selectedTab === "channel" && isInputFocused) {
       const filtered = slackChannels.filter((channel) =>
         channel.toLowerCase().includes(inputValue.toLowerCase())
+      ).filter((channel) =>
+        !userData.priorityChannels.some(
+          (priority: string) => priority.toLowerCase() === channel.toLowerCase()
+        )
+      ).filter((channel) =>
+        !ignoreChannels.some(
+          (ignore: string) => ignore.toLowerCase() === channel.toLowerCase()
+        )
+      );
+      setSearchResults(filtered);
+    }
+     else if (selectedTab === "keyword" && isInputFocused) {
+      const filtered  = suggestedTopics.filter((topic) =>
+        topic.toLowerCase().includes(inputValue.toLowerCase())
+      ).filter((topic) =>
+        !userData.priorityTopics.some(
+          (priority: string) => priority.toLowerCase() === topic.toLowerCase()
+        )
+      ).filter((topic) =>
+        !ignoreKeywords.some(
+          (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
+        )
       );
       setSearchResults(filtered);
     } else {
       setSearchResults([]);
     }
-  }, [inputValue, isInputFocused, selectedTab, slackChannels]);
+  }, [inputValue, isInputFocused, selectedTab, slackChannels, userData, suggestedTopics, ignoreKeywords, ignoreChannels]);
 
   const addItem = () => {
     if (!inputValue.trim()) return;
@@ -129,6 +153,15 @@ const IgnoreConfigStep = ({
   const selectChannel = (channel: string) => {
     if (!ignoreChannels.includes(channel)) {
       setIgnoreChannels((prev) => [...prev, channel]);
+    }
+    setInputValue("");
+    setSearchResults([]);
+    setIsInputFocused(false);
+  };
+
+    const selectKeyword = (topic: string) => {
+    if (!ignoreKeywords.includes(topic)) {
+      setIgnoreKeywords((prev) => [...prev, topic]);
     }
     setInputValue("");
     setSearchResults([]);
@@ -325,15 +358,34 @@ const IgnoreConfigStep = ({
             <p className="text-sm text-off-white/70 -mt-1">
               We'll filter out messages containing these keywords or phrases.
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 relative">
+              <div className="relative flex-grow">
               <Input
+                ref={inputRef}
                 id="ignore-keyword"
                 placeholder="Enter keyword to ignore"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addItem()}
+                onFocus={() => setIsInputFocused(true)}
                 className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70"
               />
+
+                {isInputFocused && searchResults.length > 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+                    {searchResults.map((topic) => (
+                      <div
+                        key={topic}
+                        onClick={() => selectKeyword(topic)}
+                        className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
+                      >
+                        <Hash size={14} className="text-glass-blue/80" />
+                        <span className="text-off-white">{topic}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+             </div>
               <Button onClick={addItem} variant="outline" className="shrink-0">
                 <Plus size={16} />
                 Add
