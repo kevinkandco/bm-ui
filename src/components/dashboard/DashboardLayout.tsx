@@ -89,43 +89,31 @@ const DashboardLayout = ({
 
   const handleNavClick = useCallback(
     async (path: string, id: string) => {
-      // if (id === "logout") {
-      //   try {
-      //     const token = localStorage.getItem("token");
-      //     if (!token) {
-      //       console.error("No authorization token found");
-      //       return;
-      //     }
-      //     Http.setBearerToken(token);
-      //     const response = await Http.callApi(
-      //       "get",
-      //       `${BaseURL}/api/logout`,
-      //       null,
-      //       {
-      //         headers: {
-      //           "ngrok-skip-browser-warning": "true",
-      //         },
-      //       }
-      //     );
-      //     if (response.ok) {
-      //       localStorage.removeItem("token");
-      //       navigate("/");
-      //     } else {
-      //       toast({
-      //         title: "Error",
-      //         description: "Failed to log out.",
-      //         variant: "destructive",
-      //       });
-      //     }
-      //   } catch (error) {
-      //     console.error("Error fetching user data:", error);
-      //   }
-      //   return;
-      // }
-
       if (id === "logout") {
-        localStorage.removeItem("token");
-        navigate("/");
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            console.error("No authorization token found");
+            return;
+          }
+          Http.setBearerToken(token);
+          const response = await Http.callApi(
+            "get",
+            `${BaseURL}/api/logout`);
+              if (response?.data?.message) {
+                localStorage.removeItem("token");
+                navigate("/");
+              } else {
+                toast({
+                  title: "Error",
+                  description: "Failed to log out.",
+                  variant: "destructive",
+                });
+              }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+        return;
       }
 
       navigate(path);
