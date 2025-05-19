@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import useAuthStore from "@/store/useAuthStore";
 import Http from "@/Http";
 import { useSearchParams } from "react-router-dom";
@@ -14,17 +14,18 @@ const ProtectedRoute = ({
   const [checked, setChecked] = useState(false);
   const [validSession, setValidSession] = useState(false);
   const [searchParams] = useSearchParams();
+  const redirect = useNavigate();
+  const authToken = localStorage.getItem("token");
 
   const { user, logout, verify } = useAuthStore();
 
   useEffect(() => {
     const verifyAuth = async () => {
       const token = localStorage.getItem("token");
-
       if (!token) {
         logout();
         setChecked(true);
-        return;
+        return redirect('/');
       }
 
       try {
@@ -42,6 +43,7 @@ const ProtectedRoute = ({
           setValidSession(true);
         } else {
           logout();
+          return redirect('/');
         }
 
         setChecked(true);
@@ -49,6 +51,7 @@ const ProtectedRoute = ({
         console.error("Auth verification failed", err);
         logout();
         setChecked(true);
+        return redirect('/');
       }
     };
 
@@ -72,10 +75,9 @@ const ProtectedRoute = ({
     }
   }, []);
 
-  // if (!checked) return <LoadingFallback />;
     if (!checked) return <div>Loading...</div>;
 
-    if (validSession && !user?.is_onboard && location.pathname !== "/onboarding") {
+    if ((!authToken || validSession && !user?.is_onboard) && location.pathname !== "/onboarding") {
         return <Navigate to="/onboarding" replace />;
     }
 
