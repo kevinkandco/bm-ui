@@ -36,6 +36,7 @@ useEffect(() => {
   const providerFromUrl = searchParams.get("provider");
 
   const localToken = localStorage.getItem("token");
+  const localProvider = localStorage.getItem("provider");
 
   if (tokenFromUrl && providerFromUrl) {
     // Save token and clean URL
@@ -56,10 +57,9 @@ useEffect(() => {
       onNext();
     }, 1000);
   } else if (localToken) {
-    // Token exists in localStorage, assume already signed in
     updateUserData({
       isSignedIn: true,
-      authProvider: "google", // or fetch this from localStorage too, if needed
+      authProvider: localProvider ? localProvider : "google",
     });
     onNext();
   } else {

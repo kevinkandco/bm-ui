@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./hooks/use-theme";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
@@ -60,14 +61,18 @@ const App = () => (
           <BrowserRouter>
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/dashboard/briefs" element={<BriefsList />} />
-                <Route path="/dashboard/tasks" element={<TasksList />} />
-                <Route path="/dashboard/meetings" element={<MeetingsList />} />
-                <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
-                <Route path="/dashboard/settings" element={<SettingsPage />} />
+                <Route element={<ProtectedRoute element="unprotected" />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/onboarding" element={<Onboarding />} />
+                </Route>
+                <Route element={<ProtectedRoute element="protected" />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard/briefs" element={<BriefsList />} />
+                  <Route path="/dashboard/tasks" element={<TasksList />} />
+                  <Route path="/dashboard/meetings" element={<MeetingsList />} />
+                  <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
+                  <Route path="/dashboard/settings" element={<SettingsPage />} />
+                </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
