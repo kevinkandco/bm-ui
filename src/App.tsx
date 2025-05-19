@@ -63,15 +63,15 @@ const App = () => (
               <Routes>
                 <Route element={<ProtectedRoute element="unprotected" />}>
                   <Route path="/" element={<Index />} />
-                  <Route path="/onboarding" element={<Onboarding />} />
                 </Route>
+                  <Route path="/onboarding" element={<Onboarding />} />
                 <Route element={<ProtectedRoute element="protected" />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/dashboard/briefs" element={<BriefsList />} />
-                  <Route path="/dashboard/tasks" element={<TasksList />} />
-                  <Route path="/dashboard/meetings" element={<MeetingsList />} />
-                  <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
-                  <Route path="/dashboard/settings" element={<SettingsPage />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/dashboard/briefs" element={<BriefsList />} />
+                      <Route path="/dashboard/tasks" element={<TasksList />} />
+                      <Route path="/dashboard/meetings" element={<MeetingsList />} />
+                      <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
+                      <Route path="/dashboard/settings" element={<SettingsPage />} />
                 </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

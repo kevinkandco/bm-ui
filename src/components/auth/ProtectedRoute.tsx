@@ -16,11 +16,8 @@ const ProtectedRoute = ({
   const [searchParams] = useSearchParams();
 
   const { user, logout, verify } = useAuthStore();
-	console.log('1111111111b');
 
   useEffect(() => {
-	console.log('111111111a');
-	
     const verifyAuth = async () => {
       const token = localStorage.getItem("token");
 
@@ -59,8 +56,6 @@ const ProtectedRoute = ({
   }, [verify, logout]);
 
   useEffect(() => {
-	console.log("111111111c");
-
     const tokenFromUrl = searchParams.get("token");
 	console.log(tokenFromUrl, 'toekn')
 
@@ -78,15 +73,19 @@ const ProtectedRoute = ({
   }, []);
 
   // if (!checked) return <LoadingFallback />;
-  if (!checked) return <div>Loading</div>;
+    if (!checked) return <div>Loading...</div>;
 
-  if (validSession && !user?.is_onboard) {
-	console.log('we are here')
-    return <Navigate to="/onboarding" replace />;
-  }
+    if (validSession && !user?.is_onboard && location.pathname !== "/onboarding") {
+        return <Navigate to="/onboarding" replace />;
+    }
 
-  if (element === "unprotected")
-    return validSession ? <Navigate to="/dashboard" replace /> : <Outlet />;
+    if (element === "unprotected") {
+        return validSession ? <Navigate to="/dashboard" replace /> : <Outlet />;
+    }
+
+    if (element === "protected") {
+        return validSession ? <Outlet /> : <Navigate to="/" replace />;
+    }
 };
 
 export default ProtectedRoute;

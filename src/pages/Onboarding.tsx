@@ -13,6 +13,7 @@ import BriefPreferencesStep from "@/components/onboarding/BriefPreferencesStep";
 import GetStartedStep from "@/components/onboarding/GetStartedStep";
 import SuccessModal from "@/components/onboarding/SuccessModal";
 import { memo, useEffect, useCallback } from "react";
+import useAuthStore from '@/store/useAuthStore.ts';
 
 // Each step component is memoized to prevent unnecessary re-renders
 const OnboardingContent = memo(({ 
@@ -42,7 +43,6 @@ const OnboardingContent = memo(({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentStep, showSuccess]);
-
   if (showSuccess) {
     return <SuccessModal onComplete={handleComplete} />;
   }
@@ -135,7 +135,6 @@ const OnboardingContent = memo(({
 });
 
 OnboardingContent.displayName = 'OnboardingContent';
-
 const Onboarding = () => {
   const navigate = useNavigate();
   const {
@@ -167,6 +166,13 @@ const Onboarding = () => {
       document.body.style.overflow = '';
     };
   }, [showSuccess]);
+    const { user } = useAuthStore();
+    useEffect(() => {
+        if (user?.is_onboard) {
+            navigate("/dashboard");
+            return;
+        }
+    }, []);
 
   return (
     <OnboardingLayout>
