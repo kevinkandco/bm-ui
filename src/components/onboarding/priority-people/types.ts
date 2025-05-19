@@ -15,6 +15,7 @@ export interface PriorityPerson {
   email?: string;
   contactName?: string;
   label?: string;
+  avatar?: string;
 }
 
 export interface PriorityPeopleStepProps {

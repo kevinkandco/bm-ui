@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,65 +16,96 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Check, Plus, Search, Trash2, UserPlus, X } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
+import Http from "@/Http";
 
 interface PriorityPeopleModalProps {
   open: boolean;
   onClose: () => void;
 }
 
+const BaseURL = import.meta.env.VITE_API_HOST;
 const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [newPersonName, setNewPersonName] = useState("");
   const [newPersonTitle, setNewPersonTitle] = useState("");
   
   // Sample data with actual profile image URLs
-  const [priorityPeople, setPriorityPeople] = useState([
-    { 
-      name: "Sandra Chen", 
-      title: "Product Manager", 
-      lastActivity: "15m ago", 
-      platform: "Email",
-      active: true,
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    { 
-      name: "Alex Johnson", 
-      title: "Engineering Lead", 
-      lastActivity: "2h ago", 
-      platform: "Slack",
-      active: true,
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    { 
-      name: "Michael Lee", 
-      title: "CEO", 
-      lastActivity: "1d ago", 
-      platform: "Calendar",
-      active: false,
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    { 
-      name: "Taylor Swift", 
-      title: "Designer", 
-      lastActivity: "3h ago", 
-      platform: "Slack",
-      active: true,
-      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    { 
-      name: "Jamie Williams", 
-      title: "Marketing", 
-      lastActivity: "5h ago", 
-      platform: "Email",
-      active: true,
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
+  // const [priorityPeople, setPriorityPeople] = useState([
+  //   { 
+  //     name: "Sandra Chen", 
+  //     title: "Product Manager", 
+  //     lastActivity: "15m ago", 
+  //     platform: "Email",
+  //     active: true,
+  //     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
+  //   },
+  //   { 
+  //     name: "Alex Johnson", 
+  //     title: "Engineering Lead", 
+  //     lastActivity: "2h ago", 
+  //     platform: "Slack",
+  //     active: true,
+  //     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
+  //   },
+  //   { 
+  //     name: "Michael Lee", 
+  //     title: "CEO", 
+  //     lastActivity: "1d ago", 
+  //     platform: "Calendar",
+  //     active: false,
+  //     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
+  //   },
+  //   { 
+  //     name: "Taylor Swift", 
+  //     title: "Designer", 
+  //     lastActivity: "3h ago", 
+  //     platform: "Slack",
+  //     active: true,
+  //     image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
+  //   },
+  //   { 
+  //     name: "Jamie Williams", 
+  //     title: "Marketing", 
+  //     lastActivity: "5h ago", 
+  //     platform: "Email",
+  //     active: true,
+  //     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
+  //   }
+  // ]);
+
+  const [priorityPeople, setPriorityPeople] = useState([])
+
+  const getContact = useCallback(async (): Promise<void> => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/");
+        return;
+      }
+      Http.setBearerToken(token);
+      const response = await Http.callApi(
+        "get",
+        `${BaseURL}/api/priority-people`);
+        if (response) {
+            setPriorityPeople(response?.data?.data?.contacts);
+        } else {
+          console.error("Failed to fetch user data");
+        }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
-  ]);
+  }, []);
+
+  useEffect(() => {
+    getContact();
+  }, [getContact]);
 
   const filteredPeople = priorityPeople.filter(person => 
-    person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    person.title.toLowerCase().includes(searchQuery.toLowerCase())
+    (person?.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+    (person?.title?.toLowerCase() || '').includes(searchQuery.toLowerCase())
   );
 
   const handleRemovePerson = (name: string) => {
@@ -186,33 +217,33 @@ const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
           
           {/* People list */}
           <div className="space-y-3 max-h-[40vh] overflow-y-auto pr-1">
-            {filteredPeople.length === 0 ? (
+            {filteredPeople?.length === 0 ? (
               <div className="text-center py-6">
                 <p className="text-white/50">No people found matching your search</p>
               </div>
             ) : (
-              filteredPeople.map((person) => (
+              filteredPeople?.map((person) => (
                 <div 
-                  key={person.name} 
+                  key={person?.name} 
                   className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10"
                 >
                   <div className="flex items-center space-x-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={person.image} alt={person.name} />
+                      <AvatarImage src={person?.avatar ? person?.avatar : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&rounded=true&name=${person?.name}`} alt={person?.name} />
                       <AvatarFallback className="bg-accent-primary/20 text-accent-primary">
-                        {person.name.charAt(0)}
+                        {person?.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="font-medium text-white">{person.name}</h3>
-                      <p className="text-sm text-white/60">{person.title}</p>
+                      <h3 className="font-medium text-white">{person?.name}</h3>
+                      <p className="text-sm text-white/60">{person?.title || 'Product Manager'}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
                     <Select 
-                      defaultValue={person.platform}
-                      onValueChange={(value) => handleChangePlatform(person.name, value)}
+                      defaultValue={person?.platform || 'Email'}
+                      onValueChange={(value) => handleChangePlatform(person?.name, value)}
                     >
                       <SelectTrigger className="w-[100px] h-8 text-xs bg-white/10 border-white/10">
                         <SelectValue />
@@ -231,8 +262,8 @@ const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className={`h-8 w-8 rounded-full ${person.active ? 'bg-green-500/20 text-green-500' : 'bg-white/10 text-white/50'}`}
-                      onClick={() => handleToggleActive(person.name)}
+                      className={`h-8 w-8 rounded-full ${person?.active ? 'bg-green-500/20 text-green-500' : 'bg-white/10 text-white/50'}`}
+                      onClick={() => handleToggleActive(person?.name)}
                     >
                       <Check className="h-4 w-4" />
                     </Button>
@@ -241,7 +272,7 @@ const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 rounded-full bg-white/10 text-white/50 hover:bg-red-500/20 hover:text-red-500"
-                      onClick={() => handleRemovePerson(person.name)}
+                      onClick={() => handleRemovePerson(person?.name)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

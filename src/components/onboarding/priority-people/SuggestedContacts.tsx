@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SuggestedContactsProps {
   suggestedContacts: Contact[];
@@ -117,7 +118,12 @@ export const SuggestedContacts = ({
                     ? "bg-electric-teal/80" 
                     : "bg-foreground/90 dark:bg-deep-plum"
                 )}>
-                  <User size={15} className="text-white" />
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={contact?.avatar ? contact?.avatar : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&rounded=true&name=${contact?.name}`} alt={contact?.name} />
+                    <AvatarFallback className="bg-accent-primary/20 text-accent-primary">
+                      {person?.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
                 
                 <div>

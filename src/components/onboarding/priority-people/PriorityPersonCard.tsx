@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Contact, PriorityPerson, Label } from "./types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface PriorityPersonCardProps {
   person: PriorityPerson;
@@ -51,7 +52,12 @@ export const PriorityPersonCard = ({
     <div className="flex items-center justify-between py-2 px-3 border border-white/30 backdrop-blur-md bg-white/15 rounded-lg transition-all">
       <div className="flex items-center">
         <div className="w-8 h-8 flex items-center justify-center bg-deep-plum rounded-full mr-3">
-          <User size={15} className="text-white" />
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={person?.avatar ? person?.avatar : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&rounded=true&name=${person?.name}`} alt={person?.name} />
+              <AvatarFallback className="bg-accent-primary/20 text-accent-primary">
+                {person?.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
         </div>
         <div>
           {/* Display label (role) if present */}
