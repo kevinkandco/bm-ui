@@ -106,6 +106,10 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
 
       if (tokenFromUrl) {
         localStorage.setItem("token", tokenFromUrl);
+          const url = new URL(window.location.href);
+          url.searchParams.delete("token");
+          url.searchParams.delete("provider");
+          window.history.replaceState({}, document.title, url.pathname + url.search);
       }
 
       getBriefs();
