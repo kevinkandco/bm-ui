@@ -2,63 +2,91 @@ import { useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import useAuthStore from "@/store/useAuthStore";
 import Http from "@/Http";
+import { useSearchParams } from "react-router-dom";
 // import LoadingFallback from "@/components/LoadingFallback";
 const BaseURL = import.meta.env.VITE_API_HOST;
 
-const ProtectedRoute = ({element}: {element: "protected" | "unprotected"}) => {
-	const [checked, setChecked] = useState(false);
-	const [validSession, setValidSession] = useState(false);
+const ProtectedRoute = ({
+  element,
+}: {
+  element: "protected" | "unprotected";
+}) => {
+  const [checked, setChecked] = useState(false);
+  const [validSession, setValidSession] = useState(false);
+  const [searchParams] = useSearchParams();
 
-	const { user, logout, verify } = useAuthStore();
+  const { user, logout, verify } = useAuthStore();
+	console.log('1111111111b');
 
-	useEffect(() => {
-		const verifyAuth = async () => {
-			const token = localStorage.getItem("token");
+  useEffect(() => {
+	console.log('111111111a');
+	
+    const verifyAuth = async () => {
+      const token = localStorage.getItem("token");
 
-			if (!token) {
-				logout();
-				setChecked(true);
-				return;
-			}
+      if (!token) {
+        logout();
+        setChecked(true);
+        return;
+      }
 
-			try {
-				Http.setBearerToken(token);
-				const response = await Http.callApi("get", `${BaseURL}/api/me`, null, {
-					headers: {
-                        "ngrok-skip-browser-warning": "true",
-                    },
-				});
+      try {
+        Http.setBearerToken(token);
+        const response = await Http.callApi("get", `${BaseURL}/api/me`, null, {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
 
-				console.log("User data:", response);
+        console.log("User data:", response);
 
-				if (response && response.data) {
-					verify(response.data, true);
-					setValidSession(true);
-				} else {
-					logout();
-				}
+        if (response && response.data) {
+          verify(response.data, true);
+          setValidSession(true);
+        } else {
+          logout();
+        }
 
-				setChecked(true);
-			} catch (err) {
-				console.error("Auth verification failed", err);
-				logout();
-				setChecked(true);
-			}
-		};
+        setChecked(true);
+      } catch (err) {
+        console.error("Auth verification failed", err);
+        logout();
+        setChecked(true);
+      }
+    };
 
-		verifyAuth();
-	}, [verify, logout]);
+    verifyAuth();
+  }, [verify, logout]);
 
-	// if (!checked) return <LoadingFallback />;
-	if (!checked) return <div>Loading</div>;
+  useEffect(() => {
+	console.log("111111111c");
 
-	if (validSession && !user?.is_onboard) {
-		return <Navigate to="/onboarding" replace />;
-	}
+    const tokenFromUrl = searchParams.get("token");
+	console.log(tokenFromUrl, 'toekn')
 
-	if (element === "unprotected") return validSession ?  <Navigate to="/dashboard" replace /> : <Outlet />;
+    if (tokenFromUrl) {
+      localStorage.setItem("token", tokenFromUrl);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("token");
+      url.searchParams.delete("provider");
+      window.history.replaceState(
+        {},
+        document.title,
+        url.pathname + url.search
+      );
+    }
+  }, []);
 
-	return validSession ? <Outlet /> : <Navigate to="/" replace />;
+  // if (!checked) return <LoadingFallback />;
+  if (!checked) return <div>Loading</div>;
+
+  if (validSession && !user?.is_onboard) {
+	console.log('we are here')
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  if (element === "unprotected")
+    return validSession ? <Navigate to="/dashboard" replace /> : <Outlet />;
 };
 
 export default ProtectedRoute;

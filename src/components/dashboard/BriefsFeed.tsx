@@ -8,6 +8,7 @@ import { Clock, Zap, X } from "lucide-react";
 import { Summary } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface BriefsFeedProps {
   onOpenBrief: (briefId: number, briefData: Summary) => void;
@@ -20,6 +21,7 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
   // Sample briefs data - in a real app this would come from a data source
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
@@ -77,7 +79,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          console.error("No authorization token found");
+          navigate("/");
           return;
         }
         Http.setBearerToken(token);
@@ -124,8 +126,8 @@ const handleGenerateSummary = async () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("No authorization token found");
       setLoading(false);
+      navigate("/");
       return;
     }
 

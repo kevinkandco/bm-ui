@@ -2,6 +2,7 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
 import Http from "@/Http";
+import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -13,6 +14,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [suggestedContacts, setSuggestedContacts] = useState<Contact[] | null>(null);
   const [platformContacts, setPlatformContacts] = useState<Contact[] | null>(null);
 
+  const navigate = useNavigate();
 
   
   // Mock platform contacts for designation - moved to useMemo to prevent recreation on every render
@@ -38,7 +40,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No authorization token found");
+        navigate("/");
         return;
       }
       Http.setBearerToken(token);

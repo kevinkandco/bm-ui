@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Slack, Mail, Calendar } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "../../Http";
+import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface IntegrationOption {
@@ -160,6 +161,8 @@ const IntegrationsStep = ({
     version: "Future"
   }]);
 
+  const navigate = useNavigate();
+
   const [loader, setLoader] = useState(false);
 
   const fetchChannels = useCallback(async (): Promise<void> => {
@@ -167,7 +170,7 @@ const IntegrationsStep = ({
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          console.error("No authorization token found");
+          navigate("/");
           return;
         }
         Http.setBearerToken(token);
@@ -231,7 +234,7 @@ const getUser = async (): Promise<void> => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      console.error("No authorization token found");
+      navigate("/");
       return;
     }
 

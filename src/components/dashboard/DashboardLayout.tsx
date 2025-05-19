@@ -93,7 +93,7 @@ const DashboardLayout = ({
         try {
           const token = localStorage.getItem("token");
           if (!token) {
-            console.error("No authorization token found");
+            navigate("/");
             return;
           }
           Http.setBearerToken(token);

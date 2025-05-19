@@ -1,5 +1,6 @@
 import Http from "@/Http";
 import { useState, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -86,6 +87,8 @@ export function useOnboardingState() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
   console.log(userData, 'rrr');  
+  const navigate = useNavigate();
+  
 
   // The sign-in step is no longer counted in the total steps
   const totalSteps = 8;
@@ -109,7 +112,7 @@ export function useOnboardingState() {
         try {
               const token = localStorage.getItem("token");
               if (!token) {
-                console.error("No authorization token found");
+                navigate("/");
                 return;
               }
               Http.setBearerToken(token);

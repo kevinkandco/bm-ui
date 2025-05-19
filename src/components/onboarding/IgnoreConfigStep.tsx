@@ -8,6 +8,7 @@ import { X, Plus, BellOff, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Http from "@/Http";
 import suggestedTopicsData from '@/data/suggestedTopics.json';
+import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -48,6 +49,7 @@ const IgnoreConfigStep = ({
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   // Mock Slack channels - in a real app, these would be fetched from Slack API
   const [slackChannels, setSlackChannels] = useState<string[] | []>([]);
@@ -58,7 +60,7 @@ const IgnoreConfigStep = ({
       const token = localStorage.getItem("token");
 
       if (!token) {
-        console.error("No authorization token found");
+        navigate("/");
         return;
       }
 

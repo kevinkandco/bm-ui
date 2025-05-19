@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Http from "@/Http";
+import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -22,7 +23,7 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
   //   "#engineering",
   //   "#hr"
   // ]);
-
+  const navigate = useNavigate();
   const [allSlackChannels, setAllSlackChannels] = useState([]);
 
   const getAllChannel = async (): Promise<void> => {
@@ -30,7 +31,7 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        console.error("No authorization token found");
+        navigate("/");
         return;
       }
 
