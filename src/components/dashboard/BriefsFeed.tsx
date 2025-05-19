@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, Zap, X } from "lucide-react";
 import { Summary } from "./types";
 import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 interface BriefsFeedProps {
   onOpenBrief: (briefId: number, briefData: Summary) => void;
@@ -19,9 +20,10 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
   // Sample briefs data - in a real app this would come from a data source
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
 
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   
   // const briefs = useMemo(() => [
   //   {
@@ -73,7 +75,6 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
 
     const getBriefs = useCallback(async (): Promise<void> => {
       try {
-        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
           console.error("No authorization token found");
@@ -92,18 +93,25 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
         );
         if (response) {
           setBriefs(response?.data?.summaries?.data);
-          setLoading(false);
         } else {
           console.error("Failed to fetch summaries data");
-          setLoading(false);
         }
       } catch (error) {
-          setLoading(false);
         console.error("Error fetching summaries data:", error);
       }
     }, []);
 
     useEffect(() => {
+      const tokenFromUrl = searchParams.get("token");
+
+      if (tokenFromUrl) {
+        localStorage.setItem("token", tokenFromUrl);
+          const url = new URL(window.location.href);
+          url.searchParams.delete("token");
+          url.searchParams.delete("provider");
+          window.history.replaceState({}, document.title, url.pathname + url.search);
+      }
+
       getBriefs();
     }, [getBriefs]);
 
@@ -114,8 +122,6 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
 const handleGenerateSummary = async () => {
   try {
     setLoading(true);
-    console.log(loading, 1);
-
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("No authorization token found");
