@@ -5,41 +5,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useNavigate } from "react-router-dom";
 import Http from "@/Http";
+import { PriorityPeople } from "./types";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
-interface PriorityPeopleWidgetProps {}
+interface PriorityPeopleWidgetProps {
+  priorityPeople:PriorityPeople[]
+}
 
-const PriorityPeopleWidget = React.memo(({}: PriorityPeopleWidgetProps) => {
-  // Sample data with actual profile image URLs
-const navigate = useNavigate();
-const [priorityPeople, setPriorityPeople] = useState([])
-  
-const getContact = useCallback(async (): Promise<void> => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-      return;
-    }
-    Http.setBearerToken(token);
-    const response = await Http.callApi(
-      "get",
-      `${BaseURL}/api/priority-people`
-    );
-    if (response) {
-      setPriorityPeople(response?.data?.data?.contacts.slice(0, 5));
-    } else {
-      console.error("Failed to fetch user data");
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-  }
-}, []);
-
-useEffect(() => {
-  getContact();
-}, [getContact]);
-
+const PriorityPeopleWidget = React.memo(({priorityPeople}: PriorityPeopleWidgetProps) => {
 
   return (
     <TooltipProvider>

@@ -19,3 +19,14 @@ export interface Summary {
   messages_count: number;
   task_count: number;
 }
+
+export interface PriorityPeople {
+  name: string;
+  email: string;
+  label?: string;
+  title?: string;
+  avatar?: string;
+  active?: boolean;
+  platform?: string;
+  lastActivity?: string;
+}
