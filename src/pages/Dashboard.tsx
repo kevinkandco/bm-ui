@@ -31,6 +31,7 @@ const Dashboard = () => {
     selectedBrief: null,
     selectedBriefData: null,
     focusModeOpen: false,
+    focusTime: 0,
     catchMeUpOpen: false,
     sidebarOpen: !isMobile, // Sidebar closed on mobile by default, open on desktop
     briefModalOpen: false,
@@ -94,13 +95,21 @@ const Dashboard = () => {
   }, []);
 
   // Handler for when focus mode is started
-  const handleStartFocusMode = useCallback(() => {
+  const handleStartFocusMode = useCallback((focusTime: number) => {
     setUiState(prev => ({
       ...prev,
       focusModeOpen: false,
+      focusTime: focusTime * 60,
       userStatus: "focus" as UserStatus
     }));
   }, []);
+
+    const handleFocusModeClose = useCallback(() => {
+			setUiState((prev) => ({
+				...prev,
+				focusModeOpen: false,
+			}));
+		}, []);
 
   // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(() => {
@@ -201,11 +210,12 @@ const Dashboard = () => {
   }), [uiState.sidebarOpen, handleToggleSidebar]);
 
   const statusTimerProps = useMemo(() => ({
-    status: uiState.userStatus, 
+    status: uiState.userStatus,
+    focusTime: uiState.focusTime,
     onToggleFocusMode: handleToggleFocusMode, 
     onToggleCatchMeUp: handleToggleCatchMeUp,
     onExitFocusMode: handleExitFocusMode
-  }), [uiState.userStatus, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
+  }), [uiState.userStatus, uiState.focusTime, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
 
   const briefsFeedProps = useMemo(() => ({
     onOpenBrief: handleOpenBrief,
@@ -285,7 +295,8 @@ const Dashboard = () => {
       />
       <FocusMode 
         open={uiState.focusModeOpen}
-        onClose={handleStartFocusMode}
+        SaveChangesAndClose={handleStartFocusMode}
+        onClose={handleFocusModeClose}
       />
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
