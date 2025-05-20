@@ -15,6 +15,10 @@ import { Clock, Zap, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Http from "@/Http";
+import { useNavigate } from "react-router-dom";
+
+const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface CatchMeUpProps {
   open: boolean;
@@ -28,6 +32,8 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
   const [customHours, setCustomHours] = useState(3);
   const [detectedTime, setDetectedTime] = useState("3 hours");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate detection of offline time
@@ -35,10 +41,42 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
     setDetectedTime("3 hours");
   }, [open]);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     const timeDescription = timePeriod === "auto" ? detectedTime : `${customHours} hours`;
-    
-    onGenerateSummary(timeDescription);
+			try {
+				setLoading(true);
+				const token = localStorage.getItem("token");
+				if (!token) {
+					setLoading(false);
+					navigate("/");
+					return;
+				}
+				Http.setBearerToken(token);
+				const response = await Http.callApi(
+					"post",
+					`${BaseURL}/api/catch-me`,
+          { time_period:  timePeriod === "auto" ? detectedTime : customHours },
+          {
+            headers: {
+                        "ngrok-skip-browser-warning": "true",
+                    },
+          }
+				);
+				if (response) {
+          onGenerateSummary(timeDescription);
+					toast({
+						title: "Create Summary",
+						description:
+							response?.data?.message || "Summary generated successfully.",
+					});
+				} else {
+					console.error("Failed to fetch user data");
+				}
+			} catch (error) {
+				console.error("Error fetching user data:", error);
+			} finally {
+				setLoading(false);
+			}
   };
 
   return (

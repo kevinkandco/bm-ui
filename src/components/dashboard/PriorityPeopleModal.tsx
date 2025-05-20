@@ -103,7 +103,7 @@ const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
     getContact();
   }, [getContact]);
 
-  const filteredPeople = priorityPeople.filter(person => 
+  const filteredPeople = priorityPeople?.filter(person => 
     (person?.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     (person?.title?.toLowerCase() || '').includes(searchQuery.toLowerCase())
   );

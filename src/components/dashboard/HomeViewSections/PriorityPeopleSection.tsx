@@ -34,10 +34,10 @@ const PriorityPeopleSection = () => {
         Priority People
       </h2>
       <p className="text-text-secondary text-sm mb-3">
-        {priorityPeople.filter(p => p.active).length} people with recent activity
+        {priorityPeople?.filter(p => p.active).length} people with recent activity
       </p>
       <div className="space-y-1">
-        {priorityPeople.map((person, i) => (
+        {priorityPeople?.map((person, i) => (
           <div key={i} className={`p-2 rounded-lg ${person.active ? "hover:bg-surface-raised/20" : "hover:bg-surface-raised/10"} transition-colors`}>
             <div className="flex items-center">
               <div className="h-6 w-6 rounded-full bg-surface-raised/30 border border-border-subtle flex items-center justify-center text-text-primary font-medium text-xs">

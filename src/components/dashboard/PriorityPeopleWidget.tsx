@@ -44,7 +44,7 @@ useEffect(() => {
   return (
     <TooltipProvider>
       <div className="flex gap-1.5">
-        {priorityPeople.map((person) => (
+        {priorityPeople?.map((person) => (
           <Popover key={person?.name}>
             <PopoverTrigger asChild>
               <div className="relative cursor-pointer">
