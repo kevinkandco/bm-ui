@@ -147,7 +147,32 @@ const Dashboard = () => {
 		}, []);
 
   // Handler for exiting focus mode
-  const handleExitFocusMode = useCallback(() => {
+  const handleExitFocusMode = useCallback(async () => {
+    try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            navigate("/");
+            return;
+          }
+          Http.setBearerToken(token);
+          const response = await Http.callApi(
+            "get",
+            `${BaseURL}/api/exit-focus-mode`);
+            if (response) {
+              toast({
+                title: "Focus Mode Activated",
+                description: `Focus mode activated for minutes`,
+              });
+              console.log(response, 'res');
+              
+            } else {
+              console.error("Failed to fetch user data");
+            }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          console.log(123);
+        }
     setUiState(prev => ({
       ...prev,
       endFocusModalOpen: true
