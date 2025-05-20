@@ -64,12 +64,13 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
 				);
 				if (response) {
           // onGenerateSummary(timeDescription);
-          navigate("/dashboard/catch-up");
-					toast({
-						title: "Create Summary",
-						description:
-							response?.data?.message || "Summary generated successfully.",
-					});
+        //  onClose(); 
+        toast({
+          title: "Create Summary",
+          description:
+          response?.data?.message || "Summary generated successfully.",
+        });
+        window.location.reload();
 				} else {
 					console.error("Failed to fetch user data");
 				}
