@@ -13,7 +13,7 @@ interface SuggestedContactsProps {
   suggestedContacts: Contact[];
   priorityPeople: PriorityPerson[];
   platformContacts: Contact[];
-  addPerson: (name: string, email?: string) => void;
+  addPerson: (name: string, email?: string, avatar?: string) => void;
   removePerson: (name: string) => void;
   designateContact: (personName: string, contact: Contact) => void;
   addLabel: (personName: string, label: string) => void;
@@ -80,7 +80,7 @@ export const SuggestedContacts = ({
     if (contact) {
       // Add the person first if not already added
       if (!isContactAdded(contact)) {
-        addPerson(contact.name, contact.email);
+        addPerson(contact.name, contact.email, contact.avatar);
       }
       
       // Then add the label with a slight delay to ensure person is added first

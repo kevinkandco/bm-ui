@@ -74,7 +74,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   );
   
   // Function to add a person to the priority list
-  const addPerson = useCallback((name: string, email?: string) => {
+  const addPerson = useCallback((name: string, email?: string, avatar?: string) => {
     if (!name.trim()) return;
     
     setPriorityPeople(prev => {
@@ -84,7 +84,8 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
       return [...prev, { 
         name: name.trim(), 
         email,
-        label: selectedLabel || undefined
+        label: selectedLabel || undefined,
+        avatar: avatar || undefined,
       }];
     });
     
