@@ -63,7 +63,8 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
           }
 				);
 				if (response) {
-          onGenerateSummary(timeDescription);
+          // onGenerateSummary(timeDescription);
+          navigate("/dashboard/catch-up");
 					toast({
 						title: "Create Summary",
 						description:
