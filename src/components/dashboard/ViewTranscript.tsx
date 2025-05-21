@@ -12,10 +12,10 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;
-  briefData: Summary;
+  summary: string;
 }
 
-const ViewTranscript = ({ open, onClose, briefData }: BriefModalProps) => {
+const ViewTranscript = ({ open, onClose, summary }: BriefModalProps) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl max-h-96 overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
@@ -24,7 +24,7 @@ const ViewTranscript = ({ open, onClose, briefData }: BriefModalProps) => {
         </DialogHeader>
         
         <div className="p-2">
-          <p className="text-white/90 text-md">{briefData?.summary}</p>
+          <p className="text-white/90 text-md">{summary}</p>
         </div> 
       </DialogContent>
     </Dialog>

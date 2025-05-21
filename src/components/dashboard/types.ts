@@ -4,6 +4,14 @@ export interface Stats {
   meetings?: number;
 }
 
+export interface SummaryMassage {
+	platform?: string;
+	message?: string;
+	sender?: string;
+	time?: string;
+	priority?: string;
+}
+
 export interface Summary {
   id: number;
   user_id?: number;
@@ -15,7 +23,7 @@ export interface Summary {
   timestamp?: string;
   stats?: Stats;
   savedTime?: string;
-  messages?: string[];
+  messages?: SummaryMassage[];
   messagesCount?: number;
   taskCount?: number;
   monitoringChannels?: string;

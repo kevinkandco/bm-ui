@@ -32,7 +32,6 @@ const Dashboard = () => {
   const [uiState, setUiState] = useState({
     briefDrawerOpen: false,
     selectedBrief: null,
-    selectedBriefData: null,
     focusModeOpen: false,
     focusTime: 0,
     focusModeExitLoading: false,
@@ -160,11 +159,10 @@ const Dashboard = () => {
   }, [navigate, toast]);
 
   // Optimized callbacks to prevent re-creation on each render
-  const handleOpenBrief = useCallback((briefId: number, briefData: Summary) => {
+  const handleOpenBrief = useCallback((briefId: number) => {
     setUiState(prev => ({
       ...prev,
       selectedBrief: briefId,
-      selectedBriefData: briefData,
       briefModalOpen: true
     }));
   }, []);
@@ -416,7 +414,7 @@ const Dashboard = () => {
       />
       <BriefModal 
         open={uiState.briefModalOpen}
-        briefData={uiState.selectedBriefData}
+        briefId={uiState.selectedBrief}
         onClose={handleCloseBriefModal}
       />
       <UpdateScheduleModal 

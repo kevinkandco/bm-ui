@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,16 +14,19 @@ import Audio from "./Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import { Summary } from "./types";
 import ViewTranscript from "./ViewTranscript";
+import Http from "@/Http";
+import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;
-  briefData: Summary;
+  briefId: number;
 }
 
-const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
+const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     const [showTranscript, setShowTranscript] = useState(false);
+    const [brief, setBrief] = useState<Summary | null>(null);
     const {
 			audioRef,
 			isPlaying,
@@ -37,6 +40,30 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
 			handleSeekEnd,
 			handleSeekMove,
 		} = useAudioPlayer();
+    const navigate = useNavigate();
+
+    const getBriefs = useCallback(async (): Promise<void> => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            navigate("/");
+            return;
+          }
+          Http.setBearerToken(token);
+          const response = await Http.callApi("get", `${BaseURL}/api/summary/${briefId}/show`, null, {headers: { "ngrok-skip-browser-warning": "true" }});
+          if (response) {
+            setBrief(response?.data?.data);
+          } else {
+            console.error("Failed to fetch summaries data");
+          }
+        } catch (error) {
+          console.error("Error fetching summaries data:", error);
+        }
+      }, [navigate, briefId]);
+
+      useEffect(() => {
+        getBriefs();
+      }, [briefId, getBriefs]);
 
     const handleClose = () => {
       setShowTranscript(false);
@@ -45,6 +72,7 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
     const handleOpen = () => {
       setShowTranscript(true);
     }
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
@@ -53,19 +81,19 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
         </DialogHeader>
         
         <div className="p-2">
-          <p className="text-white/90 mb-6 text-lg">I've been monitoring your channels for <span className="font-semibold text-blue-400">1.25 hrs</span>. Here's a brief of what you missed while you were away:</p>
+          <p className="text-white/90 mb-6 text-lg">I've been monitoring your channels for <span className="font-semibold text-blue-400">{brief?.monitoringChannels}</span>. Here's a brief of what you missed while you were away:</p>
           
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Messages Analyzed</h3>
-              <p className="text-4xl font-medium text-white">{briefData?.messagesCount}</p>
+              <p className="text-4xl font-medium text-white">{brief?.messagesCount}</p>
               <p className="text-white/70 text-sm">Emails, Threads, Messages</p>
             </div>
             
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Estimated Time Saved</h3>
-              <p className="text-4xl font-medium text-white">{briefData?.savedTime}</p>
+              <p className="text-4xl font-medium text-white">{brief?.savedTime}</p>
               <div className="flex gap-2 mt-1">
                 <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                   <span className="text-xs text-white/90">T</span>
@@ -81,7 +109,7 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
             
             <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm">
               <h3 className="text-white/80 text-sm mb-1">Tasks Found</h3>
-              <p className="text-4xl font-medium text-white">{briefData?.taskCount}</p>
+              <p className="text-4xl font-medium text-white">{brief?.taskCount}</p>
               <p className="text-white/70 text-sm">Detected and Saved</p>
             </div>
           </div>
@@ -124,7 +152,7 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
                     }`}
                   />
                 ))}
-                <Audio audioSrc={BaseURL + briefData?.audioPath} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
+                <Audio audioSrc={BaseURL + brief?.audioPath} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
               </div>
               
               <div className="flex justify-between text-xs text-deep-teal/70 mt-1">
@@ -173,7 +201,7 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
           </div>
           
           {/* Recent Messages */}
-          <h3 className="text-xl font-semibold text-white mb-3">Recent Messages</h3>
+          {brief?.messages.length !== 0 && <> <h3 className="text-xl font-semibold text-white mb-3">Recent Messages</h3>
           
           <div className="bg-white/10 rounded-lg border border-white/10 shadow-sm overflow-hidden">
             <table className="min-w-full">
@@ -189,61 +217,25 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  { 
-                    platform: "S", 
-                    message: "Daily Standup Notes", 
-                    sender: "@devops", 
-                    time: "08:00 AM",
-                    priority: "High", 
-                  },
-                  { 
-                    platform: "M", 
-                    message: "Project Deadline Reminder", 
-                    sender: "ali@apple.com", 
-                    time: "09:00 AM",
-                    priority: "Medium", 
-                  },
-                  { 
-                    platform: "M", 
-                    message: "Urgent Client Request", 
-                    sender: "jane@apple.com", 
-                    time: "10:00 AM",
-                    priority: "High", 
-                  },
-                  { 
-                    platform: "M", 
-                    message: "Lunch Meeting Agenda", 
-                    sender: "john@apple.com", 
-                    time: "12:00 PM",
-                    priority: "Low", 
-                  },
-                  { 
-                    platform: "M", 
-                    message: "Feedback on Design Mockup", 
-                    sender: "design@brief.me", 
-                    time: "02:00 PM",
-                    priority: "Medium", 
-                  },
-                ].map((message, i) => (
+                {brief?.messages?.map((message, i) => (
                   <tr key={i} className="border-b border-white/10 hover:bg-white/5 transition-colors">
                     <td className="py-3 px-4">
                       <div className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center">
-                        <span className="text-xs text-white/80">{message.platform}</span>
+                        <span className="text-xs text-white/80">{message?.platform}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-medium text-white">{message.message}</td>
-                    <td className="py-3 px-4 text-white/80">{message.sender}</td>
-                    <td className="py-3 px-4 text-white/70">{message.time}</td>
+                    <td className="py-3 px-4 font-medium text-white">{message?.message}</td>
+                    <td className="py-3 px-4 text-white/80">{message?.sender}</td>
+                    <td className="py-3 px-4 text-white/70">{message?.time}</td>
                     <td className="py-3 px-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        message.priority === "High" 
+                        message?.priority === "High" 
                           ? "bg-red-500/20 text-red-400" 
-                          : message.priority === "Medium"
+                          : message?.priority === "Medium"
                             ? "bg-orange-500/20 text-orange-400"
                             : "bg-blue-500/20 text-blue-400"
                       }`}>
-                        {message.priority}
+                        {message?.priority}
                       </span>
                     </td>
                     <td className="py-3 px-4">
@@ -258,12 +250,12 @@ const BriefModal = ({ open, onClose, briefData }: BriefModalProps) => {
                 ))}
               </tbody>
             </table>
-          </div>
+          </div></>}
         </div>
       </DialogContent>
       <ViewTranscript
         open={showTranscript}
-        briefData={briefData}
+        summary={brief?.summary}
         onClose={handleClose}
       />
     </Dialog>
