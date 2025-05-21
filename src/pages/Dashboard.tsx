@@ -370,7 +370,7 @@ const Dashboard = () => {
           {/* Right Sidebar */}
           <div className="lg:col-span-4 space-y-4 md:space-y-6">
             {/* Priority People */}
-            <div className="glass-card rounded-xl md:rounded-3xl p-3 md:p-4">
+            <div className="glass-card !overflow-visible rounded-xl md:rounded-3xl p-3 md:p-4">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-text-primary font-medium">Priority People</h2>
                 <Button 
