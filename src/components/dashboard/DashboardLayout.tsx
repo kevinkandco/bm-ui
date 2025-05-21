@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
 import Http from "@/Http";
+import useAuthStore from "@/store/useAuthStore";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -55,7 +56,7 @@ const navItems = [{
 },
 {
   icon: LogOut,
-  label: "LogOut",
+  label: "Logout",
   path: "",
   id: "logout"
 }];
@@ -72,6 +73,7 @@ const DashboardLayout = ({
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const {logout} = useAuthStore();
   
   // Close mobile nav when changing routes
   useEffect(() => {
@@ -100,8 +102,8 @@ const DashboardLayout = ({
           const response = await Http.callApi(
             "get",
             `${BaseURL}/api/logout`);
-              if (response?.data?.message) {
-                localStorage.removeItem("token");
+              if (response && response?.data?.message) {
+                logout();
                 navigate("/");
               } else {
                 toast({
