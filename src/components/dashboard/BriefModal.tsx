@@ -62,7 +62,9 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
       }, [navigate, briefId]);
 
       useEffect(() => {
-        getBriefs();
+        if(briefId) {
+          getBriefs();
+        }
       }, [briefId, getBriefs]);
 
     const handleClose = () => {
