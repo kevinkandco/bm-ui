@@ -18,14 +18,17 @@ import { Check, Plus, Search, Trash2, UserPlus, X } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import Http from "@/Http";
+import { PriorityPeople } from "./types";
 
 interface PriorityPeopleModalProps {
   open: boolean;
   onClose: () => void;
+  priorityPeople: PriorityPeople[],
+  setPriorityPeople: React.Dispatch<React.SetStateAction<PriorityPeople[]>>
 }
 
 const BaseURL = import.meta.env.VITE_API_HOST;
-const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
+const PriorityPeopleModal = ({ open, onClose, priorityPeople, setPriorityPeople }: PriorityPeopleModalProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -76,33 +79,6 @@ const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
   //   }
   // ]);
 
-  const [priorityPeople, setPriorityPeople] = useState([])
-
-  const getContact = useCallback(async (): Promise<void> => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return;
-      }
-      Http.setBearerToken(token);
-      const response = await Http.callApi(
-        "get",
-        `${BaseURL}/api/priority-people`);
-        if (response) {
-            setPriorityPeople(response?.data?.data?.contacts);
-        } else {
-          console.error("Failed to fetch user data");
-        }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    getContact();
-  }, [getContact]);
-
   const filteredPeople = priorityPeople?.filter(person => 
     (person?.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     (person?.title?.toLowerCase() || '').includes(searchQuery.toLowerCase())
@@ -141,7 +117,7 @@ const PriorityPeopleModal = ({ open, onClose }: PriorityPeopleModalProps) => {
       lastActivity: "Just added",
       platform: "Email",
       active: true,
-      image: ""
+      avatar: ""
     };
     
     setPriorityPeople(prev => [...prev, newPerson]);

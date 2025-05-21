@@ -55,7 +55,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
 				const response = await Http.callApi(
 					"post",
 					`${BaseURL}/api/catch-me`,
-          { time_period:  timePeriod === "auto" ? detectedTime : customHours },
+          { time_period:  timePeriod === "auto" ? parseInt(detectedTime) : customHours },
           {
             headers: {
                         "ngrok-skip-browser-warning": "true",
@@ -70,7 +70,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
           description:
           response?.data?.message || "Summary generated successfully.",
         });
-        window.location.reload();
+        // window.location.reload();
 				} else {
 					console.error("Failed to fetch user data");
 				}

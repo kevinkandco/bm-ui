@@ -22,7 +22,7 @@ export interface Summary {
 
 export interface PriorityPeople {
   name: string;
-  email: string;
+  email?: string;
   label?: string;
   title?: string;
   avatar?: string;

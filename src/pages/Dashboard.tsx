@@ -163,6 +163,11 @@ const Dashboard = () => {
                 title: "Focus Mode Activated",
                 description: `Focus mode activated for minutes`,
               });
+              setUiState(prev => ({
+                ...prev,
+              //   endFocusModalOpen: true,
+              userStatus: "active" as UserStatus
+              }));
               console.log(response, 'res');
               
             } else {
@@ -173,11 +178,7 @@ const Dashboard = () => {
         } finally {
           console.log(123);
         }
-    setUiState(prev => ({
-      ...prev,
-      endFocusModalOpen: true
-    }));
-  }, []);
+  }, [navigate, toast]);
 
   // Handler for closing the end focus modal
   const handleCloseEndFocusModal = useCallback(() => {
@@ -374,6 +375,8 @@ const Dashboard = () => {
       />
       <PriorityPeopleModal
         open={uiState.priorityPeopleModalOpen}
+        priorityPeople={priorityPeople}
+        setPriorityPeople={setPriorityPeople}
         onClose={handleClosePriorityPeopleModal}
       />
       <EndFocusModal {...endFocusModalProps} />
