@@ -51,7 +51,7 @@ const PriorityPeopleWidget = React.memo(({priorityPeople}: PriorityPeopleWidgetP
                   <h3 className="font-medium text-text-primary">{person?.name}</h3>
                   <p className="text-text-secondary text-sm">{person?.title || 'Product Manager' }</p>
                   <div className="flex items-center gap-1 mt-1 text-xs text-text-secondary">
-                    <span>{person?.platform || 'Email'}</span>
+                    <span>{person?.email || 'Email'}</span>
                     <span>•</span>
                     <span>{person?.lastActivity}</span>
                   </div>
