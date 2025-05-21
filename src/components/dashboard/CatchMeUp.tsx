@@ -17,16 +17,18 @@ import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
 import { useNavigate } from "react-router-dom";
+import { Summary } from "./types";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface CatchMeUpProps {
   open: boolean;
+  setBrief: React.Dispatch<React.SetStateAction<Summary[]>>,
   onClose: () => void;
   onGenerateSummary: (timeDescription: string) => void;
 }
 
-const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
+const CatchMeUp = ({ open, onClose, onGenerateSummary, setBrief }: CatchMeUpProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
@@ -64,7 +66,8 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
 				);
 				if (response) {
           // onGenerateSummary(timeDescription);
-        // onClose();
+          setBrief(prev => [response?.data?.data, ...prev]);
+        onClose();
         toast({
           title: "Create Summary",
           description:

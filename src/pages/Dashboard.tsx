@@ -410,6 +410,7 @@ const Dashboard = () => {
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
         onClose={handleCloseCatchMeUp}
+        setBriefs={setBriefs}
         onGenerateSummary={handleGenerateCatchMeUpSummary}
       />
       <BriefModal 
