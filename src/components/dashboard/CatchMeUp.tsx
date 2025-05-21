@@ -23,12 +23,12 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface CatchMeUpProps {
   open: boolean;
-  setBrief: React.Dispatch<React.SetStateAction<Summary[]>>,
+  setBriefs: React.Dispatch<React.SetStateAction<Summary[]>>,
   onClose: () => void;
   onGenerateSummary: (timeDescription: string) => void;
 }
 
-const CatchMeUp = ({ open, onClose, onGenerateSummary, setBrief }: CatchMeUpProps) => {
+const CatchMeUp = ({ open, onClose, onGenerateSummary, setBriefs: setBrief }: CatchMeUpProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
@@ -66,8 +66,9 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary, setBrief }: CatchMeUpProp
 				);
 				if (response) {
           // onGenerateSummary(timeDescription);
-          setBrief(prev => [response?.data?.data, ...prev]);
-        onClose();
+          // setBrief(prev => [response?.data?.data, ...prev]);
+        // onClose();
+        window.location.reload();
         toast({
           title: "Create Summary",
           description:

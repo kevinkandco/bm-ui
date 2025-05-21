@@ -226,7 +226,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                         <span className="text-xs text-white/80">{message?.platform}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-medium text-white">{message?.message}</td>
+                    <td className="py-3 px-4 font-medium text-white">{message?.title}</td>
                     <td className="py-3 px-4 text-white/80">{message?.sender}</td>
                     <td className="py-3 px-4 text-white/70">{message?.time}</td>
                     <td className="py-3 px-4">

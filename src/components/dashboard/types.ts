@@ -10,6 +10,7 @@ export interface SummaryMassage {
 	sender?: string;
 	time?: string;
 	priority?: string;
+  title?: string;
 }
 
 export interface Summary {
