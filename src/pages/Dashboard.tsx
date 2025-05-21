@@ -14,7 +14,7 @@ import PriorityPeopleModal from "@/components/dashboard/PriorityPeopleModal";
 import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { PriorityPeople, Summary } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
@@ -46,37 +46,75 @@ const Dashboard = () => {
     userStatus: "active" as UserStatus
   });
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
+  const [briefs, setBriefs] = useState<Summary[] | null>(null);
+  const [searchParams] = useSearchParams();
+
+  const getBriefs = useCallback(async (): Promise<void> => {
+		try {
+			const token = localStorage.getItem("token");
+			if (!token) {
+				navigate("/");
+				return;
+			}
+			Http.setBearerToken(token);
+			const response = await Http.callApi("get", `${BaseURL}/api/summaries`, null, {headers: { "ngrok-skip-browser-warning": "true" }});
+			if (response) {
+				setBriefs(response?.data?.data);
+			} else {
+				console.error("Failed to fetch summaries data");
+			}
+		} catch (error) {
+			console.error("Error fetching summaries data:", error);
+		}
+	}, [navigate]);
+
+	const fetchDashboardData = useCallback(async () => {
+		try {
+			const token = localStorage.getItem("token");
+			if (!token) {
+				navigate("/");
+				return;
+			}
+			Http.setBearerToken(token);
+			const response = await Http.callApi(
+				"get",
+				`${BaseURL}/api/dashboard`,
+				null,
+				{ headers: { "ngrok-skip-browser-warning": "true" } }
+			);
+			if (response) {
+				setUiState((prev) => ({
+					...prev,
+					userStatus: response?.data?.mode,
+					focusTime: response?.data?.focusRemainingTime,
+				}));
+				setPriorityPeople(response?.data?.priorityPeople);
+				console.log(response, "fetch priority people api");
+			} else {
+				console.error("Failed to fetch user data");
+			}
+		} catch (error) {
+			console.error("Error fetching user data:", error);
+		}
+	}, [navigate]);
 
   useEffect(() => {
-		const fetchDashboardData = async () => {
-			try {
-				const token = localStorage.getItem("token");
-				if (!token) {
-					navigate("/");
-					return;
-				}
-				Http.setBearerToken(token);
-				const response = await Http.callApi(
-					"get",
-					`${BaseURL}/api/dashboard`);
-				if (response) {
-          setUiState(prev => ({
-            ...prev,
-              userStatus: response?.data?.mode,
-              focusTime: response?.data?.focusRemainingTime,
-          }));
-          setPriorityPeople(response?.data?.priorityPeople);
-					console.log(response, "fetch priority people api");
-				} else {
-					console.error("Failed to fetch user data");
-				}
-			} catch (error) {
-				console.error("Error fetching user data:", error);
-			}
-		};
+		const tokenFromUrl = searchParams.get("token");
 
+		if (tokenFromUrl) {
+			localStorage.setItem("token", tokenFromUrl);
+			const url = new URL(window.location.href);
+			url.searchParams.delete("token");
+			url.searchParams.delete("provider");
+			window.history.replaceState(
+				{},
+				document.title,
+				url.pathname + url.search
+			);
+		}
 		fetchDashboardData();
-	}, [navigate]);
+		getBriefs();
+	}, [navigate, searchParams, getBriefs, fetchDashboardData]);
 
    // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(async () => {
@@ -290,10 +328,11 @@ const Dashboard = () => {
   }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading , handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
 
   const briefsFeedProps = useMemo(() => ({
+    briefs: briefs,
     onOpenBrief: handleOpenBrief,
     onCatchMeUp: handleToggleCatchMeUp,
     onFocusMode: handleToggleFocusMode
-  }), [handleOpenBrief, handleToggleCatchMeUp, handleToggleFocusMode]);
+  }), [briefs, handleOpenBrief, handleToggleCatchMeUp, handleToggleFocusMode]);
 
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,

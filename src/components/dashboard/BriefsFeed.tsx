@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 interface BriefsFeedProps {
+  briefs: Summary[] | null;
   onOpenBrief: (briefId: number, briefData: Summary) => void;
   onCatchMeUp: () => void;
   onFocusMode: () => void;
@@ -14,44 +15,7 @@ interface BriefsFeedProps {
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
-const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const [briefs, setBriefs] = useState<Summary[] | null>(null);
-
-    const getBriefs = useCallback(async (): Promise<void> => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/");
-          return;
-        }
-        Http.setBearerToken(token);
-        const response = await Http.callApi("get",`${BaseURL}/api/summaries`);
-        if (response) {
-          setBriefs(response?.data?.summaries?.data);
-        } else {
-          console.error("Failed to fetch summaries data");
-        }
-      } catch (error) {
-        console.error("Error fetching summaries data:", error);
-      }
-    }, [navigate]);
-
-    useEffect(() => {
-      const tokenFromUrl = searchParams.get("token");
-
-      if (tokenFromUrl) {
-        localStorage.setItem("token", tokenFromUrl);
-          const url = new URL(window.location.href);
-          url.searchParams.delete("token");
-          url.searchParams.delete("provider");
-          window.history.replaceState({}, document.title, url.pathname + url.search);
-      }
-
-      getBriefs();
-    }, [getBriefs, searchParams]);
+const BriefsFeed = React.memo(({ briefs, onOpenBrief }: BriefsFeedProps) => {
 
   const handleOpenBrief = (briefId: number, briefData: Summary) => {
     onOpenBrief(briefId, briefData);
@@ -74,7 +38,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
           >
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-text-primary text-lg font-medium">{brief.title || 'Slack Channel Updates'}</h3>
-              <span className="text-sm text-text-secondary">{brief.timestamp || '2 days ago'}</span>
+              <span className="text-sm text-text-secondary">{brief.summaryTime || '2 days ago'}</span>
             </div>
             <p className="text-text-secondary mb-4 text-sm">{brief.description || 'Upcoming project milestones this week'}</p>
             <div className="flex flex-wrap gap-4 items-center">

@@ -6,18 +6,20 @@ export interface Stats {
 
 export interface Summary {
   id: number;
-  user_id: number;
-  summary: string;
-  audio_path: string;
-  created_at: string;
+  user_id?: number;
+  summary?: string;
+  audioPath?: string;
+  created_at?: string;
   title?: string;
   description?: string;
   timestamp?: string;
   stats?: Stats;
-  saved_time?: string;
-  messages: string[];
-  messages_count: number;
-  task_count: number;
+  savedTime?: string;
+  messages?: string[];
+  messagesCount?: number;
+  taskCount?: number;
+  monitoringChannels?: string;
+  summaryTime?: string;
 }
 
 export interface PriorityPeople {
