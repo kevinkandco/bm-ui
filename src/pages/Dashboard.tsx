@@ -35,6 +35,7 @@ const Dashboard = () => {
     selectedBriefData: null,
     focusModeOpen: false,
     focusTime: 0,
+    focusModeExitLoading: false,
     catchMeUpOpen: false,
     sidebarOpen: !isMobile, // Sidebar closed on mobile by default, open on desktop
     briefModalOpen: false,
@@ -76,6 +77,49 @@ const Dashboard = () => {
 
 		fetchDashboardData();
 	}, [navigate]);
+
+   // Handler for exiting focus mode
+  const handleExitFocusMode = useCallback(async () => {
+    try {
+          setUiState(prev => ({
+            ...prev,
+          //   endFocusModalOpen: true,
+            focusModeExitLoading: true
+          }));
+          const token = localStorage.getItem("token");
+          if (!token) {
+            navigate("/");
+            return;
+          }
+          Http.setBearerToken(token);
+          const response = await Http.callApi(
+            "get",
+            `${BaseURL}/api/exit-focus-mode`);
+            if (response) {
+              toast({
+                title: "Focus Mode Deactivate",
+                description: `Focus mode Deactivate`,
+              });
+              setUiState(prev => ({
+                ...prev,
+                //   endFocusModalOpen: true,
+                userStatus: "active" as UserStatus,
+              }));
+              console.log(response, 'res');
+              
+            } else {
+              console.error("Failed to fetch user data");
+            }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setUiState((prev) => ({
+						...prev,
+						//   endFocusModalOpen: true,
+						focusModeExitLoading: false,
+					}));
+        }
+  }, [navigate, toast]);
 
   // Optimized callbacks to prevent re-creation on each render
   const handleOpenBrief = useCallback((briefId: number, briefData: Summary) => {
@@ -145,40 +189,6 @@ const Dashboard = () => {
 				focusModeOpen: false,
 			}));
 		}, []);
-
-  // Handler for exiting focus mode
-  const handleExitFocusMode = useCallback(async () => {
-    try {
-          const token = localStorage.getItem("token");
-          if (!token) {
-            navigate("/");
-            return;
-          }
-          Http.setBearerToken(token);
-          const response = await Http.callApi(
-            "get",
-            `${BaseURL}/api/exit-focus-mode`);
-            if (response) {
-              toast({
-                title: "Focus Mode Activated",
-                description: `Focus mode activated for minutes`,
-              });
-              setUiState(prev => ({
-                ...prev,
-              //   endFocusModalOpen: true,
-              userStatus: "active" as UserStatus
-              }));
-              console.log(response, 'res');
-              
-            } else {
-              console.error("Failed to fetch user data");
-            }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        } finally {
-          console.log(123);
-        }
-  }, [navigate, toast]);
 
   // Handler for closing the end focus modal
   const handleCloseEndFocusModal = useCallback(() => {
@@ -273,10 +283,11 @@ const Dashboard = () => {
   const statusTimerProps = useMemo(() => ({
     status: uiState.userStatus,
     focusTime: uiState.focusTime,
+    focusModeExitLoading: uiState.focusModeExitLoading,
     onToggleFocusMode: handleToggleFocusMode, 
     onToggleCatchMeUp: handleToggleCatchMeUp,
     onExitFocusMode: handleExitFocusMode
-  }), [uiState.userStatus, uiState.focusTime, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
+  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading , handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
 
   const briefsFeedProps = useMemo(() => ({
     onOpenBrief: handleOpenBrief,
