@@ -16,6 +16,7 @@ import { Summary } from "./types";
 import ViewTranscript from "./ViewTranscript";
 import Http from "@/Http";
 import { useNavigate } from "react-router-dom";
+import { capitalizeFirstLetter } from "@/lib/utils";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -100,7 +101,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
         </DialogHeader>
         
         <div className="p-2">
-          <p className="text-white/90 mb-6 text-lg">I've been monitoring your channels for <span className="font-semibold text-blue-400">{brief?.monitoringChannels}</span>. Here's a brief of what you missed while you were away:</p>
+          <p className="text-white/90 mb-6 text-lg">I've been monitoring your channels for <span className="font-semibold text-blue-400">{brief?.duration}</span>. Here's a brief of what you missed while you were away:</p>
           
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -137,11 +138,11 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
           <div className="bg-white/10 rounded-lg border border-white/10 p-5 shadow-sm mb-6">
             <div className="flex justify-between items-start mb-2">
               <div>
-                <h3 className="font-semibold text-white">Afternoon Catch-up Brief</h3>
+                <h3 className="font-semibold text-white">{brief?.title}</h3>
                 {brief?.start_at || brief?.ended_at ? <p className="text-white/70 text-sm">{`${brief?.start_at} - ${brief?.ended_at} Updates`}</p> : null}
               </div>
               <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
-                1.25 hrs summarized in {formatDuration(duration)}
+                {brief?.duration} summarized in {formatDuration(duration)}
               </span>
             </div>
             
@@ -248,13 +249,13 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                     <td className="py-3 px-4 text-white/70">{message?.time}</td>
                     <td className="py-3 px-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        message?.priority === "High" 
+                        capitalizeFirstLetter(message?.priority) === "High" 
                           ? "bg-red-500/20 text-red-400" 
-                          : message?.priority === "Medium"
+                          : capitalizeFirstLetter(message?.priority) === "Medium"
                             ? "bg-orange-500/20 text-orange-400"
                             : "bg-blue-500/20 text-blue-400"
                       }`}>
-                        {message?.priority}
+                        {capitalizeFirstLetter(message?.priority)}
                       </span>
                     </td>
                     <td className="py-3 px-4">

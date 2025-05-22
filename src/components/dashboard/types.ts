@@ -31,13 +31,13 @@ export interface Summary {
   created_at?: string;
   title?: string;
   description?: string;
+  duration?: string;
   timestamp?: string;
   stats?: Stats;
   savedTime?: string;
   messages?: SummaryMassage[];
   messagesCount?: number;
   taskCount?: number;
-  monitoringChannels?: string;
   summaryTime?: string;
   ended_at?: string;
   start_at?: string;
