@@ -42,24 +42,24 @@ const BriefsFeed = React.memo(({ briefs, onOpenBrief }: BriefsFeedProps) => {
             </div>
             <p className="text-text-secondary mb-4 text-sm">{brief.description || 'Upcoming project milestones this week'}</p>
             <div className="flex flex-wrap gap-4 items-center">
-              {brief?.stats?.emails > 0 && (
+              {brief?.emailCount > 0 && (
                 <div className="flex items-center gap-2">
                   <Mail className="h-5 w-5 text-accent-primary" />
-                  <span className="text-sm font-medium text-text-primary">{brief?.stats?.emails || '2'} emails</span>
+                  <span className="text-sm font-medium text-text-primary">{brief?.emailCount || '2'} emails</span>
                 </div>
               )}
               
-              {brief?.stats?.messages > 0 && (
+              {brief?.slackMessageCount > 0 && (
                 <div className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-accent-primary" />
-                  <span className="text-sm font-medium text-text-primary">{brief?.stats?.messages || '4'} messages</span>
+                  <span className="text-sm font-medium text-text-primary">{brief?.slackMessageCount || '4'} messages</span>
                 </div>
               )}
               
-              {brief?.stats?.meetings > 0 && (
+              {brief?.meetingCount > 0 && (
                 <div className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-accent-primary" />
-                  <span className="text-sm font-medium text-text-primary">{brief?.stats?.meetings || '9'} meetings</span>
+                  <span className="text-sm font-medium text-text-primary">{brief?.meetingCount || '9'} meetings</span>
                 </div>
               )}
             </div>

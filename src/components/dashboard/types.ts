@@ -1,9 +1,3 @@
-export interface Stats {
-  emails?: number;
-  messages?: number;
-  meetings?: number;
-}
-
 export interface BriefSchedules {
     id: string;
     name?: string;
@@ -33,7 +27,6 @@ export interface Summary {
   description?: string;
   duration?: string;
   timestamp?: string;
-  stats?: Stats;
   savedTime?: string;
   messages?: SummaryMassage[];
   messagesCount?: number;
@@ -41,6 +34,9 @@ export interface Summary {
   summaryTime?: string;
   ended_at?: string;
   start_at?: string;
+  slackMessageCount: number;
+  emailCount: number;
+  meetingCount: number;
 }
 
 export interface PriorityPeople {
