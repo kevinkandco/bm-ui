@@ -32,15 +32,15 @@ const BriefsFeed = React.memo(({ briefs, onOpenBrief }: BriefsFeedProps) => {
       <div className="divide-y divide-border-subtle">
         {briefs?.map((brief) => (
           <div 
-            key={brief.id}
+            key={brief?.id}
             className="py-6 transition-colors cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-md px-3" 
-            onClick={() => handleOpenBrief(brief.id, brief)}
+            onClick={() => handleOpenBrief(brief?.id, brief)}
           >
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-text-primary text-lg font-medium">{brief.title || 'Slack Channel Updates'}</h3>
-              <span className="text-sm text-text-secondary">{brief.summaryTime || '2 days ago'}</span>
+              <h3 className="text-text-primary text-lg font-medium">{brief?.title || 'Slack Channel Updates'}</h3>
+              <span className="text-sm text-text-secondary">{brief?.summaryTime || '2 days ago'}</span>
             </div>
-            <p className="text-text-secondary mb-4 text-sm">{brief.description || 'Upcoming project milestones this week'}</p>
+            <p className="text-text-secondary mb-4 text-sm">{brief?.description || 'Upcoming project milestones this week'}</p>
             <div className="flex flex-wrap gap-4 items-center">
               {brief?.emailCount > 0 && (
                 <div className="flex items-center gap-2">
