@@ -39,6 +39,8 @@ export interface Summary {
   taskCount?: number;
   monitoringChannels?: string;
   summaryTime?: string;
+  ended_at?: string;
+  start_at?: string;
 }
 
 export interface PriorityPeople {

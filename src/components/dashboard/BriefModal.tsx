@@ -123,7 +123,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="font-semibold text-white">Afternoon Catch-up Brief</h3>
-                <p className="text-white/70 text-sm">2:00 PM - 4:30 PM Updates</p>
+                {brief?.start_at || brief?.ended_at ? <p className="text-white/70 text-sm">{`${brief?.start_at} - ${brief?.ended_at} Updates`}</p> : null}
               </div>
               <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
                 1.25 hrs summarized in {formatDuration(duration)}
