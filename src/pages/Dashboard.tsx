@@ -15,7 +15,7 @@ import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboar
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { PriorityPeople, Summary } from "@/components/dashboard/types";
+import { BriefSchedules, PriorityPeople, Summary } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
 
@@ -45,6 +45,7 @@ const Dashboard = () => {
     userStatus: "active" as UserStatus
   });
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
+  const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
   const [searchParams] = useSearchParams();
 
@@ -87,6 +88,7 @@ const Dashboard = () => {
 					userStatus: response?.data?.mode,
 					focusTime: response?.data?.focusRemainingTime,
 				}));
+        SetBriefSchedules(response?.data?.briefSchedules);
 				setPriorityPeople(response?.data?.priorityPeople);
 				console.log(response, "fetch priority people api");
 			} else {
@@ -320,10 +322,11 @@ const Dashboard = () => {
     status: uiState.userStatus,
     focusTime: uiState.focusTime,
     focusModeExitLoading: uiState.focusModeExitLoading,
+    briefSchedules: briefSchedules,
     onToggleFocusMode: handleToggleFocusMode, 
     onToggleCatchMeUp: handleToggleCatchMeUp,
     onExitFocusMode: handleExitFocusMode
-  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading , handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
+  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, briefSchedules, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
 
   const briefsFeedProps = useMemo(() => ({
     briefs: briefs,

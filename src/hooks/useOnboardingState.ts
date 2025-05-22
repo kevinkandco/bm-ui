@@ -1,3 +1,4 @@
+import { BriefSchedules } from "@/components/dashboard/types";
 import Http from "@/Http";
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,15 +22,7 @@ export interface UserData {
   includeIgnoredInSummary: boolean;
 
   // Brief preferences
-  briefSchedules: {
-    id: string;
-    name: string;
-    deliveryMethod: "email" | "audio" | "both";
-    scheduleTime: "morning" | "midday" | "evening" | "custom";
-    briefTime: string;
-    enabled: boolean;
-    days: string[];
-  }[];
+  briefSchedules: BriefSchedules[];
 
   // Daily schedule
   dailySchedule: {

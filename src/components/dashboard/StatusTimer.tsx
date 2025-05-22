@@ -4,17 +4,19 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { BriefSchedules } from "./types";
 
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   focusTime: number; //in seconds
   focusModeExitLoading: boolean;
+  briefSchedules: BriefSchedules[];
   onToggleCatchMeUp?: () => void;
   onToggleFocusMode?: () => void;
   onExitFocusMode?: () => void;
 }
 
-const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading,onToggleCatchMeUp, onToggleFocusMode, onExitFocusMode }: StatusTimerProps) => {
+const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, briefSchedules, onToggleCatchMeUp, onToggleFocusMode, onExitFocusMode }: StatusTimerProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
@@ -40,42 +42,83 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading,onTogg
   
   // Calculate time until next brief (9AM tomorrow if after 8AM, otherwise 8AM today)
   const calculateTimeUntilNextBrief = useCallback(() => {
-    const now = new Date();
-    const nextBrief = new Date();
-    
-    // If it's after 8 AM, set next brief to 9 AM tomorrow
-    if (now.getHours() >= 8) {
-      nextBrief.setDate(nextBrief.getDate() + 1);
-      nextBrief.setHours(9, 0, 0, 0);
-    } else {
-      // Otherwise set it to 8 AM today
-      nextBrief.setHours(8, 0, 0, 0);
-    }
-    
-    const diffMs = nextBrief.getTime() - now.getTime();
-    const diffSec = Math.floor(diffMs / 1000);
-    
-    const hours = Math.floor(diffSec / 3600).toString().padStart(2, '0');
-    const minutes = Math.floor((diffSec % 3600) / 60).toString().padStart(2, '0');
-    const seconds = Math.floor(diffSec % 60).toString().padStart(2, '0');
-    
-    return `${hours}:${minutes}:${seconds}`;
-  }, []);
+		const schedule = briefSchedules[0]; // assume 1 schedule for now
+		const [briefHour, briefMinute] = schedule.briefTime.split(":").map(Number);
+		const scheduledDays = schedule.days; // e.g., ["Monday", "Tuesday", ...]
+
+		const dayNameToIndex: Record<string, number> = {
+			Sunday: 0,
+			Monday: 1,
+			Tuesday: 2,
+			Wednesday: 3,
+			Thursday: 4,
+			Friday: 5,
+			Saturday: 6,
+		};
+
+		const scheduledDayIndexes = scheduledDays.map((day) => dayNameToIndex[day]);
+
+		const now = new Date();
+		const nowDay = now.getDay();
+
+		// Helper: create a brief datetime for a given offset (0 = today, 1 = tomorrow, etc.)
+		const getBriefTime = (offset: number) => {
+			const date = new Date(now);
+			date.setDate(date.getDate() + offset);
+			date.setHours(briefHour, briefMinute, 0, 0);
+			return date;
+		};
+
+		// Step 1: check today
+		const todayBrief = getBriefTime(0);
+		if (scheduledDayIndexes.includes(nowDay) && now < todayBrief) {
+			const diffMs = todayBrief.getTime() - now.getTime();
+			return formatDiff(diffMs);
+		}
+
+		// Step 2: find next matching day
+		for (let i = 1; i <= 7; i++) {
+			const futureDay = (nowDay + i) % 7;
+			if (scheduledDayIndexes.includes(futureDay)) {
+				const nextBrief = getBriefTime(i);
+				const diffMs = nextBrief.getTime() - now.getTime();
+				return formatDiff(diffMs);
+			}
+		}
+
+		// fallback
+		return "00:00:00";
+	}, [briefSchedules]);
+
+	const formatDiff = (diffMs: number) => {
+		const diffSec = Math.floor(diffMs / 1000);
+		const hours = Math.floor(diffSec / 3600)
+			.toString()
+			.padStart(2, "0");
+		const minutes = Math.floor((diffSec % 3600) / 60)
+			.toString()
+			.padStart(2, "0");
+		const seconds = Math.floor(diffSec % 60)
+			.toString()
+			.padStart(2, "0");
+		return `${hours}:${minutes}:${seconds}`;
+	};
+
 
   // Calculate remaining focus time
-const calculateFocusTimeRemaining = useCallback(() => {
-  if (!startTime) return "00:00:00";
-  
-  const now = Date.now();
-  const elapsedSeconds = Math.floor((now - startTime) / 1000);
-  const remainingSeconds = Math.max(0, focusTime - elapsedSeconds);
+  const calculateFocusTimeRemaining = useCallback(() => {
+    if (!startTime) return "00:00:00";
+    
+    const now = Date.now();
+    const elapsedSeconds = Math.floor((now - startTime) / 1000);
+    const remainingSeconds = Math.max(0, focusTime - elapsedSeconds);
 
-  const hours = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
-  const minutes = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
-  const seconds = Math.floor(remainingSeconds % 60).toString().padStart(2, '0');
-  
-  return `${hours}:${minutes}:${seconds}`;
-}, [startTime]);
+    const hours = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
+    const minutes = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
+    const seconds = Math.floor(remainingSeconds % 60).toString().padStart(2, '0');
+    
+    return `${hours}:${minutes}:${seconds}`;
+  }, [startTime, focusTime]);
 
 
   useEffect(() => {
