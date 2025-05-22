@@ -29,7 +29,7 @@ const BriefsFeed = React.memo(({ briefs, onOpenBrief }: BriefsFeedProps) => {
       <p className="text-text-secondary mt-1 mb-4">Stay updated with your latest briefs</p>
 
       
-      <div className="divide-y divide-border-subtle overflow-y-auto" style={{ maxHeight: '600px' }}>
+      <div className="divide-y divide-border-subtle">
         {briefs?.map((brief) => (
           <div 
             key={brief.id}
