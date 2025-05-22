@@ -401,7 +401,7 @@ const Dashboard = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
           {/* Main Feed Column */}
-          <div className="lg:col-span-8 h-[700px]">
+          <div className="lg:col-span-8">
             {/* Briefs Feed */}
             <BriefsFeed {...briefsFeedProps} />
           </div>
