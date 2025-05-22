@@ -3,6 +3,7 @@ import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import useAuthStore from "@/store/useAuthStore";
 import Http from "@/Http";
 import { useSearchParams } from "react-router-dom";
+import Loader from "../Loader";
 // import LoadingFallback from "@/components/LoadingFallback";
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -70,7 +71,7 @@ const ProtectedRoute = ({
     }
   }, [searchParams]);
 
-    if (!checked) return <div>Loading...</div>;
+    if (!checked) return <Loader />
 
     if ((!authToken || validSession && !user?.is_onboard) && location.pathname !== "/onboarding") {
         return <Navigate to="/onboarding" replace />;
