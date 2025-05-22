@@ -66,16 +66,7 @@ const IgnoreConfigStep = ({
 
       Http.setBearerToken(token);
 
-      const response = await Http.callApi(
-        "get",
-        `${BaseURL}/api/slack/channels`,
-        null,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-        }
-      );
+      const response = await Http.callApi("get",`${BaseURL}/api/slack/channels`);
 
       if (response) {
         setSlackChannels(response?.data?.map((c: { name: any }) => c.name));

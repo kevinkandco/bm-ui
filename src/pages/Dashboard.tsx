@@ -57,7 +57,7 @@ const Dashboard = () => {
 				return;
 			}
 			Http.setBearerToken(token);
-			const response = await Http.callApi("get", `${BaseURL}/api/summaries`, null, {headers: { "ngrok-skip-browser-warning": "true" }});
+			const response = await Http.callApi("get", `${BaseURL}/api/summaries`);
 			if (response) {
 				setBriefs(response?.data?.data);
 			} else {
@@ -76,12 +76,7 @@ const Dashboard = () => {
 				return;
 			}
 			Http.setBearerToken(token);
-			const response = await Http.callApi(
-				"get",
-				`${BaseURL}/api/dashboard`,
-				null,
-				{ headers: { "ngrok-skip-browser-warning": "true" } }
-			);
+			const response = await Http.callApi("get",`${BaseURL}/api/dashboard`);
 			if (response) {
 				setUiState((prev) => ({
 					...prev,
@@ -119,46 +114,46 @@ const Dashboard = () => {
 
    // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(async () => {
-    try {
-          setUiState(prev => ({
-            ...prev,
-          //   endFocusModalOpen: true,
-            focusModeExitLoading: true
-          }));
-          const token = localStorage.getItem("token");
-          if (!token) {
-            navigate("/");
-            return;
-          }
-          Http.setBearerToken(token);
-          const response = await Http.callApi(
-            "get",
-            `${BaseURL}/api/exit-focus-mode`);
-            if (response) {
-              toast({
-                title: "Focus Mode Deactivate",
-                description: `Focus mode Deactivate`,
-              });
-              setUiState(prev => ({
-                ...prev,
-                //   endFocusModalOpen: true,
-                userStatus: "active" as UserStatus,
-              }));
-              getBriefs();
-              
-            } else {
-              console.error("Failed to fetch user data");
-            }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        } finally {
-          setUiState((prev) => ({
-						...prev,
-						//   endFocusModalOpen: true,
-						focusModeExitLoading: false,
-					}));
-        }
-  }, [navigate, toast, getBriefs]);
+		try {
+			setUiState((prev) => ({
+				...prev,
+				//   endFocusModalOpen: true,
+				focusModeExitLoading: true,
+			}));
+			const token = localStorage.getItem("token");
+			if (!token) {
+				navigate("/");
+				return;
+			}
+			Http.setBearerToken(token);
+			const response = await Http.callApi(
+				"get",
+				`${BaseURL}/api/exit-focus-mode`
+			);
+			if (response) {
+				toast({
+					title: "Focus Mode Deactivate",
+					description: `Focus mode Deactivate`,
+				});
+				setUiState((prev) => ({
+					...prev,
+					//   endFocusModalOpen: true,
+					userStatus: "active" as UserStatus,
+				}));
+				getBriefs();
+			} else {
+				console.error("Failed to fetch user data");
+			}
+		} catch (error) {
+			console.error("Error fetching user data:", error);
+		} finally {
+			setUiState((prev) => ({
+				...prev,
+				//   endFocusModalOpen: true,
+				focusModeExitLoading: false,
+			}));
+		}
+	}, [navigate, toast, getBriefs]);
 
   // Optimized callbacks to prevent re-creation on each render
   const handleOpenBrief = useCallback((briefId: number) => {

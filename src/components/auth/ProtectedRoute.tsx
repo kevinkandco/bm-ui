@@ -30,11 +30,7 @@ const ProtectedRoute = ({
 
       try {
         Http.setBearerToken(token);
-        const response = await Http.callApi("get", `${BaseURL}/api/me`, null, {
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-        });
+        const response = await Http.callApi("get", `${BaseURL}/api/me`);
 
         console.log("User data:", response);
 
@@ -56,11 +52,10 @@ const ProtectedRoute = ({
     };
 
     verifyAuth();
-  }, [verify, logout]);
+  }, [verify, logout, redirect]);
 
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
-	console.log(tokenFromUrl, 'toekn')
 
     if (tokenFromUrl) {
       localStorage.setItem("token", tokenFromUrl);
@@ -73,7 +68,7 @@ const ProtectedRoute = ({
         url.pathname + url.search
       );
     }
-  }, []);
+  }, [searchParams]);
 
     if (!checked) return <div>Loading...</div>;
 

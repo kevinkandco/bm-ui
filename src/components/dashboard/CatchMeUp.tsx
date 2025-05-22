@@ -59,11 +59,6 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
 				{
 					time_period:
 						timePeriod === "auto" ? parseInt(detectedTime) : customHours,
-				},
-				{
-					headers: {
-						"ngrok-skip-browser-warning": "true",
-					},
 				}
 			);
 			if (response) {

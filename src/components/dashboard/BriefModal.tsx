@@ -25,55 +25,57 @@ interface BriefModalProps {
 }
 
 const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
-    const [showTranscript, setShowTranscript] = useState(false);
-    const [brief, setBrief] = useState<Summary | null>(null);
-    const {
-			audioRef,
-			isPlaying,
-			currentTime,
-			duration,
-			handleTimeUpdate,
-			handlePlayPause,
-			formatDuration,
-			barRef,
-			handleSeekStart,
-			handleSeekEnd,
-			handleSeekMove,
-		} = useAudioPlayer();
-    const navigate = useNavigate();
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [brief, setBrief] = useState<Summary | null>(null);
+  const {
+    audioRef,
+    isPlaying,
+    currentTime,
+    duration,
+    handleTimeUpdate,
+    handlePlayPause,
+    formatDuration,
+    barRef,
+    handleSeekStart,
+    handleSeekEnd,
+    handleSeekMove,
+  } = useAudioPlayer();
+  const navigate = useNavigate();
 
-    const getBriefs = useCallback(async (): Promise<void> => {
-        try {
-          const token = localStorage.getItem("token");
-          if (!token) {
-            navigate("/");
-            return;
-          }
-          Http.setBearerToken(token);
-          const response = await Http.callApi("get", `${BaseURL}/api/summary/${briefId}/show`, null, {headers: { "ngrok-skip-browser-warning": "true" }});
-          if (response) {
-            setBrief(response?.data?.data);
-          } else {
-            console.error("Failed to fetch summaries data");
-          }
-        } catch (error) {
-          console.error("Error fetching summaries data:", error);
-        }
-      }, [navigate, briefId]);
+  const getBriefs = useCallback(async (): Promise<void> => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/");
+        return;
+      }
+      
+      Http.setBearerToken(token);
+      const response = await Http.callApi("get",`${BaseURL}/api/summary/${briefId}/show`);
 
-      useEffect(() => {
-        if(briefId) {
-          getBriefs();
-        }
-      }, [briefId, getBriefs]);
-
-    const handleClose = () => {
-      setShowTranscript(false);
+      if (response) {
+        setBrief(response?.data?.data);
+      } else {
+        console.error("Failed to fetch summaries data");
+      }
+    } catch (error) {
+      console.error("Error fetching summaries data:", error);
     }
+  }, [navigate, briefId]);
 
-    const handleOpen = () => {
-      setShowTranscript(true);
+  useEffect(() => {
+    if (briefId) {
+      getBriefs();
     }
+  }, [briefId, getBriefs]);
+
+  const handleClose = () => {
+    setShowTranscript(false);
+  };
+
+  const handleOpen = () => {
+    setShowTranscript(true);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

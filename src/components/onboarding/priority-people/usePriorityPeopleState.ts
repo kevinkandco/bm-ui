@@ -44,11 +44,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
         return;
       }
       Http.setBearerToken(token);
-      const response = await Http.callApi("get", `${BaseURL}/api/slack/dms/contacts`, null, {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-        },
-      });
+      const response = await Http.callApi("get", `${BaseURL}/api/slack/dms/contacts`);
       if (response) { 
         setPlatformContacts(response?.data?.contacts);
         setSuggestedContacts(response?.data?.contacts);
@@ -58,7 +54,7 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
 		getContact();

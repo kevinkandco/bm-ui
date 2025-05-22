@@ -1,32 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Http from "@/Http";
 import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
 export function usePriorityChannelsState(initialChannels: string[] = []) {
-  const [priorityChannels, setPriorityChannels] =
-    useState<string[]>(initialChannels);
-
-  // All available Slack channels
-  // const [allSlackChannels] = useState([
-  //   "#general",
-  //   "#random",
-  //   "#announcements",
-  //   "#team-dev",
-  //   "#marketing",
-  //   "#sales",
-  //   "#support",
-  //   "#watercooler",
-  //   "#project-alpha",
-  //   "#design",
-  //   "#engineering",
-  //   "#hr"
-  // ]);
+  const [priorityChannels, setPriorityChannels] = useState<string[]>(initialChannels);
   const navigate = useNavigate();
   const [allSlackChannels, setAllSlackChannels] = useState([]);
 
-  const getAllChannel = async (): Promise<void> => {
+  const getAllChannel = useCallback(async (): Promise<void> => {
     try {
       const token = localStorage.getItem("token");
 
@@ -37,30 +20,20 @@ export function usePriorityChannelsState(initialChannels: string[] = []) {
 
       Http.setBearerToken(token);
 
-      const response = await Http.callApi(
-        "get",
-        `${BaseURL}/api/slack/channels`,
-        null,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-        }
-      );
-      console.log(response);
+      const response = await Http.callApi("get",`${BaseURL}/api/slack/channels`);
       if (response) {
-        setAllSlackChannels(response?.data?.map((c: { name: any }) =>  c.name));
+        setAllSlackChannels(response?.data?.map((c: { name: string }) =>  c.name));
       } else {
         console.error("Failed to fetch user data");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     getAllChannel();
-  }, []);
+  }, [getAllChannel]);
 
   // Filtered list of slack channels (excluding selected ones)
   const [slackChannels, setSlackChannels] = useState<string[]>([]);
