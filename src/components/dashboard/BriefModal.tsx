@@ -26,6 +26,10 @@ interface BriefModalProps {
 
 const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
   const [showTranscript, setShowTranscript] = useState(false);
+  const [showMessageTranscript, setMessageTranscript] = useState({
+    open: false,
+    index: null
+  });
   const [brief, setBrief] = useState<Summary | null>(null);
   const {
     audioRef,
@@ -71,11 +75,22 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
   const handleClose = () => {
     setShowTranscript(false);
+    setMessageTranscript({
+      open: false,
+      index: null
+    })
   };
 
   const handleOpen = () => {
     setShowTranscript(true);
   };
+
+  const handleMessageTranscriptOpen = (index: number) => {
+    setMessageTranscript({
+      open: true,
+      index: index
+    })
+  }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -243,7 +258,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                       </span>
                     </td>
                     <td className="py-3 px-4">
-                      <Button variant="link" className="text-blue-400 p-0 h-auto text-sm hover:text-blue-300">
+                      <Button variant="link" className="text-blue-400 p-0 h-auto text-sm hover:text-blue-300" onClick={() => handleMessageTranscriptOpen(i)}>
                         View Transcript
                       </Button>
                     </td>
@@ -258,8 +273,8 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
         </div>
       </DialogContent>
       <ViewTranscript
-        open={showTranscript}
-        summary={brief?.summary}
+        open={showTranscript || showMessageTranscript?.open}
+        summary={showTranscript ? brief?.summary : brief?.messages[showMessageTranscript?.index]?.message}
         onClose={handleClose}
       />
     </Dialog>
