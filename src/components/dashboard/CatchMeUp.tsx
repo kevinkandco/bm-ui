@@ -53,14 +53,10 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
 				return;
 			}
 			Http.setBearerToken(token);
-			const response = await Http.callApi(
-				"post",
-				`${BaseURL}/api/catch-me`,
-				{
-					time_period:
-						timePeriod === "auto" ? parseInt(detectedTime) : customHours,
-				}
-			);
+			const response = await Http.callApi("post", `${BaseURL}/api/catch-me`, {
+				time_period:
+					timePeriod === "auto" ? parseInt(detectedTime) : customHours,
+			});
 			if (response) {
 				onClose();
 				toast({
@@ -70,9 +66,22 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
 				});
 			} else {
 				console.error("Failed to fetch user data");
+				toast({
+					title: "generate Summary failed",
+					description: "Summary generated failed. please try again sometime later.",
+				});
 			}
 		} catch (error) {
 			console.error("Error fetching user data:", error);
+			const errorMessage =
+				error?.response?.data?.message ||
+				error?.message ||
+				"Summary generated failed. please try again sometime later.";
+
+			toast({
+				title: "generate Summary failed",
+				description: errorMessage,
+			});
 		} finally {
 			setLoading(false);
 		}

@@ -64,9 +64,22 @@ const FocusMode = ({ open, onClose, SaveChangesAndClose }: FocusModeProps) => {
 				SaveChangesAndClose(focusTime);
 			} else {
 				console.error("Failed to fetch user data");
+        toast({
+					title: "Focus Mode Activation Failed",
+					description: "Focus mode activation failed. please try again sometime later.",
+				});
 			}
 		} catch (error) {
 			console.error("Error fetching user data:", error);
+			const errorMessage =
+				error?.response?.data?.message ||
+				error?.message ||
+				"Focus mode activation failed. please try again sometime later.";
+
+			toast({
+				title: "Focus Mode Activation failed",
+				description: errorMessage,
+			});
 		} finally {
 			setLoading(false);
 		}

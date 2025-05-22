@@ -61,12 +61,25 @@ const Dashboard = () => {
 			if (response) {
 				setBriefs(response?.data?.data);
 			} else {
-				console.error("Failed to fetch summaries data");
+				console.error("Failed to fetch summaries data"); 
+        toast({
+          title: "Error",
+          description: "Failed to fetch summaries data.",
+        });
 			}
 		} catch (error) {
 			console.error("Error fetching summaries data:", error);
+      const errorMessage =
+				error?.response?.data?.message ||
+				error?.message ||
+				"Something went wrong. Failed to fetch summaries data.";
+
+			toast({
+				title: "Focus Mode Exit failed",
+				description: errorMessage,
+			});
 		}
-	}, [navigate]);
+	}, [navigate, toast]);
 
 	const fetchDashboardData = useCallback(async () => {
 		try {
@@ -85,14 +98,27 @@ const Dashboard = () => {
 				}));
         SetBriefSchedules(response?.data?.briefSchedules);
 				setPriorityPeople(response?.data?.priorityPeople);
-				console.log(response, "fetch priority people api");
 			} else {
 				console.error("Failed to fetch user data");
+        toast({
+          title: "Error",
+          description: "Failed to fetch user data.",
+        });
 			}
 		} catch (error) {
 			console.error("Error fetching user data:", error);
+
+      const errorMessage =
+				error?.response?.data?.message ||
+				error?.message ||
+				"Something went wrong. Failed to fetch user data.";
+
+			toast({
+				title: "Failed to fetch user data",
+				description: errorMessage,
+			});
 		}
-	}, [navigate]);
+	}, [navigate, toast]);
 
   useEffect(() => {
 		const tokenFromUrl = searchParams.get("token");
@@ -143,9 +169,25 @@ const Dashboard = () => {
 				getBriefs();
 			} else {
 				console.error("Failed to fetch user data");
+
+				const errorMessage = "Focus mode Exit failed. please try again sometime later.";
+
+				toast({
+					title: "Focus Mode Exit Failed",
+					description: errorMessage,
+				});
 			}
 		} catch (error) {
 			console.error("Error fetching user data:", error);
+			const errorMessage =
+				error?.response?.data?.message ||
+				error?.message ||
+				"Something went wrong. Please try again later.";
+
+			toast({
+				title: "Focus Mode Exit failed",
+				description: errorMessage,
+			});
 		} finally {
 			setUiState((prev) => ({
 				...prev,
