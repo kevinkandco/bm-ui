@@ -11,24 +11,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { Clock, Zap, X } from "lucide-react";
+import { Zap, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
 import { useNavigate } from "react-router-dom";
-import { Summary } from "./types";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface CatchMeUpProps {
   open: boolean;
-  setBriefs: React.Dispatch<React.SetStateAction<Summary[]>>,
   onClose: () => void;
   onGenerateSummary: (timeDescription: string) => void;
 }
 
-const CatchMeUp = ({ open, onClose, onGenerateSummary, setBriefs: setBrief }: CatchMeUpProps) => {
+const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
@@ -44,45 +42,46 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary, setBriefs: setBrief }: Ca
   }, [open]);
 
   const handleGenerate = async () => {
-    const timeDescription = timePeriod === "auto" ? detectedTime : `${customHours} hours`;
-			try {
-				setLoading(true);
-				const token = localStorage.getItem("token");
-				if (!token) {
-					setLoading(false);
-					navigate("/");
-					return;
-				}
-				Http.setBearerToken(token);
-				const response = await Http.callApi(
-					"post",
-					`${BaseURL}/api/catch-me`,
-          { time_period:  timePeriod === "auto" ? parseInt(detectedTime) : customHours },
-          {
-            headers: {
-                        "ngrok-skip-browser-warning": "true",
-                    },
-          }
-				);
-				if (response) {
-          // onGenerateSummary(timeDescription);
-          // setBrief(prev => [response?.data?.data, ...prev]);
-        // onClose();
-        window.location.reload();
-        toast({
-          title: "Create Summary",
-          description:
-          response?.data?.message || "Summary generated successfully.",
-        });
-				} else {
-					console.error("Failed to fetch user data");
-				}
-			} catch (error) {
-				console.error("Error fetching user data:", error);
-			} finally {
+		const timeDescription =
+			timePeriod === "auto" ? detectedTime : `${customHours} hours`;
+		try {
+			setLoading(true);
+			const token = localStorage.getItem("token");
+			if (!token) {
 				setLoading(false);
+				navigate("/");
+				return;
 			}
-  };
+			Http.setBearerToken(token);
+			const response = await Http.callApi(
+				"post",
+				`${BaseURL}/api/catch-me`,
+				{
+					time_period:
+						timePeriod === "auto" ? parseInt(detectedTime) : customHours,
+				},
+				{
+					headers: {
+						"ngrok-skip-browser-warning": "true",
+					},
+				}
+			);
+			if (response) {
+				onClose();
+				toast({
+					title: "Create Summary",
+					description:
+						response?.data?.message || "Summary generated successfully.",
+				});
+			} else {
+				console.error("Failed to fetch user data");
+			}
+		} catch (error) {
+			console.error("Error fetching user data:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

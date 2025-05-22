@@ -144,7 +144,7 @@ const Dashboard = () => {
                 //   endFocusModalOpen: true,
                 userStatus: "active" as UserStatus,
               }));
-              console.log(response, 'res');
+              getBriefs();
               
             } else {
               console.error("Failed to fetch user data");
@@ -158,7 +158,7 @@ const Dashboard = () => {
 						focusModeExitLoading: false,
 					}));
         }
-  }, [navigate, toast]);
+  }, [navigate, toast, getBriefs]);
 
   // Optimized callbacks to prevent re-creation on each render
   const handleOpenBrief = useCallback((briefId: number) => {
@@ -247,7 +247,8 @@ const Dashboard = () => {
       ...prev,
       catchMeUpOpen: false
     }));
-  }, []);
+    getBriefs();
+  }, [getBriefs]);
 
   // New handler for generating catch me up summary
   const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
@@ -413,7 +414,6 @@ const Dashboard = () => {
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
         onClose={handleCloseCatchMeUp}
-        setBriefs={setBriefs}
         onGenerateSummary={handleGenerateCatchMeUpSummary}
       />
       <BriefModal 
