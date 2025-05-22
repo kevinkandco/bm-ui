@@ -162,7 +162,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             </div>
             
             <p className="text-sm text-white/80 mb-4">
-              A summary of <span className="font-medium">{brief?.slackMessageCount} important messages</span> from Slack and <span className="font-medium">{brief?.emailCount} emails</span> requiring your attention. 
+              A summary of <span className="font-medium">{brief?.slackMessageCount} important messages</span> from Slack and <span className="font-medium">{brief?.emailCount ?? 0} emails</span> requiring your attention. 
               Key topics include the Q4 planning meeting and project deadlines.
             </p>
             
