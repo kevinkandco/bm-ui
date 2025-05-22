@@ -23,6 +23,16 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
+interface BriefsFeedProps {
+  briefs: Summary[] | null;
+  onOpenBrief: (briefId: number) => void;
+  onCatchMeUp: () => void;
+  onFocusMode: () => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -47,39 +57,83 @@ const Dashboard = () => {
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
+  const [pagination, setPagination] = useState({
+      currentPage: 1,
+      totalPages: 1,
+      itemsPerPage: 10, // or whatever default you want
+    });
   const [searchParams] = useSearchParams();
 
-  const getBriefs = useCallback(async (): Promise<void> => {
-		try {
-			const token = localStorage.getItem("token");
-			if (!token) {
-				navigate("/");
-				return;
-			}
-			Http.setBearerToken(token);
-			const response = await Http.callApi("get", `${BaseURL}/api/summaries`);
-			if (response) {
-				setBriefs(response?.data?.data);
-			} else {
-				console.error("Failed to fetch summaries data"); 
+  // const getBriefs = useCallback(async (): Promise<void> => {
+	// 	try {
+	// 		const token = localStorage.getItem("token");
+	// 		if (!token) {
+	// 			navigate("/");
+	// 			return;
+	// 		}
+	// 		Http.setBearerToken(token);
+	// 		const response = await Http.callApi("get", `${BaseURL}/api/summaries`);
+	// 		if (response) {
+	// 			setBriefs(response?.data?.data);
+	// 		} else {
+	// 			console.error("Failed to fetch summaries data"); 
+  //       toast({
+  //         title: "Error",
+  //         description: "Failed to fetch summaries data.",
+  //       });
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("Error fetching summaries data:", error);
+  //     const errorMessage =
+	// 			error?.response?.data?.message ||
+	// 			error?.message ||
+	// 			"Something went wrong. Failed to fetch summaries data.";
+
+	// 		toast({
+	// 			title: "Focus Mode Exit failed",
+	// 			description: errorMessage,
+	// 		});
+	// 	}
+	// }, [navigate, toast]);
+
+  const getBriefs = useCallback(async (page = 1): Promise<void> => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/");
+        return;
+      }
+      Http.setBearerToken(token);
+      const response = await Http.callApi("get", `${BaseURL}/api/summaries?page=${page}`);
+      if (response) {
+        setBriefs(response?.data?.data);
+        console.log(response, '11');
+        
+        setPagination(prev => ({
+          ...prev,
+          currentPage: response?.data?.meta?.current_page || 1,
+          totalPages: response?.data?.meta?.last_page || 1,
+        }));
+      } else {
+        console.error("Failed to fetch summaries data"); 
         toast({
           title: "Error",
           description: "Failed to fetch summaries data.",
         });
-			}
-		} catch (error) {
-			console.error("Error fetching summaries data:", error);
+      }
+    } catch (error) {
+      console.error("Error fetching summaries data:", error);
       const errorMessage =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Something went wrong. Failed to fetch summaries data.";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong. Failed to fetch summaries data.";
 
-			toast({
-				title: "Focus Mode Exit failed",
-				description: errorMessage,
-			});
-		}
-	}, [navigate, toast]);
+      toast({
+        title: "Focus Mode Exit failed",
+        description: errorMessage,
+      });
+    }
+  }, [navigate, toast]);
 
 	const fetchDashboardData = useCallback(async () => {
 		try {
@@ -120,23 +174,41 @@ const Dashboard = () => {
 		}
 	}, [navigate, toast]);
 
-  useEffect(() => {
-		const tokenFromUrl = searchParams.get("token");
+  // useEffect(() => {
+	// 	const tokenFromUrl = searchParams.get("token");
 
-		if (tokenFromUrl) {
-			localStorage.setItem("token", tokenFromUrl);
-			const url = new URL(window.location.href);
-			url.searchParams.delete("token");
-			url.searchParams.delete("provider");
-			window.history.replaceState(
-				{},
-				document.title,
-				url.pathname + url.search
-			);
-		}
-		fetchDashboardData();
-		getBriefs();
-	}, [navigate, searchParams, getBriefs, fetchDashboardData]);
+	// 	if (tokenFromUrl) {
+	// 		localStorage.setItem("token", tokenFromUrl);
+	// 		const url = new URL(window.location.href);
+	// 		url.searchParams.delete("token");
+	// 		url.searchParams.delete("provider");
+	// 		window.history.replaceState(
+	// 			{},
+	// 			document.title,
+	// 			url.pathname + url.search
+	// 		);
+	// 	}
+	// 	fetchDashboardData();
+	// 	getBriefs();
+	// }, [navigate, searchParams, getBriefs, fetchDashboardData]);
+
+  useEffect(() => {
+  const tokenFromUrl = searchParams.get("token");
+
+  if (tokenFromUrl) {
+    localStorage.setItem("token", tokenFromUrl);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("token");
+    url.searchParams.delete("provider");
+    window.history.replaceState(
+      {},
+      document.title,
+      url.pathname + url.search
+    );
+  }
+  fetchDashboardData();
+  getBriefs(1); 
+}, [navigate, searchParams, getBriefs, fetchDashboardData]);
 
    // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(async () => {
@@ -370,8 +442,11 @@ const Dashboard = () => {
     briefs: briefs,
     onOpenBrief: handleOpenBrief,
     onCatchMeUp: handleToggleCatchMeUp,
-    onFocusMode: handleToggleFocusMode
-  }), [briefs, handleOpenBrief, handleToggleCatchMeUp, handleToggleFocusMode]);
+    onFocusMode: handleToggleFocusMode,
+    currentPage: pagination.currentPage,
+    totalPages: pagination.totalPages,
+    onPageChange: getBriefs,
+  }), [briefs, handleOpenBrief, handleToggleCatchMeUp, handleToggleFocusMode, pagination.currentPage, pagination.totalPages, getBriefs]);
 
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
@@ -404,6 +479,14 @@ const Dashboard = () => {
           <div className="lg:col-span-8">
             {/* Briefs Feed */}
             <BriefsFeed {...briefsFeedProps} />
+            {pagination.totalPages > 1 && (
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={getBriefs}
+              />
+            )}
+
           </div>
           
           {/* Right Sidebar */}
@@ -475,3 +558,29 @@ const Dashboard = () => {
 };
 
 export default React.memo(Dashboard);
+
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  return (
+    <div className="flex justify-center items-center gap-2 mt-6">
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={currentPage === 1}
+        onClick={() => onPageChange(currentPage - 1)}
+      >
+        Previous
+      </Button>
+      <span className="text-sm">
+        Page {currentPage} of {totalPages}
+      </span>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
+      >
+        Next
+      </Button>
+    </div>
+  );
+};
