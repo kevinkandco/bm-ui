@@ -17,6 +17,7 @@ import ViewTranscript from "./ViewTranscript";
 import Http from "@/Http";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import BriefLoadingSkeleton from "./BriefLoadingSkeleton";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -32,6 +33,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     index: null
   });
   const [brief, setBrief] = useState<Summary | null>(null);
+  const [loading, setLoading] = useState(false);
   const {
     audioRef,
     isPlaying,
@@ -49,6 +51,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
   const getBriefs = useCallback(async (): Promise<void> => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       if (!token) {
         navigate("/");
@@ -65,14 +68,26 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
       }
     } catch (error) {
       console.error("Error fetching summaries data:", error);
+    } finally {
+      setLoading(false);
     }
   }, [navigate, briefId]);
 
   useEffect(() => {
-    if (briefId) {
-      getBriefs();
-    }
-  }, [briefId, getBriefs]);
+		if (briefId) {
+			getBriefs();
+		}
+
+		return () => {
+			setShowTranscript(false);
+			setMessageTranscript({
+				open: false,
+				index: null,
+			});
+
+			setBrief(null);
+		};
+	}, [briefId, getBriefs]);
 
   const handleClose = () => {
     setShowTranscript(false);
@@ -99,7 +114,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
         <DialogHeader>
           <DialogTitle className="text-lg font-medium text-white">Brief Details</DialogTitle>
         </DialogHeader>
-        
+      {loading ? <BriefLoadingSkeleton /> : <>   
         <div className="p-2">
           <p className="text-white/90 mb-6 text-lg">I've been monitoring your channels for <span className="font-semibold text-blue-400">{brief?.duration}</span>. Here's a brief of what you missed while you were away:</p>
           
@@ -272,6 +287,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             </table>
           </div></>}
         </div>
+      </>}
       </DialogContent>
       <ViewTranscript
         open={showTranscript || showMessageTranscript?.open}
