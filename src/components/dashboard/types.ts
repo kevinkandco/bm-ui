@@ -15,6 +15,7 @@ export interface SummaryMassage {
 	time?: string;
 	priority?: string;
   title?: string;
+  redirectLink?: string;
 }
 
 export interface Summary {
