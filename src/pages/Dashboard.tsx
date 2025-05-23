@@ -98,6 +98,9 @@ const Dashboard = () => {
 
   const getBriefs = useCallback(async (page = 1): Promise<void> => {
     try {
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
       const token = localStorage.getItem("token");
       if (!token) {
         navigate("/");
