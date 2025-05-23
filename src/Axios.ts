@@ -47,5 +47,9 @@ export function callApi(
     data: any = null,
     options: AxiosRequestConfig = {}
 ): Promise<AxiosResponse | false> {
-    return AxiosMiddleware(method, url, data, options);
+    return AxiosMiddleware(method, url, data, {
+        headers: {
+            "ngrok-skip-browser-warning": true
+        }
+    });
 }
