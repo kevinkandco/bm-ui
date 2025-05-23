@@ -48,7 +48,6 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     handleSeekMove,
   } = useAudioPlayer();
   const navigate = useNavigate();
-
   const getBriefs = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
@@ -157,7 +156,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                 {brief?.start_at || brief?.ended_at ? <p className="text-white/70 text-sm">{`${brief?.start_at} - ${brief?.ended_at} Updates`}</p> : null}
               </div>
               <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full">
-                {brief?.duration} summarized in {formatDuration(duration)}
+                {brief?.duration} summarized in {duration ? formatDuration(duration) : "0:00"}
               </span>
             </div>
             
@@ -197,7 +196,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                   <div className="text-green-400">Project Deadlines</div>
                   <div className="text-red-400">Urgent Email</div>
                 </div>
-                <div>{formatDuration(duration)}</div>
+                <div>{duration ? formatDuration(duration) : "0:00"}</div>
               </div>
             </div>
             
@@ -225,7 +224,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                 </Button>
               </div>
               
-              <span className="text-sm font-medium text-white">{formatDuration(duration)}</span>
+              <span className="text-sm font-medium text-white">{duration ? formatDuration(duration) : "0:00"}</span>
             </div>
             
             <div className="mt-4 text-right">
