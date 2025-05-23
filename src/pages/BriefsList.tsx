@@ -141,7 +141,7 @@ const BriefsList = () => {
             <h2 className="text-xl font-semibold text-text-primary mb-4">Recent Briefs</h2>
             
             <div className="space-y-1">
-              {briefs?.map((brief) => (
+              {briefs?.map((brief, index) => (
                 <div key={brief?.id}>
                   <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-all cursor-pointer">
                     <div className="flex items-center">
@@ -158,7 +158,7 @@ const BriefsList = () => {
                     </div>
                     <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button>
                   </div>
-                  {brief.id !== briefs.length && <Separator className="bg-border-subtle my-1" />}
+                  {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
                 </div>
               ))}
             </div>
