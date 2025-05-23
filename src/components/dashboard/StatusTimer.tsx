@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Clock, Headphones, Zap, Plane, X } from "lucide-react";
+import { Clock, Headphones, Zap, Plane, X, SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -295,6 +295,18 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, brief
             <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
               {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+
+              {onToggleFocusMode && (
+                <Button 
+                  onClick={onToggleFocusMode}
+                  variant="outline"
+                  size={isMobile ? "sm" : "default"}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                >
+                  <SquareArrowOutUpRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Sign Out</span>
+                </Button>
+              )}
               
               {onToggleFocusMode && (
                 <Button 
