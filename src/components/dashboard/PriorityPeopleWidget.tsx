@@ -17,7 +17,7 @@ const PriorityPeopleWidget = React.memo(({priorityPeople}: PriorityPeopleWidgetP
   return (
     <TooltipProvider>
       <div className="flex gap-1.5">
-        {priorityPeople?.map((person) => (
+        {priorityPeople?.slice(0,5)?.map((person) => (
           <Popover key={person?.name}>
             <PopoverTrigger asChild>
               <div className="relative cursor-pointer">
