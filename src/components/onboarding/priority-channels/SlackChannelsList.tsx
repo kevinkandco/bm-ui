@@ -1,10 +1,11 @@
 
 import { cn } from "@/lib/utils";
-import { Hash } from "lucide-react";
+import { Hash, Lock } from "lucide-react";
 import { useState } from "react";
+import { PriorityChannels } from "./types";
 
 interface SlackChannelsListProps {
-  slackChannels: string[];
+  slackChannels: PriorityChannels[];
   priorityChannels: string[];
   onSelectChannel: (channel: string) => void;
 }
@@ -26,20 +27,20 @@ export const SlackChannelsList = ({
       <div className="grid grid-cols-1 gap-1.5">
         {displayedChannels?.map(channel => (
           <button
-            key={channel}
-            onClick={() => onSelectChannel(channel)}
+            key={channel?.id}
+            onClick={() => onSelectChannel(channel?.name)}
             className={cn(
               "flex items-center justify-between py-2 px-3 rounded-lg border text-left",
-              priorityChannels.includes(channel)
+              priorityChannels.includes(channel?.name)
                 ? "bg-white/20 border-neon-mint/30 text-neon-mint"
                 : "bg-white/5 border-white/20 text-off-white hover:bg-white/10"
             )}
           >
             <div className="flex items-center gap-2">
-              <Hash size={16} className="text-neon-mint" />
-              <div className="font-medium">{channel}</div>
+              {channel?.channel_type ? <Lock size={16} className="text-neon-mint" /> : <Hash size={16} className="text-neon-mint" />}
+              <div className="font-medium">{channel?.name}</div>
             </div>
-            {priorityChannels.includes(channel) && (
+            {priorityChannels.includes(channel?.name) && (
               <div className="text-neon-mint text-sm">Added</div>
             )}
           </button>

@@ -14,6 +14,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   const {
     priorityChannels,
     slackChannels,
+    allSlackChannels,
     addChannel,
     selectChannel,
     removeChannel
@@ -24,8 +25,8 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   // Memoize filtered channels to prevent unnecessary recalculation
   const filteredChannels = useMemo(() => 
     searchQuery 
-      ? slackChannels.filter(channel => 
-          channel.toLowerCase().includes(searchQuery.toLowerCase()))
+      ? slackChannels?.filter(channel => 
+          channel?.name?.toLowerCase().includes(searchQuery.toLowerCase()))
       : slackChannels,
     [searchQuery, slackChannels]
   );
@@ -62,7 +63,8 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
           />
           
           <SelectedChannels 
-            channels={priorityChannels} 
+            channels={priorityChannels}
+            slackChannels={allSlackChannels} 
             onRemoveChannel={removeChannel} 
           />
         </div>

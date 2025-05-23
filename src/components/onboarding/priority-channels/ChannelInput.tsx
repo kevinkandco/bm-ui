@@ -3,12 +3,13 @@ import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Search, Hash } from "lucide-react";
+import { PriorityChannels } from "./types";
 
 interface ChannelInputProps {
   onAddChannel: (channel: string) => void;
   onSelectChannel: (channel: string) => void;
   existingChannels: string[];
-  availableChannels: string[];
+  availableChannels: PriorityChannels[];
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
 }
@@ -23,13 +24,13 @@ export const ChannelInput = ({
 }: ChannelInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<PriorityChannels[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Filter channels based on input
   useEffect(() => {
     if (inputValue) {
-      const filtered = availableChannels.filter(channel => channel.toLowerCase().includes(inputValue.toLowerCase()));
+      const filtered = availableChannels.filter(channel => channel?.name?.toLowerCase().includes(inputValue.toLowerCase()));
       setSearchResults(filtered);
     } else {
       setSearchResults([]);
@@ -93,11 +94,11 @@ export const ChannelInput = ({
             className="pl-10 bg-white/15 border-white/20 text-off-white placeholder:text-white/50 h-12" 
           />
           
-          {isInputFocused && searchResults.length > 0 && <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
-              {searchResults.map(channel => <div key={channel} onClick={() => selectChannel(channel)} className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 cursor-pointer">
+          {isInputFocused && searchResults?.length > 0 && <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+              {searchResults.map(channel => <div key={channel?.id} onClick={() => selectChannel(channel?.name)} className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 cursor-pointer">
                   <Hash size={14} className="text-white/80" />
-                  <span className="text-off-white">{channel}</span>
-                  {existingChannels.includes(channel) && <span className="text-xs text-neon-mint ml-auto">Added</span>}
+                  <span className="text-off-white">{channel?.name}</span>
+                  {existingChannels.includes(channel?.name) && <span className="text-xs text-neon-mint ml-auto">Added</span>}
                 </div>)}
             </div>}
         </div>
