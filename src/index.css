@@ -365,3 +365,20 @@
     transform: translateY(-8px) translateX(5px);
   }
 }
+
+
+/* For most browsers */
+.time-picker {
+  color: #fff /* Replace with your desired color (e.g., #ffffff for white) */
+}
+
+/* For WebKit browsers like Chrome/Safari */
+.time-picker::-webkit-datetime-edit-hour-field,
+.time-picker::-webkit-datetime-edit-minute-field,
+.time-picker::-webkit-datetime-edit-ampm-field {
+  color: #fff;
+}
+
+.time-picker::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Inverts the icon color (useful for dark backgrounds) */
+}

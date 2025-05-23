@@ -201,7 +201,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                 type="time"
                 value={dailySchedule.workdayStart}
                 onChange={(e) => updateDailySchedule('workdayStart', e.target.value)}
-                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey time-picker [&::-webkit-calendar-picker-indicator]:ml-[3.25rem]"
               />
               <p className="text-xs text-cool-slate">When do you typically start your workday?</p>
             </div>
@@ -216,7 +216,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                 type="time"
                 value={dailySchedule.workdayEnd}
                 onChange={(e) => updateDailySchedule('workdayEnd', e.target.value)}
-                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey time-picker [&::-webkit-calendar-picker-indicator]:ml-[3.25rem]"
               />
               <p className="text-xs text-cool-slate">When do you typically end your workday?</p>
             </div>
@@ -402,7 +402,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                     type="time"
                     value={brief.briefTime}
                     onChange={(e) => handleTimeChange(brief.id, e.target.value)}
-                    className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal"
+                    className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal time-picker [&::-webkit-calendar-picker-indicator]:ml-52"
                   />
                   <p className="text-xs text-cool-slate mt-2">
                     Your brief will be prepared and delivered at this time (in your local timezone)
