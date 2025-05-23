@@ -4,11 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import ProgressIndicator from "./ProgressIndicator";
-import { X, Plus, BellOff, Hash } from "lucide-react";
+import { X, Plus, BellOff, Hash, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Http from "@/Http";
 import suggestedTopicsData from '@/data/suggestedTopics.json';
 import { useNavigate } from "react-router-dom";
+import { PriorityChannels } from "./priority-channels/types";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -36,7 +37,7 @@ const IgnoreConfigStep = ({
   );
   const [inputValue, setInputValue] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<PriorityChannels[] | string[]>([]);
 
   const [ignoreChannels, setIgnoreChannels] = useState<string[]>(
     userData.ignoreChannels || []
@@ -52,7 +53,7 @@ const IgnoreConfigStep = ({
   const navigate = useNavigate();
 
   // Mock Slack channels - in a real app, these would be fetched from Slack API
-  const [slackChannels, setSlackChannels] = useState<string[] | []>([]);
+  const [slackChannels, setSlackChannels] = useState<PriorityChannels[] | null>(null);
   const [suggestedTopics] = useState(suggestedTopicsData.map((topic) => topic.name));
 
   const getAllChannel = async (): Promise<void> => {
@@ -69,7 +70,14 @@ const IgnoreConfigStep = ({
       const response = await Http.callApi("get",`${BaseURL}/api/slack/channels`);
 
       if (response) {
-        setSlackChannels(response?.data?.map((c: { name: any }) => c.name));
+        const allChannels: PriorityChannels[] = response.data;
+        const filtered = userData?.ignoreChannels?.map(
+          (channelName: string) => {
+            const Channel = allChannels.find((c) => c.name === channelName);
+            return Channel ? Channel : { id: channelName, name: channelName };
+          }
+        );
+        setSlackChannels(filtered);
       } else {
         console.error("Failed to fetch user data");
       }
@@ -90,27 +98,27 @@ const IgnoreConfigStep = ({
   // Filter channels based on input
   useEffect(() => {
     if (selectedTab === "channel" && isInputFocused) {
-      const filtered = slackChannels.filter((channel) =>
-        channel.toLowerCase().includes(inputValue.toLowerCase())
-      ).filter((channel) =>
-        !userData.priorityChannels.some(
-          (priority: string) => priority.toLowerCase() === channel.toLowerCase()
+      const filtered = slackChannels?.filter((channel) =>
+        channel?.name?.toLowerCase().includes(inputValue.toLowerCase())
+      )?.filter((channel) =>
+        !userData?.priorityChannels?.some(
+          (priority: string) => priority?.toLowerCase() === channel?.name?.toLowerCase()
         )
-      ).filter((channel) =>
-        !ignoreChannels.some(
-          (ignore: string) => ignore.toLowerCase() === channel.toLowerCase()
+      )?.filter((channel) =>
+        !ignoreChannels?.some(
+          (ignore: string) => ignore?.toLowerCase() === channel?.name?.toLowerCase()
         )
       );
       setSearchResults(filtered);
     }
      else if (selectedTab === "keyword" && isInputFocused) {
-      const filtered  = suggestedTopics.filter((topic) =>
-        topic.toLowerCase().includes(inputValue.toLowerCase())
-      ).filter((topic) =>
+      const filtered  = suggestedTopics?.filter((topic) =>
+        topic?.toLowerCase().includes(inputValue.toLowerCase())
+      )?.filter((topic) =>
         !userData.priorityTopics.some(
           (priority: string) => priority.toLowerCase() === topic.toLowerCase()
         )
-      ).filter((topic) =>
+      )?.filter((topic) =>
         !ignoreKeywords.some(
           (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
         )
@@ -129,7 +137,7 @@ const IgnoreConfigStep = ({
       if (ignoreChannels.includes(inputValue.trim())) {
         return;
       }
-
+      setSlackChannels((prev) => [...prev, {id: inputValue.trim(), name: inputValue.trim()}]);
       setIgnoreChannels((prev) => [...prev, inputValue.trim()]);
     } else if (selectedTab === "keyword") {
       // Check if keyword already exists
@@ -197,18 +205,20 @@ const IgnoreConfigStep = ({
 
   // Render selected items based on current tab
   const renderSelectedItems = () => {
+    
     if (selectedTab === "channel" && ignoreChannels.length > 0) {
+      const channels: PriorityChannels[] = slackChannels?.filter(channel => ignoreChannels?.includes(channel?.name));
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
-          {ignoreChannels.map((channel) => (
+          {channels?.map((channel) => (
             <div
-              key={channel}
+              key={channel?.id}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white"
             >
-              <Hash size={14} className="text-glass-blue/80" />
-              <span>{channel}</span>
+              {channel?.channel_type ? <Lock size={16} className="text-glass-blue/80" /> : <Hash size={16} className="text-glass-blue/80" />}
+              <span>{channel?.name}</span>
               <button
-                onClick={() => removeItem("channel", channel)}
+                onClick={() => removeItem("channel", channel?.name)}
                 className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors"
               >
                 <X size={14} />
@@ -319,14 +329,14 @@ const IgnoreConfigStep = ({
 
                 {isInputFocused && searchResults.length > 0 && (
                   <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
-                    {searchResults.map((channel) => (
+                    {searchResults?.map((channel: PriorityChannels) => (
                       <div
-                        key={channel}
-                        onClick={() => selectChannel(channel)}
+                        key={channel.id}
+                        onClick={() => selectChannel(channel.name)}
                         className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
                       >
-                        <Hash size={14} className="text-glass-blue/80" />
-                        <span className="text-off-white">{channel}</span>
+                        {channel?.channel_type ? <Lock size={16} className="text-glass-blue/80" /> : <Hash size={16} className="text-glass-blue/80" />}
+                        <span className="text-off-white">{channel.name}</span>
                       </div>
                     ))}
                   </div>
