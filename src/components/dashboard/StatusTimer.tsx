@@ -10,36 +10,39 @@ interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   focusTime: number; //in seconds
   focusModeExitLoading: boolean;
+  isSignoff: boolean;
   briefSchedules: BriefSchedules[];
+  fetchDashboardData: () => void;
   onToggleCatchMeUp?: () => void;
   onToggleFocusMode?: () => void;
   onToggleSignOff?: () => void;
-  onToggleSignOffed?: () => void;
   onExitFocusMode?: () => void;
 }
 
-const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, briefSchedules, onToggleCatchMeUp, onToggleFocusMode, onToggleSignOff, onToggleSignOffed, onExitFocusMode }: StatusTimerProps) => {
+const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSignoff, briefSchedules, fetchDashboardData, onToggleCatchMeUp, onToggleFocusMode, onToggleSignOff, onExitFocusMode }: StatusTimerProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
   const [timeUntilNextBrief, setTimeUntilNextBrief] = useState<string>("00:00:00");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [focusTimeRemaining, setFocusTimeRemaining] = useState<string>("00:00:00");
+  const [hasExitedFocus, setHasExitedFocus] = useState(false);
   
   // For focus mode - default 30 minutes
   // const focusTime = 60; // 30 minutes in seconds
 
     useEffect(() => {
 			if (status === "focus") {
+        setHasExitedFocus(false);
 				setStartTime(Date.now());
 			}
-		}, [status]);
+		}, [status, focusTime]);
 
 		useEffect(() => {
 			if (status !== "focus") {
 				setStartTime(null);
 			}
-		}, [status]);
+		}, [status, focusTime]);
 
   
   // Calculate time until next brief (9AM tomorrow if after 8AM, otherwise 8AM today)
@@ -129,34 +132,35 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, brief
       if (status === "active" || status === "away") {
         setTimeUntilNextBrief(calculateTimeUntilNextBrief());
       } else if (status === "focus") {
-        setFocusTimeRemaining(calculateFocusTimeRemaining());
-        setTimeElapsed(`${focusTimeRemaining} remaining`);
+        const remaining = calculateFocusTimeRemaining();
+        setFocusTimeRemaining(remaining);
+        setTimeElapsed(`${remaining} remaining`);
+
+        if (remaining === "00:00:00" && !hasExitedFocus &&  onExitFocusMode) {
+          setHasExitedFocus(true);
+          onExitFocusMode();
+        }
       }
     }, 1000);
     
     // Only update the elapsed timer if the user is not active
-    if (status !== "active") {
-      const elapsedTimer = setInterval(() => {
+    const elapsedTimer = setInterval(() => {
+      if (startTime && status !== "active" && status !== "focus") {
         const now = Date.now();
-        const diff = Math.floor((now - startTime) / 1000); // seconds
-        
-        const hours = Math.floor(diff / 3600).toString().padStart(2, '0');
-        const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
-        const seconds = Math.floor(diff % 60).toString().padStart(2, '0');
-        
-        if (status !== "focus") {
-          setTimeElapsed(`${hours}:${minutes}:${seconds}`);
-        }
-      }, 1000);
-      
-      return () => {
-        clearInterval(elapsedTimer);
-        clearInterval(countdownTimer);
-      };
-    }
-    
-    return () => clearInterval(countdownTimer);
-  }, [startTime, status, calculateTimeUntilNextBrief, calculateFocusTimeRemaining, focusTimeRemaining]);
+        const diff = Math.floor((now - startTime) / 1000);
+        const hours = String(Math.floor(diff / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+        const seconds = String(diff % 60).padStart(2, '0');
+        setTimeElapsed(`${hours}:${minutes}:${seconds}`);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(countdownTimer);
+      clearInterval(elapsedTimer);
+    };
+
+  }, [startTime, status, calculateTimeUntilNextBrief, calculateFocusTimeRemaining, focusTimeRemaining, onExitFocusMode, hasExitedFocus]);
 
   // Calculate next brief time after focus mode
   const getNextBriefAfterFocus = () => {
@@ -239,17 +243,15 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, brief
               {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
 
-              {onToggleSignOffed && (
                 <Button 
-                  onClick={onToggleSignOffed}
                   variant="outline"
                   size={isMobile ? "sm" : "default"}
                   className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                  disabled
                 >
                   <Power className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Signed Off Today</span>
                 </Button>
-              )}
               
               {onToggleCatchMeUp && (
                 <Button 
