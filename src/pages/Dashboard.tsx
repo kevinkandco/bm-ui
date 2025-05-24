@@ -18,6 +18,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { BriefSchedules, PriorityPeople, Summary } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
+import Pagination from "@/components/dashboard/Pagination";
 import SignOff from "@/components/dashboard/SignOff";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
@@ -589,29 +590,3 @@ const Dashboard = () => {
 };
 
 export default React.memo(Dashboard);
-
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  return (
-    <div className="flex justify-center items-center gap-2 mt-6">
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={currentPage === 1}
-        onClick={() => onPageChange(currentPage - 1)}
-      >
-        Previous
-      </Button>
-      <span className="text-sm">
-        Page {currentPage} of {totalPages}
-      </span>
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={currentPage === totalPages}
-        onClick={() => onPageChange(currentPage + 1)}
-      >
-        Next
-      </Button>
-    </div>
-  );
-};

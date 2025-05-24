@@ -1,14 +1,33 @@
 
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Archive, Plus, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import Http from "@/Http";
+import { Summary } from "@/components/dashboard/types";
+import Pagination from "@/components/dashboard/Pagination";
+import BriefModal from "@/components/dashboard/BriefModal";
+
+const BaseURL = import.meta.env.VITE_API_HOST;
 
 const BriefsList = () => {
   const { toast } = useToast();
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [briefs, setBriefs] = useState<Summary[] | null>(null);
+  const navigate = useNavigate();
+  const [uiState, setUiState] = useState({
+    selectedBrief: null,
+    briefModalOpen: false
+  })
+
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    itemsPerPage: 2, // or whatever default you want
+  });
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -21,13 +40,73 @@ const BriefsList = () => {
     });
   };
 
-  const briefs = [
-    { id: 1, title: "Daily Update - May 14, 2025", date: "Today, 9:00 AM", unread: true },
-    { id: 2, title: "Weekly Summary - Week 20", date: "Yesterday, 5:30 PM", unread: false },
-    { id: 3, title: "Project Milestones - Q2", date: "May 12, 2025", unread: false },
-    { id: 4, title: "Team Performance Review", date: "May 10, 2025", unread: false },
-    { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false },
-  ];
+  // const briefs = [
+  //   { id: 1, title: "Daily Update - May 14, 2025", date: "Today, 9:00 AM", unread: true },
+  //   { id: 2, title: "Weekly Summary - Week 20", date: "Yesterday, 5:30 PM", unread: false },
+  //   { id: 3, title: "Project Milestones - Q2", date: "May 12, 2025", unread: false },
+  //   { id: 4, title: "Team Performance Review", date: "May 10, 2025", unread: false },
+  //   { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false },
+  // ];
+
+  const getBriefs = useCallback(async (page = 1): Promise<void> => {
+      try {
+  
+        window.scrollTo({ top: 0, behavior: "smooth" });
+  
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/");
+          return;
+        }
+        Http.setBearerToken(token);
+        const response = await Http.callApi("get", `${BaseURL}/api/summaries?page=${page}`);
+        if (response) {
+          setBriefs(response?.data?.data);
+          
+          setPagination(prev => ({
+            ...prev,
+            currentPage: response?.data?.meta?.current_page || 1,
+            totalPages: response?.data?.meta?.last_page || 1,
+          }));
+        } else {
+          console.error("Failed to fetch summaries data"); 
+          toast({
+            title: "Error",
+            description: "Failed to fetch summaries data.",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching summaries data:", error);
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong. Failed to fetch summaries data.";
+  
+        toast({
+          title: "Focus Mode Exit failed",
+          description: errorMessage,
+        });
+      }
+  }, [navigate, toast]);
+
+  useEffect(() => {
+    getBriefs(1);
+  }, [getBriefs]);
+
+  const handleOpenBrief = useCallback((briefId: number) => {
+    setUiState(prev => ({
+      ...prev,
+      selectedBrief: briefId,
+      briefModalOpen: true
+    }));
+  }, []);
+
+  const handleCloseBriefModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      briefModalOpen: false
+    }));
+  }, []);
 
   return (
     <DashboardLayout 
@@ -62,30 +141,42 @@ const BriefsList = () => {
             <h2 className="text-xl font-semibold text-text-primary mb-4">Recent Briefs</h2>
             
             <div className="space-y-1">
-              {briefs.map((brief) => (
-                <React.Fragment key={brief.id}>
+              {briefs?.map((brief, index) => (
+                <div key={brief?.id}>
                   <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-all cursor-pointer">
                     <div className="flex items-center">
                       <Archive className="h-5 w-5 text-accent-primary mr-3" />
                       <div>
                         <div className="flex items-center">
                           <h3 className="font-medium text-text-primary">{brief.title}</h3>
-                          {brief.unread && (
+                          {/* {brief.unread && (
                             <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full"></span>
-                          )}
+                          )} */}
                         </div>
-                        <p className="text-sm text-text-secondary">{brief.date}</p>
+                        <p className="text-sm text-text-secondary">{brief.summaryTime}</p>
                       </div>
                     </div>
-                    <Button size="sm" variant="ghost">View</Button>
+                    <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button>
                   </div>
-                  {brief.id !== briefs.length && <Separator className="bg-border-subtle my-1" />}
-                </React.Fragment>
+                  {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
+                </div>
               ))}
             </div>
           </div>
         </div>
+        {pagination.totalPages > 1 && (
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={getBriefs}
+          />
+        )}
       </div>
+      <BriefModal
+        open={uiState.briefModalOpen}
+        briefId={uiState.selectedBrief}
+        onClose={handleCloseBriefModal}
+      />
     </DashboardLayout>
   );
 };
