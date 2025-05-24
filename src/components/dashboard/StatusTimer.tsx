@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Clock, Headphones, Zap, Plane, X, SquareArrowOutUpRight } from "lucide-react";
+import { Clock, Headphones, Zap, Plane, X, SquareArrowOutUpRight, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -13,10 +13,12 @@ interface StatusTimerProps {
   briefSchedules: BriefSchedules[];
   onToggleCatchMeUp?: () => void;
   onToggleFocusMode?: () => void;
+  onToggleSignOff?: () => void;
+  onToggleSignOffed?: () => void;
   onExitFocusMode?: () => void;
 }
 
-const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, briefSchedules, onToggleCatchMeUp, onToggleFocusMode, onExitFocusMode }: StatusTimerProps) => {
+const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, briefSchedules, onToggleCatchMeUp, onToggleFocusMode, onToggleSignOff, onToggleSignOffed, onExitFocusMode }: StatusTimerProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
@@ -124,7 +126,7 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, brief
   useEffect(() => {
     // Update countdown timer
     const countdownTimer = setInterval(() => {
-      if (status === "active") {
+      if (status === "active" || status === "away") {
         setTimeUntilNextBrief(calculateTimeUntilNextBrief());
       } else if (status === "focus") {
         setFocusTimeRemaining(calculateFocusTimeRemaining());
@@ -218,19 +220,36 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, brief
       case "away":
         return (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
-            <div className="flex items-center">
-              <div className="bg-yellow-500 text-white p-2 rounded-full mr-2">
-                <Clock className="h-4 w-4" />
+            <div className="flex items-center gap-5">
+              <div className="flex items-center">
+                <div className="bg-yellow-500 text-white p-2 rounded-full mr-2">
+                  <Clock className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-medium text-text-primary">Away</h3>
+                  <p className="text-xs sm:text-sm text-text-secondary">{timeUntilNextBrief}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm sm:text-base font-medium text-text-primary">Away</h3>
-                <p className="text-xs sm:text-sm text-text-secondary">{timeElapsed}</p>
+              <div style={{  color: "#aaa" }} className="text-sm">
+                You’ve signed off for today.
               </div>
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
               {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+
+              {onToggleSignOffed && (
+                <Button 
+                  onClick={onToggleSignOffed}
+                  variant="outline"
+                  size={isMobile ? "sm" : "default"}
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                >
+                  <Power className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Signed Off Today</span>
+                </Button>
+              )}
               
               {onToggleCatchMeUp && (
                 <Button 
@@ -296,15 +315,15 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, brief
               {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
 
-              {onToggleFocusMode && (
+              {onToggleSignOff && (
                 <Button 
-                  onClick={onToggleFocusMode}
+                  onClick={onToggleSignOff}
                   variant="outline"
                   size={isMobile ? "sm" : "default"}
                   className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <SquareArrowOutUpRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Sign Out</span>
+                  <Power className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Sign Off Today</span>
                 </Button>
               )}
               

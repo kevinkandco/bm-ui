@@ -18,6 +18,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { BriefSchedules, PriorityPeople, Summary } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
+import SignOff from "@/components/dashboard/SignOff";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -52,6 +53,7 @@ const Dashboard = () => {
     priorityPeopleModalOpen: false,
     endFocusModalOpen: false,
     catchUpModalOpen: false,
+    SignOffModalOpen: false,
     userStatus: "active" as UserStatus
   });
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
@@ -424,6 +426,35 @@ const Dashboard = () => {
     }));
   }, []);
 
+  const handleOpenSignOffModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      SignOffModalOpen: true
+    }));
+  }, []);
+
+  const handleSignOffStart = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      SignOffModalOpen: false,
+      userStatus: "away" as UserStatus
+    }));
+  }, []);
+
+  const handleSignOffed = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      userStatus: "active" as UserStatus
+    }));
+  }, []);
+
+  const handleCloseSignOffModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      SignOffModalOpen: false
+    }));
+  }, []);
+
   // Memoized props to prevent unnecessary re-renders
   const layoutProps = useMemo(() => ({
     currentPage: "home", 
@@ -438,7 +469,8 @@ const Dashboard = () => {
     briefSchedules: briefSchedules,
     onToggleFocusMode: handleToggleFocusMode, 
     onToggleCatchMeUp: handleToggleCatchMeUp,
-    onExitFocusMode: handleExitFocusMode
+    onToggleSignOff: handleOpenSignOffModal,
+    onToggleSignOffed :handleSignOffed,
   }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, briefSchedules, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
 
   const briefsFeedProps = useMemo(() => ({
@@ -533,6 +565,11 @@ const Dashboard = () => {
         open={uiState.focusModeOpen}
         SaveChangesAndClose={handleStartFocusMode}
         onClose={handleFocusModeClose}
+      />
+      <SignOff 
+        open={uiState.SignOffModalOpen}
+        onConfirmSignOut={handleSignOffStart}
+        onClose={handleCloseSignOffModal}
       />
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
