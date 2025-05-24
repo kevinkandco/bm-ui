@@ -413,17 +413,16 @@ const Dashboard = () => {
       }
       Http.setBearerToken(token);
       await Http.callApi("post", `${BaseURL}/api/sign-off`);
-        toast({
-          title: "Sign Off Successful",
-          description: "Your sign off has been recorded successfully.",
-        });
-        fetchDashboardData();
-        setUiState((prev) => ({
-          ...prev,
-          isSignoff: true,
-          SignOffModalOpen: false,
-        }));
-      
+      toast({
+        title: "Sign Off Successful",
+        description: "Your sign off has been recorded successfully.",
+      });
+      fetchDashboardData();
+      setUiState((prev) => ({
+        ...prev,
+        isSignoff: true,
+        SignOffModalOpen: false,
+      }));
     } catch (error) {
       console.error("Error signing off:", error);
       const errorMessage =
