@@ -7,7 +7,7 @@ function AxiosMiddleware(
     url: string,
     data?: any,
     options?: AxiosRequestConfig
-): Promise<AxiosResponse | false> {
+): Promise<AxiosResponse> {
     switch (method) {
         case 'get':
             return axios.get(url, options);
@@ -28,12 +28,23 @@ function AxiosMiddleware(
 }
 
 axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
-        console.error(error);
-        return Promise.resolve(false);
+        if (axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            const message = error.response?.data?.message || error.message;
+            const data = error.response?.data;
+
+            const formattedError = {
+                name: "AxiosError",
+                message,
+                status,
+                data
+            };
+
+            throw formattedError; 
+        }
+        throw error;
     }
 );
 
@@ -46,6 +57,6 @@ export function callApi(
     url: string,
     data: any = null,
     options: AxiosRequestConfig = {}
-): Promise<AxiosResponse | false> {
+): Promise<AxiosResponse> {
     return AxiosMiddleware(method, url, data, options);
 }

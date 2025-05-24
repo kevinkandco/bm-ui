@@ -19,6 +19,7 @@ import { BriefSchedules, PriorityPeople, Summary } from "@/components/dashboard/
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
 import Pagination from "@/components/dashboard/Pagination";
+import SignOff from "@/components/dashboard/SignOff";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -53,6 +54,8 @@ const Dashboard = () => {
     priorityPeopleModalOpen: false,
     endFocusModalOpen: false,
     catchUpModalOpen: false,
+    isSignoff: false,
+    SignOffModalOpen: false,
     userStatus: "active" as UserStatus
   });
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
@@ -109,7 +112,6 @@ const Dashboard = () => {
       }
       Http.setBearerToken(token);
       const response = await Http.callApi("get", `${BaseURL}/api/summaries?page=${page}`);
-      if (response) {
         setBriefs(response?.data?.data);
         console.log(response, '11');
         
@@ -118,13 +120,6 @@ const Dashboard = () => {
           currentPage: response?.data?.meta?.current_page || 1,
           totalPages: response?.data?.meta?.last_page || 1,
         }));
-      } else {
-        console.error("Failed to fetch summaries data"); 
-        toast({
-          title: "Error",
-          description: "Failed to fetch summaries data.",
-        });
-      }
     } catch (error) {
       console.error("Error fetching summaries data:", error);
       const errorMessage =
@@ -148,21 +143,14 @@ const Dashboard = () => {
 			}
 			Http.setBearerToken(token);
 			const response = await Http.callApi("get",`${BaseURL}/api/dashboard`);
-			if (response) {
 				setUiState((prev) => ({
 					...prev,
-					userStatus: response?.data?.mode,
+					userStatus: response?.data?.mode === 'focus' ? 'focus' : response?.data?.sign_off ? 'away' : 'active',
+          isSignoff: response?.data?.sign_off || false,
 					focusTime: response?.data?.focusRemainingTime,
 				}));
         SetBriefSchedules(response?.data?.briefSchedules);
 				setPriorityPeople(response?.data?.priorityPeople);
-			} else {
-				console.error("Failed to fetch user data");
-        toast({
-          title: "Error",
-          description: "Failed to fetch user data.",
-        });
-			}
 		} catch (error) {
 			console.error("Error fetching user data:", error);
 
@@ -228,31 +216,16 @@ const Dashboard = () => {
 				return;
 			}
 			Http.setBearerToken(token);
-			const response = await Http.callApi(
+			await Http.callApi(
 				"get",
 				`${BaseURL}/api/exit-focus-mode`
 			);
-			if (response) {
-				toast({
-					title: "Focus Mode Deactivate",
-					description: `Focus mode Deactivate`,
-				});
-				setUiState((prev) => ({
-					...prev,
-					//   endFocusModalOpen: true,
-					userStatus: "active" as UserStatus,
-				}));
-				getBriefs();
-			} else {
-				console.error("Failed to fetch user data");
-
-				const errorMessage = "Focus mode Exit failed. please try again sometime later.";
-
-				toast({
-					title: "Focus Mode Exit Failed",
-					description: errorMessage,
-				});
-			}
+      toast({
+        title: "Focus Mode Deactivate",
+        description: `Focus mode Deactivate`,
+      });
+      fetchDashboardData();
+      getBriefs();
 		} catch (error) {
 			console.error("Error fetching user data:", error);
 			const errorMessage =
@@ -271,7 +244,7 @@ const Dashboard = () => {
 				focusModeExitLoading: false,
 			}));
 		}
-	}, [navigate, toast, getBriefs]);
+	}, [navigate, toast, getBriefs, fetchDashboardData]);
 
   // Optimized callbacks to prevent re-creation on each render
   const handleOpenBrief = useCallback((briefId: number) => {
@@ -425,6 +398,53 @@ const Dashboard = () => {
     }));
   }, []);
 
+  const handleOpenSignOffModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      SignOffModalOpen: true
+    }));
+  }, []);
+
+  const handleSignOffStart = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/");
+        return;
+      }
+      Http.setBearerToken(token);
+      await Http.callApi("post", `${BaseURL}/api/sign-off`);
+      toast({
+        title: "Sign Off Successful",
+        description: "Your sign off has been recorded successfully.",
+      });
+      fetchDashboardData();
+      setUiState((prev) => ({
+        ...prev,
+        isSignoff: true,
+        SignOffModalOpen: false,
+      }));
+    } catch (error) {
+      console.error("Error signing off:", error);
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong. Please try again later.";
+
+      toast({
+				title: "Focus Mode Exit failed",
+				description: errorMessage,
+			});
+    }
+  }, [toast, navigate, fetchDashboardData]);
+
+  const handleCloseSignOffModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      SignOffModalOpen: false
+    }));
+  }, []);
+
   // Memoized props to prevent unnecessary re-renders
   const layoutProps = useMemo(() => ({
     currentPage: "home", 
@@ -436,11 +456,14 @@ const Dashboard = () => {
     status: uiState.userStatus,
     focusTime: uiState.focusTime,
     focusModeExitLoading: uiState.focusModeExitLoading,
+    isSignoff: uiState.isSignoff,
     briefSchedules: briefSchedules,
+    fetchDashboardData: fetchDashboardData,
     onToggleFocusMode: handleToggleFocusMode, 
     onToggleCatchMeUp: handleToggleCatchMeUp,
+    onToggleSignOff: handleOpenSignOffModal,
     onExitFocusMode: handleExitFocusMode
-  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, briefSchedules, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
+  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, uiState.isSignoff, briefSchedules, fetchDashboardData, handleToggleFocusMode, handleToggleCatchMeUp, handleOpenSignOffModal, handleExitFocusMode ]);
 
   const briefsFeedProps = useMemo(() => ({
     briefs: briefs,
@@ -534,6 +557,11 @@ const Dashboard = () => {
         open={uiState.focusModeOpen}
         SaveChangesAndClose={handleStartFocusMode}
         onClose={handleFocusModeClose}
+      />
+      <SignOff 
+        open={uiState.SignOffModalOpen}
+        onConfirmSignOut={handleSignOffStart}
+        onClose={handleCloseSignOffModal}
       />
       <CatchMeUp 
         open={uiState.catchMeUpOpen}
