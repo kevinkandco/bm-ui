@@ -56,7 +56,7 @@ const IntegrationsStep = ({
       description: "Connect to your workspaces and channels",
     version: "V1"
   }, {
-      id: "gmail",
+      id: "google",
       name: "Gmail",
       icon: "G",
       available: true,
@@ -199,35 +199,92 @@ const IntegrationsStep = ({
 
 const [data, setData] = useState<UserData>({});
 
-  const toggleConnection = (id: string) => {
-    if (id === 'slack') {
-      if (data?.provider === 'slack') {
-          setConnected(prev => ({
-            ...prev,
-            [id]: !prev[id],
-          }));
-      } else {
-          window.open(`${BaseURL}/auth/redirect/slack`, "_self");
-      }
-    }
-    else if (id === 'gmail') {
-      if (data?.provider === 'google') {
-          setConnected(prev => ({
-            ...prev,
-            [id]: !prev[id],
-          }));
-      } else {
-          window.open(`${BaseURL}/auth/redirect/google`, "_self");
-      }
-    }
-    else {
-      if (!integrations.find((i) => i.id === id)?.available) return;
+  // const toggleConnection = (id: string) => {
+  //   if (id === 'slack') {
+  //     if (data?.provider === 'slack') {
+  //         setConnected(prev => ({
+  //           ...prev,
+  //           [id]: !prev[id],
+  //         }));
+  //     } else {
+  //         window.open(`${BaseURL}/auth/redirect/slack`, "_self");
+  //     }
+  //   }
+  //   else if (id === 'google') {
+  //     if (data?.provider === 'google' || connected.google) {
+  //         setConnected(prev => ({
+  //           ...prev,
+  //           [id]: !prev[id],  
+  //         }));
+  //     } else {
+  //         if (data?.system_integrations?.some((i) => i.provider_name === "Google")) {
+  //           setConnected(prev => ({
+  //           ...prev,
+  //           [id]: !prev[id],  
+  //         }));
+  //           return;
+  //         } 
+  //         window.open(`${BaseURL}/google/auth`, "_self");
+  //     }
+  //   }
+  //   else {
+  //     if (!integrations.find((i) => i.id === id)?.available) return;
+  //     setConnected((prev) => ({
+  //       ...prev,
+  //       [id]: !prev[id],
+  //     }));
+  //   }
+  // };
+
+  const toggleConnection = (id: Provider) => {
+  const lowerId = id.toLowerCase();
+
+  const openAuthUrl = (provider: Provider) => {
+    const urls: Record<Provider, string> = {
+      slack: `${BaseURL}/auth/redirect/slack`,
+      google: `${BaseURL}/google/auth`,
+      calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
+      outlook: `${BaseURL}/outlook/auth`,
+    };
+    window.open(urls[provider], "_self");
+  };
+
+  const isIntegrated = data?.system_integrations?.some(
+    (i) => i.provider_name.toLowerCase() === lowerId
+  );
+
+  const isConnected = connected[lowerId];
+
+  if (id === "slack") {
+    if (data?.provider === "slack" || isIntegrated || isConnected) {
       setConnected((prev) => ({
         ...prev,
         [id]: !prev[id],
       }));
+    } else {
+      openAuthUrl("slack");
     }
-  };
+  } else if (id === "google") {
+    if (data?.provider === "google" || isConnected || isIntegrated) {
+      setConnected((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+    } else {
+      openAuthUrl("google");
+    }
+  } else {
+    // for other providers like 'calendar', 'outlook'
+    const available = integrations.find((i) => i.id === id)?.available;
+    if (!available) return;
+
+    setConnected((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  }
+};
+  console.log(connected)
 
 const getUser = async (): Promise<void> => {
   try {
@@ -242,12 +299,23 @@ const getUser = async (): Promise<void> => {
 
     const response = await Http.callApi("get", `${BaseURL}/api/me`);
     if (response) {
-      setData(response.data);
-      if (response?.data?.provider) 
+      console.log(response.data.data?.system_integrations, '22222');
+      
+      setData(response.data?.data);
+      if (response?.data?.data?.system_integrations) {
+          const data = response.data.data.system_integrations.reduce(
+          (acc: Record<string, boolean>, integration: { provider_name: string }) => {
+            const key = integration.provider_name.toLowerCase() as string;
+            acc[key] = true;
+            return acc;
+          },
+          {}
+        ); 
           setConnected(prev => ({
             ...prev,
-            [response?.data?.provider]: true,
+            ...data
           }));
+        }
     } else {
       console.error("Failed to fetch user data");
     }
@@ -286,7 +354,7 @@ useEffect(() => {
     switch (id) {
       case "slack":
         return <Slack className="text-white" size={isMobile ? 16 : 20} />;
-      case "gmail":
+      case "google":
         return <Mail className="text-white" size={isMobile ? 16 : 20} />;
       case "outlook":
         return <Mail className="text-white" size={isMobile ? 16 : 20} />;

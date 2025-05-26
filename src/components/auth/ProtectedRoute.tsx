@@ -32,11 +32,9 @@ const ProtectedRoute = ({
       try {
         Http.setBearerToken(token);
         const response = await Http.callApi("get", `${BaseURL}/api/me`);
-
-        console.log("User data:", response);
-
-        if (response && response.data) {
-          verify(response.data, true);
+        
+        if (response && response.data && response.data.data) {
+          verify(response.data.data, true);
           setValidSession(true);
         } else {
           logout();
