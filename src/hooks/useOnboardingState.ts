@@ -29,6 +29,10 @@ export interface UserData {
 
   // Connected integrations
   integrations: any[];
+
+   // Timezone
+  timezone: string;
+  
   [key: string]: any;
 }
 
@@ -69,6 +73,9 @@ export const defaultUserData: UserData = {
 
   // Connected integrations
   integrations: [],
+
+  // Timezone (default to local timezone)
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 };
 
 export function useOnboardingState() {
