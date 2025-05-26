@@ -1,7 +1,13 @@
 import { memo } from "react";
 import { Button } from "../ui/button";
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   return (
     <div className="flex justify-center items-center gap-2 mt-6">
       <Button

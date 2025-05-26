@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
 import Http from "@/Http";
 import useAuthStore from "@/store/useAuthStore";
+import { useBriefStore } from "@/store/useBriefStore";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -32,7 +33,7 @@ const navItems = [{
   label: "Briefs",
   path: "/dashboard/briefs",
   id: "briefs",
-  badge: 3
+  badge: null
 }, {
   icon: CheckSquare,
   label: "Tasks",
@@ -74,55 +75,46 @@ const DashboardLayout = ({
   const isMobile = useIsMobile();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const {logout} = useAuthStore();
-  
+  const {getUnreadCount, unreadCount} = useBriefStore();
+
   // Close mobile nav when changing routes
   useEffect(() => {
     if (isMobile) {
       setMobileNavOpen(false);
     }
-  }, [currentPage, isMobile]);
-  
-  // const handleNavClick = useCallback((path: string) => {
-  //   navigate(path);
-  //   if (isMobile) {
-  //     setMobileNavOpen(false);
-  //   }
-  // }, [navigate, isMobile]);
+    getUnreadCount();
+    navItems[1].badge = unreadCount; 
+  }, [currentPage, isMobile, getUnreadCount, unreadCount]);
 
-  const handleNavClick = useCallback(
-    async (path: string, id: string) => {
-      if (id === "logout") {
-        try {
-          const token = localStorage.getItem("token");
-          if (!token) {
-            navigate("/");
-            return;
-          }
-          Http.setBearerToken(token);
-          const response = await Http.callApi(
-            "get",
-            `${BaseURL}/api/logout`);
-              if (response && response?.data?.message) {
-                logout();
-                navigate("/");
-              } else {
-                toast({
-                  title: "Error",
-                  description: "Failed to log out.",
-                  variant: "destructive",
-                });
-              }
+  const handleLogout = useCallback(async (path: string, id: string) => {
+    if (id === "logout") {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/");
+          return;
+        }
+        Http.setBearerToken(token);
+        await Http.callApi(
+          "get",
+          `${BaseURL}/api/logout`);
+        logout();
+        navigate("/");
         } catch (error) {
           console.error("Error fetching user data:", error);
+          toast({
+            title: "Error",
+            description: "Failed to log out. Please try again.",
+            variant: "destructive",
+          });
         }
         return;
-      }
-
-      navigate(path);
-      if (isMobile) {
-        setMobileNavOpen(false);
-      }
-  }, [navigate, isMobile]);
+    }
+    navigate(path);
+    if (isMobile) {
+      setMobileNavOpen(false);
+    }
+  }, [navigate, isMobile, logout, toast]);
 
   // Memoize sidebar classes to prevent recalculation on every render
   const sidebarClasses = useMemo(() => cn(
@@ -143,7 +135,7 @@ const DashboardLayout = ({
       {navItems.map(({ icon: Icon, label, path, id, badge }) => (
         <button
           key={id}
-          onClick={() => handleNavClick(path, id)}
+          onClick={() => handleLogout(path, id)}
           className={cn(
             "flex items-center px-4 py-3 text-sm relative transition-colors",
             currentPage === id 
@@ -161,7 +153,7 @@ const DashboardLayout = ({
         </button>
       ))}
     </div>
-  ), [sidebarOpen, currentPage, handleNavClick, isMobile]);
+  ), [sidebarOpen, currentPage, handleLogout, isMobile]);
 
   return (
     <div className="flex min-h-screen bg-surface relative">
@@ -262,7 +254,7 @@ const DashboardLayout = ({
         {navItems.slice(0, 5).map(({ icon: Icon, id, path }) => (
           <button
             key={id}
-            onClick={() => handleNavClick(path)}
+            onClick={() => handleLogout(path, id)}
             className={cn(
               "p-2 flex flex-col items-center justify-center",
               currentPage === id ? "text-accent-primary" : "text-text-secondary"

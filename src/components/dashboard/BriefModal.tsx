@@ -18,6 +18,7 @@ import Http from "@/Http";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import BriefLoadingSkeleton from "./BriefLoadingSkeleton";
+import { useBriefStore } from "@/store/useBriefStore";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -34,6 +35,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
   });
   const [brief, setBrief] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(false);
+  const {getUnreadCount} = useBriefStore();
   const {
     audioRef,
     isPlaying,
@@ -62,6 +64,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
       if (response) {
         setBrief(response?.data?.data);
+        getUnreadCount();
       } else {
         console.error("Failed to fetch summaries data");
       }

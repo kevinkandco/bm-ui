@@ -40,6 +40,7 @@ export interface Summary {
   taskCount?: number;
   summaryTime?: string;
   ended_at?: string;
+  read_at?: string | null;
   start_at?: string;
   slackMessageCount: number;
   emailCount: number;

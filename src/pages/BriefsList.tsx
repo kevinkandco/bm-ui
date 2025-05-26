@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Archive, Plus, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ const BriefsList = () => {
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
-    itemsPerPage: 2, // or whatever default you want
+    itemsPerPage: 2,
   });
 
   const handleToggleSidebar = () => {
@@ -39,14 +39,6 @@ const BriefsList = () => {
       description: "Opening brief creation form",
     });
   };
-
-  // const briefs = [
-  //   { id: 1, title: "Daily Update - May 14, 2025", date: "Today, 9:00 AM", unread: true },
-  //   { id: 2, title: "Weekly Summary - Week 20", date: "Yesterday, 5:30 PM", unread: false },
-  //   { id: 3, title: "Project Milestones - Q2", date: "May 12, 2025", unread: false },
-  //   { id: 4, title: "Team Performance Review", date: "May 10, 2025", unread: false },
-  //   { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false },
-  // ];
 
   const getBriefs = useCallback(async (page = 1): Promise<void> => {
       try {
@@ -102,11 +94,12 @@ const BriefsList = () => {
   }, []);
 
   const handleCloseBriefModal = useCallback(() => {
+    getBriefs(pagination.currentPage);
     setUiState(prev => ({
       ...prev,
       briefModalOpen: false
     }));
-  }, []);
+  }, [pagination.currentPage, getBriefs]);
 
   return (
     <DashboardLayout 
@@ -149,9 +142,9 @@ const BriefsList = () => {
                       <div>
                         <div className="flex items-center">
                           <h3 className="font-medium text-text-primary">{brief.title}</h3>
-                          {/* {brief.unread && (
+                          {!brief?.read_at && (
                             <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full"></span>
-                          )} */}
+                          )}
                         </div>
                         <p className="text-sm text-text-secondary">{brief.summaryTime}</p>
                       </div>
