@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BriefSchedules } from "./types";
+import { BriefSchedules, DailySchedule } from "./types";
 
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -12,6 +12,7 @@ interface StatusTimerProps {
   focusModeExitLoading: boolean;
   isSignoff: boolean;
   briefSchedules: BriefSchedules[];
+  dailySchedule: DailySchedule;
   fetchDashboardData: () => void;
   onToggleCatchMeUp?: () => void;
   onToggleFocusMode?: () => void;
@@ -19,7 +20,7 @@ interface StatusTimerProps {
   onExitFocusMode?: () => void;
 }
 
-const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSignoff, briefSchedules, fetchDashboardData, onToggleCatchMeUp, onToggleFocusMode, onToggleSignOff, onExitFocusMode }: StatusTimerProps) => {
+const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSignoff, briefSchedules,  dailySchedule, fetchDashboardData, onToggleCatchMeUp, onToggleFocusMode, onToggleSignOff, onExitFocusMode }: StatusTimerProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
@@ -48,7 +49,8 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
   // Calculate time until next brief (9AM tomorrow if after 8AM, otherwise 8AM today)
   const calculateTimeUntilNextBrief = useCallback(() => {
 		const schedule = briefSchedules[0]; // assume 1 schedule for now
-		const [briefHour, briefMinute] = schedule.briefTime.split(":").map(Number);
+    const workdayStart = dailySchedule?.workdayStart || "08:00";
+		const [hour, minute] = (status === "away" ? workdayStart :schedule.briefTime).split(":").map(Number);
 		const scheduledDays = schedule.days; // e.g., ["Monday", "Tuesday", ...]
 
 		const dayNameToIndex: Record<string, number> = {
@@ -70,7 +72,7 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
 		const getBriefTime = (offset: number) => {
 			const date = new Date(now);
 			date.setDate(date.getDate() + offset);
-			date.setHours(briefHour, briefMinute, 0, 0);
+			date.setHours(hour, minute, 0, 0);
 			return date;
 		};
 

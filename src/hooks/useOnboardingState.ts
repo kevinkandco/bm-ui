@@ -1,4 +1,4 @@
-import { BriefSchedules } from "@/components/dashboard/types";
+import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
 import Http from "@/Http";
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,11 +25,7 @@ export interface UserData {
   briefSchedules: BriefSchedules[];
 
   // Daily schedule
-  dailySchedule: {
-    workdayStart: string;
-    workdayEnd: string;
-    weekendMode: boolean;
-  };
+  dailySchedule: DailySchedule;
 
   // Connected integrations
   integrations: any[];

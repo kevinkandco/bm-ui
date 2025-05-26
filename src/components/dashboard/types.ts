@@ -1,12 +1,18 @@
 export interface BriefSchedules {
-    id: string;
-    name?: string;
-    deliveryMethod?: "email" | "audio" | "both";
-    scheduleTime: "morning" | "midday" | "evening" | "custom";
-    briefTime?: string;
-    enabled?: boolean;
-    days?: string[];
-  }
+  id: string;
+  name?: string;
+  deliveryMethod?: "email" | "audio" | "both";
+  scheduleTime: "morning" | "midday" | "evening" | "custom";
+  briefTime?: string;
+  enabled?: boolean;
+  days?: string[];
+}
+
+export interface DailySchedule {
+  workdayStart: string;
+  workdayEnd: string;
+  weekendMode: boolean;
+}
 
 export interface SummaryMassage {
 	platform?: string;

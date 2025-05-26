@@ -15,7 +15,7 @@ import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboar
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, PriorityPeople, Summary } from "@/components/dashboard/types";
+import { BriefSchedules, DailySchedule, PriorityPeople, Summary } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
 import Pagination from "@/components/dashboard/Pagination";
@@ -60,6 +60,7 @@ const Dashboard = () => {
   });
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
+  const [dailySchedule, setDailySchedule] = useState<DailySchedule | null>(null);
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
   const [pagination, setPagination] = useState({
       currentPage: 1,
@@ -149,6 +150,7 @@ const Dashboard = () => {
           isSignoff: response?.data?.sign_off || false,
 					focusTime: response?.data?.focusRemainingTime,
 				}));
+        setDailySchedule(response?.data?.dailySchedule);
         SetBriefSchedules(response?.data?.briefSchedules);
 				setPriorityPeople(response?.data?.priorityPeople);
 		} catch (error) {
@@ -458,12 +460,13 @@ const Dashboard = () => {
     focusModeExitLoading: uiState.focusModeExitLoading,
     isSignoff: uiState.isSignoff,
     briefSchedules: briefSchedules,
+    dailySchedule: dailySchedule,
     fetchDashboardData: fetchDashboardData,
     onToggleFocusMode: handleToggleFocusMode, 
     onToggleCatchMeUp: handleToggleCatchMeUp,
     onToggleSignOff: handleOpenSignOffModal,
     onExitFocusMode: handleExitFocusMode
-  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, uiState.isSignoff, briefSchedules, fetchDashboardData, handleToggleFocusMode, handleToggleCatchMeUp, handleOpenSignOffModal, handleExitFocusMode ]);
+  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, uiState.isSignoff, briefSchedules, dailySchedule, fetchDashboardData, handleToggleFocusMode, handleToggleCatchMeUp, handleOpenSignOffModal, handleExitFocusMode ]);
 
   const briefsFeedProps = useMemo(() => ({
     briefs: briefs,
