@@ -1,10 +1,6 @@
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
-import Http from "@/Http";
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
-
 
 export interface UserData {
   // Auth data
@@ -103,29 +99,6 @@ export function useOnboardingState() {
   const handleNext = useCallback(() => {
 		setCurrentStep((prev) => {
 			const nextStep = prev + 1;
-			if (nextStep == 10) {
-				try {
-					const token = localStorage.getItem("token");
-					if (!token) {
-						navigate("/");
-						return;
-					}
-					Http.setBearerToken(token);
-					const response = Http.callApi(
-						"post",
-						`${BaseURL}/api/slack/on-boarding`,
-						{ userData }
-					);
-					if (response) {
-						console.log(response, "response");
-						// setUserData(response);
-					} else {
-						console.error("Failed to fetch user data");
-					}
-				} catch (error) {
-					console.error("Error fetching user data:", error);
-				}
-			}
 			if (nextStep <= totalSteps + 1) {
 				// +1 because we have an extra step (sign-in)
 				window.scrollTo(0, 0);
@@ -135,7 +108,7 @@ export function useOnboardingState() {
 				return prev;
 			}
 		});
-	}, [totalSteps, userData]);
+	}, [totalSteps]);
 
   const handleBack = useCallback(() => {
     setCurrentStep((prev) => {

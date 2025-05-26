@@ -3,6 +3,11 @@ import ProgressIndicator from "./ProgressIndicator";
 import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
+import { useNavigate } from "react-router-dom";
+import Http from "@/Http";
+import { toast } from "@/hooks/use-toast";
+
+const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface GetStartedStepProps {
   onNext: () => void;
@@ -106,6 +111,32 @@ const GetStartedStep = ({
   const dividerClass = theme === 'light'
     ? 'divide-black/10'
     : 'divide-white/20';
+
+    const navigate = useNavigate();
+
+    const handleContinue = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            navigate("/");
+            return;
+          }
+          Http.setBearerToken(token);
+          await Http.callApi(
+            "post",
+            `${BaseURL}/api/slack/on-boarding`,
+            { userData }
+          );
+          onNext();
+        } catch (error) {
+          console.error("Error while setting up user data:", error);
+          toast({
+            title: "Error",
+            description: error?.message || "There was an error setting up your account. Please try again later.",
+            variant: "destructive",
+          });
+        }
+      };
   
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -188,7 +219,7 @@ const GetStartedStep = ({
           Back
         </Button>
         <Button 
-          onClick={onNext} 
+          onClick={handleContinue} 
           variant="glow" 
           size="pill"
           className="py-2 sm:py-3 px-3 sm:px-4 text-sm"
