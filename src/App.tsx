@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./hooks/use-theme";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ProtectedOnboardingRoute from "./components/auth/protectedOnboardingRoute";
 
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
@@ -64,7 +65,9 @@ const App = () => (
                 <Route element={<ProtectedRoute element="unprotected" />}>
                   <Route path="/" element={<Index />} />
                 </Route>
+                <Route element={<ProtectedOnboardingRoute />}>
                   <Route path="/onboarding" element={<Onboarding />} />
+                </Route>
                 <Route element={<ProtectedRoute element="protected" />}>
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/dashboard/briefs" element={<BriefsList />} />
