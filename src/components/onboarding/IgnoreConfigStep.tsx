@@ -103,7 +103,7 @@ const IgnoreConfigStep = ({
   useEffect(() => {
     if (selectedTab === "channel" && isInputFocused) {
       const filtered = slackChannels?.filter((channel) =>
-        channel?.name?.toLowerCase().includes(inputValue.toLowerCase())
+        channel?.name?.toLowerCase()?.includes(inputValue.toLowerCase())
       )?.filter((channel) =>
         !userData?.priorityChannels?.some(
           (priority: string) => priority?.toLowerCase() === channel?.name?.toLowerCase()
@@ -117,13 +117,13 @@ const IgnoreConfigStep = ({
     }
      else if (selectedTab === "keyword" && isInputFocused) {
       const filtered  = suggestedTopics?.filter((topic) =>
-        topic?.toLowerCase().includes(inputValue.toLowerCase())
+        topic?.toLowerCase()?.includes(inputValue.toLowerCase())
       )?.filter((topic) =>
-        !userData.priorityTopics.some(
+        !userData.priorityTopics?.some(
           (priority: string) => priority.toLowerCase() === topic.toLowerCase()
         )
       )?.filter((topic) =>
-        !ignoreKeywords.some(
+        !ignoreKeywords?.some(
           (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
         )
       );
@@ -134,18 +134,18 @@ const IgnoreConfigStep = ({
   }, [inputValue, isInputFocused, selectedTab, slackChannels, userData, suggestedTopics, ignoreKeywords, ignoreChannels]);
 
   const addItem = () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue?.trim()) return;
 
     if (selectedTab === "channel") {
       // Check if channel already exists
-      if (ignoreChannels.includes(inputValue.trim())) {
+      if (ignoreChannels?.includes(inputValue.trim())) {
         return;
       }
       setSlackChannels((prev) => [...prev, {id: inputValue.trim(), name: inputValue.trim()}]);
       setIgnoreChannels((prev) => [...prev, inputValue.trim()]);
     } else if (selectedTab === "keyword") {
       // Check if keyword already exists
-      if (ignoreKeywords.includes(inputValue.trim())) {
+      if (ignoreKeywords?.includes(inputValue.trim())) {
         return;
       }
 
@@ -175,9 +175,9 @@ const IgnoreConfigStep = ({
 
   const removeItem = (type: "channel" | "keyword", value: string) => {
     if (type === "channel") {
-      setIgnoreChannels((prev) => prev.filter((item) => item !== value));
+      setIgnoreChannels((prev) => prev?.filter((item) => item !== value));
     } else if (type === "keyword") {
-      setIgnoreKeywords((prev) => prev.filter((item) => item !== value));
+      setIgnoreKeywords((prev) => prev?.filter((item) => item !== value));
     }
   };
 
@@ -210,7 +210,7 @@ const IgnoreConfigStep = ({
   // Render selected items based on current tab
   const renderSelectedItems = () => {
     
-    if (selectedTab === "channel" && ignoreChannels.length > 0) {
+    if (selectedTab === "channel" && ignoreChannels?.length > 0) {
       const channels: PriorityChannels[] = slackChannels?.filter(channel => ignoreChannels?.includes(channel?.name));
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
@@ -231,10 +231,10 @@ const IgnoreConfigStep = ({
           ))}
         </div>
       );
-    } else if (selectedTab === "keyword" && ignoreKeywords.length > 0) {
+    } else if (selectedTab === "keyword" && ignoreKeywords?.length > 0) {
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
-          {ignoreKeywords.map((keyword) => (
+          {ignoreKeywords?.map((keyword) => (
             <div
               key={keyword}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white"
@@ -332,7 +332,7 @@ const IgnoreConfigStep = ({
                   className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70 w-full"
                 />
 
-                {isInputFocused && searchResults.length > 0 && (
+                {isInputFocused && searchResults?.length > 0 && (
                   <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
                     {searchResults?.map((channel: PriorityChannels) => (
                       <div
@@ -380,7 +380,7 @@ const IgnoreConfigStep = ({
                 className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70"
               />
 
-                {isInputFocused && searchResults.length > 0 && (
+                {isInputFocused && searchResults?.length > 0 && (
                   <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
                     {searchResults.map((topic) => (
                       <div
