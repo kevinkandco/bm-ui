@@ -48,7 +48,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     handleSeekStart,
     handleSeekEnd,
     handleSeekMove,
-  } = useAudioPlayer();
+  } = useAudioPlayer(brief?.audioPath ? BaseURL + brief?.audioPath : null);
   const navigate = useNavigate();
   const getBriefs = useCallback(async (): Promise<void> => {
     try {
@@ -189,7 +189,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                     }`}
                   />
                 ))}
-                <Audio audioSrc={BaseURL + brief?.audioPath} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
+                <Audio audioSrc={brief?.audioPath ? BaseURL + brief?.audioPath : null} audioRef={audioRef} handleTimeUpdate={handleTimeUpdate} />
               </div>
               
               <div className="flex justify-between text-xs text-deep-teal/70 mt-1">

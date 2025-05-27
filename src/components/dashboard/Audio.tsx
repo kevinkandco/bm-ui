@@ -25,6 +25,11 @@ const Audio = ({
 		};
 	}, [audioRef, handleTimeUpdate]);
 
+	if (!audioSrc) {
+		audioRef.current = null; // Reset the audioRef if no audioSrc is provided
+		return null; // Return null if audioSrc is not provided
+	}
+
 	return <audio ref={audioRef} src={audioSrc} className="hidden" />;
 };
 

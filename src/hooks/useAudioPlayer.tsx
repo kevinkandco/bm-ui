@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const useAudioPlayer = () => {
+const useAudioPlayer = (audioSrc: string | null) => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
@@ -11,6 +11,19 @@ const useAudioPlayer = () => {
 
 	const barRef = useRef<HTMLDivElement | null>(null);
 	const [isSeeking, setIsSeeking] = useState(false);
+
+	useEffect(() => {
+		if (!audioSrc) {
+			setCurrentTime(0);
+			setDuration(0);
+			setIsPlaying(false);
+			if (audioRef.current) {
+				audioRef.current.pause();
+				audioRef.current.currentTime = 0;
+			}
+		}
+	}, [audioSrc]);
+
 
 	const handleSeekStart = (e: React.MouseEvent) => {
 		setIsSeeking(true);
@@ -75,11 +88,12 @@ const useAudioPlayer = () => {
 	};
 
 	const formatDuration = (durationSeconds: number) => {
-		const minutes = Math.floor(durationSeconds / 60);
-		const seconds = Math.floor(durationSeconds % 60);
-		const formattedSeconds = seconds.toString().padStart(2, "0");
-		return `${minutes}:${formattedSeconds}`;
-	};
+	if (!isFinite(durationSeconds) || durationSeconds < 0) return "0:00";
+	const minutes = Math.floor(durationSeconds / 60);
+	const seconds = Math.floor(durationSeconds % 60);
+	const formattedSeconds = seconds.toString().padStart(2, "0");
+	return `${minutes}:${formattedSeconds}`;
+};
 
 	return {
 		audioRef,
