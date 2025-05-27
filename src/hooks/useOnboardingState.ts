@@ -82,20 +82,13 @@ export function useOnboardingState() {
   return storedStep && token ? parseInt(storedStep, 10) : 1;
 });
   const [showSuccess, setShowSuccess] = useState(false);
-  const [userData, setUserData] = useState<UserData>(defaultUserData);
-  console.log("currentStep in useOnboarding:", currentStep);
-
-
-  useEffect(() => {
+  const [userData, setUserData] = useState<UserData>(() => {
+  const token = localStorage.getItem("token");
     const storedData = localStorage.getItem("onboardingUserData");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData) as UserData;
-      setUserData(parsedData);
-    }
-  }, []);
-
-  
-
+    return storedData && token !== "null"
+      ? (JSON.parse(storedData) as UserData)
+      : defaultUserData;
+  });
   // The sign-in step is no longer counted in the total steps
   const totalSteps = 8;
 
@@ -119,7 +112,6 @@ export function useOnboardingState() {
 			const nextStep = prev + 1;
 			if (nextStep <= totalSteps + 1) {
 				// +1 because we have an extra step
-        console.log("Next step:", nextStep);
 				window.scrollTo(0, 0);
         localStorage.setItem("onboardingCurrentStep", nextStep.toString());
 				return nextStep;

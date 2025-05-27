@@ -332,7 +332,7 @@ const IgnoreConfigStep = ({
                   className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70 w-full"
                 />
 
-                {isInputFocused && searchResults?.length > 0 && (
+                {isInputFocused && searchResults &&searchResults?.length > 0 && (
                   <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
                     {searchResults?.map((channel: PriorityChannels) => (
                       <div
@@ -380,9 +380,9 @@ const IgnoreConfigStep = ({
                 className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70"
               />
 
-                {isInputFocused && searchResults?.length > 0 && (
+                {isInputFocused && searchResults && searchResults?.length > 0 && (
                   <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
-                    {searchResults.map((topic) => (
+                    {searchResults?.map((topic: string) => (
                       <div
                         key={topic}
                         onClick={() => selectKeyword(topic)}

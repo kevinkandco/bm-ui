@@ -45,6 +45,7 @@ const PriorityPeopleStep = memo(
         email: person.email,
         contactName: person.contactName,
         label: person.label,
+        avatar: person.avatar,
       }))
     );
 
