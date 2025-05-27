@@ -1,5 +1,5 @@
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export interface UserData {
   // Auth data
@@ -76,9 +76,24 @@ export const defaultUserData: UserData = {
 };
 
 export function useOnboardingState() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(() => {
+  const token = localStorage.getItem("token");
+  const storedStep = localStorage.getItem("onboardingCurrentStep");
+  return storedStep && token ? parseInt(storedStep, 10) : 1;
+});
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
+  console.log("currentStep in useOnboarding:", currentStep);
+
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("onboardingUserData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData) as UserData;
+      setUserData(parsedData);
+    }
+  }, []);
+
   
 
   // The sign-in step is no longer counted in the total steps
@@ -92,27 +107,35 @@ export function useOnboardingState() {
   }, []);
 
   const updateUserData = useCallback((data: Partial<UserData>) => {
-    setUserData((prev) => ({ ...prev, ...data }));
+    setUserData((prev) => {
+      const updatedData = { ...prev, ...data };
+      localStorage.setItem("onboardingUserData", JSON.stringify(updatedData));
+      return updatedData;
+    });
   }, []);
 
   const handleNext = useCallback(() => {
 		setCurrentStep((prev) => {
 			const nextStep = prev + 1;
 			if (nextStep <= totalSteps + 1) {
-				// +1 because we have an extra step (sign-in)
+				// +1 because we have an extra step
+        console.log("Next step:", nextStep);
 				window.scrollTo(0, 0);
+        localStorage.setItem("onboardingCurrentStep", nextStep.toString());
 				return nextStep;
 			} else {
 				setShowSuccess(true);
+        // localStorage.removeItem("onboardingCurrentStep");
 				return prev;
 			}
 		});
-	}, [totalSteps]);
+	}, []);
 
   const handleBack = useCallback(() => {
     setCurrentStep((prev) => {
       if (prev > 1) {
         window.scrollTo(0, 0);
+        localStorage.setItem("onboardingCurrentStep", (prev - 1).toString());
         return prev - 1;
       }
       return prev;
@@ -121,8 +144,14 @@ export function useOnboardingState() {
 
   const handleSkip = useCallback(() => {
     // Skip to final step
+    localStorage.setItem("onboardingCurrentStep", (totalSteps + 1).toString());
     setCurrentStep(totalSteps + 1); // +1 because we have an extra step (sign-in)
   }, [totalSteps]);
+
+  const gotoLogin = useCallback(() => {
+    localStorage.setItem("onboardingCurrentStep", "1");
+    setCurrentStep(1);
+  }, []);
 
   return {
     currentStep,
@@ -136,5 +165,6 @@ export function useOnboardingState() {
     handleNext,
     handleBack,
     handleSkip,
+    gotoLogin,
   };
 }

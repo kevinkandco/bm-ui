@@ -27,6 +27,7 @@ const OnboardingContent = memo(({
   handleComplete,
   totalSteps,
   getProgressStep,
+  gotoLogin
 }: {
   currentStep: number;
   showSuccess: boolean;
@@ -38,6 +39,7 @@ const OnboardingContent = memo(({
   handleComplete: () => void;
   totalSteps: number;
   getProgressStep: (step: number) => number;
+  gotoLogin: () => void;
 }) => {
   // Scroll to top when step changes for better mobile experience
   useEffect(() => {
@@ -74,6 +76,7 @@ const OnboardingContent = memo(({
           updateUserData={updateUserData}
           userData={userData}
           onSkip={handleSkip}
+          gotoLogin={gotoLogin}
         />
       );
     case 4:

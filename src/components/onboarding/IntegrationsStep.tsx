@@ -28,6 +28,7 @@ interface IntegrationsStepProps {
   onBack: () => void;
   onSkip: () => void;
   updateUserData: (data: any) => void;
+  gotoLogin: () => void;
   userData: {
     integrations: string[];
     [key: string]: any;
@@ -42,7 +43,8 @@ const IntegrationsStep = ({
   onBack,
   onSkip,
   updateUserData,
-  userData
+  userData,
+  gotoLogin
 }: IntegrationsStepProps) => {
   const isMobile = useIsMobile();
 
@@ -236,11 +238,11 @@ const [data, setData] = useState<UserData>({});
   //   }
   // };
 
-  const toggleConnection = (id: Provider) => {
+  const toggleConnection = (id: string) => {
   const lowerId = id.toLowerCase();
 
-  const openAuthUrl = (provider: Provider) => {
-    const urls: Record<Provider, string> = {
+  const openAuthUrl = (provider: string) => {
+    const urls: Record<string, string> = {
       slack: `${BaseURL}/auth/redirect/slack`,
       google: `${BaseURL}/google/auth`,
       calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
@@ -318,9 +320,19 @@ const getUser = async (): Promise<void> => {
         }
     } else {
       console.error("Failed to fetch user data");
-    }
+      if (response?.data?.message === "Unauthorized") {
+        // If unauthorized, redirect to login
+        localStorage.removeItem("token");
+        gotoLogin();
+      }
+    } 
   } catch (error) {
     console.error("Error fetching user data:", error);
+    if (error?.message === "Unauthenticated." || error?.response?.status === 401) {
+      // If unauthorized, redirect to login
+      localStorage.removeItem("token");
+      gotoLogin();
+    }
   }
 };
 
