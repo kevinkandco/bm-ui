@@ -8,10 +8,9 @@ export interface BriefSchedules {
   days?: string[];
 }
 
-export interface DailySchedule {
-  workdayStart: string;
-  workdayEnd: string;
-  weekendMode: boolean;
+export interface UserSchedule {
+  workday_start: string;
+  workday_end: string;
 }
 
 export interface SummaryMassage {

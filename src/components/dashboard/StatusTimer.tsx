@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BriefSchedules, DailySchedule } from "./types";
+import { BriefSchedules, UserSchedule } from "./types";
 
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -12,7 +12,7 @@ interface StatusTimerProps {
   focusModeExitLoading: boolean;
   isSignoff: boolean;
   briefSchedules: BriefSchedules[];
-  dailySchedule: DailySchedule;
+  userSchedule: UserSchedule;
   fetchDashboardData: () => void;
   onToggleCatchMeUp?: () => void;
   onToggleFocusMode?: () => void;
@@ -20,7 +20,7 @@ interface StatusTimerProps {
   onExitFocusMode?: () => void;
 }
 
-const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSignoff, briefSchedules,  dailySchedule, fetchDashboardData, onToggleCatchMeUp, onToggleFocusMode, onToggleSignOff, onExitFocusMode }: StatusTimerProps) => {
+const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSignoff, briefSchedules,  userSchedule, fetchDashboardData, onToggleCatchMeUp, onToggleFocusMode, onToggleSignOff, onExitFocusMode }: StatusTimerProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
@@ -49,7 +49,7 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
   // Calculate time until next brief (9AM tomorrow if after 8AM, otherwise 8AM today)
   const calculateTimeUntilNextBrief = useCallback(() => {
 		const schedule = briefSchedules[0]; // assume 1 schedule for now
-    const workdayStart = dailySchedule?.workdayStart || "08:00";
+    const workdayStart = userSchedule?.workday_start || "08:00";
 		const [hour, minute] = (status === "away" ? workdayStart :schedule.briefTime).split(":").map(Number);
 		const scheduledDays = schedule.days; // e.g., ["Monday", "Tuesday", ...]
 
@@ -95,7 +95,7 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
 
 		// fallback
 		return "00:00:00";
-	}, [briefSchedules]);
+	}, [userSchedule, briefSchedules, status]);
 
 	const formatDiff = (diffMs: number) => {
 		const diffSec = Math.floor(diffMs / 1000);
