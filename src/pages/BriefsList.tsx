@@ -1,5 +1,4 @@
-
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Archive, Plus, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -135,8 +134,8 @@ const BriefsList = () => {
             
             <div className="space-y-1">
               {briefs?.map((brief, index) => (
-                <div key={brief?.id}>
-                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-all cursor-pointer">
+                <React.Fragment key={brief?.id}>
+                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => handleOpenBrief(brief?.id)}>
                     <div className="flex items-center">
                       <Archive className="h-5 w-5 text-accent-primary mr-3" />
                       <div>
@@ -149,10 +148,10 @@ const BriefsList = () => {
                         <p className="text-sm text-text-secondary">{brief.summaryTime}</p>
                       </div>
                     </div>
-                    <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button>
+                    {/* <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button> */}
                   </div>
                   {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
-                </div>
+                </React.Fragment>
               ))}
             </div>
           </div>
