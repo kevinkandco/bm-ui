@@ -71,13 +71,17 @@ const IgnoreConfigStep = ({
 
       if (response) {
         const allChannels: PriorityChannels[] = response.data;
-        const filtered = userData?.ignoreChannels?.map(
-          (channelName: string) => {
-            const Channel = allChannels.find((c) => c.name === channelName);
-            return Channel ? Channel : { id: channelName, name: channelName };
-          }
-        );
-        setSlackChannels(filtered);
+
+        const extraChannels = userData?.ignoreChannels?.filter((channelName: string) => {
+          return !allChannels?.some((c) => c.name === channelName);
+        })?.map((channelName: string) => ({
+          id: channelName,
+          name: channelName
+        })) ?? [];
+
+        const combinedChannels = [...allChannels, ...extraChannels];
+
+        setSlackChannels(combinedChannels);
       } else {
         console.error("Failed to fetch user data");
       }
@@ -193,7 +197,7 @@ const IgnoreConfigStep = ({
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
-        setTimeout(() => setIsInputFocused(false), 100);
+        setTimeout(() => setIsInputFocused(false), 200);
       }
     };
 
@@ -320,6 +324,7 @@ const IgnoreConfigStep = ({
                   ref={inputRef}
                   id="ignore-channel"
                   placeholder="Enter channel name (e.g. #random)"
+                  autoComplete="off"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && addItem()}
@@ -367,6 +372,7 @@ const IgnoreConfigStep = ({
                 ref={inputRef}
                 id="ignore-keyword"
                 placeholder="Enter keyword to ignore"
+                autoComplete="off"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addItem()}
