@@ -13,16 +13,10 @@ import { Slack, Mail, Calendar } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "../../Http";
 import { useNavigate } from "react-router-dom";
+import { IntegrationOption } from "@/components/type";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
-interface IntegrationOption {
-  id: string;
-  name: string;
-  icon: string;
-  available: boolean;
-  description: string;
-  version: "V1" | "V2" | "V3" | "Future";
-}
+
 interface IntegrationsStepProps {
   onNext: () => void;
   onBack: () => void;
