@@ -1,6 +1,5 @@
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
-import { useState, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback } from "react";
 
 export interface UserData {
   // Auth data
@@ -31,6 +30,8 @@ export interface UserData {
   
   [key: string]: any;
 }
+
+const timezone: string = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export const defaultUserData: UserData = {
   // Auth data
@@ -71,15 +72,13 @@ export const defaultUserData: UserData = {
   integrations: [],
 
   // Timezone (default to local timezone)
-  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  timezone: timezone === 'Asia/Calcutta' ? 'Asia/Kolkata' : timezone,
 };
 
 export function useOnboardingState() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
-  console.log(userData, 'rrr');  
-  const navigate = useNavigate();
   
 
   // The sign-in step is no longer counted in the total steps
