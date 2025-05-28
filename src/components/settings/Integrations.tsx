@@ -19,7 +19,7 @@ interface UserData {
 const Integrations = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
-  const { gotoLogin } = useAuthStore();
+  const { user, gotoLogin } = useAuthStore();
 
   const [integrations] = useState<IntegrationOption[]>([
     // V1 integrations
@@ -150,23 +150,118 @@ const Integrations = () => {
 
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [provider, setProvider] = useState<{id: number, name: string} | null>(null);
 
   const [connected, setConnected] = useState<Record<string, boolean>>({});
 
   const [data, setData] = useState<UserData>({});
 
+  const handleOpenModal = (provider: string) => {
+    const id = data.find((p) => p.provider_name?.toLowerCase() === provider.toLowerCase())?.id;
+    setProvider({id, name: provider});
+    setIsOpen(true);
+  }
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  }
+
+  const handleDisconnect = async (provider: {id: number, name: string}) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        navigate("/");
+        return;
+      }
+
+      Http.setBearerToken(token);
+
+      const response = await Http.callApi(
+        "get",
+        `${BaseURL}/api/system-integrations/${provider.id}/disconnect`
+      );
+
+      if (response && response.data && response.data.success) {
+        toast({
+          title: "Disconnected Successfully",
+          description: `You have successfully disconnected from ${provider.name}.`,
+        });
+        getProvider();
+      } else {
+        throw new Error("Failed to disconnect");
+      }
+      
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error disconnecting integration:", error);
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong. Failed to Disconnect.";
+
+      toast({
+        title: "Failed to Disconnect",
+        description: errorMessage,
+      });
+    }
+  }
+
   const toggleConnection = (id: string) => {
     const lowerId = id.toLowerCase();
 
-    const openAuthUrl = (provider: string) => {
-      const urls: Record<string, string> = {
-        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
-        google: `${BaseURL}/google/auth?redirectURL=dashboard/settings`,
-        calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${BaseURL}/outlook/auth`,
-      };
-      window.open(urls[provider], "_self");
-    };
+    // const openAuthUrl = async (provider: string) => {
+      // const urls: Record<string, string> = {
+      //   slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
+      //   google: `${BaseURL}/google/auth?redirectURL=dashboard/settings&token=${localStorage.getItem("token")}`,
+      //   calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
+      //   outlook: `${BaseURL}/outlook/auth`,
+      // };
+      // window.open(urls[provider], "_self");
+    // };
+
+    const openAuthUrl = async (provider: string): Promise<void> => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        navigate("/");
+        return;
+      }
+
+      Http.setBearerToken(token);
+
+      const response = await Http.callApi("get", `${BaseURL}/api/system-integrations/login?provider=${provider}&user_id=${user?.id}&redirectURL=dashboard/settings`);
+      // if (response && response.data && response.data.data) {
+
+      //   setData(response.data.data);
+      //   const data = response.data.data.reduce(
+      //     (
+      //       acc: Record<string, boolean>,
+      //       integration: { provider_name: string }
+      //     ) => {
+      //       const key = integration.provider_name.toLowerCase() as string;
+      //       acc[key] = true;
+      //       return acc;
+      //     },
+      //     {}
+      //   );
+      //   setConnected((prev) => ({
+      //     ...prev,
+      //     ...data,
+      //   }));
+      // }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      if (
+        error?.message === "Unauthenticated." ||
+        error?.response?.status === 401
+      ) {
+        // If unauthorized, redirect to login
+        gotoLogin();
+      }
+    }
+  }
 
     const isIntegrated = data?.system_integrations?.some(
       (i) => i.provider_name.toLowerCase() === lowerId
@@ -204,7 +299,7 @@ const Integrations = () => {
     }
   };
 
-  const getUser = useCallback(async (): Promise<void> => {
+  const getProvider = useCallback(async (): Promise<void> => {
     try {
       const token = localStorage.getItem("token");
 
@@ -248,8 +343,8 @@ const Integrations = () => {
   }, [gotoLogin, navigate]);
   
   useEffect(() => {
-    getUser();
-  }, [getUser]);
+    getProvider();
+  }, [getProvider]);
 
   const groupedIntegrations = integrations.reduce((groups, integration) => {
     if (!groups[integration.version]) {
@@ -333,7 +428,7 @@ const Integrations = () => {
 
                 <div className="flex justify-center items-center ml-2">
                   {connected[integration.id] ? (
-                    <button type="button" onClick={() => toggleConnection(integration.id)} className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Disconnect</button>
+                    <button type="button" onClick={() => handleOpenModal(integration.id)} className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Disconnect</button>
                   ) : (
                     <button type="button" onClick={() => toggleConnection(integration.id)} className="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">Connect</button>
                   )}
@@ -367,7 +462,7 @@ const Integrations = () => {
           </div>
         </div>
       </div>
-      {/* <DisconnectModal /> */}
+      <DisconnectModal provider={provider} open={isOpen} onClose={handleCloseModal} onDisconnect={handleDisconnect}  />
     </div>
   );
 };
