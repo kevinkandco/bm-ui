@@ -150,7 +150,8 @@ const Onboarding = () => {
     handleSkip,
     setShowSuccess,
     totalSteps,
-    getProgressStep
+    getProgressStep,
+    gotoLogin
   } = useOnboardingState();
   
   const handleComplete = useCallback(() => {
@@ -190,6 +191,7 @@ const Onboarding = () => {
         handleComplete={handleComplete}
         totalSteps={totalSteps}
         getProgressStep={getProgressStep}
+        gotoLogin={gotoLogin}
       />
     </OnboardingLayout>
   );

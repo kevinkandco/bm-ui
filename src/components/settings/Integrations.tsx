@@ -1,12 +1,12 @@
-import TextInput from "./TextInput";
 import { useToast } from "@/hooks/use-toast";
-import SaveChangeButton from "./SaveChangeButton";
-import { Separator } from "@/components/ui/separator";
 import { Slack, Mail, Calendar } from "lucide-react";
 import { IntegrationOption } from "@/components/type";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Http from "@/Http";
+import useAuthStore from "@/store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -17,6 +17,7 @@ interface UserData {
 const Integrations = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { gotoLogin } = useAuthStore();
 
   const [integrations] = useState<IntegrationOption[]>([
     // V1 integrations
@@ -145,6 +146,8 @@ const Integrations = () => {
     },
   ]);
 
+  const navigate = useNavigate();
+
   const [connected, setConnected] = useState<Record<string, boolean>>({});
 
   const [data, setData] = useState<UserData>({});
@@ -198,7 +201,52 @@ const Integrations = () => {
     }
   };
 
-  // const hasAnyConnection = Object?.values(connected)?.some(value => value);
+  const getUser = useCallback(async (): Promise<void> => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        navigate("/");
+        return;
+      }
+
+      Http.setBearerToken(token);
+
+      const response = await Http.callApi("get", `${BaseURL}/api/me`);
+      if (response && response.data && response.data.data && response.data.data.system_integrations) {
+
+        setData(response.data.data);
+        const data = response.data.data.system_integrations.reduce(
+          (
+            acc: Record<string, boolean>,
+            integration: { provider_name: string }
+          ) => {
+            const key = integration.provider_name.toLowerCase() as string;
+            acc[key] = true;
+            return acc;
+          },
+          {}
+        );
+        setConnected((prev) => ({
+          ...prev,
+          ...data,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      if (
+        error?.message === "Unauthenticated." ||
+        error?.response?.status === 401
+      ) {
+        // If unauthorized, redirect to login
+        gotoLogin();
+      }
+    }
+  }, [gotoLogin, navigate]);
+  
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
 
   const groupedIntegrations = integrations.reduce((groups, integration) => {
     if (!groups[integration.version]) {
@@ -316,12 +364,6 @@ const Integrations = () => {
           </div>
         </div>
       </div>
-
-      <Separator className="bg-border-subtle my-8" />
-
-      <div className="mb-8"></div>
-
-      <SaveChangeButton onClick={handleSaveSettings} />
     </div>
   );
 };

@@ -280,9 +280,8 @@ const [data, setData] = useState<UserData>({});
     }));
   }
 };
-  console.log(connected)
 
-const getUser = async (): Promise<void> => {
+const getUser = useCallback(async (): Promise<void> => {
   try {
     const token = localStorage.getItem("token");
 
@@ -294,45 +293,45 @@ const getUser = async (): Promise<void> => {
     Http.setBearerToken(token);
 
     const response = await Http.callApi("get", `${BaseURL}/api/me`);
-    if (response) {
-      console.log(response.data.data?.system_integrations, '22222');
-      
-      setData(response.data?.data);
-      if (response?.data?.data?.system_integrations) {
-          const data = response.data.data.system_integrations.reduce(
-          (acc: Record<string, boolean>, integration: { provider_name: string }) => {
-            const key = integration.provider_name.toLowerCase() as string;
-            acc[key] = true;
-            return acc;
-          },
-          {}
-        ); 
-          setConnected(prev => ({
-            ...prev,
-            ...data
-          }));
-        }
-    } else {
-      console.error("Failed to fetch user data");
-      if (response?.data?.message === "Unauthorized") {
-        // If unauthorized, redirect to login
-        localStorage.removeItem("token");
-        gotoLogin();
-      }
-    } 
+    if (
+      response &&
+      response.data &&
+      response.data.data &&
+      response.data.data.system_integrations
+    ) {
+      setData(response.data.data);
+      const data = response.data.data.system_integrations.reduce(
+        (
+          acc: Record<string, boolean>,
+          integration: { provider_name: string }
+        ) => {
+          const key = integration.provider_name.toLowerCase() as string;
+          acc[key] = true;
+          return acc;
+        },
+        {}
+      );
+      setConnected((prev) => ({
+        ...prev,
+        ...data,
+      }));
+    }
   } catch (error) {
     console.error("Error fetching user data:", error);
-    if (error?.message === "Unauthenticated." || error?.response?.status === 401) {
+    if (
+      error?.message === "Unauthenticated." ||
+      error?.response?.status === 401
+    ) {
       // If unauthorized, redirect to login
       localStorage.removeItem("token");
       gotoLogin();
     }
   }
-};
+}, [gotoLogin, navigate]);
 
 useEffect(() => {
   getUser();
-}, []);
+}, [getUser]);
 
   const handleContinue = async() => {
     

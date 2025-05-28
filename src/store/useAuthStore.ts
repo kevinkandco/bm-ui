@@ -24,6 +24,7 @@ interface AuthStoreType {
 	verify: (user: AuthUser, status: boolean) => void;
 	logout: () => void;
 	setUser: (user: Partial<AuthUser>) => void;
+	gotoLogin: () => void;
 }
 
 const useAuthStore = create(
@@ -51,6 +52,12 @@ const useAuthStore = create(
 						? { ...state.user, ...partialUser }
 						: (partialUser as AuthUser),
 				})),
+			
+			gotoLogin: () => {
+				localStorage.removeItem("token");
+				window.location.href = "/";
+			}
+			
 		}),
 		{
 			name: "auth-storage", // name in localStorage
