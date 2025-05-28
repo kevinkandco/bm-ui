@@ -7,6 +7,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "@/Http";
 import useAuthStore from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
+import DisconnectModal from "./DisconnectModal";
+import { Button } from "../ui/button";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -147,6 +149,7 @@ const Integrations = () => {
   ]);
 
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const [connected, setConnected] = useState<Record<string, boolean>>({});
 
@@ -157,8 +160,8 @@ const Integrations = () => {
 
     const openAuthUrl = (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL}/auth/redirect/slack`,
-        google: `${BaseURL}/google/auth`,
+        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${BaseURL}/google/auth?redirectURL=dashboard/settings`,
         calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
         outlook: `${BaseURL}/outlook/auth`,
       };
@@ -178,17 +181,17 @@ const Integrations = () => {
           [id]: !prev[id],
         }));
       // } else {
-        // openAuthUrl("slack");
+      //   openAuthUrl("slack");
       // }
     } else if (id === "google") {
-      // if (data?.provider === "google" || isConnected || isIntegrated) {
+      if (data?.provider === "google" || isConnected || isIntegrated) {
         setConnected((prev) => ({
           ...prev,
           [id]: !prev[id],
         }));
-      // } else {
-      //   openAuthUrl("google");
-      // }
+      } else {
+        openAuthUrl("google");
+      }
     } else {
       // for other providers like 'calendar', 'outlook'
       const available = integrations.find((i) => i.id === id)?.available;
@@ -212,11 +215,11 @@ const Integrations = () => {
 
       Http.setBearerToken(token);
 
-      const response = await Http.callApi("get", `${BaseURL}/api/me`);
-      if (response && response.data && response.data.data && response.data.data.system_integrations) {
+      const response = await Http.callApi("get", `${BaseURL}/api/system-integrations`);
+      if (response && response.data && response.data.data) {
 
         setData(response.data.data);
-        const data = response.data.data.system_integrations.reduce(
+        const data = response.data.data.reduce(
           (
             acc: Record<string, boolean>,
             integration: { provider_name: string }
@@ -297,7 +300,7 @@ const Integrations = () => {
             {groupedIntegrations.V1?.map((integration) => (
               <div
                 key={integration.id}
-                onClick={() => toggleConnection(integration.id)}
+                
                 className={cn(
                   "integration-list-item flex items-center py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg cursor-pointer transition-all duration-300",
                   connected[integration.id]
@@ -328,11 +331,11 @@ const Integrations = () => {
                   )}
                 </div>
 
-                <div className="ml-2">
-                  {connected[integration.id] && (
-                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-electric-teal/20 text-text-primary whitespace-nowrap font-medium dark:text-white">
-                      Connected ✓
-                    </span>
+                <div className="flex justify-center items-center ml-2">
+                  {connected[integration.id] ? (
+                    <button type="button" onClick={() => toggleConnection(integration.id)} className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Disconnect</button>
+                  ) : (
+                    <button type="button" onClick={() => toggleConnection(integration.id)} className="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">Connect</button>
                   )}
                 </div>
               </div>
@@ -364,6 +367,7 @@ const Integrations = () => {
           </div>
         </div>
       </div>
+      {/* <DisconnectModal /> */}
     </div>
   );
 };

@@ -24,7 +24,7 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
 
   const handleSignIn = (provider: "google" | "slack") => {
     try {
-      const url = provider === "google" ? `${BaseURL}/google/auth` : `${BaseURL}/auth/redirect/${provider}`;
+      const url = provider === "google" ? `${BaseURL}/google/auth?redirectURL=onboarding` : `${BaseURL}/auth/redirect/${provider}?redirectURL=onboarding`;
       window.open(url, "_self");
     } catch (error) {
       console.log(error);

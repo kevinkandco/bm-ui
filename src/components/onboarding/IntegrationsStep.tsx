@@ -237,8 +237,8 @@ const [data, setData] = useState<UserData>({});
 
   const openAuthUrl = (provider: string) => {
     const urls: Record<string, string> = {
-      slack: `${BaseURL}/auth/redirect/slack`,
-      google: `${BaseURL}/google/auth`,
+      slack: `${BaseURL}/auth/redirect/slack?redirect=onboarding`,
+      google: `${BaseURL}/google/auth?redirect=onboarding`,
       calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
       outlook: `${BaseURL}/outlook/auth`,
     };
@@ -292,15 +292,14 @@ const getUser = useCallback(async (): Promise<void> => {
 
     Http.setBearerToken(token);
 
-    const response = await Http.callApi("get", `${BaseURL}/api/me`);
+    const response = await Http.callApi("get", `${BaseURL}/api/system-integrations`);
     if (
       response &&
       response.data &&
-      response.data.data &&
-      response.data.data.system_integrations
+      response.data.data
     ) {
       setData(response.data.data);
-      const data = response.data.data.system_integrations.reduce(
+      const data = response.data.data.reduce(
         (
           acc: Record<string, boolean>,
           integration: { provider_name: string }
