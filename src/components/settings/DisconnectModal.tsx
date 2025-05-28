@@ -11,12 +11,13 @@ import { Button } from "@/components/ui/button";
 import { LogOut, X } from "lucide-react";
 
 interface SignOutModalProps {
+  provider: {id: number, name: string};
   open: boolean;
   onClose: () => void;
-  onConfirmSignOut: () => void;
+  onDisconnect: (provider: {id: number, name: string}) => void;
 }
 
-const DisconnectModal = ({ open, onClose, onConfirmSignOut }: SignOutModalProps) => {
+const DisconnectModal = ({ provider, open, onClose, onDisconnect }: SignOutModalProps) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-sm bg-background/80 backdrop-blur-xl border border-white/10">
@@ -40,7 +41,7 @@ const DisconnectModal = ({ open, onClose, onConfirmSignOut }: SignOutModalProps)
             Cancel
           </Button>
           <Button
-            onClick={onConfirmSignOut}
+            onClick={() => onDisconnect(provider)}
             className="bg-red-600 text-white hover:bg-red-700"
           >
             <LogOut className="mr-2 h-4 w-4" />
