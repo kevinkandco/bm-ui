@@ -237,8 +237,8 @@ const [data, setData] = useState<UserData>({});
 
   const openAuthUrl = (provider: string) => {
     const urls: Record<string, string> = {
-      slack: `${BaseURL}/auth/redirect/slack?redirect=onboarding`,
-      google: `${BaseURL}/google/auth?redirect=onboarding`,
+      slack: `${BaseURL}/auth/redirect/slack?redirectURL=onboarding`,
+      google: `${BaseURL}/google/auth?redirectURL=onboarding`,
       calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
       outlook: `${BaseURL}/outlook/auth`,
     };
