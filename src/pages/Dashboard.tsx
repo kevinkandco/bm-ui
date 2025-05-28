@@ -69,38 +69,6 @@ const Dashboard = () => {
     });
   const [searchParams] = useSearchParams();
 
-  // const getBriefs = useCallback(async (): Promise<void> => {
-	// 	try {
-	// 		const token = localStorage.getItem("token");
-	// 		if (!token) {
-	// 			navigate("/");
-	// 			return;
-	// 		}
-	// 		Http.setBearerToken(token);
-	// 		const response = await Http.callApi("get", `${BaseURL}/api/summaries`);
-	// 		if (response) {
-	// 			setBriefs(response?.data?.data);
-	// 		} else {
-	// 			console.error("Failed to fetch summaries data"); 
-  //       toast({
-  //         title: "Error",
-  //         description: "Failed to fetch summaries data.",
-  //       });
-	// 		}
-	// 	} catch (error) {
-	// 		console.error("Error fetching summaries data:", error);
-  //     const errorMessage =
-	// 			error?.response?.data?.message ||
-	// 			error?.message ||
-	// 			"Something went wrong. Failed to fetch summaries data.";
-
-	// 		toast({
-	// 			title: "Focus Mode Exit failed",
-	// 			description: errorMessage,
-	// 		});
-	// 	}
-	// }, [navigate, toast]);
-
   const getBriefs = useCallback(async (page = 1): Promise<void> => {
     try {
 
@@ -166,24 +134,6 @@ const Dashboard = () => {
 			});
 		}
 	}, [navigate, toast]);
-
-  // useEffect(() => {
-	// 	const tokenFromUrl = searchParams.get("token");
-
-	// 	if (tokenFromUrl) {
-	// 		localStorage.setItem("token", tokenFromUrl);
-	// 		const url = new URL(window.location.href);
-	// 		url.searchParams.delete("token");
-	// 		url.searchParams.delete("provider");
-	// 		window.history.replaceState(
-	// 			{},
-	// 			document.title,
-	// 			url.pathname + url.search
-	// 		);
-	// 	}
-	// 	fetchDashboardData();
-	// 	getBriefs();
-	// }, [navigate, searchParams, getBriefs, fetchDashboardData]);
 
   useEffect(() => {
   const tokenFromUrl = searchParams.get("token");
