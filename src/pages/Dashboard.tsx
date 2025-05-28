@@ -62,6 +62,7 @@ const Dashboard = () => {
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
+  const [isPending, setIsPending] = useState<boolean>(false);
   const [pagination, setPagination] = useState({
       currentPage: 1,
       totalPages: 1,
@@ -152,6 +153,16 @@ const Dashboard = () => {
   fetchDashboardData();
   getBriefs(1); 
 }, [navigate, searchParams, getBriefs, fetchDashboardData]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isPending) {
+      timer = setInterval(() => {
+        getBriefs(pagination.currentPage);
+      }, 3000); // Adjust the delay as needed
+    }
+    return () => clearInterval(timer);
+  }, [getBriefs, isPending, pagination.currentPage]);
 
    // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(async () => {
@@ -419,13 +430,9 @@ const Dashboard = () => {
 
   const briefsFeedProps = useMemo(() => ({
     briefs: briefs,
-    onOpenBrief: handleOpenBrief,
-    onCatchMeUp: handleToggleCatchMeUp,
-    onFocusMode: handleToggleFocusMode,
-    currentPage: pagination.currentPage,
-    totalPages: pagination.totalPages,
-    onPageChange: getBriefs,
-  }), [briefs, handleOpenBrief, handleToggleCatchMeUp, handleToggleFocusMode, pagination.currentPage, pagination.totalPages, getBriefs]);
+    setIsPending: setIsPending,
+    onOpenBrief: handleOpenBrief
+  }), [briefs, setIsPending, handleOpenBrief]);
 
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
