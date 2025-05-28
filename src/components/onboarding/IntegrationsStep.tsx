@@ -252,7 +252,7 @@ const [data, setData] = useState<UserData>({});
   const isConnected = connected[lowerId];
 
   if (id === "slack") {
-    if (data?.provider === "slack" || isIntegrated || isConnected) {
+    if (isIntegrated || isConnected) {
       setConnected((prev) => ({
         ...prev,
         [id]: !prev[id],
@@ -261,7 +261,7 @@ const [data, setData] = useState<UserData>({});
       openAuthUrl("slack");
     }
   } else if (id === "google") {
-    if (data?.provider === "google" || isConnected || isIntegrated) {
+    if (isConnected || isIntegrated) {
       setConnected((prev) => ({
         ...prev,
         [id]: !prev[id],
