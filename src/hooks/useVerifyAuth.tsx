@@ -45,6 +45,10 @@ function useVerifyAuth() {
         if (response?.data?.data) {
           verify(response.data.data, true);
           setValidSession(true);
+          if (response.data.data.is_onboard) {
+            localStorage.removeItem("onboardingUserData");
+            localStorage.removeItem("onboardingCurrentStep");
+          }
         } else {
           logout();
         }

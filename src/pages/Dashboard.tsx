@@ -114,7 +114,6 @@ const Dashboard = () => {
       Http.setBearerToken(token);
       const response = await Http.callApi("get", `${BaseURL}/api/summaries?page=${page}`);
         setBriefs(response?.data?.data);
-        console.log(response, '11');
         
         setPagination(prev => ({
           ...prev,
