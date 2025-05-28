@@ -8,7 +8,6 @@ import Http from "@/Http";
 import useAuthStore from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import DisconnectModal from "./DisconnectModal";
-import { Button } from "../ui/button";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -19,7 +18,7 @@ interface UserData {
 const Integrations = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
-  const { user, gotoLogin } = useAuthStore();
+  const { gotoLogin } = useAuthStore();
 
   const [integrations] = useState<IntegrationOption[]>([
     // V1 integrations
@@ -210,58 +209,15 @@ const Integrations = () => {
   const toggleConnection = (id: string) => {
     const lowerId = id.toLowerCase();
 
-    // const openAuthUrl = async (provider: string) => {
-      // const urls: Record<string, string> = {
-      //   slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
-      //   google: `${BaseURL}/google/auth?redirectURL=dashboard/settings&token=${localStorage.getItem("token")}`,
-      //   calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
-      //   outlook: `${BaseURL}/outlook/auth`,
-      // };
-      // window.open(urls[provider], "_self");
-    // };
-
-    const openAuthUrl = async (provider: string): Promise<void> => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        navigate("/");
-        return;
-      }
-
-      Http.setBearerToken(token);
-
-      const response = await Http.callApi("get", `${BaseURL}/api/system-integrations/login?provider=${provider}&user_id=${user?.id}&redirectURL=dashboard/settings`);
-      // if (response && response.data && response.data.data) {
-
-      //   setData(response.data.data);
-      //   const data = response.data.data.reduce(
-      //     (
-      //       acc: Record<string, boolean>,
-      //       integration: { provider_name: string }
-      //     ) => {
-      //       const key = integration.provider_name.toLowerCase() as string;
-      //       acc[key] = true;
-      //       return acc;
-      //     },
-      //     {}
-      //   );
-      //   setConnected((prev) => ({
-      //     ...prev,
-      //     ...data,
-      //   }));
-      // }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      if (
-        error?.message === "Unauthenticated." ||
-        error?.response?.status === 401
-      ) {
-        // If unauthorized, redirect to login
-        gotoLogin();
-      }
-    }
-  }
+    const openAuthUrl = async (provider: string) => {
+      const urls: Record<string, string> = {
+        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${BaseURL}/google/auth?redirectURL=dashboard/settings&token=${localStorage.getItem("token")}`,
+        calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${BaseURL}/outlook/auth`,
+      };
+      window.open(urls[provider], "_self");
+    };
 
     const isIntegrated = data?.system_integrations?.some(
       (i) => i.provider_name.toLowerCase() === lowerId
@@ -270,14 +226,14 @@ const Integrations = () => {
     const isConnected = connected[lowerId];
 
     if (id === "slack") {
-      // if (data?.provider === "slack" || isIntegrated || isConnected) {
+      if (data?.provider === "slack" || isIntegrated || isConnected) {
         setConnected((prev) => ({
           ...prev,
           [id]: !prev[id],
         }));
-      // } else {
-      //   openAuthUrl("slack");
-      // }
+      } else {
+        openAuthUrl("slack");
+      }
     } else if (id === "google") {
       if (data?.provider === "google" || isConnected || isIntegrated) {
         setConnected((prev) => ({
