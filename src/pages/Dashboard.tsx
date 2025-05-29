@@ -124,14 +124,15 @@ const Dashboard = () => {
 
   const getBrief = useCallback(
     async (briefId: number): Promise<false | Summary> => {
-      const response = await call("get", `/api/summary/${briefId}/show`, {
+      const response = await call("get", `/api/summary/${briefId}/status`, {
         showToast: true,
         toastTitle: "Failed to fetch brief",
         toastDescription: "Something went wrong while fetching the brief.",
         returnOnFailure: false, 
       });
+      console.log(response, 'fetch brief api');
 
-      return response?.status === "success" ? response : false;
+      return response?.data?.status === "success" ? response?.data : false;
     },
     [call]
   );
