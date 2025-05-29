@@ -5,18 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import Http from "@/Http";
 import { Summary } from "@/components/dashboard/types";
 import Pagination from "@/components/dashboard/Pagination";
 import BriefModal from "@/components/dashboard/BriefModal";
+import { useApi } from "@/hooks/useApi";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
 
 const BriefsList = () => {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
-  const navigate = useNavigate();
+  const { call } = useApi();
   const [uiState, setUiState] = useState({
     selectedBrief: null,
     briefModalOpen: false
@@ -40,45 +39,25 @@ const BriefsList = () => {
   };
 
   const getBriefs = useCallback(async (page = 1): Promise<void> => {
-      try {
-  
-        window.scrollTo({ top: 0, behavior: "smooth" });
-  
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/");
-          return;
-        }
-        Http.setBearerToken(token);
-        const response = await Http.callApi("get", `${BaseURL}/api/summaries?page=${page}`);
-        if (response) {
-          setBriefs(response?.data?.data);
-          
-          setPagination(prev => ({
-            ...prev,
-            currentPage: response?.data?.meta?.current_page || 1,
-            totalPages: response?.data?.meta?.last_page || 1,
-          }));
-        } else {
-          console.error("Failed to fetch summaries data"); 
-          toast({
-            title: "Error",
-            description: "Failed to fetch summaries data.",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching summaries data:", error);
-        const errorMessage =
-          error?.response?.data?.message ||
-          error?.message ||
-          "Something went wrong. Failed to fetch summaries data.";
-  
-        toast({
-          title: "Focus Mode Exit failed",
-          description: errorMessage,
-        });
-      }
-  }, [navigate, toast]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    const response = await call("get", `/api/summaries?page=${page}`, {
+      showToast: true,
+      toastTitle: "Failed to fetch summaries",
+      toastDescription: "Unable to load briefs. Please try again.",
+    });
+
+    if (response) {
+      setBriefs(response?.data);
+
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: response?.meta?.current_page || 1,
+        totalPages: response?.meta?.last_page || 1,
+      }));
+    }
+  }, [call]);
+
 
   useEffect(() => {
     getBriefs(1);

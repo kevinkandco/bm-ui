@@ -1,10 +1,8 @@
 
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
-import Http from "@/Http";
-import { useNavigate } from "react-router-dom";
+import { useApi } from "@/hooks/useApi";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
 
 export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [inputValue, setInputValue] = useState("");
@@ -13,48 +11,16 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [priorityPeople, setPriorityPeople] = useState<PriorityPerson[]>(initialPeople);
   const [suggestedContacts, setSuggestedContacts] = useState<Contact[] | null>(null);
   const [platformContacts, setPlatformContacts] = useState<Contact[] | null>(null);
-
-  const navigate = useNavigate();
-
-  
-  // Mock platform contacts for designation - moved to useMemo to prevent recreation on every render
-  // const platformContacts = useMemo<Contact[]>(() => [
-  //   { id: "p1", name: "Alex Johnson", email: "alex@company.com" },
-  //   { id: "p2", name: "Taylor Swift", email: "taylor@email.com" },
-  //   { id: "p3", name: "Kelsey Smith", email: "kelsey@personal.com" },
-  //   { id: "p4", name: "Jordan Lee", email: "jordan@client.com" },
-  //   { id: "p5", name: "Pat Wilson", email: "pat@partner.com" },
-  //   { id: "p6", name: "Robin Zhang", email: "robin@team.com" },
-  // ], []);
-  
-  // Suggested contacts - using actual contacts instead of roles
-  // const suggestedContacts = useMemo<Contact[]>(() => [
-  //   { id: "c1", name: "Morgan Freeman", email: "morgan@company.com" },
-  //   { id: "c2", name: "Emma Watson", email: "emma@company.com" },
-  //   { id: "c3", name: "Chris Evans", email: "chris@company.com" },
-  //   { id: "c4", name: "Jennifer Lopez", email: "jlo@email.com" },
-  //   { id: "c5", name: "Ryan Reynolds", email: "ryan@client.com" },
-  // ], []);
+  const { call } = useApi();
 
   const getContact = useCallback(async (): Promise<void> => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return;
-      }
-      Http.setBearerToken(token);
-      const response = await Http.callApi("get", `${BaseURL}/api/slack/dms/contacts`);
-      if (response) { 
-        setPlatformContacts(response?.data?.contacts);
-        setSuggestedContacts(response?.data?.contacts);
-      } else {
-        console.error("Failed to fetch user data");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    const response = await call("get", "/api/slack/dms/contacts");
+
+    if (response) {
+      setPlatformContacts(response?.contacts);
+      setSuggestedContacts(response?.contacts);
     }
-  }, [navigate]);
+  }, [call]);
 
   useEffect(() => {
 		getContact();

@@ -11,10 +11,9 @@ import {
 import { cn } from "@/lib/utils";
 import { Slack, Mail, Calendar } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import Http from "../../Http";
-import { useNavigate } from "react-router-dom";
 import { IntegrationOption } from "@/components/type";
 import { useToast } from "@/hooks/use-toast";
+import { useApi } from "@/hooks/useApi";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -158,43 +157,30 @@ const IntegrationsStep = ({
       description: "Monitor your service desk (coming soon)",
     version: "Future"
   }]);
-
-  const navigate = useNavigate();
+  
+  const { call } = useApi();
 
   const [loader, setLoader] = useState(false);
 
   const fetchChannels = useCallback(async (): Promise<void> => {
-      setLoader(true);
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/");
-          return;
-        }
-        Http.setBearerToken(token);
-        const response = await Http.callApi("get", `${BaseURL}/api/slack/fetch`);
-        if (response) { 
-          onNext();
-        } else {
-          console.error("Failed to fetch user data");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        const errorMessage =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Something went wrong. Failed to fetch Slack data.";
+    setLoader(true);
 
-        toast({
-          title: "Failed to fetch Slack data",
-          variant: "destructive",
-				  description: errorMessage,
-        })
-      } finally {
-        setLoader(false);
-      }
-    }, [navigate, toast, onNext]);
-  
+    const response = await call("get", "/api/slack/fetch", {
+      showToast: true,
+      toastTitle: "Failed to fetch Slack data",
+      toastVariant: "destructive",
+      toastDescription: "Something went wrong. Failed to fetch Slack data.",
+      returnOnFailure: false,
+    });
+
+    if (response) {
+      onNext();
+    } else {
+      console.error("Failed to fetch Slack data");
+    }
+
+    setLoader(false);
+  }, [call, onNext]);
 
   const [connected, setConnected] = useState<Record<string, boolean>>(userData.integrations.reduce((acc: Record<string, boolean>, id: string) => ({
         ...acc,
@@ -205,43 +191,6 @@ const IntegrationsStep = ({
   );
 
 const [data, setData] = useState<UserData>({});
-
-  // const toggleConnection = (id: string) => {
-  //   if (id === 'slack') {
-  //     if (data?.provider === 'slack') {
-  //         setConnected(prev => ({
-  //           ...prev,
-  //           [id]: !prev[id],
-  //         }));
-  //     } else {
-  //         window.open(`${BaseURL}/auth/redirect/slack`, "_self");
-  //     }
-  //   }
-  //   else if (id === 'google') {
-  //     if (data?.provider === 'google' || connected.google) {
-  //         setConnected(prev => ({
-  //           ...prev,
-  //           [id]: !prev[id],  
-  //         }));
-  //     } else {
-  //         if (data?.system_integrations?.some((i) => i.provider_name === "Google")) {
-  //           setConnected(prev => ({
-  //           ...prev,
-  //           [id]: !prev[id],  
-  //         }));
-  //           return;
-  //         } 
-  //         window.open(`${BaseURL}/google/auth`, "_self");
-  //     }
-  //   }
-  //   else {
-  //     if (!integrations.find((i) => i.id === id)?.available) return;
-  //     setConnected((prev) => ({
-  //       ...prev,
-  //       [id]: !prev[id],
-  //     }));
-  //   }
-  // };
 
   const toggleConnection = (id: string) => {
   const lowerId = id.toLowerCase();
@@ -293,51 +242,37 @@ const [data, setData] = useState<UserData>({});
 };
 
 const getUser = useCallback(async (): Promise<void> => {
-  try {
-    const token = localStorage.getItem("token");
+  const response = await call("get", "/api/settings/system-integrations", {
+    returnOnFailure: false,
+  });
 
-    if (!token) {
-      navigate("/");
-      return;
-    }
-
-    Http.setBearerToken(token);
-
-    const response = await Http.callApi("get", `${BaseURL}/api/settings/system-integrations`);
-    if (
-      response &&
-      response.data &&
-      response.data.data
-    ) {
-      setData(response.data.data);
-      const data = response.data.data.reduce(
-        (
-          acc: Record<string, boolean>,
-          integration: { provider_name: string }
-        ) => {
-          const key = integration.provider_name.toLowerCase() as string;
-          acc[key] = true;
-          return acc;
-        },
-        {}
-      );
-      setConnected((prev) => ({
-        ...prev,
-        ...data,
-      }));
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    if (
-      error?.message === "Unauthenticated." ||
-      error?.response?.status === 401
-    ) {
-      // If unauthorized, redirect to login
-      localStorage.removeItem("token");
-      gotoLogin();
-    }
+  if (!response) {
+    console.error("Failed to fetch user data");
+    // Handle unauthenticated case
+    localStorage.removeItem("token");
+    gotoLogin();
+    return;
   }
-}, [gotoLogin, navigate]);
+
+  if (response?.data) {
+    setData(response.data);
+    const data = response.data.reduce(
+      (
+        acc: Record<string, boolean>,
+        integration: { provider_name: string }
+      ) => {
+        const key = integration.provider_name.toLowerCase();
+        acc[key] = true;
+        return acc;
+      },
+      {}
+    );
+    setConnected((prev) => ({
+      ...prev,
+      ...data,
+    }));
+  }
+}, [call, gotoLogin]);
 
 useEffect(() => {
   getUser();

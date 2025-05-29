@@ -14,11 +14,10 @@ import Audio from "./Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import { Summary } from "./types";
 import ViewTranscript from "./ViewTranscript";
-import Http from "@/Http";
-import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import BriefLoadingSkeleton from "./BriefLoadingSkeleton";
 import { useBriefStore } from "@/store/useBriefStore";
+import { useApi } from "@/hooks/useApi";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -49,31 +48,25 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     handleSeekEnd,
     handleSeekMove,
   } = useAudioPlayer(brief?.audioPath ? BaseURL + brief?.audioPath : null);
-  const navigate = useNavigate();
+  const { call } = useApi();
   const getBrief = useCallback(async (): Promise<void> => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return;
-      }
-      
-      Http.setBearerToken(token);
-      const response = await Http.callApi("get",`${BaseURL}/api/summary/${briefId}/show`);
+    setLoading(true);
 
-      if (response) {
-        setBrief(response?.data?.data);
-        getUnreadCount();
-      } else {
-        console.error("Failed to fetch summaries data");
-      }
-    } catch (error) {
-      console.error("Error fetching summaries data:", error);
-    } finally {
-      setLoading(false);
+    const response = await call("get", `/api/summary/${briefId}/show`, {
+      showToast: true,
+      toastTitle: "Failed to fetch brief",
+      toastDescription: "Could not retrieve brief data.",
+      returnOnFailure: false,
+    });
+
+    if (response) {
+      setBrief(response?.data);
+      getUnreadCount();
     }
-  }, [navigate, briefId, getUnreadCount]);
+
+    setLoading(false);
+  }, [call, briefId, getUnreadCount]);
+
 
   useEffect(() => {
 		if (briefId) {

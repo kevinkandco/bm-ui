@@ -176,7 +176,7 @@ const Onboarding = () => {
             navigate("/dashboard");
             return;
         }
-    }, []);
+    }, [user?.is_onboard]);
 
   return (
     <OnboardingLayout>

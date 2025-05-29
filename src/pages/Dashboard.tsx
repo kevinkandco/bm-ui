@@ -152,7 +152,7 @@ const Dashboard = () => {
     }
     fetchDashboardData();
     getBriefs(1); 
-  }, [navigate, searchParams, getBriefs, fetchDashboardData]);
+  }, [searchParams, getBriefs, fetchDashboardData]);
 
   useEffect(() => {
     if (!briefs) return;

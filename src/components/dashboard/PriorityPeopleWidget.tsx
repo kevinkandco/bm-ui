@@ -1,10 +1,8 @@
 
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useNavigate } from "react-router-dom";
-import Http from "@/Http";
 import { PriorityPeople } from "./types";
 
 const BaseURL = import.meta.env.VITE_API_HOST;

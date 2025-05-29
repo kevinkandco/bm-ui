@@ -1,36 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
-import Http from "@/Http";
-import { useNavigate } from "react-router-dom";
 import { PriorityChannels } from "./types";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { useApi } from "@/hooks/useApi";
 
 export function usePriorityChannelsState(initialChannels: string[] = []) {
   const [priorityChannels, setPriorityChannels] = useState<string[]>(initialChannels);
-  const navigate = useNavigate();
   const [allSlackChannels, setAllSlackChannels] = useState<PriorityChannels[] | null>(null);
+  const { call } = useApi();
 
   const getAllChannel = useCallback(async (): Promise<void> => {
-    try {
-      const token = localStorage.getItem("token");
+    const response = await call("get", "/api/slack/channels");
 
-      if (!token) {
-        navigate("/");
-        return;
-      }
-
-      Http.setBearerToken(token);
-
-      const response = await Http.callApi("get",`${BaseURL}/api/slack/channels`);
-      if (response) {
-        setAllSlackChannels(response?.data);
-      } else {
-        console.error("Failed to fetch user data");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    if (response) {
+      setAllSlackChannels(response);
     }
-  }, [navigate]);
+  }, [call]);
+
 
   useEffect(() => {
     getAllChannel();

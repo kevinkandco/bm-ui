@@ -15,10 +15,8 @@ import { Zap, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
-import Http from "@/Http";
 import { useNavigate } from "react-router-dom";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { useApi } from "@/hooks/useApi";
 
 interface CatchMeUpProps {
   open: boolean;
@@ -34,6 +32,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const [detectedTime, setDetectedTime] = useState("3 hours");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { call } = useApi();
 
   useEffect(() => {
     // Simulate detection of offline time
@@ -42,50 +41,30 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   }, [open]);
 
   const handleGenerate = async () => {
-		const timeDescription =
-			timePeriod === "auto" ? detectedTime : `${customHours} hours`;
-		try {
-			setLoading(true);
-			const token = localStorage.getItem("token");
-			if (!token) {
-				setLoading(false);
-				navigate("/");
-				return;
-			}
-			Http.setBearerToken(token);
-			const response = await Http.callApi("post", `${BaseURL}/api/catch-me`, {
-				time_period:
-					timePeriod === "auto" ? parseInt(detectedTime) : customHours,
-			});
-			if (response) {
-				onClose();
-				toast({
-					title: "Create Summary",
-					description:
-						response?.data?.message || "Summary generated successfully.",
-				});
-			} else {
-				console.error("Failed to fetch user data");
-				toast({
-					title: "generate Summary failed",
-					description: "Summary generated failed. please try again sometime later.",
-				});
-			}
-		} catch (error) {
-			console.error("Error fetching user data:", error);
-			const errorMessage =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Summary generated failed. please try again sometime later.";
+    setLoading(true);
 
-			toast({
-				title: "generate Summary failed",
-				description: errorMessage,
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
+    const response = await call("post", "/api/catch-me", {
+      body: {
+        time_period: timePeriod === "auto" ? parseInt(detectedTime) : customHours,
+      },
+      showToast: true,
+      toastTitle: "Generate Summary failed",
+      toastDescription: "Summary generation failed. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false, // returns null on failure
+    });
+
+    setLoading(false);
+
+    if (response) {
+      onClose();
+      toast({
+        title: "Create Summary",
+        description:
+          response?.message || "Summary generated successfully.",
+      });
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

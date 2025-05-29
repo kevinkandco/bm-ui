@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,10 +6,9 @@ import { Switch } from "@/components/ui/switch";
 import ProgressIndicator from "./ProgressIndicator";
 import { X, Plus, BellOff, Hash, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Http from "@/Http";
 import suggestedTopicsData from '@/data/suggestedTopics.json';
-import { useNavigate } from "react-router-dom";
 import { PriorityChannels } from "./priority-channels/types";
+import { useApi } from "@/hooks/useApi";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -48,51 +47,40 @@ const IgnoreConfigStep = ({
   const [includeInSummary, setIncludeInSummary] = useState<boolean>(
     userData.includeIgnoredInSummary || false
   );
-
-  const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
-
   // Mock Slack channels - in a real app, these would be fetched from Slack API
   const [slackChannels, setSlackChannels] = useState<PriorityChannels[] | null>(null);
   const [suggestedTopics] = useState(suggestedTopicsData.map((topic) => topic.name));
 
-  const getAllChannel = async (): Promise<void> => {
-    try {
-      const token = localStorage.getItem("token");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { call } = useApi();
 
-      if (!token) {
-        navigate("/");
-        return;
-      }
+  const getAllChannel = useCallback(async (): Promise<void> => {
+    const response = await call("get", "/api/slack/channels");
 
-      Http.setBearerToken(token);
-
-      const response = await Http.callApi("get",`${BaseURL}/api/slack/channels`);
-
-      if (response) {
-        const allChannels: PriorityChannels[] = response.data;
-
-        const extraChannels = userData?.ignoreChannels?.filter((channelName: string) => {
-          return !allChannels?.some((c) => c.name === channelName);
-        })?.map((channelName: string) => ({
-          id: channelName,
-          name: channelName
-        })) ?? [];
-
-        const combinedChannels = [...allChannels, ...extraChannels];
-
-        setSlackChannels(combinedChannels);
-      } else {
-        console.error("Failed to fetch user data");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    if (!response) {
+      console.error("Failed to fetch Slack channels");
+      return;
     }
-  };
+
+    const allChannels: PriorityChannels[] = response;
+
+    const extraChannels =
+      userData?.ignoreChannels?.filter((channelName: string) => {
+        return !allChannels?.some((c) => c.name === channelName);
+      })?.map((channelName: string) => ({
+        id: channelName,
+        name: channelName,
+      })) ?? [];
+
+    const combinedChannels = [...allChannels, ...extraChannels];
+
+    setSlackChannels(combinedChannels);
+  }, [call, userData]);
+
 
   useEffect(() => {
     getAllChannel();
-  }, []);
+  }, [getAllChannel]);
 
   const hasSlackIntegration = userData.integrations?.some(
     (integration: any) =>

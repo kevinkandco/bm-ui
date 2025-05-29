@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import Http from "@/Http";
 import useAuthStore from "@/store/useAuthStore";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { useApi } from "./useApi";
 
 function useVerifyAuth() {
   const [searchParams] = useSearchParams();
   const [checked, setChecked] = useState(false);
   const [validSession, setValidSession] = useState(false);
   const { user, logout, verify } = useAuthStore();
+  const { call } = useApi();
 
   useEffect(() => {
     // Handle token from URL first
@@ -39,30 +38,30 @@ function useVerifyAuth() {
         return;
       }
 
-      try {
-        Http.setBearerToken(token);
-        const response = await Http.callApi("get", `${BaseURL}/api/me`);
-        if (response?.data?.data) {
-          verify(response.data.data, true);
-          setValidSession(true);
-          if (response.data.data.is_onboard) {
-            localStorage.removeItem("onboardingUserData");
-            localStorage.removeItem("onboardingCurrentStep");
-          }
-        } else {
-          logout();
+      const response = await call("get", "/api/me", {
+        showToast: false,
+        returnOnFailure: false,
+      });
+
+      if (response?.data) {
+        verify(response.data, true);
+        setValidSession(true);
+
+        if (response.data.is_onboard) {
+          localStorage.removeItem("onboardingUserData");
+          localStorage.removeItem("onboardingCurrentStep");
         }
-      } catch {
+      } else {
         logout();
-      } finally {
-        setChecked(true);
       }
+
+      setChecked(true);
     }
 
     // Add small delay to ensure URL token is processed
     const timer = setTimeout(verifyAuth, 50);
     return () => clearTimeout(timer);
-  }, [logout, verify, searchParams]); // Add searchParams as dependency
+  }, [logout, verify, searchParams, call]); // Add searchParams as dependency
 
   return { checked, validSession, user };
 }

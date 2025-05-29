@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Check, Plus, Search, Trash2, UserPlus, X } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useNavigate } from "react-router-dom";
-import Http from "@/Http";
 import { PriorityPeople } from "./types";
 
 interface PriorityPeopleModalProps {
@@ -30,54 +28,9 @@ interface PriorityPeopleModalProps {
 const BaseURL = import.meta.env.VITE_API_HOST;
 const PriorityPeopleModal = ({ open, onClose, priorityPeople, setPriorityPeople }: PriorityPeopleModalProps) => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [newPersonName, setNewPersonName] = useState("");
   const [newPersonTitle, setNewPersonTitle] = useState("");
-  
-  // Sample data with actual profile image URLs
-  // const [priorityPeople, setPriorityPeople] = useState([
-  //   { 
-  //     name: "Sandra Chen", 
-  //     title: "Product Manager", 
-  //     lastActivity: "15m ago", 
-  //     platform: "Email",
-  //     active: true,
-  //     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-  //   },
-  //   { 
-  //     name: "Alex Johnson", 
-  //     title: "Engineering Lead", 
-  //     lastActivity: "2h ago", 
-  //     platform: "Slack",
-  //     active: true,
-  //     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-  //   },
-  //   { 
-  //     name: "Michael Lee", 
-  //     title: "CEO", 
-  //     lastActivity: "1d ago", 
-  //     platform: "Calendar",
-  //     active: false,
-  //     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-  //   },
-  //   { 
-  //     name: "Taylor Swift", 
-  //     title: "Designer", 
-  //     lastActivity: "3h ago", 
-  //     platform: "Slack",
-  //     active: true,
-  //     image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-  //   },
-  //   { 
-  //     name: "Jamie Williams", 
-  //     title: "Marketing", 
-  //     lastActivity: "5h ago", 
-  //     platform: "Email",
-  //     active: true,
-  //     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-  //   }
-  // ]);
 
   const filteredPeople = priorityPeople?.filter(person => 
     (person?.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||

@@ -4,10 +4,10 @@ import { IntegrationOption } from "@/components/type";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import Http from "@/Http";
 import useAuthStore from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import DisconnectModal from "./DisconnectModal";
+import { useApi } from "@/hooks/useApi";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -150,10 +150,9 @@ const Integrations = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [provider, setProvider] = useState<{id: number, name: string} | null>(null);
-
   const [connected, setConnected] = useState<Record<string, boolean>>({});
-
   const [data, setData] = useState<UserData>({});
+  const { call } = useApi();
 
   const handleOpenModal = (provider: string) => {
     const id = data.find((p) => p.provider_name?.toLowerCase() === provider.toLowerCase())?.id;
@@ -165,46 +164,27 @@ const Integrations = () => {
     setIsOpen(false);
   }
 
-  const handleDisconnect = async (provider: {id: number, name: string}) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        navigate("/");
-        return;
+  const handleDisconnect = async (provider: { id: number; name: string }) => {
+    const response = await call(
+      "get",
+      `/api/settings/system-integrations/${provider.id}/disconnect`,
+      {
+        showToast: true,
+        toastTitle: "Failed to Disconnect",
+        toastDescription: `Could not disconnect from ${provider.name}.`,
       }
+    );
 
-      Http.setBearerToken(token);
-
-      const response = await Http.callApi(
-        "get",
-        `${BaseURL}/api/settings/system-integrations/${provider.id}/disconnect`
-      );
-
-      if (response && response.data && response.data.success) {
-        toast({
-          title: "Disconnected Successfully",
-          description: `You have successfully disconnected from ${provider.name}.`,
-        });
-        getProvider();
-      } else {
-        throw new Error("Failed to disconnect");
-      }
-      
-      handleCloseModal();
-    } catch (error) {
-      console.error("Error disconnecting integration:", error);
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong. Failed to Disconnect.";
-
+    if (response?.success) {
       toast({
-        title: "Failed to Disconnect",
-        description: errorMessage,
+        title: "Disconnected Successfully",
+        description: `You have successfully disconnected from ${provider.name}.`,
       });
+      getProvider();
+      handleCloseModal();
     }
-  }
+  };
+
 
   const toggleConnection = (id: string) => {
     const lowerId = id.toLowerCase();
@@ -256,47 +236,30 @@ const Integrations = () => {
   };
 
   const getProvider = useCallback(async (): Promise<void> => {
-    try {
-      const token = localStorage.getItem("token");
+    const response = await call("get", "/api/settings/system-integrations", {
+      showToast: false,
+      returnOnFailure: false,
+    });
 
-      if (!token) {
-        navigate("/");
-        return;
-      }
+    if (response?.data) {
+      setData(response.data);
 
-      Http.setBearerToken(token);
+      const data = response.data.reduce(
+        (acc: Record<string, boolean>, integration: { provider_name: string }) => {
+          const key = integration.provider_name.toLowerCase();
+          acc[key] = true;
+          return acc;
+        },
+        {}
+      );
 
-      const response = await Http.callApi("get", `${BaseURL}/api/settings/system-integrations`);
-      if (response && response.data && response.data.data) {
-
-        setData(response.data.data);
-        const data = response.data.data.reduce(
-          (
-            acc: Record<string, boolean>,
-            integration: { provider_name: string }
-          ) => {
-            const key = integration.provider_name.toLowerCase() as string;
-            acc[key] = true;
-            return acc;
-          },
-          {}
-        );
-        setConnected((prev) => ({
-          ...prev,
-          ...data,
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      if (
-        error?.message === "Unauthenticated." ||
-        error?.response?.status === 401
-      ) {
-        // If unauthorized, redirect to login
-        gotoLogin();
-      }
+      setConnected((prev) => ({
+        ...prev,
+        ...data,
+      }));
     }
-  }, [gotoLogin, navigate]);
+  }, [call]);
+
   
   useEffect(() => {
     getProvider();

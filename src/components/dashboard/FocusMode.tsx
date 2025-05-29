@@ -14,10 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { Headphones, Monitor, Wifi, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import Http from "@/Http";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { useApi } from "@/hooks/useApi";
 
 interface FocusModeProps {
   open: boolean;
@@ -27,6 +24,7 @@ interface FocusModeProps {
 
 const FocusMode = ({ open, onClose, SaveChangesAndClose }: FocusModeProps) => {
   const { toast } = useToast();
+  const { call } = useApi();
   const [focusTime, setFocusTime] = useState(30);
   const [options, setOptions] = useState({
     updateStatus: true,
@@ -35,55 +33,35 @@ const FocusMode = ({ open, onClose, SaveChangesAndClose }: FocusModeProps) => {
     enableDnd: true
   });
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
   const handleOptionChange = (key: keyof typeof options) => {
     setOptions(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleStartFocus = async () => {
-		try {
-			setLoading(true);
-			const token = localStorage.getItem("token");
-			if (!token) {
-				setLoading(false);
-				navigate("/");
-				return;
-			}
-			Http.setBearerToken(token);
-			const response = await Http.callApi(
-				"post",
-				`${BaseURL}/api/focus-mode`,
-				{...options, focusDuration: focusTime }
-			);
-			if (response) {
-				toast({
-					title: "Focus Mode Activated",
-					description: `Focus mode activated for ${focusTime} minutes`,
-				});
-				SaveChangesAndClose(focusTime);
-			} else {
-				console.error("Failed to fetch user data");
-        toast({
-					title: "Focus Mode Activation Failed",
-					description: "Focus mode activation failed. please try again sometime later.",
-				});
-			}
-		} catch (error) {
-			console.error("Error fetching user data:", error);
-			const errorMessage =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Focus mode activation failed. please try again sometime later.";
+    setLoading(true);
 
-			toast({
-				title: "Focus Mode Activation failed",
-				description: errorMessage,
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
+    const response = await call("post", "/api/focus-mode", {
+      body: { ...options, focusDuration: focusTime },
+      showToast: true,
+      toastTitle: "Focus Mode Activation Failed",
+      toastDescription: "Focus mode activation failed. please try again sometime later.",
+      toastVariant: "destructive",
+      returnOnFailure: false,
+    });
+
+    setLoading(false);
+
+    if (response) {
+      toast({
+        title: "Focus Mode Activated",
+        description: `Focus mode activated for ${focusTime} minutes`,
+        variant: "default",
+      });
+      SaveChangesAndClose(focusTime);
+    }
+  };
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

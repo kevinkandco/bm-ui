@@ -8,11 +8,9 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
-import Http from "@/Http";
 import useAuthStore from "@/store/useAuthStore";
 import { useBriefStore } from "@/store/useBriefStore";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { useApi } from "@/hooks/useApi";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -76,6 +74,7 @@ const DashboardLayout = ({
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const {logout} = useAuthStore();
   const {getUnreadCount, unreadCount} = useBriefStore();
+  const { call } = useApi();
 
   // Close mobile nav when changing routes
   useEffect(() => {
@@ -88,33 +87,25 @@ const DashboardLayout = ({
 
   const handleLogout = useCallback(async (path: string, id: string) => {
     if (id === "logout") {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/");
-          return;
-        }
-        Http.setBearerToken(token);
-        await Http.callApi(
-          "get",
-          `${BaseURL}/api/logout`);
+      const response = await call("get", "/api/logout", {
+        toastTitle: "Error",
+        toastDescription: "Failed to log out. Please try again.",
+        toastVariant: "destructive",
+      });
+
+      if (response) {
         logout();
         navigate("/");
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          toast({
-            title: "Error",
-            description: "Failed to log out. Please try again.",
-            variant: "destructive",
-          });
-        }
-        return;
+      }
+      return;
     }
+
     navigate(path);
     if (isMobile) {
       setMobileNavOpen(false);
     }
-  }, [navigate, isMobile, logout, toast]);
+  }, [navigate, isMobile, logout, call]);
+
 
   // Memoize sidebar classes to prevent recalculation on every render
   const sidebarClasses = useMemo(() => cn(

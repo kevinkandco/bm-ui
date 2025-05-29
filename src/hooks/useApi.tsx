@@ -7,8 +7,9 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 interface ApiCallOptions {
   showToast?: boolean;
   toastTitle?: string;
-  body?: any;
   toastDescription?: string;
+  toastVariant?: "default" | "destructive";
+  body?: any;
   returnOnFailure?: boolean; // whether to return false or throw
 }
 
@@ -23,6 +24,9 @@ export function useApi() {
       options: ApiCallOptions = {}
     ) => {
       try {
+        if (!BaseURL) {
+          throw new Error("VITE_API_HOST environment variable is missing");
+        }
         const token = localStorage.getItem("token");
         if (!token) {
           navigate("/");
@@ -43,6 +47,7 @@ export function useApi() {
         if (options?.showToast) {
           toast({
             title: options.toastTitle || "API Error",
+            variant: options.toastVariant || "default",
             description:
               error?.response?.data?.message ||
               error?.message ||

@@ -3,9 +3,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
-import { useNavigate } from "react-router-dom";
-import Http from "@/Http";
-import { toast } from "@/hooks/use-toast";
+import { useApi } from "@/hooks/useApi";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -28,7 +26,7 @@ const GetStartedStep = ({
   userData
 }: GetStartedStepProps) => {
   const { theme } = useTheme();
-  
+  const { call } = useApi();
   // Format time string to readable format (e.g., "09:00" to "9:00 AM")
   const formatTimeString = (timeStr: string) => {
     try {
@@ -112,31 +110,21 @@ const GetStartedStep = ({
     ? 'divide-black/10'
     : 'divide-white/20';
 
-    const navigate = useNavigate();
+  const handleContinue = async () => {
+    const response = await call("post", "/api/slack/on-boarding", {
+      body: { userData },
+      showToast: true,
+      toastTitle: "Error",
+      toastDescription: "There was an error setting up your account. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false,
+    });
 
-    const handleContinue = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          if (!token) {
-            navigate("/");
-            return;
-          }
-          Http.setBearerToken(token);
-          await Http.callApi(
-            "post",
-            `${BaseURL}/api/slack/on-boarding`,
-            { userData }
-          );
-          onNext();
-        } catch (error) {
-          console.error("Error while setting up user data:", error);
-          toast({
-            title: "Error",
-            description: error?.message || "There was an error setting up your account. Please try again later.",
-            variant: "destructive",
-          });
-        }
-      };
+    if (!response) return;
+
+    onNext();
+  };
+
   
   return (
     <div className="space-y-4 sm:space-y-6">
