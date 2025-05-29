@@ -14,6 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Http from "../../Http";
 import { useNavigate } from "react-router-dom";
 import { IntegrationOption } from "@/components/type";
+import { useToast } from "@/hooks/use-toast";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -41,6 +42,7 @@ const IntegrationsStep = ({
   gotoLogin
 }: IntegrationsStepProps) => {
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   const [integrations] = useState<IntegrationOption[]>([
     // V1 integrations
@@ -172,17 +174,26 @@ const IntegrationsStep = ({
         Http.setBearerToken(token);
         const response = await Http.callApi("get", `${BaseURL}/api/slack/fetch`);
         if (response) { 
-          console.log(response, 'fetch channel api');
-          
+          onNext();
         } else {
           console.error("Failed to fetch user data");
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
+        const errorMessage =
+				error?.response?.data?.message ||
+				error?.message ||
+				"Something went wrong. Failed to fetch Slack data.";
+
+        toast({
+          title: "Failed to fetch Slack data",
+          variant: "destructive",
+				  description: errorMessage,
+        })
       } finally {
         setLoader(false);
       }
-    }, []);
+    }, [navigate, toast, onNext]);
   
 
   const [connected, setConnected] = useState<Record<string, boolean>>(userData.integrations.reduce((acc: Record<string, boolean>, id: string) => ({
@@ -339,7 +350,6 @@ useEffect(() => {
       integrations: selectedIntegrations
     });
     await fetchChannels();
-    onNext();
   };
 
   const hasAnyConnection = Object.values(connected).some(value => value);
@@ -387,6 +397,11 @@ useEffect(() => {
 
       {/* Combined integrations list */}
       <div className="space-y-3 sm:space-y-4">
+        {loader && (
+            <p className="text-sm sm:text-base text-yellow-500 font-medium">
+              We are Fetching your Slack data, please wait a moment...
+            </p>
+        )}
         <h3 className="text-base sm:text-lg font-medium text-text-primary">Integrations</h3>
         <div className="flex flex-col space-y-1 sm:space-y-1.5">
           {/* Available integrations */}
