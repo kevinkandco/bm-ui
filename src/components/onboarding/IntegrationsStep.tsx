@@ -292,7 +292,7 @@ const getUser = useCallback(async (): Promise<void> => {
 
     Http.setBearerToken(token);
 
-    const response = await Http.callApi("get", `${BaseURL}/api/system-integrations`);
+    const response = await Http.callApi("get", `${BaseURL}/api/settings/system-integrations`);
     if (
       response &&
       response.data &&

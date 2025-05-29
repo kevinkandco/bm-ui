@@ -178,7 +178,7 @@ const Integrations = () => {
 
       const response = await Http.callApi(
         "get",
-        `${BaseURL}/api/system-integrations/${provider.id}/disconnect`
+        `${BaseURL}/api/settings/system-integrations/${provider.id}/disconnect`
       );
 
       if (response && response.data && response.data.success) {
@@ -266,7 +266,7 @@ const Integrations = () => {
 
       Http.setBearerToken(token);
 
-      const response = await Http.callApi("get", `${BaseURL}/api/system-integrations`);
+      const response = await Http.callApi("get", `${BaseURL}/api/settings/system-integrations`);
       if (response && response.data && response.data.data) {
 
         setData(response.data.data);
