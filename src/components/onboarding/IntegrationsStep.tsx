@@ -277,14 +277,17 @@ const getUser = useCallback(async (): Promise<void> => {
 useEffect(() => {
   getUser();
 }, [getUser]);
-
   const handleContinue = async() => {
     
     const selectedIntegrations = Object.entries(connected).filter(([_, isConnected]) => isConnected).map(([id]) => id);
     updateUserData({
       integrations: selectedIntegrations
     });
-    await fetchChannels();
+    if(connected['slack']) {
+      await fetchChannels();
+    } else {
+      onNext();
+    }
   };
 
   const hasAnyConnection = Object.values(connected).some(value => value);
