@@ -19,6 +19,9 @@ const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-text-primary text-lg font-medium">
           {brief?.title || "Slack Channel Updates"}
+          {!brief?.read_at && (
+            <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full"></span>
+          )}
         </h3>
         {isPending ? (
           <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
