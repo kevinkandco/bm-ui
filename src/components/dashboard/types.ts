@@ -39,6 +39,7 @@ export interface Summary {
   taskCount?: number;
   summaryTime?: string;
   status: "success" | "failed" | "pending";
+  error?: string;
   ended_at?: string;
   read_at?: string | null;
   start_at?: string;

@@ -1,6 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Summary } from "@/components/dashboard/types";
 import { MessageSquare, Mail, Calendar } from "lucide-react";
+import { useState } from "react";
+import ViewErrorMessage from "./ViewErrorMessage";
 
 interface BriefProps {
   brief: Summary;
@@ -8,9 +10,23 @@ interface BriefProps {
   handleOpenBrief?: (briefId: number, briefData: Summary) => void;
 }
 
+
 const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState<string>("");
+  
+  const handleClick = (message: string) => {
+    setOpen(true);
+    setMessage(message);
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
+    setMessage("");
+  }
   const success = !!handleOpenBrief;
   return (
+    <>
     <div
       key={brief?.id}
       className="py-6 transition-colors cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-md px-3"
@@ -34,7 +50,7 @@ const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
             {brief?.summaryTime || "Today at 10:00 AM"}
           </span>
         ) : (
-          <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+          <span onClick={() => handleClick(brief?.error)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
             Failed to generate the summary
           </span>
         )}
@@ -88,6 +104,8 @@ const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
         </div>
       )}
     </div>
+    <ViewErrorMessage open={open} onClose={handleClose} message={message} />
+    </>
   );
 };
 
