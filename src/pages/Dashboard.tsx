@@ -17,11 +17,9 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { BriefSchedules, UserSchedule, PriorityPeople, Summary } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
-import Http from "@/Http";
 import Pagination from "@/components/dashboard/Pagination";
 import SignOff from "@/components/dashboard/SignOff";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { useApi } from "@/hooks/useApi";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -42,6 +40,7 @@ interface PendingData {
 
 const Dashboard = () => {
   const { toast } = useToast();
+  const { call } = useApi();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   
@@ -74,125 +73,98 @@ const Dashboard = () => {
       itemsPerPage: 10, // or whatever default you want
     });
   const [searchParams] = useSearchParams();
+  const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
 
-  const getBriefs = useCallback(async (page = 1): Promise<void> => {
-    try {
 
+  const getBriefs = useCallback( async (page = 1): Promise<void> => {
       window.scrollTo({ top: 0, behavior: "smooth" });
 
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return;
-      }
-      Http.setBearerToken(token);
-      const response = await Http.callApi("get", `${BaseURL}/api/summaries?page=${page}`);
-        setBriefs(response?.data?.data);
-        
-        setPagination(prev => ({
-          ...prev,
-          currentPage: response?.data?.meta?.current_page || 1,
-          totalPages: response?.data?.meta?.last_page || 1,
-        }));
-    } catch (error) {
-      console.error("Error fetching summaries data:", error);
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong. Failed to fetch summaries data.";
-
-      toast({
-        title: "Focus Mode Exit failed",
-        description: errorMessage,
+      const response = await call("get", `/api/summaries?page=${page}`, {
+        showToast: true,
+        toastTitle: "Failed to fetch summaries",
+        toastDescription:
+          "Something went wrong. Failed to fetch summaries data.",
       });
-    }
-  }, [navigate, toast]);
 
-	const fetchDashboardData = useCallback(async () => {
-		try {
-			const token = localStorage.getItem("token");
-			if (!token) {
-				navigate("/");
-				return;
-			}
-			Http.setBearerToken(token);
-			const response = await Http.callApi("get",`${BaseURL}/api/dashboard`);
-				setUiState((prev) => ({
-					...prev,
-					userStatus: response?.data?.mode === 'focus' ? 'focus' : response?.data?.sign_off ? 'away' : 'active',
-          isSignoff: response?.data?.sign_off || false,
-					focusTime: response?.data?.focusRemainingTime,
-				}));
-        setUserSchedule(response?.data?.userSchedule);
-        SetBriefSchedules(response?.data?.briefSchedules);
-				setPriorityPeople(response?.data?.priorityPeople);
-		} catch (error) {
-			console.error("Error fetching user data:", error);
+      if (response) {
+        setBriefs(response?.data);
 
-      const errorMessage =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Something went wrong. Failed to fetch user data.";
-
-			toast({
-				title: "Failed to fetch user data",
-				description: errorMessage,
-			});
-		}
-	}, [navigate, toast]);
-
-  useEffect(() => {
-  const tokenFromUrl = searchParams.get("token");
-
-  if (tokenFromUrl) {
-    localStorage.setItem("token", tokenFromUrl);
-    const url = new URL(window.location.href);
-    url.searchParams.delete("token");
-    url.searchParams.delete("provider");
-    window.history.replaceState(
-      {},
-      document.title,
-      url.pathname + url.search
-    );
-  }
-  fetchDashboardData();
-  getBriefs(1); 
-}, [navigate, searchParams, getBriefs, fetchDashboardData]);
-
-  useEffect(() => {
-      if (!briefs) return;
-
-      const newPending = briefs
-        .filter(
-          (brief) => brief.status !== "success" && brief.status !== "failed"
-        )
-        .map((brief) => ({ id: brief.id, status: true }));
-
-      setPendingData(newPending);
-    }, [briefs, setPendingData]);
-
-  const getBrief = useCallback(async (briefId: number): Promise<false | Summary> => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return;
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.meta?.current_page || 1,
+          totalPages: response.meta?.last_page || 1,
+        }));
       }
-      
-      Http.setBearerToken(token);
-      const response = await Http.callApi("get",`${BaseURL}/api/summary/${briefId}/show`);
-      if ( response?.data?.data?.status === "success") {
-        return response?.data?.data;
-      } else {
-        return false;
-      } 
-    } catch (error) {
-      console.error("Error fetching summaries data:", error);
-      return false;
-    }
-  }, [navigate]);
+    }, [call]);
 
-  const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
+  const fetchDashboardData = useCallback(async () => {
+    const response = await call("get", "/api/dashboard", {
+      showToast: true,
+      toastTitle: "Failed to fetch user data",
+      toastDescription: "Something went wrong. Failed to fetch user data.",
+    });
+
+    if (response) {
+      setUiState((prev) => ({
+        ...prev,
+        userStatus: response.mode === 'focus'
+          ? 'focus'
+          : response.sign_off
+          ? 'away'
+          : 'active',
+        isSignoff: response.sign_off || false,
+        focusTime: response.focusRemainingTime,
+      }));
+
+      setUserSchedule(response.userSchedule);
+      SetBriefSchedules(response.briefSchedules);
+      setPriorityPeople(response.priorityPeople);
+    }
+  }, [call]);
+
+  const getBrief = useCallback(
+    async (briefId: number): Promise<false | Summary> => {
+      const response = await call("get", `/api/summary/${briefId}/show`, {
+        showToast: true,
+        toastTitle: "Failed to fetch brief",
+        toastDescription: "Something went wrong while fetching the brief.",
+        returnOnFailure: false, 
+      });
+
+      return response?.status === "success" ? response : false;
+    },
+    [call]
+  );
+
+  useEffect(() => {
+    const tokenFromUrl = searchParams.get("token");
+
+    if (tokenFromUrl) {
+      localStorage.setItem("token", tokenFromUrl);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("token");
+      url.searchParams.delete("provider");
+      window.history.replaceState(
+        {},
+        document.title,
+        url.pathname + url.search
+      );
+    }
+    fetchDashboardData();
+    getBriefs(1); 
+  }, [navigate, searchParams, getBriefs, fetchDashboardData]);
+
+  useEffect(() => {
+    if (!briefs) return;
+
+    const newPending = briefs
+      .filter(
+        (brief) => brief.status !== "success" && brief.status !== "failed"
+      )
+      .map((brief) => ({ id: brief.id, status: true }));
+
+    setPendingData(newPending);
+  }, [briefs, setPendingData]);
 
   useEffect(() => {
     // Clear existing intervals first
@@ -234,50 +206,32 @@ const Dashboard = () => {
     };
   }, [pendingData, getBrief]);
 
-
-   // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(async () => {
-		try {
-			setUiState((prev) => ({
-				...prev,
-				//   endFocusModalOpen: true,
-				focusModeExitLoading: true,
-			}));
-			const token = localStorage.getItem("token");
-			if (!token) {
-				navigate("/");
-				return;
-			}
-			Http.setBearerToken(token);
-			await Http.callApi(
-				"get",
-				`${BaseURL}/api/exit-focus-mode`
-			);
+    setUiState((prev) => ({
+      ...prev,
+      focusModeExitLoading: true,
+    }));
+
+    const response = await call("get", "/api/exit-focus-mode", {
+      showToast: true,
+      toastTitle: "Focus Mode Exit failed",
+      toastDescription: "Something went wrong. Please try again later.",
+    });
+
+    if (response) {
       toast({
-        title: "Focus Mode Deactivate",
-        description: `Focus mode Deactivate`,
+        title: "Focus Mode Deactivated",
+        description: "Focus mode has been successfully deactivated.",
       });
       fetchDashboardData();
       getBriefs();
-		} catch (error) {
-			console.error("Error fetching user data:", error);
-			const errorMessage =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Something went wrong. Please try again later.";
+    }
 
-			toast({
-				title: "Focus Mode Exit failed",
-				description: errorMessage,
-			});
-		} finally {
-			setUiState((prev) => ({
-				...prev,
-				//   endFocusModalOpen: true,
-				focusModeExitLoading: false,
-			}));
-		}
-	}, [navigate, toast, getBriefs, fetchDashboardData]);
+    setUiState((prev) => ({
+      ...prev,
+      focusModeExitLoading: false,
+    }));
+  }, [call, fetchDashboardData, getBriefs, toast]);
 
   // Optimized callbacks to prevent re-creation on each render
   const handleOpenBrief = useCallback((briefId: number) => {
@@ -390,7 +344,6 @@ const Dashboard = () => {
       description: "Your summary has been created and emailed to you"
     });
     
-    // Navigate to the catch-up page to show the summary
     navigate("/dashboard/catch-up");
   }, [toast, navigate]);
 
@@ -439,37 +392,27 @@ const Dashboard = () => {
   }, []);
 
   const handleSignOffStart = useCallback(async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return;
-      }
-      Http.setBearerToken(token);
-      await Http.callApi("post", `${BaseURL}/api/sign-off`);
+    const response = await call("post", "/api/sign-off", {
+      showToast: true,
+      toastTitle: "Sign Off Failed",
+      toastDescription: "Something went wrong. Please try again later."
+    });
+
+    if (response) {
       toast({
         title: "Sign Off Successful",
         description: "Your sign off has been recorded successfully.",
       });
+
       fetchDashboardData();
       setUiState((prev) => ({
         ...prev,
         isSignoff: true,
         SignOffModalOpen: false,
       }));
-    } catch (error) {
-      console.error("Error signing off:", error);
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong. Please try again later.";
-
-      toast({
-				title: "Focus Mode Exit failed",
-				description: errorMessage,
-			});
     }
-  }, [toast, navigate, fetchDashboardData]);
+  }, [call, fetchDashboardData, toast]);
+
 
   const handleCloseSignOffModal = useCallback(() => {
     setUiState(prev => ({
