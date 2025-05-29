@@ -50,7 +50,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     handleSeekMove,
   } = useAudioPlayer(brief?.audioPath ? BaseURL + brief?.audioPath : null);
   const navigate = useNavigate();
-  const getBriefs = useCallback(async (): Promise<void> => {
+  const getBrief = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
@@ -73,11 +73,11 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     } finally {
       setLoading(false);
     }
-  }, [navigate, briefId]);
+  }, [navigate, briefId, getUnreadCount]);
 
   useEffect(() => {
 		if (briefId) {
-			getBriefs();
+			getBrief();
 		}
 
 		return () => {
@@ -89,7 +89,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
 			setBrief(null);
 		};
-	}, [briefId, getBriefs]);
+	}, [briefId, getBrief]);
 
   const handleClose = () => {
     setShowTranscript(false);

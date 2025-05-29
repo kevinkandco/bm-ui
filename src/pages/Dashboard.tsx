@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BriefsFeed from "@/components/dashboard/BriefsFeed";
 import BriefDrawer from "@/components/dashboard/BriefDrawer";
@@ -35,6 +35,11 @@ interface BriefsFeedProps {
   onPageChange: (page: number) => void;
 }
 
+interface PendingData {
+  id: number;
+  status: boolean;
+}
+
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -62,7 +67,7 @@ const Dashboard = () => {
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
-  const [isPending, setIsPending] = useState<boolean>(false);
+  const [pendingData, setPendingData] = useState<PendingData[] | null>(null);
   const [pagination, setPagination] = useState({
       currentPage: 1,
       totalPages: 1,
@@ -155,14 +160,80 @@ const Dashboard = () => {
 }, [navigate, searchParams, getBriefs, fetchDashboardData]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isPending) {
-      timer = setInterval(() => {
-        getBriefs(pagination.currentPage);
-      }, 3000); // Adjust the delay as needed
+      if (!briefs) return;
+
+      const newPending = briefs
+        .filter(
+          (brief) => brief.status !== "success" && brief.status !== "failed"
+        )
+        .map((brief) => ({ id: brief.id, status: true }));
+
+      setPendingData(newPending);
+    }, [briefs, setPendingData]);
+
+  const getBrief = useCallback(async (briefId: number): Promise<false | Summary> => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/");
+        return;
+      }
+      
+      Http.setBearerToken(token);
+      const response = await Http.callApi("get",`${BaseURL}/api/summary/${briefId}/show`);
+      if ( response?.data?.data?.status === "success") {
+        return response?.data?.data;
+      } else {
+        return false;
+      } 
+    } catch (error) {
+      console.error("Error fetching summaries data:", error);
+      return false;
     }
-    return () => clearInterval(timer);
-  }, [getBriefs, isPending, pagination.currentPage]);
+  }, [navigate]);
+
+  const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
+
+  useEffect(() => {
+    // Clear existing intervals first
+    intervalIDsRef.current.forEach(clearInterval);
+    intervalIDsRef.current = [];
+
+    if (!pendingData?.length) return;
+
+    const ids = pendingData.map((item) => {
+      const intervalId = setInterval(async () => {
+        const data = await getBrief(item.id);
+
+        if (data) {
+          setPendingData(
+            (prev) => prev?.filter((data) => data.id !== item.id) ?? []
+          );
+
+          setBriefs((prev) => {
+            if (!prev) return null;
+            return prev?.map((brief) => brief.id === item.id ? data : brief) || null;
+          });
+
+          clearInterval(intervalId);
+
+          intervalIDsRef.current = intervalIDsRef.current.filter(
+            (id) => id !== intervalId
+          );
+        }
+      }, 3000);
+
+      return intervalId;
+    });
+
+    intervalIDsRef.current = ids;
+
+    return () => {
+      intervalIDsRef.current.forEach(clearInterval);
+      intervalIDsRef.current = [];
+    };
+  }, [pendingData, getBrief]);
+
 
    // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(async () => {
@@ -430,9 +501,8 @@ const Dashboard = () => {
 
   const briefsFeedProps = useMemo(() => ({
     briefs: briefs,
-    setIsPending: setIsPending,
     onOpenBrief: handleOpenBrief
-  }), [briefs, setIsPending, handleOpenBrief]);
+  }), [briefs, handleOpenBrief]);
 
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
