@@ -22,7 +22,7 @@ const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
         </h3>
         {isPending ? (
           <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
-            Pending
+            Generating summary
           </span>
         ) : success ? (
           <span className="text-sm text-text-secondary">
@@ -30,7 +30,7 @@ const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
           </span>
         ) : (
           <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
-            Failed
+            Failed to generate the summary
           </span>
         )}
       </div>
