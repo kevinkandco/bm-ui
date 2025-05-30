@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -76,12 +75,6 @@ const HomeView = ({
             <div className="absolute inset-0 bg-gradient-to-r from-accent-primary via-purple-500 to-pink-500 rounded-full blur-2xl opacity-40 animate-spin" style={{ animationDuration: '8s' }}></div>
             <div className="absolute inset-0 bg-gradient-to-l from-cyan-400 via-blue-500 to-accent-secondary rounded-full blur-xl opacity-30 animate-pulse" style={{ animationDuration: '3s' }}></div>
             
-            {/* Floating particles effect */}
-            <div className="absolute -top-8 -left-8 w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-60 animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}></div>
-            <div className="absolute -top-4 -right-6 w-3 h-3 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-50 animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}></div>
-            <div className="absolute -bottom-6 -left-4 w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full opacity-70 animate-bounce" style={{ animationDelay: '1s', animationDuration: '2.2s' }}></div>
-            <div className="absolute -bottom-8 -right-8 w-5 h-5 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full opacity-40 animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.8s' }}></div>
-            
             {/* Enhanced Neumorphic Brief Me Button */}
             <button
               onClick={onToggleCatchMeUp}
@@ -93,13 +86,10 @@ const HomeView = ({
                          bg-gradient-to-br from-surface via-surface to-surface-raised
                          border border-white/5"
               style={{
-                background: 'linear-gradient(145deg, var(--surface), var(--surface-raised))',
-                textShadow: '2px 2px 4px rgba(0,0,0,0.3), -1px -1px 2px rgba(255,255,255,0.1)'
+                background: 'linear-gradient(145deg, var(--surface), var(--surface-raised))'
               }}
             >
-              <span className="bg-gradient-to-r from-accent-primary via-purple-500 to-pink-500 bg-clip-text text-transparent font-extrabold text-xl tracking-wider">
-                Brief Me
-              </span>
+              Brief Me
             </button>
           </div>
         </div>
