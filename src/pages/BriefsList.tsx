@@ -208,7 +208,7 @@ const BriefsList = () => {
                       </div>
                     </div>
                     {/* <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button> */}
-                    {brief?.status === "pending" && (
+                    {(brief?.status !== "failed" && brief?.status !== "success")  && (
                       <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
                         Generating summary
                       </span>
