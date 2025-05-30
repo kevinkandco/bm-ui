@@ -1,9 +1,11 @@
+
 import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { LogIn } from "lucide-react";
 
 const Index = () => {
   const { theme } = useTheme();
@@ -93,9 +95,18 @@ const Index = () => {
             <p className="text-text-secondary mb-6 sm:mb-8 mx-auto text-sm sm:text-base">Brief-me delivers personalized summaries of what matters most. Get caught up in minutes, not hours.</p>
 
             {/* Call to Action */}
-            <Button asChild className="w-full rounded-full bg-accent-primary text-text-primary font-medium py-5 sm:py-6 text-base sm:text-lg hover:scale-[1.03] hover:brightness-105 transition-all">
-              <Link to="/onboarding">Join the Waitlist</Link>
-            </Button>
+            <div className="space-y-3 w-full">
+              <Button asChild className="w-full rounded-full bg-accent-primary text-text-primary font-medium py-5 sm:py-6 text-base sm:text-lg hover:scale-[1.03] hover:brightness-105 transition-all">
+                <Link to="/onboarding">Join the Waitlist</Link>
+              </Button>
+              
+              <Button asChild variant="outline" className="w-full rounded-full font-medium py-3 sm:py-4 text-sm sm:text-base text-text-primary border-border-subtle hover:bg-surface-raised/20 transition-all">
+                <Link to="/login" className="flex items-center gap-2">
+                  <LogIn className="w-4 h-4" />
+                  Log In
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
