@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Archive, Plus, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,18 +9,23 @@ import { Summary } from "@/components/dashboard/types";
 import Pagination from "@/components/dashboard/Pagination";
 import BriefModal from "@/components/dashboard/BriefModal";
 import { useApi } from "@/hooks/useApi";
+import { PendingData } from "./Dashboard";
+import ViewErrorMessage from "@/components/dashboard/ViewErrorMessage";
 
 
 const BriefsList = () => {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState<string>("");
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
   const { call } = useApi();
   const [uiState, setUiState] = useState({
     selectedBrief: null,
     briefModalOpen: false
   })
-
+  const [pendingData, setPendingData] = useState<PendingData[] | null>(null);
+  const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -37,6 +42,15 @@ const BriefsList = () => {
       description: "Opening brief creation form",
     });
   };
+
+  const handleClick = (message: string) => {
+    setOpen(true);
+    setMessage(message);
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
+  }
 
   const getBriefs = useCallback(async (page = 1): Promise<void> => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -58,10 +72,76 @@ const BriefsList = () => {
     }
   }, [call]);
 
+  const getBrief = useCallback(
+    async (briefId: number): Promise<false | Summary> => {
+      const response = await call("get", `/api/summary/${briefId}/status`, {
+        showToast: true,
+        toastTitle: "Failed to fetch brief",
+        toastDescription: "Something went wrong while fetching the brief.",
+        returnOnFailure: false, 
+      });
+      console.log(response, 'fetch brief api');
+
+      return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
+    },
+    [call]
+  );
 
   useEffect(() => {
     getBriefs(1);
   }, [getBriefs]);
+
+  useEffect(() => {
+    if (!briefs) return;
+
+    const newPending = briefs
+      .filter(
+        (brief) => brief.status !== "success" && brief.status !== "failed"
+      )
+      .map((brief) => ({ id: brief.id, status: true }));
+
+    setPendingData(newPending);
+  }, [briefs, setPendingData]);
+
+  useEffect(() => {
+      // Clear existing intervals first
+      intervalIDsRef.current.forEach(clearInterval);
+      intervalIDsRef.current = [];
+  
+      if (!pendingData?.length) return;
+  
+      const ids = pendingData.map((item) => {
+        const intervalId = setInterval(async () => {
+          const data = await getBrief(item.id);
+  
+          if (data) {
+            setPendingData(
+              (prev) => prev?.filter((data) => data.id !== item.id) ?? []
+            );
+  
+            setBriefs((prev) => {
+              if (!prev) return null;
+              return prev?.map((brief) => brief.id === item.id ? data : brief) || null;
+            });
+  
+            clearInterval(intervalId);
+  
+            intervalIDsRef.current = intervalIDsRef.current.filter(
+              (id) => id !== intervalId
+            );
+          }
+        }, 3000);
+  
+        return intervalId;
+      });
+  
+      intervalIDsRef.current = ids;
+  
+      return () => {
+        intervalIDsRef.current.forEach(clearInterval);
+        intervalIDsRef.current = [];
+      };
+    }, [pendingData, getBrief]);
 
   const handleOpenBrief = useCallback((briefId: number) => {
     setUiState(prev => ({
@@ -114,7 +194,7 @@ const BriefsList = () => {
             <div className="space-y-1">
               {briefs?.map((brief, index) => (
                 <React.Fragment key={brief?.id}>
-                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => handleOpenBrief(brief?.id)}>
+                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => brief?.status === "success" ? handleOpenBrief(brief?.id) : null}>
                     <div className="flex items-center">
                       <Archive className="h-5 w-5 text-accent-primary mr-3" />
                       <div>
@@ -128,6 +208,16 @@ const BriefsList = () => {
                       </div>
                     </div>
                     {/* <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button> */}
+                    {brief?.status === "pending" && (
+                      <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
+                        Generating summary
+                      </span>
+                    )}
+                    {brief?.status === "failed" && (
+                      <span onClick={() => handleClick(brief?.error)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+                        Failed to generate the summary
+                      </span>
+                    )}
                   </div>
                   {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
                 </React.Fragment>
@@ -148,6 +238,7 @@ const BriefsList = () => {
         briefId={uiState.selectedBrief}
         onClose={handleCloseBriefModal}
       />
+      <ViewErrorMessage open={open} onClose={handleClose} message={message} />
     </DashboardLayout>
   );
 };

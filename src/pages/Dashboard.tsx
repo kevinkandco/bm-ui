@@ -33,7 +33,7 @@ interface BriefsFeedProps {
   onPageChange: (page: number) => void;
 }
 
-interface PendingData {
+export interface PendingData {
   id: number;
   status: boolean;
 }
