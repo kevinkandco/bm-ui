@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 // Import optimized section components
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
@@ -11,31 +13,36 @@ import UrgentThreadsSection from "./HomeViewSections/UrgentThreadsSection";
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
+
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
 }
+
 const HomeView = ({
   onOpenBrief,
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal
 }: HomeViewProps) => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
+  
   const handleUpdateSchedule = useCallback(() => {
     toast({
       title: "Brief Schedule",
       description: "Opening brief schedule settings"
     });
   }, [toast]);
+  
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
@@ -49,37 +56,143 @@ const HomeView = ({
     messageCount: 12
   };
 
-  // Memoize Hero section to prevent unnecessary re-renders
-  const HeroSection = React.memo(() => <div className="mb-6 md:mb-8 text-center">
-      <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
-        Good morning, Alex
-      </h1>
-      <p className="text-text-secondary">Ready to catch up or focus?</p>
-    </div>);
-  return <div className="min-h-screen bg-surface px-4 py-6">
-      <HeroSection />
-      
-      {/* Mobile-first layout with responsive grid */}
-      <div className="max-w-7xl mx-auto">
-        {/* Main CTAs - Full width on mobile, centered on desktop */}
-        <div className="mb-6 md:mb-8 space-y-4 max-w-md mx-auto">
-          <Button onClick={onToggleCatchMeUp} className="w-full h-14 md:h-16 bg-accent-primary text-white rounded-2xl text-lg font-medium shadow-lg hover:shadow-xl transition-all">
-            <Zap className="mr-3 h-5 w-5 md:h-6 md:w-6" />
-            Catch Me Up
-          </Button>
-          
-          <Button onClick={onToggleFocusMode} variant="outline" className="w-full h-14 md:h-16 rounded-2xl text-lg font-medium border-2 border-border-subtle text-text-primary hover:bg-surface-raised/30 shadow-lg hover:shadow-xl transition-all">
-            <Headphones className="mr-3 h-5 w-5 md:h-6 md:w-6" />
-            Focus Mode
-          </Button>
+  // Mobile View
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-surface px-4 py-6">
+        {/* Mobile Welcome Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-text-primary mb-2">
+            Good morning, Alex
+          </h1>
+          <p className="text-text-secondary mb-8">What would you like to know?</p>
         </div>
 
-        {/* Responsive layout: single column on mobile, two columns on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Main content - Full width on mobile, 8 columns on desktop */}
-          <div className="lg:col-span-8 space-y-6">
+        {/* Central "Brief Me" Button */}
+        <div className="flex flex-col items-center justify-center mb-12">
+          <div className="relative">
+            {/* Gradient animation background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur-xl opacity-30 animate-pulse"></div>
+            
+            {/* Neumorphic Brief Me Button */}
+            <button
+              onClick={onToggleCatchMeUp}
+              className="relative w-32 h-32 rounded-full bg-surface text-text-primary font-semibold text-lg shadow-[inset_8px_8px_16px_rgba(0,0,0,0.3),inset_-8px_-8px_16px_rgba(255,255,255,0.1)] hover:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.4),inset_-6px_-6px_12px_rgba(255,255,255,0.15)] transition-all duration-300"
+            >
+              Brief Me
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="fixed bottom-6 right-6">
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button 
+                size="icon" 
+                className="w-14 h-14 rounded-full bg-accent-primary text-white shadow-lg"
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[80vh] bg-surface/95 backdrop-blur-xl border-border-subtle">
+              <div className="p-4 space-y-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-semibold text-text-primary">Menu</h2>
+                  <Button 
+                    size="icon" 
+                    variant="ghost" 
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                {/* Focus Mode Option */}
+                <Button 
+                  onClick={() => {
+                    onToggleFocusMode();
+                    setMobileMenuOpen(false);
+                  }} 
+                  variant="outline" 
+                  className="w-full h-12 rounded-xl border-border-subtle"
+                >
+                  <Headphones className="mr-3 h-5 w-5" />
+                  Focus Mode
+                </Button>
+
+                {/* Latest Brief */}
+                <div className="border border-border-subtle rounded-xl p-4">
+                  <h3 className="font-semibold text-text-primary mb-2">Latest Brief</h3>
+                  <p className="text-sm text-text-secondary mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+                  <Button 
+                    onClick={() => onOpenBrief(latestBrief.id)} 
+                    className="w-full bg-accent-primary text-white rounded-xl"
+                  >
+                    Read Brief
+                  </Button>
+                </div>
+
+                {/* Other Sections */}
+                <div className="space-y-4">
+                  <div className="border border-border-subtle rounded-xl p-4">
+                    <UrgentThreadsSection />
+                  </div>
+                  <div className="border border-border-subtle rounded-xl p-4">
+                    <ConnectedChannelsSection />
+                  </div>
+                  <div className="border border-border-subtle rounded-xl p-4">
+                    <PriorityPeopleSection />
+                  </div>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop View
+  return (
+    <div className="min-h-screen bg-surface px-4 py-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Desktop Header - Horizontal Layout */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-text-primary mb-2">
+              Good morning, Alex
+            </h1>
+            <p className="text-text-secondary">Ready to catch up or focus?</p>
+          </div>
+          
+          {/* Smaller CTAs on the right */}
+          <div className="flex gap-3">
+            <Button 
+              onClick={onToggleCatchMeUp} 
+              className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all"
+            >
+              <Zap className="mr-2 h-4 w-4" />
+              Catch Me Up
+            </Button>
+            
+            <Button 
+              onClick={onToggleFocusMode} 
+              variant="outline" 
+              className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all"
+            >
+              <Headphones className="mr-2 h-4 w-4" />
+              Focus Mode
+            </Button>
+          </div>
+        </div>
+
+        {/* Desktop Grid Layout */}
+        <div className="grid grid-cols-12 gap-6">
+          {/* Main content - 8 columns */}
+          <div className="col-span-8 space-y-6">
             {/* Latest Brief Card */}
-            <div className="glass-card rounded-2xl p-4 md:p-6">
+            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
                 <span className="text-sm text-text-secondary">{latestBrief.timestamp}</span>
@@ -87,46 +200,46 @@ const HomeView = ({
               
               <p className="text-text-secondary mb-4">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
               
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button onClick={() => onOpenBrief(latestBrief.id)} className="flex-1 bg-accent-primary text-white rounded-xl">
+              <div className="flex gap-3">
+                <Button 
+                  onClick={() => onOpenBrief(latestBrief.id)} 
+                  className="bg-accent-primary text-white rounded-xl shadow-sm"
+                >
                   Read Brief
                 </Button>
-                <Button onClick={handleViewAllBriefs} variant="outline" className="flex-1 rounded-xl border-border-subtle text-text-primary">
+                <Button 
+                  onClick={handleViewAllBriefs} 
+                  variant="outline" 
+                  className="rounded-xl border-border-subtle text-text-primary shadow-sm"
+                >
                   <Archive className="mr-2 h-4 w-4" />
                   View All Briefs
                 </Button>
               </div>
             </div>
 
-            {/* Desktop: Combined sections in a single card */}
-            <div className="hidden md:block glass-card rounded-3xl overflow-hidden">
+            {/* Combined sections card */}
+            <div className="border border-border-subtle rounded-2xl overflow-hidden bg-surface-overlay/30 shadow-sm">
               <LatestBriefSection onClick={onOpenBriefModal} />
               <Separator className="bg-border-subtle" />
               <UrgentThreadsSection />
-              <Separator className="bg-border-subtle" />
-              <ConnectedChannelsSection />
-              <Separator className="bg-border-subtle" />
-              <PriorityPeopleSection />
-            </div>
-
-            {/* Mobile: Separate cards for each section */}
-            <div className="md:hidden space-y-4">
-              <div className="glass-card rounded-2xl overflow-hidden">
-                <UrgentThreadsSection />
-              </div>
-              <div className="glass-card rounded-2xl overflow-hidden">
-                <ConnectedChannelsSection />
-              </div>
-              <div className="glass-card rounded-2xl overflow-hidden">
-                <PriorityPeopleSection />
-              </div>
             </div>
           </div>
           
-          {/* Sidebar - Hidden on mobile, visible on desktop */}
-          <div className="hidden lg:block lg:col-span-4 space-y-6">
+          {/* Sidebar - 4 columns */}
+          <div className="col-span-4 space-y-4">
+            {/* Priority People Section - Compact */}
+            <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm">
+              <PriorityPeopleSection />
+            </div>
+
+            {/* Connected Channels Section - Compact */}
+            <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm">
+              <ConnectedChannelsSection />
+            </div>
+
             {/* Next Brief Section */}
-            <div className="glass-card rounded-2xl p-4 md:p-6">
+            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold text-text-primary">Next Scheduled Brief</h2>
               </div>
@@ -138,13 +251,17 @@ const HomeView = ({
                 </div>
               </div>
               
-              <Button variant="outline" className="w-full rounded-xl border-border-subtle text-text-primary" onClick={handleUpdateSchedule}>
+              <Button 
+                variant="outline" 
+                className="w-full rounded-xl border-border-subtle text-text-primary shadow-sm" 
+                onClick={handleUpdateSchedule}
+              >
                 Update Schedule
               </Button>
             </div>
             
             {/* Upcoming Meetings - Blurred Coming Soon */}
-            <div className="glass-card rounded-2xl p-4 md:p-6 relative overflow-hidden">
+            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
               <div className="filter blur-sm">
                 <h2 className="text-lg font-semibold text-text-primary mb-4">Upcoming Meetings</h2>
                 
@@ -177,27 +294,9 @@ const HomeView = ({
             </div>
           </div>
         </div>
-
-        {/* Mobile: Next Brief at bottom */}
-        <div className="md:hidden mt-6">
-          <div className="glass-card rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-text-primary">Next Brief</h2>
-            </div>
-            
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="font-medium text-text-primary">Midday Brief</p>
-                <p className="text-sm text-text-secondary">Today at 12:30 PM</p>
-              </div>
-            </div>
-            
-            <Button variant="outline" className="w-full rounded-xl border-border-subtle text-text-primary" onClick={handleUpdateSchedule}>
-              Update Schedule
-            </Button>
-          </div>
-        </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default React.memo(HomeView);
