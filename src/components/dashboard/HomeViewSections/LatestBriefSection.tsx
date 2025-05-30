@@ -26,7 +26,7 @@ const LatestBriefSection = ({ onClick }: LatestBriefSectionProps) => {
           <span className="text-sm font-medium text-text-primary">12 Slack messages</span>
         </div>
         
-        <Button variant="outline" size="sm" className="ml-auto border-border-subtle text-text-primary hover:bg-surface-raised/30 hover:text-accent-primary shadow-subtle">
+        <Button variant="outline" size="sm" className="ml-auto border-border-subtle text-text-primary hover:bg-surface-raised/30 hover:text-accent-primary">
           View Full Brief
         </Button>
       </div>
