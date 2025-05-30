@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -71,15 +72,34 @@ const HomeView = ({
         {/* Central "Brief Me" Button */}
         <div className="flex flex-col items-center justify-center mb-12">
           <div className="relative">
-            {/* Gradient animation background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur-xl opacity-30 animate-pulse"></div>
+            {/* Dynamic multi-colored gradient background with rotation */}
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-primary via-purple-500 to-pink-500 rounded-full blur-2xl opacity-40 animate-spin" style={{ animationDuration: '8s' }}></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-cyan-400 via-blue-500 to-accent-secondary rounded-full blur-xl opacity-30 animate-pulse" style={{ animationDuration: '3s' }}></div>
             
-            {/* Neumorphic Brief Me Button */}
+            {/* Floating particles effect */}
+            <div className="absolute -top-8 -left-8 w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-60 animate-bounce" style={{ animationDelay: '0s', animationDuration: '2s' }}></div>
+            <div className="absolute -top-4 -right-6 w-3 h-3 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-50 animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}></div>
+            <div className="absolute -bottom-6 -left-4 w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full opacity-70 animate-bounce" style={{ animationDelay: '1s', animationDuration: '2.2s' }}></div>
+            <div className="absolute -bottom-8 -right-8 w-5 h-5 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full opacity-40 animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.8s' }}></div>
+            
+            {/* Enhanced Neumorphic Brief Me Button */}
             <button
               onClick={onToggleCatchMeUp}
-              className="relative w-32 h-32 rounded-full bg-surface text-text-primary font-semibold text-lg shadow-[inset_8px_8px_16px_rgba(0,0,0,0.3),inset_-8px_-8px_16px_rgba(255,255,255,0.1)] hover:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.4),inset_-6px_-6px_12px_rgba(255,255,255,0.15)] transition-all duration-300"
+              className="relative w-36 h-36 rounded-full bg-surface text-text-primary font-bold text-xl tracking-wide
+                         shadow-[12px_12px_24px_rgba(0,0,0,0.4),-12px_-12px_24px_rgba(255,255,255,0.1)]
+                         hover:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-8px_-8px_16px_rgba(255,255,255,0.15)]
+                         active:shadow-[4px_4px_8px_rgba(0,0,0,0.6),-4px_-4px_8px_rgba(255,255,255,0.2)]
+                         transition-all duration-300 transform hover:scale-105 active:scale-95
+                         bg-gradient-to-br from-surface via-surface to-surface-raised
+                         border border-white/5"
+              style={{
+                background: 'linear-gradient(145deg, var(--surface), var(--surface-raised))',
+                textShadow: '2px 2px 4px rgba(0,0,0,0.3), -1px -1px 2px rgba(255,255,255,0.1)'
+              }}
             >
-              Brief Me
+              <span className="bg-gradient-to-r from-accent-primary via-purple-500 to-pink-500 bg-clip-text text-transparent font-extrabold text-xl tracking-wider">
+                Brief Me
+              </span>
             </button>
           </div>
         </div>
