@@ -1,22 +1,46 @@
 
 import React from "react";
-import { Settings, MessageSquare, Mail } from "lucide-react";
+import { Settings, MessageSquare, Mail, Slack, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ConnectedChannelsSection = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   
   const connectedPlatforms = [
-    { name: "Gmail", icon: Mail, connected: true, comingSoon: false },
-    { name: "Slack", icon: MessageSquare, connected: true, comingSoon: false },
-    { name: "Teams", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Calendar", icon: MessageSquare, connected: false, comingSoon: true }
+    { name: "Gmail", id: "gmail", icon: Mail, connected: true, comingSoon: false },
+    { name: "Slack", id: "slack", icon: Slack, connected: true, comingSoon: false },
+    { name: "Teams", id: "teams", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Calendar", id: "calendar", icon: Calendar, connected: false, comingSoon: true }
   ];
 
   const handleOpenSettings = () => {
     navigate("/dashboard/settings");
+  };
+
+  // Helper function to render the appropriate icon based on platform ID
+  const renderIcon = (platform: typeof connectedPlatforms[0]) => {
+    switch (platform.id) {
+      case "slack":
+        return <Slack className={`h-4 w-4 ${
+          platform.connected ? "text-accent-primary" : "text-text-muted"
+        }`} />;
+      case "gmail":
+        return <Mail className={`h-4 w-4 ${
+          platform.connected ? "text-accent-primary" : "text-text-muted"
+        }`} />;
+      case "calendar":
+        return <Calendar className={`h-4 w-4 ${
+          platform.connected ? "text-accent-primary" : "text-text-muted"
+        }`} />;
+      default:
+        return <platform.icon className={`h-4 w-4 ${
+          platform.connected ? "text-accent-primary" : "text-text-muted"
+        }`} />;
+    }
   };
 
   return (
@@ -41,9 +65,7 @@ const ConnectedChannelsSection = () => {
                 ? "bg-accent-primary/20 border border-accent-primary/30" 
                 : "bg-surface-raised/30 border border-border-subtle"
             }`}>
-              <platform.icon className={`h-4 w-4 ${
-                platform.connected ? "text-accent-primary" : "text-text-muted"
-              }`} />
+              {renderIcon(platform)}
             </div>
             {platform.comingSoon && (
               <Badge 
