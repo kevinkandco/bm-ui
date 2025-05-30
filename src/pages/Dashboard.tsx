@@ -132,7 +132,7 @@ const Dashboard = () => {
       });
       console.log(response, 'fetch brief api');
 
-      return response?.data?.status === "success" ? response?.data : false;
+      return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
     },
     [call]
   );
