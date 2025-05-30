@@ -3,6 +3,8 @@ import Loader from "../Loader";
 import useVerifyAuth from "@/hooks/useVerifyAuth";
 import { useEffect } from "react";
 
+const COMPANY = import.meta.env.VITE_COMPANY;
+
 declare global {
   interface Window {
     Featurebase: (...args: any[]) => void;
@@ -18,7 +20,7 @@ const ProtectedRoute = ({ element }: { element: "protected" | "unprotected" }) =
     window.Featurebase(
       "identify",
       {
-        organization: "octal",
+        organization: COMPANY,
         name: user?.name,
         email: user?.email,
         // profilePicture: "https://www.w3schools.com/html/img_girl.jpg",  
@@ -26,8 +28,6 @@ const ProtectedRoute = ({ element }: { element: "protected" | "unprotected" }) =
       (err) => {
         if (err) {
           console.error(err);
-        } else {
-          console.log("Data sent successfully!");
         }
       }
     );
