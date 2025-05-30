@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,33 +11,35 @@ import UrgentThreadsSection from "./HomeViewSections/UrgentThreadsSection";
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
 }
-
-const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBriefModal }: HomeViewProps) => {
-  const { toast } = useToast();
+const HomeView = ({
+  onOpenBrief,
+  onToggleFocusMode,
+  onToggleCatchMeUp,
+  onOpenBriefModal
+}: HomeViewProps) => {
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
-  
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
-
   const handleUpdateSchedule = useCallback(() => {
     toast({
       title: "Brief Schedule",
-      description: "Opening brief schedule settings",
+      description: "Opening brief schedule settings"
     });
   }, [toast]);
-
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
-  
+
   // Sample brief data
   const latestBrief = {
     id: 1,
@@ -47,38 +48,27 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
     emailCount: 5,
     messageCount: 12
   };
-  
+
   // Memoize Hero section to prevent unnecessary re-renders
-  const HeroSection = React.memo(() => (
-    <div className="mb-6 md:mb-8 text-center">
+  const HeroSection = React.memo(() => <div className="mb-6 md:mb-8 text-center">
       <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
         Good morning, Alex
       </h1>
       <p className="text-text-secondary">Ready to catch up or focus?</p>
-    </div>
-  ));
-  
-  return (
-    <div className="min-h-screen bg-surface px-4 py-6">
+    </div>);
+  return <div className="min-h-screen bg-surface px-4 py-6">
       <HeroSection />
       
       {/* Mobile-first layout with responsive grid */}
       <div className="max-w-7xl mx-auto">
         {/* Main CTAs - Full width on mobile, centered on desktop */}
         <div className="mb-6 md:mb-8 space-y-4 max-w-md mx-auto">
-          <Button 
-            onClick={onToggleCatchMeUp}
-            className="w-full h-14 md:h-16 bg-accent-primary text-white rounded-2xl text-lg font-medium shadow-lg hover:shadow-xl transition-all"
-          >
+          <Button onClick={onToggleCatchMeUp} className="w-full h-14 md:h-16 bg-accent-primary text-white rounded-2xl text-lg font-medium shadow-lg hover:shadow-xl transition-all">
             <Zap className="mr-3 h-5 w-5 md:h-6 md:w-6" />
             Catch Me Up
           </Button>
           
-          <Button 
-            onClick={onToggleFocusMode}
-            variant="outline"
-            className="w-full h-14 md:h-16 rounded-2xl text-lg font-medium border-2 border-border-subtle text-text-primary hover:bg-surface-raised/30 shadow-lg hover:shadow-xl transition-all"
-          >
+          <Button onClick={onToggleFocusMode} variant="outline" className="w-full h-14 md:h-16 rounded-2xl text-lg font-medium border-2 border-border-subtle text-text-primary hover:bg-surface-raised/30 shadow-lg hover:shadow-xl transition-all">
             <Headphones className="mr-3 h-5 w-5 md:h-6 md:w-6" />
             Focus Mode
           </Button>
@@ -98,17 +88,10 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
               <p className="text-text-secondary mb-4">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
               
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  onClick={() => onOpenBrief(latestBrief.id)}
-                  className="flex-1 bg-accent-primary text-white rounded-xl"
-                >
+                <Button onClick={() => onOpenBrief(latestBrief.id)} className="flex-1 bg-accent-primary text-white rounded-xl">
                   Read Brief
                 </Button>
-                <Button 
-                  onClick={handleViewAllBriefs}
-                  variant="outline" 
-                  className="flex-1 rounded-xl border-border-subtle text-text-primary"
-                >
+                <Button onClick={handleViewAllBriefs} variant="outline" className="flex-1 rounded-xl border-border-subtle text-text-primary">
                   <Archive className="mr-2 h-4 w-4" />
                   View All Briefs
                 </Button>
@@ -145,7 +128,7 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
             {/* Next Brief Section */}
             <div className="glass-card rounded-2xl p-4 md:p-6">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-semibold text-text-primary">Next Brief</h2>
+                <h2 className="text-lg font-semibold text-text-primary">Next Scheduled Brief</h2>
               </div>
               
               <div className="flex items-center justify-between mb-4">
@@ -155,11 +138,7 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
                 </div>
               </div>
               
-              <Button 
-                variant="outline"
-                className="w-full rounded-xl border-border-subtle text-text-primary"
-                onClick={handleUpdateSchedule}
-              >
+              <Button variant="outline" className="w-full rounded-xl border-border-subtle text-text-primary" onClick={handleUpdateSchedule}>
                 Update Schedule
               </Button>
             </div>
@@ -213,18 +192,12 @@ const HomeView = ({ onOpenBrief, onToggleFocusMode, onToggleCatchMeUp, onOpenBri
               </div>
             </div>
             
-            <Button 
-              variant="outline"
-              className="w-full rounded-xl border-border-subtle text-text-primary"
-              onClick={handleUpdateSchedule}
-            >
+            <Button variant="outline" className="w-full rounded-xl border-border-subtle text-text-primary" onClick={handleUpdateSchedule}>
               Update Schedule
             </Button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default React.memo(HomeView);
