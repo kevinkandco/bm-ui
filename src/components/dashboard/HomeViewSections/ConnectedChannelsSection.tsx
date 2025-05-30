@@ -12,11 +12,28 @@ const ConnectedChannelsSection = () => {
   const isMobile = useIsMobile();
   
   const connectedPlatforms = [
-    { name: "Gmail", id: "gmail", icon: Mail, connected: true, comingSoon: false },
+    // V1 integrations - available now
     { name: "Slack", id: "slack", icon: Slack, connected: true, comingSoon: false },
+    { name: "Gmail", id: "gmail", icon: Mail, connected: true, comingSoon: false },
+    
+    // V2 integrations - coming soon
     { name: "Outlook", id: "outlook", icon: Mail, connected: false, comingSoon: true },
     { name: "Google Calendar", id: "calendar", icon: Calendar, connected: false, comingSoon: true },
-    { name: "Teams", id: "teams", icon: MessageSquare, connected: false, comingSoon: true }
+    { name: "Asana", id: "asana", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Notion", id: "notion", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Zoom/Meet", id: "zoom", icon: MessageSquare, connected: false, comingSoon: true },
+    
+    // V3 integrations - coming soon
+    { name: "Microsoft Teams", id: "teams", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Salesforce", id: "salesforce", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Hubspot", id: "hubspot", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Jira", id: "jira", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Confluence", id: "confluence", icon: MessageSquare, connected: false, comingSoon: true },
+    
+    // Future integrations - coming soon
+    { name: "GitHub/GitLab", id: "github", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Zendesk", id: "zendesk", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "ServiceNow", id: "servicenow", icon: MessageSquare, connected: false, comingSoon: true }
   ];
 
   const handleOpenSettings = () => {
@@ -25,25 +42,31 @@ const ConnectedChannelsSection = () => {
 
   // Helper function to render the appropriate icon based on platform ID
   const renderIcon = (platform: typeof connectedPlatforms[0]) => {
+    const iconClass = `h-3 w-3 ${
+      platform.connected ? "text-accent-primary" : "text-text-muted/50"
+    }`;
+
     switch (platform.id) {
       case "slack":
-        return <Slack className={`h-3 w-3 ${
-          platform.connected ? "text-accent-primary" : "text-text-muted/50"
-        }`} />;
+        return <Slack className={iconClass} />;
       case "gmail":
-        return <Mail className={`h-3 w-3 ${
-          platform.connected ? "text-accent-primary" : "text-text-muted/50"
-        }`} />;
       case "outlook":
-        return <Mail className={`h-3 w-3 text-text-muted/50`} />;
+        return <Mail className={iconClass} />;
       case "calendar":
-        return <Calendar className={`h-3 w-3 text-text-muted/50`} />;
+        return <Calendar className={iconClass} />;
       case "teams":
-        return <MessageSquare className={`h-3 w-3 text-text-muted/50`} />;
+      case "asana":
+      case "notion":
+      case "zoom":
+      case "salesforce":
+      case "hubspot":
+      case "jira":
+      case "confluence":
+      case "github":
+      case "zendesk":
+      case "servicenow":
       default:
-        return <platform.icon className={`h-3 w-3 ${
-          platform.connected ? "text-accent-primary" : "text-text-muted/50"
-        }`} />;
+        return <MessageSquare className={iconClass} />;
     }
   };
 
@@ -62,7 +85,7 @@ const ConnectedChannelsSection = () => {
           </Button>
         </div>
         
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 flex-wrap">
           {connectedPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
