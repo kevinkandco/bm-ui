@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X , LogOut} from "lucide-react";
+import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X , LogOut, MessageSquareMore} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -52,6 +52,11 @@ const navItems = [{
   label: "Settings",
   path: "/dashboard/settings",
   id: "settings"
+}, {
+  icon: MessageSquareMore,
+  label: "Feedback",
+  path: "",
+  id: "feedback"
 },
 {
   icon: LogOut,
@@ -85,7 +90,7 @@ const DashboardLayout = ({
     navItems[1].badge = unreadCount; 
   }, [currentPage, isMobile, getUnreadCount, unreadCount]);
 
-  const handleLogout = useCallback(async (path: string, id: string) => {
+  const handleClick = useCallback(async (path: string, id: string) => {
     if (id === "logout") {
       const response = await call("get", "/api/logout", {
         toastTitle: "Error",
@@ -98,6 +103,16 @@ const DashboardLayout = ({
         navigate("/");
       }
       return;
+    }
+
+    if (id === "feedback") {
+      window.postMessage({
+      target: 'FeaturebaseWidget',
+      data: { 
+        action: 'openFeedbackWidget',
+      }
+    })
+return;
     }
 
     navigate(path);
@@ -126,7 +141,7 @@ const DashboardLayout = ({
       {navItems.map(({ icon: Icon, label, path, id, badge }) => (
         <button
           key={id}
-          onClick={() => handleLogout(path, id)}
+          onClick={() => handleClick(path, id)}
           className={cn(
             "flex items-center px-4 py-3 text-sm relative transition-colors",
             currentPage === id 
@@ -144,7 +159,7 @@ const DashboardLayout = ({
         </button>
       ))}
     </div>
-  ), [sidebarOpen, currentPage, handleLogout, isMobile]);
+  ), [sidebarOpen, currentPage, handleClick, isMobile]);
 
   return (
     <div className="flex min-h-screen bg-surface relative">
@@ -245,7 +260,7 @@ const DashboardLayout = ({
         {navItems.slice(0, 5).map(({ icon: Icon, id, path }) => (
           <button
             key={id}
-            onClick={() => handleLogout(path, id)}
+            onClick={() => handleClick(path, id)}
             className={cn(
               "p-2 flex flex-col items-center justify-center",
               currentPage === id ? "text-accent-primary" : "text-text-secondary"
