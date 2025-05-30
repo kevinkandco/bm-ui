@@ -48,7 +48,7 @@ const ConnectedChannelsSection = () => {
   };
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={300}>
       <div className="p-2">
         <div className="flex items-center justify-between mb-1.5">
           <h2 className="text-text-primary text-xs font-medium">Connected Channels</h2>
@@ -66,11 +66,11 @@ const ConnectedChannelsSection = () => {
           {connectedPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
-                <div className="relative group">
+                <div className="relative group cursor-pointer">
                   <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
                     platform.connected 
                       ? "bg-accent-primary/20 border border-accent-primary/30" 
-                      : "bg-surface-raised/20 border border-border-subtle/50"
+                      : "bg-surface-raised/20 border border-border-subtle/50 hover:bg-surface-raised/30"
                   }`}>
                     {renderIcon(platform)}
                   </div>
@@ -79,7 +79,7 @@ const ConnectedChannelsSection = () => {
                   )}
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="bg-canvas-black border border-cool-slate/20 text-ice-grey text-xs">
+              <TooltipContent side="bottom" className="text-xs">
                 <p>
                   {platform.name}
                   {platform.comingSoon && " - coming soon!"}
