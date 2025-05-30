@@ -32,10 +32,8 @@ const ProtectedRoute = ({ element }: { element: "protected" | "unprotected" }) =
       }
     );
 
-
-
       window.Featurebase("initialize_feedback_widget", {
-        organization: "octal",
+        organization: COMPANY,
         theme: "dark",
         name: "ssp",
         placement: "right",
