@@ -105,15 +105,13 @@ const ConnectedChannelsSection = () => {
           Coming Soon
         </div>
 
-        {/* Coming Soon Platforms */}
+        {/* Coming Soon Platforms - styled like the image */}
         <div className="flex items-center gap-1 flex-wrap">
           {comingSoonPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
-                <div className="relative group cursor-pointer">
-                  <div className="w-5 h-5 rounded-md flex items-center justify-center transition-all bg-gray-800/90 opacity-70">
-                    {renderIcon(platform)}
-                  </div>
+                <div className="px-2 py-1 bg-gray-600/90 rounded-full text-white text-[10px] font-medium cursor-pointer hover:bg-gray-500/90 transition-colors">
+                  {platform.name}
                 </div>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">
