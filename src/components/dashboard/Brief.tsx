@@ -74,33 +74,25 @@ const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-wrap gap-4 items-center">
-          {brief?.emailCount > 0 && (
+        <div className="flex flex-wrap gap-4 items-center">   
             <div className="flex items-center gap-2">
               <Mail className="h-5 w-5 text-accent-primary" />
               <span className="text-sm font-medium text-text-primary">
-                {brief?.emailCount || "2"} emails
+                {brief?.emailCount || "0"} emails
               </span>
             </div>
-          )}
-
-          {brief?.slackMessageCount > 0 && (
             <div className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5 text-accent-primary" />
               <span className="text-sm font-medium text-text-primary">
-                {brief?.slackMessageCount || "4"} messages
+                {brief?.slackMessageCount || "0"} messages
               </span>
             </div>
-          )}
-
-          {brief?.meetingCount > 0 && (
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-accent-primary" />
               <span className="text-sm font-medium text-text-primary">
-                {brief?.meetingCount || "9"} meetings
+                {brief?.meetingCount || "0"} meetings
               </span>
             </div>
-          )}
         </div>
       )}
     </div>
