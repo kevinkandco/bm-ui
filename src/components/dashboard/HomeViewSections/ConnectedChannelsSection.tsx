@@ -13,60 +13,48 @@ const ConnectedChannelsSection = () => {
   
   const connectedPlatforms = [
     // V1 integrations - available now
-    { name: "Slack", id: "slack", icon: Slack, connected: true, comingSoon: false },
-    { name: "Gmail", id: "gmail", icon: Mail, connected: true, comingSoon: false },
+    { name: "Slack", id: "slack", icon: "S", connected: true, comingSoon: false },
+    { name: "Gmail", id: "gmail", icon: "G", connected: true, comingSoon: false },
     
     // V2 integrations - coming soon
-    { name: "Outlook", id: "outlook", icon: Mail, connected: false, comingSoon: true },
-    { name: "Google Calendar", id: "calendar", icon: Calendar, connected: false, comingSoon: true },
-    { name: "Asana", id: "asana", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Notion", id: "notion", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Zoom/Meet", id: "zoom", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Outlook", id: "outlook", icon: "O", connected: false, comingSoon: true },
+    { name: "Google Calendar", id: "calendar", icon: "C", connected: false, comingSoon: true },
+    { name: "Asana", id: "asana", icon: "A", connected: false, comingSoon: true },
+    { name: "Notion", id: "notion", icon: "N", connected: false, comingSoon: true },
+    { name: "Zoom/Meet", id: "zoom", icon: "Z", connected: false, comingSoon: true },
     
     // V3 integrations - coming soon
-    { name: "Microsoft Teams", id: "teams", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Salesforce", id: "salesforce", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Hubspot", id: "hubspot", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Jira", id: "jira", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Confluence", id: "confluence", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Microsoft Teams", id: "teams", icon: "T", connected: false, comingSoon: true },
+    { name: "Salesforce", id: "salesforce", icon: "SF", connected: false, comingSoon: true },
+    { name: "Hubspot", id: "hubspot", icon: "H", connected: false, comingSoon: true },
+    { name: "Jira", id: "jira", icon: "J", connected: false, comingSoon: true },
+    { name: "Confluence", id: "confluence", icon: "CF", connected: false, comingSoon: true },
     
     // Future integrations - coming soon
-    { name: "GitHub/GitLab", id: "github", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "Zendesk", id: "zendesk", icon: MessageSquare, connected: false, comingSoon: true },
-    { name: "ServiceNow", id: "servicenow", icon: MessageSquare, connected: false, comingSoon: true }
+    { name: "GitHub/GitLab", id: "github", icon: "GH", connected: false, comingSoon: true },
+    { name: "Zendesk", id: "zendesk", icon: "ZD", connected: false, comingSoon: true },
+    { name: "ServiceNow", id: "servicenow", icon: "SN", connected: false, comingSoon: true }
   ];
 
   const handleOpenSettings = () => {
     navigate("/dashboard/settings");
   };
 
-  // Helper function to render the appropriate icon based on platform ID
+  // Helper function to render the appropriate icon based on platform ID (same as onboarding)
   const renderIcon = (platform: typeof connectedPlatforms[0]) => {
-    const iconClass = `h-3 w-3 ${
-      platform.connected ? "text-accent-primary" : "text-text-muted/50"
-    }`;
-
+    const iconSize = 12; // Smaller for the condensed view
+    
     switch (platform.id) {
       case "slack":
-        return <Slack className={iconClass} />;
+        return <Slack className="text-white" size={iconSize} />;
       case "gmail":
+        return <Mail className="text-white" size={iconSize} />;
       case "outlook":
-        return <Mail className={iconClass} />;
+        return <Mail className="text-white" size={iconSize} />;
       case "calendar":
-        return <Calendar className={iconClass} />;
-      case "teams":
-      case "asana":
-      case "notion":
-      case "zoom":
-      case "salesforce":
-      case "hubspot":
-      case "jira":
-      case "confluence":
-      case "github":
-      case "zendesk":
-      case "servicenow":
+        return <Calendar className="text-white" size={iconSize} />;
       default:
-        return <MessageSquare className={iconClass} />;
+        return <span className="text-white font-bold text-[8px]">{platform.icon}</span>;
     }
   };
 
@@ -92,8 +80,8 @@ const ConnectedChannelsSection = () => {
                 <div className="relative group cursor-pointer">
                   <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
                     platform.connected 
-                      ? "bg-accent-primary/20 border border-accent-primary/30" 
-                      : "bg-surface-raised/20 border border-border-subtle/50 hover:bg-surface-raised/30"
+                      ? "bg-accent-primary/80" 
+                      : "bg-gray-800/90 opacity-70"
                   }`}>
                     {renderIcon(platform)}
                   </div>
