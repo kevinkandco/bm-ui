@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Settings, MessageSquare, Mail, Slack, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,6 +33,10 @@ const ConnectedChannelsSection = () => {
         }`} />;
       case "calendar":
         return <Calendar className={`h-4 w-4 ${
+          platform.connected ? "text-accent-primary" : "text-text-muted"
+        }`} />;
+      case "teams":
+        return <MessageSquare className={`h-4 w-4 ${
           platform.connected ? "text-accent-primary" : "text-text-muted"
         }`} />;
       default:
