@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X , LogOut, MessageSquareMore} from "lucide-react";
+import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X , LogOut} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -52,11 +52,6 @@ const navItems = [{
   label: "Settings",
   path: "/dashboard/settings",
   id: "settings"
-}, {
-  icon: MessageSquareMore,
-  label: "Feedback",
-  path: "",
-  id: "feedback"
 },
 {
   icon: LogOut,
@@ -103,16 +98,6 @@ const DashboardLayout = ({
         navigate("/");
       }
       return;
-    }
-
-    if (id === "feedback") {
-      window.postMessage({
-      target: 'FeaturebaseWidget',
-      data: { 
-        action: 'openFeedbackWidget',
-      }
-    })
-return;
     }
 
     navigate(path);
