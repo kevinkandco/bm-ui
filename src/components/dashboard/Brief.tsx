@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Summary } from "@/components/dashboard/types";
 import { MessageSquare, Mail, Calendar } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ViewErrorMessage from "./ViewErrorMessage";
 
 interface BriefProps {
@@ -22,7 +22,6 @@ const Brief = ({ brief, handleOpenBrief, isPending=false }: BriefProps) => {
   
   const handleClose = () => {
     setOpen(false);
-    setMessage("");
   }
   const success = !!handleOpenBrief;
   return (
