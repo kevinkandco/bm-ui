@@ -1,40 +1,61 @@
 
 import React from "react";
-import { Wifi, MessageSquare, Mail, Calendar } from "lucide-react";
+import { Settings, MessageSquare, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 const ConnectedChannelsSection = () => {
-  const platforms = [
-    { name: "Slack", channels: ["#product", "#team-updates", "#general"], icon: MessageSquare, active: true },
-    { name: "Email", channels: ["Work Inbox", "Personal"], icon: Mail, active: true },
-    { name: "Calendar", channels: ["Work", "Personal"], icon: Calendar, active: true }
+  const navigate = useNavigate();
+  
+  const connectedPlatforms = [
+    { name: "Gmail", icon: Mail, connected: true, comingSoon: false },
+    { name: "Slack", icon: MessageSquare, connected: true, comingSoon: false },
+    { name: "Teams", icon: MessageSquare, connected: false, comingSoon: true },
+    { name: "Calendar", icon: MessageSquare, connected: false, comingSoon: true }
   ];
 
+  const handleOpenSettings = () => {
+    navigate("/dashboard/settings");
+  };
+
   return (
-    <div className="p-6">
-      <h2 className="text-text-primary text-lg flex items-center mb-2">
-        <Wifi className="mr-2 h-5 w-5 text-accent-primary" />
-        Connected Channels
-      </h2>
-      <p className="text-text-secondary text-sm mb-3">
-        Monitoring {platforms.reduce((total, p) => total + p.channels.length, 0)} channels across {platforms.length} platforms
-      </p>
-      <div className="space-y-3">
-        {platforms.map((platform, i) => (
-          <div key={i} className="rounded-lg p-3 hover:bg-surface-raised/20 transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <platform.icon className="h-4 w-4 text-accent-primary mr-2" />
-                <h3 className="text-sm font-medium text-text-primary">{platform.name}</h3>
-              </div>
-              <span className={`h-2 w-2 rounded-full ${platform.active ? "bg-accent-primary" : "bg-text-muted"}`}></span>
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-text-primary text-sm font-medium">Connected Channels</h2>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6"
+          onClick={handleOpenSettings}
+        >
+          <Settings className="h-3 w-3 text-text-secondary" />
+        </Button>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        {connectedPlatforms.map((platform, i) => (
+          <div key={i} className="relative">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+              platform.connected 
+                ? "bg-accent-primary/20 border border-accent-primary/30" 
+                : "bg-surface-raised/30 border border-border-subtle"
+            }`}>
+              <platform.icon className={`h-4 w-4 ${
+                platform.connected ? "text-accent-primary" : "text-text-muted"
+              }`} />
             </div>
-            <div className="mt-1 flex flex-wrap gap-1">
-              {platform.channels.map((channel, j) => (
-                <span key={j} className="text-xs text-text-secondary bg-surface-raised/30 px-2 py-0.5 rounded border border-border-subtle">
-                  {channel}
-                </span>
-              ))}
-            </div>
+            {platform.comingSoon && (
+              <Badge 
+                variant="secondary" 
+                className="absolute -top-1 -right-1 text-xs px-1 py-0 h-4 bg-surface-raised/50 text-text-muted border border-border-subtle"
+              >
+                Soon
+              </Badge>
+            )}
+            {platform.connected && (
+              <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-background"></span>
+            )}
           </div>
         ))}
       </div>
