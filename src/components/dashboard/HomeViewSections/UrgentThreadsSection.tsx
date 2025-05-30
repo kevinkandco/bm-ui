@@ -23,7 +23,7 @@ const UrgentThreadsSection = () => {
         {urgentThreads.map((thread, i) => (
           <div 
             key={i} 
-            className="px-4 py-3 rounded-lg bg-surface-raised/20 border border-border-subtle text-sm flex items-center justify-between shadow-subtle hover:shadow-glow hover:border-border-subtle/50 transition-all cursor-pointer"
+            className="px-4 py-3 rounded-lg bg-surface-raised/20 border border-border-subtle text-sm flex items-center justify-between hover:border-border-subtle/50 transition-all cursor-pointer"
           >
             <span className="font-medium text-text-primary">{thread.channel}</span>
             <span className="text-text-secondary">{thread.message}</span>
