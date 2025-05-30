@@ -1,33 +1,46 @@
 
-import React from "react";
+import React, { useState, useCallback } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Archive, Plus, Filter } from "lucide-react";
+import BriefModal from "@/components/dashboard/BriefModal";
+import { Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 
 const BriefsList = () => {
   const { toast } = useToast();
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBrief, setSelectedBrief] = useState<number | null>(null);
+  const [briefModalOpen, setBriefModalOpen] = useState(false);
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
 
-  const handleCreateBrief = () => {
-    toast({
-      title: "Create Brief",
-      description: "Opening brief creation form",
-    });
-  };
+  const handleOpenBrief = useCallback((briefId: number) => {
+    setSelectedBrief(briefId);
+    setBriefModalOpen(true);
+  }, []);
+
+  const handleCloseBriefModal = useCallback(() => {
+    setBriefModalOpen(false);
+    setSelectedBrief(null);
+  }, []);
 
   const briefs = [
-    { id: 1, title: "Daily Update - May 14, 2025", date: "Today, 9:00 AM", unread: true },
-    { id: 2, title: "Weekly Summary - Week 20", date: "Yesterday, 5:30 PM", unread: false },
-    { id: 3, title: "Project Milestones - Q2", date: "May 12, 2025", unread: false },
-    { id: 4, title: "Team Performance Review", date: "May 10, 2025", unread: false },
-    { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false },
+    { id: 1, title: "Daily Update - May 14, 2025", date: "Today, 9:00 AM", unread: true, summary: "5 emails, 12 messages" },
+    { id: 2, title: "Weekly Summary - Week 20", date: "Yesterday, 5:30 PM", unread: false, summary: "24 emails, 47 messages" },
+    { id: 3, title: "Project Milestones - Q2", date: "May 12, 2025", unread: false, summary: "8 emails, 15 messages" },
+    { id: 4, title: "Team Performance Review", date: "May 10, 2025", unread: false, summary: "12 emails, 23 messages" },
+    { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false, summary: "6 emails, 9 messages" },
   ];
+
+  const filteredBriefs = briefs.filter(brief =>
+    brief.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    brief.summary.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <DashboardLayout 
@@ -35,57 +48,70 @@ const BriefsList = () => {
       sidebarOpen={sidebarOpen} 
       onToggleSidebar={handleToggleSidebar}
     >
-      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-text-primary">Briefs</h1>
-            <p className="text-text-secondary mt-1">View and manage all your briefs</p>
-          </div>
-          <div className="flex gap-3 mt-4 md:mt-0">
-            <Button 
-              onClick={handleCreateBrief}
-              className="rounded-full shadow-subtle hover:shadow-glow transition-all"
-            >
-              <Plus className="mr-2 h-5 w-5" /> Create Brief
-            </Button>
-            <Button 
-              variant="outline"
-              className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle backdrop-blur-md"
-            >
-              <Filter className="mr-2 h-5 w-5" /> Filter
-            </Button>
+      <div className="min-h-screen bg-surface px-4 py-6">
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+          <p className="text-text-secondary">Search and view your brief history</p>
+        </div>
+        
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
+            <Input
+              placeholder="Search briefs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
+            />
           </div>
         </div>
         
-        <div className="glass-card rounded-3xl overflow-hidden">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-text-primary mb-4">Recent Briefs</h2>
-            
+        {/* Briefs List */}
+        <div className="glass-card rounded-2xl overflow-hidden">
+          <div className="p-4 md:p-6">
             <div className="space-y-1">
-              {briefs.map((brief) => (
-                <React.Fragment key={brief.id}>
-                  <div className="flex items-center justify-between p-3 rounded-xl hover:bg-white/10 transition-all cursor-pointer">
-                    <div className="flex items-center">
-                      <Archive className="h-5 w-5 text-accent-primary mr-3" />
-                      <div>
-                        <div className="flex items-center">
-                          <h3 className="font-medium text-text-primary">{brief.title}</h3>
-                          {brief.unread && (
-                            <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full"></span>
-                          )}
+              {filteredBriefs.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-text-secondary">No briefs found matching your search.</p>
+                </div>
+              ) : (
+                filteredBriefs.map((brief) => (
+                  <React.Fragment key={brief.id}>
+                    <div 
+                      className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
+                      onClick={() => handleOpenBrief(brief.id)}
+                    >
+                      <div className="flex items-center flex-1">
+                        <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center">
+                            <h3 className="font-medium text-text-primary truncate">{brief.title}</h3>
+                            {brief.unread && (
+                              <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
+                            )}
+                          </div>
+                          <p className="text-sm text-text-secondary">{brief.date}</p>
+                          <p className="text-xs text-text-secondary mt-1">{brief.summary}</p>
                         </div>
-                        <p className="text-sm text-text-secondary">{brief.date}</p>
                       </div>
                     </div>
-                    <Button size="sm" variant="ghost">View</Button>
-                  </div>
-                  {brief.id !== briefs.length && <Separator className="bg-border-subtle my-1" />}
-                </React.Fragment>
-              ))}
+                    {brief.id !== filteredBriefs[filteredBriefs.length - 1].id && 
+                      <Separator className="bg-border-subtle my-1" />
+                    }
+                  </React.Fragment>
+                ))
+              )}
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Brief Modal */}
+      <BriefModal 
+        open={briefModalOpen}
+        onClose={handleCloseBriefModal}
+      />
     </DashboardLayout>
   );
 };

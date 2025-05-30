@@ -1,21 +1,15 @@
+
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BriefsFeed from "@/components/dashboard/BriefsFeed";
-import BriefDrawer from "@/components/dashboard/BriefDrawer";
+import BriefModal from "@/components/dashboard/BriefModal";
 import FocusMode from "@/components/dashboard/FocusMode";
 import CatchMeUp from "@/components/dashboard/CatchMeUp";
-import BriefModal from "@/components/dashboard/BriefModal";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
-import UpdateScheduleModal from "@/components/dashboard/UpdateScheduleModal";
-import StatusTimer from "@/components/dashboard/StatusTimer";
-import ConnectedAccounts from "@/components/dashboard/ConnectedAccounts";
-import PriorityPeopleWidget from "@/components/dashboard/PriorityPeopleWidget";
-import PriorityPeopleModal from "@/components/dashboard/PriorityPeopleModal";
-import { NextBriefSection, UpcomingMeetingsSection } from "@/components/dashboard/HomeViewSections/SidebarSections";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Zap, Headphones, Archive, Clock } from "lucide-react";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -24,22 +18,17 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   
-  // Initialize state once, avoid unnecessary re-renders
   const [uiState, setUiState] = useState({
-    briefDrawerOpen: false,
     selectedBrief: null,
     focusModeOpen: false,
     catchMeUpOpen: false,
-    sidebarOpen: !isMobile, // Sidebar closed on mobile by default, open on desktop
+    sidebarOpen: !isMobile,
     briefModalOpen: false,
-    updateScheduleOpen: false,
-    priorityPeopleModalOpen: false,
     endFocusModalOpen: false,
     catchUpModalOpen: false,
     userStatus: "active" as UserStatus
   });
 
-  // Optimized callbacks to prevent re-creation on each render
   const handleOpenBrief = useCallback((briefId: number) => {
     setUiState(prev => ({
       ...prev,
@@ -69,20 +58,6 @@ const Dashboard = () => {
     }));
   }, []);
 
-  const handleOpenBriefModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      briefModalOpen: true
-    }));
-  }, []);
-
-  const handleCloseBriefDrawer = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      briefDrawerOpen: false
-    }));
-  }, []);
-
   const handleCloseFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -90,7 +65,6 @@ const Dashboard = () => {
     }));
   }, []);
 
-  // Handler for when focus mode is started
   const handleStartFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -99,7 +73,6 @@ const Dashboard = () => {
     }));
   }, []);
 
-  // Handler for exiting focus mode
   const handleExitFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -107,7 +80,6 @@ const Dashboard = () => {
     }));
   }, []);
 
-  // Handler for closing the end focus modal
   const handleCloseEndFocusModal = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -128,7 +100,6 @@ const Dashboard = () => {
     }));
   }, []);
 
-  // New handler for generating catch me up summary
   const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
     setUiState(prev => ({
       ...prev,
@@ -137,7 +108,6 @@ const Dashboard = () => {
     }));
   }, []);
 
-  // Handler for closing the catch up modal
   const handleCloseCatchUpModal = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -149,7 +119,6 @@ const Dashboard = () => {
       description: "Your summary has been created and emailed to you"
     });
     
-    // Navigate to the catch-up page to show the summary
     navigate("/dashboard/catch-up");
   }, [toast, navigate]);
 
@@ -160,55 +129,15 @@ const Dashboard = () => {
     }));
   }, []);
 
-  const handleUpdateSchedule = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      updateScheduleOpen: true
-    }));
-  }, []);
+  const handleViewAllBriefs = useCallback(() => {
+    navigate("/dashboard/briefs");
+  }, [navigate]);
 
-  const handleCloseUpdateSchedule = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      updateScheduleOpen: false
-    }));
-  }, []);
-
-  // New handler for priority people modal
-  const handleOpenPriorityPeopleModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      priorityPeopleModalOpen: true
-    }));
-  }, []);
-
-  // New handler for closing priority people modal
-  const handleClosePriorityPeopleModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      priorityPeopleModalOpen: false
-    }));
-  }, []);
-
-  // Memoized props to prevent unnecessary re-renders
   const layoutProps = useMemo(() => ({
     currentPage: "home", 
     sidebarOpen: uiState.sidebarOpen, 
     onToggleSidebar: handleToggleSidebar
   }), [uiState.sidebarOpen, handleToggleSidebar]);
-
-  const statusTimerProps = useMemo(() => ({
-    status: uiState.userStatus, 
-    onToggleFocusMode: handleToggleFocusMode, 
-    onToggleCatchMeUp: handleToggleCatchMeUp,
-    onExitFocusMode: handleExitFocusMode
-  }), [uiState.userStatus, handleToggleFocusMode, handleToggleCatchMeUp, handleExitFocusMode]);
-
-  const briefsFeedProps = useMemo(() => ({
-    onOpenBrief: handleOpenBrief,
-    onCatchMeUp: handleToggleCatchMeUp,
-    onFocusMode: handleToggleFocusMode
-  }), [handleOpenBrief, handleToggleCatchMeUp, handleToggleFocusMode]);
 
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
@@ -225,61 +154,130 @@ const Dashboard = () => {
     timeRemaining: 60
   }), [uiState.catchUpModalOpen, handleCloseCatchUpModal]);
 
+  // Sample brief data
+  const latestBrief = {
+    id: 1,
+    title: "Morning Brief",
+    timestamp: "Today, 8:00 AM",
+    emailCount: 5,
+    messageCount: 12
+  };
+
   return (
     <DashboardLayout {...layoutProps}>
-      <div className="container px-4 py-4 md:p-6 max-w-7xl mx-auto">
-        {/* Timer and status section */}
-        <StatusTimer {...statusTimerProps} />
-        
-        {/* Connected accounts and metrics section */}
-        <div className="pb-4 pt-2">
-          <ConnectedAccounts />
+      <div className="min-h-screen bg-surface px-4 py-6">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
+            Good morning, Alex
+          </h1>
+          <p className="text-text-secondary">Ready to catch up or focus?</p>
         </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
-          {/* Main Feed Column */}
-          <div className="lg:col-span-8">
-            {/* Briefs Feed */}
-            <BriefsFeed {...briefsFeedProps} />
+
+        {/* Main CTAs */}
+        <div className="mb-8 space-y-4">
+          <Button 
+            onClick={handleToggleCatchMeUp}
+            className="w-full h-16 bg-accent-primary text-white rounded-2xl text-lg font-medium shadow-lg hover:shadow-xl transition-all"
+          >
+            <Zap className="mr-3 h-6 w-6" />
+            Catch Me Up
+          </Button>
+          
+          <Button 
+            onClick={handleToggleFocusMode}
+            variant="outline"
+            className="w-full h-16 rounded-2xl text-lg font-medium border-2 border-border-subtle text-text-primary hover:bg-surface-raised/30 shadow-lg hover:shadow-xl transition-all"
+          >
+            <Headphones className="mr-3 h-6 w-6" />
+            Focus Mode
+          </Button>
+        </div>
+
+        {/* Latest Brief Card */}
+        <div className="glass-card rounded-2xl p-6 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
+            <span className="text-sm text-text-secondary">{latestBrief.timestamp}</span>
           </div>
           
-          {/* Right Sidebar */}
-          <div className="lg:col-span-4 space-y-4 md:space-y-6">
-            {/* Priority People */}
-            <div className="glass-card rounded-xl md:rounded-3xl p-3 md:p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-text-primary font-medium">Priority People</h2>
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  onClick={handleOpenPriorityPeopleModal} 
-                  className="h-7 w-7 rounded-full"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </Button>
+          <p className="text-text-secondary mb-4">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+          
+          <div className="flex gap-3">
+            <Button 
+              onClick={() => handleOpenBrief(latestBrief.id)}
+              className="flex-1 bg-accent-primary text-white rounded-xl"
+            >
+              Read Brief
+            </Button>
+            <Button 
+              onClick={handleViewAllBriefs}
+              variant="outline" 
+              className="flex-1 rounded-xl border-border-subtle text-text-primary"
+            >
+              <Archive className="mr-2 h-4 w-4" />
+              View All Briefs
+            </Button>
+          </div>
+        </div>
+
+        {/* Next Brief Card */}
+        <div className="glass-card rounded-2xl p-6 mb-6">
+          <div className="flex items-center mb-3">
+            <Clock className="mr-2 h-5 w-5 text-accent-primary" />
+            <h2 className="text-lg font-semibold text-text-primary">Next Brief</h2>
+          </div>
+          
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="font-medium text-text-primary">Midday Brief</p>
+              <p className="text-sm text-text-secondary">Today at 12:30 PM</p>
+            </div>
+          </div>
+          
+          <Button 
+            variant="outline"
+            className="w-full rounded-xl border-border-subtle text-text-primary"
+          >
+            Update Schedule
+          </Button>
+        </div>
+
+        {/* Upcoming Meetings - Blurred Coming Soon */}
+        <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div className="filter blur-sm">
+            <h2 className="text-lg font-semibold text-text-primary mb-4">Upcoming Meetings</h2>
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-2">
+                <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                <div>
+                  <p className="font-medium text-text-primary">Weekly Standup</p>
+                  <p className="text-sm text-text-secondary">10:00 AM - 4 attendees</p>
+                </div>
               </div>
-              <PriorityPeopleWidget />
+              
+              <div className="flex items-center gap-3 p-2">
+                <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                <div>
+                  <p className="font-medium text-text-primary">Product Review</p>
+                  <p className="text-sm text-text-secondary">1:30 PM - 6 attendees</p>
+                </div>
+              </div>
             </div>
-            
-            {/* Next Brief */}
-            <div className="glass-card rounded-xl md:rounded-3xl p-3 md:p-4">
-              <NextBriefSection onUpdateSchedule={handleUpdateSchedule} />
-            </div>
-            
-            {/* Upcoming Meetings */}
-            <div className="glass-card rounded-xl md:rounded-3xl p-3 md:p-4">
-              <UpcomingMeetingsSection />
+          </div>
+          
+          {/* Coming Soon Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center bg-surface/80 backdrop-blur-sm">
+            <div className="text-center">
+              <p className="text-text-primary font-semibold mb-1">Coming Soon</p>
+              <p className="text-text-secondary text-sm">Meeting integration</p>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Modals and sheets */}
-      <BriefDrawer 
-        open={uiState.briefDrawerOpen}
-        briefId={uiState.selectedBrief}
-        onClose={handleCloseBriefDrawer}
-      />
+      {/* Modals */}
       <FocusMode 
         open={uiState.focusModeOpen}
         onClose={handleStartFocusMode}
@@ -292,14 +290,6 @@ const Dashboard = () => {
       <BriefModal 
         open={uiState.briefModalOpen}
         onClose={handleCloseBriefModal}
-      />
-      <UpdateScheduleModal 
-        open={uiState.updateScheduleOpen}
-        onClose={handleCloseUpdateSchedule}
-      />
-      <PriorityPeopleModal
-        open={uiState.priorityPeopleModalOpen}
-        onClose={handleClosePriorityPeopleModal}
       />
       <EndFocusModal {...endFocusModalProps} />
       <EndFocusModal {...catchUpModalProps} />
