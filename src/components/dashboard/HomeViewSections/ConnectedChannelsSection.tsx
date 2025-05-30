@@ -15,7 +15,9 @@ const ConnectedChannelsSection = () => {
     // V1 integrations - available now
     { name: "Slack", id: "slack", icon: "S", connected: true, comingSoon: false },
     { name: "Gmail", id: "gmail", icon: "G", connected: true, comingSoon: false },
-    
+  ];
+
+  const comingSoonPlatforms = [
     // V2 integrations - coming soon
     { name: "Outlook", id: "outlook", icon: "O", connected: false, comingSoon: true },
     { name: "Google Calendar", id: "calendar", icon: "C", connected: false, comingSoon: true },
@@ -41,7 +43,7 @@ const ConnectedChannelsSection = () => {
   };
 
   // Helper function to render the appropriate icon based on platform ID (same as onboarding)
-  const renderIcon = (platform: typeof connectedPlatforms[0]) => {
+  const renderIcon = (platform: typeof connectedPlatforms[0] | typeof comingSoonPlatforms[0]) => {
     const iconSize = 12; // Smaller for the condensed view
     
     switch (platform.id) {
@@ -73,7 +75,8 @@ const ConnectedChannelsSection = () => {
           </Button>
         </div>
         
-        <div className="flex items-center gap-1 flex-wrap">
+        {/* Available/Connected Platforms */}
+        <div className="flex items-center gap-1 flex-wrap mb-2">
           {connectedPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
@@ -91,10 +94,30 @@ const ConnectedChannelsSection = () => {
                 </div>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">
-                <p>
-                  {platform.name}
-                  {platform.comingSoon && " - coming soon!"}
-                </p>
+                <p>{platform.name}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+
+        {/* Coming Soon Label */}
+        <div className="text-[10px] text-text-secondary font-medium mb-1">
+          Coming Soon
+        </div>
+
+        {/* Coming Soon Platforms */}
+        <div className="flex items-center gap-1 flex-wrap">
+          {comingSoonPlatforms.map((platform, i) => (
+            <Tooltip key={i}>
+              <TooltipTrigger asChild>
+                <div className="relative group cursor-pointer">
+                  <div className="w-5 h-5 rounded-md flex items-center justify-center transition-all bg-gray-800/90 opacity-70">
+                    {renderIcon(platform)}
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                <p>{platform.name} - coming soon!</p>
               </TooltipContent>
             </Tooltip>
           ))}
