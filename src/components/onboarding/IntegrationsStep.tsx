@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { Slack, Mail, Calendar } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 interface IntegrationOption {
   id: string;
   name: string;
@@ -33,7 +34,7 @@ const IntegrationsStep = ({
 }: IntegrationsStepProps) => {
   const isMobile = useIsMobile();
   const [integrations] = useState<IntegrationOption[]>([
-  // V1 integrations
+  // V1 integrations - only Slack and Gmail are available now
   {
     id: "slack",
     name: "Slack",
@@ -48,23 +49,23 @@ const IntegrationsStep = ({
     available: true,
     description: "Sync important emails and avoid spam",
     version: "V1"
-  }, {
+  },
+  // V2 integrations (coming soon) - moved Outlook and Google Calendar here
+  {
     id: "outlook",
     name: "Outlook",
     icon: "O",
-    available: true,
-    description: "Connect your Outlook email account",
-    version: "V1"
+    available: false,
+    description: "Connect your Outlook email account (coming soon)",
+    version: "V2"
   }, {
     id: "calendar",
     name: "Google Calendar",
     icon: "C",
-    available: true,
-    description: "Stay on top of meetings and events",
-    version: "V1"
-  },
-  // V2 integrations (coming soon)
-  {
+    available: false,
+    description: "Stay on top of meetings and events (coming soon)",
+    version: "V2"
+  }, {
     id: "asana",
     name: "Asana",
     icon: "A",
@@ -235,7 +236,7 @@ const IntegrationsStep = ({
           {/* Coming soon integrations with indicator in the same line */}
           {groupedIntegrations.V2?.map(integration => <div key={integration.id} className="integration-list-item flex items-center py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg border border-black/20 bg-white/10 backdrop-blur-md opacity-70 dark:border-white/20">
               <div className="w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center bg-gray-800/80 rounded-full mr-2 sm:mr-3">
-                <span className="text-white/80 font-bold text-xs sm:text-sm">{integration.icon}</span>
+                {renderIcon(integration.id, integration.icon)}
               </div>
               
               <div className="flex-grow">
