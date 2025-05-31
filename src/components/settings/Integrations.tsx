@@ -191,8 +191,8 @@ const Integrations = () => {
 
     const openAuthUrl = async (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard`,
-        google: `${BaseURL}/google/auth?redirectURL=dashboard`,
+        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${BaseURL}/google/auth?redirectURL=dashboard/settings`,
         calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
         outlook: `${BaseURL}/outlook/auth`,
       };
