@@ -1,5 +1,5 @@
 import { useToast } from "@/hooks/use-toast";
-import { Slack, Mail, Calendar } from "lucide-react";
+import { Slack, Mail, Calendar, Settings } from "lucide-react";
 import { IntegrationOption } from "@/components/type";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,8 @@ import useAuthStore from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import DisconnectModal from "./DisconnectModal";
 import { useApi } from "@/hooks/useApi";
+import SlackSettingsModal from "./modal/SlackSettingsModalProps";
+import { Button } from "../ui/button";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -152,6 +154,7 @@ const Integrations = () => {
   const [provider, setProvider] = useState<{id: number, name: string} | null>(null);
   const [connected, setConnected] = useState<Record<string, boolean>>({});
   const [data, setData] = useState<UserData>({});
+  const [isSlackModalOpen, setSlackModalOpen] = useState(false);
   const { call } = useApi();
 
   const handleOpenModal = (provider: string) => {
@@ -347,7 +350,12 @@ const Integrations = () => {
 
                 <div className="flex justify-center items-center ml-2">
                   {connected[integration.id] ? (
+                    <>
+                    {integration.id === "slack" && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2" onClick={() => setSlackModalOpen(true)}>
+                     <Settings size={20}>Configure Slack</Settings>
+                    </div>}
                     <button type="button" onClick={() => handleOpenModal(integration.id)} className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Disconnect</button>
+                    </>
                   ) : (
                     <button type="button" onClick={() => toggleConnection(integration.id)} className="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">Connect</button>
                   )}
@@ -382,6 +390,11 @@ const Integrations = () => {
         </div>
       </div>
       <DisconnectModal provider={provider} open={isOpen} onClose={handleCloseModal} onDisconnect={handleDisconnect}  />
+      <SlackSettingsModal
+        open={isSlackModalOpen}
+        onClose={() => setSlackModalOpen(false)}
+        // onSave={(data) => console.log("Slack settings saved:", data)}
+      />
     </div>
   );
 };

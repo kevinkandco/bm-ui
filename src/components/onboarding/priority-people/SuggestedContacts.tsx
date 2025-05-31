@@ -273,16 +273,6 @@ export const SuggestedContacts = ({
           </Button>
         </div>
       )}
-      
-      <div className="text-center mt-4">
-        <Button 
-          variant="ghost" 
-          className="text-foreground/60 dark:text-white/50 hover:text-foreground dark:hover:text-ice-grey"
-        >
-          <Search size={16} className="mr-2" />
-          Import from contacts
-        </Button>
-      </div>
     </div>
   );
 };
