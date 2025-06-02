@@ -18,6 +18,7 @@ interface SlackSettingsModalProps {
   open: boolean;
   onClose: () => void;
   firstTimeSlackConnected: boolean;
+  setFirstTimeSlackConnected: React.Dispatch<React.SetStateAction<boolean>>;
   initialTab?: SettingsTab;
 }
 
@@ -43,6 +44,7 @@ const SlackSettingsModal = ({
   open,
   onClose,
   firstTimeSlackConnected,
+  setFirstTimeSlackConnected,
   initialTab = "priorityPeople",
 }: SlackSettingsModalProps) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
@@ -103,8 +105,9 @@ const SlackSettingsModal = ({
     if (firstTimeSlackConnected) {
       setActiveTab("priorityPeople");
       syncData();
+      setFirstTimeSlackConnected(false);
     }
-  }, [firstTimeSlackConnected, syncData]);
+  }, [firstTimeSlackConnected, syncData, setFirstTimeSlackConnected]);
 
   const handleNext = useCallback(() => {
     const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);

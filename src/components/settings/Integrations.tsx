@@ -405,6 +405,7 @@ const Integrations = () => {
         open={isSlackModalOpen}
         onClose={() => setSlackModalOpen(false)}
         firstTimeSlackConnected={firstTimeSlackConnected}
+        setFirstTimeSlackConnected={setFirstTimeSlackConnected}
       />
     </div>
   );
