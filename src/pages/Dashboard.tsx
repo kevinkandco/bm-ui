@@ -343,6 +343,7 @@ const Dashboard = () => {
         onToggleFocusMode={handleToggleFocusMode}
         onToggleCatchMeUp={handleToggleCatchMeUp}
         onOpenBriefModal={handleOpenBriefModal}
+        statusTimerProps={statusTimerProps}
       />
       
       {/* Modals */}

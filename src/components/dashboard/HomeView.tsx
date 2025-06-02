@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Zap, Headphones, Archive, Menu, X, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import StatusTimer, { StatusTimerProps } from "@/components/dashboard/StatusTimer";
 
 // Import optimized section components
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
@@ -19,13 +20,15 @@ interface HomeViewProps {
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
+  statusTimerProps: StatusTimerProps;
 }
 
 const HomeView = ({
   onOpenBrief,
   onToggleFocusMode,
   onToggleCatchMeUp,
-  onOpenBriefModal
+  onOpenBriefModal,
+  statusTimerProps
 }: HomeViewProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -35,6 +38,7 @@ const HomeView = ({
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
+
   
   const handleUpdateSchedule = useCallback(() => {
     toast({
@@ -176,8 +180,11 @@ const HomeView = ({
             <p className="text-text-secondary">Ready to catch up or focus?</p>
           </div>
           
+          <StatusTimer {...statusTimerProps} />
+          
           {/* Smaller CTAs on the right */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
+
             <Button 
               onClick={onToggleCatchMeUp} 
               className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all"
