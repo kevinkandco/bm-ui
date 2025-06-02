@@ -8,13 +8,15 @@ import Profile from "@/components/settings/Profile";
 // import DeliverySchedule from "@/components/settings/DeliverySchedule";
 // import PrivacySecurity from "@/components/settings/PrivacySecurity";
 import Integrations from "@/components/settings/Integrations";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const SettingsPage = () => {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [activeCategory, setActiveCategory] = React.useState("profile");
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -86,12 +88,23 @@ const SettingsPage = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="container p-4 md:p-6 max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary flex items-center">
-            <Settings className="mr-3 h-6 w-6" />
-            Settings
-          </h1>
-          <p className="text-text-secondary mt-1">Manage your account and preferences</p>
+        <div className="flex justify-between items-center">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-text-primary flex items-center">
+              <Settings className="mr-3 h-6 w-6" />
+              Settings
+            </h1>
+            <p className="text-text-secondary mt-1">Manage your account and preferences</p>
+          </div>
+
+          <Button
+            variant="outline"
+            size="default"
+            className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all"
+            onClick={() => navigate("/dashboard")}
+          >
+            <span className="text-xs sm:text-sm">Go to Dashboard</span>
+          </Button>
         </div>
         
         <div className="glass-card rounded-3xl overflow-hidden">

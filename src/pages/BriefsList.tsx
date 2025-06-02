@@ -21,6 +21,7 @@ const BriefsList = () => {
   const [message, setMessage] = useState<string>("");
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
   const { call } = useApi();
+  const navigate = useNavigate();
   const [uiState, setUiState] = useState({
     selectedBrief: null,
     briefModalOpen: false
@@ -165,13 +166,6 @@ const BriefsList = () => {
       briefModalOpen: false
     }));
   }, [pagination.currentPage, getBriefs]);
-  // const briefs = [
-  //   { id: 1, title: "Daily Update - May 14, 2025", date: "Today, 9:00 AM", unread: true, summary: "5 emails, 12 messages" },
-  //   { id: 2, title: "Weekly Summary - Week 20", date: "Yesterday, 5:30 PM", unread: false, summary: "24 emails, 47 messages" },
-  //   { id: 3, title: "Project Milestones - Q2", date: "May 12, 2025", unread: false, summary: "8 emails, 15 messages" },
-  //   { id: 4, title: "Team Performance Review", date: "May 10, 2025", unread: false, summary: "12 emails, 23 messages" },
-  //   { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false, summary: "6 emails, 9 messages" },
-  // ];
 
   const filteredBriefs = briefs?.filter(brief =>
     brief.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -185,9 +179,19 @@ const BriefsList = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="min-h-screen bg-surface px-4 py-6">
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
-          <p className="text-text-secondary">Search and view your brief history</p>
+        <div className="flex justify-between items-center">
+          <div className="mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+            <p className="text-text-secondary">Search and view your brief history</p>
+          </div>
+          <Button
+            variant="outline"
+            size="default"
+            className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all"
+            onClick={() => navigate("/dashboard")}
+          >
+            <span className="text-xs sm:text-sm">Go to Dashboard</span>
+          </Button>
         </div>
         
         {/* Search */}

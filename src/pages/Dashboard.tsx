@@ -324,6 +324,10 @@ const Dashboard = () => {
         statusTimerProps={statusTimerProps}
         priorityPeople={priorityPeople}
         latestBrief={latestBrief}
+        status={uiState.userStatus}
+        onExitFocusMode={handleExitFocusMode}
+        focusModeExitLoading={uiState.focusModeExitLoading}
+        onToggleSignOff={handleOpenSignOffModal}
       />
       
       {/* Modals */}
