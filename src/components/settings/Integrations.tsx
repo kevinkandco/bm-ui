@@ -5,11 +5,10 @@ import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useAuthStore from "@/store/useAuthStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import DisconnectModal from "./DisconnectModal";
 import { useApi } from "@/hooks/useApi";
-import SlackSettingsModal from "./modal/SlackSettingsModalProps";
-import { Button } from "../ui/button";
+import SlackSettingsModal from "./modal/SlackSettingsModal";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -20,7 +19,6 @@ interface UserData {
 const Integrations = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
-  const { gotoLogin } = useAuthStore();
 
   const [integrations] = useState<IntegrationOption[]>([
     // V1 integrations
@@ -156,6 +154,26 @@ const Integrations = () => {
   const [data, setData] = useState<UserData>({});
   const [isSlackModalOpen, setSlackModalOpen] = useState(false);
   const { call } = useApi();
+  const [searchParams] = useSearchParams();
+  const [firstTimeSlackConnected, setFirstTimeSlackConnected] = useState(false);
+
+    useEffect(() => {
+      const selected = searchParams.get("selected");
+  
+      if (selected) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("selected");
+        window.history.replaceState(
+          {},
+          document.title,
+          url.pathname + url.search
+        );
+        if(selected === 'slack') {
+          setFirstTimeSlackConnected(true);
+          setSlackModalOpen(true);
+        }
+      }
+    }, [searchParams]);
 
   const handleOpenModal = (provider: string) => {
     const id = data.find((p) => p.provider_name?.toLowerCase() === provider.toLowerCase())?.id;
@@ -276,13 +294,6 @@ const Integrations = () => {
     return groups;
   }, {} as Record<string, IntegrationOption[]>);
 
-  const handleSaveSettings = () => {
-    toast({
-      title: "Settings Saved",
-      description: "Your preferences have been updated successfully",
-    });
-  };
-
   const renderIcon = (id: string, iconText: string) => {
     switch (id) {
       case "slack":
@@ -393,7 +404,7 @@ const Integrations = () => {
       <SlackSettingsModal
         open={isSlackModalOpen}
         onClose={() => setSlackModalOpen(false)}
-        // onSave={(data) => console.log("Slack settings saved:", data)}
+        firstTimeSlackConnected={firstTimeSlackConnected}
       />
     </div>
   );
