@@ -95,7 +95,7 @@ const DashboardLayout = ({
 
       if (response) {
         logout();
-        navigate("/");
+        window.location.reload();
       }
       return;
     }
