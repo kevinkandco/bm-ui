@@ -21,7 +21,7 @@ const PriorityTopics = ({
 
   const addTopic = () => {
     const trimmed = inputValue.trim();
-    if (!trimmed || slackData.priorityTopics?.includes(trimmed)) return;
+    if (!trimmed || slackData?.priorityTopics?.includes(trimmed)) return;
 
     setSlackData((prev) => ({
       ...prev,
@@ -119,9 +119,9 @@ const PriorityTopics = ({
             </Button>
           </div>
 
-          {slackData.priorityTopics?.length > 0 && (
+          {slackData?.priorityTopics?.length > 0 && (
             <div className="flex flex-wrap gap-1 sm:gap-2 pt-2">
-              {slackData.priorityTopics?.map((topic) => (
+              {slackData?.priorityTopics?.map((topic) => (
                 <div
                   key={topic}
                   className="flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-xs sm:text-sm text-off-white"
@@ -159,7 +159,7 @@ const PriorityTopics = ({
                 onClick={() => addSuggestedTopic(topic)}
                 className={cn(
                   "px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border text-xs sm:text-sm",
-                  slackData.priorityTopics?.includes(topic.name)
+                  slackData?.priorityTopics?.includes(topic.name)
                     ? "bg-glass-blue/10 border-glass-blue/40 text-glass-blue"
                     : "bg-white/10 border-white/20 text-off-white hover:border-white/40"
                 )}
@@ -193,7 +193,7 @@ const PriorityTopics = ({
                       onClick={() => addSuggestedTopic(topic)}
                       className={cn(
                         "px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs",
-                        slackData.priorityTopics?.includes(topic.name)
+                        slackData?.priorityTopics?.includes(topic.name)
                           ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
                           : "bg-white/10 text-off-white/70 hover:text-off-white"
                       )}
@@ -217,7 +217,7 @@ const PriorityTopics = ({
                       onClick={() => addSuggestedTopic(topic)}
                       className={cn(
                         "px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs",
-                        slackData.priorityTopics?.includes(topic.name)
+                        slackData?.priorityTopics?.includes(topic.name)
                           ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
                           : "bg-white/10 text-off-white/70 hover:text-off-white"
                       )}

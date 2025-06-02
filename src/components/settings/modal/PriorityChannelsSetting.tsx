@@ -38,18 +38,18 @@ const PriorityChannelsSetting = ({
 
   // Update available channels whenever priority channels change
   useEffect(() => {
-    const priority = slackData.priorityChannels ?? [];
+    const priority = slackData?.priorityChannels ?? [];
 
     setSlackChannels(
       allSlackChannels?.filter(
         (channel) => !priority.some((c) => c === channel?.name)
       ) ?? []
     );
-  }, [slackData.priorityChannels, allSlackChannels]);
+  }, [slackData?.priorityChannels, allSlackChannels]);
 
   const addChannel = (channelName: string) => {
     const trimmed = channelName.trim();
-    if (!trimmed || slackData.priorityChannels?.includes(trimmed)) return;
+    if (!trimmed || slackData?.priorityChannels?.includes(trimmed)) return;
 
     setAllSlackChannels((prev) => [
       ...(prev ?? []),
@@ -64,7 +64,7 @@ const PriorityChannelsSetting = ({
 
   const selectChannel = (channel: string) => {
     const trimmed = channel.trim();
-    if (!slackData.priorityChannels?.includes(trimmed)) {
+    if (!slackData?.priorityChannels?.includes(trimmed)) {
       setSlackData((prev) => ({
         ...prev,
         priorityChannels: [...(prev.priorityChannels ?? []), trimmed],
@@ -136,14 +136,14 @@ const PriorityChannelsSetting = ({
           <ChannelInput
             onAddChannel={addChannel}
             onSelectChannel={selectChannel}
-            existingChannels={slackData.priorityChannels ?? []}
+            existingChannels={slackData?.priorityChannels ?? []}
             availableChannels={slackChannels}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
 
           <SelectedChannels
-            channels={slackData.priorityChannels ?? []}
+            channels={slackData?.priorityChannels ?? []}
             slackChannels={allSlackChannels}
             onRemoveChannel={removeChannel}
           />
@@ -160,7 +160,7 @@ const PriorityChannelsSetting = ({
 
           <SlackChannelsList
             slackChannels={filteredChannels}
-            priorityChannels={slackData.priorityChannels ?? []}
+            priorityChannels={slackData?.priorityChannels ?? []}
             onSelectChannel={selectChannel}
           />
         </div>

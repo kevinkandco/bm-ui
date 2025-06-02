@@ -80,7 +80,7 @@ const IgnoreSetting = ({
         )
         ?.filter(
           (channel) =>
-            !slackData.ignoreChannels?.some(
+            !slackData?.ignoreChannels?.some(
               (ignore: string) =>
                 ignore?.toLowerCase() === channel?.name?.toLowerCase()
             )
@@ -100,7 +100,7 @@ const IgnoreSetting = ({
         )
         ?.filter(
           (topic) =>
-            !slackData.ignoreKeywords?.some(
+            !slackData?.ignoreKeywords?.some(
               (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
             )
         );
@@ -115,8 +115,8 @@ const IgnoreSetting = ({
     slackChannels,
     slackData,
     suggestedTopics,
-    slackData.ignoreKeywords,
-    slackData.ignoreChannels,
+    slackData?.ignoreKeywords,
+    slackData?.ignoreChannels,
   ]);
 
   const addItem = () => {
@@ -124,10 +124,10 @@ const IgnoreSetting = ({
     if (!trimmedInput) return;
 
     if (selectedTab === "channel") {
-      if (slackData.ignoreChannels?.includes(trimmedInput)) {
+      if (slackData?.ignoreChannels?.includes(trimmedInput)) {
         return;
       }
-      // Update slackData.ignoreChannels with new channel
+      // Update slackData?.ignoreChannels with new channel
       setSlackData((prev) => ({
         ...prev,
         ignoreChannels: [...(prev.ignoreChannels || []), trimmedInput],
@@ -137,10 +137,10 @@ const IgnoreSetting = ({
         { id: trimmedInput, name: trimmedInput },
       ]);
     } else if (selectedTab === "keyword") {
-      if (slackData.ignoreKeywords?.includes(trimmedInput)) {
+      if (slackData?.ignoreKeywords?.includes(trimmedInput)) {
         return;
       }
-      // Update slackData.ignoreKeywords with new keyword
+      // Update slackData?.ignoreKeywords with new keyword
       setSlackData((prev) => ({
         ...prev,
         ignoreKeywords: [...(prev.ignoreKeywords || []), trimmedInput],
@@ -151,7 +151,7 @@ const IgnoreSetting = ({
   };
 
  const selectChannel = (channel: string) => {
-  if (!slackData.ignoreChannels?.includes(channel)) {
+  if (!slackData?.ignoreChannels?.includes(channel)) {
     setSlackData((prev) => ({
       ...prev,
       ignoreChannels: [...(prev.ignoreChannels || []), channel],
@@ -163,7 +163,7 @@ const IgnoreSetting = ({
 };
 
 const selectKeyword = (topic: string) => {
-  if (!slackData.ignoreKeywords?.includes(topic)) {
+  if (!slackData?.ignoreKeywords?.includes(topic)) {
     setSlackData((prev) => ({
       ...prev,
       ignoreKeywords: [...(prev.ignoreKeywords || []), topic],
@@ -211,9 +211,9 @@ const selectKeyword = (topic: string) => {
   };
 
   const renderSelectedItems = () => {
-    if (selectedTab === "channel" && slackData.ignoreChannels?.length > 0) {
+    if (selectedTab === "channel" && slackData?.ignoreChannels?.length > 0) {
       const channels: PriorityChannels[] = slackChannels?.filter((channel) =>
-        slackData.ignoreChannels?.includes(channel?.name)
+        slackData?.ignoreChannels?.includes(channel?.name)
       );
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
@@ -238,10 +238,10 @@ const selectKeyword = (topic: string) => {
           ))}
         </div>
       );
-    } else if (selectedTab === "keyword" && slackData.ignoreKeywords?.length > 0) {
+    } else if (selectedTab === "keyword" && slackData?.ignoreKeywords?.length > 0) {
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
-          {slackData.ignoreKeywords?.map((keyword) => (
+          {slackData?.ignoreKeywords?.map((keyword) => (
             <div
               key={keyword}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white"
@@ -448,7 +448,7 @@ const selectKeyword = (topic: string) => {
         <div className="flex items-center space-x-2 pt-2">
           <Switch
             id="include-in-summary"
-            checked={slackData.includeIgnoredInSummary}
+            checked={slackData?.includeIgnoredInSummary}
             onCheckedChange={handleIncludeInSummary}
             className="data-[state=checked]:bg-glass-blue"
           />

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,8 @@ import { SlackData } from "./types";
 interface SlackSettingsModalProps {
   open: boolean;
   onClose: () => void;
+  firstTimeSlackConnected: boolean;
+  setFirstTimeSlackConnected: React.Dispatch<React.SetStateAction<boolean>>;
   initialTab?: SettingsTab;
 }
 
@@ -41,6 +43,8 @@ interface TabConfig {
 const SlackSettingsModal = ({
   open,
   onClose,
+  firstTimeSlackConnected,
+  setFirstTimeSlackConnected,
   initialTab = "priorityPeople",
 }: SlackSettingsModalProps) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
@@ -48,7 +52,7 @@ const SlackSettingsModal = ({
   const [slackData, setSlackData] = useState<SlackData>();
   const [SyncLoading, setSyncLoading] = useState(false);
   const { call } = useApi();
-  const tabs: TabConfig[] = [
+  const tabs: TabConfig[] = useMemo(() => [
     {
       id: "priorityPeople",
       label: "Priority People",
@@ -73,7 +77,7 @@ const SlackSettingsModal = ({
       icon: <ChevronRight className="h-4 w-4" />,
       Component: IgnoreSetting,
     },
-  ];
+  ], []);
 
   const getSlackData = useCallback(async (): Promise<void> => {
     const response = await call("get", "/api/settings/slack-data");
@@ -97,6 +101,19 @@ const SlackSettingsModal = ({
     setSyncLoading(false);
   }, [call, getSlackData]);
 
+    useEffect(() => {
+    if (firstTimeSlackConnected) {
+      setActiveTab("priorityPeople");
+      syncData();
+    }
+  }, [firstTimeSlackConnected, syncData]);
+
+  const handleNext = useCallback(() => {
+    const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
+    const nextIndex = tabs[currentIndex + 1];
+    if (nextIndex) setActiveTab(nextIndex.id);
+  }, [activeTab, tabs]);
+
   const handleSave = useCallback(async (): Promise<void> => {
     setIsSaving(true);
     const response = await call("post", "/api/settings/update/slack-data", {
@@ -106,8 +123,9 @@ const SlackSettingsModal = ({
     if (response) {
       onClose();
     }
+    setFirstTimeSlackConnected(false);
     setIsSaving(false);
-  }, [call, slackData, onClose]);
+  }, [call, slackData, onClose, setFirstTimeSlackConnected]);
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.Component;
 
@@ -167,13 +185,23 @@ const SlackSettingsModal = ({
                 >
                   Cancel
                 </Button>
-                <Button
-                  className="bg-blue-500 hover:bg-blue-600 min-w-32"
-                  onClick={handleSave}
-                  disabled={isSaving}
-                >
-                  {isSaving ? "Saving..." : "Save Settings"}
-                </Button>
+                {firstTimeSlackConnected &&
+                activeTab !== tabs[tabs.length - 1].id ? (
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600 min-w-32"
+                    onClick={handleNext}
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600 min-w-32"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? "Saving..." : "Save Settings"}
+                  </Button>
+                )}
               </div>
             </div>
           </div>

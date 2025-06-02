@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Settings, User, Bell, Clock, Shield, Zap } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -8,11 +8,13 @@ import Profile from "@/components/settings/Profile";
 // import DeliverySchedule from "@/components/settings/DeliverySchedule";
 // import PrivacySecurity from "@/components/settings/PrivacySecurity";
 import Integrations from "@/components/settings/Integrations";
+import { useSearchParams } from "react-router-dom";
 
 const SettingsPage = () => {
   const { toast } = useToast();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [activeCategory, setActiveCategory] = React.useState("profile");
+  const [searchParams] = useSearchParams();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -50,6 +52,24 @@ const SettingsPage = () => {
       component: <Integrations />
     }
   ];
+
+
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const selected = searchParams.get("selected");
+
+    if (tab) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("tab");
+      window.history.replaceState(
+        {},
+        document.title,
+        url.pathname + url.search
+      );
+      handleCategoryClick(tab);
+    }
+  }, [searchParams]);
 
   const handleCategoryClick = (categoryId: string) => {
     setActiveCategory(categoryId);
