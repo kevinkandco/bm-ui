@@ -274,13 +274,9 @@ const Integrations = () => {
         {}
       );
 
-      setConnected((prev) => ({
-        ...prev,
-        ...data,
-      }));
+      setConnected({...data});
     }
   }, [call]);
-
   
   useEffect(() => {
     getProvider();
