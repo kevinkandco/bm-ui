@@ -19,6 +19,7 @@ const lazyImport = (importFn) => {
 
 // Lazy load pages with optimized chunks
 const Index = lazyImport(() => import("./pages/Index"));
+const Login = lazyImport(() => import("./pages/Login"));
 const Onboarding = lazyImport(() => import("./pages/Onboarding"));
 const Dashboard = lazyImport(() => import("./pages/Dashboard"));
 const BriefsList = lazyImport(() => import("./pages/BriefsList"));
@@ -64,6 +65,7 @@ const App = () => (
               <Routes>
                 <Route element={<ProtectedRoute element="unprotected" />}>
                   <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
                 </Route>
                 <Route element={<ProtectedOnboardingRoute />}>
                   <Route path="/onboarding" element={<Onboarding />} />
