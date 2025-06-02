@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -117,7 +117,7 @@ const HomeView = ({
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
-
+                
                 {/* Focus Mode Option */}
                 <Button 
                   onClick={() => {
@@ -185,7 +185,17 @@ const HomeView = ({
               <Zap className="mr-2 h-4 w-4" />
               Catch Me Up
             </Button>
-            
+          
+              <Button 
+                // onClick={onToggleSignOff}
+                variant="outline"
+                size={isMobile ? "sm" : "default"}
+                className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all"
+              >
+                <Power className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                <span className="text-xs sm:text-sm">Sign Off Today</span>
+              </Button>
+
             <Button 
               onClick={onToggleFocusMode} 
               variant="outline" 

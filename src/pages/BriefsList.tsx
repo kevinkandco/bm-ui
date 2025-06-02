@@ -102,7 +102,7 @@ const BriefsList = () => {
     if (!briefs) return;
 
     const newPending = briefs
-      .filter(
+      ?.filter(
         (brief) => brief.status !== "success" && brief.status !== "failed"
       )
       .map((brief) => ({ id: brief.id, status: true }));
@@ -133,7 +133,7 @@ const BriefsList = () => {
   
             clearInterval(intervalId);
   
-            intervalIDsRef.current = intervalIDsRef.current.filter(
+            intervalIDsRef.current = intervalIDsRef.current?.filter(
               (id) => id !== intervalId
             );
           }
@@ -173,7 +173,7 @@ const BriefsList = () => {
   //   { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false, summary: "6 emails, 9 messages" },
   // ];
 
-  const filteredBriefs = briefs.filter(brief =>
+  const filteredBriefs = briefs?.filter(brief =>
     brief.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     brief.summary.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -208,7 +208,7 @@ const BriefsList = () => {
           <div className="p-4 md:p-6">
             <div className="space-y-1">
 
-              {filteredBriefs.length === 0 ? (
+              {filteredBriefs?.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-text-secondary">No briefs found matching your search.</p>
                 </div>

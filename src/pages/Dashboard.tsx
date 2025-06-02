@@ -62,29 +62,6 @@ const Dashboard = () => {
       itemsPerPage: 10, // or whatever default you want
     });
   const [searchParams] = useSearchParams();
-  const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
-
-
-  const getBriefs = useCallback( async (page = 1): Promise<void> => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-      const response = await call("get", `/api/summaries?page=${page}`, {
-        showToast: true,
-        toastTitle: "Failed to fetch summaries",
-        toastDescription:
-          "Something went wrong. Failed to fetch summaries data.",
-      });
-
-      if (response) {
-        setBriefs(response?.data);
-
-        setPagination((prev) => ({
-          ...prev,
-          currentPage: response.meta?.current_page || 1,
-          totalPages: response.meta?.last_page || 1,
-        }));
-      }
-    }, [call]);
 
   const fetchDashboardData = useCallback(async () => {
     const response = await call("get", "/api/dashboard", {
@@ -111,7 +88,7 @@ const Dashboard = () => {
     }
   }, [call]);
 
-  const getBrief = useCallback(
+  const getLatestBrief = useCallback(
     async (briefId: number): Promise<false | Summary> => {
       const response = await call("get", `/api/summary/${briefId}/status`, {
         showToast: true,
@@ -141,60 +118,8 @@ const Dashboard = () => {
       );
     }
     fetchDashboardData();
-    getBriefs(1); 
-  }, [searchParams, getBriefs, fetchDashboardData]);
-
-  useEffect(() => {
-    if (!briefs) return;
-
-    const newPending = briefs
-      .filter(
-        (brief) => brief.status !== "success" && brief.status !== "failed"
-      )
-      .map((brief) => ({ id: brief.id, status: true }));
-
-    setPendingData(newPending);
-  }, [briefs, setPendingData]);
-
-  useEffect(() => {
-    // Clear existing intervals first
-    intervalIDsRef.current.forEach(clearInterval);
-    intervalIDsRef.current = [];
-
-    if (!pendingData?.length) return;
-
-    const ids = pendingData.map((item) => {
-      const intervalId = setInterval(async () => {
-        const data = await getBrief(item.id);
-
-        if (data) {
-          setPendingData(
-            (prev) => prev?.filter((data) => data.id !== item.id) ?? []
-          );
-
-          setBriefs((prev) => {
-            if (!prev) return null;
-            return prev?.map((brief) => brief.id === item.id ? data : brief) || null;
-          });
-
-          clearInterval(intervalId);
-
-          intervalIDsRef.current = intervalIDsRef.current.filter(
-            (id) => id !== intervalId
-          );
-        }
-      }, 3000);
-
-      return intervalId;
-    });
-
-    intervalIDsRef.current = ids;
-
-    return () => {
-      intervalIDsRef.current.forEach(clearInterval);
-      intervalIDsRef.current = [];
-    };
-  }, [pendingData, getBrief]);
+    getLatestBrief(1); 
+  }, [searchParams, getLatestBrief, fetchDashboardData]);
 
   const handleExitFocusMode = useCallback(async () => {
     setUiState((prev) => ({
@@ -214,14 +139,14 @@ const Dashboard = () => {
         description: "Focus mode has been successfully deactivated.",
       });
       fetchDashboardData();
-      getBriefs();
+      getLatestBrief(1);
     }
 
     setUiState((prev) => ({
       ...prev,
       focusModeExitLoading: false,
     }));
-  }, [call, fetchDashboardData, getBriefs, toast]);
+  }, [call, fetchDashboardData, getLatestBrief, toast]);
 
   const handleOpenBrief = useCallback((briefId: number) => {
     setUiState(prev => ({
@@ -294,8 +219,8 @@ const Dashboard = () => {
       ...prev,
       catchMeUpOpen: false
     }));
-    getBriefs();
-  }, [getBriefs]);
+    getLatestBrief(1);
+  }, [getLatestBrief]);
 
   const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
     setUiState(prev => ({
