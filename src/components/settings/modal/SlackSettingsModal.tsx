@@ -105,9 +105,8 @@ const SlackSettingsModal = ({
     if (firstTimeSlackConnected) {
       setActiveTab("priorityPeople");
       syncData();
-      setFirstTimeSlackConnected(false);
     }
-  }, [firstTimeSlackConnected, syncData, setFirstTimeSlackConnected]);
+  }, [firstTimeSlackConnected, syncData]);
 
   const handleNext = useCallback(() => {
     const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
@@ -124,8 +123,9 @@ const SlackSettingsModal = ({
     if (response) {
       onClose();
     }
+    setFirstTimeSlackConnected(false);
     setIsSaving(false);
-  }, [call, slackData, onClose]);
+  }, [call, slackData, onClose, setFirstTimeSlackConnected]);
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.Component;
 
