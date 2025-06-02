@@ -17,13 +17,13 @@ export const PriorityPeopleList = ({
   addLabel,
   contacts
 }: PriorityPeopleListProps) => {
-  if (priorityPeople.length === 0) {
+  if (priorityPeople?.length === 0) {
     return null;
   }
   
   return (
     <div className="space-y-1.5">
-      {priorityPeople.map((person) => (
+      {priorityPeople?.map((person) => (
         <PriorityPersonCard
           key={person.name}
           person={person}

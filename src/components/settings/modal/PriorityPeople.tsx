@@ -174,7 +174,7 @@ const PriorityPeople = ({
 
         {/* Added people list */}
         <PriorityPeopleList
-          priorityPeople={slackData.priorityPeople}
+          priorityPeople={slackData?.priorityPeople}
           removePerson={removePerson}
           designateContact={designateContact}
           addLabel={addLabel}
@@ -194,7 +194,7 @@ const PriorityPeople = ({
         {/* Suggested contacts */}
         <SuggestedContacts
           suggestedContacts={suggestedContacts}
-          priorityPeople={slackData.priorityPeople}
+          priorityPeople={slackData?.priorityPeople}
           platformContacts={platformContacts}
           addPerson={addPerson}
           removePerson={removePerson}
