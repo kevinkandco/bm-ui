@@ -4,32 +4,14 @@ import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
+import { PriorityPeople } from "../types";
 
-const PriorityPeopleSection = () => {
-  const navigate = useNavigate();
-  
-  const priorityPeople = [
-    { 
-      name: "Sandra Chen", 
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
-      active: true 
-    },
-    { 
-      name: "Alex Johnson", 
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
-      active: true 
-    },
-    { 
-      name: "Michael Lee", 
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
-      active: false 
-    },
-    { 
-      name: "Taylor Swift", 
-      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
-      active: true 
-    }
-  ];
+interface PriorityPeopleSectionProps {
+  priorityPeople: PriorityPeople[];
+}
+
+const PriorityPeopleSection = ({priorityPeople} : PriorityPeopleSectionProps) => {
+const navigate = useNavigate();
 
   const handleOpenSettings = () => {
     // For now, we'll navigate to the general settings page
@@ -52,10 +34,10 @@ const PriorityPeopleSection = () => {
       </div>
       
       <div className="flex items-center gap-1">
-        {priorityPeople.slice(0, 5).map((person, i) => (
+        {priorityPeople?.slice(0, 5).map((person, i) => (
           <div key={i} className="relative">
             <Avatar className="h-8 w-8 ring-2 ring-background">
-              <AvatarImage src={person.image} alt={person.name} />
+              <AvatarImage src={person.avatar} alt={person.name} />
               <AvatarFallback className={`${
                 person.active ? "bg-accent-primary/20 text-accent-primary" : "bg-surface-raised/30 text-text-secondary"
               } text-xs`}>
@@ -67,9 +49,9 @@ const PriorityPeopleSection = () => {
             )}
           </div>
         ))}
-        {priorityPeople.length > 5 && (
+        {priorityPeople?.length > 5 && (
           <div className="w-8 h-8 rounded-full bg-surface-raised/30 border border-border-subtle flex items-center justify-center">
-            <span className="text-xs text-text-secondary">+{priorityPeople.length - 5}</span>
+            <span className="text-xs text-text-secondary">+{priorityPeople?.length - 5}</span>
           </div>
         )}
       </div>

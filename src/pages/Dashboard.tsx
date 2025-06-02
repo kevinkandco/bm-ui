@@ -16,16 +16,6 @@ import { useApi } from "@/hooks/useApi";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
-interface BriefsFeedProps {
-  briefs: Summary[] | null;
-  onOpenBrief: (briefId: number) => void;
-  onCatchMeUp: () => void;
-  onFocusMode: () => void;
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
-
 export interface PendingData {
   id: number;
   status: boolean;
@@ -54,13 +44,7 @@ const Dashboard = () => {
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
-  const [briefs, setBriefs] = useState<Summary[] | null>(null);
-  const [pendingData, setPendingData] = useState<PendingData[] | null>(null);
-  const [pagination, setPagination] = useState({
-      currentPage: 1,
-      totalPages: 1,
-      itemsPerPage: 10, // or whatever default you want
-    });
+  const [latestBrief, setLatestBrief] = useState<Summary | null>(null);
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
@@ -88,20 +72,19 @@ const Dashboard = () => {
     }
   }, [call]);
 
-  const getLatestBrief = useCallback(
-    async (briefId: number): Promise<false | Summary> => {
-      const response = await call("get", `/api/summary/${briefId}/status`, {
-        showToast: true,
-        toastTitle: "Failed to fetch brief",
-        toastDescription: "Something went wrong while fetching the brief.",
-        returnOnFailure: false, 
-      });
-      console.log(response, 'fetch brief api');
-
-      return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
-    },
-    [call]
-  );
+  const getLatestBrief = useCallback(async () => {
+    const response = await call("get", `/api/summaries`, {
+      showToast: true,
+      toastTitle: "Failed to fetch briefs",
+      toastDescription: "Something went wrong while fetching the briefs.",
+      returnOnFailure: false,
+    });
+    setLatestBrief(response.data[0]);
+    setUiState((prev) => ({
+      ...prev,
+      selectedBrief: response.data[0].id
+    }))
+  }, [call]);
 
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
@@ -118,7 +101,7 @@ const Dashboard = () => {
       );
     }
     fetchDashboardData();
-    getLatestBrief(1); 
+    getLatestBrief(); 
   }, [searchParams, getLatestBrief, fetchDashboardData]);
 
   const handleExitFocusMode = useCallback(async () => {
@@ -139,7 +122,7 @@ const Dashboard = () => {
         description: "Focus mode has been successfully deactivated.",
       });
       fetchDashboardData();
-      getLatestBrief(1);
+      getLatestBrief();
     }
 
     setUiState((prev) => ({
@@ -219,7 +202,7 @@ const Dashboard = () => {
       ...prev,
       catchMeUpOpen: false
     }));
-    getLatestBrief(1);
+    getLatestBrief();
   }, [getLatestBrief]);
 
   const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
@@ -316,11 +299,6 @@ const Dashboard = () => {
     onExitFocusMode: handleExitFocusMode
   }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, uiState.isSignoff, briefSchedules, userSchedule, fetchDashboardData, handleToggleFocusMode, handleToggleCatchMeUp, handleOpenSignOffModal, handleExitFocusMode ]);
 
-  const briefsFeedProps = useMemo(() => ({
-    briefs: briefs,
-    onOpenBrief: handleOpenBrief
-  }), [briefs, handleOpenBrief]);
-
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
     onClose: handleCloseEndFocusModal,
@@ -344,6 +322,8 @@ const Dashboard = () => {
         onToggleCatchMeUp={handleToggleCatchMeUp}
         onOpenBriefModal={handleOpenBriefModal}
         statusTimerProps={statusTimerProps}
+        priorityPeople={priorityPeople}
+        latestBrief={latestBrief}
       />
       
       {/* Modals */}

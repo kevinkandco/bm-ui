@@ -14,6 +14,7 @@ import UrgentThreadsSection from "./HomeViewSections/UrgentThreadsSection";
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
+import { PriorityPeople, Summary } from "./types";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -21,6 +22,8 @@ interface HomeViewProps {
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
   statusTimerProps: StatusTimerProps;
+  priorityPeople: PriorityPeople[];
+  latestBrief: Summary;
 }
 
 const HomeView = ({
@@ -28,7 +31,9 @@ const HomeView = ({
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal,
-  statusTimerProps
+  statusTimerProps,
+  priorityPeople,
+  latestBrief
 }: HomeViewProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -52,13 +57,13 @@ const HomeView = ({
   }, [navigate]);
 
   // Sample brief data
-  const latestBrief = {
-    id: 1,
-    title: "Morning Brief",
-    timestamp: "Today, 8:00 AM",
-    emailCount: 5,
-    messageCount: 12
-  };
+  // const latestBrief = {
+  //   id: 1,
+  //   title: "Morning Brief",
+  //   timestamp: "Today, 8:00 AM",
+  //   emailCount: 5,
+  //   messageCount: 12
+  // };
 
   // Mobile View
   if (isMobile) {
@@ -138,7 +143,7 @@ const HomeView = ({
                 {/* Latest Brief */}
                 <div className="border border-border-subtle rounded-xl p-4">
                   <h3 className="font-semibold text-text-primary mb-2">Latest Brief</h3>
-                  <p className="text-sm text-text-secondary mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+                  <p className="text-sm text-text-secondary mb-3">{latestBrief.emailCount} emails, {latestBrief?.messagesCount} messages</p>
                   <Button 
                     onClick={() => onOpenBrief(latestBrief.id)} 
                     className="w-full bg-accent-primary text-white rounded-xl"
@@ -156,7 +161,7 @@ const HomeView = ({
                     <ConnectedChannelsSection />
                   </div>
                   <div className="border border-border-subtle rounded-xl p-4">
-                    <PriorityPeopleSection />
+                    <PriorityPeopleSection priorityPeople={priorityPeople}/>
                   </div>
                 </div>
               </div>
@@ -222,10 +227,10 @@ const HomeView = ({
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
-                <span className="text-sm text-text-secondary">{latestBrief.timestamp}</span>
+                <span className="text-sm text-text-secondary">{latestBrief?.timestamp}</span>
               </div>
               
-              <p className="text-text-secondary mb-4">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+              <p className="text-text-secondary mb-4">{latestBrief?.emailCount} emails, {latestBrief?.meetingCount} messages</p>
               
               <div className="flex gap-3">
                 <Button 
@@ -257,7 +262,7 @@ const HomeView = ({
           <div className="col-span-4 space-y-4">
             {/* Priority People Section - Compact */}
             <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm">
-              <PriorityPeopleSection />
+              <PriorityPeopleSection priorityPeople={priorityPeople} />
             </div>
 
             {/* Connected Channels Section - Compact */}
