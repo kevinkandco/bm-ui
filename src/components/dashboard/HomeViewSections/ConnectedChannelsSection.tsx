@@ -12,27 +12,21 @@ const ConnectedChannelsSection = () => {
   const isMobile = useIsMobile();
   
   const connectedPlatforms = [
-    // V1 integrations - available now
     { name: "Slack", id: "slack", icon: "S", connected: true, comingSoon: false },
     { name: "Gmail", id: "gmail", icon: "G", connected: true, comingSoon: false },
   ];
 
   const comingSoonPlatforms = [
-    // V2 integrations - coming soon
     { name: "Outlook", id: "outlook", icon: "O", connected: false, comingSoon: true },
     { name: "Google Calendar", id: "calendar", icon: "C", connected: false, comingSoon: true },
     { name: "Asana", id: "asana", icon: "A", connected: false, comingSoon: true },
     { name: "Notion", id: "notion", icon: "N", connected: false, comingSoon: true },
     { name: "Zoom/Meet", id: "zoom", icon: "Z", connected: false, comingSoon: true },
-    
-    // V3 integrations - coming soon
     { name: "Microsoft Teams", id: "teams", icon: "T", connected: false, comingSoon: true },
     { name: "Salesforce", id: "salesforce", icon: "SF", connected: false, comingSoon: true },
     { name: "Hubspot", id: "hubspot", icon: "H", connected: false, comingSoon: true },
     { name: "Jira", id: "jira", icon: "J", connected: false, comingSoon: true },
     { name: "Confluence", id: "confluence", icon: "CF", connected: false, comingSoon: true },
-    
-    // Future integrations - coming soon
     { name: "GitHub/GitLab", id: "github", icon: "GH", connected: false, comingSoon: true },
     { name: "Zendesk", id: "zendesk", icon: "ZD", connected: false, comingSoon: true },
     { name: "ServiceNow", id: "servicenow", icon: "SN", connected: false, comingSoon: true }
@@ -42,9 +36,8 @@ const ConnectedChannelsSection = () => {
     navigate("/dashboard/settings");
   };
 
-  // Helper function to render the appropriate icon based on platform ID (same as onboarding)
   const renderIcon = (platform: typeof connectedPlatforms[0] | typeof comingSoonPlatforms[0]) => {
-    const iconSize = 12; // Smaller for the condensed view
+    const iconSize = 16;
     
     switch (platform.id) {
       case "slack":
@@ -56,44 +49,44 @@ const ConnectedChannelsSection = () => {
       case "calendar":
         return <Calendar className="text-white" size={iconSize} />;
       default:
-        return <span className="text-white font-bold text-[8px]">{platform.icon}</span>;
+        return <span className="text-white font-semibold text-xs">{platform.icon}</span>;
     }
   };
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="p-2">
-        <div className="flex items-center justify-between mb-1.5">
-          <h2 className="text-text-primary text-xs font-medium">Connected Channels</h2>
+      <div className="bg-ds-surface rounded-xl p-24 shadow-card">
+        <div className="flex items-center justify-between mb-16">
+          <h2 className="text-ds-text-primary text-lg font-semibold">Connected Channels</h2>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-4 w-4"
+            className="h-8 w-8 hover:bg-ds-surface-raised"
             onClick={handleOpenSettings}
           >
-            <Settings className="h-2 w-2 text-text-secondary" />
+            <Settings className="h-4 w-4 text-ds-text-secondary" />
           </Button>
         </div>
         
-        {/* Available/Connected Platforms */}
-        <div className="flex items-center gap-1 flex-wrap mb-2">
+        {/* Connected Platforms */}
+        <div className="flex items-center gap-8 flex-wrap mb-24">
           {connectedPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
                 <div className="relative group cursor-pointer">
-                  <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
+                  <div className={`w-10 h-10 rounded-md flex items-center justify-center transition-all duration-hover ${
                     platform.connected 
-                      ? "bg-accent-primary/80" 
-                      : "bg-gray-800/90 opacity-70"
+                      ? "bg-ds-accent-blue" 
+                      : "bg-ds-text-secondary opacity-50"
                   }`}>
                     {renderIcon(platform)}
                   </div>
                   {platform.connected && (
-                    <span className="absolute -bottom-0.5 -right-0.5 h-1 w-1 rounded-full bg-green-500 border border-background"></span>
+                    <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-ds-accent-green border-2 border-ds-surface"></span>
                   )}
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs">
+              <TooltipContent side="bottom" className="text-label">
                 <p>{platform.name}</p>
               </TooltipContent>
             </Tooltip>
@@ -101,20 +94,20 @@ const ConnectedChannelsSection = () => {
         </div>
 
         {/* Coming Soon Label */}
-        <div className="text-[10px] text-text-secondary font-medium mb-1">
+        <div className="text-label text-ds-text-secondary font-medium mb-12 border-t border-ds-divider pt-16">
           Coming Soon
         </div>
 
-        {/* Coming Soon Platforms - styled like the image */}
-        <div className="flex items-center gap-1 flex-wrap">
+        {/* Coming Soon Platforms */}
+        <div className="flex items-center gap-8 flex-wrap">
           {comingSoonPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
-                <div className="px-2 py-1 bg-gray-600/90 rounded-full text-white text-[10px] font-medium cursor-pointer hover:bg-gray-500/90 transition-colors">
+                <div className="px-12 py-6 bg-ds-surface-raised rounded-full text-ds-text-secondary text-label font-medium cursor-pointer hover:bg-ds-divider transition-colors duration-hover">
                   {platform.name}
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs">
+              <TooltipContent side="bottom" className="text-label">
                 <p>{platform.name} - coming soon!</p>
               </TooltipContent>
             </Tooltip>
