@@ -1,21 +1,26 @@
 
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { Settings, MessageSquare, Mail, Slack, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useApi } from "@/hooks/useApi";
+
+interface IntegrationOption {
+  name: string;
+  id: string;
+  icon: string;
+  connected: boolean;
+  comingSoon: boolean;
+}
 
 const ConnectedChannelsSection = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  
-  const connectedPlatforms = [
-    // V1 integrations - available now
-    { name: "Slack", id: "slack", icon: "S", connected: true, comingSoon: false },
-    { name: "Gmail", id: "gmail", icon: "G", connected: true, comingSoon: false },
-  ];
+  const { call } = useApi();
+  const [connectedPlatforms, setConnectedPlatforms] = React.useState([]);
 
   const comingSoonPlatforms = [
     // V2 integrations - coming soon
@@ -38,8 +43,41 @@ const ConnectedChannelsSection = () => {
     { name: "ServiceNow", id: "servicenow", icon: "SN", connected: false, comingSoon: true }
   ];
 
+  const getProvider = useCallback(async (): Promise<void> => {
+      const response = await call("get", "/api/settings/system-integrations", {
+        showToast: false,
+        returnOnFailure: false,
+      });
+  
+      if (response?.data) {
+        
+        const data = response.data.reduce(
+          (
+            acc: IntegrationOption[],
+            integration: { provider_name: string; is_connected: boolean }
+          ) => {
+            acc.push({
+              name: integration?.provider_name,
+              id: integration?.provider_name?.toLowerCase(),
+              icon: integration?.provider_name?.charAt(0)?.toLocaleUpperCase(),
+              connected: integration.is_connected,
+              comingSoon: false,
+            });
+            return acc;
+          },
+          []
+        );
+  
+        setConnectedPlatforms(data);
+      }
+    }, [call]);
+    
+    useEffect(() => {
+      getProvider();
+    }, [getProvider]);
+
   const handleOpenSettings = () => {
-    navigate("/dashboard/settings");
+    navigate("/dashboard/settings?tab=integrations");
   };
 
   // Helper function to render the appropriate icon based on platform ID (same as onboarding)
