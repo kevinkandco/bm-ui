@@ -1,10 +1,11 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { PriorityPeople } from "../types";
+import SlackSettingsModal from "@/components/settings/modal/SlackSettingsModal";
 
 interface PriorityPeopleSectionProps {
   priorityPeople: PriorityPeople[];
@@ -12,14 +13,16 @@ interface PriorityPeopleSectionProps {
 
 const PriorityPeopleSection = ({priorityPeople} : PriorityPeopleSectionProps) => {
 const navigate = useNavigate();
+const [isSlackModalOpen, setSlackModalOpen] = useState(false);
 
   const handleOpenSettings = () => {
     // For now, we'll navigate to the general settings page
     // In the future, this could be a dedicated priority people settings page
-    navigate("/dashboard/settings");
+    setSlackModalOpen(true);
   };
 
   return (
+    <>
     <div className="p-4">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-text-primary text-sm font-medium">Priority People</h2>
@@ -56,6 +59,12 @@ const navigate = useNavigate();
         )}
       </div>
     </div>
+    <SlackSettingsModal
+        open={isSlackModalOpen}
+        onClose={() => setSlackModalOpen(false)}
+        initialTab={"priorityPeople"}
+      />
+    </>
   );
 };
 

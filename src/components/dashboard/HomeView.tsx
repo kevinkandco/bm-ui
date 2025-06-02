@@ -15,6 +15,7 @@ import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSectio
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import { PriorityPeople, Summary } from "./types";
+import useAuthStore from "@/store/useAuthStore";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -36,6 +37,7 @@ const HomeView = ({
   latestBrief
 }: HomeViewProps) => {
   const { toast } = useToast();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,15 +58,6 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  // Sample brief data
-  // const latestBrief = {
-  //   id: 1,
-  //   title: "Morning Brief",
-  //   timestamp: "Today, 8:00 AM",
-  //   emailCount: 5,
-  //   messageCount: 12
-  // };
-
   // Mobile View
   if (isMobile) {
     return (
@@ -72,7 +65,7 @@ const HomeView = ({
         {/* Mobile Welcome Section */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-text-primary mb-2">
-            Good morning, Alex
+            Good morning, {user?.name}
           </h1>
           <p className="text-text-secondary mb-8">What would you like to know?</p>
         </div>
@@ -180,7 +173,7 @@ const HomeView = ({
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-text-primary mb-2">
-              Good morning, Alex
+              Good morning, {user.name}
             </h1>
             <p className="text-text-secondary">Ready to catch up or focus?</p>
           </div>
