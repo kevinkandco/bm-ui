@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -84,12 +83,12 @@ const DashboardLayout = ({
                   <div className="space-y-4">
                     <button
                       onClick={() => {
-                        navigate("/dashboard/briefs");
+                        navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
                       className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
                     >
-                      View All Briefs
+                      Brief Schedule
                     </button>
                     
                     <button
@@ -99,7 +98,43 @@ const DashboardLayout = ({
                       }}
                       className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
                     >
-                      Settings
+                      Priorities
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        navigate("/dashboard/settings");
+                        setMobileNavOpen(false);
+                      }}
+                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
+                    >
+                      Integrations
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        toast({
+                          title: "Feedback",
+                          description: "Feedback feature coming soon"
+                        });
+                        setMobileNavOpen(false);
+                      }}
+                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
+                    >
+                      Feedback
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        toast({
+                          title: "Contact Us",
+                          description: "Contact feature coming soon"
+                        });
+                        setMobileNavOpen(false);
+                      }}
+                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
+                    >
+                      Contact Us
                     </button>
                   </div>
                 </div>
