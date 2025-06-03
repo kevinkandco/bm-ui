@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -64,7 +63,15 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				
-				// Glass morphism design system colors - referenced by CSS variables to be theme aware
+				// New Podia Color Palette
+				'primary-teal': '#2EE2AD',
+				'accent-green': '#3DE48D',
+				'dark-navy': '#0A0F19',
+				'deep-blue': '#131B2B',
+				'light-gray-text': '#B3B8C1',
+				'white-text': '#FFFFFF',
+				
+				// Glass morphism design system colors - updated for new palette
 				'surface': 'var(--surface)',
 				'surface-raised': 'var(--surface-raised)',
 				'surface-overlay': 'var(--surface-overlay)',
@@ -77,18 +84,18 @@ export default {
 				'glow-highlight': 'var(--glow-highlight)',
 				'glow-line': 'var(--glow-line)',
 				
-				// Additional colors for compatibility with existing code
+				// Keep legacy colors for compatibility
 				'canvas-black': '#1A1A1C',
 				'deep-plum': '#222222',  
 				'cranberry': '#6E0039',
-				'electric-teal': '#2B88FF',  
-				'hot-coral': '#6BA5FF',     
+				'electric-teal': '#2EE2AD',  // Updated to match new primary
+				'hot-coral': '#3DE48D',     // Updated to match accent green
 				'ice-grey': '#E0E4EA',
 				'cool-slate': '#B0B3BE',
 				'slate-grey': '#696E79',
-				'glass-blue': '#2B88FF',
-				'deep-teal': '#1A1A1C',
-				'lake-blue': '#2B88FF',
+				'glass-blue': '#2EE2AD',
+				'deep-teal': '#0A0F19',
+				'lake-blue': '#2EE2AD',
 				'bright-orange': '#FF5F37',
 				'white': {
 					DEFAULT: '#FFFFFF',
@@ -104,27 +111,44 @@ export default {
 					80: 'rgba(255, 255, 255, 0.8)',
 					90: 'rgba(255, 255, 255, 0.9)',
 				},
-				// Keep legacy colors
-				"indigo": "#3B3BFF",
-				"neutral-gray": "#8E9196",
-				"teal-blue": "#3B83F5",
-				"purple-light": "#9b87f5",
-				"soft-gray": "#F1F0FB",
-				
-				// Light mode colors
-				"light-surface": "#F5F5F7",
-				"light-raised": "#FFFFFF",
-				"light-overlay": "rgba(255, 255, 255, 0.85)",
-				"light-text-primary": "#1A1A1C",
-				"light-text-secondary": "rgba(26, 26, 28, 0.8)",
-				"light-text-muted": "rgba(26, 26, 28, 0.5)",
-				"light-border-subtle": "rgba(0, 0, 0, 0.08)",
+			},
+			fontFamily: {
+				'sans': ['Inter', 'system-ui', 'sans-serif'],
+				'inter': ['Inter', 'system-ui', 'sans-serif'],
+			},
+			fontSize: {
+				// Podia Typography Scale
+				'heading': ['32px', { lineHeight: '1.2', fontWeight: '600' }],
+				'subheading': ['20px', { lineHeight: '1.3', fontWeight: '400' }],
+				'body': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
+				'secondary': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
+				'button': ['16px', { lineHeight: '1', fontWeight: '500' }],
+				'chip': ['14px', { lineHeight: '1', fontWeight: '400' }],
+			},
+			spacing: {
+				// Podia Spacing Scale
+				'podia-padding': '20px',
+				'podia-section': '24px',
+				'podia-button': '12px',
+				'podia-chat': '16px',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
 				xl: '16px',
+				'podia-button': '12px',
+				'podia-chip': '20px',
+				'podia-card': '16px',
+			},
+			boxShadow: {
+				'podia-button': '0 4px 8px rgba(46, 226, 173, 0.2)',
+				'glass': '0 4px 30px rgba(0, 0, 0, 0.2)',
+				'elevated': '0 10px 30px rgba(0, 0, 0, 0.15)',
+				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(46, 226, 173, 0.1)',
+				'neon': '0 0 15px rgba(46, 226, 173, 0.4)',
+				'subtle': '0 8px 32px rgba(0, 0, 0, 0.2)',
+				'light-subtle': '0 8px 32px rgba(0, 0, 0, 0.1)',
 			},
 			transitionDuration: {
 				'400': '400ms',
@@ -243,14 +267,6 @@ export default {
 				'float': 'float 6s infinite ease-in-out',
 				'glow': 'glow 3s infinite ease-in-out',
 				'float-delay': 'float-delay 8s infinite ease-in-out 1s',
-			},
-			boxShadow: {
-				'glass': '0 4px 30px rgba(0, 0, 0, 0.2)',
-				'elevated': '0 10px 30px rgba(0, 0, 0, 0.15)',
-				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(43, 136, 255, 0.1)',
-				'neon': '0 0 15px rgba(43, 136, 255, 0.4)',
-				'subtle': '0 8px 32px rgba(0, 0, 0, 0.2)',
-				'light-subtle': '0 8px 32px rgba(0, 0, 0, 0.1)',
 			},
 			backgroundImage: {
 				'gradient-primary': 'linear-gradient(90deg, #2B88FF, #6BA5FF)',
