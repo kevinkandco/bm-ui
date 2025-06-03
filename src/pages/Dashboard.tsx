@@ -79,10 +79,10 @@ const Dashboard = () => {
       toastDescription: "Something went wrong while fetching the briefs.",
       returnOnFailure: false,
     });
-    setLatestBrief(response.data[0]);
+    setLatestBrief(response?.data?.[0]);
     setUiState((prev) => ({
       ...prev,
-      selectedBrief: response.data[0].id
+      selectedBrief: response?.data?.[0]?.id
     }))
   }, [call]);
 
