@@ -6,25 +6,32 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold transition-all duration-hover ease-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ds-accent-blue focus-visible:ring-opacity-40 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-ds-accent-blue text-white hover:bg-ds-accent-blue-hover",
-        primary: "bg-ds-accent-blue text-white hover:bg-ds-accent-blue-hover rounded-md",
-        secondary: "border border-ds-accent-blue bg-transparent text-ds-accent-blue hover:bg-ds-accent-blue hover:bg-opacity-10",
-        tertiary: "bg-transparent text-ds-text-secondary hover:text-ds-text-primary border-none",
-        destructive: "bg-ds-accent-red text-white hover:opacity-90",
-        outline: "border border-ds-divider bg-ds-surface hover:bg-ds-surface-raised text-ds-text-primary",
-        ghost: "hover:bg-ds-surface-raised text-ds-text-secondary hover:text-ds-text-primary",
-        link: "text-ds-accent-blue underline-offset-4 hover:underline",
+        default: "bg-glass-blue text-white hover:bg-lake-blue transition-colors duration-300 shadow-neon",
+        primary: "bg-[#0F6FDD] text-white hover:bg-[#0E66C8] transition-colors duration-300 rounded-full", // Darker blue for better contrast
+        destructive:
+          "bg-hot-coral text-white hover:bg-hot-coral/90 shadow-sm",
+        outline:
+          "border bg-surface-overlay backdrop-blur-md hover:bg-white/15 text-text-primary hover:text-text-primary dark:border-white/40 light:border-black/20",
+        secondary:
+          "bg-white/25 backdrop-blur-md text-text-primary hover:bg-white/35 shadow-sm",
+        ghost: "hover:bg-white/15 hover:text-text-primary text-text-secondary",
+        link: "text-text-secondary underline-offset-4 hover:text-accent-primary",
+        plain: "bg-transparent text-text-primary hover:text-accent-primary p-0 border-none",
+        glow: "bg-black/80 text-white hover:bg-black/70 transition-all duration-300 shadow-none hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-white/10 dark:text-white light:text-text-primary",
+        black: "bg-black text-white hover:bg-black/90 rounded-full border border-white/10 transition-all duration-300 shadow-none hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]",
+        back: "bg-transparent text-white hover:text-[#0F6FDD] p-0 border-none transition-colors", // Changed hover color to match darker primary
       },
       size: {
-        default: "h-10 px-16 py-8 text-label",
-        sm: "h-9 rounded-md px-12 text-label",
-        lg: "h-11 rounded-md px-24 text-base",
-        icon: "h-10 w-10",
+        default: "h-10 px-4 py-2 rounded-xl",
+        sm: "h-9 rounded-lg px-3",
+        lg: "h-11 rounded-xl px-8",
+        icon: "h-10 w-10 rounded-full",
         none: "h-auto p-0",
+        pill: "h-10 px-6 py-2 rounded-full",
       },
     },
     defaultVariants: {

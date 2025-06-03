@@ -39,36 +39,36 @@ const DashboardLayout = ({
 
   // Memoize main content classes
   const mainContentClasses = useMemo(() => cn(
-    "flex-1 overflow-auto bg-ds-background",
+    "flex-1 overflow-auto",
     className
   ), [className]);
 
   return (
-    <div className="flex min-h-screen bg-ds-background">
-      {/* Top Bar - Mobile */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-ds-surface border-b border-ds-divider md:hidden h-64">
-        <div className="flex items-center justify-between px-16 h-full">
+    <div className="flex min-h-screen bg-surface relative">
+      {/* Mobile Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border-subtle md:hidden">
+        <div className="flex items-center justify-between p-4">
           <div className="flex items-center">
-            <div className="h-8 w-8 bg-ds-accent-blue rounded-md flex items-center justify-center">
+            <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
               <span className="font-bold text-white text-lg">B</span>
             </div>
-            <span className="ml-12 font-semibold text-lg text-ds-text-primary">Brief-me</span>
+            <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
           </div>
           
           <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
             <SheetTrigger asChild>
               <Button size="icon" variant="ghost" className="h-9 w-9">
-                <Menu className="h-5 w-5 text-ds-text-secondary" />
+                <Menu className="h-4 w-4 text-text-primary" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="p-0 w-full max-w-none bg-ds-surface border-ds-divider">
+            <SheetContent side="right" className="p-0 w-full max-w-none bg-surface border-border-subtle">
               <div className="flex flex-col h-full">
-                <div className="p-16 flex items-center justify-between border-b border-ds-divider h-64">
+                <div className="p-4 flex items-center justify-between border-b border-border-subtle">
                   <div className="flex items-center">
-                    <div className="h-8 w-8 bg-ds-accent-blue rounded-md flex items-center justify-center">
+                    <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
                       <span className="font-bold text-white text-lg">B</span>
                     </div>
-                    <span className="ml-12 font-semibold text-lg text-ds-text-primary">Brief-me</span>
+                    <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
                   </div>
                   <Button 
                     size="icon" 
@@ -76,18 +76,18 @@ const DashboardLayout = ({
                     onClick={() => setMobileNavOpen(false)}
                     className="h-8 w-8"
                   >
-                    <X className="h-5 w-5 text-ds-text-secondary" />
+                    <X className="h-5 w-5 text-text-secondary" />
                   </Button>
                 </div>
                 
-                <div className="flex-1 p-16">
-                  <div className="space-y-16">
+                <div className="flex-1 p-4">
+                  <div className="space-y-4">
                     <button
                       onClick={() => {
                         navigate("/dashboard/briefs");
                         setMobileNavOpen(false);
                       }}
-                      className="w-full text-left p-12 rounded-md hover:bg-ds-surface-raised text-ds-text-primary transition-colors duration-hover"
+                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
                     >
                       View All Briefs
                     </button>
@@ -97,16 +97,16 @@ const DashboardLayout = ({
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="w-full text-left p-12 rounded-md hover:bg-ds-surface-raised text-ds-text-primary transition-colors duration-hover"
+                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
                     >
                       Settings
                     </button>
                   </div>
                 </div>
                 
-                <div className="mt-auto p-16 border-t border-ds-divider">
+                <div className="mt-auto p-4 border-t border-border-subtle">
                   <div className="flex items-center justify-between">
-                    <span className="text-label text-ds-text-secondary">Version 1.0.0</span>
+                    <span className="text-xs text-text-secondary">Version 1.0.0</span>
                   </div>
                 </div>
               </div>
@@ -118,7 +118,7 @@ const DashboardLayout = ({
       {/* Main Content */}
       <div className={mainContentClasses}>
         {/* Add top padding on mobile to account for fixed header */}
-        <div className="pt-64 md:pt-0 min-h-full">
+        <div className="pt-20 md:pt-0">
           {children}
         </div>
       </div>
