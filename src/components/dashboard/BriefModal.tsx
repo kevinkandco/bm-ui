@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Mail, MessageSquare, CheckSquare, Clock, ArrowUp, ArrowDown, Play, Pause } from "lucide-react";
+import { Mail, MessageSquare, CheckSquare, Clock, ArrowUp, ArrowDown, Play, Pause, Bookmark, BookmarkPlus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,7 +17,100 @@ interface BriefModalProps {
   onClose: () => void;
 }
 
+const AudioWave = ({ isPlaying, currentTime = 28, duration = 63 }: { isPlaying: boolean; currentTime?: number; duration?: number }) => {
+  const [bookmarks, setBookmarks] = useState<number[]>([15, 35]);
+  
+  const addBookmark = () => {
+    if (!bookmarks.includes(currentTime)) {
+      setBookmarks([...bookmarks, currentTime].sort((a, b) => a - b));
+    }
+  };
+
+  return (
+    <div className="relative">
+      {/* Waveform visualization */}
+      <div className="h-12 flex items-center justify-center overflow-hidden rounded-lg bg-white/5 border border-white/10">
+        {Array.from({ length: 80 }).map((_, index) => {
+          const progress = (currentTime / duration) * 80;
+          const isActive = index < progress;
+          const height = Math.random() * 0.7 + 0.3; // Random height between 0.3 and 1
+          
+          return (
+            <div
+              key={index}
+              className={`w-1 mx-0.5 rounded-full transition-all duration-75 ${
+                isActive 
+                  ? 'bg-blue-500' 
+                  : 'bg-white/20'
+              } ${isPlaying && isActive ? 'animate-pulse' : ''}`}
+              style={{ 
+                height: `${height * 32}px`,
+                animationDelay: `${index * 20}ms`
+              }}
+            />
+          );
+        })}
+      </div>
+      
+      {/* Bookmarks */}
+      {bookmarks.map((bookmark) => (
+        <div
+          key={bookmark}
+          className="absolute top-0 w-0.5 h-12 bg-yellow-400 rounded-full"
+          style={{ left: `${(bookmark / duration) * 100}%` }}
+        >
+          <div className="absolute -top-1 -left-1.5 w-3 h-3 bg-yellow-400 rounded-full flex items-center justify-center">
+            <Bookmark className="w-1.5 h-1.5 text-yellow-900" />
+          </div>
+        </div>
+      ))}
+      
+      {/* Current position indicator */}
+      <div
+        className="absolute top-0 w-0.5 h-12 bg-white rounded-full"
+        style={{ left: `${(currentTime / duration) * 100}%` }}
+      />
+      
+      {/* Time labels and topics */}
+      <div className="flex justify-between text-xs text-white/70 mt-2">
+        <div>{Math.floor(currentTime / 60)}:{(currentTime % 60).toString().padStart(2, '0')}</div>
+        <div className="hidden sm:flex flex-1 justify-around px-4">
+          <div className="text-blue-400 text-xs cursor-pointer hover:text-blue-300" onClick={() => setBookmarks([...bookmarks, 18])}>Q4 Planning</div>
+          <div className="text-green-400 text-xs cursor-pointer hover:text-green-300" onClick={() => setBookmarks([...bookmarks, 38])}>Project Deadlines</div>
+          <div className="text-red-400 text-xs cursor-pointer hover:text-red-300" onClick={() => setBookmarks([...bookmarks, 52])}>Urgent Email</div>
+        </div>
+        <div>1:03</div>
+      </div>
+      
+      {/* Mobile topic indicators */}
+      <div className="sm:hidden flex justify-center space-x-4 mt-1 text-xs">
+        <div className="text-blue-400 cursor-pointer hover:text-blue-300" onClick={() => setBookmarks([...bookmarks, 18])}>Q4</div>
+        <div className="text-green-400 cursor-pointer hover:text-green-300" onClick={() => setBookmarks([...bookmarks, 38])}>Deadlines</div>
+        <div className="text-red-400 cursor-pointer hover:text-red-300" onClick={() => setBookmarks([...bookmarks, 52])}>Urgent</div>
+      </div>
+      
+      {/* Bookmark button */}
+      <div className="absolute -top-8 right-0">
+        <Button
+          size="icon"
+          variant="outline"
+          className="h-6 w-6 border-yellow-400/40 hover:bg-yellow-400/10"
+          onClick={addBookmark}
+        >
+          <BookmarkPlus className="h-3 w-3 text-yellow-400" />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const BriefModal = ({ open, onClose }: BriefModalProps) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-6xl h-[90vh] max-h-[90vh] overflow-hidden bg-background/80 backdrop-blur-xl border border-white/10 p-0">
@@ -82,33 +175,9 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                   Key topics include the Q4 planning meeting and project deadlines.
                 </p>
                 
-                {/* Audio timeline - More compact */}
+                {/* Audio Wave Component */}
                 <div className="mb-3 relative">
-                  <div className="h-4 flex items-center overflow-hidden">
-                    {Array.from({ length: 40 }).map((_, index) => (
-                      <div 
-                        key={index} 
-                        className={`w-1 mx-0.5 rounded-full ${index < 28 ? 'bg-blue-500 h-3' : 'bg-white/20 h-1.5'}`}
-                      />
-                    ))}
-                  </div>
-                  
-                  <div className="flex justify-between text-xs text-white/70 mt-1">
-                    <div>00:00</div>
-                    <div className="hidden sm:flex flex-1 justify-around px-4">
-                      <div className="text-blue-400 text-xs">Q4 Planning</div>
-                      <div className="text-green-400 text-xs">Project Deadlines</div>
-                      <div className="text-red-400 text-xs">Urgent Email</div>
-                    </div>
-                    <div>01:03</div>
-                  </div>
-                  
-                  {/* Mobile topic indicators */}
-                  <div className="sm:hidden flex justify-center space-x-4 mt-1 text-xs">
-                    <div className="text-blue-400">Q4</div>
-                    <div className="text-green-400">Deadlines</div>
-                    <div className="text-red-400">Urgent</div>
-                  </div>
+                  <AudioWave isPlaying={isPlaying} />
                 </div>
                 
                 {/* Audio controls - More compact */}
@@ -124,8 +193,17 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
                     <Button size="icon" variant="outline" className="h-6 w-6 border-white/20 hover:bg-white/10">
                       <ArrowUp className="h-3 w-3 text-white" />
                     </Button>
-                    <Button size="icon" variant="outline" className="h-8 w-8 rounded-full border-blue-500 bg-blue-500/20 hover:bg-blue-500/30">
-                      <Play className="h-3 w-3 text-blue-400" />
+                    <Button 
+                      size="icon" 
+                      variant="outline" 
+                      className="h-8 w-8 rounded-full border-blue-500 bg-blue-500/20 hover:bg-blue-500/30"
+                      onClick={togglePlayPause}
+                    >
+                      {isPlaying ? (
+                        <Pause className="h-3 w-3 text-blue-400" />
+                      ) : (
+                        <Play className="h-3 w-3 text-blue-400" />
+                      )}
                     </Button>
                     <Button size="icon" variant="outline" className="h-6 w-6 border-white/20 hover:bg-white/10">
                       <ArrowDown className="h-3 w-3 text-white" />
