@@ -270,6 +270,7 @@ const HomeView = ({
                 {/* Latest Brief */}
                 <div className="border border-border-subtle rounded-xl p-4">
                   <h3 className="font-semibold text-text-primary mb-2">Latest Brief</h3>
+                  <span className="text-sm text-text-secondary mb-3">{latestBrief?.[0]?.title}</span>
                   <p className="text-sm text-text-secondary mb-3">{latestBrief?.[0]?.emailCount ? `${latestBrief?.[0]?.emailCount} emails` : "0 email"}, {latestBrief?.[0]?.slackMessageCount  ? `${latestBrief?.[0]?.slackMessageCount} messages` : "0 messages"}</p>
                   <Button 
                     onClick={() => onOpenBrief(latestBrief?.[0]?.id)} 
@@ -324,11 +325,11 @@ const HomeView = ({
           <div className="col-span-8 space-y-6">
             {/* Latest Brief Card */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-1">
                 <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
                 <span className="text-sm text-text-secondary">{latestBrief?.[0]?.summaryTime}</span>
               </div>
-            
+              <span className="text-sm text-text-secondary mb-4">{latestBrief?.[0]?.title}</span>
               <p className="text-text-secondary mb-4">{latestBrief?.[0]?.emailCount ? `${latestBrief?.[0]?.emailCount} emails` : "0 email"}, {latestBrief?.[0]?.slackMessageCount  ? `${latestBrief?.[0]?.slackMessageCount} messages` : "0 message"}</p>
               
               <div className="flex gap-3">
