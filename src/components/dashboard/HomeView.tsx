@@ -11,9 +11,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
-import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
+import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
+
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
@@ -22,6 +23,7 @@ interface HomeViewProps {
   onStartFocusMode: () => void;
   onSignOffForDay: () => void;
 }
+
 const HomeView = ({
   onOpenBrief,
   onToggleFocusMode,
@@ -163,7 +165,7 @@ const HomeView = ({
                     <ConnectedChannelsSection />
                   </div>
                   <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                    <PriorityPeopleSection />
+                    <PrioritiesSection />
                   </div>
                 </div>
               </div>
@@ -328,12 +330,7 @@ const HomeView = ({
           
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
-            {/* Priority People Section - Compact */}
-            <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
-              <PriorityPeopleSection />
-            </div>
-
-            {/* Next Brief Section */}
+            {/* Next Brief Section - Now first */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold text-text-primary">Next Scheduled Brief</h2>
@@ -349,6 +346,11 @@ const HomeView = ({
               <Button variant="outline" className="w-full rounded-xl border-border-subtle text-text-primary shadow-sm" onClick={handleUpdateSchedule}>
                 Update Schedule
               </Button>
+            </div>
+
+            {/* Priorities Section - Compact */}
+            <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
+              <PrioritiesSection />
             </div>
             
             {/* Upcoming Meetings - Blurred Coming Soon */}
