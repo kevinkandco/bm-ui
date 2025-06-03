@@ -12,6 +12,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
+import BriefCard from "./HomeViewSections/BriefCard";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 
 interface HomeViewProps {
@@ -47,15 +48,46 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  // Sample brief data with time ranges
-  const latestBrief = {
-    id: 1,
-    title: "Morning Brief",
-    timestamp: "Today, 8:00 AM",
-    timeRange: "5:00 AM - 8:00 AM",
-    emailCount: 5,
-    messageCount: 12
-  };
+  const handleViewTranscript = useCallback((briefId: number) => {
+    toast({
+      title: "Transcript",
+      description: `Opening transcript for brief ${briefId}`
+    });
+  }, [toast]);
+
+  // Sample brief data
+  const recentBriefs = [
+    {
+      id: 1,
+      name: "Morning Brief",
+      timeCreated: "Today, 8:00 AM",
+      timeRange: "5:00 AM - 8:00 AM",
+      slackMessages: { total: 12, fromPriorityPeople: 3 },
+      emails: { total: 5, fromPriorityPeople: 2 },
+      actionItems: 4,
+      hasTranscript: true
+    },
+    {
+      id: 2,
+      name: "Midday Brief", 
+      timeCreated: "Today, 12:30 PM",
+      timeRange: "8:00 AM - 12:30 PM",
+      slackMessages: { total: 18, fromPriorityPeople: 5 },
+      emails: { total: 8, fromPriorityPeople: 3 },
+      actionItems: 6,
+      hasTranscript: true
+    },
+    {
+      id: 3,
+      name: "Evening Brief",
+      timeCreated: "Yesterday, 6:00 PM", 
+      timeRange: "12:30 PM - 6:00 PM",
+      slackMessages: { total: 14, fromPriorityPeople: 2 },
+      emails: { total: 6, fromPriorityPeople: 1 },
+      actionItems: 3,
+      hasTranscript: false
+    }
+  ];
 
   // Sample urgent threads data
   const urgentThreads = [
@@ -65,19 +97,19 @@ const HomeView = ({
     { channel: "Michael", message: "Urgent: Client meeting moved to 2 PM" }
   ];
 
-  // Combine brief and urgent threads for horizontal scroll
+  // Combine brief and urgent threads for horizontal scroll (mobile)
   const allCards = [
     {
       type: 'brief',
-      id: latestBrief.id,
-      title: latestBrief.title,
-      subtitle: latestBrief.timeRange,
-      description: `${latestBrief.emailCount} emails, ${latestBrief.messageCount} messages`,
+      id: recentBriefs[0].id,
+      title: recentBriefs[0].name,
+      subtitle: recentBriefs[0].timeRange,
+      description: `${recentBriefs[0].emails.total} emails, ${recentBriefs[0].slackMessages.total} messages`,
       icon: FileText,
       iconColor: "text-primary-teal",
       buttonText: "Read Brief",
       buttonVariant: "default" as const,
-      onClick: () => onOpenBrief(latestBrief.id)
+      onClick: () => onOpenBrief(recentBriefs[0].id)
     },
     ...urgentThreads.map((thread, i) => ({
       type: 'urgent',
@@ -271,10 +303,10 @@ const HomeView = ({
         <div className="grid grid-cols-12 gap-6">
           {/* Main content - 8 columns */}
           <div className="col-span-8 space-y-6">
-            {/* Responsive Cards Section */}
+            {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Recent Activity</h2>
+                <h2 className="text-xl font-semibold text-text-primary">Recent Briefs</h2>
                 <Button 
                   onClick={handleViewAllBriefs} 
                   variant="outline" 
@@ -285,34 +317,15 @@ const HomeView = ({
                 </Button>
               </div>
               
-              {/* Responsive Grid of Cards */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {allCards.map((card) => (
-                  <div 
-                    key={card.id}
-                    className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm hover:shadow-md transition-all cursor-pointer"
-                    onClick={card.onClick}
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <card.icon className={`h-5 w-5 ${card.iconColor}`} />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-text-primary">{card.title}</h3>
-                        <p className="text-sm text-text-secondary">{card.subtitle}</p>
-                      </div>
-                    </div>
-                    <p className="text-text-secondary mb-4">{card.description}</p>
-                    <Button 
-                      size="sm"
-                      variant={card.buttonVariant}
-                      className="rounded-xl shadow-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        card.onClick();
-                      }}
-                    >
-                      {card.buttonText}
-                    </Button>
-                  </div>
+              {/* Brief Cards - Full Width */}
+              <div className="space-y-4">
+                {recentBriefs.map((brief) => (
+                  <BriefCard
+                    key={brief.id}
+                    brief={brief}
+                    onViewBrief={onOpenBrief}
+                    onViewTranscript={handleViewTranscript}
+                  />
                 ))}
               </div>
             </div>
