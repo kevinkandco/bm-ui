@@ -60,7 +60,7 @@ const HomeView = ({
   // Mobile View
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-dark-navy px-6 py-8 flex flex-col relative">
+      <div className="min-h-screen px-6 py-8 flex flex-col relative">
         {/* Mobile Menu Button - Top Right */}
         <div className="fixed top-8 right-6 z-50">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -180,7 +180,7 @@ const HomeView = ({
 
   // Desktop View
   return (
-    <div className="min-h-screen bg-surface px-4 py-6">
+    <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
