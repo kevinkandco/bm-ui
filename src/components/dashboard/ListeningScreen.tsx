@@ -1,4 +1,3 @@
-
 import React from "react";
 
 interface ListeningScreenProps {
@@ -13,11 +12,16 @@ const ListeningScreen = ({
   subtitle = "Analyzing your updates and creating your brief..."
 }: ListeningScreenProps) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[300px] px-6 py-8">
+    <div className="flex flex-col items-center justify-center min-h-[150px] sm:min-h-[300px] px-4 py-2 sm:px-6 sm:py-8">
       {/* Animated Gradient Circle */}
-      <div className="relative mb-6">
+      <div className="relative mb-2 sm:mb-6">
         {/* Main gradient circle with rotating background */}
-        <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center">
+        <div 
+          className="relative w-20 h-20 sm:w-48 sm:h-48 rounded-full flex items-center justify-center"
+          style={{
+            animation: isListening ? 'soft-pulse 3s ease-in-out infinite' : 'none'
+          }}
+        >
           {/* Rotating gradient background */}
           <div 
             className="absolute inset-0 rounded-full animate-spin"
@@ -28,7 +32,7 @@ const ListeningScreen = ({
           />
           
           {/* Inner circle with waves */}
-          <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden">
+          <div className="relative w-16 h-16 sm:w-36 sm:h-36 rounded-full overflow-hidden">
             {/* Base gradient */}
             <div 
               className="absolute inset-0 rounded-full"
@@ -99,12 +103,12 @@ const ListeningScreen = ({
       </div>
 
       {/* Text content */}
-      <div className="text-center space-y-2">
-        <h2 className="text-white text-base font-normal tracking-wide">
+      <div className="text-center space-y-1 sm:space-y-2">
+        <h2 className="text-white text-sm sm:text-base font-normal tracking-wide">
           {title}
         </h2>
         {subtitle && (
-          <p className="text-light-gray-text text-sm max-w-xs mx-auto leading-relaxed">
+          <p className="text-light-gray-text text-xs sm:text-sm max-w-xs mx-auto leading-relaxed">
             {subtitle}
           </p>
         )}
@@ -112,7 +116,7 @@ const ListeningScreen = ({
 
       {/* Optional loading dots */}
       {isListening && (
-        <div className="flex space-x-1 mt-4">
+        <div className="flex space-x-1 mt-2 sm:mt-4">
           <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
           <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
           <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
