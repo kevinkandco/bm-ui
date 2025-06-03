@@ -7,14 +7,18 @@ import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const ConnectedChannelsSection = () => {
+interface ConnectedChannelsSectionProps {
+  showAsHorizontal?: boolean;
+}
+
+const ConnectedChannelsSection = ({ showAsHorizontal = false }: ConnectedChannelsSectionProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   
   const connectedPlatforms = [
     // V1 integrations - available now
-    { name: "Slack", id: "slack", icon: "S", connected: true, comingSoon: false },
-    { name: "Gmail", id: "gmail", icon: "G", connected: true, comingSoon: false },
+    { name: "Slack", id: "slack", icon: "S", connected: true, comingSoon: false, monitoring: "Active" },
+    { name: "Gmail", id: "gmail", icon: "G", connected: true, comingSoon: false, monitoring: "Monitoring" },
   ];
 
   const comingSoonPlatforms = [
@@ -60,6 +64,51 @@ const ConnectedChannelsSection = () => {
     }
   };
 
+  // Horizontal layout for desktop
+  if (showAsHorizontal) {
+    return (
+      <TooltipProvider delayDuration={300}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <h2 className="text-text-primary text-lg font-medium">Connected Channels</h2>
+            
+            {/* Connected Platforms */}
+            <div className="flex items-center gap-3">
+              {connectedPlatforms.map((platform, i) => (
+                <Tooltip key={i}>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200 shadow-inner">
+                      <div className="flex items-center justify-center">
+                        {renderIcon(platform)}
+                      </div>
+                      <span className="text-white text-sm font-medium">{platform.name}</span>
+                      <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-400 border-green-500/40">
+                        {platform.monitoring}
+                      </Badge>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-sm">
+                    <p>{platform.name} - {platform.monitoring}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </div>
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8"
+            onClick={handleOpenSettings}
+          >
+            <Settings className="h-4 w-4 text-text-secondary" />
+          </Button>
+        </div>
+      </TooltipProvider>
+    );
+  }
+
+  // Original vertical layout for mobile/sidebar
   return (
     <TooltipProvider delayDuration={300}>
       <div className="p-6">
@@ -98,16 +147,16 @@ const ConnectedChannelsSection = () => {
         </div>
 
         {/* Coming Soon Label */}
-        <div className="text-sm text-text-secondary font-medium mb-3">
+        <div className="text-sm text-text-secondary font-medium mb-2">
           Coming Soon
         </div>
 
         {/* Coming Soon Platforms - Compact Pills */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {comingSoonPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/7 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-200 shadow-inner opacity-70">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/7 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-200 shadow-inner opacity-70">
                   <div className="flex items-center justify-center">
                     {renderIcon(platform, true)}
                   </div>

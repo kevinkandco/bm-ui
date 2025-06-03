@@ -262,6 +262,11 @@ const HomeView = ({
           </div>
         </div>
 
+        {/* Connected Channels Section - Desktop Only */}
+        <div className="mb-6">
+          <ConnectedChannelsSection showAsHorizontal={true} />
+        </div>
+
         {/* Desktop Grid Layout */}
         <div className="grid grid-cols-12 gap-6">
           {/* Main content - 8 columns */}
@@ -318,11 +323,6 @@ const HomeView = ({
             {/* Priority People Section - Compact */}
             <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm">
               <PriorityPeopleSection />
-            </div>
-
-            {/* Connected Channels Section - Compact */}
-            <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm">
-              <ConnectedChannelsSection />
             </div>
 
             {/* Next Brief Section */}
