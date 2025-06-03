@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -48,11 +47,8 @@ const HomeView = ({
     onOpenBrief(1);
   }, [onOpenBrief]);
   const handleUpdateSchedule = useCallback(() => {
-    toast({
-      title: "Brief Schedule",
-      description: "Opening brief schedule settings"
-    });
-  }, [toast]);
+    navigate("/dashboard/settings");
+  }, [navigate]);
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
