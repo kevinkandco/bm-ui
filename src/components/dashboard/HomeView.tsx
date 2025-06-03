@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -155,7 +154,7 @@ const HomeView = ({
         </div>
 
         {/* Mobile Welcome Section - Compact */}
-        <div className="text-center mb-3 mt-4 flex-shrink-0">
+        <div className="text-center mb-2 mt-4 flex-shrink-0">
           <h1 className="text-xl font-semibold text-white-text mb-1">
             Good morning, Alex
           </h1>
@@ -163,7 +162,7 @@ const HomeView = ({
         </div>
 
         {/* Central Animated "Brief Me" Button - Optimized for screen fit */}
-        <div className="flex-1 flex flex-col items-center justify-center min-h-0 mb-3">
+        <div className="flex-1 flex flex-col items-center justify-center min-h-0 mb-2">
           <div className="relative">
             <ListeningScreen 
               isListening={true}
@@ -173,64 +172,8 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Mobile Recent Briefs - Below the circle - More compact */}
-        <div className="mb-3 flex-shrink-0">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-sm font-semibold text-white-text">Recent Briefs</h2>
-            <Button onClick={handleViewAllBriefs} variant="ghost" size="sm" className="text-light-gray-text text-xs">
-              View All
-            </Button>
-          </div>
-          <ScrollArea className="w-full">
-            <div className="flex gap-2 pb-2">
-              {recentBriefs.map(brief => 
-                <div key={brief.id} className="flex-none w-56 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-5 h-5 rounded-full bg-surface-raised/50 flex items-center justify-center">
-                      <FileText className="h-2.5 w-2.5 text-primary-teal" />
-                    </div>
-                    <button
-                      onClick={() => handlePlayBrief(brief.id)}
-                      className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
-                    >
-                      {playingBrief === brief.id ? (
-                        <div className="flex items-center gap-0.5">
-                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
-                          <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
-                        </div>
-                      ) : (
-                        <Play className="h-2 w-2 text-primary-teal" />
-                      )}
-                    </button>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-xs font-semibold text-white-text truncate">
-                        {brief.name}
-                      </h3>
-                      <p className="text-xs text-light-gray-text truncate">
-                        {brief.timeCreated}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-1 mb-2">
-                    <div className="flex items-center justify-between text-xs text-light-gray-text">
-                      <span>{brief.slackMessages.total} Slack</span>
-                      <span>{brief.emails.total} Emails</span>
-                      <span>{brief.actionItems} Actions</span>
-                    </div>
-                  </div>
-                  <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs py-1">
-                    View Brief
-                  </Button>
-                </div>
-              )}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </div>
-
-        {/* Bottom Action Buttons - Compact */}
-        <div className="flex justify-center items-center gap-4 pb-4 flex-shrink-0">
+        {/* Action Buttons - Above Recent Briefs */}
+        <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0">
           <button onClick={onOpenBriefModal} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
@@ -265,6 +208,62 @@ const HomeView = ({
                        active:scale-95">
             <Zap className="w-4 h-4 text-light-gray-text" />
           </button>
+        </div>
+
+        {/* Mobile Recent Briefs - Below action buttons - Very compact */}
+        <div className="mb-2 flex-shrink-0">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="text-sm font-semibold text-white-text">Recent Briefs</h2>
+            <Button onClick={handleViewAllBriefs} variant="ghost" size="sm" className="text-light-gray-text text-xs">
+              View All
+            </Button>
+          </div>
+          <ScrollArea className="w-full">
+            <div className="flex gap-2 pb-2">
+              {recentBriefs.map(brief => 
+                <div key={brief.id} className="flex-none w-48 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-4 h-4 rounded-full bg-surface-raised/50 flex items-center justify-center">
+                      <FileText className="h-2 w-2 text-primary-teal" />
+                    </div>
+                    <button
+                      onClick={() => handlePlayBrief(brief.id)}
+                      className="w-4 h-4 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+                    >
+                      {playingBrief === brief.id ? (
+                        <div className="flex items-center gap-0.5">
+                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                        </div>
+                      ) : (
+                        <Play className="h-1.5 w-1.5 text-primary-teal" />
+                      )}
+                    </button>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-xs font-semibold text-white-text truncate">
+                        {brief.name}
+                      </h3>
+                      <p className="text-xs text-light-gray-text truncate">
+                        {brief.timeCreated}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-1 mb-1">
+                    <div className="flex items-center justify-between text-xs text-light-gray-text">
+                      <span>{brief.slackMessages.total} Slack</span>
+                      <span>{brief.emails.total} Emails</span>
+                      <span>{brief.actionItems} Actions</span>
+                    </div>
+                  </div>
+                  <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs py-0.5 h-6">
+                    View Brief
+                  </Button>
+                </div>
+              )}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </div>
       </div>;
   }
