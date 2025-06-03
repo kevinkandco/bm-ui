@@ -1,3 +1,4 @@
+
 import React from "react";
 
 interface ListeningScreenProps {
@@ -12,12 +13,12 @@ const ListeningScreen = ({
   subtitle = "Analyzing your updates and creating your brief..."
 }: ListeningScreenProps) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[150px] sm:min-h-[300px] px-4 py-2 sm:px-6 sm:py-8">
+    <div className="flex flex-col items-center justify-center min-h-[200px] sm:min-h-[300px] px-2 py-1 sm:px-6 sm:py-8">
       {/* Animated Gradient Circle */}
-      <div className="relative mb-2 sm:mb-6">
+      <div className="relative mb-1 sm:mb-6">
         {/* Main gradient circle with rotating background */}
         <div 
-          className="relative w-20 h-20 sm:w-48 sm:h-48 rounded-full flex items-center justify-center"
+          className="relative w-32 h-32 sm:w-48 sm:h-48 rounded-full flex items-center justify-center"
           style={{
             animation: isListening ? 'soft-pulse 3s ease-in-out infinite' : 'none'
           }}
@@ -32,7 +33,7 @@ const ListeningScreen = ({
           />
           
           {/* Inner circle with waves */}
-          <div className="relative w-16 h-16 sm:w-36 sm:h-36 rounded-full overflow-hidden">
+          <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden">
             {/* Base gradient */}
             <div 
               className="absolute inset-0 rounded-full"
@@ -76,29 +77,6 @@ const ListeningScreen = ({
               </>
             )}
           </div>
-
-          {/* Outer rotating glow rings */}
-          {isListening && (
-            <>
-              <div 
-                className="absolute inset-0 rounded-full animate-spin"
-                style={{
-                  background: `conic-gradient(from 90deg, transparent 0%, rgba(46, 226, 173, 0.3) 25%, transparent 50%, rgba(46, 226, 173, 0.2) 75%, transparent 100%)`,
-                  animationDuration: '6s',
-                  transform: 'scale(1.1)'
-                }}
-              />
-              <div 
-                className="absolute inset-0 rounded-full animate-spin"
-                style={{
-                  background: `conic-gradient(from 180deg, transparent 0%, rgba(72, 145, 116, 0.2) 25%, transparent 50%, rgba(46, 226, 173, 0.1) 75%, transparent 100%)`,
-                  animationDuration: '10s',
-                  animationDirection: 'reverse',
-                  transform: 'scale(1.2)'
-                }}
-              />
-            </>
-          )}
         </div>
       </div>
 
@@ -116,12 +94,25 @@ const ListeningScreen = ({
 
       {/* Optional loading dots */}
       {isListening && (
-        <div className="flex space-x-1 mt-2 sm:mt-4">
+        <div className="flex space-x-1 mt-1 sm:mt-4">
           <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
           <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
           <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes soft-pulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 0.9;
+          }
+          50% {
+            transform: scale(1.05);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 };
