@@ -28,39 +28,34 @@ interface BriefCardProps {
 
 const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => {
   return (
-    <Card className="w-full hover:shadow-md transition-all cursor-pointer" onClick={() => onViewBrief(brief.id)}>
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-              <FileText className="h-5 w-5 text-primary-teal" />
+    <Card className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden" onClick={() => onViewBrief(brief.id)}>
+      {/* Header Section */}
+      <div className="bg-surface-raised/60 px-4 py-3 border-b border-border-subtle/30">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileText className="h-4 w-4 text-primary-teal" />
+            <h3 className="text-base font-semibold text-white-text">
               {brief.name}
             </h3>
-            <p className="text-sm text-text-secondary mt-1">
-              Created: {brief.timeCreated}
-            </p>
-            <p className="text-sm text-text-secondary">
-              Time Range: {brief.timeRange}
-            </p>
           </div>
           <div className="flex gap-2">
             {brief.hasTranscript && (
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-xl"
+                className="h-7 px-2 text-xs rounded-lg border-border-subtle/40 hover:border-border-subtle/60"
                 onClick={(e) => {
                   e.stopPropagation();
                   onViewTranscript(brief.id);
                 }}
               >
-                <ExternalLink className="h-4 w-4 mr-2" />
+                <ExternalLink className="h-3 w-3 mr-1" />
                 Transcript
               </Button>
             )}
             <Button
               size="sm"
-              className="rounded-xl bg-primary-teal hover:bg-accent-green"
+              className="h-7 px-3 text-xs rounded-lg bg-primary-teal hover:bg-accent-green"
               onClick={(e) => {
                 e.stopPropagation();
                 onViewBrief(brief.id);
@@ -70,46 +65,57 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
             </Button>
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Body Section - More Transparent */}
+      <CardContent className="p-4 bg-surface-overlay/20">
+        {/* Time Info */}
+        <div className="flex items-center gap-4 mb-3 text-xs text-light-gray-text">
+          <span>Created: {brief.timeCreated}</span>
+          <span>•</span>
+          <span>Range: {brief.timeRange}</span>
+        </div>
+
+        {/* Stats Grid - Compact */}
+        <div className="grid grid-cols-3 gap-3">
           {/* Slack Messages */}
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-overlay/30">
-            <MessageSquare className="h-5 w-5 text-accent-green" />
-            <div>
-              <p className="text-sm font-medium text-text-primary">
-                {brief.slackMessages.total} Slack Messages
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-white-text truncate">
+                {brief.slackMessages.total} Slack
               </p>
               {brief.slackMessages.fromPriorityPeople > 0 && (
-                <Badge variant="secondary" className="text-xs bg-primary-teal/20 text-primary-teal border-primary-teal/40">
-                  {brief.slackMessages.fromPriorityPeople} from priority people
+                <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-primary-teal/20 text-primary-teal border-primary-teal/40 rounded-md">
+                  {brief.slackMessages.fromPriorityPeople} priority
                 </Badge>
               )}
             </div>
           </div>
 
           {/* Emails */}
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-overlay/30">
-            <Mail className="h-5 w-5 text-blue-400" />
-            <div>
-              <p className="text-sm font-medium text-text-primary">
+          <div className="flex items-center gap-2">
+            <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-white-text truncate">
                 {brief.emails.total} Emails
               </p>
               {brief.emails.fromPriorityPeople > 0 && (
-                <Badge variant="secondary" className="text-xs bg-primary-teal/20 text-primary-teal border-primary-teal/40">
-                  {brief.emails.fromPriorityPeople} from priority people
+                <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-primary-teal/20 text-primary-teal border-primary-teal/40 rounded-md">
+                  {brief.emails.fromPriorityPeople} priority
                 </Badge>
               )}
             </div>
           </div>
 
           {/* Action Items */}
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-overlay/30">
-            <CheckSquare className="h-5 w-5 text-orange-400" />
-            <div>
-              <p className="text-sm font-medium text-text-primary">
-                {brief.actionItems} Action Items
+          <div className="flex items-center gap-2">
+            <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-white-text truncate">
+                {brief.actionItems} Actions
               </p>
-              <p className="text-xs text-text-secondary">Detected automatically</p>
+              <p className="text-xs text-light-gray-text">Auto-detected</p>
             </div>
           </div>
         </div>
