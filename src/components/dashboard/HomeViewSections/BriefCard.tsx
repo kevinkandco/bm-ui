@@ -29,9 +29,10 @@ interface BriefCardProps {
 const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => {
   return (
     <Card 
-      className="w-full transition-all cursor-pointer overflow-hidden border-0 rounded-xl" 
+      className="w-full transition-all cursor-pointer overflow-hidden border-0 rounded-xl shadow-none" 
       style={{
-        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
+        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
+        boxShadow: 'none'
       }}
       onClick={() => onViewBrief(brief.id)}
     >
