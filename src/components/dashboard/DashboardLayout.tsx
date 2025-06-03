@@ -44,7 +44,7 @@ const DashboardLayout = ({
   ), [className]);
 
   return (
-    <div className="flex min-h-screen bg-surface relative">
+    <div className="flex min-h-screen relative">
       {/* Mobile Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border-subtle md:hidden">
         <div className="flex items-center justify-between p-4">
