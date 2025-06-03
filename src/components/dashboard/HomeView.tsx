@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -191,7 +192,7 @@ const HomeView = ({
           <div className="relative">
             <ListeningScreen 
               isListening={true}
-              title="Podia is listening"
+              title="brief-me is monitoring"
               subtitle="Ready to brief you on your updates"
             />
           </div>
