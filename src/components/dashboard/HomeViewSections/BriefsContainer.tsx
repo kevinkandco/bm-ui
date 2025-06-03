@@ -24,9 +24,11 @@ interface BriefsContainerProps {
   briefs: Brief[];
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
+  onPlayBrief: (briefId: number) => void;
+  playingBrief: number | null;
 }
 
-const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript }: BriefsContainerProps) => {
+const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, playingBrief }: BriefsContainerProps) => {
   return (
     <Card 
       className="w-full rounded-xl shadow-none border-0" 
@@ -43,6 +45,8 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript }: BriefsContai
               brief={brief}
               onViewBrief={onViewBrief}
               onViewTranscript={onViewTranscript}
+              onPlayBrief={onPlayBrief}
+              playingBrief={playingBrief}
               isLast={index === briefs.length - 1}
             />
           ))}

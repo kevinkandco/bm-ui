@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -38,6 +38,7 @@ const HomeView = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
@@ -57,6 +58,22 @@ const HomeView = ({
       description: `Opening transcript for brief ${briefId}`
     });
   }, [toast]);
+
+  const handlePlayBrief = useCallback((briefId: number) => {
+    if (playingBrief === briefId) {
+      setPlayingBrief(null);
+      toast({
+        title: "Brief Paused",
+        description: "Audio playback paused"
+      });
+    } else {
+      setPlayingBrief(briefId);
+      toast({
+        title: "Playing Brief",
+        description: "Audio playback started"
+      });
+    }
+  }, [playingBrief, toast]);
 
   // Sample brief data
   const recentBriefs = [{
@@ -138,29 +155,54 @@ const HomeView = ({
         </div>
 
         {/* Mobile Welcome Section - Compact */}
-        <div className="text-center mb-4 mt-4">
+        <div className="text-center mb-3 mt-4 flex-shrink-0">
           <h1 className="text-xl font-semibold text-white-text mb-1">
             Good morning, Alex
           </h1>
           <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Mobile Recent Briefs - Horizontal Scroll - Compact */}
-        <div className="mb-4 flex-shrink-0">
+        {/* Central Animated "Brief Me" Button - Optimized for screen fit */}
+        <div className="flex-1 flex flex-col items-center justify-center min-h-0 mb-3">
+          <div className="relative">
+            <ListeningScreen 
+              isListening={true}
+              title="brief-me is monitoring"
+              subtitle="Ready to brief you on your updates"
+            />
+          </div>
+        </div>
+
+        {/* Mobile Recent Briefs - Below the circle - More compact */}
+        <div className="mb-3 flex-shrink-0">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-base font-semibold text-white-text">Recent Briefs</h2>
+            <h2 className="text-sm font-semibold text-white-text">Recent Briefs</h2>
             <Button onClick={handleViewAllBriefs} variant="ghost" size="sm" className="text-light-gray-text text-xs">
               View All
             </Button>
           </div>
           <ScrollArea className="w-full">
-            <div className="flex gap-3 pb-2">
+            <div className="flex gap-2 pb-2">
               {recentBriefs.map(brief => 
-                <div key={brief.id} className="flex-none w-64 border border-light-gray-text/20 rounded-xl p-3 bg-deep-blue/30">
+                <div key={brief.id} className="flex-none w-56 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-6 h-6 rounded-full bg-surface-raised/50 flex items-center justify-center">
-                      <FileText className="h-3 w-3 text-primary-teal" />
+                    <div className="w-5 h-5 rounded-full bg-surface-raised/50 flex items-center justify-center">
+                      <FileText className="h-2.5 w-2.5 text-primary-teal" />
                     </div>
+                    <button
+                      onClick={() => handlePlayBrief(brief.id)}
+                      className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+                    >
+                      {playingBrief === brief.id ? (
+                        <div className="flex items-center gap-0.5">
+                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                          <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                        </div>
+                      ) : (
+                        <Play className="h-2 w-2 text-primary-teal" />
+                      )}
+                    </button>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-xs font-semibold text-white-text truncate">
                         {brief.name}
@@ -185,17 +227,6 @@ const HomeView = ({
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
-        </div>
-
-        {/* Central Animated "Brief Me" Button - Optimized for screen fit */}
-        <div className="flex-1 flex flex-col items-center justify-center min-h-0">
-          <div className="relative">
-            <ListeningScreen 
-              isListening={true}
-              title="brief-me is monitoring"
-              subtitle="Ready to brief you on your updates"
-            />
-          </div>
         </div>
 
         {/* Bottom Action Buttons - Compact */}
@@ -298,7 +329,13 @@ const HomeView = ({
               </div>
               
               {/* Unified Brief Container */}
-              <BriefsContainer briefs={recentBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} />
+              <BriefsContainer 
+                briefs={recentBriefs} 
+                onViewBrief={onOpenBrief} 
+                onViewTranscript={handleViewTranscript}
+                onPlayBrief={handlePlayBrief}
+                playingBrief={playingBrief}
+              />
             </div>
           </div>
           

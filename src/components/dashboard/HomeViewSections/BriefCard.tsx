@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -23,10 +23,12 @@ interface BriefCardProps {
   };
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
+  onPlayBrief: (briefId: number) => void;
+  playingBrief: number | null;
   isLast?: boolean;
 }
 
-const BriefCard = ({ brief, onViewBrief, onViewTranscript, isLast }: BriefCardProps) => {
+const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingBrief, isLast }: BriefCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCardClick = () => {
@@ -48,6 +50,24 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, isLast }: BriefCardPr
             <div className="w-10 h-10 rounded-full bg-surface-raised/50 flex items-center justify-center flex-shrink-0">
               <FileText className="h-5 w-5 text-primary-teal" />
             </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onPlayBrief(brief.id);
+              }}
+              className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0"
+            >
+              {playingBrief === brief.id ? (
+                <div className="flex items-center gap-0.5">
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                  <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                  <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '450ms' }} />
+                </div>
+              ) : (
+                <Play className="h-3 w-3 text-primary-teal" />
+              )}
+            </button>
             <div className="min-w-0 flex-1">
               <h3 className="text-base font-semibold text-white-text truncate">
                 {brief.name}
