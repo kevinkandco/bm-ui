@@ -1,7 +1,6 @@
 
 import React from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -24,20 +23,20 @@ interface BriefCardProps {
   };
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
+  isLast?: boolean;
 }
 
-const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => {
+const BriefCard = ({ brief, onViewBrief, onViewTranscript, isLast }: BriefCardProps) => {
   return (
-    <Card 
-      className="w-full transition-all cursor-pointer overflow-hidden border-0 rounded-xl shadow-none" 
+    <div 
+      className={`w-full transition-all cursor-pointer overflow-hidden ${!isLast ? 'border-b border-border-subtle/20 pb-4 mb-4' : ''}`}
       style={{
-        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-        boxShadow: 'none'
+        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.2) 0%, rgba(43, 49, 54, 0.2) 100%)',
       }}
       onClick={() => onViewBrief(brief.id)}
     >
       {/* Header Section - Very subtle */}
-      <div className="bg-surface-raised/10 px-4 py-3 border-b border-border-subtle/10">
+      <div className="bg-surface-raised/5 px-4 py-3 border-b border-border-subtle/10 rounded-t-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FileText className="h-4 w-4 text-primary-teal" />
@@ -75,7 +74,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
       </div>
 
       {/* Body Section - Almost transparent */}
-      <CardContent className="p-4 bg-surface-overlay/5">
+      <div className="p-4 bg-surface-overlay/3">
         {/* Time Info */}
         <div className="flex items-center gap-4 mb-3 text-xs text-light-gray-text">
           <span>Created: {brief.timeCreated}</span>
@@ -126,8 +125,8 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
-import BriefCard from "./HomeViewSections/BriefCard";
+import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 
 interface HomeViewProps {
@@ -317,17 +316,12 @@ const HomeView = ({
                 </Button>
               </div>
               
-              {/* Brief Cards - Full Width */}
-              <div className="space-y-4">
-                {recentBriefs.map((brief) => (
-                  <BriefCard
-                    key={brief.id}
-                    brief={brief}
-                    onViewBrief={onOpenBrief}
-                    onViewTranscript={handleViewTranscript}
-                  />
-                ))}
-              </div>
+              {/* Unified Brief Container */}
+              <BriefsContainer
+                briefs={recentBriefs}
+                onViewBrief={onOpenBrief}
+                onViewTranscript={handleViewTranscript}
+              />
             </div>
           </div>
           
