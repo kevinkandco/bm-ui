@@ -29,13 +29,13 @@ interface BriefsContainerProps {
 const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript }: BriefsContainerProps) => {
   return (
     <Card 
-      className="w-full border-0 rounded-xl shadow-none" 
+      className="w-full border border-border-subtle/20 rounded-xl shadow-none" 
       style={{
         background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
         boxShadow: 'none'
       }}
     >
-      <CardContent className="p-0">
+      <CardContent className="p-4">
         {briefs.map((brief, index) => (
           <BriefCard
             key={brief.id}
