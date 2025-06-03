@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,63 @@ const HomeView = ({
   // Mobile View
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-dark-navy px-6 py-8 flex flex-col">
+      <div className="min-h-screen bg-dark-navy px-6 py-8 flex flex-col relative">
+        {/* Mobile Menu Button - Top Right */}
+        <div className="fixed top-8 right-6 z-50">
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button 
+                size="icon" 
+                className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60"
+                variant="outline"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[80vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
+              <div className="p-4 space-y-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-semibold text-white-text">Menu</h2>
+                  <Button 
+                    size="icon" 
+                    variant="ghost" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-light-gray-text hover:text-white-text"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                {/* Latest Brief */}
+                <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
+                  <h3 className="font-semibold text-white-text mb-1">Latest Brief</h3>
+                  <p className="text-xs text-light-gray-text mb-1">{latestBrief.timeRange}</p>
+                  <p className="text-sm text-light-gray-text mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+                  <Button 
+                    onClick={() => onOpenBrief(latestBrief.id)} 
+                    className="w-full bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
+                  >
+                    Read Brief
+                  </Button>
+                </div>
+
+                {/* Other Sections */}
+                <div className="space-y-4">
+                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
+                    <UrgentThreadsSection />
+                  </div>
+                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
+                    <ConnectedChannelsSection />
+                  </div>
+                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
+                    <PriorityPeopleSection />
+                  </div>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
         {/* Mobile Welcome Section */}
         <div className="text-center mb-12 mt-8">
           <h1 className="text-3xl font-semibold text-white-text mb-3">
@@ -125,62 +182,6 @@ const HomeView = ({
           >
             <Clock className="w-6 h-6 text-light-gray-text" />
           </button>
-        </div>
-
-        {/* Mobile Menu Button - Moved to top right corner */}
-        <div className="fixed top-8 right-6 z-50">
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button 
-                size="icon" 
-                className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60"
-                variant="outline"
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="h-[80vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
-              <div className="p-4 space-y-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-white-text">Menu</h2>
-                  <Button 
-                    size="icon" 
-                    variant="ghost" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-light-gray-text hover:text-white-text"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-
-                {/* Latest Brief */}
-                <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                  <h3 className="font-semibold text-white-text mb-1">Latest Brief</h3>
-                  <p className="text-xs text-light-gray-text mb-1">{latestBrief.timeRange}</p>
-                  <p className="text-sm text-light-gray-text mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
-                  <Button 
-                    onClick={() => onOpenBrief(latestBrief.id)} 
-                    className="w-full bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
-                  >
-                    Read Brief
-                  </Button>
-                </div>
-
-                {/* Other Sections */}
-                <div className="space-y-4">
-                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                    <UrgentThreadsSection />
-                  </div>
-                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                    <ConnectedChannelsSection />
-                  </div>
-                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                    <PriorityPeopleSection />
-                  </div>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     );
