@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -79,63 +80,51 @@ const DashboardLayout = ({
                   </Button>
                 </div>
                 
-                <div className="flex-1 p-4">
-                  <div className="space-y-4">
-                    <button
-                      onClick={() => {
+                <div className="flex-1 p-6">
+                  <div className="space-y-6">
+                    <a
+                      href="/dashboard/settings"
+                      onClick={(e) => {
+                        e.preventDefault();
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
+                      className="block text-text-primary hover:text-accent-primary transition-colors"
                     >
                       Brief Schedule
-                    </button>
+                    </a>
                     
-                    <button
-                      onClick={() => {
+                    <a
+                      href="/dashboard/settings"
+                      onClick={(e) => {
+                        e.preventDefault();
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
+                      className="block text-text-primary hover:text-accent-primary transition-colors"
                     >
                       Priorities
-                    </button>
+                    </a>
                     
-                    <button
-                      onClick={() => {
+                    <a
+                      href="/dashboard/settings"
+                      onClick={(e) => {
+                        e.preventDefault();
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
+                      className="block text-text-primary hover:text-accent-primary transition-colors"
                     >
                       Integrations
-                    </button>
+                    </a>
                     
-                    <button
-                      onClick={() => {
-                        toast({
-                          title: "Feedback",
-                          description: "Feedback feature coming soon"
-                        });
-                        setMobileNavOpen(false);
-                      }}
-                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
-                    >
+                    <span className="block text-text-secondary cursor-not-allowed">
                       Feedback
-                    </button>
+                    </span>
                     
-                    <button
-                      onClick={() => {
-                        toast({
-                          title: "Contact Us",
-                          description: "Contact feature coming soon"
-                        });
-                        setMobileNavOpen(false);
-                      }}
-                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
-                    >
+                    <span className="block text-text-secondary cursor-not-allowed">
                       Contact Us
-                    </button>
+                    </span>
                   </div>
                 </div>
                 
