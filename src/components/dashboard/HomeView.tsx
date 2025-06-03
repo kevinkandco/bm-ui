@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -134,19 +135,56 @@ const HomeView = ({
               </Button>
             </SheetTrigger>
             <SheetContent side="bottom" className="h-[80vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
-              <div className="p-4 space-y-6">
+              <div className="p-6 space-y-8">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-white-text">Menu</h2>
                 </div>
 
-                {/* Other Sections */}
-                <div className="space-y-4">
-                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                    <ConnectedChannelsSection />
-                  </div>
-                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                    <PrioritiesSection />
-                  </div>
+                {/* Simple Menu Links */}
+                <div className="space-y-8">
+                  <a
+                    href="/dashboard/settings"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/dashboard/settings");
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block text-lg text-white-text hover:text-primary-teal transition-colors"
+                  >
+                    Brief Schedule
+                  </a>
+                  
+                  <a
+                    href="/dashboard/settings"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/dashboard/settings");
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block text-lg text-white-text hover:text-primary-teal transition-colors"
+                  >
+                    Priorities
+                  </a>
+                  
+                  <a
+                    href="/dashboard/settings"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/dashboard/settings");
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block text-lg text-white-text hover:text-primary-teal transition-colors"
+                  >
+                    Integrations
+                  </a>
+                  
+                  <span className="block text-lg text-light-gray-text">
+                    Feedback
+                  </span>
+                  
+                  <span className="block text-lg text-light-gray-text">
+                    Contact Us
+                  </span>
                 </div>
               </div>
             </SheetContent>
