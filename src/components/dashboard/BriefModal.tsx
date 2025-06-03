@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   Dialog,
@@ -26,67 +25,129 @@ const AudioWave = ({ isPlaying, currentTime = 28, duration = 63 }: { isPlaying: 
     }
   };
 
+  // Generate smooth wave points
+  const generateWavePoints = (amplitude: number, frequency: number, phase: number = 0) => {
+    const points = [];
+    const width = 100; // percentage
+    const steps = 200; // More steps for smoother curve
+    
+    for (let i = 0; i <= steps; i++) {
+      const x = (i / steps) * width;
+      const y = 50 + amplitude * Math.sin((i / steps) * frequency * Math.PI * 2 + phase);
+      points.push(`${x},${y}`);
+    }
+    return points.join(' ');
+  };
+
+  const currentProgress = (currentTime / duration) * 100;
+
   return (
-    <div className="relative">
-      {/* Waveform visualization */}
-      <div className="h-12 flex items-center justify-center overflow-hidden rounded-lg bg-white/5 border border-white/10">
-        {Array.from({ length: 80 }).map((_, index) => {
-          const progress = (currentTime / duration) * 80;
-          const isActive = index < progress;
-          const height = Math.random() * 0.7 + 0.3; // Random height between 0.3 and 1
+    <div className="relative w-full">
+      {/* Smooth Wave Visualization */}
+      <div className="h-16 w-full relative overflow-hidden rounded-lg bg-white/5 border border-white/10">
+        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {/* Background waves - multiple layers for depth */}
+          <polyline
+            points={generateWavePoints(12, 3, 0)}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.1)"
+            strokeWidth="0.5"
+            className={isPlaying ? "animate-pulse" : ""}
+          />
+          <polyline
+            points={generateWavePoints(8, 5, Math.PI / 4)}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.15)"
+            strokeWidth="0.8"
+            className={isPlaying ? "animate-pulse" : ""}
+            style={{ animationDelay: '0.2s' }}
+          />
+          <polyline
+            points={generateWavePoints(15, 2, Math.PI / 2)}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.08)"
+            strokeWidth="0.3"
+            className={isPlaying ? "animate-pulse" : ""}
+            style={{ animationDelay: '0.4s' }}
+          />
           
-          return (
-            <div
-              key={index}
-              className={`w-1 mx-0.5 rounded-full transition-all duration-75 ${
-                isActive 
-                  ? 'bg-blue-500' 
-                  : 'bg-white/20'
-              } ${isPlaying && isActive ? 'animate-pulse' : ''}`}
+          {/* Main active wave - changes color based on progress */}
+          <defs>
+            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset={`${currentProgress}%`} stopColor="#3B82F6" />
+              <stop offset={`${currentProgress}%`} stopColor="rgba(255, 255, 255, 0.3)" />
+            </linearGradient>
+          </defs>
+          
+          <polyline
+            points={generateWavePoints(20, 4, 0)}
+            fill="none"
+            stroke="url(#waveGradient)"
+            strokeWidth="2"
+            className={`transition-all duration-300 ${isPlaying ? 'animate-pulse' : ''}`}
+            style={{ 
+              filter: isPlaying ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))' : '',
+              animationDuration: '1.5s'
+            }}
+          />
+          
+          {/* Flowing overlay wave when playing */}
+          {isPlaying && (
+            <polyline
+              points={generateWavePoints(25, 3, 0)}
+              fill="none"
+              stroke="rgba(59, 130, 246, 0.4)"
+              strokeWidth="1.5"
+              className="animate-pulse"
               style={{ 
-                height: `${height * 32}px`,
-                animationDelay: `${index * 20}ms`
+                animationDuration: '2s',
+                filter: 'drop-shadow(0 0 4px rgba(59, 130, 246, 0.8))'
               }}
             />
-          );
-        })}
-      </div>
-      
-      {/* Bookmarks */}
-      {bookmarks.map((bookmark) => (
-        <div
-          key={bookmark}
-          className="absolute top-0 w-0.5 h-12 bg-yellow-400 rounded-full"
-          style={{ left: `${(bookmark / duration) * 100}%` }}
-        >
-          <div className="absolute -top-1 -left-1.5 w-3 h-3 bg-yellow-400 rounded-full flex items-center justify-center">
-            <Bookmark className="w-1.5 h-1.5 text-yellow-900" />
+          )}
+          
+          {/* Progress indicator line */}
+          <line
+            x1={currentProgress}
+            y1="0"
+            x2={currentProgress}
+            y2="100"
+            stroke="white"
+            strokeWidth="0.8"
+            opacity="0.9"
+          />
+        </svg>
+        
+        {/* Bookmarks */}
+        {bookmarks.map((bookmark) => (
+          <div
+            key={bookmark}
+            className="absolute top-0 w-0.5 h-16 bg-yellow-400 rounded-full"
+            style={{ left: `${(bookmark / duration) * 100}%` }}
+          >
+            <div className="absolute -top-1 -left-1.5 w-3 h-3 bg-yellow-400 rounded-full flex items-center justify-center">
+              <Bookmark className="w-1.5 h-1.5 text-yellow-900" />
+            </div>
           </div>
-        </div>
-      ))}
-      
-      {/* Current position indicator */}
-      <div
-        className="absolute top-0 w-0.5 h-12 bg-white rounded-full"
-        style={{ left: `${(currentTime / duration) * 100}%` }}
-      />
+        ))}
+      </div>
       
       {/* Time labels and topics */}
       <div className="flex justify-between text-xs text-white/70 mt-2">
         <div>{Math.floor(currentTime / 60)}:{(currentTime % 60).toString().padStart(2, '0')}</div>
         <div className="hidden sm:flex flex-1 justify-around px-4">
-          <div className="text-blue-400 text-xs cursor-pointer hover:text-blue-300" onClick={() => setBookmarks([...bookmarks, 18])}>Q4 Planning</div>
-          <div className="text-green-400 text-xs cursor-pointer hover:text-green-300" onClick={() => setBookmarks([...bookmarks, 38])}>Project Deadlines</div>
-          <div className="text-red-400 text-xs cursor-pointer hover:text-red-300" onClick={() => setBookmarks([...bookmarks, 52])}>Urgent Email</div>
+          <div className="text-blue-400 text-xs cursor-pointer hover:text-blue-300 transition-colors" onClick={() => setBookmarks([...bookmarks, 18])}>Q4 Planning</div>
+          <div className="text-green-400 text-xs cursor-pointer hover:text-green-300 transition-colors" onClick={() => setBookmarks([...bookmarks, 38])}>Project Deadlines</div>
+          <div className="text-red-400 text-xs cursor-pointer hover:text-red-300 transition-colors" onClick={() => setBookmarks([...bookmarks, 52])}>Urgent Email</div>
         </div>
         <div>1:03</div>
       </div>
       
       {/* Mobile topic indicators */}
       <div className="sm:hidden flex justify-center space-x-4 mt-1 text-xs">
-        <div className="text-blue-400 cursor-pointer hover:text-blue-300" onClick={() => setBookmarks([...bookmarks, 18])}>Q4</div>
-        <div className="text-green-400 cursor-pointer hover:text-green-300" onClick={() => setBookmarks([...bookmarks, 38])}>Deadlines</div>
-        <div className="text-red-400 cursor-pointer hover:text-red-300" onClick={() => setBookmarks([...bookmarks, 52])}>Urgent</div>
+        <div className="text-blue-400 cursor-pointer hover:text-blue-300 transition-colors" onClick={() => setBookmarks([...bookmarks, 18])}>Q4</div>
+        <div className="text-green-400 cursor-pointer hover:text-green-300 transition-colors" onClick={() => setBookmarks([...bookmarks, 38])}>Deadlines</div>
+        <div className="text-red-400 cursor-pointer hover:text-red-300 transition-colors" onClick={() => setBookmarks([...bookmarks, 52])}>Urgent</div>
       </div>
       
       {/* Bookmark button */}
@@ -94,7 +155,7 @@ const AudioWave = ({ isPlaying, currentTime = 28, duration = 63 }: { isPlaying: 
         <Button
           size="icon"
           variant="outline"
-          className="h-6 w-6 border-yellow-400/40 hover:bg-yellow-400/10"
+          className="h-6 w-6 border-yellow-400/40 hover:bg-yellow-400/10 transition-colors"
           onClick={addBookmark}
         >
           <BookmarkPlus className="h-3 w-3 text-yellow-400" />
