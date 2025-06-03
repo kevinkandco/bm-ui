@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,21 +33,23 @@ const HomeView = ({
   onStartFocusMode,
   onSignOffForDay
 }: HomeViewProps) => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
+  
   const handleUpdateSchedule = useCallback(() => {
     navigate("/dashboard/settings");
   }, [navigate]);
+  
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
+  
   const handleViewTranscript = useCallback((briefId: number) => {
     toast({
       title: "Transcript",
@@ -104,26 +105,11 @@ const HomeView = ({
     hasTranscript: false
   }];
 
-  // Sample urgent threads data
-  const urgentThreads = [{
-    channel: "# product",
-    message: "New designs ready for review"
-  }, {
-    channel: "Sandra",
-    message: "About the quarterly report"
-  }, {
-    channel: "# engineering",
-    message: "Critical bug found in production"
-  }, {
-    channel: "Michael",
-    message: "Urgent: Client meeting moved to 2 PM"
-  }];
-
   // Mobile View
   if (isMobile) {
-    return <div className="min-h-screen px-4 py-6 flex flex-col relative">
+    return <div className="h-screen flex flex-col px-4 py-4 overflow-hidden">
         {/* Mobile Menu Button - Top Right */}
-        <div className="fixed top-6 right-4 z-50">
+        <div className="fixed top-4 right-4 z-50">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button size="icon" className="w-10 h-10 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60" variant="outline">
@@ -150,32 +136,32 @@ const HomeView = ({
           </Sheet>
         </div>
 
-        {/* Mobile Welcome Section */}
-        <div className="text-center mb-6 mt-6">
-          <h1 className="text-2xl font-semibold text-white-text mb-2">
+        {/* Mobile Welcome Section - Compact */}
+        <div className="text-center mb-4 mt-4">
+          <h1 className="text-xl font-semibold text-white-text mb-1">
             Good morning, Alex
           </h1>
-          <p className="text-light-gray-text">Ready to catch up or focus?</p>
+          <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Mobile Recent Briefs - Horizontal Scroll */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-white-text">Recent Briefs</h2>
+        {/* Mobile Recent Briefs - Horizontal Scroll - Compact */}
+        <div className="mb-4 flex-shrink-0">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-base font-semibold text-white-text">Recent Briefs</h2>
             <Button onClick={handleViewAllBriefs} variant="ghost" size="sm" className="text-light-gray-text text-xs">
               View All
             </Button>
           </div>
           <ScrollArea className="w-full">
-            <div className="flex gap-3 pb-4">
+            <div className="flex gap-3 pb-2">
               {recentBriefs.map(brief => 
-                <div key={brief.id} className="flex-none w-72 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 rounded-full bg-surface-raised/50 flex items-center justify-center">
-                      <FileText className="h-4 w-4 text-primary-teal" />
+                <div key={brief.id} className="flex-none w-64 border border-light-gray-text/20 rounded-xl p-3 bg-deep-blue/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 rounded-full bg-surface-raised/50 flex items-center justify-center">
+                      <FileText className="h-3 w-3 text-primary-teal" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-semibold text-white-text truncate">
+                      <h3 className="text-xs font-semibold text-white-text truncate">
                         {brief.name}
                       </h3>
                       <p className="text-xs text-light-gray-text truncate">
@@ -183,14 +169,14 @@ const HomeView = ({
                       </p>
                     </div>
                   </div>
-                  <div className="space-y-2 mb-3">
+                  <div className="space-y-1 mb-2">
                     <div className="flex items-center justify-between text-xs text-light-gray-text">
                       <span>{brief.slackMessages.total} Slack</span>
                       <span>{brief.emails.total} Emails</span>
                       <span>{brief.actionItems} Actions</span>
                     </div>
                   </div>
-                  <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-xl hover:bg-accent-green text-xs">
+                  <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs py-1">
                     View Brief
                   </Button>
                 </div>
@@ -200,34 +186,9 @@ const HomeView = ({
           </ScrollArea>
         </div>
 
-        {/* Horizontal Scrolling Section for Urgent Threads */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-white-text">Urgent Threads</h2>
-          </div>
-          <ScrollArea className="w-full">
-            <div className="flex gap-3 pb-4">
-              {urgentThreads.map((thread, i) => 
-                <div key={i} className="flex-none w-64 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Zap className="h-4 w-4 text-accent-green" />
-                    <h3 className="font-semibold text-white-text text-sm">Urgent Thread</h3>
-                  </div>
-                  <p className="text-sm font-medium text-white-text mb-1">{thread.channel}</p>
-                  <p className="text-sm text-light-gray-text mb-3">{thread.message}</p>
-                  <Button size="sm" variant="outline" className="w-full border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60 text-xs">
-                    View Thread
-                  </Button>
-                </div>
-              )}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </div>
-
-        {/* Central Animated "Brief Me" Button */}
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="relative mb-16">
+        {/* Central Animated "Brief Me" Button - Optimized for screen fit */}
+        <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+          <div className="relative">
             <ListeningScreen 
               isListening={true}
               title="Podia is listening"
@@ -236,22 +197,22 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Bottom Action Buttons */}
-        <div className="flex justify-center items-center gap-6 pb-6">
-          <button onClick={onOpenBriefModal} className="w-14 h-14 rounded-full bg-deep-blue border border-light-gray-text/40 
+        {/* Bottom Action Buttons - Compact */}
+        <div className="flex justify-center items-center gap-4 pb-4 flex-shrink-0">
+          <button onClick={onOpenBriefModal} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
                        active:scale-95">
-            <FileText className="w-5 h-5 text-light-gray-text" />
+            <FileText className="w-4 h-4 text-light-gray-text" />
           </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-14 h-14 rounded-full bg-deep-blue border border-light-gray-text/40 
+              <button className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
                            flex items-center justify-center transition-all duration-200
                            hover:border-light-gray-text/60 hover:bg-deep-blue/90
                            active:scale-95">
-                <ChevronDown className="w-5 h-5 text-light-gray-text" />
+                <ChevronDown className="w-4 h-4 text-light-gray-text" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-deep-blue border-light-gray-text/20">
@@ -266,11 +227,11 @@ const HomeView = ({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button onClick={onToggleCatchMeUp} className="w-14 h-14 rounded-full bg-deep-blue border border-light-gray-text/40 
+          <button onClick={onToggleCatchMeUp} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
                        active:scale-95">
-            <Zap className="w-5 h-5 text-light-gray-text" />
+            <Zap className="w-4 h-4 text-light-gray-text" />
           </button>
         </div>
       </div>;
@@ -402,4 +363,5 @@ const HomeView = ({
       </div>
     </div>;
 };
+
 export default React.memo(HomeView);
