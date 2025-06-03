@@ -254,11 +254,11 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                         <span className="text-xs text-white/80">{message?.platform}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-medium text-white">
+                    <td className="py-3 px-4 font-medium text-white break-all">
                       <a href={message?.redirectLink} target="_blank">{message?.title}</a>
                     </td>
-                    <td className="py-3 px-4 text-white/80">{message?.sender}</td>
-                    <td className="py-3 px-4 text-white/70">{message?.time}</td>
+                    <td className="py-3 px-4 text-white/80 break-all">{message?.sender}</td>
+                    <td className="py-3 px-4 text-white/70 break-all">{message?.time}</td>
                     <td className="py-3 px-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                         capitalizeFirstLetter(message?.priority) === "High" 
