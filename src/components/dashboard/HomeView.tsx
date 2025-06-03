@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -78,14 +77,6 @@ const HomeView = ({
               <div className="p-4 space-y-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-white-text">Menu</h2>
-                  <Button 
-                    size="icon" 
-                    variant="ghost" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-light-gray-text hover:text-white-text"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
                 </div>
 
                 {/* Latest Brief */}
