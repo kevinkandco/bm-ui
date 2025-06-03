@@ -13,75 +13,94 @@ const ListeningScreen = ({
   subtitle = "Analyzing your updates and creating your brief..."
 }: ListeningScreenProps) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] px-6 py-8">
+    <div className="flex flex-col items-center justify-center min-h-[300px] px-6 py-8">
       {/* Animated Gradient Circle */}
-      <div className="relative mb-8">
-        {/* Main gradient circle */}
-        <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full flex items-center justify-center">
-          {/* Gradient background */}
+      <div className="relative mb-6">
+        {/* Main gradient circle with rotating background */}
+        <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full flex items-center justify-center">
+          {/* Rotating gradient background */}
           <div 
-            className="absolute inset-0 rounded-full"
+            className="absolute inset-0 rounded-full animate-spin"
             style={{
-              background: `radial-gradient(circle, rgba(46, 226, 173, 0.8) 0%, rgba(46, 226, 173, 0.4) 40%, rgba(46, 226, 173, 0.1) 70%, transparent 100%)`
+              background: `conic-gradient(from 0deg, rgba(46, 226, 173, 0.8) 0%, rgba(72, 145, 116, 0.6) 120%, rgba(46, 226, 173, 0.4) 240%, rgba(46, 226, 173, 0.8) 360%)`,
+              animationDuration: '8s'
             }}
           />
           
-          {/* Animated ripple rings */}
+          {/* Inner circle with waves */}
+          <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden">
+            {/* Base gradient */}
+            <div 
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: `linear-gradient(135deg, rgba(46, 226, 173, 0.9) 0%, rgba(72, 145, 116, 0.8) 50%, rgba(46, 226, 173, 0.7) 100%)`
+              }}
+            />
+            
+            {/* Animated waves */}
+            {isListening && (
+              <>
+                <div 
+                  className="absolute inset-0 rounded-full animate-pulse"
+                  style={{
+                    background: `radial-gradient(ellipse 80% 40% at 50% 60%, rgba(255,255,255,0.6) 0%, transparent 50%)`,
+                    clipPath: 'ellipse(70% 30% at 50% 70%)',
+                    animationDuration: '3s',
+                    transform: 'rotate(0deg)'
+                  }}
+                />
+                <div 
+                  className="absolute inset-0 rounded-full animate-pulse"
+                  style={{
+                    background: `radial-gradient(ellipse 60% 35% at 50% 40%, rgba(255,255,255,0.4) 0%, transparent 50%)`,
+                    clipPath: 'ellipse(60% 25% at 50% 50%)',
+                    animationDuration: '4s',
+                    animationDelay: '0.5s',
+                    transform: 'rotate(15deg)'
+                  }}
+                />
+                <div 
+                  className="absolute inset-0 rounded-full animate-pulse"
+                  style={{
+                    background: `radial-gradient(ellipse 70% 25% at 50% 30%, rgba(255,255,255,0.3) 0%, transparent 50%)`,
+                    clipPath: 'ellipse(50% 20% at 50% 30%)',
+                    animationDuration: '5s',
+                    animationDelay: '1s',
+                    transform: 'rotate(-10deg)'
+                  }}
+                />
+              </>
+            )}
+          </div>
+
+          {/* Outer rotating glow rings */}
           {isListening && (
             <>
               <div 
-                className="absolute inset-0 rounded-full animate-ping"
+                className="absolute inset-0 rounded-full animate-spin"
                 style={{
-                  background: `radial-gradient(circle, transparent 60%, rgba(46, 226, 173, 0.3) 70%, transparent 80%)`,
-                  animationDuration: '2s',
-                  animationDelay: '0s'
+                  background: `conic-gradient(from 90deg, transparent 0%, rgba(46, 226, 173, 0.3) 25%, transparent 50%, rgba(46, 226, 173, 0.2) 75%, transparent 100%)`,
+                  animationDuration: '6s',
+                  transform: 'scale(1.1)'
                 }}
               />
               <div 
-                className="absolute inset-0 rounded-full animate-ping"
+                className="absolute inset-0 rounded-full animate-spin"
                 style={{
-                  background: `radial-gradient(circle, transparent 40%, rgba(46, 226, 173, 0.2) 50%, transparent 60%)`,
-                  animationDuration: '2s',
-                  animationDelay: '0.5s'
-                }}
-              />
-              <div 
-                className="absolute inset-0 rounded-full animate-ping"
-                style={{
-                  background: `radial-gradient(circle, transparent 20%, rgba(46, 226, 173, 0.1) 30%, transparent 40%)`,
-                  animationDuration: '2s',
-                  animationDelay: '1s'
+                  background: `conic-gradient(from 180deg, transparent 0%, rgba(72, 145, 116, 0.2) 25%, transparent 50%, rgba(46, 226, 173, 0.1) 75%, transparent 100%)`,
+                  animationDuration: '10s',
+                  animationDirection: 'reverse',
+                  transform: 'scale(1.2)'
                 }}
               />
             </>
           )}
-
-          {/* Flowing wave effect */}
-          <div className="relative w-32 h-32 sm:w-40 sm:h-40">
-            <div 
-              className="absolute inset-0 rounded-full animate-pulse"
-              style={{
-                background: `linear-gradient(45deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.3) 100%)`,
-                clipPath: 'ellipse(70% 60% at 50% 40%)',
-                animationDuration: '3s'
-              }}
-            />
-            <div 
-              className="absolute inset-0 rounded-full animate-pulse"
-              style={{
-                background: `linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.2) 100%)`,
-                clipPath: 'ellipse(60% 50% at 50% 60%)',
-                animationDuration: '4s',
-                animationDelay: '0.5s'
-              }}
-            />
-          </div>
         </div>
       </div>
 
       {/* Text content */}
       <div className="text-center space-y-2">
-        <h2 className="text-white text-lg font-normal tracking-wide">
+        <h2 className="text-white text-base font-normal tracking-wide">
           {title}
         </h2>
         {subtitle && (
@@ -93,10 +112,10 @@ const ListeningScreen = ({
 
       {/* Optional loading dots */}
       {isListening && (
-        <div className="flex space-x-1 mt-6">
-          <div className="w-2 h-2 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-2 h-2 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-2 h-2 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+        <div className="flex space-x-1 mt-4">
+          <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       )}
     </div>

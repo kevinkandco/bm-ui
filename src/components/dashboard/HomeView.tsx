@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSectio
 import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
+import ListeningScreen from "./ListeningScreen";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -117,40 +119,15 @@ const HomeView = ({
     message: "Urgent: Client meeting moved to 2 PM"
   }];
 
-  // Combine brief and urgent threads for horizontal scroll (mobile)
-  const allCards = [{
-    type: 'brief',
-    id: recentBriefs[0].id,
-    title: recentBriefs[0].name,
-    subtitle: recentBriefs[0].timeRange,
-    description: `${recentBriefs[0].emails.total} emails, ${recentBriefs[0].slackMessages.total} messages`,
-    icon: FileText,
-    iconColor: "text-primary-teal",
-    buttonText: "Read Brief",
-    buttonVariant: "default" as const,
-    onClick: () => onOpenBrief(recentBriefs[0].id)
-  }, ...urgentThreads.map((thread, i) => ({
-    type: 'urgent',
-    id: `urgent-${i}`,
-    title: thread.channel,
-    subtitle: "Urgent Thread",
-    description: thread.message,
-    icon: Zap,
-    iconColor: "text-accent-green",
-    buttonText: "View Thread",
-    buttonVariant: "outline" as const,
-    onClick: () => console.log(`View thread: ${thread.channel}`)
-  }))];
-
   // Mobile View
   if (isMobile) {
-    return <div className="min-h-screen px-6 py-8 flex flex-col relative">
+    return <div className="min-h-screen px-4 py-6 flex flex-col relative">
         {/* Mobile Menu Button - Top Right */}
-        <div className="fixed top-8 right-6 z-50">
+        <div className="fixed top-6 right-4 z-50">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button size="icon" className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60" variant="outline">
-                <Menu className="h-5 w-5" />
+              <Button size="icon" className="w-10 h-10 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60" variant="outline">
+                <Menu className="h-4 w-4" />
               </Button>
             </SheetTrigger>
             <SheetContent side="bottom" className="h-[80vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
@@ -174,72 +151,107 @@ const HomeView = ({
         </div>
 
         {/* Mobile Welcome Section */}
-        <div className="text-center mb-8 mt-8">
-          <h1 className="text-3xl font-semibold text-white-text mb-3">
+        <div className="text-center mb-6 mt-6">
+          <h1 className="text-2xl font-semibold text-white-text mb-2">
             Good morning, Alex
           </h1>
-          <p className="text-light-gray-text text-lg">Ready to catch up or focus?</p>
+          <p className="text-light-gray-text">Ready to catch up or focus?</p>
         </div>
 
-        {/* Horizontal Scrolling Section for Briefs and Urgent Threads */}
-        <div className="mb-8">
+        {/* Mobile Recent Briefs - Horizontal Scroll */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-white-text">Recent Briefs</h2>
+            <Button onClick={handleViewAllBriefs} variant="ghost" size="sm" className="text-light-gray-text text-xs">
+              View All
+            </Button>
+          </div>
           <ScrollArea className="w-full">
-            <div className="flex gap-4 pb-4">
-              {allCards.map(card => <div key={card.id} className="flex-none w-72 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <card.icon className={`h-4 w-4 ${card.iconColor}`} />
-                    <h3 className="font-semibold text-white-text text-sm">{card.subtitle}</h3>
+            <div className="flex gap-3 pb-4">
+              {recentBriefs.map(brief => 
+                <div key={brief.id} className="flex-none w-72 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-surface-raised/50 flex items-center justify-center">
+                      <FileText className="h-4 w-4 text-primary-teal" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-semibold text-white-text truncate">
+                        {brief.name}
+                      </h3>
+                      <p className="text-xs text-light-gray-text truncate">
+                        {brief.timeCreated}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-sm font-medium text-white-text mb-1">{card.title}</p>
-                  <p className="text-sm text-light-gray-text mb-3">{card.description}</p>
-                  <Button onClick={card.onClick} size="sm" variant={card.buttonVariant} className={card.buttonVariant === "default" ? "bg-primary-teal text-white-text rounded-xl hover:bg-accent-green" : "border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60"}>
-                    {card.buttonText}
+                  <div className="space-y-2 mb-3">
+                    <div className="flex items-center justify-between text-xs text-light-gray-text">
+                      <span>{brief.slackMessages.total} Slack</span>
+                      <span>{brief.emails.total} Emails</span>
+                      <span>{brief.actionItems} Actions</span>
+                    </div>
+                  </div>
+                  <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-xl hover:bg-accent-green text-xs">
+                    View Brief
                   </Button>
-                </div>)}
+                </div>
+              )}
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
 
-        {/* Central "Brief Me" Button */}
+        {/* Horizontal Scrolling Section for Urgent Threads */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-white-text">Urgent Threads</h2>
+          </div>
+          <ScrollArea className="w-full">
+            <div className="flex gap-3 pb-4">
+              {urgentThreads.map((thread, i) => 
+                <div key={i} className="flex-none w-64 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="h-4 w-4 text-accent-green" />
+                    <h3 className="font-semibold text-white-text text-sm">Urgent Thread</h3>
+                  </div>
+                  <p className="text-sm font-medium text-white-text mb-1">{thread.channel}</p>
+                  <p className="text-sm text-light-gray-text mb-3">{thread.message}</p>
+                  <Button size="sm" variant="outline" className="w-full border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60 text-xs">
+                    View Thread
+                  </Button>
+                </div>
+              )}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
+
+        {/* Central Animated "Brief Me" Button */}
         <div className="flex-1 flex flex-col items-center justify-center">
           <div className="relative mb-16">
-            {/* Enhanced gradient background with multiple layers */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-teal via-accent-green to-primary-teal rounded-full blur-3xl opacity-30 animate-pulse scale-110" style={{
-            animationDuration: '4s'
-          }}></div>
-            <div className="absolute inset-0 bg-gradient-to-l from-accent-green via-primary-teal to-accent-green rounded-full blur-2xl opacity-40 animate-spin" style={{
-            animationDuration: '8s'
-          }}></div>
-            
-            {/* Main Brief Me Button */}
-            <button onClick={onToggleCatchMeUp} className="relative w-48 h-48 rounded-full bg-gradient-to-br from-dark-navy via-deep-blue to-dark-navy text-white-text font-semibold text-2xl tracking-wide
-                         shadow-[16px_16px_32px_rgba(0,0,0,0.5),-16px_-16px_32px_rgba(255,255,255,0.05)]
-                         hover:shadow-[12px_12px_24px_rgba(0,0,0,0.6),-12px_-12px_24px_rgba(255,255,255,0.08)]
-                         active:shadow-[8px_8px_16px_rgba(0,0,0,0.7),-8px_-8px_16px_rgba(255,255,255,0.1)]
-                         transition-all duration-300 transform hover:scale-105 active:scale-98
-                         border border-white/10">
-              Brief Me
-            </button>
+            <ListeningScreen 
+              isListening={true}
+              title="Podia is listening"
+              subtitle="Ready to brief you on your updates"
+            />
           </div>
         </div>
 
         {/* Bottom Action Buttons */}
-        <div className="flex justify-center items-center gap-8 pb-8">
-          <button onClick={onOpenBriefModal} className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+        <div className="flex justify-center items-center gap-6 pb-6">
+          <button onClick={onOpenBriefModal} className="w-14 h-14 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
                        active:scale-95">
-            <FileText className="w-6 h-6 text-light-gray-text" />
+            <FileText className="w-5 h-5 text-light-gray-text" />
           </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+              <button className="w-14 h-14 rounded-full bg-deep-blue border border-light-gray-text/40 
                            flex items-center justify-center transition-all duration-200
                            hover:border-light-gray-text/60 hover:bg-deep-blue/90
                            active:scale-95">
-                <ChevronDown className="w-6 h-6 text-light-gray-text" />
+                <ChevronDown className="w-5 h-5 text-light-gray-text" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-deep-blue border-light-gray-text/20">
@@ -254,11 +266,11 @@ const HomeView = ({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button onClick={onToggleCatchMeUp} className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+          <button onClick={onToggleCatchMeUp} className="w-14 h-14 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
                        active:scale-95">
-            <Zap className="w-6 h-6 text-light-gray-text" />
+            <Zap className="w-5 h-5 text-light-gray-text" />
           </button>
         </div>
       </div>;
