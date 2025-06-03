@@ -13,40 +13,36 @@ import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSectio
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
 }
-
 const HomeView = ({
   onOpenBrief,
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal
 }: HomeViewProps) => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
-  
   const handleUpdateSchedule = useCallback(() => {
     toast({
       title: "Brief Schedule",
       description: "Opening brief schedule settings"
     });
   }, [toast]);
-  
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
-
   const handleViewTranscript = useCallback((briefId: number) => {
     toast({
       title: "Transcript",
@@ -55,88 +51,101 @@ const HomeView = ({
   }, [toast]);
 
   // Sample brief data
-  const recentBriefs = [
-    {
-      id: 1,
-      name: "Morning Brief",
-      timeCreated: "Today, 8:00 AM",
-      timeRange: "5:00 AM - 8:00 AM",
-      slackMessages: { total: 12, fromPriorityPeople: 3 },
-      emails: { total: 5, fromPriorityPeople: 2 },
-      actionItems: 4,
-      hasTranscript: true
+  const recentBriefs = [{
+    id: 1,
+    name: "Morning Brief",
+    timeCreated: "Today, 8:00 AM",
+    timeRange: "5:00 AM - 8:00 AM",
+    slackMessages: {
+      total: 12,
+      fromPriorityPeople: 3
     },
-    {
-      id: 2,
-      name: "Midday Brief", 
-      timeCreated: "Today, 12:30 PM",
-      timeRange: "8:00 AM - 12:30 PM",
-      slackMessages: { total: 18, fromPriorityPeople: 5 },
-      emails: { total: 8, fromPriorityPeople: 3 },
-      actionItems: 6,
-      hasTranscript: true
+    emails: {
+      total: 5,
+      fromPriorityPeople: 2
     },
-    {
-      id: 3,
-      name: "Evening Brief",
-      timeCreated: "Yesterday, 6:00 PM", 
-      timeRange: "12:30 PM - 6:00 PM",
-      slackMessages: { total: 14, fromPriorityPeople: 2 },
-      emails: { total: 6, fromPriorityPeople: 1 },
-      actionItems: 3,
-      hasTranscript: false
-    }
-  ];
+    actionItems: 4,
+    hasTranscript: true
+  }, {
+    id: 2,
+    name: "Midday Brief",
+    timeCreated: "Today, 12:30 PM",
+    timeRange: "8:00 AM - 12:30 PM",
+    slackMessages: {
+      total: 18,
+      fromPriorityPeople: 5
+    },
+    emails: {
+      total: 8,
+      fromPriorityPeople: 3
+    },
+    actionItems: 6,
+    hasTranscript: true
+  }, {
+    id: 3,
+    name: "Evening Brief",
+    timeCreated: "Yesterday, 6:00 PM",
+    timeRange: "12:30 PM - 6:00 PM",
+    slackMessages: {
+      total: 14,
+      fromPriorityPeople: 2
+    },
+    emails: {
+      total: 6,
+      fromPriorityPeople: 1
+    },
+    actionItems: 3,
+    hasTranscript: false
+  }];
 
   // Sample urgent threads data
-  const urgentThreads = [
-    { channel: "# product", message: "New designs ready for review" },
-    { channel: "Sandra", message: "About the quarterly report" },
-    { channel: "# engineering", message: "Critical bug found in production" },
-    { channel: "Michael", message: "Urgent: Client meeting moved to 2 PM" }
-  ];
+  const urgentThreads = [{
+    channel: "# product",
+    message: "New designs ready for review"
+  }, {
+    channel: "Sandra",
+    message: "About the quarterly report"
+  }, {
+    channel: "# engineering",
+    message: "Critical bug found in production"
+  }, {
+    channel: "Michael",
+    message: "Urgent: Client meeting moved to 2 PM"
+  }];
 
   // Combine brief and urgent threads for horizontal scroll (mobile)
-  const allCards = [
-    {
-      type: 'brief',
-      id: recentBriefs[0].id,
-      title: recentBriefs[0].name,
-      subtitle: recentBriefs[0].timeRange,
-      description: `${recentBriefs[0].emails.total} emails, ${recentBriefs[0].slackMessages.total} messages`,
-      icon: FileText,
-      iconColor: "text-primary-teal",
-      buttonText: "Read Brief",
-      buttonVariant: "default" as const,
-      onClick: () => onOpenBrief(recentBriefs[0].id)
-    },
-    ...urgentThreads.map((thread, i) => ({
-      type: 'urgent',
-      id: `urgent-${i}`,
-      title: thread.channel,
-      subtitle: "Urgent Thread",
-      description: thread.message,
-      icon: Zap,
-      iconColor: "text-accent-green",
-      buttonText: "View Thread",
-      buttonVariant: "outline" as const,
-      onClick: () => console.log(`View thread: ${thread.channel}`)
-    }))
-  ];
+  const allCards = [{
+    type: 'brief',
+    id: recentBriefs[0].id,
+    title: recentBriefs[0].name,
+    subtitle: recentBriefs[0].timeRange,
+    description: `${recentBriefs[0].emails.total} emails, ${recentBriefs[0].slackMessages.total} messages`,
+    icon: FileText,
+    iconColor: "text-primary-teal",
+    buttonText: "Read Brief",
+    buttonVariant: "default" as const,
+    onClick: () => onOpenBrief(recentBriefs[0].id)
+  }, ...urgentThreads.map((thread, i) => ({
+    type: 'urgent',
+    id: `urgent-${i}`,
+    title: thread.channel,
+    subtitle: "Urgent Thread",
+    description: thread.message,
+    icon: Zap,
+    iconColor: "text-accent-green",
+    buttonText: "View Thread",
+    buttonVariant: "outline" as const,
+    onClick: () => console.log(`View thread: ${thread.channel}`)
+  }))];
 
   // Mobile View
   if (isMobile) {
-    return (
-      <div className="min-h-screen px-6 py-8 flex flex-col relative">
+    return <div className="min-h-screen px-6 py-8 flex flex-col relative">
         {/* Mobile Menu Button - Top Right */}
         <div className="fixed top-8 right-6 z-50">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button 
-                size="icon" 
-                className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60"
-                variant="outline"
-              >
+              <Button size="icon" className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60" variant="outline">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
@@ -172,30 +181,17 @@ const HomeView = ({
         <div className="mb-8">
           <ScrollArea className="w-full">
             <div className="flex gap-4 pb-4">
-              {allCards.map((card) => (
-                <div 
-                  key={card.id}
-                  className="flex-none w-72 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30"
-                >
+              {allCards.map(card => <div key={card.id} className="flex-none w-72 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
                   <div className="flex items-center gap-2 mb-2">
                     <card.icon className={`h-4 w-4 ${card.iconColor}`} />
                     <h3 className="font-semibold text-white-text text-sm">{card.subtitle}</h3>
                   </div>
                   <p className="text-sm font-medium text-white-text mb-1">{card.title}</p>
                   <p className="text-sm text-light-gray-text mb-3">{card.description}</p>
-                  <Button 
-                    onClick={card.onClick}
-                    size="sm"
-                    variant={card.buttonVariant}
-                    className={card.buttonVariant === "default" 
-                      ? "bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
-                      : "border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60"
-                    }
-                  >
+                  <Button onClick={card.onClick} size="sm" variant={card.buttonVariant} className={card.buttonVariant === "default" ? "bg-primary-teal text-white-text rounded-xl hover:bg-accent-green" : "border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60"}>
                     {card.buttonText}
                   </Button>
-                </div>
-              ))}
+                </div>)}
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
@@ -205,19 +201,20 @@ const HomeView = ({
         <div className="flex-1 flex flex-col items-center justify-center">
           <div className="relative mb-16">
             {/* Enhanced gradient background with multiple layers */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-teal via-accent-green to-primary-teal rounded-full blur-3xl opacity-30 animate-pulse scale-110" style={{ animationDuration: '4s' }}></div>
-            <div className="absolute inset-0 bg-gradient-to-l from-accent-green via-primary-teal to-accent-green rounded-full blur-2xl opacity-40 animate-spin" style={{ animationDuration: '8s' }}></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-teal via-accent-green to-primary-teal rounded-full blur-3xl opacity-30 animate-pulse scale-110" style={{
+            animationDuration: '4s'
+          }}></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-accent-green via-primary-teal to-accent-green rounded-full blur-2xl opacity-40 animate-spin" style={{
+            animationDuration: '8s'
+          }}></div>
             
             {/* Main Brief Me Button */}
-            <button
-              onClick={onToggleCatchMeUp}
-              className="relative w-48 h-48 rounded-full bg-gradient-to-br from-dark-navy via-deep-blue to-dark-navy text-white-text font-semibold text-2xl tracking-wide
+            <button onClick={onToggleCatchMeUp} className="relative w-48 h-48 rounded-full bg-gradient-to-br from-dark-navy via-deep-blue to-dark-navy text-white-text font-semibold text-2xl tracking-wide
                          shadow-[16px_16px_32px_rgba(0,0,0,0.5),-16px_-16px_32px_rgba(255,255,255,0.05)]
                          hover:shadow-[12px_12px_24px_rgba(0,0,0,0.6),-12px_-12px_24px_rgba(255,255,255,0.08)]
                          active:shadow-[8px_8px_16px_rgba(0,0,0,0.7),-8px_-8px_16px_rgba(255,255,255,0.1)]
                          transition-all duration-300 transform hover:scale-105 active:scale-98
-                         border border-white/10"
-            >
+                         border border-white/10">
               Brief Me
             </button>
           </div>
@@ -225,43 +222,32 @@ const HomeView = ({
 
         {/* Bottom Action Buttons */}
         <div className="flex justify-center items-center gap-8 pb-8">
-          <button
-            onClick={onOpenBriefModal}
-            className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+          <button onClick={onOpenBriefModal} className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95"
-          >
+                       active:scale-95">
             <FileText className="w-6 h-6 text-light-gray-text" />
           </button>
 
-          <button
-            onClick={onToggleFocusMode}
-            className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+          <button onClick={onToggleFocusMode} className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95"
-          >
+                       active:scale-95">
             <Headphones className="w-6 h-6 text-light-gray-text" />
           </button>
 
-          <button
-            onClick={onToggleCatchMeUp}
-            className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+          <button onClick={onToggleCatchMeUp} className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95"
-          >
+                       active:scale-95">
             <Clock className="w-6 h-6 text-light-gray-text" />
           </button>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Desktop View
-  return (
-    <div className="min-h-screen px-4 py-6">
+  return <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
@@ -269,24 +255,17 @@ const HomeView = ({
             <h1 className="text-3xl font-bold text-text-primary mb-2">
               Good morning, Alex
             </h1>
-            <p className="text-text-secondary">Ready to catch up or focus?</p>
+            <p className="text-text-secondary">Let's get you caught up.</p>
           </div>
           
           {/* Smaller CTAs on the right */}
           <div className="flex gap-3">
-            <Button 
-              onClick={onToggleCatchMeUp} 
-              className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all"
-            >
+            <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
               <Zap className="mr-2 h-4 w-4" />
               Catch Me Up
             </Button>
             
-            <Button 
-              onClick={onToggleFocusMode} 
-              variant="outline" 
-              className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all"
-            >
+            <Button onClick={onToggleFocusMode} variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
               <Headphones className="mr-2 h-4 w-4" />
               Focus Mode
             </Button>
@@ -306,22 +285,14 @@ const HomeView = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-text-primary">Recent Briefs</h2>
-                <Button 
-                  onClick={handleViewAllBriefs} 
-                  variant="outline" 
-                  className="rounded-xl border-border-subtle text-text-primary shadow-sm"
-                >
+                <Button onClick={handleViewAllBriefs} variant="outline" className="rounded-xl border-border-subtle text-text-primary shadow-sm">
                   <Archive className="mr-2 h-4 w-4" />
                   View All Briefs
                 </Button>
               </div>
               
               {/* Unified Brief Container */}
-              <BriefsContainer
-                briefs={recentBriefs}
-                onViewBrief={onOpenBrief}
-                onViewTranscript={handleViewTranscript}
-              />
+              <BriefsContainer briefs={recentBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} />
             </div>
           </div>
           
@@ -345,11 +316,7 @@ const HomeView = ({
                 </div>
               </div>
               
-              <Button 
-                variant="outline" 
-                className="w-full rounded-xl border-border-subtle text-text-primary shadow-sm" 
-                onClick={handleUpdateSchedule}
-              >
+              <Button variant="outline" className="w-full rounded-xl border-border-subtle text-text-primary shadow-sm" onClick={handleUpdateSchedule}>
                 Update Schedule
               </Button>
             </div>
@@ -389,8 +356,6 @@ const HomeView = ({
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default React.memo(HomeView);
