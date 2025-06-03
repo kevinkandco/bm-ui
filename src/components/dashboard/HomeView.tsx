@@ -299,7 +299,7 @@ const HomeView = ({
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
             {/* Priority People Section - Compact */}
-            <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm">
+            <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
               <PriorityPeopleSection />
             </div>
 
