@@ -87,6 +87,7 @@ export default {
 				'cool-slate': '#B0B3BE',
 				'slate-grey': '#696E79',
 				'glass-blue': '#2B88FF',
+				'glass-black': '#222222',
 				'deep-teal': '#1A1A1C',
 				'lake-blue': '#2B88FF',
 				'bright-orange': '#FF5F37',

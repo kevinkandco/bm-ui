@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BriefSchedules, UserSchedule } from "./types";
 
-interface StatusTimerProps {
+export interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   focusTime: number; //in seconds
   focusModeExitLoading: boolean;
@@ -197,11 +197,11 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+            {/* <div className="flex items-center space-x-2 mt-2 sm:mt-0"> */}
               {/* Theme toggle removed on mobile */}
-              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
               
-              {onExitFocusMode && (
+              {/* {onExitFocusMode && (
                 <Button 
                   onClick={onExitFocusMode}
                   variant="outline"
@@ -218,8 +218,8 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
                   } 
                   <span className="text-xs sm:text-sm">Exit</span>
                 </Button>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
           </div>
         );
       
@@ -241,11 +241,11 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+            {/* <div className="flex items-center space-x-2 mt-2 sm:mt-0"> */}
               {/* Theme toggle removed on mobile */}
-              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
 
-                <Button 
+                {/* <Button 
                   variant="outline"
                   size={isMobile ? "sm" : "default"}
                   className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
@@ -265,8 +265,8 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
                   <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
           </div>
         );
       
@@ -283,11 +283,11 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+            {/* <div className="flex items-center space-x-2 mt-2 sm:mt-0"> */}
               {/* Theme toggle removed on mobile */}
-              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
               
-              {onToggleCatchMeUp && (
+              {/* {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
@@ -297,8 +297,8 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
                   <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
           </div>
         );
       
@@ -315,11 +315,11 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
               </div>
             </div>
             
-            <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
+            {/* <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0"> */}
               {/* Theme toggle removed on mobile */}
-              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
 
-              {onToggleSignOff && (
+              {/* {onToggleSignOff && (
                 <Button 
                   onClick={onToggleSignOff}
                   variant="outline"
@@ -329,8 +329,8 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
                   <Power className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Sign Off Today</span>
                 </Button>
-              )}
-              
+              )} */}
+{/*               
               {onToggleFocusMode && (
                 <Button 
                   onClick={onToggleFocusMode}
@@ -342,8 +342,8 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
                   <span className="text-xs sm:text-sm">Focus</span>
                 </Button>
               )}
-              
-              {onToggleCatchMeUp && (
+               */}
+              {/* {onToggleCatchMeUp && (
                 <Button 
                   onClick={onToggleCatchMeUp}
                   size={isMobile ? "sm" : "default"}
@@ -352,15 +352,15 @@ const StatusTimer = React.memo(({ status, focusTime, focusModeExitLoading, isSig
                   <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
           </div>
         );
     }
   };
 
   return (
-    <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
+    <div className={`py-2 px-3 sm:py-4 sm:px-6`}>
       {renderContent()}
     </div>
   );

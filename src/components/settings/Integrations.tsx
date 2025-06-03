@@ -318,7 +318,7 @@ const Integrations = () => {
         <h3 className="text-lg font-medium text-text-primary mb-4">
           Integrations
         </h3>
-        <div className="space-y-4 max-w-2xl">
+        <div className="space-y-4 max-w-[98%]">
           <div className="flex flex-col space-y-1 sm:space-y-1.5">
             {/* Available integrations */}
             {groupedIntegrations.V1?.map((integration) => (

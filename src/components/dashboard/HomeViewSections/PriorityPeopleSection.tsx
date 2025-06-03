@@ -1,64 +1,70 @@
 
-import React from "react";
-import { User } from "lucide-react";
+import React, { useState } from "react";
+import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
+import { PriorityPeople } from "../types";
+import SlackSettingsModal from "@/components/settings/modal/SlackSettingsModal";
 
-const PriorityPeopleSection = () => {
-  const priorityPeople = [
-    { 
-      name: "Sandra Chen", 
-      title: "Product Manager", 
-      lastActivity: "15m ago", 
-      platform: "Email",
-      active: true 
-    },
-    { 
-      name: "Alex Johnson", 
-      title: "Engineering Lead", 
-      lastActivity: "2h ago", 
-      platform: "Slack",
-      active: true 
-    },
-    { 
-      name: "Michael Lee", 
-      title: "CEO", 
-      lastActivity: "1d ago", 
-      platform: "Calendar",
-      active: false 
-    }
-  ];
+interface PriorityPeopleSectionProps {
+  priorityPeople: PriorityPeople[];
+}
+
+const PriorityPeopleSection = ({priorityPeople} : PriorityPeopleSectionProps) => {
+const navigate = useNavigate();
+const [isSlackModalOpen, setSlackModalOpen] = useState(false);
+
+  const handleOpenSettings = () => {
+    // For now, we'll navigate to the general settings page
+    // In the future, this could be a dedicated priority people settings page
+    setSlackModalOpen(true);
+  };
 
   return (
-    <div className="p-6">
-      <h2 className="text-text-primary text-lg flex items-center mb-2">
-        <User className="mr-2 h-5 w-5 text-accent-primary" />
-        Priority People
-      </h2>
-      <p className="text-text-secondary text-sm mb-3">
-        {priorityPeople?.filter(p => p.active).length} people with recent activity
-      </p>
-      <div className="space-y-1">
-        {priorityPeople?.map((person, i) => (
-          <div key={i} className={`p-2 rounded-lg ${person.active ? "hover:bg-surface-raised/20" : "hover:bg-surface-raised/10"} transition-colors`}>
-            <div className="flex items-center">
-              <div className="h-6 w-6 rounded-full bg-surface-raised/30 border border-border-subtle flex items-center justify-center text-text-primary font-medium text-xs">
+    <>
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-text-primary text-sm font-medium">Priority People</h2>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6"
+          onClick={handleOpenSettings}
+        >
+          <Settings className="h-3 w-3 text-text-secondary" />
+        </Button>
+      </div>
+      
+      <div className="flex items-center gap-1">
+        {priorityPeople?.slice(0, 5).map((person, i) => (
+          <div key={i} className="relative">
+            <Avatar className="h-8 w-8 ring-2 ring-background">
+              <AvatarImage src={person.avatar} alt={person.name} />
+              <AvatarFallback className={`${
+                person.active ? "bg-accent-primary/20 text-accent-primary" : "bg-surface-raised/30 text-text-secondary"
+              } text-xs`}>
                 {person.name.charAt(0)}
-              </div>
-              <div className="ml-2 flex-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-text-primary">{person.name}</h3>
-                  <div className="flex items-center text-xs text-text-secondary">
-                    <span>{person.platform}</span>
-                    <span className="mx-1">•</span>
-                    <span>{person.lastActivity}</span>
-                  </div>
-                </div>
-              </div>
-              {person.active && <span className="h-2 w-2 rounded-full bg-accent-primary ml-1"></span>}
-            </div>
+              </AvatarFallback>
+            </Avatar>
+            {person.active && (
+              <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-green-500 border border-background"></span>
+            )}
           </div>
         ))}
+        {priorityPeople?.length > 5 && (
+          <div className="w-8 h-8 rounded-full bg-surface-raised/30 border border-border-subtle flex items-center justify-center">
+            <span className="text-xs text-text-secondary">+{priorityPeople?.length - 5}</span>
+          </div>
+        )}
       </div>
     </div>
+    <SlackSettingsModal
+        open={isSlackModalOpen}
+        onClose={() => setSlackModalOpen(false)}
+        initialTab={"priorityPeople"}
+      />
+    </>
   );
 };
 
