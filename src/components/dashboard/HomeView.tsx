@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 // Import optimized section components
 import UrgentThreadsSection from "./HomeViewSections/UrgentThreadsSection";
@@ -56,6 +57,12 @@ const HomeView = ({
     messageCount: 12
   };
 
+  // Sample urgent threads data
+  const urgentThreads = [
+    { channel: "# product", message: "New designs ready for review" },
+    { channel: "Sandra", message: "About the quarterly report" }
+  ];
+
   // Mobile View
   if (isMobile) {
     return (
@@ -78,24 +85,8 @@ const HomeView = ({
                   <h2 className="text-lg font-semibold text-white-text">Menu</h2>
                 </div>
 
-                {/* Latest Brief */}
-                <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                  <h3 className="font-semibold text-white-text mb-1">Latest Brief</h3>
-                  <p className="text-xs text-light-gray-text mb-1">{latestBrief.timeRange}</p>
-                  <p className="text-sm text-light-gray-text mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
-                  <Button 
-                    onClick={() => onOpenBrief(latestBrief.id)} 
-                    className="w-full bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
-                  >
-                    Read Brief
-                  </Button>
-                </div>
-
                 {/* Other Sections */}
                 <div className="space-y-4">
-                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
-                    <UrgentThreadsSection />
-                  </div>
                   <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
                     <ConnectedChannelsSection />
                   </div>
@@ -109,11 +100,58 @@ const HomeView = ({
         </div>
 
         {/* Mobile Welcome Section */}
-        <div className="text-center mb-12 mt-8">
+        <div className="text-center mb-8 mt-8">
           <h1 className="text-3xl font-semibold text-white-text mb-3">
             Good morning, Alex
           </h1>
           <p className="text-light-gray-text text-lg">Ready to catch up or focus?</p>
+        </div>
+
+        {/* Horizontal Scrolling Section for Briefs and Urgent Threads */}
+        <div className="mb-8">
+          <Carousel className="w-full">
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {/* Latest Brief Card */}
+              <CarouselItem className="pl-2 md:pl-4 basis-4/5">
+                <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30 h-full">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FileText className="h-4 w-4 text-primary-teal" />
+                    <h3 className="font-semibold text-white-text text-sm">Latest Brief</h3>
+                  </div>
+                  <p className="text-xs text-light-gray-text mb-1">{latestBrief.timeRange}</p>
+                  <p className="text-sm text-light-gray-text mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+                  <Button 
+                    onClick={() => onOpenBrief(latestBrief.id)} 
+                    size="sm"
+                    className="bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
+                  >
+                    Read Brief
+                  </Button>
+                </div>
+              </CarouselItem>
+
+              {/* Urgent Threads Cards */}
+              {urgentThreads.map((thread, i) => (
+                <CarouselItem key={i} className="pl-2 md:pl-4 basis-4/5">
+                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30 h-full">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Zap className="h-4 w-4 text-accent-green" />
+                      <h3 className="font-semibold text-white-text text-sm">Urgent Thread</h3>
+                    </div>
+                    <p className="text-sm font-medium text-white-text mb-1">{thread.channel}</p>
+                    <p className="text-sm text-light-gray-text mb-3">{thread.message}</p>
+                    <Button 
+                      size="sm"
+                      variant="outline"
+                      className="border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60"
+                    >
+                      View Thread
+                    </Button>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </div>
 
         {/* Central "Brief Me" Button */}
