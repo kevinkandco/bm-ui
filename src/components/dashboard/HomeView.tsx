@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,10 +7,9 @@ import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 // Import optimized section components
-import UrgentThreadsSection from "./HomeViewSections/UrgentThreadsSection";
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
@@ -60,7 +60,37 @@ const HomeView = ({
   // Sample urgent threads data
   const urgentThreads = [
     { channel: "# product", message: "New designs ready for review" },
-    { channel: "Sandra", message: "About the quarterly report" }
+    { channel: "Sandra", message: "About the quarterly report" },
+    { channel: "# engineering", message: "Critical bug found in production" },
+    { channel: "Michael", message: "Urgent: Client meeting moved to 2 PM" }
+  ];
+
+  // Combine brief and urgent threads for horizontal scroll
+  const allCards = [
+    {
+      type: 'brief',
+      id: latestBrief.id,
+      title: latestBrief.title,
+      subtitle: latestBrief.timeRange,
+      description: `${latestBrief.emailCount} emails, ${latestBrief.messageCount} messages`,
+      icon: FileText,
+      iconColor: "text-primary-teal",
+      buttonText: "Read Brief",
+      buttonVariant: "default" as const,
+      onClick: () => onOpenBrief(latestBrief.id)
+    },
+    ...urgentThreads.map((thread, i) => ({
+      type: 'urgent',
+      id: `urgent-${i}`,
+      title: thread.channel,
+      subtitle: "Urgent Thread",
+      description: thread.message,
+      icon: Zap,
+      iconColor: "text-accent-green",
+      buttonText: "View Thread",
+      buttonVariant: "outline" as const,
+      onClick: () => console.log(`View thread: ${thread.channel}`)
+    }))
   ];
 
   // Mobile View
@@ -109,49 +139,35 @@ const HomeView = ({
 
         {/* Horizontal Scrolling Section for Briefs and Urgent Threads */}
         <div className="mb-8">
-          <Carousel className="w-full">
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {/* Latest Brief Card */}
-              <CarouselItem className="pl-2 md:pl-4 basis-4/5">
-                <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30 h-full">
+          <ScrollArea className="w-full">
+            <div className="flex gap-4 pb-4">
+              {allCards.map((card) => (
+                <div 
+                  key={card.id}
+                  className="flex-none w-72 border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30"
+                >
                   <div className="flex items-center gap-2 mb-2">
-                    <FileText className="h-4 w-4 text-primary-teal" />
-                    <h3 className="font-semibold text-white-text text-sm">Latest Brief</h3>
+                    <card.icon className={`h-4 w-4 ${card.iconColor}`} />
+                    <h3 className="font-semibold text-white-text text-sm">{card.subtitle}</h3>
                   </div>
-                  <p className="text-xs text-light-gray-text mb-1">{latestBrief.timeRange}</p>
-                  <p className="text-sm text-light-gray-text mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+                  <p className="text-sm font-medium text-white-text mb-1">{card.title}</p>
+                  <p className="text-sm text-light-gray-text mb-3">{card.description}</p>
                   <Button 
-                    onClick={() => onOpenBrief(latestBrief.id)} 
+                    onClick={card.onClick}
                     size="sm"
-                    className="bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
+                    variant={card.buttonVariant}
+                    className={card.buttonVariant === "default" 
+                      ? "bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
+                      : "border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60"
+                    }
                   >
-                    Read Brief
+                    {card.buttonText}
                   </Button>
                 </div>
-              </CarouselItem>
-
-              {/* Urgent Threads Cards */}
-              {urgentThreads.map((thread, i) => (
-                <CarouselItem key={i} className="pl-2 md:pl-4 basis-4/5">
-                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30 h-full">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Zap className="h-4 w-4 text-accent-green" />
-                      <h3 className="font-semibold text-white-text text-sm">Urgent Thread</h3>
-                    </div>
-                    <p className="text-sm font-medium text-white-text mb-1">{thread.channel}</p>
-                    <p className="text-sm text-light-gray-text mb-3">{thread.message}</p>
-                    <Button 
-                      size="sm"
-                      variant="outline"
-                      className="border-light-gray-text/40 text-light-gray-text rounded-xl hover:border-light-gray-text/60"
-                    >
-                      View Thread
-                    </Button>
-                  </div>
-                </CarouselItem>
               ))}
-            </CarouselContent>
-          </Carousel>
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </div>
 
         {/* Central "Brief Me" Button */}
@@ -178,7 +194,6 @@ const HomeView = ({
 
         {/* Bottom Action Buttons */}
         <div className="flex justify-center items-center gap-8 pb-8">
-          {/* Brief Button */}
           <button
             onClick={onOpenBriefModal}
             className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
@@ -189,7 +204,6 @@ const HomeView = ({
             <FileText className="w-6 h-6 text-light-gray-text" />
           </button>
 
-          {/* Focus Button */}
           <button
             onClick={onToggleFocusMode}
             className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
@@ -200,7 +214,6 @@ const HomeView = ({
             <Headphones className="w-6 h-6 text-light-gray-text" />
           </button>
 
-          {/* Catch Up Button */}
           <button
             onClick={onToggleCatchMeUp}
             className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
@@ -253,25 +266,10 @@ const HomeView = ({
         <div className="grid grid-cols-12 gap-6">
           {/* Main content - 8 columns */}
           <div className="col-span-8 space-y-6">
-            {/* Latest Brief Card */}
-            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
-                <span className="text-sm text-text-secondary">{latestBrief.timestamp}</span>
-              </div>
-              
-              <div className="mb-4">
-                <p className="text-xs text-text-secondary mb-1">Time Range: {latestBrief.timeRange}</p>
-                <p className="text-text-secondary">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
-              </div>
-              
-              <div className="flex gap-3">
-                <Button 
-                  onClick={() => onOpenBrief(latestBrief.id)} 
-                  className="bg-accent-primary text-white rounded-xl shadow-sm"
-                >
-                  Read Brief
-                </Button>
+            {/* Responsive Cards Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-text-primary">Recent Activity</h2>
                 <Button 
                   onClick={handleViewAllBriefs} 
                   variant="outline" 
@@ -281,11 +279,37 @@ const HomeView = ({
                   View All Briefs
                 </Button>
               </div>
-            </div>
-
-            {/* Urgent Threads Card */}
-            <div className="border border-border-subtle rounded-2xl overflow-hidden bg-surface-overlay/30 shadow-sm">
-              <UrgentThreadsSection />
+              
+              {/* Responsive Grid of Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {allCards.map((card) => (
+                  <div 
+                    key={card.id}
+                    className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                    onClick={card.onClick}
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <card.icon className={`h-5 w-5 ${card.iconColor}`} />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-text-primary">{card.title}</h3>
+                        <p className="text-sm text-text-secondary">{card.subtitle}</p>
+                      </div>
+                    </div>
+                    <p className="text-text-secondary mb-4">{card.description}</p>
+                    <Button 
+                      size="sm"
+                      variant={card.buttonVariant}
+                      className="rounded-xl shadow-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        card.onClick();
+                      }}
+                    >
+                      {card.buttonText}
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           
