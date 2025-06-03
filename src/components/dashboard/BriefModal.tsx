@@ -47,7 +47,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     handleSeekStart,
     handleSeekEnd,
     handleSeekMove,
-  } = useAudioPlayer(brief?.audioPath ? BaseURL + brief?.audioPath : null);
+  } = useAudioPlayer(brief?.audioPath ? BaseURL + brief?.audioPath : null, false);
   const { call } = useApi();
   const getBrief = useCallback(async (): Promise<void> => {
     setLoading(true);

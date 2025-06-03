@@ -1,29 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 
-const useAudioPlayer = (audioSrc: string | null) => {
+const useAudioPlayer = (audioSrc: string | null, autoplay: boolean) => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
 
 	const audioRef = useRef<HTMLAudioElement>(null);
-
-	//--- new
-
 	const barRef = useRef<HTMLDivElement | null>(null);
 	const [isSeeking, setIsSeeking] = useState(false);
 
 	useEffect(() => {
-		if (!audioSrc) {
-			setCurrentTime(0);
-			setDuration(0);
-			setIsPlaying(false);
-			if (audioRef.current) {
-				audioRef.current.pause();
-				audioRef.current.currentTime = 0;
-			}
-		}
-	}, [audioSrc]);
+    if (!audioSrc) {
+		setCurrentTime(0);
+		setDuration(0);
+		setIsPlaying(false);
+      	if (audioRef.current) {
+			audioRef.current.pause();
+			audioRef.current.currentTime = 0;
+      	}
+      	return;
+    }
 
+    if (audioRef.current && autoplay) {
+    	audioRef.current.load();
+    	audioRef.current.play().then(() => {
+			setIsPlaying(true);
+		}).catch((err) => {
+    		console.warn("Autoplay failed", err);
+			setIsPlaying(false);
+    	});
+    }
+  }, [audioSrc, autoplay]);
 
 	const handleSeekStart = (e: React.MouseEvent) => {
 		setIsSeeking(true);
@@ -106,7 +113,6 @@ const useAudioPlayer = (audioSrc: string | null) => {
 		handlePause,
 		handlePlayPause,
 		formatDuration,
-		//--- new
 		barRef,
 		handleSeekStart,
 		handleSeekEnd,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import Profile from "@/components/settings/Profile";
@@ -10,6 +10,7 @@ import Profile from "@/components/settings/Profile";
 import Integrations from "@/components/settings/Integrations";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import Voices from "@/components/settings/modal/Voices";
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -46,6 +47,12 @@ const SettingsPage = () => {
       icon: Shield,
       name: "Privacy & Security",
       // component: <PrivacySecurity />
+    },
+    {
+      id: "voices",
+      icon: AudioLines,
+      name: "Voices",
+      component: <Voices />
     },
     {
       id: "integrations",
