@@ -8,7 +8,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 // Import optimized section components
-import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import UrgentThreadsSection from "./HomeViewSections/UrgentThreadsSection";
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
@@ -246,10 +245,8 @@ const HomeView = ({
               </div>
             </div>
 
-            {/* Combined sections card */}
+            {/* Urgent Threads Card */}
             <div className="border border-border-subtle rounded-2xl overflow-hidden bg-surface-overlay/30 shadow-sm">
-              <LatestBriefSection onClick={onOpenBriefModal} />
-              <Separator className="bg-border-subtle" />
               <UrgentThreadsSection />
             </div>
           </div>

@@ -43,8 +43,8 @@ const ConnectedChannelsSection = () => {
   };
 
   // Helper function to render the appropriate icon based on platform ID
-  const renderIcon = (platform: typeof connectedPlatforms[0] | typeof comingSoonPlatforms[0]) => {
-    const iconSize = 16;
+  const renderIcon = (platform: typeof connectedPlatforms[0] | typeof comingSoonPlatforms[0], isComingSoon = false) => {
+    const iconSize = isComingSoon ? 12 : 16;
     
     switch (platform.id) {
       case "slack":
@@ -56,7 +56,7 @@ const ConnectedChannelsSection = () => {
       case "calendar":
         return <Calendar className="text-white" size={iconSize} />;
       default:
-        return <span className="text-white font-medium text-sm">{platform.icon}</span>;
+        return <span className={`text-white font-medium ${isComingSoon ? 'text-xs' : 'text-sm'}`}>{platform.icon}</span>;
     }
   };
 
@@ -102,16 +102,16 @@ const ConnectedChannelsSection = () => {
           Coming Soon
         </div>
 
-        {/* Coming Soon Platforms */}
-        <div className="flex items-center gap-3 flex-wrap">
+        {/* Coming Soon Platforms - Compact Pills */}
+        <div className="flex items-center gap-2 flex-wrap">
           {comingSoonPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/7 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-200 shadow-inner opacity-70">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/7 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-200 shadow-inner opacity-70">
                   <div className="flex items-center justify-center">
-                    {renderIcon(platform)}
+                    {renderIcon(platform, true)}
                   </div>
-                  <span className="text-white text-sm font-medium">{platform.name}</span>
+                  <span className="text-white text-xs font-medium">{platform.name}</span>
                 </div>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-sm">
