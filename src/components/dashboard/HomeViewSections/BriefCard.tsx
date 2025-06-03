@@ -30,7 +30,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
   return (
     <Card className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden" onClick={() => onViewBrief(brief.id)}>
       {/* Header Section */}
-      <div className="bg-surface-raised/60 px-4 py-3 border-b border-border-subtle/30">
+      <div className="bg-surface-raised/40 px-4 py-3 border-b border-border-subtle/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FileText className="h-4 w-4 text-primary-teal" />
@@ -68,7 +68,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
       </div>
 
       {/* Body Section - More Transparent */}
-      <CardContent className="p-4 bg-surface-overlay/20">
+      <CardContent className="p-4 bg-surface-overlay/10">
         {/* Time Info */}
         <div className="flex items-center gap-4 mb-3 text-xs text-light-gray-text">
           <span>Created: {brief.timeCreated}</span>
@@ -76,17 +76,17 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
           <span>Range: {brief.timeRange}</span>
         </div>
 
-        {/* Stats Grid - Compact */}
-        <div className="grid grid-cols-3 gap-3">
+        {/* Stats Grid - Compact with no wrapping */}
+        <div className="grid grid-cols-3 gap-4">
           {/* Slack Messages */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-white-text truncate">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-white-text whitespace-nowrap">
                 {brief.slackMessages.total} Slack
               </p>
               {brief.slackMessages.fromPriorityPeople > 0 && (
-                <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-primary-teal/20 text-primary-teal border-primary-teal/40 rounded-md">
+                <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-primary-teal/20 text-primary-teal border-primary-teal/40 rounded-md whitespace-nowrap">
                   {brief.slackMessages.fromPriorityPeople} priority
                 </Badge>
               )}
@@ -94,14 +94,14 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
           </div>
 
           {/* Emails */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-white-text truncate">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-white-text whitespace-nowrap">
                 {brief.emails.total} Emails
               </p>
               {brief.emails.fromPriorityPeople > 0 && (
-                <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-primary-teal/20 text-primary-teal border-primary-teal/40 rounded-md">
+                <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-primary-teal/20 text-primary-teal border-primary-teal/40 rounded-md whitespace-nowrap">
                   {brief.emails.fromPriorityPeople} priority
                 </Badge>
               )}
@@ -109,13 +109,13 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
           </div>
 
           {/* Action Items */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-white-text truncate">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-white-text whitespace-nowrap">
                 {brief.actionItems} Actions
               </p>
-              <p className="text-xs text-light-gray-text">Auto-detected</p>
+              <p className="text-xs text-light-gray-text whitespace-nowrap">Auto-detected</p>
             </div>
           </div>
         </div>
