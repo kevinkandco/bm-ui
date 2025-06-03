@@ -28,7 +28,13 @@ interface BriefCardProps {
 
 const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => {
   return (
-    <Card className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden bg-transparent border-border-subtle/10" onClick={() => onViewBrief(brief.id)}>
+    <Card 
+      className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden border-0 rounded-xl" 
+      style={{
+        background: 'linear-gradient(135deg, #1F2428 0%, #2B3136 100%)'
+      }}
+      onClick={() => onViewBrief(brief.id)}
+    >
       {/* Header Section - Very subtle */}
       <div className="bg-surface-raised/10 px-4 py-3 border-b border-border-subtle/10">
         <div className="flex items-center justify-between">
