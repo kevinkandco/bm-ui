@@ -44,7 +44,7 @@ const Dashboard = () => {
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
-  const [latestBrief, setLatestBrief] = useState<Summary | null>(null);
+  const [latestBrief, setLatestBrief] = useState<Summary[] | null>(null);
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
@@ -77,13 +77,9 @@ const Dashboard = () => {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
-      returnOnFailure: false,
+      returnOnFailure: false
     });
-    setLatestBrief(response?.data?.[0]);
-    setUiState((prev) => ({
-      ...prev,
-      selectedBrief: response?.data?.[0]?.id
-    }))
+    setLatestBrief(response?.data);
   }, [call]);
 
   useEffect(() => {

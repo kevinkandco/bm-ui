@@ -11,6 +11,7 @@ interface ApiCallOptions {
   toastVariant?: "default" | "destructive";
   body?: any;
   returnOnFailure?: boolean; // whether to return false or throw
+  query?: string;
 }
 
 export function useApi() {
@@ -37,7 +38,7 @@ export function useApi() {
 
         const response = await Http.callApi(
           method,
-          `${BaseURL}${endpoint}`,
+          `${BaseURL}${endpoint}${options?.query ? `?${options.query}` : ""}`,
           options?.body
         );
 

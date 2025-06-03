@@ -16,6 +16,7 @@ import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import { PriorityPeople, Summary } from "./types";
 import useAuthStore from "@/store/useAuthStore";
+import ViewErrorMessage from "./ViewErrorMessage";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -24,7 +25,7 @@ interface HomeViewProps {
   onOpenBriefModal: () => void;
   statusTimerProps: StatusTimerProps;
   priorityPeople: PriorityPeople[];
-  latestBrief: Summary;
+  latestBrief: Summary[];
   status: "active" | "away" | "focus" | "vacation";
   onExitFocusMode: () => void;
   focusModeExitLoading: boolean;
@@ -49,6 +50,8 @@ const HomeView = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState<string>("");
 
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
@@ -65,6 +68,16 @@ const HomeView = ({
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
+
+  const handleMessageClick = (message: string) => {
+    setOpen(true);
+    setMessage(message);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
   const renderContent = () => {
     switch (status) {
       case "focus":
@@ -257,9 +270,9 @@ const HomeView = ({
                 {/* Latest Brief */}
                 <div className="border border-border-subtle rounded-xl p-4">
                   <h3 className="font-semibold text-text-primary mb-2">Latest Brief</h3>
-                  <p className="text-sm text-text-secondary mb-3">{latestBrief.emailCount} emails, {latestBrief?.messagesCount} messages</p>
+                  <p className="text-sm text-text-secondary mb-3">{latestBrief?.[0]?.emailCount ? `${latestBrief?.[0]?.emailCount} emails` : "0 email"}, {latestBrief?.[0]?.slackMessageCount  ? `${latestBrief?.[0]?.slackMessageCount} messages` : "0 messages"}</p>
                   <Button 
-                    onClick={() => onOpenBrief(latestBrief.id)} 
+                    onClick={() => onOpenBrief(latestBrief?.[0]?.id)} 
                     className="w-full bg-accent-primary text-white rounded-xl"
                   >
                     Read Brief
@@ -313,14 +326,14 @@ const HomeView = ({
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
-                <span className="text-sm text-text-secondary">{latestBrief?.timestamp}</span>
+                <span className="text-sm text-text-secondary">{latestBrief?.[0]?.summaryTime}</span>
               </div>
-              
-              <p className="text-text-secondary mb-4">{latestBrief?.emailCount} emails, {latestBrief?.meetingCount} messages</p>
+            
+              <p className="text-text-secondary mb-4">{latestBrief?.[0]?.emailCount ? `${latestBrief?.[0]?.emailCount} emails` : "0 email"}, {latestBrief?.[0]?.slackMessageCount  ? `${latestBrief?.[0]?.slackMessageCount} messages` : "0 message"}</p>
               
               <div className="flex gap-3">
                 <Button 
-                  onClick={() => onOpenBrief(latestBrief.id)} 
+                  onClick={() => onOpenBrief(latestBrief?.[0].id)} 
                   className="bg-accent-primary text-white rounded-xl shadow-sm"
                 >
                   Read Brief
@@ -337,11 +350,13 @@ const HomeView = ({
             </div>
 
             {/* Combined sections card */}
-            <div className="border border-border-subtle rounded-2xl overflow-hidden bg-surface-overlay/30 shadow-sm">
-              <LatestBriefSection onClick={onOpenBriefModal} />
-              <Separator className="bg-border-subtle" />
-              <UrgentThreadsSection />
-            </div>
+            {latestBrief?.slice(0,3).map((brief, index) => (
+              <div className="border border-border-subtle rounded-2xl overflow-hidden bg-surface-overlay/30 shadow-sm">
+                <LatestBriefSection onClick={onOpenBrief} key={brief?.id} brief={brief} handleMessageClick={handleMessageClick} />
+                <Separator className="bg-border-subtle" />
+                <UrgentThreadsSection />
+              </div>
+            ))}
           </div>
           
           {/* Sidebar - 4 columns */}
@@ -413,6 +428,7 @@ const HomeView = ({
           </div>
         </div>
       </div>
+      <ViewErrorMessage open={open} onClose={handleClose} message={message} />
     </div>
   );
 };
