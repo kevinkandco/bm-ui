@@ -1,5 +1,6 @@
+
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -7,23 +8,35 @@ import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
+
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
+  onStartFocusMode: () => void;
+  onSignOffForDay: () => void;
 }
+
 const HomeView = ({
   onOpenBrief,
   onToggleFocusMode,
   onToggleCatchMeUp,
-  onOpenBriefModal
+  onOpenBriefModal,
+  onStartFocusMode,
+  onSignOffForDay
 }: HomeViewProps) => {
   const {
     toast
@@ -229,18 +242,32 @@ const HomeView = ({
             <FileText className="w-6 h-6 text-light-gray-text" />
           </button>
 
-          <button onClick={onToggleFocusMode} className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
-                       flex items-center justify-center transition-all duration-200
-                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95">
-            <Headphones className="w-6 h-6 text-light-gray-text" />
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+                           flex items-center justify-center transition-all duration-200
+                           hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                           active:scale-95">
+                <ChevronDown className="w-6 h-6 text-light-gray-text" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-deep-blue border-light-gray-text/20">
+              <DropdownMenuItem onClick={onStartFocusMode} className="text-white-text hover:bg-light-gray-text/10">
+                <Headphones className="mr-2 h-4 w-4" />
+                Start Focus Mode
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onSignOffForDay} className="text-white-text hover:bg-light-gray-text/10">
+                <Clock className="mr-2 h-4 w-4" />
+                Sign Off for the Day
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <button onClick={onToggleCatchMeUp} className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
                        active:scale-95">
-            <Clock className="w-6 h-6 text-light-gray-text" />
+            <Zap className="w-6 h-6 text-light-gray-text" />
           </button>
         </div>
       </div>;
@@ -258,16 +285,30 @@ const HomeView = ({
             <p className="text-text-secondary">Let's get you caught up.</p>
           </div>
           
-          {/* Smaller CTAs on the right */}
+          {/* Updated CTAs on the right */}
           <div className="flex gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
+                  Update Status
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-surface border-border-subtle">
+                <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-white/5">
+                  <Headphones className="mr-2 h-4 w-4" />
+                  Start Focus Mode
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-white/5">
+                  <Clock className="mr-2 h-4 w-4" />
+                  Sign Off for the Day
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
             <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
               <Zap className="mr-2 h-4 w-4" />
-              Catch Me Up
-            </Button>
-            
-            <Button onClick={onToggleFocusMode} variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
-              <Headphones className="mr-2 h-4 w-4" />
-              Focus Mode
+              Brief Me
             </Button>
           </div>
         </div>
@@ -358,4 +399,5 @@ const HomeView = ({
       </div>
     </div>;
 };
+
 export default React.memo(HomeView);

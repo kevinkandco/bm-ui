@@ -6,6 +6,7 @@ import BriefModal from "@/components/dashboard/BriefModal";
 import FocusMode from "@/components/dashboard/FocusMode";
 import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
+import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -25,7 +26,8 @@ const Dashboard = () => {
     briefModalOpen: false,
     endFocusModalOpen: false,
     catchUpModalOpen: false,
-    userStatus: "active" as UserStatus
+    userStatus: "active" as UserStatus,
+    focusModeActive: false
   });
 
   const handleOpenBrief = useCallback((briefId: number) => {
@@ -68,26 +70,50 @@ const Dashboard = () => {
     setUiState(prev => ({
       ...prev,
       focusModeOpen: false,
-      userStatus: "focus" as UserStatus
+      userStatus: "focus" as UserStatus,
+      focusModeActive: true
     }));
-  }, []);
+    
+    toast({
+      title: "Focus Mode Started",
+      description: "Slack status set to 'focusing', Gmail status set to 'monitoring'"
+    });
+  }, [toast]);
 
   const handleExitFocusMode = useCallback(() => {
     setUiState(prev => ({
       ...prev,
-      endFocusModalOpen: true
-    }));
-  }, []);
-
-  const handleCloseEndFocusModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      endFocusModalOpen: false,
-      userStatus: "active" as UserStatus
+      endFocusModalOpen: true,
+      userStatus: "active" as UserStatus,
+      focusModeActive: false
     }));
     
     toast({
       title: "Focus Mode Ended",
+      description: "Slack and Gmail status set to 'online'"
+    });
+  }, [toast]);
+
+  const handleSignOffForDay = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      userStatus: "away" as UserStatus
+    }));
+    
+    toast({
+      title: "Signed Off",
+      description: "We'll monitor your channels until your next auto-scheduled brief"
+    });
+  }, [toast]);
+
+  const handleCloseEndFocusModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      endFocusModalOpen: false
+    }));
+    
+    toast({
+      title: "Focus Brief Ready",
       description: "Your brief has been created and emailed to you"
     });
   }, [toast]);
@@ -158,11 +184,21 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout {...layoutProps}>
+      {/* Focus Mode Timer - only show when focus mode is active */}
+      {uiState.focusModeActive && (
+        <StatusTimer 
+          status={uiState.userStatus}
+          onExitFocusMode={handleExitFocusMode}
+        />
+      )}
+      
       <HomeView 
         onOpenBrief={handleOpenBrief}
         onToggleFocusMode={handleToggleFocusMode}
         onToggleCatchMeUp={handleToggleCatchMeUp}
         onOpenBriefModal={handleOpenBriefModal}
+        onStartFocusMode={handleStartFocusMode}
+        onSignOffForDay={handleSignOffForDay}
       />
       
       {/* Modals */}
