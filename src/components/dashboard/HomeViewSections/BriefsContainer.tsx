@@ -29,22 +29,24 @@ interface BriefsContainerProps {
 const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript }: BriefsContainerProps) => {
   return (
     <Card 
-      className="w-full border border-border-subtle/20 rounded-xl shadow-none" 
+      className="w-full rounded-xl shadow-none border-0" 
       style={{
         background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
         boxShadow: 'none'
       }}
     >
-      <CardContent className="p-4">
-        {briefs.map((brief, index) => (
-          <BriefCard
-            key={brief.id}
-            brief={brief}
-            onViewBrief={onViewBrief}
-            onViewTranscript={onViewTranscript}
-            isLast={index === briefs.length - 1}
-          />
-        ))}
+      <CardContent className="p-6">
+        <div className="space-y-4">
+          {briefs.map((brief, index) => (
+            <BriefCard
+              key={brief.id}
+              brief={brief}
+              onViewBrief={onViewBrief}
+              onViewTranscript={onViewTranscript}
+              isLast={index === briefs.length - 1}
+            />
+          ))}
+        </div>
       </CardContent>
     </Card>
   );
