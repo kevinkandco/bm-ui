@@ -31,7 +31,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
     <Card 
       className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden border-0 rounded-xl" 
       style={{
-        background: 'linear-gradient(135deg, #1F2428 0%, #2B3136 100%)'
+        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
       }}
       onClick={() => onViewBrief(brief.id)}
     >
