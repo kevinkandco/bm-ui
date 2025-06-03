@@ -97,7 +97,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
             <div className="space-y-4 pt-2 bg-white/10 rounded-lg border border-white/10 p-3">
               {/* Date and Time Range Selection */}
               <div className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-3">
                   <div className="space-y-2">
                     <Label className="text-sm text-white/70">Start Date & Time</Label>
                     <div className="flex gap-2">
@@ -106,12 +106,12 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
                           <Button
                             variant="outline"
                             className={cn(
-                              "flex-1 justify-start text-left font-normal bg-white/5 border-white/20 text-white hover:bg-white/10",
+                              "flex-1 justify-start text-left font-normal bg-white/5 border-white/20 text-white hover:bg-white/10 text-xs",
                               !customStartDate && "text-white/50"
                             )}
                           >
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {customStartDate ? format(customStartDate, "MMM d") : "Pick date"}
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {customStartDate ? format(customStartDate, "MMM d") : "Date"}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0 bg-background/90 border-white/20" align="start">
@@ -128,7 +128,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
                         type="time"
                         value={customStartTime}
                         onChange={(e) => setCustomStartTime(e.target.value)}
-                        className="px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white text-sm w-24"
+                        className="px-2 py-2 bg-white/5 border border-white/20 rounded-md text-white text-xs w-20"
                       />
                     </div>
                   </div>
@@ -141,12 +141,12 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
                           <Button
                             variant="outline"
                             className={cn(
-                              "flex-1 justify-start text-left font-normal bg-white/5 border-white/20 text-white hover:bg-white/10",
+                              "flex-1 justify-start text-left font-normal bg-white/5 border-white/20 text-white hover:bg-white/10 text-xs",
                               !customEndDate && "text-white/50"
                             )}
                           >
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {customEndDate ? format(customEndDate, "MMM d") : "Pick date"}
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {customEndDate ? format(customEndDate, "MMM d") : "Date"}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0 bg-background/90 border-white/20" align="start">
@@ -163,28 +163,28 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
                         type="time"
                         value={customEndTime}
                         onChange={(e) => setCustomEndTime(e.target.value)}
-                        className="px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white text-sm w-24"
+                        className="px-2 py-2 bg-white/5 border border-white/20 rounded-md text-white text-xs w-20"
                       />
                     </div>
                   </div>
                 </div>
                 
-                <div className="text-center text-white/50 text-sm">
+                <div className="text-center text-white/50 text-xs">
                   or use a preset duration
                 </div>
               </div>
               
               {/* Preset Hours Selection */}
               <div className="space-y-2">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                <div className="flex flex-col gap-2">
                   <span className="text-sm text-white/70">Duration: {customHours} hr</span>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2">
                     {[1, 4, 24].map(time => (
                       <Button 
                         key={time} 
                         variant="outline"
                         size="sm"
-                        className={`${customHours === time ? "bg-blue-500/20 text-blue-400 border-blue-500/50" : "bg-white/5 text-white/70 border-white/10"} hover:bg-white/10`}
+                        className={`flex-1 text-xs ${customHours === time ? "bg-blue-500/20 text-blue-400 border-blue-500/50" : "bg-white/5 text-white/70 border-white/10"} hover:bg-white/10`}
                         onClick={() => setCustomHours(time)}
                       >
                         {time} hr
