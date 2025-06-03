@@ -1,6 +1,5 @@
-
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -61,86 +60,107 @@ const HomeView = ({
   // Mobile View
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-surface px-4 py-6">
+      <div className="min-h-screen bg-dark-navy px-6 py-8 flex flex-col">
         {/* Mobile Welcome Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-text-primary mb-2">
+        <div className="text-center mb-12 mt-8">
+          <h1 className="text-3xl font-semibold text-white-text mb-3">
             Good morning, Alex
           </h1>
-          <p className="text-text-secondary mb-8">What would you like to know?</p>
+          <p className="text-light-gray-text text-lg">Ready to catch up or focus?</p>
         </div>
 
         {/* Central "Brief Me" Button */}
-        <div className="flex flex-col items-center justify-center mb-12">
-          <div className="relative">
-            {/* Dynamic multi-colored gradient background with rotation */}
-            <div className="absolute inset-0 bg-gradient-to-r from-accent-primary via-purple-500 to-pink-500 rounded-full blur-2xl opacity-40 animate-spin" style={{ animationDuration: '8s' }}></div>
-            <div className="absolute inset-0 bg-gradient-to-l from-cyan-400 via-blue-500 to-accent-secondary rounded-full blur-xl opacity-30 animate-pulse" style={{ animationDuration: '3s' }}></div>
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="relative mb-16">
+            {/* Enhanced gradient background with multiple layers */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-teal via-accent-green to-primary-teal rounded-full blur-3xl opacity-30 animate-pulse scale-110" style={{ animationDuration: '4s' }}></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-accent-green via-primary-teal to-accent-green rounded-full blur-2xl opacity-40 animate-spin" style={{ animationDuration: '8s' }}></div>
             
-            {/* Enhanced Neumorphic Brief Me Button */}
+            {/* Main Brief Me Button */}
             <button
               onClick={onToggleCatchMeUp}
-              className="relative w-36 h-36 rounded-full bg-surface text-text-primary font-bold text-xl tracking-wide
-                         shadow-[12px_12px_24px_rgba(0,0,0,0.4),-12px_-12px_24px_rgba(255,255,255,0.1)]
-                         hover:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-8px_-8px_16px_rgba(255,255,255,0.15)]
-                         active:shadow-[4px_4px_8px_rgba(0,0,0,0.6),-4px_-4px_8px_rgba(255,255,255,0.2)]
-                         transition-all duration-300 transform hover:scale-105 active:scale-95
-                         bg-gradient-to-br from-surface via-surface to-surface-raised
-                         border border-white/5"
-              style={{
-                background: 'linear-gradient(145deg, var(--surface), var(--surface-raised))'
-              }}
+              className="relative w-48 h-48 rounded-full bg-gradient-to-br from-dark-navy via-deep-blue to-dark-navy text-white-text font-semibold text-2xl tracking-wide
+                         shadow-[16px_16px_32px_rgba(0,0,0,0.5),-16px_-16px_32px_rgba(255,255,255,0.05)]
+                         hover:shadow-[12px_12px_24px_rgba(0,0,0,0.6),-12px_-12px_24px_rgba(255,255,255,0.08)]
+                         active:shadow-[8px_8px_16px_rgba(0,0,0,0.7),-8px_-8px_16px_rgba(255,255,255,0.1)]
+                         transition-all duration-300 transform hover:scale-105 active:scale-98
+                         border border-white/10"
             >
               Brief Me
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="fixed bottom-6 right-6">
+        {/* Bottom Action Buttons */}
+        <div className="flex justify-center items-center gap-8 pb-8">
+          {/* Brief Button */}
+          <button
+            onClick={onOpenBriefModal}
+            className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+                       flex items-center justify-center transition-all duration-200
+                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                       active:scale-95"
+          >
+            <FileText className="w-6 h-6 text-light-gray-text" />
+          </button>
+
+          {/* Focus Button */}
+          <button
+            onClick={onToggleFocusMode}
+            className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+                       flex items-center justify-center transition-all duration-200
+                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                       active:scale-95"
+          >
+            <Headphones className="w-6 h-6 text-light-gray-text" />
+          </button>
+
+          {/* Catch Up Button */}
+          <button
+            onClick={onToggleCatchMeUp}
+            className="w-16 h-16 rounded-full bg-deep-blue border border-light-gray-text/40 
+                       flex items-center justify-center transition-all duration-200
+                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                       active:scale-95"
+          >
+            <Clock className="w-6 h-6 text-light-gray-text" />
+          </button>
+        </div>
+
+        {/* Mobile Menu Button - Moved to top right corner */}
+        <div className="fixed top-8 right-6 z-50">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button 
                 size="icon" 
-                className="w-14 h-14 rounded-full bg-accent-primary text-white shadow-lg"
+                className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60"
+                variant="outline"
               >
-                <Menu className="h-6 w-6" />
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="h-[80vh] bg-surface/95 backdrop-blur-xl border-border-subtle">
+            <SheetContent side="bottom" className="h-[80vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
               <div className="p-4 space-y-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-text-primary">Menu</h2>
+                  <h2 className="text-lg font-semibold text-white-text">Menu</h2>
                   <Button 
                     size="icon" 
                     variant="ghost" 
                     onClick={() => setMobileMenuOpen(false)}
+                    className="text-light-gray-text hover:text-white-text"
                   >
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
 
-                {/* Focus Mode Option */}
-                <Button 
-                  onClick={() => {
-                    onToggleFocusMode();
-                    setMobileMenuOpen(false);
-                  }} 
-                  variant="outline" 
-                  className="w-full h-12 rounded-xl border-border-subtle"
-                >
-                  <Headphones className="mr-3 h-5 w-5" />
-                  Focus Mode
-                </Button>
-
                 {/* Latest Brief */}
-                <div className="border border-border-subtle rounded-xl p-4">
-                  <h3 className="font-semibold text-text-primary mb-1">Latest Brief</h3>
-                  <p className="text-xs text-text-secondary mb-1">{latestBrief.timeRange}</p>
-                  <p className="text-sm text-text-secondary mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+                <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
+                  <h3 className="font-semibold text-white-text mb-1">Latest Brief</h3>
+                  <p className="text-xs text-light-gray-text mb-1">{latestBrief.timeRange}</p>
+                  <p className="text-sm text-light-gray-text mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
                   <Button 
                     onClick={() => onOpenBrief(latestBrief.id)} 
-                    className="w-full bg-accent-primary text-white rounded-xl"
+                    className="w-full bg-primary-teal text-white-text rounded-xl hover:bg-accent-green"
                   >
                     Read Brief
                   </Button>
@@ -148,13 +168,13 @@ const HomeView = ({
 
                 {/* Other Sections */}
                 <div className="space-y-4">
-                  <div className="border border-border-subtle rounded-xl p-4">
+                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
                     <UrgentThreadsSection />
                   </div>
-                  <div className="border border-border-subtle rounded-xl p-4">
+                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
                     <ConnectedChannelsSection />
                   </div>
-                  <div className="border border-border-subtle rounded-xl p-4">
+                  <div className="border border-light-gray-text/20 rounded-2xl p-4 bg-deep-blue/30">
                     <PriorityPeopleSection />
                   </div>
                 </div>
