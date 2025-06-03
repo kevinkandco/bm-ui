@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -92,9 +93,9 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     background: radial-gradient(
       circle at top left,
-      #3FC47F 0%,
-      #1E646E 50%,
-      #0E1F2C 100%
+      #2A8A5F 0%,
+      #1E646E 30%,
+      #000000 70%
     );
     background-attachment: fixed;
     color: var(--text-primary);
