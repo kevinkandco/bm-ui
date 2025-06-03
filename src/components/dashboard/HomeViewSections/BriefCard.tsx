@@ -28,9 +28,9 @@ interface BriefCardProps {
 
 const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => {
   return (
-    <Card className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden" onClick={() => onViewBrief(brief.id)}>
-      {/* Header Section */}
-      <div className="bg-surface-raised/40 px-4 py-3 border-b border-border-subtle/20">
+    <Card className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden bg-transparent border-border-subtle/10" onClick={() => onViewBrief(brief.id)}>
+      {/* Header Section - Very subtle */}
+      <div className="bg-surface-raised/10 px-4 py-3 border-b border-border-subtle/10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FileText className="h-4 w-4 text-primary-teal" />
@@ -43,7 +43,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
               <Button
                 variant="outline"
                 size="sm"
-                className="h-7 px-2 text-xs rounded-lg border-border-subtle/40 hover:border-border-subtle/60"
+                className="h-7 px-2 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent"
                 onClick={(e) => {
                   e.stopPropagation();
                   onViewTranscript(brief.id);
@@ -67,8 +67,8 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => 
         </div>
       </div>
 
-      {/* Body Section - More Transparent */}
-      <CardContent className="p-4 bg-surface-overlay/10">
+      {/* Body Section - Almost transparent */}
+      <CardContent className="p-4 bg-surface-overlay/5">
         {/* Time Info */}
         <div className="flex items-center gap-4 mb-3 text-xs text-light-gray-text">
           <span>Created: {brief.timeCreated}</span>
