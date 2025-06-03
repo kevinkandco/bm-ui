@@ -14,7 +14,10 @@ const LatestBriefSection = ({ onClick }: LatestBriefSectionProps) => {
         <h2 className="text-text-primary text-lg font-medium">Latest Brief</h2>
         <span className="text-sm text-text-secondary">Today, 8:00 AM</span>
       </div>
-      <p className="text-text-secondary mb-4 text-sm">Quick summary of your morning updates</p>
+      <div className="mb-4">
+        <p className="text-xs text-text-secondary mb-1">Time Range: 5:00 AM - 8:00 AM</p>
+        <p className="text-text-secondary text-sm">Quick summary of your morning updates</p>
+      </div>
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex items-center gap-2 flex-1">
           <Mail className="h-5 w-5 text-accent-primary" />

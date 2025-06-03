@@ -30,11 +30,46 @@ const BriefsList = () => {
   }, []);
 
   const briefs = [
-    { id: 1, title: "Daily Update - May 14, 2025", date: "Today, 9:00 AM", unread: true, summary: "5 emails, 12 messages" },
-    { id: 2, title: "Weekly Summary - Week 20", date: "Yesterday, 5:30 PM", unread: false, summary: "24 emails, 47 messages" },
-    { id: 3, title: "Project Milestones - Q2", date: "May 12, 2025", unread: false, summary: "8 emails, 15 messages" },
-    { id: 4, title: "Team Performance Review", date: "May 10, 2025", unread: false, summary: "12 emails, 23 messages" },
-    { id: 5, title: "Stakeholder Update", date: "May 8, 2025", unread: false, summary: "6 emails, 9 messages" },
+    { 
+      id: 1, 
+      title: "Daily Update - May 14, 2025", 
+      date: "Today, 9:00 AM", 
+      timeRange: "6:00 AM - 9:00 AM",
+      unread: true, 
+      summary: "5 emails, 12 messages" 
+    },
+    { 
+      id: 2, 
+      title: "Weekly Summary - Week 20", 
+      date: "Yesterday, 5:30 PM", 
+      timeRange: "Monday - Friday",
+      unread: false, 
+      summary: "24 emails, 47 messages" 
+    },
+    { 
+      id: 3, 
+      title: "Project Milestones - Q2", 
+      date: "May 12, 2025", 
+      timeRange: "Last 24 hours",
+      unread: false, 
+      summary: "8 emails, 15 messages" 
+    },
+    { 
+      id: 4, 
+      title: "Team Performance Review", 
+      date: "May 10, 2025", 
+      timeRange: "9:00 AM - 5:00 PM",
+      unread: false, 
+      summary: "12 emails, 23 messages" 
+    },
+    { 
+      id: 5, 
+      title: "Stakeholder Update", 
+      date: "May 8, 2025", 
+      timeRange: "2:00 PM - 6:00 PM",
+      unread: false, 
+      summary: "6 emails, 9 messages" 
+    },
   ];
 
   const filteredBriefs = briefs.filter(brief =>
@@ -92,6 +127,7 @@ const BriefsList = () => {
                             )}
                           </div>
                           <p className="text-sm text-text-secondary">{brief.date}</p>
+                          <p className="text-xs text-text-secondary mt-1">Time Range: {brief.timeRange}</p>
                           <p className="text-xs text-text-secondary mt-1">{brief.summary}</p>
                         </div>
                       </div>

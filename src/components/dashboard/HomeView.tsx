@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -47,11 +48,12 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  // Sample brief data
+  // Sample brief data with time ranges
   const latestBrief = {
     id: 1,
     title: "Morning Brief",
     timestamp: "Today, 8:00 AM",
+    timeRange: "5:00 AM - 8:00 AM",
     emailCount: 5,
     messageCount: 12
   };
@@ -133,7 +135,8 @@ const HomeView = ({
 
                 {/* Latest Brief */}
                 <div className="border border-border-subtle rounded-xl p-4">
-                  <h3 className="font-semibold text-text-primary mb-2">Latest Brief</h3>
+                  <h3 className="font-semibold text-text-primary mb-1">Latest Brief</h3>
+                  <p className="text-xs text-text-secondary mb-1">{latestBrief.timeRange}</p>
                   <p className="text-sm text-text-secondary mb-3">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
                   <Button 
                     onClick={() => onOpenBrief(latestBrief.id)} 
@@ -208,7 +211,10 @@ const HomeView = ({
                 <span className="text-sm text-text-secondary">{latestBrief.timestamp}</span>
               </div>
               
-              <p className="text-text-secondary mb-4">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+              <div className="mb-4">
+                <p className="text-xs text-text-secondary mb-1">Time Range: {latestBrief.timeRange}</p>
+                <p className="text-text-secondary">{latestBrief.emailCount} emails, {latestBrief.messageCount} messages</p>
+              </div>
               
               <div className="flex gap-3">
                 <Button 

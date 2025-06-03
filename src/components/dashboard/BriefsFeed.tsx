@@ -10,13 +10,14 @@ interface BriefsFeedProps {
 }
 
 const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
-  // Sample briefs data - in a real app this would come from a data source
+  // Sample briefs data with time ranges - in a real app this would come from a data source
   const briefs = useMemo(() => [
     {
       id: 1,
       title: "Morning Brief",
       description: "Quick summary of your morning updates",
       timestamp: "Today, 8:00 AM",
+      timeRange: "5:00 AM - 8:00 AM",
       stats: {
         emails: 5,
         messages: 12,
@@ -28,6 +29,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       title: "Slack Channel Updates",
       description: "New messages in #team-updates channel",
       timestamp: "Today, 10:30 AM",
+      timeRange: "8:00 AM - 10:30 AM",
       stats: {
         emails: 0,
         messages: 8,
@@ -39,6 +41,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       title: "Weekly Summary",
       description: "Your week at a glance",
       timestamp: "Yesterday, 5:00 PM",
+      timeRange: "Monday - Friday",
       stats: {
         emails: 24,
         messages: 47,
@@ -50,6 +53,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       title: "Project Deadline Reminders",
       description: "Upcoming project milestones this week",
       timestamp: "2 days ago",
+      timeRange: "Last 24 hours",
       stats: {
         emails: 2,
         messages: 5,
@@ -78,7 +82,10 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
               <h3 className="text-text-primary text-lg font-medium">{brief.title}</h3>
               <span className="text-sm text-text-secondary">{brief.timestamp}</span>
             </div>
-            <p className="text-text-secondary mb-4 text-sm">{brief.description}</p>
+            <div className="mb-4">
+              <p className="text-xs text-text-secondary mb-1">Time Range: {brief.timeRange}</p>
+              <p className="text-text-secondary text-sm">{brief.description}</p>
+            </div>
             <div className="flex flex-wrap gap-4 items-center">
               {brief.stats.emails > 0 && (
                 <div className="flex items-center gap-2">
