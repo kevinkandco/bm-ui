@@ -42,9 +42,9 @@ const ConnectedChannelsSection = () => {
     navigate("/dashboard/settings");
   };
 
-  // Helper function to render the appropriate icon based on platform ID (same as onboarding)
+  // Helper function to render the appropriate icon based on platform ID
   const renderIcon = (platform: typeof connectedPlatforms[0] | typeof comingSoonPlatforms[0]) => {
-    const iconSize = 12; // Smaller for the condensed view
+    const iconSize = 16;
     
     switch (platform.id) {
       case "slack":
@@ -56,44 +56,41 @@ const ConnectedChannelsSection = () => {
       case "calendar":
         return <Calendar className="text-white" size={iconSize} />;
       default:
-        return <span className="text-white font-bold text-[8px]">{platform.icon}</span>;
+        return <span className="text-white font-medium text-sm">{platform.icon}</span>;
     }
   };
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="p-2">
-        <div className="flex items-center justify-between mb-1.5">
-          <h2 className="text-text-primary text-xs font-medium">Connected Channels</h2>
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-text-primary text-lg font-medium">Connected Channels</h2>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-4 w-4"
+            className="h-8 w-8"
             onClick={handleOpenSettings}
           >
-            <Settings className="h-2 w-2 text-text-secondary" />
+            <Settings className="h-4 w-4 text-text-secondary" />
           </Button>
         </div>
         
         {/* Available/Connected Platforms */}
-        <div className="flex items-center gap-1 flex-wrap mb-2">
+        <div className="flex items-center gap-3 flex-wrap mb-4">
           {connectedPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
-                <div className="relative group cursor-pointer">
-                  <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                    platform.connected 
-                      ? "bg-accent-primary/80" 
-                      : "bg-gray-800/90 opacity-70"
-                  }`}>
+                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200 shadow-inner">
+                  <div className="flex items-center justify-center">
                     {renderIcon(platform)}
                   </div>
+                  <span className="text-white text-sm font-medium">{platform.name}</span>
                   {platform.connected && (
-                    <span className="absolute -bottom-0.5 -right-0.5 h-1 w-1 rounded-full bg-green-500 border border-background"></span>
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
                   )}
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs">
+              <TooltipContent side="bottom" className="text-sm">
                 <p>{platform.name}</p>
               </TooltipContent>
             </Tooltip>
@@ -101,20 +98,23 @@ const ConnectedChannelsSection = () => {
         </div>
 
         {/* Coming Soon Label */}
-        <div className="text-[10px] text-text-secondary font-medium mb-1">
+        <div className="text-sm text-text-secondary font-medium mb-3">
           Coming Soon
         </div>
 
-        {/* Coming Soon Platforms - styled like the image */}
-        <div className="flex items-center gap-1 flex-wrap">
+        {/* Coming Soon Platforms */}
+        <div className="flex items-center gap-3 flex-wrap">
           {comingSoonPlatforms.map((platform, i) => (
             <Tooltip key={i}>
               <TooltipTrigger asChild>
-                <div className="px-2 py-1 bg-gray-600/90 rounded-full text-white text-[10px] font-medium cursor-pointer hover:bg-gray-500/90 transition-colors">
-                  {platform.name}
+                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/7 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-200 shadow-inner opacity-70">
+                  <div className="flex items-center justify-center">
+                    {renderIcon(platform)}
+                  </div>
+                  <span className="text-white text-sm font-medium">{platform.name}</span>
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs">
+              <TooltipContent side="bottom" className="text-sm">
                 <p>{platform.name} - coming soon!</p>
               </TooltipContent>
             </Tooltip>
