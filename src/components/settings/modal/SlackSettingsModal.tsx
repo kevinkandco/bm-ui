@@ -127,6 +127,12 @@ const SlackSettingsModal = ({
     setIsSaving(false);
   }, [call, slackData, onClose, setFirstTimeSlackConnected]);
 
+  const handleClose = () => {
+    onClose();
+    if (setFirstTimeSlackConnected) setFirstTimeSlackConnected(false);
+    getSlackData();
+  }
+
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.Component;
 
   return (
@@ -181,7 +187,7 @@ const SlackSettingsModal = ({
                 <Button
                   variant="outline"
                   className="text-white/80 border-white/20 hover:bg-white/10 hover:text-white"
-                  onClick={onClose}
+                  onClick={handleClose}
                 >
                   Cancel
                 </Button>
