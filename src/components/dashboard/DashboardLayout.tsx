@@ -81,7 +81,7 @@ const DashboardLayout = ({
                 </div>
                 
                 <div className="flex-1 p-6">
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     <a
                       href="/dashboard/settings"
                       onClick={(e) => {
@@ -89,7 +89,7 @@ const DashboardLayout = ({
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="block text-text-primary hover:text-accent-primary transition-colors"
+                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
                     >
                       Brief Schedule
                     </a>
@@ -101,7 +101,7 @@ const DashboardLayout = ({
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="block text-text-primary hover:text-accent-primary transition-colors"
+                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
                     >
                       Priorities
                     </a>
@@ -113,16 +113,16 @@ const DashboardLayout = ({
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="block text-text-primary hover:text-accent-primary transition-colors"
+                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
                     >
                       Integrations
                     </a>
                     
-                    <span className="block text-text-secondary cursor-not-allowed">
+                    <span className="block text-lg text-text-secondary">
                       Feedback
                     </span>
                     
-                    <span className="block text-text-secondary cursor-not-allowed">
+                    <span className="block text-lg text-text-secondary">
                       Contact Us
                     </span>
                   </div>
