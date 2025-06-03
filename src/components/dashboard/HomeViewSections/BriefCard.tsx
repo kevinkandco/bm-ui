@@ -92,92 +92,86 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
             </div>
           </div>
         </div>
+        
+        {/* Time Range - Now above the line */}
+        <div className="text-xs text-light-gray-text mt-2">
+          Range: {brief.timeRange}
+        </div>
       </div>
 
       {/* Expanded Content */}
       {isExpanded && (
         <div className="px-4 pb-4">
-          <div className="border-t border-white/20 pt-4">
-            <div className="mb-4">
-              <div className="text-xs text-light-gray-text mb-3">
-                <span>Range: {brief.timeRange}</span>
-              </div>
-
-              {/* Detailed Stats Grid */}
-              <div className="grid grid-cols-1 gap-4 mb-4">
-                {/* Slack Messages */}
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-raised/30">
-                  <MessageSquare className="h-5 w-5 text-accent-green flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-white-text">
-                      {brief.slackMessages.total} Slack Messages
-                    </p>
-                    {brief.slackMessages.fromPriorityPeople > 0 && (
-                      <div className="mt-1">
-                        <Badge variant="secondary" className="text-xs h-5 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
-                          {brief.slackMessages.fromPriorityPeople} from priority people
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
+          <div className="border-t border-white/20 pt-3">
+            {/* Condensed Stats Grid */}
+            <div className="grid grid-cols-1 gap-2 mb-3">
+              {/* Slack Messages */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
+                  <p className="text-sm font-medium text-white-text">
+                    {brief.slackMessages.total} Slack Messages
+                  </p>
                 </div>
-
-                {/* Emails */}
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-raised/30">
-                  <Mail className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-white-text">
-                      {brief.emails.total} Emails
-                    </p>
-                    {brief.emails.fromPriorityPeople > 0 && (
-                      <div className="mt-1">
-                        <Badge variant="secondary" className="text-xs h-5 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
-                          {brief.emails.fromPriorityPeople} from priority people
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action Items */}
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-raised/30">
-                  <CheckSquare className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-white-text">
-                      {brief.actionItems} Action Items
-                    </p>
-                    <p className="text-xs text-light-gray-text">Auto-detected</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2 pt-2">
-                {brief.hasTranscript && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onViewTranscript(brief.id);
-                    }}
-                  >
-                    <ExternalLink className="h-3 w-3 mr-1" />
-                    Transcript
-                  </Button>
+                {brief.slackMessages.fromPriorityPeople > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                    {brief.slackMessages.fromPriorityPeople} priority
+                  </Badge>
                 )}
+              </div>
+
+              {/* Emails */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                  <p className="text-sm font-medium text-white-text">
+                    {brief.emails.total} Emails
+                  </p>
+                </div>
+                {brief.emails.fromPriorityPeople > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                    {brief.emails.fromPriorityPeople} priority
+                  </Badge>
+                )}
+              </div>
+
+              {/* Action Items */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                  <p className="text-sm font-medium text-white-text">
+                    {brief.actionItems} Action Items
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons - Moved to right side */}
+            <div className="flex justify-end gap-2 pt-1">
+              {brief.hasTranscript && (
                 <Button
+                  variant="outline"
                   size="sm"
-                  className="h-8 px-4 text-xs rounded-lg bg-primary-teal hover:bg-accent-green"
+                  className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onViewBrief(brief.id);
+                    onViewTranscript(brief.id);
                   }}
                 >
-                  View Brief
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Transcript
                 </Button>
-              </div>
+              )}
+              <Button
+                size="sm"
+                className="h-7 px-4 text-xs rounded-lg bg-primary-teal hover:bg-accent-green"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewBrief(brief.id);
+                }}
+              >
+                View Brief
+              </Button>
             </div>
           </div>
         </div>
