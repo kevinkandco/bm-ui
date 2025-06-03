@@ -29,7 +29,7 @@ interface BriefCardProps {
 const BriefCard = ({ brief, onViewBrief, onViewTranscript }: BriefCardProps) => {
   return (
     <Card 
-      className="w-full hover:shadow-md transition-all cursor-pointer overflow-hidden border-0 rounded-xl" 
+      className="w-full transition-all cursor-pointer overflow-hidden border-0 rounded-xl" 
       style={{
         background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
       }}
