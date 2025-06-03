@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BriefModal from "@/components/dashboard/BriefModal";
-import { Archive, Search } from "lucide-react";
+import { Archive, Calendar, Mail, MessageSquare, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -218,8 +218,9 @@ const BriefsList = () => {
                 </div>
               ) : (filteredBriefs?.map((brief, index) => (
                 <React.Fragment key={brief?.id}>
-                  <div className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => brief?.status === "success" ? handleOpenBrief(brief?.id) : null}>
-                    <div className="flex items-center flex-1">
+                  <div className="flex flex-col p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => brief?.status === "success" ? handleOpenBrief(brief?.id) : null}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center flex-1">
                       <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center">
@@ -243,6 +244,28 @@ const BriefsList = () => {
                         Failed to generate the summary
                       </span>
                     )}
+                    </div>
+                    
+                  <div className="flex flex-wrap gap-4 items-center mt-3 ml-5">   
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-5 w-5 text-accent-primary" />
+                      <span className="text-sm font-medium text-text-primary">
+                        {brief?.emailCount || "0"} emails
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MessageSquare className="h-5 w-5 text-accent-primary" />
+                      <span className="text-sm font-medium text-text-primary">
+                        {brief?.slackMessageCount || "0"} messages
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-accent-primary" />
+                      <span className="text-sm font-medium text-text-primary">
+                        {brief?.meetingCount || "0"} meetings
+                      </span>
+                     </div>
+                    </div>
                   </div>
                   {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
                 </React.Fragment>
