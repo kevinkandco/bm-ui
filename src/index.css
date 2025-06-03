@@ -90,13 +90,11 @@
   body {
     @apply font-inter;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background: linear-gradient(135deg, 
-      #0A0F19 0%, 
-      #0D1420 20%, 
-      #15242F 40%, 
-      #1A2C3A 60%, 
-      #0F1B26 80%, 
-      #0A0F19 100%
+    background: radial-gradient(
+      circle at top left,
+      #3FC47F 0%,
+      #1E646E 50%,
+      #0E1F2C 100%
     );
     background-attachment: fixed;
     color: var(--text-primary);
