@@ -7,19 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
 import PriorityPeopleSection from "./HomeViewSections/PriorityPeopleSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
@@ -28,7 +22,6 @@ interface HomeViewProps {
   onStartFocusMode: () => void;
   onSignOffForDay: () => void;
 }
-
 const HomeView = ({
   onOpenBrief,
   onToggleFocusMode,
@@ -278,7 +271,7 @@ const HomeView = ({
             <h1 className="text-3xl font-bold text-text-primary mb-2">
               Good morning, Alex
             </h1>
-            <p className="text-text-secondary">Let's get you caught up.</p>
+            <p className="text-text-secondary font-light text-slate-50">Let's get you caught up.</p>
           </div>
           
           {/* Updated CTAs on the right */}
@@ -395,5 +388,4 @@ const HomeView = ({
       </div>
     </div>;
 };
-
 export default React.memo(HomeView);
