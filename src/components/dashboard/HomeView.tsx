@@ -182,14 +182,14 @@ const HomeView = ({
         </div>
 
         {/* Central Animated "Brief Me" Button - Reduced spacing */}
-        <div className="flex-1 flex flex-col items-center justify-center px-0 py-10">
+        <div className="flex-1 flex flex-col items-center justify-center my-0 mx-0 px-0 py-[8px]">
           <div className="relative">
             <ListeningScreen isListening={true} title="brief-me is monitoring" />
           </div>
         </div>
 
         {/* Action Buttons - Above Recent Briefs */}
-        <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0">
+        <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0 my-[6px] py-[3px]">
           <button onClick={onOpenBriefModal} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
                        hover:border-light-gray-text/60 hover:bg-deep-blue/90
