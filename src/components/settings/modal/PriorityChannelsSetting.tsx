@@ -8,6 +8,7 @@ import { ChannelInput } from "@/components/onboarding/priority-channels/ChannelI
 import { SelectedChannels } from "@/components/onboarding/priority-channels/SelectedChannels";
 import { SlackChannelsList } from "@/components/onboarding/priority-channels/SlackChannelsList";
 import { MessageSquare } from "lucide-react";
+import FancyLoader from "./FancyLoader";
 
 const PriorityChannelsSetting = ({
   slackData,
@@ -19,14 +20,17 @@ const PriorityChannelsSetting = ({
     PriorityChannels[] | null
   >(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loadingChannels, setLoadingChannels] = useState(false);
   const { call } = useApi();
 
   const getAllChannel = useCallback(async (): Promise<void> => {
+    setLoadingChannels(true);
     const response = await call("get", "/api/slack/channels");
 
     if (response) {
       setAllSlackChannels(response);
     }
+    setLoadingChannels(false);
   }, [call]);
 
   useEffect(() => {
@@ -126,45 +130,48 @@ const PriorityChannelsSetting = ({
         Mark your most important channels. We'll highlight updates from these
         channels in your brief.
       </p>
+      {loadingChannels ? (
+          <FancyLoader />
+        ) : (
+        <div className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="priority-channel" className="text-text-primary">
+              Add important channels
+            </Label>
 
-      <div className="space-y-5">
-        <div className="space-y-2">
-          <Label htmlFor="priority-channel" className="text-text-primary">
-            Add important channels
-          </Label>
+            <ChannelInput
+              onAddChannel={addChannel}
+              onSelectChannel={selectChannel}
+              existingChannels={slackData?.priorityChannels ?? []}
+              availableChannels={slackChannels}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
 
-          <ChannelInput
-            onAddChannel={addChannel}
-            onSelectChannel={selectChannel}
-            existingChannels={slackData?.priorityChannels ?? []}
-            availableChannels={slackChannels}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
+            <SelectedChannels
+              channels={slackData?.priorityChannels ?? []}
+              slackChannels={allSlackChannels}
+              onRemoveChannel={removeChannel}
+            />
+          </div>
 
-          <SelectedChannels
-            channels={slackData?.priorityChannels ?? []}
-            slackChannels={allSlackChannels}
-            onRemoveChannel={removeChannel}
-          />
+          {/* Slack channels section */}
+          <div className="space-y-2">
+            <h3 className="text-lg font-medium text-text-primary">
+              <span className="flex items-center gap-2">
+                <MessageSquare size={18} className="text-accent-primary" />
+                Your Slack Channels
+              </span>
+            </h3>
+
+            <SlackChannelsList
+              slackChannels={filteredChannels}
+              priorityChannels={slackData?.priorityChannels ?? []}
+              onSelectChannel={selectChannel}
+            />
+          </div>
         </div>
-
-        {/* Slack channels section */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-medium text-text-primary">
-            <span className="flex items-center gap-2">
-              <MessageSquare size={18} className="text-accent-primary" />
-              Your Slack Channels
-            </span>
-          </h3>
-
-          <SlackChannelsList
-            slackChannels={filteredChannels}
-            priorityChannels={slackData?.priorityChannels ?? []}
-            onSelectChannel={selectChannel}
-          />
-        </div>
-      </div>
+      )}
     </>
   );
 };

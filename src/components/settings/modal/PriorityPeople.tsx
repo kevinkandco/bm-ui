@@ -12,6 +12,7 @@ import { useApi } from "@/hooks/useApi";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettingsTabProps } from "./types";
+import FancyLoader from "./FancyLoader";
 
 const PriorityPeople = ({
   slackData,
@@ -24,15 +25,18 @@ const PriorityPeople = ({
   const [selectedLabel, setSelectedLabel] = useState<Label | "">("");
   const [suggestedContacts, setSuggestedContacts] = useState<Contact[]>([]);
   const [platformContacts, setPlatformContacts] = useState<Contact[]>([]);
+  const [loadingContacts, setLoadingContacts] = useState(false);
   const { call } = useApi();
 
   const getContact = useCallback(async (): Promise<void> => {
+    setLoadingContacts(true);
     const response = await call("get", "/api/slack/dms/contacts");
 
     if (response) {
       setPlatformContacts(response?.contacts);
       setSuggestedContacts(response?.contacts);
     }
+    setLoadingContacts(false);
   }, [call]);
 
   useEffect(() => {
@@ -159,50 +163,53 @@ const PriorityPeople = ({
           Brief-Me barriers.
         </p>
       </div>
+      {loadingContacts ? (
+        <FancyLoader />
+      ) : (
+        <div className="space-y-4">
+          {/* Search input */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50 dark:text-white/40" />
+            <Input
+              placeholder="Search contacts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-white/20 dark:bg-white/10 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey placeholder:text-foreground/60 dark:placeholder:text-white/50"
+            />
+          </div>
 
-      <div className="space-y-4">
-        {/* Search input */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50 dark:text-white/40" />
-          <Input
-            placeholder="Search contacts..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white/20 dark:bg-white/10 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey placeholder:text-foreground/60 dark:placeholder:text-white/50"
+          {/* Added people list */}
+          <PriorityPeopleList
+            priorityPeople={slackData?.priorityPeople}
+            removePerson={removePerson}
+            designateContact={designateContact}
+            addLabel={addLabel}
+            contacts={platformContacts}
+          />
+
+          {/* Manual input with dropdown */}
+          <ManualInputSection
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            selectedLabel={selectedLabel}
+            setSelectedLabel={setSelectedLabel}
+            addPerson={addPerson}
+            filteredManualContacts={filteredManualContacts}
+          />
+
+          {/* Suggested contacts */}
+          <SuggestedContacts
+            suggestedContacts={suggestedContacts}
+            priorityPeople={slackData?.priorityPeople}
+            platformContacts={platformContacts}
+            addPerson={addPerson}
+            removePerson={removePerson}
+            designateContact={designateContact}
+            addLabel={addLabel}
+            searchQuery={searchQuery}
           />
         </div>
-
-        {/* Added people list */}
-        <PriorityPeopleList
-          priorityPeople={slackData?.priorityPeople}
-          removePerson={removePerson}
-          designateContact={designateContact}
-          addLabel={addLabel}
-          contacts={platformContacts}
-        />
-
-        {/* Manual input with dropdown */}
-        <ManualInputSection
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          selectedLabel={selectedLabel}
-          setSelectedLabel={setSelectedLabel}
-          addPerson={addPerson}
-          filteredManualContacts={filteredManualContacts}
-        />
-
-        {/* Suggested contacts */}
-        <SuggestedContacts
-          suggestedContacts={suggestedContacts}
-          priorityPeople={slackData?.priorityPeople}
-          platformContacts={platformContacts}
-          addPerson={addPerson}
-          removePerson={removePerson}
-          designateContact={designateContact}
-          addLabel={addLabel}
-          searchQuery={searchQuery}
-        />
-      </div>
+      )}
     </>
   );
 };

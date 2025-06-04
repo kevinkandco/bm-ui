@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import FancyLoader from "./FancyLoader";
 
 const IgnoreSetting = ({
   slackData,
@@ -31,11 +32,13 @@ const IgnoreSetting = ({
   const [suggestedTopics] = useState(
     suggestedTopicsData.map((topic) => topic.name)
   );
+  const [loadingIgnore, setLoadingIgnore] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const { call } = useApi();
 
   const getAllChannel = useCallback(async (): Promise<void> => {
+    setLoadingIgnore(true);
     const response = await call("get", "/api/slack/channels");
 
     if (!response) {
@@ -58,6 +61,7 @@ const IgnoreSetting = ({
     const combinedChannels = [...allChannels, ...extraChannels];
 
     setSlackChannels(combinedChannels);
+    setLoadingIgnore(false);
   }, [call, slackData]);
 
   useEffect(() => {
@@ -338,128 +342,132 @@ const selectKeyword = (topic: string) => {
           )}
         </button>
       </div>
+      {loadingIgnore ? (
+        <FancyLoader />
+      ) : (
+        <div className="space-y-6">
+          {selectedTab === "channel" && (
+            <div className="space-y-3 mt-4">
+              <Label htmlFor="ignore-channel" className="text-off-white">
+                Ignore channels
+              </Label>
+              <p className="text-sm text-off-white/70 -mt-1">
+                We'll exclude these Slack channels or email folders from your
+                brief (like #random or social updates).
+              </p>
+              <div className="flex gap-2 relative">
+                <div className="relative flex-grow">
+                  <Input
+                    ref={inputRef}
+                    id="ignore-channel"
+                    placeholder="Enter channel name (e.g. #random)"
+                    autoComplete="off"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && addItem()}
+                    onFocus={() => setIsInputFocused(true)}
+                    className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70 w-full"
+                  />
 
-      <div className="space-y-6">
-        {selectedTab === "channel" && (
-          <div className="space-y-3 mt-4">
-            <Label htmlFor="ignore-channel" className="text-off-white">
-              Ignore channels
-            </Label>
-            <p className="text-sm text-off-white/70 -mt-1">
-              We'll exclude these Slack channels or email folders from your
-              brief (like #random or social updates).
-            </p>
-            <div className="flex gap-2 relative">
-              <div className="relative flex-grow">
-                <Input
-                  ref={inputRef}
-                  id="ignore-channel"
-                  placeholder="Enter channel name (e.g. #random)"
-                  autoComplete="off"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addItem()}
-                  onFocus={() => setIsInputFocused(true)}
-                  className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70 w-full"
-                />
-
-                {isInputFocused &&
-                  searchResults &&
-                  searchResults?.length > 0 && (
-                    <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
-                      {searchResults?.map((channel: PriorityChannels) => (
-                        <div
-                          key={channel.id}
-                          onClick={() => selectChannel(channel.name)}
-                          className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
-                        >
-                          {channel?.channel_type ? (
-                            <Lock size={16} className="text-glass-blue/80" />
-                          ) : (
-                            <Hash size={16} className="text-glass-blue/80" />
-                          )}
-                          <span className="text-off-white">{channel.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {isInputFocused &&
+                    searchResults &&
+                    searchResults?.length > 0 && (
+                      <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+                        {searchResults?.map((channel: PriorityChannels) => (
+                          <div
+                            key={channel.id}
+                            onClick={() => selectChannel(channel.name)}
+                            className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
+                          >
+                            {channel?.channel_type ? (
+                              <Lock size={16} className="text-glass-blue/80" />
+                            ) : (
+                              <Hash size={16} className="text-glass-blue/80" />
+                            )}
+                            <span className="text-off-white">{channel.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+                <Button onClick={addItem} variant="outline" className="shrink-0">
+                  <Plus size={16} />
+                  Add
+                </Button>
               </div>
-              <Button onClick={addItem} variant="outline" className="shrink-0">
-                <Plus size={16} />
-                Add
-              </Button>
+
+              {/* Always render selected channels for immediate feedback */}
+              {renderSelectedItems()}
             </div>
+          )}
 
-            {/* Always render selected channels for immediate feedback */}
-            {renderSelectedItems()}
-          </div>
-        )}
+          {selectedTab === "keyword" && (
+            <div className="space-y-3 mt-4">
+              <Label htmlFor="ignore-keyword" className="text-off-white">
+                Ignore keywords
+              </Label>
+              <p className="text-sm text-off-white/70 -mt-1">
+                We'll filter out messages containing these keywords or phrases.
+              </p>
+              <div className="flex gap-2 relative">
+                <div className="relative flex-grow">
+                  <Input
+                    ref={inputRef}
+                    id="ignore-keyword"
+                    placeholder="Enter keyword to ignore"
+                    autoComplete="off"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && addItem()}
+                    onFocus={() => setIsInputFocused(true)}
+                    className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70"
+                  />
 
-        {selectedTab === "keyword" && (
-          <div className="space-y-3 mt-4">
-            <Label htmlFor="ignore-keyword" className="text-off-white">
-              Ignore keywords
-            </Label>
-            <p className="text-sm text-off-white/70 -mt-1">
-              We'll filter out messages containing these keywords or phrases.
-            </p>
-            <div className="flex gap-2 relative">
-              <div className="relative flex-grow">
-                <Input
-                  ref={inputRef}
-                  id="ignore-keyword"
-                  placeholder="Enter keyword to ignore"
-                  autoComplete="off"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addItem()}
-                  onFocus={() => setIsInputFocused(true)}
-                  className="bg-white/15 border-white/20 text-off-white placeholder:text-white placeholder:opacity-70"
-                />
-
-                {isInputFocused &&
-                  searchResults &&
-                  searchResults?.length > 0 && (
-                    <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
-                      {searchResults?.map((topic: string) => (
-                        <div
-                          key={topic}
-                          onClick={() => selectKeyword(topic)}
-                          className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
-                        >
-                          <Hash size={14} className="text-glass-blue/80" />
-                          <span className="text-off-white">{topic}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {isInputFocused &&
+                    searchResults &&
+                    searchResults?.length > 0 && (
+                      <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+                        {searchResults?.map((topic: string) => (
+                          <div
+                            key={topic}
+                            onClick={() => selectKeyword(topic)}
+                            className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
+                          >
+                            <Hash size={14} className="text-glass-blue/80" />
+                            <span className="text-off-white">{topic}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+                <Button onClick={addItem} variant="outline" className="shrink-0">
+                  <Plus size={16} />
+                  Add
+                </Button>
               </div>
-              <Button onClick={addItem} variant="outline" className="shrink-0">
-                <Plus size={16} />
-                Add
-              </Button>
+
+              {/* Always render selected keywords for immediate feedback */}
+              {renderSelectedItems()}
             </div>
+          )}
 
-            {/* Always render selected keywords for immediate feedback */}
-            {renderSelectedItems()}
+          <div className="flex items-center space-x-2 pt-2">
+            <Switch
+              id="include-in-summary"
+              checked={slackData?.includeIgnoredInSummary}
+              onCheckedChange={handleIncludeInSummary}
+              className="data-[state=checked]:bg-glass-blue"
+            />
+            <Label
+              htmlFor="include-in-summary"
+              className="text-off-white/80 cursor-pointer"
+            >
+              Still include ignored items in summaries (but with lower priority)
+            </Label>
           </div>
-        )}
-
-        <div className="flex items-center space-x-2 pt-2">
-          <Switch
-            id="include-in-summary"
-            checked={slackData?.includeIgnoredInSummary}
-            onCheckedChange={handleIncludeInSummary}
-            className="data-[state=checked]:bg-glass-blue"
-          />
-          <Label
-            htmlFor="include-in-summary"
-            className="text-off-white/80 cursor-pointer"
-          >
-            Still include ignored items in summaries (but with lower priority)
-          </Label>
         </div>
-      </div>
+      )}
+
     </>
   );
 };
