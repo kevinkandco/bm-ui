@@ -231,7 +231,7 @@ const BriefsList = () => {
                         <div className="flex items-center flex-1">
                           <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
 
-                          <div className="flex justify-between w-full">
+                          <div className="flex justify-between w-full flex-col sm:flex-row gap-5 sm:gap-0"> 
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center">
                               <h3 className="font-medium text-text-primary truncate">{title}</h3>
