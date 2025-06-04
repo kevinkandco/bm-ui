@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, AudioLines } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import Profile from "@/components/settings/Profile";
@@ -11,6 +11,7 @@ import Integrations from "@/components/settings/Integrations";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Voices from "@/components/settings/modal/Voices";
+import { useApi } from "@/hooks/useApi";
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -18,6 +19,7 @@ const SettingsPage = () => {
   const [activeCategory, setActiveCategory] = React.useState("profile");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { call } = useApi();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -59,10 +61,34 @@ const SettingsPage = () => {
       icon: Zap,
       name: "Integrations",
       component: <Integrations />
+    },
+    {
+      id: "logout",
+      icon: LogOut,
+      name: "Logout",
     }
   ];
 
+  const handleCategoryClick = useCallback(async (categoryId: string) => {
+    if (categoryId === "logout") {
+      const response = await call("get", "/api/logout", {
+        toastTitle: "Error",
+        toastDescription: "Failed to log out. Please try again.",
+        toastVariant: "destructive",
+      });
+      if (response) {
+        toast({
+          title: "Logged out",
+          description: "You have been successfully logged out.",
+        });
 
+        location.reload();
+      }
+      return;
+    }
+
+    setActiveCategory(categoryId);
+  }, [call, toast]);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -78,11 +104,7 @@ const SettingsPage = () => {
       );
       handleCategoryClick(tab);
     }
-  }, [searchParams]);
-
-  const handleCategoryClick = (categoryId: string) => {
-    setActiveCategory(categoryId);
-  };
+  }, [searchParams, handleCategoryClick]);
 
   const activeComponent = settingCategories.find(
     category => category.id === activeCategory

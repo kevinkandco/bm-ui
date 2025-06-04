@@ -42,9 +42,7 @@ const useAuthStore = create(
 			verify: (user, status) => set({ user, isAuthenticated: status }),
 
 			logout: () => {
-				localStorage.removeItem("onboardingCurrentStep")
-				localStorage.removeItem("onboardingUserData");
-				localStorage.removeItem("token");
+				localStorage.clear();
 				set({ user: null, token: null, isAuthenticated: false });
 			},
 
