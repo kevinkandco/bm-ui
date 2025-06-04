@@ -7,7 +7,7 @@ import { Summary } from "../types";
 interface BriefsContainerProps {
   briefs: Summary[];
   onViewBrief: (briefId: number) => void;
-  onViewTranscript: (briefId: number) => void;
+  onViewTranscript: (message: string, briefId: number) => void;
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
 }

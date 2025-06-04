@@ -8,7 +8,7 @@ import { Summary } from "../types";
 interface BriefCardProps {
   brief: Summary;
   onViewBrief: (briefId: number) => void;
-  onViewTranscript: (briefId: number) => void;
+  onViewTranscript: (message: string, briefId: number) => void;
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
   isLast?: boolean;
@@ -143,7 +143,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                   className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onViewTranscript(brief.id);
+                    onViewTranscript(brief.summary, brief.id);
                   }}
                 >
                   <ExternalLink className="h-3 w-3 mr-1" />

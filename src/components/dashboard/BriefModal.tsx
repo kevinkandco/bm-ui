@@ -264,7 +264,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
   const [showTranscript, setShowTranscript] = useState(false);
   const [showMessageTranscript, setMessageTranscript] = useState({
     open: false,
-    index: null,
+    message: "",
   });
   const [brief, setBrief] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(false);
@@ -313,7 +313,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
       setShowTranscript(false);
       setMessageTranscript({
         open: false,
-        index: null,
+        message: '',
       });
 
       setBrief(null);
@@ -324,7 +324,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     setShowTranscript(false);
     setMessageTranscript({
       open: false,
-      index: null,
+      message: '',
     });
   };
 
@@ -332,10 +332,10 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     setShowTranscript(true);
   };
 
-  const handleMessageTranscriptOpen = (index: number) => {
+  const handleMessageTranscriptOpen = (message: string) => {
     setMessageTranscript({
       open: true,
-      index: index,
+      message,
     });
   };
 
@@ -362,7 +362,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             <div className="px-4 md:px-6 py-4 space-y-4">
               <p className="text-gray-200 text-sm md:text-base">
                 I've been monitoring your channels for{" "}
-                <span className="font-semibold text-emerald-400">1.25 hrs</span>
+                <span className="font-semibold text-emerald-400">{brief?.duration}</span>
                 . Here's a brief of what you missed while you were away:
               </p>
 
@@ -385,7 +385,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                     Estimated Time Saved
                   </h3>
                   <p className="text-xl md:text-2xl font-medium text-gray-100">
-                    48 Minutes
+                    {brief?.savedTime}
                   </p>
                   <div className="flex gap-1 mt-1">
                     <div className="w-4 h-4 bg-gray-700/60 rounded-full flex items-center justify-center">
@@ -419,7 +419,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                     <p className="text-gray-400 text-xs">{timeRange}</p>
                   </div>
                   <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full self-start">
-                    1.25 hrs summarized in {formatDuration(duration)}
+                     {brief?.duration} summarized in {formatDuration(duration)}
                   </span>
                 </div>
 
@@ -514,6 +514,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                   <Button
                     variant="link"
                     className="text-teal-400 hover:text-teal-300 text-xs p-0 h-auto"
+                    onClick={handleOpen}
                   >
                     View Transcript
                   </Button>
@@ -544,7 +545,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                               </div>
                               <div className="min-w-0 flex-1">
                                 <h4 className="font-medium text-gray-100 text-xs truncate break-all">
-                                  {message.message}
+                                  {message.title}
                                 </h4>
                                 <p className="text-gray-400 text-xs truncate break-all">
                                   {message.sender} • {message.time}
@@ -618,7 +619,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                                   </div>
                                 </td>
                                 <td className="py-2 px-3 font-medium text-gray-100 text-sm break-all">
-                                  {message.message}
+                                  {message.title}
                                 </td>
                                 <td className="py-2 px-3 text-gray-300 text-sm break-all">
                                   {message.sender}
@@ -643,6 +644,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                                   <Button
                                     variant="link"
                                     className="text-teal-400 p-0 h-auto text-sm hover:text-teal-300"
+                                    onClick={() => handleMessageTranscriptOpen(message?.message)}
                                   >
                                     View Transcript
                                   </Button>
@@ -665,7 +667,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
         summary={
           showTranscript
             ? brief?.summary
-            : brief?.messages?.[showMessageTranscript?.index]?.message
+            : showMessageTranscript.message
         }
         onClose={handleClose}
       />
