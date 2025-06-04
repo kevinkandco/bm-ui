@@ -1,3 +1,4 @@
+
 import React from "react";
 interface ListeningScreenProps {
   isListening?: boolean;
@@ -65,19 +66,6 @@ const ListeningScreen = ({
             {subtitle}
           </p>}
       </div>
-
-      {/* Optional loading dots */}
-      {isListening && <div className="flex space-x-1 mt-1 sm:mt-4 py-[13px]">
-          <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{
-        animationDelay: '0ms'
-      }} />
-          <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{
-        animationDelay: '150ms'
-      }} />
-          <div className="w-1.5 h-1.5 bg-primary-teal rounded-full animate-bounce" style={{
-        animationDelay: '300ms'
-      }} />
-        </div>}
 
       <style>{`
         @keyframes soft-pulse {
