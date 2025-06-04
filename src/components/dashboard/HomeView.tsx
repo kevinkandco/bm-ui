@@ -350,7 +350,7 @@ const HomeView = ({
             {/* Next Brief Section - Now first */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm py-[9px]">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-semibold text-text-primary">Next Scheduled Brief</h2>
+                <h2 className="font-semibold text-text-primary text-base">Next Scheduled Brief</h2>
               </div>
               
               <div className="flex items-center justify-between mb-4">
