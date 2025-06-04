@@ -1,16 +1,12 @@
 
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { Home, Archive, CheckSquare, Video, Zap, Settings, HelpCircle, Menu, Clock, Headphones, Calendar, ChevronRight, ChevronLeft, X , LogOut} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
-import useAuthStore from "@/store/useAuthStore";
-import { useBriefStore } from "@/store/useBriefStore";
-import { useApi } from "@/hooks/useApi";
+import { Menu, X } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -24,17 +20,12 @@ const DashboardLayout = ({
   children,
   className,
   currentPage = "home",
-  sidebarOpen,
   onToggleSidebar
 }: DashboardLayoutProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const {logout} = useAuthStore();
-  const {getUnreadCount, unreadCount} = useBriefStore();
-  const { call } = useApi();
 
   // Close mobile nav when changing routes
   useEffect(() => {
