@@ -15,6 +15,7 @@ import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import ListeningScreen from "./ListeningScreen";
+
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
@@ -174,15 +175,15 @@ const HomeView = ({
         </div>
 
         {/* Mobile Welcome Section - Compact */}
-        <div className="text-center mb-2 mt-4 flex-shrink-0">
+        <div className="text-center flex-shrink-0 mt-4">
           <h1 className="text-xl font-semibold text-white-text mb-1">
             Good morning, Alex
           </h1>
           <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Central Animated "Brief Me" Button - Optimized for screen fit */}
-        <div className="flex-1 flex flex-col items-center justify-center min-h-0 mb-2">
+        {/* Central Animated "Brief Me" Button - Centered between text sections */}
+        <div className="flex-1 flex flex-col items-center justify-center">
           <div className="relative">
             <ListeningScreen isListening={true} title="brief-me is monitoring" />
           </div>
