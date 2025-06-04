@@ -46,6 +46,7 @@ export interface Summary {
   slackMessageCount: number;
   emailCount: number;
   meetingCount: number;
+  actionCount: number;
 }
 
 export interface PriorityPeople {

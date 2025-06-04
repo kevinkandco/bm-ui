@@ -25,7 +25,7 @@ interface HomeViewProps {
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
   priorityPeople: PriorityPeople[];
-  latestBrief: Summary;
+  recentBriefs: Summary[];
   status: "active" | "away" | "focus" | "vacation";
   onExitFocusMode: () => void;
   focusModeExitLoading: boolean;
@@ -34,6 +34,7 @@ interface HomeViewProps {
   onSignOffForDay: () => void;
 }
 const HomeView = ({
+  recentBriefs,
   onOpenBrief,
   onToggleFocusMode,
   onToggleCatchMeUp,
@@ -81,54 +82,6 @@ const HomeView = ({
       });
     }
   }, [playingBrief, toast]);
-
-  // Sample brief data
-  const recentBriefs = [{
-    id: 1,
-    name: "Morning Brief",
-    timeCreated: "Today, 8:00 AM",
-    timeRange: "5:00 AM - 8:00 AM",
-    slackMessages: {
-      total: 12,
-      fromPriorityPeople: 3
-    },
-    emails: {
-      total: 5,
-      fromPriorityPeople: 2
-    },
-    actionItems: 4,
-    hasTranscript: true
-  }, {
-    id: 2,
-    name: "Midday Brief",
-    timeCreated: "Today, 12:30 PM",
-    timeRange: "8:00 AM - 12:30 PM",
-    slackMessages: {
-      total: 18,
-      fromPriorityPeople: 5
-    },
-    emails: {
-      total: 8,
-      fromPriorityPeople: 3
-    },
-    actionItems: 6,
-    hasTranscript: true
-  }, {
-    id: 3,
-    name: "Evening Brief",
-    timeCreated: "Yesterday, 6:00 PM",
-    timeRange: "12:30 PM - 6:00 PM",
-    slackMessages: {
-      total: 14,
-      fromPriorityPeople: 2
-    },
-    emails: {
-      total: 6,
-      fromPriorityPeople: 1
-    },
-    actionItems: 3,
-    hasTranscript: false
-  }];
 
   // Mobile View
   if (isMobile) {
@@ -269,18 +222,18 @@ const HomeView = ({
                     </button>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-xs font-semibold text-white-text truncate">
-                        {brief.name}
+                        {brief.title}
                       </h3>
                       <p className="text-xs text-light-gray-text truncate">
-                        {brief.timeCreated}
+                        {brief.summaryTime}
                       </p>
                     </div>
                   </div>
                   <div className="space-y-1 mb-1">
                     <div className="flex items-center justify-between text-xs text-light-gray-text">
-                      <span>{brief.slackMessages.total} Slack</span>
-                      <span>{brief.emails.total} Emails</span>
-                      <span>{brief.actionItems} Actions</span>
+                      <span>{brief.slackMessageCount} Slack</span>
+                      <span>{brief.emailCount} Emails</span>
+                      <span>{brief.actionCount} Actions</span>
                     </div>
                   </div>
                   <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs py-0.5 h-6">

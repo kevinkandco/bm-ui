@@ -2,26 +2,10 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import BriefCard from "./BriefCard";
-
-interface Brief {
-  id: number;
-  name: string;
-  timeCreated: string;
-  timeRange: string;
-  slackMessages: {
-    total: number;
-    fromPriorityPeople: number;
-  };
-  emails: {
-    total: number;
-    fromPriorityPeople: number;
-  };
-  actionItems: number;
-  hasTranscript: boolean;
-}
+import { Summary } from "../types";
 
 interface BriefsContainerProps {
-  briefs: Brief[];
+  briefs: Summary[];
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
   onPlayBrief: (briefId: number) => void;
@@ -39,7 +23,7 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
     >
       <CardContent className="p-6">
         <div className="space-y-4">
-          {briefs.map((brief, index) => (
+          {briefs?.map((brief, index) => (
             <BriefCard
               key={brief.id}
               brief={brief}

@@ -3,24 +3,10 @@ import React, { useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Summary } from "../types";
 
 interface BriefCardProps {
-  brief: {
-    id: number;
-    name: string;
-    timeCreated: string;
-    timeRange: string;
-    slackMessages: {
-      total: number;
-      fromPriorityPeople: number;
-    };
-    emails: {
-      total: number;
-      fromPriorityPeople: number;
-    };
-    actionItems: number;
-    hasTranscript: boolean;
-  };
+  brief: Summary;
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
   onPlayBrief: (briefId: number) => void;
@@ -34,6 +20,8 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
   };
+
+  const timeRange = brief?.start_at && brief?.ended_at ? `Range: ${brief?.start_at} - ${brief?.ended_at}` : "";
 
   return (
     <div 
@@ -70,18 +58,18 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
             </button>
             <div className="min-w-0 flex-1">
               <h3 className="text-base font-semibold text-white-text truncate">
-                {brief.name}
+                {brief?.title}
               </h3>
               <p className="text-xs text-light-gray-text truncate">
-                {brief.timeCreated}
+                {brief?.summaryTime}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <div className="flex items-center gap-4 text-xs text-light-gray-text">
-              <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
-              <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
-              <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
+              <span className="whitespace-nowrap">{brief?.slackMessageCount} Slack</span>
+              <span className="whitespace-nowrap">{brief?.emailCount} Emails</span>
+              <span className="whitespace-nowrap">{brief?.actionCount} Actions</span>
             </div>
             <div className="ml-2">
               {isExpanded ? (
@@ -95,7 +83,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
         
         {/* Time Range - Now above the line */}
         <div className="text-xs text-light-gray-text mt-2">
-          Range: {brief.timeRange}
+          {timeRange}
         </div>
       </div>
 
@@ -110,14 +98,14 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                 <div className="flex items-center gap-3">
                   <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
                   <p className="text-sm font-medium text-white-text">
-                    {brief.slackMessages.total} Slack Messages
+                    {brief.slackMessageCount} Slack Messages
                   </p>
                 </div>
-                {brief.slackMessages.fromPriorityPeople > 0 && (
+                {/* {brief.slackMessages.fromPriorityPeople > 0 && (
                   <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
                     {brief.slackMessages.fromPriorityPeople} priority
                   </Badge>
-                )}
+                )} */}
               </div>
 
               {/* Emails */}
@@ -125,14 +113,14 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                 <div className="flex items-center gap-3">
                   <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
                   <p className="text-sm font-medium text-white-text">
-                    {brief.emails.total} Emails
+                    {brief.emailCount} Emails
                   </p>
                 </div>
-                {brief.emails.fromPriorityPeople > 0 && (
+                {/* {brief.emails.fromPriorityPeople > 0 && (
                   <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
                     {brief.emails.fromPriorityPeople} priority
                   </Badge>
-                )}
+                )} */}
               </div>
 
               {/* Action Items */}
@@ -140,7 +128,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                 <div className="flex items-center gap-3">
                   <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
                   <p className="text-sm font-medium text-white-text">
-                    {brief.actionItems} Action Items
+                    {brief.actionCount} Action Items
                   </p>
                 </div>
               </div>
@@ -148,7 +136,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
 
             {/* Action Buttons - Moved to right side */}
             <div className="flex justify-end gap-2 pt-1">
-              {brief.hasTranscript && (
+              {brief.summary && (
                 <Button
                   variant="outline"
                   size="sm"

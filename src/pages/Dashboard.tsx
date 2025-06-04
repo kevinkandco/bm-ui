@@ -46,7 +46,7 @@ const Dashboard = () => {
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
-  const [latestBrief, setLatestBrief] = useState<Summary | null>(null);
+  const [recentBriefs, setRecentBriefs] = useState<Summary[] | null>(null);
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
@@ -74,18 +74,14 @@ const Dashboard = () => {
     }
   }, [call]);
 
-  const getLatestBrief = useCallback(async () => {
-    const response = await call("get", `/api/summaries`, {
+  const getRecentBriefs = useCallback(async () => {
+    const response = await call("get", `/api/summaries?per_page=3`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
       returnOnFailure: false,
     });
-    setLatestBrief(response?.data?.[0]);
-    setUiState((prev) => ({
-      ...prev,
-      selectedBrief: response?.data?.[0]?.id
-    }))
+    setRecentBriefs(response?.data);
   }, [call]);
 
   useEffect(() => {
@@ -103,8 +99,8 @@ const Dashboard = () => {
       );
     }
     fetchDashboardData();
-    getLatestBrief(); 
-  }, [searchParams, getLatestBrief, fetchDashboardData]);
+    getRecentBriefs(); 
+  }, [searchParams, getRecentBriefs, fetchDashboardData]);
 
   const handleExitFocusMode = useCallback(async () => {
     setUiState((prev) => ({
@@ -131,14 +127,14 @@ const Dashboard = () => {
         description: "Slack and Gmail status set to 'online'"
       });
       fetchDashboardData();
-      getLatestBrief();
+      getRecentBriefs();
     }
 
     setUiState((prev) => ({
       ...prev,
       focusModeExitLoading: false,
     }));
-  }, [call, fetchDashboardData, getLatestBrief, toast]);
+  }, [call, fetchDashboardData, getRecentBriefs, toast]);
 
   const handleFocusModeClose = useCallback(() => {
 			setUiState((prev) => ({
@@ -242,8 +238,8 @@ const Dashboard = () => {
       ...prev,
       catchMeUpOpen: false
     }));
-    getLatestBrief();
-  }, [getLatestBrief]);
+    getRecentBriefs();
+  }, [getRecentBriefs]);
 
   const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
     setUiState(prev => ({
@@ -373,7 +369,7 @@ const Dashboard = () => {
         onToggleCatchMeUp={handleToggleCatchMeUp}
         onOpenBriefModal={handleOpenBriefModal}
         priorityPeople={priorityPeople}
-        latestBrief={latestBrief}
+        recentBriefs={recentBriefs}
         status={uiState.userStatus}
         onExitFocusMode={handleExitFocusMode}
         focusModeExitLoading={uiState.focusModeExitLoading}
