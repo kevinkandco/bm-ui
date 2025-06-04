@@ -217,42 +217,52 @@ const BriefsList = () => {
                   <p className="text-text-secondary">No briefs found matching your search.</p>
                 </div>
               ) : (
-                filteredBriefs?.map((brief, index) => (
-                  <React.Fragment key={brief.id}>
-                    <div 
-                      className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
-                      onClick={() => handleOpenBrief(brief.id)}
-                    >
-                      <div className="flex items-center flex-1">
-                        <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center">
-                            <h3 className="font-medium text-text-primary truncate">{brief.title}</h3>
-                            {brief?.read_at && (
-                              <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
+                filteredBriefs?.map((brief, index) => {
+                  const { id, title, status, summaryTime, start_at, ended_at, emailCount, slackMessageCount, error } = brief;
+
+                  const timeRange = start_at && ended_at ? `Time Range: ${start_at} - ${ended_at}` : "";
+
+                  return (
+                    <React.Fragment key={brief.id}>
+                      <div 
+                        className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
+                        onClick={() => handleOpenBrief(id)}
+                      >
+                        <div className="flex items-center flex-1">
+                          <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
+
+                          <div className="flex justify-between w-full">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center">
+                              <h3 className="font-medium text-text-primary truncate">{title}</h3>
+                              {!brief?.read_at && (
+                                <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
+                              )}
+                            </div>
+                            <p className="text-sm text-text-secondary">{summaryTime}</p>
+                            {timeRange && <p className="text-xs text-text-secondary mt-1">{timeRange}</p>}
+                            <p className="text-xs text-text-secondary mt-1">{`${emailCount ? `${emailCount} emails` : "0 email"}, ${slackMessageCount ? `${slackMessageCount} slack messages` : "0 slack messages"}`}</p>
+                          </div>
+                          <div>
+                            {(status !== "failed" && status !== "success")  && (
+                              <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
+                                Generating summary
+                              </span>
+                            )}
+                            {status === "failed" && (
+                              <span onClick={() => handleClick(error)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+                                Failed to generate the summary
+                              </span>
                             )}
                           </div>
-                          <p className="text-sm text-text-secondary">{brief?.summaryTime}</p>
-                          <p className="text-xs text-text-secondary mt-1">Time Range: {brief?.start_at} - {brief?.ended_at}</p>
-                          <p className="text-xs text-text-secondary mt-1">{brief.summary}</p>
+                          </div>
+                          {/* <p className="text-sm text-text-secondary">{brief.date}</p> */}
                         </div>
-                        {/* <p className="text-sm text-text-secondary">{brief.date}</p> */}
                       </div>
-                    </div>
-                    {/* <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button> */}
-                    {/* {(brief?.status !== "failed" && brief?.status !== "success")  && (
-                      <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
-                        Generating summary
-                      </span>
-                    )}
-                    {brief?.status === "failed" && (
-                      <span onClick={() => handleClick(brief?.error)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
-                        Failed to generate the summary
-                      </span>
-                    )} */}
-                  {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
-                </React.Fragment>
-              )))}
+                    {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
+                  </React.Fragment>
+                )
+                }))}
             </div>
           </div>
         </div>
