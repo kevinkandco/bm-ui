@@ -15,7 +15,6 @@ import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import ListeningScreen from "./ListeningScreen";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
@@ -183,7 +182,7 @@ const HomeView = ({
         </div>
 
         {/* Central Animated "Brief Me" Button - Reduced spacing */}
-        <div className="flex-1 flex flex-col items-center justify-center px-0 py-4">
+        <div className="flex-1 flex flex-col items-center justify-center px-0 py-10">
           <div className="relative">
             <ListeningScreen isListening={true} title="brief-me is monitoring" />
           </div>
