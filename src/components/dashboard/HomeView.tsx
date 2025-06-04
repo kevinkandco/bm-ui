@@ -15,7 +15,6 @@ import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import ListeningScreen from "./ListeningScreen";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
@@ -24,7 +23,6 @@ interface HomeViewProps {
   onStartFocusMode: () => void;
   onSignOffForDay: () => void;
 }
-
 const HomeView = ({
   onOpenBrief,
   onToggleFocusMode,
@@ -33,31 +31,28 @@ const HomeView = ({
   onStartFocusMode,
   onSignOffForDay
 }: HomeViewProps) => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
-  
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
-  
   const handleUpdateSchedule = useCallback(() => {
     navigate("/dashboard/settings");
   }, [navigate]);
-  
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
-  
   const handleViewTranscript = useCallback((briefId: number) => {
     toast({
       title: "Transcript",
       description: `Opening transcript for brief ${briefId}`
     });
   }, [toast]);
-
   const handlePlayBrief = useCallback((briefId: number) => {
     if (playingBrief === briefId) {
       setPlayingBrief(null);
@@ -141,39 +136,27 @@ const HomeView = ({
 
                 {/* Simple Menu Links */}
                 <div className="space-y-8">
-                  <a
-                    href="/dashboard/settings"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block text-lg text-white-text hover:text-primary-teal transition-colors"
-                  >
+                  <a href="/dashboard/settings" onClick={e => {
+                  e.preventDefault();
+                  navigate("/dashboard/settings");
+                  setMobileMenuOpen(false);
+                }} className="block text-lg text-white-text hover:text-primary-teal transition-colors">
                     Brief Schedule
                   </a>
                   
-                  <a
-                    href="/dashboard/settings"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block text-lg text-white-text hover:text-primary-teal transition-colors"
-                  >
+                  <a href="/dashboard/settings" onClick={e => {
+                  e.preventDefault();
+                  navigate("/dashboard/settings");
+                  setMobileMenuOpen(false);
+                }} className="block text-lg text-white-text hover:text-primary-teal transition-colors">
                     Priorities
                   </a>
                   
-                  <a
-                    href="/dashboard/settings"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block text-lg text-white-text hover:text-primary-teal transition-colors"
-                  >
+                  <a href="/dashboard/settings" onClick={e => {
+                  e.preventDefault();
+                  navigate("/dashboard/settings");
+                  setMobileMenuOpen(false);
+                }} className="block text-lg text-white-text hover:text-primary-teal transition-colors">
                     Integrations
                   </a>
                   
@@ -201,10 +184,7 @@ const HomeView = ({
         {/* Central Animated "Brief Me" Button - Optimized for screen fit */}
         <div className="flex-1 flex flex-col items-center justify-center min-h-0 mb-2">
           <div className="relative">
-            <ListeningScreen 
-              isListening={true}
-              title="brief-me is monitoring"
-            />
+            <ListeningScreen isListening={true} title="brief-me is monitoring" />
           </div>
         </div>
 
@@ -256,25 +236,23 @@ const HomeView = ({
           </div>
           <ScrollArea className="w-full">
             <div className="flex gap-2 pb-2">
-              {recentBriefs.map(brief => 
-                <div key={brief.id} className="flex-none w-48 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
+              {recentBriefs.map(brief => <div key={brief.id} className="flex-none w-48 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-4 h-4 rounded-full bg-surface-raised/50 flex items-center justify-center">
                       <FileText className="h-2 w-2 text-primary-teal" />
                     </div>
-                    <button
-                      onClick={() => handlePlayBrief(brief.id)}
-                      className="w-4 h-4 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
-                    >
-                      {playingBrief === brief.id ? (
-                        <div className="flex items-center gap-0.5">
-                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
-                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
-                        </div>
-                      ) : (
-                        <Play className="h-1.5 w-1.5 text-primary-teal" />
-                      )}
+                    <button onClick={() => handlePlayBrief(brief.id)} className="w-4 h-4 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
+                      {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
+                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{
+                      animationDelay: '0ms'
+                    }} />
+                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
+                      animationDelay: '150ms'
+                    }} />
+                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{
+                      animationDelay: '300ms'
+                    }} />
+                        </div> : <Play className="h-1.5 w-1.5 text-primary-teal" />}
                     </button>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-xs font-semibold text-white-text truncate">
@@ -295,8 +273,7 @@ const HomeView = ({
                   <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs py-0.5 h-6">
                     View Brief
                   </Button>
-                </div>
-              )}
+                </div>)}
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
@@ -313,7 +290,7 @@ const HomeView = ({
             <h1 className="text-3xl font-bold text-text-primary mb-2">
               Good morning, Alex
             </h1>
-            <p className="text-text-secondary font-light text-slate-50">Let's get you caught up.</p>
+            <p className="text-text-secondary font-light text-gray-50">Let's get you caught up.</p>
           </div>
           
           {/* Updated CTAs on the right */}
@@ -364,13 +341,7 @@ const HomeView = ({
               </div>
               
               {/* Unified Brief Container */}
-              <BriefsContainer 
-                briefs={recentBriefs} 
-                onViewBrief={onOpenBrief} 
-                onViewTranscript={handleViewTranscript}
-                onPlayBrief={handlePlayBrief}
-                playingBrief={playingBrief}
-              />
+              <BriefsContainer briefs={recentBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} />
             </div>
           </div>
           
@@ -436,5 +407,4 @@ const HomeView = ({
       </div>
     </div>;
 };
-
 export default React.memo(HomeView);
