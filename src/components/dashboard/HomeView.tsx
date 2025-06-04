@@ -397,7 +397,7 @@ const HomeView = ({
               {/* Coming Soon Overlay */}
               <div className="absolute inset-0 flex items-center justify-center bg-surface/80 backdrop-blur-sm">
                 <div className="text-center">
-                  <p className="text-text-primary font-semibold mb-1">Coming Soon</p>
+                  <p className="text-text-primary font-semibold mb-1">AI Meeting Proxy</p>
                   <p className="text-text-secondary text-sm">Meeting Proxy</p>
                 </div>
               </div>
