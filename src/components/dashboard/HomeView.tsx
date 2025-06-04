@@ -355,7 +355,7 @@ const HomeView = ({
               
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="font-medium text-text-primary">Midday Brief</p>
+                  <p className="font-medium text-text-primary text-sm">Midday Brief</p>
                   <p className="text-sm text-text-secondary">Today at 12:30 PM</p>
                 </div>
               </div>
