@@ -101,7 +101,7 @@ const ListeningScreen = ({
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         @keyframes soft-pulse {
           0%, 100% {
             transform: scale(1);

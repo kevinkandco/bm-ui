@@ -89,10 +89,6 @@ const EndFocusModal = ({
                 />
               </div>
             </div>
-            
-            <p className="text-sm text-white/70 text-center max-w-xs px-2">
-              Your brief will be ready soon. We'll also email you a copy when it's complete.
-            </p>
           </div>
         </div>
       </DialogContent>
