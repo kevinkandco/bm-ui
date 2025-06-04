@@ -59,3 +59,9 @@ export interface PriorityPeople {
   platform?: string;
   lastActivity?: string;
 }
+
+export interface Priorities {
+  priorityPeople: PriorityPeople[];
+  priorityChannels: {name: string, active: boolean}[];
+  triggers: string[];
+}

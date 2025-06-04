@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const useAudioPlayer = (audioSrc: string | null, autoplay: boolean) => {
+const useAudioPlayer = (audioSrc: string | null, autoplay: boolean, onAudioEnded?: () => void) => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
@@ -20,6 +20,20 @@ const useAudioPlayer = (audioSrc: string | null, autoplay: boolean) => {
       	}
       	return;
     }
+
+	const audio = audioRef.current;
+	if (!audio) return;
+
+	const handleEnded = () => {
+		setIsPlaying(false);
+		setCurrentTime(0); // optional, reset playback time
+		if (onAudioEnded) { // Call the callback when audio ends
+			onAudioEnded();
+		}
+	};
+
+	audio.addEventListener("ended", handleEnded);
+
 
     if (audioRef.current && autoplay) {
     	audioRef.current.load();

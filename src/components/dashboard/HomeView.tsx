@@ -241,7 +241,7 @@ const currentAudioUrl = useMemo(() => {
           </div>
           <ScrollArea className="w-full">
             <div className="flex gap-2 pb-2">
-              {recentBriefs.map(brief => <div key={brief.id} className="flex-none w-48 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
+              {recentBriefs?.map(brief => <div key={brief.id} className="flex-none w-48 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-4 h-4 rounded-full bg-surface-raised/50 flex items-center justify-center">
                       <FileText className="h-2 w-2 text-primary-teal" />

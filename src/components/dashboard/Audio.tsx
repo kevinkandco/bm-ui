@@ -8,20 +8,26 @@ const Audio = ({
 }: {
 	audioSrc: string;
 	audioRef: React.MutableRefObject<HTMLAudioElement>;
-	handleTimeUpdate: () => void;
+	handleTimeUpdate?: () => void;
 }) => {
 	useEffect(() => {
 		const audio = audioRef.current;
 		if (!audio) return;
 
-		const updateTimeAndDuration = () => handleTimeUpdate();
+		let updateTimeAndDuration: () => void;
 
-		audio.addEventListener("timeupdate", handleTimeUpdate);
-		audio.addEventListener("loadedmetadata", updateTimeAndDuration);
+		if (handleTimeUpdate) {
+			updateTimeAndDuration = () => handleTimeUpdate();
+
+			audio.addEventListener("timeupdate", handleTimeUpdate);
+			audio.addEventListener("loadedmetadata", updateTimeAndDuration);
+		}
 
 		return () => {
-			audio.removeEventListener("timeupdate", handleTimeUpdate);
-			audio.removeEventListener("loadedmetadata", updateTimeAndDuration);
+			if(handleTimeUpdate) {
+				audio.removeEventListener("timeupdate", handleTimeUpdate);
+				audio.removeEventListener("loadedmetadata", updateTimeAndDuration);
+			}
 		};
 	}, [audioRef, handleTimeUpdate]);
 
