@@ -278,6 +278,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     handlePlayPause,
     formatDuration,
     barRef,
+    handlePause,
     handleSeekStart,
     handleSeekEnd,
     handleSeekMove,
@@ -326,9 +327,19 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
       open: false,
       message: '',
     });
+    handlePause();
+    onClose();
   };
 
-  const handleOpen = () => {
+  const handleTranscriptClose = () => {
+    setShowTranscript(false);
+    setMessageTranscript({
+      open: false,
+      message: '',
+    });
+  };
+
+  const handleTranscriptOpen = () => {
     setShowTranscript(true);
   };
 
@@ -349,7 +360,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
       ? `${brief?.start_at} - ${brief?.ended_at} Updates`
       : "";
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-auto bg-gray-900/95 backdrop-blur-xl border border-gray-700/40 p-0">
         <div className="flex flex-col h-full">
           <DialogHeader className="px-4 md:px-6 py-3 border-b border-gray-700/40 flex-shrink-0">
@@ -514,7 +525,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                   <Button
                     variant="link"
                     className="text-teal-400 hover:text-teal-300 text-xs p-0 h-auto"
-                    onClick={handleOpen}
+                    onClick={handleTranscriptOpen}
                   >
                     View Transcript
                   </Button>
@@ -669,7 +680,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             ? brief?.summary
             : showMessageTranscript.message
         }
-        onClose={handleClose}
+        onClose={handleTranscriptClose}
       />
     </Dialog>
   );
