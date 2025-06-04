@@ -9,7 +9,7 @@ import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities } from "@/components/dashboard/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Pagination from "@/components/dashboard/Pagination";
 import SignOff from "@/components/dashboard/SignOff";
@@ -43,7 +43,7 @@ const Dashboard = () => {
     userStatus: "active" as UserStatus,
     focusModeActive: false
   });
-  const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
+  const [priorities, setPriorities] = useState<Priorities | null>(null);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
   const [recentBriefs, setRecentBriefs] = useState<Summary[] | null>(null);
@@ -70,12 +70,19 @@ const Dashboard = () => {
 
       setUserSchedule(response.userSchedule);
       SetBriefSchedules(response.briefSchedules);
-      setPriorityPeople(response.priorityPeople);
+      setPriorities((prev) => {
+        return {
+          ...prev,
+          priorityPeople: response.priorityPeople,
+          priorityChannels: response.channels?.map((channel) => ({ name: channel, active: true })) || [],
+          triggers: response.triggers
+        };
+      });
     }
   }, [call]);
 
   const getRecentBriefs = useCallback(async () => {
-    const response = await call("get", `/api/summaries?per_page=3`, {
+    const response = await call("get", `/api/summaries?per_page=4`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
@@ -368,7 +375,7 @@ const Dashboard = () => {
         onToggleFocusMode={handleToggleFocusMode}
         onToggleCatchMeUp={handleToggleCatchMeUp}
         onOpenBriefModal={handleOpenBriefModal}
-        priorityPeople={priorityPeople}
+        priorities={priorities}
         recentBriefs={recentBriefs}
         status={uiState.userStatus}
         onExitFocusMode={handleExitFocusMode}
@@ -376,6 +383,7 @@ const Dashboard = () => {
         onToggleSignOff={handleOpenSignOffModal}
         onStartFocusMode={handleStartFocusMode}
         onSignOffForDay={handleSignOffForDay}
+        fetchDashboardData={fetchDashboardData}
       />
       
       {/* Modals */}

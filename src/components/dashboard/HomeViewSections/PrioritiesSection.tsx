@@ -1,43 +1,27 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Settings, Hash, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
+import { Priorities, PriorityPeople } from "../types";
+import SlackSettingsModal from "@/components/settings/modal/SlackSettingsModal";
 
-const PrioritiesSection = () => {
-  const navigate = useNavigate();
-  
-  const priorityPeople = [
-    { 
-      name: "Sandra Chen", 
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
-      active: true 
-    },
-    { 
-      name: "Alex Johnson", 
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
-      active: true 
-    },
-    { 
-      name: "Michael Lee", 
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
-      active: false 
-    }
-  ];
+interface PrioritiesSectionProps {
+  priorities: Priorities;
+  fetchDashboardData: () => void;
+}
 
-  const priorityChannels = [
-    { name: "product", active: true },
-    { name: "engineering", active: true },
-    { name: "general", active: false }
-  ];
-
-  const priorityTriggers = [
-    "urgent", "deadline", "budget", "client"
-  ];
+const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionProps) => {
+  const [isSlackModalOpen, setSlackModalOpen] = useState(false);
 
   const handleOpenSettings = () => {
-    navigate("/dashboard/settings");
+    setSlackModalOpen(true);
+  };
+
+  const handleCloseSettings = () => {
+    setSlackModalOpen(false);
+    fetchDashboardData();
   };
 
   return (
@@ -60,10 +44,10 @@ const PrioritiesSection = () => {
           <span className="text-xs text-text-secondary font-medium">People</span>
         </div>
         <div className="flex items-center gap-1">
-          {priorityPeople.slice(0, 4).map((person, i) => (
+          {priorities?.priorityPeople?.slice(0, 4).map((person, i) => (
             <div key={i} className="relative">
               <Avatar className="h-6 w-6 ring-1 ring-background">
-                <AvatarImage src={person.image} alt={person.name} />
+                <AvatarImage src={person.avatar} alt={person.name} />
                 <AvatarFallback className={`${
                   person.active ? "bg-accent-primary/20 text-accent-primary" : "bg-surface-raised/30 text-text-secondary"
                 } text-xs`}>
@@ -75,9 +59,9 @@ const PrioritiesSection = () => {
               )}
             </div>
           ))}
-          {priorityPeople.length > 4 && (
+          {priorities?.priorityPeople?.length > 4 && (
             <div className="w-6 h-6 rounded-full bg-surface-raised/30 border border-border-subtle flex items-center justify-center">
-              <span className="text-xs text-text-secondary">+{priorityPeople.length - 4}</span>
+              <span className="text-xs text-text-secondary">+{priorities?.priorityPeople?.length - 4}</span>
             </div>
           )}
         </div>
@@ -89,7 +73,7 @@ const PrioritiesSection = () => {
           <span className="text-xs text-text-secondary font-medium">Channels</span>
         </div>
         <div className="flex items-center gap-1 flex-wrap">
-          {priorityChannels.slice(0, 3).map((channel, i) => (
+          {priorities?.priorityChannels?.slice(0, 3).map((channel, i) => (
             <div key={i} className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
               channel.active 
                 ? "bg-accent-primary/20 text-accent-primary" 
@@ -99,9 +83,9 @@ const PrioritiesSection = () => {
               <span>{channel.name}</span>
             </div>
           ))}
-          {priorityChannels.length > 3 && (
+          {priorities?.priorityChannels.length > 3 && (
             <div className="px-2 py-1 rounded text-xs bg-surface-raised/30 text-text-secondary">
-              +{priorityChannels.length - 3}
+              +{priorities?.priorityChannels.length - 3}
             </div>
           )}
         </div>
@@ -113,19 +97,24 @@ const PrioritiesSection = () => {
           <span className="text-xs text-text-secondary font-medium">Triggers</span>
         </div>
         <div className="flex items-center gap-1 flex-wrap">
-          {priorityTriggers.slice(0, 3).map((trigger, i) => (
+          {priorities?.triggers?.slice(0, 3).map((trigger, i) => (
             <div key={i} className="flex items-center gap-1 px-2 py-1 rounded text-xs bg-orange-500/20 text-orange-400">
               <AlertTriangle className="h-2.5 w-2.5" />
               <span>{trigger}</span>
             </div>
           ))}
-          {priorityTriggers.length > 3 && (
+          {priorities?.triggers?.length > 3 && (
             <div className="px-2 py-1 rounded text-xs bg-surface-raised/30 text-text-secondary">
-              +{priorityTriggers.length - 3}
+              +{priorities?.triggers?.length - 3}
             </div>
           )}
         </div>
       </div>
+      <SlackSettingsModal
+        open={isSlackModalOpen}
+        onClose={handleCloseSettings}
+        initialTab={"priorityPeople"}
+      />
     </div>
   );
 };

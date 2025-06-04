@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { Zap, Headphones, Archive, Menu, X, Power, FileText, Focus, Clock, ChevronDown, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -15,16 +15,20 @@ import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSectio
 import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
-import { PriorityPeople, Summary } from "./types";
+import { Priorities, PriorityPeople, Summary } from "./types";
 import useAuthStore from "@/store/useAuthStore";
 import ListeningScreen from "./ListeningScreen";
+import useAudioPlayer from "@/hooks/useAudioPlayer";
+import Audio from "./Audio";
+
+const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
-  priorityPeople: PriorityPeople[];
+  priorities: Priorities | null;
   recentBriefs: Summary[];
   status: "active" | "away" | "focus" | "vacation";
   onExitFocusMode: () => void;
@@ -32,15 +36,18 @@ interface HomeViewProps {
   onToggleSignOff: () => void;
   onStartFocusMode: (focusTime: number) => void;
   onSignOffForDay: () => void;
+  fetchDashboardData: () => void
 }
 const HomeView = ({
   recentBriefs,
   onOpenBrief,
+  priorities,
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal,
   onStartFocusMode,
-  onSignOffForDay
+  onSignOffForDay,
+  fetchDashboardData,
 }: HomeViewProps) => {
   const {
     toast
@@ -50,6 +57,36 @@ const HomeView = ({
   const {user} = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
+
+const currentAudioUrl = useMemo(() => {
+    const audioPath = recentBriefs?.find((v) => v.id === playingBrief)?.audioPath;
+    if (!audioPath) return null;
+    return audioPath?.includes("storage") ? BaseURL + audioPath : audioPath;
+  }, [recentBriefs, playingBrief]);
+
+  const handleAudioEnded = useCallback(() => {
+    setPlayingBrief(null); // Stop the animation and indicate no brief is playing
+    toast({
+      title: "Brief Finished",
+      description: "Audio playback completed.",
+    });
+  }, [toast]);
+
+
+  const {
+      audioRef,
+    } = useAudioPlayer(currentAudioUrl, true, handleAudioEnded);
+
+    useEffect(() => {
+        return () => {
+          if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.src = "";
+          }
+        };
+      }, [audioRef]);
+
+
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
@@ -61,12 +98,14 @@ const HomeView = ({
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
+
   const handleViewTranscript = useCallback((briefId: number) => {
     toast({
       title: "Transcript",
       description: `Opening transcript for brief ${briefId}`
     });
   }, [toast]);
+
   const handlePlayBrief = useCallback((briefId: number) => {
     if (playingBrief === briefId) {
       setPlayingBrief(null);
@@ -308,6 +347,10 @@ const HomeView = ({
               
               {/* Unified Brief Container */}
               <BriefsContainer briefs={recentBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} />
+              <Audio
+                audioSrc={currentAudioUrl}
+                audioRef={audioRef}
+              />
             </div>
           </div>
           
@@ -333,7 +376,7 @@ const HomeView = ({
 
             {/* Priorities Section - Compact */}
             <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
-              <PrioritiesSection />
+              <PrioritiesSection priorities={priorities} fetchDashboardData={fetchDashboardData} />
             </div>
             
             {/* Upcoming Meetings - Blurred Coming Soon */}
