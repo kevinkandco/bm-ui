@@ -8,7 +8,7 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader } from "lucide-react";
+import ListeningScreen from "@/components/dashboard/ListeningScreen";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EndFocusModalProps {
@@ -26,16 +26,14 @@ const EndFocusModal = ({
   description = "We're preparing a summary of all updates during your focus session", 
   timeRemaining: initialTimeRemaining = 90
 }: EndFocusModalProps) => {
-  const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining); // default 90 seconds = 1:30
+  const [timeRemaining, setTimeRemaining] = useState(initialTimeRemaining);
   const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!open) return;
     
-    // Reset timer when modal opens
     setTimeRemaining(initialTimeRemaining);
     
-    // Start countdown
     const timer = setInterval(() => {
       setTimeRemaining(prev => {
         if (prev <= 1) {
@@ -50,7 +48,6 @@ const EndFocusModal = ({
     return () => clearInterval(timer);
   }, [open, onClose, initialTimeRemaining]);
   
-  // Format time as mm:ss
   const formatTime = () => {
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
@@ -62,37 +59,37 @@ const EndFocusModal = ({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className={`sm:max-w-md bg-background/80 backdrop-blur-xl border border-white/10 ${isMobile ? 'p-4' : 'p-6'}`}>
-        <DialogHeader>
-          <DialogTitle className="text-white flex items-center justify-center text-xl">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-white text-xl">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-white/70 text-center">
+          <DialogDescription className="text-white/70">
             {description}
           </DialogDescription>
         </DialogHeader>
         
-        <div className="flex flex-col items-center justify-center py-6 space-y-6">
-          <div className="relative flex items-center justify-center">
-            <div className="absolute">
-              <Loader className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400 animate-spin" />
+        <div className="py-4">
+          <ListeningScreen 
+            isListening={true}
+            title="Podia is listening"
+            subtitle="Analyzing your updates and creating your brief..."
+          />
+          
+          {/* Timer and progress bar */}
+          <div className="flex flex-col items-center space-y-4 mt-6">
+            <div className="text-xl font-semibold text-white">
+              {formatTime()}
             </div>
-            <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full flex items-center justify-center border-4 border-white/5">
-              <span className="text-xl sm:text-2xl font-semibold">{formatTime()}</span>
+            
+            <div className="w-full max-w-xs">
+              <div className="h-2 bg-white/10 rounded-full w-full overflow-hidden">
+                <div 
+                  className="h-full bg-primary-teal rounded-full transition-all duration-1000 ease-linear"
+                  style={{ width: `${progress}%` }} 
+                />
+              </div>
             </div>
           </div>
-          
-          <div className="w-full max-w-xs">
-            <div className="h-2 bg-white/10 rounded-full w-full overflow-hidden">
-              <div 
-                className="h-full bg-blue-400 rounded-full transition-all duration-1000 ease-linear"
-                style={{ width: `${progress}%` }} 
-              />
-            </div>
-          </div>
-          
-          <p className="text-sm text-white/70 text-center max-w-xs px-2">
-            Your brief will be ready soon. We'll also email you a copy when it's complete.
-          </p>
         </div>
       </DialogContent>
     </Dialog>

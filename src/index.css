@@ -3,118 +3,125 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @layer base {
   :root {
-    /* Light Glass Morphism CSS Variables */
-    --surface: #F5F5F7;
-    --surface-raised: #FFFFFF;
-    --surface-overlay: rgba(255, 255, 255, 0.95);
-    --glow-highlight: rgba(0, 0, 0, 0.05);
-    --glow-line: rgba(0, 0, 0, 0.15);
-    --accent-primary: #0F6FDD;
-    --accent-secondary: #4E96FF;
-    --text-primary: #1A1A1C;
-    --text-secondary: rgba(26, 26, 28, 0.85);
-    --text-muted: rgba(26, 26, 28, 0.65);
-    --border-subtle: rgba(0, 0, 0, 0.12);
+    /* New Podia Color System */
+    --surface: #0A0F19;  /* Dark Navy */
+    --surface-raised: #131B2B;  /* Deep Blue */
+    --surface-overlay: rgba(19, 27, 43, 0.95);  /* Deep Blue with opacity */
+    --glow-highlight: rgba(46, 226, 173, 0.1);
+    --glow-line: rgba(46, 226, 173, 0.2);
+    --accent-primary: #2EE2AD;  /* Primary Teal */
+    --accent-secondary: #3DE48D;  /* Accent Green */
+    --text-primary: #FFFFFF;  /* White Text */
+    --text-secondary: #B3B8C1;  /* Light Gray Text */
+    --text-muted: rgba(179, 184, 193, 0.7);
+    --border-subtle: rgba(179, 184, 193, 0.2);
     
     /* Standard radius */
     --radius: 16px;
 
-    /* Light mode shadcn variables - Improved contrast */
-    --background: 0 0% 96%;     /* #f5f5f5 */
-    --foreground: 240 3% 8%;    /* #151517 - Darker text for better contrast */
-    --card: 0 0% 100%;          /* #FFFFFF */
-    --card-foreground: 240 3% 8%;  /* #151517 */
-    --popover: 0 0% 100%;       /* #FFFFFF */
-    --popover-foreground: 240 3% 8%;  /* #151517 */
-    --primary: 216 100% 46%;    /* #0F6FDD - Darker blue for better contrast */
-    --primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 0 0% 92%;      /* #EAEAEA */
-    --secondary-foreground: 240 3% 8%; /* #151517 */
-    --muted: 0 0% 88%;          /* #E0E0E0 */
-    --muted-foreground: 240 3% 25%; /* rgba(26, 26, 28, 0.8) - Darker for better contrast */
-    --accent: 216 100% 46%;     /* #0F6FDD */
-    --accent-foreground: 0 0% 100%; /* #FFFFFF */
-    --destructive: 0 84% 50%;   /* Darker red */
+    /* Updated shadcn variables for Podia theme */
+    --background: 218 42% 8%;     /* Dark Navy */
+    --foreground: 0 0% 100%;      /* White */
+    --card: 218 42% 11%;          /* Deep Blue */
+    --card-foreground: 0 0% 100%; /* White */
+    --popover: 218 42% 11%;       /* Deep Blue */
+    --popover-foreground: 0 0% 100%; /* White */
+    --primary: 162 84% 55%;       /* Primary Teal */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 218 42% 11%;     /* Deep Blue */
+    --secondary-foreground: 0 0% 100%; /* White */
+    --muted: 218 42% 15%;         /* Lighter Deep Blue */
+    --muted-foreground: 221 12% 73%; /* Light Gray Text */
+    --accent: 162 84% 55%;        /* Primary Teal */
+    --accent-foreground: 0 0% 100%; /* White */
+    --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 10% 84%;      /* #D5D5DA - Darker border */
-    --input: 240 10% 84%;       /* #D5D5DA */
-    --ring: 216 100% 46%;       /* #0F6FDD */
-    
-    /* Surface with opacity variations for gradients */
-    --surface-raised-70: rgba(255, 255, 255, 0.85);
-    --surface-90: rgba(245, 245, 247, 0.95);
+    --border: 221 12% 50%;        /* Light Gray border */
+    --input: 221 12% 50%;         /* Light Gray */
+    --ring: 162 84% 55%;          /* Primary Teal */
     
     /* Accent colors with opacity for hover states */
-    --accent-primary-hover: rgba(15, 111, 221, 0.2);
-    --accent-primary-hover-light: rgba(15, 111, 221, 0.1);
+    --accent-primary-hover: rgba(46, 226, 173, 0.2);
+    --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
   }
 
   .dark {
-    /* Dark Glass Morphism CSS Variables */
-    --surface: #1A1A1C;
-    --surface-raised: #232326;
-    --surface-overlay: rgba(35, 35, 38, 0.85);
-    --glow-highlight: rgba(255, 255, 255, 0.05);
-    --glow-line: rgba(255, 255, 255, 0.15);
-    --accent-primary: #2B88FF;
-    --accent-secondary: #6BA5FF;
+    /* Same as root for dark mode */
+    --surface: #0A0F19;
+    --surface-raised: #131B2B;
+    --surface-overlay: rgba(19, 27, 43, 0.85);
+    --glow-highlight: rgba(46, 226, 173, 0.05);
+    --glow-line: rgba(46, 226, 173, 0.15);
+    --accent-primary: #2EE2AD;
+    --accent-secondary: #3DE48D;
     --text-primary: #FFFFFF;
-    --text-secondary: rgba(255, 255, 255, 0.8);
-    --text-muted: rgba(255, 255, 255, 0.5);
-    --border-subtle: rgba(255, 255, 255, 0.08);
+    --text-secondary: #B3B8C1;
+    --text-muted: rgba(179, 184, 193, 0.5);
+    --border-subtle: rgba(179, 184, 193, 0.08);
     
-    /* Surface with opacity variations for gradients */
-    --surface-raised-70: rgba(35, 35, 38, 0.7);
-    --surface-90: rgba(26, 26, 28, 0.9);
-    
-    /* Accent colors with opacity for hover states */
-    --accent-primary-hover: rgba(43, 136, 255, 0.2);
-    --accent-primary-hover-light: rgba(43, 136, 255, 0.1);
+    --accent-primary-hover: rgba(46, 226, 173, 0.2);
+    --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
 
-    /* Update shadcn variables to match our dark design system */
-    --background: 240 3% 10%;  /* #1A1A1C */
-    --foreground: 0 0% 100%;   /* #FFFFFF */
-    --card: 240 3% 14%;        /* #232326 */
-    --card-foreground: 0 0% 100%;  /* #FFFFFF */
-    --popover: 240 3% 14%;     /* #232326 */
-    --popover-foreground: 0 0% 100%;  /* #FFFFFF */
-    --primary: 216 100% 58%;   /* #2B88FF */
-    --primary-foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 240 3% 14%;   /* #232326 */
-    --secondary-foreground: 0 0% 100%; /* #FFFFFF */
-    --muted: 240 3% 18%;       /* #2D2D31 */
-    --muted-foreground: 0 0% 80%; /* rgba(255, 255, 255, 0.8) */
-    --accent: 216 100% 58%;    /* #2B88FF */
-    --accent-foreground: 0 0% 100%; /* #FFFFFF */
+    /* Update shadcn variables to match */
+    --background: 218 42% 8%;
+    --foreground: 0 0% 100%;
+    --card: 218 42% 11%;
+    --card-foreground: 0 0% 100%;
+    --popover: 218 42% 11%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 162 84% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 218 42% 11%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 218 42% 18%;
+    --muted-foreground: 221 12% 73%;
+    --accent: 162 84% 55%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3% 25%;      /* #3D3D43 */
-    --input: 240 3% 25%;       /* #3D3D43 */
-    --ring: 216 100% 58%;      /* #2B88FF */
+    --border: 221 12% 25%;
+    --input: 221 12% 25%;
+    --ring: 162 84% 55%;
   }
 
-  /* Default to dark glass morphism mode */
   body {
-    @apply bg-surface text-text-primary font-sans;
+    @apply font-inter;
     font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  /* Light mode specific styles - Improved contrast */
-  :root:not(.dark) {
-    --surface: #eaeaec; /* Even darker background for more contrast */
-    --surface-raised: #FFFFFF;
-    --surface-overlay: rgba(255, 255, 255, 0.95);
-    --text-primary: #111111; /* Even darker text for higher contrast */
-    --text-secondary: rgba(17, 17, 17, 0.85); /* Higher contrast text */
-    --text-muted: rgba(17, 17, 17, 0.65); /* Higher contrast muted text */
-    --border-subtle: rgba(0, 0, 0, 0.2); /* Darker border for better contrast */
+    background: radial-gradient(
+      circle at top left,
+      #2A8A5F 0%,
+      #1E646E 30%,
+      #000000 70%
+    );
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
   }
 }
 
 @layer utilities {
-  /* Glass effect utilities */
+  /* Podia specific utilities */
+  .podia-heading {
+    @apply text-heading text-white-text font-semibold;
+  }
+  
+  .podia-subheading {
+    @apply text-subheading text-white-text font-normal;
+  }
+  
+  .podia-body {
+    @apply text-body text-white-text font-normal;
+  }
+  
+  .podia-secondary {
+    @apply text-secondary text-light-gray-text font-normal;
+  }
+  
+  /* Glass effect utilities - updated for new palette */
   .glass-panel {
     background: var(--surface-overlay);
     backdrop-filter: blur(16px);
@@ -124,11 +131,11 @@
   }
   
   .glow-text {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 0 10px rgba(46, 226, 173, 0.4);
   }
   
   .glow-border {
-    box-shadow: 0 0 15px rgba(43, 136, 255, 0.4);
+    box-shadow: 0 0 15px rgba(46, 226, 173, 0.4);
     border: 1px solid var(--accent-primary);
   }
   
@@ -136,234 +143,119 @@
     height: 1px;
     background: linear-gradient(
       to right, 
-      rgba(255, 255, 255, 0),
+      rgba(46, 226, 173, 0),
       var(--glow-line),
-      rgba(255, 255, 255, 0)
+      rgba(46, 226, 173, 0)
     );
   }
 
-  /* Shadow utilities - Improved for better contrast */
+  /* Shadow utilities */
   .shadow-subtle {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .shadow-glow {
-    box-shadow: 0 0 20px rgba(43, 136, 255, 0.4);
+    box-shadow: 0 0 20px rgba(46, 226, 173, 0.4);
   }
 
-  /* Text gradient */
-  .text-gradient-blue {
-    @apply bg-gradient-to-r bg-clip-text text-transparent from-accent-primary to-accent-secondary;
+  /* Text gradient with new colors */
+  .text-gradient-teal {
+    @apply bg-gradient-to-r bg-clip-text text-transparent from-primary-teal to-accent-green;
   }
   
-  /* Glass reflection effect */
-  .glass-reflection {
-    position: relative;
-    overflow: hidden;
+  /* Voice listening animation */
+  .voice-ripple {
+    @apply animate-ping;
+    background: radial-gradient(circle, rgba(46, 226, 173, 0.4) 0%, transparent 70%);
   }
   
-  .glass-reflection::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.03) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    transform: rotate(-25deg);
-    pointer-events: none;
-  }
-
-  /* New glow effect for progress bar */
-  .glow-progress {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-  }
-  
-  /* Button glow effect */
-  .glow-button {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 9999px;
-  }
-  
-  /* Opacity utility classes */
-  .opacity-85 {
-    opacity: 0.85;
+  /* Microphone gradient */
+  .mic-gradient {
+    background: radial-gradient(circle, rgba(46, 226, 173, 0.3) 0%, transparent 70%);
   }
 }
 
 @layer components {
-  /* Glass Card Component - Light/Dark mode aware with improved contrast */
+  /* Podia Button Components */
+  .podia-button-primary {
+    @apply bg-primary-teal text-white-text font-medium text-button
+           rounded-podia-button px-4 py-2.5 transition-all duration-200
+           hover:bg-accent-green focus:outline-none focus:ring-2 focus:ring-primary-teal/50
+           active:scale-95 shadow-podia-button;
+  }
+  
+  .podia-chip-secondary {
+    @apply bg-deep-blue text-white-text font-normal text-chip
+           rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
+           hover:bg-opacity-90 border border-transparent;
+  }
+  
+  .podia-chip-outline {
+    @apply bg-transparent text-light-gray-text font-normal text-chip
+           rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
+           border border-light-gray-text/40 hover:border-light-gray-text/60;
+  }
+  
+  /* Podia Cards */
+  .podia-card {
+    @apply bg-dark-navy rounded-podia-card p-4 transition-all duration-300;
+  }
+  
+  /* Podia Input/Message Bar */
+  .podia-input {
+    @apply bg-deep-blue border border-border-subtle rounded-xl px-4 py-3
+           text-white-text placeholder:text-light-gray-text placeholder:text-secondary
+           focus:outline-none focus:ring-1 focus:ring-primary-teal focus:border-primary-teal
+           transition-all duration-200;
+  }
+  
+  /* Voice Input Button */
+  .podia-voice-button {
+    @apply w-12 h-12 rounded-full bg-primary-teal text-white-text
+           flex items-center justify-center transition-all duration-200
+           hover:bg-accent-green active:scale-95 shadow-podia-button;
+  }
+  
+  .podia-voice-button.active {
+    @apply bg-primary-teal animate-pulse;
+  }
+  
+  /* Icon Container */
+  .podia-icon-container {
+    @apply w-10 h-10 rounded-full bg-dark-navy flex items-center justify-center;
+  }
+  
+  .podia-icon-container .icon {
+    @apply text-primary-teal w-5 h-5;
+  }
+  
+  /* Glass Card Component - updated for Podia theme */
   .glass-card {
     @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
-    background: linear-gradient(to bottom, var(--surface-raised-70), var(--surface-90));
-  }
-  
-  .dark .glass-card {
-    @apply border-white/10;
-  }
-  
-  .light .glass-card {
-    @apply border-black/25; /* Darker border in light mode for better contrast */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); /* Stronger shadow for better visibility */
+    background: linear-gradient(to bottom, var(--surface-raised), var(--surface));
+    border-color: var(--border-subtle);
   }
   
   .glass-card:hover {
     @apply shadow-lg;
-  }
-
-  .dark .glass-card:hover {
-    @apply border-white/15;
-  }
-  
-  .light .glass-card:hover {
-    @apply border-black/40; /* Even darker hover border for better contrast */
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2); /* Stronger hover shadow for better visibility */
-  }
-  
-  /* Glass Button */
-  .glass-button {
-    @apply bg-surface-overlay text-text-primary rounded-full py-3 px-6 
-           border border-border-subtle backdrop-blur-xl transition-all 
-           duration-300 ease-out font-medium;
-  }
-  
-  .glass-button:hover {
-    @apply border-accent-primary shadow-glow transform -translate-y-1;
-  }
-  
-  /* Primary Button */
-  .glass-button-primary {
-    @apply bg-accent-primary text-white rounded-full py-3 px-6
-           transition-all duration-300 ease-out font-medium shadow-subtle;
-  }
-  
-  .glass-button-primary:hover {
-    @apply shadow-glow transform -translate-y-1;
-  }
-  
-  /* Secondary Button */
-  .glass-button-secondary {
-    @apply bg-surface-overlay text-text-secondary rounded-full py-3 px-6
-           border border-border-subtle backdrop-blur-xl transition-all 
-           duration-300 ease-out font-medium;
-  }
-  
-  .glass-button-secondary:hover {
-    @apply text-text-primary border-accent-primary;
-  }
-  
-  /* Glass Input - Improved for better contrast */
-  .glass-input {
-    @apply bg-surface-overlay border border-border-subtle rounded-lg px-4 py-2
-           backdrop-blur-xl transition-all duration-300 ease-out text-text-primary
-           focus:outline-none focus:ring-1 focus:ring-accent-primary focus:border-accent-primary;
-  }
-  
-  /* Progress bar with glow */
-  .progress-bar-glow {
-    @apply h-1 rounded-full transition-all duration-300 ease-out bg-white shadow-[0_0_10px_rgba(255,255,255,0.7)];
-  }
-  
-  /* Progress dot indicators */
-  .progress-dot {
-    @apply w-2 h-2 rounded-full transition-all duration-300;
-  }
-  
-  .progress-dot.active {
-    @apply bg-accent-primary;
-  }
-  
-  .progress-dot.inactive {
-    @apply bg-text-muted;
-  }
-  
-  /* Theme toggle - updated for both light and dark with better contrast */
-  .theme-toggle {
-    @apply fixed top-4 right-4 p-2 rounded-full z-50 transition-colors backdrop-blur-xl;
-  }
-  
-  .dark .theme-toggle {
-    @apply bg-surface-overlay text-text-primary;
-    background-color: var(--surface-overlay);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .dark .theme-toggle:hover {
-    background-color: var(--accent-primary-hover);
-  }
-  
-  .light .theme-toggle {
-    @apply text-text-primary;
-    background-color: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for better visibility */
-  }
-  
-  .light .theme-toggle:hover {
-    background-color: var(--accent-primary-hover-light);
-  }
-
-  /* Additional light mode improvements for better contrast */
-  :root:not(.dark) .card {
-    @apply border-black/25 shadow-md;
-  }
-
-  :root:not(.dark) .input {
-    @apply border-black/30 text-foreground placeholder:text-foreground/60;
-  }
-
-  :root:not(.dark) .dropdown-menu {
-    @apply border-black/25 shadow-lg;
-  }
-  
-  :root:not(.dark) .popover {
-    @apply border-black/25 shadow-lg;
+    border-color: rgba(46, 226, 173, 0.2);
   }
 }
 
-/* Animation keyframes */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.7;
+/* Animation keyframes - keep existing ones and add voice ripple */
+@keyframes voice-ripple {
+  0% {
     transform: scale(1);
+    opacity: 1;
   }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    filter: brightness(1) blur(3px);
-  }
-  50% {
-    filter: brightness(1.2) blur(4px);
+  100% {
+    transform: scale(4);
+    opacity: 0;
   }
 }
 
-@keyframes float-delay {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(-8px) translateX(5px);
-  }
+.animate-voice-ripple {
+  animation: voice-ripple 1s ease-out infinite;
 }
 
 

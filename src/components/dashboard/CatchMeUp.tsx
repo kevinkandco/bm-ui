@@ -11,12 +11,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { Zap, X } from "lucide-react";
+import { Zap, X, Clock, Calendar } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/useApi";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface CatchMeUpProps {
   open: boolean;
@@ -31,8 +35,11 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const [customHours, setCustomHours] = useState(3);
   const [detectedTime, setDetectedTime] = useState("3 hours");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { call } = useApi();
+  const [customStartDate, setCustomStartDate] = useState<Date>();
+  const [customEndDate, setCustomEndDate] = useState<Date>();
+  const [customStartTime, setCustomStartTime] = useState("09:00");
+  const [customEndTime, setCustomEndTime] = useState("17:00");
 
   useEffect(() => {
     // Simulate detection of offline time
@@ -43,6 +50,19 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
   const handleGenerate = async () => {
     setLoading(true);
 
+    let timeDescription = "";
+    
+    if (timePeriod === "auto") {
+      timeDescription = detectedTime;
+    } else {
+      if (customStartDate && customEndDate) {
+        timeDescription = `${format(customStartDate, "MMM d")} ${customStartTime} - ${format(customEndDate, "MMM d")} ${customEndTime}`;
+      } else {
+        timeDescription = `${customHours} hours`;
+      }
+    }
+    
+    
     const response = await call("post", "/api/catch-me", {
       body: {
         time_period: timePeriod === "auto" ? parseInt(detectedTime) : customHours,
@@ -63,6 +83,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
         description:
           response?.message || "Summary generated successfully.",
       });
+      onGenerateSummary(timeDescription);
     }
   };
 
@@ -101,32 +122,114 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
           </RadioGroup>
           
           {timePeriod === "custom" && (
-            <div className="space-y-2 pt-2 bg-white/10 rounded-lg border border-white/10 p-3">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                <span className="text-sm text-white/70">Time period: {customHours} hours</span>
-                <div className="flex gap-2 flex-wrap">
-                  {[1, 4, 24].map(time => (
-                    <Button 
-                      key={time} 
-                      variant="outline"
-                      size="sm"
-                      className={`${customHours === time ? "bg-blue-500/20 text-blue-400 border-blue-500/50" : "bg-white/5 text-white/70 border-white/10"} hover:bg-white/10`}
-                      onClick={() => setCustomHours(time)}
-                    >
-                      {time}
-                    </Button>
-                  ))}
+            <div className="space-y-4 pt-2 bg-white/10 rounded-lg border border-white/10 p-3">
+              {/* Date and Time Range Selection */}
+              <div className="space-y-3">
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label className="text-sm text-white/70">Start Date & Time</Label>
+                    <div className="flex gap-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "flex-1 justify-start text-left font-normal bg-white/5 border-white/20 text-white hover:bg-white/10 text-xs",
+                              !customStartDate && "text-white/50"
+                            )}
+                          >
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {customStartDate ? format(customStartDate, "MMM d") : "Date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 bg-background/90 border-white/20" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={customStartDate}
+                            onSelect={setCustomStartDate}
+                            initialFocus
+                            className="pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <input
+                        type="time"
+                        value={customStartTime}
+                        onChange={(e) => setCustomStartTime(e.target.value)}
+                        className="px-2 py-2 bg-white/5 border border-white/20 rounded-md text-white text-xs w-20"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm text-white/70">End Date & Time</Label>
+                    <div className="flex gap-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "flex-1 justify-start text-left font-normal bg-white/5 border-white/20 text-white hover:bg-white/10 text-xs",
+                              !customEndDate && "text-white/50"
+                            )}
+                          >
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {customEndDate ? format(customEndDate, "MMM d") : "Date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 bg-background/90 border-white/20" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={customEndDate}
+                            onSelect={setCustomEndDate}
+                            initialFocus
+                            className="pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <input
+                        type="time"
+                        value={customEndTime}
+                        onChange={(e) => setCustomEndTime(e.target.value)}
+                        className="px-2 py-2 bg-white/5 border border-white/20 rounded-md text-white text-xs w-20"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-center text-white/50 text-xs">
+                  or use a preset duration
                 </div>
               </div>
               
-              <Slider
-                value={[customHours]}
-                min={1}
-                max={48}
-                step={1}
-                onValueChange={(value) => setCustomHours(value[0])}
-                className="py-2"
-              />
+              {/* Preset Hours Selection */}
+              <div className="space-y-2">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-white/70">Duration: {customHours} hr</span>
+                  <div className="flex gap-2">
+                    {[1, 4, 24].map(time => (
+                      <Button 
+                        key={time} 
+                        variant="outline"
+                        size="sm"
+                        className={`flex-1 text-xs ${customHours === time ? "bg-blue-500/20 text-blue-400 border-blue-500/50" : "bg-white/5 text-white/70 border-white/10"} hover:bg-white/10`}
+                        onClick={() => setCustomHours(time)}
+                      >
+                        {time} hr
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                
+                <Slider
+                  value={[customHours]}
+                  min={1}
+                  max={48}
+                  step={1}
+                  onValueChange={(value) => setCustomHours(value[0])}
+                  className="py-2"
+                />
+              </div>
             </div>
           )}
         </div>

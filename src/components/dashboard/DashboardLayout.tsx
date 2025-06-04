@@ -50,7 +50,7 @@ const DashboardLayout = ({
   ), [className]);
 
   return (
-    <div className="flex min-h-screen bg-surface relative">
+    <div className="flex min-h-screen relative">
       {/* Mobile Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border-subtle md:hidden">
         <div className="flex items-center justify-between p-4">
@@ -86,27 +86,51 @@ const DashboardLayout = ({
                   </Button>
                 </div>
                 
-                <div className="flex-1 p-4">
-                  <div className="space-y-4">
-                    <button
-                      onClick={() => {
-                        navigate("/dashboard/briefs");
-                        setMobileNavOpen(false);
-                      }}
-                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
-                    >
-                      View All Briefs
-                    </button>
-                    
-                    <button
-                      onClick={() => {
+                <div className="flex-1 p-6">
+                  <div className="space-y-8">
+                    <a
+                      href="/dashboard/settings"
+                      onClick={(e) => {
+                        e.preventDefault();
                         navigate("/dashboard/settings");
                         setMobileNavOpen(false);
                       }}
-                      className="w-full text-left p-3 rounded-lg hover:bg-white/5 text-text-primary"
+                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
                     >
-                      Settings
-                    </button>
+                      Brief Schedule
+                    </a>
+                    
+                    <a
+                      href="/dashboard/settings"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate("/dashboard/settings");
+                        setMobileNavOpen(false);
+                      }}
+                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
+                    >
+                      Priorities
+                    </a>
+                    
+                    <a
+                      href="/dashboard/settings"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate("/dashboard/settings");
+                        setMobileNavOpen(false);
+                      }}
+                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
+                    >
+                      Integrations
+                    </a>
+                    
+                    <span className="block text-lg text-text-secondary">
+                      Feedback
+                    </span>
+                    
+                    <span className="block text-lg text-text-secondary">
+                      Contact Us
+                    </span>
                   </div>
                 </div>
                 

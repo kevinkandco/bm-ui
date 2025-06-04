@@ -216,24 +216,31 @@ const BriefsList = () => {
                 <div className="text-center py-8">
                   <p className="text-text-secondary">No briefs found matching your search.</p>
                 </div>
-              ) : (filteredBriefs?.map((brief, index) => (
-                <React.Fragment key={brief?.id}>
-                  <div className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => brief?.status === "success" ? handleOpenBrief(brief?.id) : null}>
-                    <div className="flex items-center flex-1">
-                      <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center">
-                          <h3 className="font-medium text-text-primary truncate">{brief.title}</h3>
-                          {!brief?.read_at && (
-                            <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
-                          )}
+              ) : (
+                filteredBriefs?.map((brief, index) => (
+                  <React.Fragment key={brief.id}>
+                    <div 
+                      className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
+                      onClick={() => handleOpenBrief(brief.id)}
+                    >
+                      <div className="flex items-center flex-1">
+                        <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center">
+                            <h3 className="font-medium text-text-primary truncate">{brief.title}</h3>
+                            {brief?.read_at && (
+                              <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
+                            )}
+                          </div>
+                          <p className="text-sm text-text-secondary">{brief?.summaryTime}</p>
+                          <p className="text-xs text-text-secondary mt-1">Time Range: {brief?.start_at} - {brief?.ended_at}</p>
+                          <p className="text-xs text-text-secondary mt-1">{brief.summary}</p>
                         </div>
                         {/* <p className="text-sm text-text-secondary">{brief.date}</p> */}
-                        <p className="text-sm text-text-secondary">{brief.summaryTime}</p>
                       </div>
                     </div>
                     {/* <Button onClick={() => handleOpenBrief(brief?.id)} size="sm" variant="ghost">View</Button> */}
-                    {(brief?.status !== "failed" && brief?.status !== "success")  && (
+                    {/* {(brief?.status !== "failed" && brief?.status !== "success")  && (
                       <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
                         Generating summary
                       </span>
@@ -242,8 +249,7 @@ const BriefsList = () => {
                       <span onClick={() => handleClick(brief?.error)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
                         Failed to generate the summary
                       </span>
-                    )}
-                  </div>
+                    )} */}
                   {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
                 </React.Fragment>
               )))}

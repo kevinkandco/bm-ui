@@ -5,6 +5,7 @@ import BriefModal from "@/components/dashboard/BriefModal";
 import FocusMode from "@/components/dashboard/FocusMode";
 import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
+import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -39,7 +40,8 @@ const Dashboard = () => {
     catchUpModalOpen: false,
     isSignoff: false,
     SignOffModalOpen: false,
-    userStatus: "active" as UserStatus
+    userStatus: "active" as UserStatus,
+    focusModeActive: false
   });
   const [priorityPeople, setPriorityPeople] = useState<PriorityPeople[]>([]);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
@@ -117,9 +119,16 @@ const Dashboard = () => {
     });
 
     if (response) {
+      setUiState(prev => ({
+        ...prev,
+        endFocusModalOpen: true,
+        userStatus: "active" as UserStatus,
+        focusModeActive: false
+      }));
+    
       toast({
-        title: "Focus Mode Deactivated",
-        description: "Focus mode has been successfully deactivated.",
+        title: "Focus Mode Ended",
+        description: "Slack and Gmail status set to 'online'"
       });
       fetchDashboardData();
       getLatestBrief();
@@ -130,6 +139,13 @@ const Dashboard = () => {
       focusModeExitLoading: false,
     }));
   }, [call, fetchDashboardData, getLatestBrief, toast]);
+
+  const handleFocusModeClose = useCallback(() => {
+			setUiState((prev) => ({
+				...prev,
+				focusModeOpen: false,
+			}));
+		}, []);
 
   const handleOpenBrief = useCallback((briefId: number) => {
     setUiState(prev => ({
@@ -173,26 +189,50 @@ const Dashboard = () => {
       ...prev,
       focusModeOpen: false,
       focusTime: focusTime * 60,
-      userStatus: "focus" as UserStatus
+      userStatus: "focus" as UserStatus,
+      focusModeActive: true
     }));
-  }, []);
+    
+    toast({
+      title: "Focus Mode Started",
+      description: "Slack status set to 'focusing', Gmail status set to 'monitoring'"
+    });
+  }, [toast]);
 
-    const handleFocusModeClose = useCallback(() => {
-			setUiState((prev) => ({
-				...prev,
-				focusModeOpen: false,
-			}));
-		}, []);
+  // const handleExitFocusMode = useCallback(() => {
+  //   setUiState(prev => ({
+  //     ...prev,
+  //     endFocusModalOpen: true,
+  //     userStatus: "active" as UserStatus,
+  //     focusModeActive: false
+  //   }));
+    
+  //   toast({
+  //     title: "Focus Mode Ended",
+  //     description: "Slack and Gmail status set to 'online'"
+  //   });
+  // }, [toast]);
+
+  const handleSignOffForDay = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      userStatus: "away" as UserStatus
+    }));
+    
+    toast({
+      title: "Signed Off",
+      description: "We'll monitor your channels until your next auto-scheduled brief"
+    });
+  }, [toast]);
 
   const handleCloseEndFocusModal = useCallback(() => {
     setUiState(prev => ({
       ...prev,
-      endFocusModalOpen: false,
-      userStatus: "active" as UserStatus
+      endFocusModalOpen: false
     }));
     
     toast({
-      title: "Focus Mode Ended",
+      title: "Focus Brief Ready",
       description: "Your brief has been created and emailed to you"
     });
   }, [toast]);
@@ -316,18 +356,30 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout {...layoutProps}>
+      {/* Focus Mode Timer - only show when focus mode is active */}
+      {uiState.focusModeActive && (
+        <StatusTimer 
+          status={uiState.userStatus}
+          onExitFocusMode={handleExitFocusMode}
+          focusTime={uiState.focusTime}
+          briefSchedules={briefSchedules}
+          userSchedule={userSchedule}
+        />
+      )}
+      
       <HomeView 
         onOpenBrief={handleOpenBrief}
         onToggleFocusMode={handleToggleFocusMode}
         onToggleCatchMeUp={handleToggleCatchMeUp}
         onOpenBriefModal={handleOpenBriefModal}
-        statusTimerProps={statusTimerProps}
         priorityPeople={priorityPeople}
         latestBrief={latestBrief}
         status={uiState.userStatus}
         onExitFocusMode={handleExitFocusMode}
         focusModeExitLoading={uiState.focusModeExitLoading}
         onToggleSignOff={handleOpenSignOffModal}
+        onStartFocusMode={handleStartFocusMode}
+        onSignOffForDay={handleSignOffForDay}
       />
       
       {/* Modals */}
