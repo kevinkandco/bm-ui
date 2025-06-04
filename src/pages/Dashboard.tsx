@@ -82,7 +82,7 @@ const Dashboard = () => {
   }, [call]);
 
   const getRecentBriefs = useCallback(async () => {
-    const response = await call("get", `/api/summaries?per_page=4`, {
+    const response = await call("get", `/api/summaries?per_page=3`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
