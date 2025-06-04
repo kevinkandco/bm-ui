@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -205,7 +204,6 @@ const HomeView = ({
             <ListeningScreen 
               isListening={true}
               title="brief-me is monitoring"
-              subtitle="Ready to brief you on your updates"
             />
           </div>
         </div>
