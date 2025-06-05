@@ -293,12 +293,12 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
               {/* Waveform Visualization */}
               <div className="relative mb-6 h-16 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent rounded-lg flex items-center justify-center overflow-hidden">
                 {/* Simple waveform representation */}
-                <div className="flex items-center gap-1 h-full w-full px-4">
-                  {Array.from({ length: 50 }).map((_, i) => (
+                <div className="flex items-center gap-1 h-full w-full">
+                  {Array.from({ length: 100 }).map((_, i) => (
                     <div
                       key={i}
-                      className={`w-1 bg-gradient-to-t ${
-                        i < (progress / 100) * 50 
+                      className={`flex-1 bg-gradient-to-t ${
+                        i < (progress / 100) * 100 
                           ? 'from-primary-teal to-primary-teal/50' 
                           : 'from-gray-600 to-gray-700'
                       }`}
