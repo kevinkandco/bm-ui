@@ -48,6 +48,8 @@ const Dashboard = () => {
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
   const [recentBriefs, setRecentBriefs] = useState<Summary[] | null>(null);
+  const [pendingData, setPendingData] = useState<PendingData[] | null>(null);
+  const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
@@ -93,6 +95,20 @@ const Dashboard = () => {
     setRecentBriefs(response?.data);
   }, [call]);
 
+  const getBrief = useCallback(
+      async (briefId: number): Promise<false | Summary> => {
+        const response = await call("get", `/api/summary/${briefId}/status`, {
+          showToast: true,
+          toastTitle: "Failed to fetch brief",
+          toastDescription: "Something went wrong while fetching the brief.",
+          returnOnFailure: false, 
+        });
+  
+        return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
+      },
+      [call]
+    );
+
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
 
@@ -110,6 +126,59 @@ const Dashboard = () => {
     fetchDashboardData();
     getRecentBriefs(); 
   }, [searchParams, getRecentBriefs, fetchDashboardData]);
+
+  useEffect(() => {
+      if (!recentBriefs) return;
+  
+      const newPending = recentBriefs
+        ?.filter(
+          (brief) => brief.status !== "success" && brief.status !== "failed"
+        )
+        .map((brief) => ({ id: brief.id, status: true }));
+  
+      setPendingData(newPending);
+    }, [recentBriefs, setPendingData]);
+
+
+    useEffect(() => {
+          // Clear existing intervals first
+          intervalIDsRef.current.forEach(clearInterval);
+          intervalIDsRef.current = [];
+      
+          if (!pendingData?.length) return;
+      
+          const ids = pendingData.map((item) => {
+            const intervalId = setInterval(async () => {
+              const data = await getBrief(item.id);
+      
+              if (data) {
+                setPendingData(
+                  (prev) => prev?.filter((data) => data.id !== item.id) ?? []
+                );
+      
+                setRecentBriefs((prev) => {
+                  if (!prev) return null;
+                  return prev?.map((brief) => brief.id === item.id ? data : brief) || null;
+                });
+      
+                clearInterval(intervalId);
+      
+                intervalIDsRef.current = intervalIDsRef.current?.filter(
+                  (id) => id !== intervalId
+                );
+              }
+            }, 3000);
+      
+            return intervalId;
+          });
+      
+          intervalIDsRef.current = ids;
+      
+          return () => {
+            intervalIDsRef.current.forEach(clearInterval);
+            intervalIDsRef.current = [];
+          };
+        }, [pendingData, getBrief]);
 
   const handleExitFocusMode = useCallback(async () => {
     setUiState((prev) => ({
