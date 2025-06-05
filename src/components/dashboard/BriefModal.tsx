@@ -24,6 +24,7 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
   const [feedbackState, setFeedbackState] = useState<'none' | 'up' | 'down'>('none');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [comment, setComment] = useState("");
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const { handleSummaryFeedback, handleActionRelevance, handleAddMissingContent } = useFeedbackTracking();
 
