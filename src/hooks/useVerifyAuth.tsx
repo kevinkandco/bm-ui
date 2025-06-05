@@ -7,7 +7,7 @@ function useVerifyAuth() {
   const [searchParams] = useSearchParams();
   const [checked, setChecked] = useState(false);
   const [validSession, setValidSession] = useState(false);
-  const { user, logout, verify } = useAuthStore();
+  const { user, logout, verify, gotoLogin } = useAuthStore();
   const { call } = useApi();
 
   useEffect(() => {
@@ -33,7 +33,7 @@ function useVerifyAuth() {
       const token = localStorage.getItem("token");
       
       if (!token) {
-        logout();
+        gotoLogin();
         setChecked(true);
         return;
       }

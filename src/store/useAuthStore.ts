@@ -44,6 +44,7 @@ const useAuthStore = create(
 			logout: () => {
 				localStorage.clear();
 				set({ user: null, token: null, isAuthenticated: false });
+				location.reload();
 			},
 
 			setUser: (partialUser) =>
@@ -55,7 +56,9 @@ const useAuthStore = create(
 			
 			gotoLogin: () => {
 				localStorage.removeItem("token");
-				window.location.href = "/";
+				if (window.location.pathname !== "/" && window.location.pathname !== "/login" && window.location.pathname !== "/onboarding") {
+					window.location.href = "/";
+				}
 			}
 			
 		}),
