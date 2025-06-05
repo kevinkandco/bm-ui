@@ -298,8 +298,8 @@ const Dashboard = () => {
       description: "Your summary has been created and emailed to you"
     });
     
-    navigate("/dashboard/catch-up");
-  }, [toast, navigate]);
+    // navigate("/dashboard/catch-up");
+  }, [toast]);
 
   const handleCloseBriefModal = useCallback(() => {
     setUiState(prev => ({

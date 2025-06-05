@@ -71,7 +71,7 @@ const EndFocusModal = ({
         <div className="py-4">
           <ListeningScreen 
             isListening={true}
-            title="Podia is listening"
+            title="Brief-me is listening"
             subtitle="Analyzing your updates and creating your brief..."
           />
           

@@ -6,7 +6,7 @@ interface ListeningScreenProps {
 }
 const ListeningScreen = ({
   isListening = true,
-  title = "Podia is listening",
+  title = "Brief-me is listening",
   subtitle = "Analyzing your updates and creating your brief..."
 }: ListeningScreenProps) => {
   return <div className="flex flex-col items-center justify-center min-h-[200px] sm:min-h-[300px] px-2 py-1 sm:px-6 sm:py-8">
