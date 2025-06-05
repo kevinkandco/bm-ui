@@ -88,7 +88,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
 
   return (
     <div 
-      className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02]"
+      className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group"
       style={{
         background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)',
       }}
@@ -120,9 +120,53 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
               )}
             </button>
             <div className="min-w-0 flex-1">
-              <h3 className="text-base font-semibold text-white-text truncate">
-                {brief.name}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-semibold text-white-text truncate">
+                  {brief.name}
+                </h3>
+                
+                {/* Feedback Controls - Show on hover, next to brief name */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => handleFeedback('up', e)}
+                    disabled={feedbackState !== 'none'}
+                    className={`h-6 w-6 p-0 transition-all ${
+                      feedbackState === 'up' 
+                        ? 'bg-green-500/20 text-green-400' 
+                        : 'text-text-secondary hover:text-green-400'
+                    }`}
+                  >
+                    <ThumbsUp className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => handleFeedback('down', e)}
+                    disabled={feedbackState !== 'none'}
+                    className={`h-6 w-6 p-0 transition-all ${
+                      feedbackState === 'down' 
+                        ? 'bg-red-500/20 text-red-400' 
+                        : 'text-text-secondary hover:text-red-400'
+                    }`}
+                  >
+                    <ThumbsDown className="h-3 w-3" />
+                  </Button>
+                </div>
+
+                {/* Feedback Badge - Always visible when rated */}
+                {feedbackState === 'up' && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
+                    👍
+                  </Badge>
+                )}
+                {feedbackState === 'down' && !showCommentInput && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
+                    👎
+                  </Badge>
+                )}
+              </div>
               <p className="text-xs text-light-gray-text truncate">
                 {brief.timeCreated}
               </p>
@@ -149,53 +193,9 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
           Range: {brief.timeRange}
         </div>
 
-        {/* Feedback Controls - Always visible */}
-        <div className="flex items-center gap-2 mt-3">
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => handleFeedback('up', e)}
-              disabled={feedbackState !== 'none'}
-              className={`h-6 w-6 p-0 transition-all ${
-                feedbackState === 'up' 
-                  ? 'bg-green-500/20 text-green-400' 
-                  : 'text-text-secondary hover:text-green-400'
-              }`}
-            >
-              <ThumbsUp className="h-3 w-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => handleFeedback('down', e)}
-              disabled={feedbackState !== 'none'}
-              className={`h-6 w-6 p-0 transition-all ${
-                feedbackState === 'down' 
-                  ? 'bg-red-500/20 text-red-400' 
-                  : 'text-text-secondary hover:text-red-400'
-              }`}
-            >
-              <ThumbsDown className="h-3 w-3" />
-            </Button>
-          </div>
-
-          {/* Feedback Badge */}
-          {feedbackState === 'up' && (
-            <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
-              Rated 👍
-            </Badge>
-          )}
-          {feedbackState === 'down' && !showCommentInput && (
-            <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
-              Rated 👎
-            </Badge>
-          )}
-        </div>
-
         {/* Comment Input for downvote */}
         {showCommentInput && (
-          <div className="mt-2 animate-fade-in" onClick={(e) => e.stopPropagation()}>
+          <div className="mt-3 animate-fade-in" onClick={(e) => e.stopPropagation()}>
             <Input
               placeholder="What did we miss?"
               value={comment}
