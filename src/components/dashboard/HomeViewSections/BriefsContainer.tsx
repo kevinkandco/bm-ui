@@ -1,8 +1,9 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import BriefCard from "./BriefCard";
 import { Summary } from "../types";
+import ViewErrorMessage from "../ViewErrorMessage";
 
 interface BriefsContainerProps {
   briefs: Summary[];
@@ -13,7 +14,20 @@ interface BriefsContainerProps {
 }
 
 const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, playingBrief }: BriefsContainerProps) => {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState<string>("");
+
+  const handleClick = (message: string) => {
+    setOpen(true);
+    setMessage(message);
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
+  }
+
   return (
+    <>
     <Card 
       className="w-full rounded-xl shadow-none border-0" 
       style={{
@@ -31,12 +45,15 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
               onViewTranscript={onViewTranscript}
               onPlayBrief={onPlayBrief}
               playingBrief={playingBrief}
+              handleClick={handleClick}
               isLast={index === briefs.length - 1}
             />
           ))}
         </div>
       </CardContent>
     </Card>
+    <ViewErrorMessage open={open} onClose={handleClose} message={message} />
+    </>
   );
 };
 

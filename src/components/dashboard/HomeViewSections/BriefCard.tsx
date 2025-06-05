@@ -11,10 +11,11 @@ interface BriefCardProps {
   onViewTranscript: (message: string, briefId: number) => void;
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
+	handleClick: (message: string) => void
   isLast?: boolean;
 }
 
-const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingBrief, isLast }: BriefCardProps) => {
+const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingBrief, handleClick, isLast }: BriefCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCardClick = () => {
@@ -80,6 +81,25 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
             </div>
           </div>
         </div>
+
+				{/* Description */}
+				<div className="flex items-center justify-between">
+					<div className="text-xs text-light-gray-text mt-2">
+						{brief?.description}
+					</div>
+					<div>
+						{(brief?.status !== "failed" && brief?.status !== "success")  && (
+							<span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
+								Generating summary
+							</span>
+						)}
+						{brief?.status === "failed" && (
+							<span onClick={() => handleClick(brief?.error)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+								Failed to generate the summary
+							</span>
+						)}
+					</div>
+				</div>
         
         {/* Time Range - Now above the line */}
         <div className="text-xs text-light-gray-text mt-2">
