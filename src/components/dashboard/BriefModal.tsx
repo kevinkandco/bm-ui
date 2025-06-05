@@ -30,6 +30,7 @@ import { useBriefStore } from "@/store/useBriefStore";
 import { useApi } from "@/hooks/useApi";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import BriefModalSkeleton from "./BriefModalSkeleton";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -386,7 +387,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto">
+         {brief ? <div className="flex-1 overflow-y-auto">
             <div className="px-4 md:px-6 py-4 space-y-4">
               <p className="text-gray-200 text-sm md:text-base">
                 I've been monitoring your channels for{" "}
@@ -690,7 +691,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                 </>
               )}
             </div>
-          </div>
+          </div> : <BriefModalSkeleton />}
         </div>
       </DialogContent>
       <ViewTranscript
