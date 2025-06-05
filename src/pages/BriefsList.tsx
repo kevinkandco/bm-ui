@@ -220,12 +220,13 @@ const BriefsList = () => {
                   const { id, title, status, summaryTime, start_at, ended_at, emailCount, slackMessageCount, error } = brief;
 
                   const timeRange = start_at && ended_at ? `Time Range: ${start_at} - ${ended_at}` : "";
+                  const isClickable = status === "success" || status === "failed";
 
                   return (
                     <React.Fragment key={brief.id}>
                       <div 
                         className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
-                        onClick={ status === "success" ? () => handleOpenBrief(id) : null}
+                        onClick={isClickable ? () => handleOpenBrief(id) : null}
                       >
                         <div className="flex items-center flex-1">
                           <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
@@ -249,7 +250,10 @@ const BriefsList = () => {
                               </span>
                             )}
                             {status === "failed" && (
-                              <span onClick={() => handleClick(error)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+                              <span onClick={(e) => {
+                                e.stopPropagation();
+                                handleClick(error);
+                              }} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
                                 Failed to generate the summary
                               </span>
                             )}

@@ -29,6 +29,7 @@ import BriefLoadingSkeleton from "./BriefLoadingSkeleton";
 import { useBriefStore } from "@/store/useBriefStore";
 import { useApi } from "@/hooks/useApi";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/hooks/use-toast";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -287,6 +288,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     false
   );
   const { call } = useApi();
+  const { toast } = useToast();
   const getBrief = useCallback(async (): Promise<void> => {
     setLoading(true);
 
@@ -350,6 +352,20 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     });
   };
 
+  const handlePlayStopBrief = useCallback(
+      () => {
+        if (!brief?.audioPath) {
+          toast({
+            title: "Audio not found",
+            description: `Audio not found, please try again`,
+          })
+          return;
+        }
+        handlePlayPause();
+      },
+      [toast, handlePlayPause, brief?.audioPath]
+    );
+
   // const [isPlaying, setIsPlaying] = useState(false);
 
   // const togglePlayPause = () => {
@@ -376,6 +392,9 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                 <span className="font-semibold text-emerald-400">{brief?.duration}</span>
                 . Here's a brief of what you missed while you were away:
               </p>
+               {brief?.status === "failed" && <p className="text-red-500 text-sm md:text-base">
+                Failed to Generate Summary: {brief?.error ? brief?.error : 'Something went wrong'}
+              </p>}
 
               {/* Summary Cards - More compact */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -492,7 +511,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                       size="icon"
                       variant="outline"
                       className="h-8 w-8 rounded-full border-emerald-500 bg-emerald-500/20 hover:bg-emerald-500/30"
-                      onClick={handlePlayPause}
+                      onClick={handlePlayStopBrief}
                     >
                       {isPlaying ? (
                         <Pause className="h-3 w-3 text-emerald-400" />
