@@ -137,7 +137,7 @@ const SlackSettingsModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[60rem] max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
+      <DialogContent className="sm:max-w-[60rem] max-h-[90vh] overflow-y-auto bg-gray-900/95 backdrop-blur-xl border border-gray-700/40">
         <DialogHeader>
           <div className="flex justify-between items-center">
             <DialogTitle className="text-lg font-medium text-white">
