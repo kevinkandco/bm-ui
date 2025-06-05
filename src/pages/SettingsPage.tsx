@@ -12,6 +12,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Voices from "@/components/settings/modal/Voices";
 import { useApi } from "@/hooks/useApi";
+import useAuthStore from "@/store/useAuthStore";
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -20,6 +21,7 @@ const SettingsPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { call } = useApi();
+  const { logout, gotoLogin } = useAuthStore();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -69,24 +71,29 @@ const SettingsPage = () => {
     }
   ];
 
-  const handleCategoryClick = useCallback(async (categoryId: string) => {
-    if (categoryId === "logout") {
-      const response = await call("get", "/api/logout", {
-        toastTitle: "Error",
-        toastDescription: "Failed to log out. Please try again.",
-        toastVariant: "destructive",
-      });
-      if (response) {
-        toast({
-          title: "Logged out",
-          description: "You have been successfully logged out.",
+  const handleCategoryClick = useCallback(
+    async (categoryId: string) => {
+      if (categoryId === "logout") {
+        const response = await call("get", "/api/logout", {
+          toastTitle: "Error",
+          toastDescription: "Failed to log out. Please try again.",
+          toastVariant: "destructive",
         });
+        if (response) {
+          toast({
+            title: "Logged out",
+            description: "You have been successfully logged out.",
+          });
+          logout();
+          gotoLogin();
+          // }
+          return;
+        }
       }
-      return;
-    }
-
-    setActiveCategory(categoryId);
-  }, [call, toast]);
+      setActiveCategory(categoryId);
+    },
+    [call, toast, gotoLogin, logout]
+  );
 
   useEffect(() => {
     const tab = searchParams.get("tab");
