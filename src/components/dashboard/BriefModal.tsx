@@ -662,14 +662,14 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                                 <td className="py-2 px-3">
                                   <span
                                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                      message.priority === "High"
+                                      capitalizeFirstLetter(message.priority) === "High"
                                         ? "bg-red-500/20 text-red-400"
-                                        : message.priority === "Medium"
+                                        : capitalizeFirstLetter(message.priority) === "Medium"
                                         ? "bg-orange-500/20 text-orange-400"
                                         : "bg-emerald-500/20 text-emerald-400"
                                     }`}
                                   >
-                                    {message.priority}
+                                    {capitalizeFirstLetter(message.priority)}
                                   </span>
                                 </td>
                                 <td className="py-2 px-3">
