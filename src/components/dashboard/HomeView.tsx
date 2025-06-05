@@ -162,6 +162,7 @@ const HomeView = ({
         toast({
           title: "Audio not found",
           description: `Audio not found, please try again`,
+          variant: "destructive",
         })
         return;
       }
@@ -306,7 +307,7 @@ const HomeView = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-deep-blue border-light-gray-text/20">
               <DropdownMenuItem
-                disabled={status === "focus"}
+                disabled={status === "focus" || status === "away"}
                 className="text-white-text hover:bg-light-gray-text/10 p-0"
               >
                  <div className="flex items-center pl-2 py-1.5" onClick={() => onStartFocusMode(30)}>
@@ -319,6 +320,7 @@ const HomeView = ({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={onSignOffForDay}
+                disabled={status === "focus" || status === "away"}
                 className="text-white-text hover:bg-light-gray-text/10"
               >
                 <Clock className="mr-2 h-4 w-4" />
@@ -455,7 +457,7 @@ const HomeView = ({
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-surface border-border-subtle">
                 <DropdownMenuItem
-                  disabled={status === "focus"}
+                  disabled={status === "focus" || status === "away"}
                   className="text-text-primary hover:bg-white/5 p-0"
                 >
                   <div className="flex items-center pl-2 py-1.5" onClick={() => onStartFocusMode(30)}>
@@ -468,6 +470,7 @@ const HomeView = ({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={onSignOffForDay}
+                  disabled={status === "focus" || status === "away"}
                   className="text-text-primary hover:bg-white/5"
                 >
                   <Clock className="mr-2 h-4 w-4" />

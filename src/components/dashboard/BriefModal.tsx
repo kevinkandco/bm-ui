@@ -358,6 +358,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
           toast({
             title: "Audio not found",
             description: `Audio not found, please try again`,
+            variant: "destructive",
           })
           return;
         }
