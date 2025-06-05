@@ -9,7 +9,7 @@ import { BriefSchedules, UserSchedule } from "./types";
 export interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   focusTime: number; //in seconds
-  // focusModeExitLoading: boolean;
+  focusModeExitLoading: boolean;
   // isSignoff: boolean;
   briefSchedules: BriefSchedules[];
   userSchedule: UserSchedule;
@@ -27,7 +27,7 @@ const StatusTimer = React.memo(
     userSchedule,
     briefSchedules,
     onExitFocusMode,
-    // focusModeExitLoading,
+    focusModeExitLoading,
     // isSignoff,
     // fetchDashboardData,
     // onToggleCatchMeUp,
@@ -244,7 +244,7 @@ const StatusTimer = React.memo(
               {/* Theme toggle removed on mobile */}
               {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
 
-              {/* {onExitFocusMode && (
+              {onExitFocusMode && (
                 <Button 
                   onClick={onExitFocusMode}
                   variant="outline"
@@ -261,7 +261,7 @@ const StatusTimer = React.memo(
                   } 
                   <span className="text-xs sm:text-sm">Exit</span>
                 </Button>
-              )} */}
+              )}
               {/* </div> */}
             </div>
           );

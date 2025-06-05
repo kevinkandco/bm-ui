@@ -18,11 +18,12 @@ import { useApi } from "@/hooks/useApi";
 
 interface FocusModeProps {
   open: boolean;
+  loading: boolean;
   onClose: () => void;
-  SaveChangesAndClose: (focusTime: number) => void;
+  SaveChangesAndClose: (focusTime: number, options: { updateStatus: boolean; closeApps: boolean; monitorNotifications: boolean; enableDnd: boolean }) => void;
 }
 
-const FocusMode = ({ open, onClose, SaveChangesAndClose }: FocusModeProps) => {
+const FocusMode = ({ open, loading, onClose, SaveChangesAndClose }: FocusModeProps) => {
   const { toast } = useToast();
   const { call } = useApi();
   const [focusTime, setFocusTime] = useState(30);
@@ -32,34 +33,13 @@ const FocusMode = ({ open, onClose, SaveChangesAndClose }: FocusModeProps) => {
     monitorNotifications: true,
     enableDnd: true
   });
-    const [loading, setLoading] = useState(false);
 
   const handleOptionChange = (key: keyof typeof options) => {
     setOptions(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleStartFocus = async () => {
-    setLoading(true);
-
-    const response = await call("post", "/api/focus-mode", {
-      body: { ...options, focusDuration: focusTime },
-      showToast: true,
-      toastTitle: "Focus Mode Activation Failed",
-      toastDescription: "Focus mode activation failed. please try again sometime later.",
-      toastVariant: "destructive",
-      returnOnFailure: false,
-    });
-
-    setLoading(false);
-
-    if (response) {
-      toast({
-        title: "Focus Mode Activated",
-        description: `Focus mode activated for ${focusTime} minutes`,
-        variant: "default",
-      });
-      SaveChangesAndClose(focusTime);
-    }
+      SaveChangesAndClose(focusTime, options);
   };
 
 
@@ -162,7 +142,7 @@ const FocusMode = ({ open, onClose, SaveChangesAndClose }: FocusModeProps) => {
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white">
+          <Button variant="outline" onClick={onClose} className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white mt-2 sm:mt-0">
             <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
           <Button onClick={handleStartFocus} className="bg-blue-600 text-white hover:bg-blue-700" disabled={loading}>

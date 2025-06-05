@@ -12,6 +12,7 @@ import {
   ChevronDown,
   Play,
   Pause,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -66,6 +67,7 @@ const HomeView = ({
   recentBriefs,
   onOpenBrief,
   priorities,
+  status,
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal,
@@ -295,11 +297,16 @@ const HomeView = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-deep-blue border-light-gray-text/20">
               <DropdownMenuItem
-                onClick={() => onStartFocusMode(30)}
-                className="text-white-text hover:bg-light-gray-text/10"
+                disabled={status === "focus"}
+                className="text-white-text hover:bg-light-gray-text/10 p-0"
               >
-                <Headphones className="mr-2 h-4 w-4" />
-                Start Focus Mode
+                 <div className="flex items-center pl-2 py-1.5" onClick={() => onStartFocusMode(30)}>
+                    <Headphones className="mr-2 h-4 w-4" />
+                    Start Focus Mode
+                  </div>
+                  <div className="flex items-center rounded-full p-1 text-sm cursor-pointer" onClick={onToggleFocusMode}>
+                     <Settings size={16}>Configure Slack</Settings>
+                  </div>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={onSignOffForDay}
@@ -439,11 +446,16 @@ const HomeView = ({
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-surface border-border-subtle">
                 <DropdownMenuItem
-                  onClick={() => onStartFocusMode(30)}
-                  className="text-text-primary hover:bg-white/5"
+                  disabled={status === "focus"}
+                  className="text-text-primary hover:bg-white/5 p-0"
                 >
-                  <Headphones className="mr-2 h-4 w-4" />
-                  Start Focus Mode
+                  <div className="flex items-center pl-2 py-1.5" onClick={() => onStartFocusMode(30)}>
+                    <Headphones className="mr-2 h-4 w-4" />
+                    Start Focus Mode
+                  </div>
+                  <div className="flex items-center rounded-full p-1 text-sm cursor-pointer" onClick={onToggleFocusMode}>
+                     <Settings size={16}>Configure Slack</Settings>
+                  </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={onSignOffForDay}

@@ -41,7 +41,8 @@ const Dashboard = () => {
     isSignoff: false,
     SignOffModalOpen: false,
     userStatus: "active" as UserStatus,
-    focusModeActive: false
+    focusModeActive: false,
+    focusModeActivationLoading: false
   });
   const [priorities, setPriorities] = useState<Priorities | null>(null);
   const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
@@ -59,11 +60,12 @@ const Dashboard = () => {
     if (response) {
       setUiState((prev) => ({
         ...prev,
-        userStatus: response.mode === 'focus'
+        userStatus: response?.mode === 'focus'
           ? 'focus'
           : response.sign_off
           ? 'away'
           : 'active',
+        focusModeActive: response?.mode === 'focus',
         isSignoff: response.sign_off || false,
         focusTime: response.focusRemainingTime,
       }));
@@ -187,20 +189,49 @@ const Dashboard = () => {
   }, []);
 
   // Handler for when focus mode is started
-  const handleStartFocusMode = useCallback((focusTime: number) => {
-    setUiState(prev => ({
-      ...prev,
-      focusModeOpen: false,
-      focusTime: focusTime * 60,
-      userStatus: "focus" as UserStatus,
-      focusModeActive: true
-    }));
-    
-    toast({
-      title: "Focus Mode Started",
-      description: "Slack status set to 'focusing', Gmail status set to 'monitoring'"
-    });
-  }, [toast]);
+  const handleStartFocusMode = useCallback(
+    async (
+      focusTime: number,
+      options: {
+        updateStatus?: boolean;
+        closeApps?: boolean;
+        monitorNotifications?: boolean;
+        enableDnd?: boolean;
+      } = {}
+    ) => {
+      setUiState((prev) => ({
+        ...prev,
+        focusModeActivationLoading: true,
+      }))
+
+      const response = await call("post", "/api/focus-mode", {
+        body: { ...options, focusDuration: focusTime },
+        showToast: true,
+        toastTitle: "Focus Mode Activation Failed",
+        toastDescription:
+          "Focus mode activation failed. please try again sometime later.",
+        toastVariant: "destructive",
+        returnOnFailure: false,
+      });
+      if (response) {
+        setUiState((prev) => ({
+          ...prev,
+          focusModeOpen: false,
+          focusTime: focusTime * 60,
+          userStatus: "focus" as UserStatus,
+          focusModeActive: true,
+          focusModeActivationLoading: false
+        }));
+
+        toast({
+          title: "Focus Mode Started",
+          description:
+            "Slack status set to 'focusing', Gmail status set to 'monitoring'",
+        });
+      }
+    },
+    [toast, call]
+  );
 
   // const handleExitFocusMode = useCallback(() => {
   //   setUiState(prev => ({
@@ -367,6 +398,7 @@ const Dashboard = () => {
           focusTime={uiState.focusTime}
           briefSchedules={briefSchedules}
           userSchedule={userSchedule}
+          focusModeExitLoading={uiState.focusModeExitLoading}
         />
       )}
       
@@ -389,6 +421,7 @@ const Dashboard = () => {
       {/* Modals */}
       <FocusMode 
         open={uiState.focusModeOpen}
+        loading={uiState.focusModeActivationLoading}
         SaveChangesAndClose={handleStartFocusMode}
         onClose={handleFocusModeClose}
       />
