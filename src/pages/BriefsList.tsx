@@ -88,7 +88,6 @@ const BriefsList = () => {
         toastDescription: "Something went wrong while fetching the brief.",
         returnOnFailure: false, 
       });
-      console.log(response, 'fetch brief api');
 
       return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
     },

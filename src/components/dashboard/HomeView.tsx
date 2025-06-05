@@ -157,6 +157,15 @@ const HomeView = ({
 
   const handlePlayBrief = useCallback(
     (briefId: number) => {
+      const brief = recentBriefs?.find((b) => b.id === briefId);
+      if (!brief && !playingBrief) {
+        toast({
+          title: "Audio not found",
+          description: `Audio not found, please try again`,
+        })
+        return;
+      }
+
       if (playingBrief === briefId) {
         setPlayingBrief(null);
         toast({
