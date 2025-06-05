@@ -265,7 +265,7 @@ const HomeView = ({
         {/* Mobile Welcome Section - Compact with reduced spacing */}
         <div className="text-center flex-shrink-0 mt-4 mb-2">
           <h1 className="text-xl font-semibold text-white-text mb-0">
-            Good morning, Alex
+            Good morning, {user?.name}
           </h1>
           <p className="text-light-gray-text text-sm">
             Ready to catch up or focus?
