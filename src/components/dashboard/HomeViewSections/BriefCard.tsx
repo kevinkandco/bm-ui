@@ -1,8 +1,10 @@
 
 import React, { useState } from "react";
-import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play } from "lucide-react";
+import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { useFeedbackTracking } from "../useFeedbackTracking";
 
 interface BriefCardProps {
   brief: {
@@ -30,9 +32,58 @@ interface BriefCardProps {
 
 const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingBrief, isLast }: BriefCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [feedbackState, setFeedbackState] = useState<'none' | 'up' | 'down'>('none');
+  const [showCommentInput, setShowCommentInput] = useState(false);
+  const [showAddMissing, setShowAddMissing] = useState(false);
+  const [comment, setComment] = useState("");
+  const [missingContent, setMissingContent] = useState("");
+  
+  const { handleSummaryFeedback, handleAddMissingContent } = useFeedbackTracking();
 
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleFeedback = async (type: 'up' | 'down', e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (feedbackState === type) return; // Already rated
+    
+    setFeedbackState(type);
+    
+    if (type === 'up') {
+      await handleSummaryFeedback(brief.id.toString(), 'up');
+    } else {
+      setShowCommentInput(true);
+    }
+  };
+
+  const handleCommentSubmit = async () => {
+    if (comment.trim()) {
+      await handleSummaryFeedback(brief.id.toString(), 'down', comment.trim());
+      setComment("");
+    } else {
+      await handleSummaryFeedback(brief.id.toString(), 'down');
+    }
+    setShowCommentInput(false);
+  };
+
+  const handleAddMissingSubmit = async () => {
+    if (missingContent.trim()) {
+      await handleAddMissingContent(brief.id.toString(), missingContent.trim());
+      setMissingContent("");
+    }
+    setShowAddMissing(false);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent, type: 'comment' | 'missing') => {
+    if (e.key === 'Enter') {
+      if (type === 'comment') {
+        handleCommentSubmit();
+      } else {
+        handleAddMissingSubmit();
+      }
+    }
   };
 
   return (
@@ -93,10 +144,69 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
           </div>
         </div>
         
-        {/* Time Range - Now above the line */}
+        {/* Time Range */}
         <div className="text-xs text-light-gray-text mt-2">
           Range: {brief.timeRange}
         </div>
+
+        {/* Feedback Controls - Always visible */}
+        <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => handleFeedback('up', e)}
+              disabled={feedbackState !== 'none'}
+              className={`h-6 w-6 p-0 transition-all ${
+                feedbackState === 'up' 
+                  ? 'bg-green-500/20 text-green-400' 
+                  : 'text-text-secondary hover:text-green-400'
+              }`}
+            >
+              <ThumbsUp className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => handleFeedback('down', e)}
+              disabled={feedbackState !== 'none'}
+              className={`h-6 w-6 p-0 transition-all ${
+                feedbackState === 'down' 
+                  ? 'bg-red-500/20 text-red-400' 
+                  : 'text-text-secondary hover:text-red-400'
+              }`}
+            >
+              <ThumbsDown className="h-3 w-3" />
+            </Button>
+          </div>
+
+          {/* Feedback Badge */}
+          {feedbackState === 'up' && (
+            <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
+              Rated 👍
+            </Badge>
+          )}
+          {feedbackState === 'down' && !showCommentInput && (
+            <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
+              Rated 👎
+            </Badge>
+          )}
+        </div>
+
+        {/* Comment Input for downvote */}
+        {showCommentInput && (
+          <div className="mt-2 animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            <Input
+              placeholder="What did we miss?"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              onKeyPress={(e) => handleKeyPress(e, 'comment')}
+              onBlur={handleCommentSubmit}
+              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+              autoFocus
+            />
+          </div>
+        )}
       </div>
 
       {/* Expanded Content */}
@@ -146,7 +256,36 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
               </div>
             </div>
 
-            {/* Action Buttons - Moved to right side */}
+            {/* Add Missing Content */}
+            {!showAddMissing ? (
+              <div className="mb-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAddMissing(true);
+                  }}
+                  className="text-text-secondary hover:text-text-primary text-xs h-7 px-2"
+                >
+                  Add what's missing
+                </Button>
+              </div>
+            ) : (
+              <div className="mb-3 animate-fade-in" onClick={(e) => e.stopPropagation()}>
+                <Input
+                  placeholder="What important information did we miss?"
+                  value={missingContent}
+                  onChange={(e) => setMissingContent(e.target.value)}
+                  onKeyPress={(e) => handleKeyPress(e, 'missing')}
+                  onBlur={handleAddMissingSubmit}
+                  className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+                  autoFocus
+                />
+              </div>
+            )}
+
+            {/* Action Buttons */}
             <div className="flex justify-end gap-2 pt-1">
               {brief.hasTranscript && (
                 <Button
