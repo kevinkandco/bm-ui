@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import BriefCard from "./BriefCard";
 import { Summary } from "../types";
 import ViewErrorMessage from "../ViewErrorMessage";
+import BriefCardSkeleton from "./BriefCardSkeleton";
 
 interface BriefsContainerProps {
   briefs: Summary[];
@@ -26,6 +27,8 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
     setOpen(false);
   }
 
+  console.log(briefs);
+
   return (
     <>
     <Card 
@@ -37,7 +40,7 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
     >
       <CardContent className="p-6">
         <div className="space-y-4">
-          {briefs?.map((brief, index) => (
+          {briefs ? briefs?.map((brief, index) => (
             <BriefCard
               key={brief.id}
               brief={brief}
@@ -48,7 +51,7 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
               handleClick={handleClick}
               isLast={index === briefs.length - 1}
             />
-          ))}
+          )) : [...Array(3)].map(() => <BriefCardSkeleton />)}
         </div>
       </CardContent>
     </Card>
