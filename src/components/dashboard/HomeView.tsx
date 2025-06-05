@@ -162,6 +162,7 @@ const HomeView = ({
         toast({
           title: "Audio not found",
           description: `Audio not found, please try again`,
+          variant: "destructive",
         })
         return;
       }
