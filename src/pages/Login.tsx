@@ -7,20 +7,21 @@ import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
 
+const BaseURL = import.meta.env.VITE_API_HOST;
+
 const Login = () => {
-  const [signingIn, setSigningIn] = useState(false);
+  // const [signingIn, setSigningIn] = useState(false);
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isMobile = useIsMobile();
 
   const handleSignIn = (provider: 'google' | 'slack') => {
-    setSigningIn(true);
-    // Simulate authentication
-    setTimeout(() => {
-      setSigningIn(false);
-      // Go directly to dashboard for existing users
-      navigate("/dashboard");
-    }, 1000);
+    try {
+      const url = provider === "google" ? `${BaseURL}/google/auth?redirectURL=dashboard` : `${BaseURL}/auth/redirect/${provider}?redirectURL=dashboard`;
+      window.open(url, "_self");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleBack = () => {
@@ -95,7 +96,6 @@ const Login = () => {
               <Button 
                 className="w-full bg-surface-overlay hover:bg-surface-raised text-text-primary border border-border-subtle shadow-subtle flex items-center justify-center gap-2 sm:gap-3 rounded-xl py-2.5 sm:py-3 text-sm sm:text-base transition-all duration-400" 
                 onClick={() => handleSignIn('google')} 
-                disabled={signingIn}
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -108,7 +108,6 @@ const Login = () => {
               
               <Button 
                 onClick={() => handleSignIn('slack')} 
-                disabled={signingIn} 
                 className="w-full bg-accent-primary text-text-primary flex items-center justify-center gap-2 sm:gap-3 rounded-full transform hover:scale-[1.03] hover:brightness-105 transition-all py-2.5 sm:py-3 text-sm sm:text-base"
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -226,7 +226,7 @@ const BriefsList = () => {
                     <React.Fragment key={brief.id}>
                       <div 
                         className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
-                        onClick={() => handleOpenBrief(id)}
+                        onClick={ status === "success" ? () => handleOpenBrief(id) : null}
                       >
                         <div className="flex items-center flex-1">
                           <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
