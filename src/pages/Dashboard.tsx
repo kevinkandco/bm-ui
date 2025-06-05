@@ -193,7 +193,7 @@ const Dashboard = () => {
       )}
       
       {/* Add extra top padding here */}
-      <div className="pt-8">
+      <div className="pt-16">
         <HomeView 
           onOpenBrief={handleOpenBrief}
           onToggleFocusMode={handleToggleFocusMode}
