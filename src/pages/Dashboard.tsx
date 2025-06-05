@@ -192,14 +192,17 @@ const Dashboard = () => {
         />
       )}
       
-      <HomeView 
-        onOpenBrief={handleOpenBrief}
-        onToggleFocusMode={handleToggleFocusMode}
-        onToggleCatchMeUp={handleToggleCatchMeUp}
-        onOpenBriefModal={handleOpenBriefModal}
-        onStartFocusMode={handleStartFocusMode}
-        onSignOffForDay={handleSignOffForDay}
-      />
+      {/* Add extra top padding here */}
+      <div className="pt-8">
+        <HomeView 
+          onOpenBrief={handleOpenBrief}
+          onToggleFocusMode={handleToggleFocusMode}
+          onToggleCatchMeUp={handleToggleCatchMeUp}
+          onOpenBriefModal={handleOpenBriefModal}
+          onStartFocusMode={handleStartFocusMode}
+          onSignOffForDay={handleSignOffForDay}
+        />
+      </div>
       
       {/* Modals */}
       <FocusMode 
