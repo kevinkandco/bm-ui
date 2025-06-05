@@ -317,6 +317,17 @@ const Dashboard = () => {
   // }, [toast]);
 
   const handleSignOffForDay = useCallback(() => {
+    const response = call("post", "/api/sign-off", {
+      showToast: true,
+      toastTitle: "Sign Off Failed",
+      toastDescription:
+        "Sign off failed. please try again sometime later.",
+      toastVariant: "destructive"
+    })
+
+    if (!response) {
+      return;
+    }
     setUiState(prev => ({
       ...prev,
       userStatus: "away" as UserStatus
@@ -326,7 +337,7 @@ const Dashboard = () => {
       title: "Signed Off",
       description: "We'll monitor your channels until your next auto-scheduled brief"
     });
-  }, [toast]);
+  }, [toast, call]);
 
   const handleCloseEndFocusModal = useCallback(() => {
     setUiState(prev => ({
@@ -428,20 +439,6 @@ const Dashboard = () => {
     onToggleSidebar: handleToggleSidebar
   }), [uiState.sidebarOpen, handleToggleSidebar]);
 
-  const statusTimerProps = useMemo(() => ({
-    status: uiState.userStatus,
-    focusTime: uiState.focusTime,
-    focusModeExitLoading: uiState.focusModeExitLoading,
-    isSignoff: uiState.isSignoff,
-    briefSchedules: briefSchedules,
-    userSchedule: userSchedule,
-    fetchDashboardData: fetchDashboardData,
-    onToggleFocusMode: handleToggleFocusMode, 
-    onToggleCatchMeUp: handleToggleCatchMeUp,
-    onToggleSignOff: handleOpenSignOffModal,
-    onExitFocusMode: handleExitFocusMode
-  }), [uiState.userStatus, uiState.focusTime, uiState.focusModeExitLoading, uiState.isSignoff, briefSchedules, userSchedule, fetchDashboardData, handleToggleFocusMode, handleToggleCatchMeUp, handleOpenSignOffModal, handleExitFocusMode ]);
-
   const endFocusModalProps = useMemo(() => ({
     open: uiState.endFocusModalOpen,
     onClose: handleCloseEndFocusModal,
@@ -460,7 +457,7 @@ const Dashboard = () => {
   return (
     <DashboardLayout {...layoutProps}>
       {/* Focus Mode Timer - only show when focus mode is active */}
-      {uiState.focusModeActive && (
+      {(uiState.focusModeActive || uiState.userStatus === "away") && (
         <StatusTimer 
           status={uiState.userStatus}
           onExitFocusMode={handleExitFocusMode}
