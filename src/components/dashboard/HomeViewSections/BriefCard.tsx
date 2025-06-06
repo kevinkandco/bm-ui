@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -169,19 +168,19 @@ const BriefCard = ({
             </div>
           </div>
           
-          {/* Vertically stacked right side items with center alignment */}
+          {/* Right side items with new layout */}
           <div className="flex items-center gap-6 flex-shrink-0">
-            {/* Vertically stacked stats and time saved */}
-            <div className="flex flex-col items-end gap-1">
-              {/* Stats group - Now vertical and more compact */}
-              <div className="flex flex-col items-end gap-0.5 text-xs text-light-gray-text">
+            {/* Stats and time saved section */}
+            <div className="flex flex-col items-end gap-2">
+              {/* Horizontally aligned stats */}
+              <div className="flex items-center gap-3 text-xs text-light-gray-text">
                 <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
                 <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
                 <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
               </div>
               
-              {/* Time Saved */}
-              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2 mt-1">
+              {/* Time Saved below the stats */}
+              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
                 <Clock className="h-2.5 w-2.5 text-green-400" />
                 <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
               </div>
