@@ -10,6 +10,7 @@ import { useApi } from "@/hooks/useApi";
 import useAuthStore from "@/store/useAuthStore";
 import IntegrationsSection from "@/components/settings/IntegrationsSection";
 import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
+import Integrations from "@/components/settings/Integrations";
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -68,7 +69,7 @@ const SettingsPage = () => {
       id: "voices",
       icon: AudioLines,
       name: "Voices",
-      component: <Voices />
+      active: activeSection === "voices"
     },
     {
       id: "privacy",
@@ -128,7 +129,7 @@ const SettingsPage = () => {
   const renderContent = () => {
     switch (activeSection) {
       case "integrations":
-        return <IntegrationsSection />;
+        return <Integrations />;
       case "feedback":
         return <FeedbackTrainingSection />;
       case "profile":
@@ -212,6 +213,8 @@ const SettingsPage = () => {
             </div>
           </>
         );
+      case "voices":
+        return <Voices />;
       default:
         return (
           <div className="text-center py-12">

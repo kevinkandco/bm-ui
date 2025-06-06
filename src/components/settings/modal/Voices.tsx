@@ -109,7 +109,7 @@ const Voices = () => {
       voices.map((voice) => (
         <div
           key={voice.id}
-          className="flex flex-col gap-2 py-3 px-3 rounded-lg transition-all duration-300 border border-black/25 bg-white/15 hover:bg-white/25 backdrop-blur-md dark:border-white/30"
+          className="flex flex-col gap-2 py-3 px-3 rounded-lg transition-all duration-300 border bg-white/5 hover:bg-white/10 backdrop-blur-md border-white/10"
         >
           <div className="flex items-center">
             {/* <div className="w-8 h-8 bg-gray-800/90 rounded-full mr-3" /> */}
@@ -137,7 +137,7 @@ const Voices = () => {
                 id="include-in-summary"
                 checked={voice?.is_active}
                 onCheckedChange={(status) => setVoiceActive(voice?.id, status)}
-                className="data-[state=checked]:bg-glass-blue data-[state=unchecked]:bg-glass-black"
+                // className="data-[state=checked]:bg-glass-blue data-[state=unchecked]:bg-glass-black"
                 />
                 </div>
             <button
