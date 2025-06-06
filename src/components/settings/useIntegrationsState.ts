@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { ConnectedAccount, Tag, SplitBriefSettings } from "./types";
 import { useToast } from "@/hooks/use-toast";
@@ -14,7 +13,8 @@ export const useIntegrationsState = () => {
       email: "alex@company.com",
       tagId: "work",
       includeInCombined: true,
-      connectedAt: new Date("2024-01-15")
+      connectedAt: new Date("2024-01-15"),
+      type: "input"
     },
     {
       id: "2",
@@ -22,7 +22,8 @@ export const useIntegrationsState = () => {
       name: "Company Workspace",
       tagId: "work",
       includeInCombined: true,
-      connectedAt: new Date("2024-01-20")
+      connectedAt: new Date("2024-01-20"),
+      type: "input"
     }
   ]);
 
@@ -53,14 +54,15 @@ export const useIntegrationsState = () => {
 
   const [showFirstTimeHelper, setShowFirstTimeHelper] = useState(true);
 
-  const addAccount = useCallback((provider: string) => {
+  const addAccount = useCallback((provider: string, type: 'input' | 'output' = 'input') => {
     const newAccount: ConnectedAccount = {
       id: `${Date.now()}`,
       provider,
       email: `user@${provider}.com`,
       tagId: provider.includes('gmail') && provider.includes('.com') ? 'personal' : 'work',
       includeInCombined: true,
-      connectedAt: new Date()
+      connectedAt: new Date(),
+      type
     };
     
     setConnectedAccounts(prev => [...prev, newAccount]);

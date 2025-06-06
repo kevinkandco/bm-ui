@@ -1,10 +1,12 @@
 
 import React, { useState } from "react";
-import { Plus, Settings as SettingsIcon, AlertCircle, X } from "lucide-react";
+import { Plus, Settings as SettingsIcon, AlertCircle, X, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ConnectedAccountsList from "./ConnectedAccountsList";
 import TagManager from "./TagManager";
+import InputIntegrationsSection from "./InputIntegrationsSection";
+import OutputIntegrationsSection from "./OutputIntegrationsSection";
 import { useIntegrationsState } from "./useIntegrationsState";
 
 const IntegrationsSection = () => {
@@ -26,32 +28,25 @@ const IntegrationsSection = () => {
 
   const [showTagManager, setShowTagManager] = useState(false);
 
-  const handleAddAccount = (provider: string) => {
+  const handleAddAccount = (provider: string, type: 'input' | 'output') => {
     // Simulate OAuth flow
-    addAccount(provider);
+    addAccount(provider, type);
     toast({
-      title: "Account Connected",
-      description: `Your ${provider} account has been connected successfully.`,
+      title: "Integration Connected",
+      description: `Your ${provider} integration has been connected successfully.`,
     });
   };
 
   const hasMultipleTags = tags.length > 1;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-text-primary">Integrations</h2>
-        <Button 
-          onClick={() => handleAddAccount("gmail")}
-          className="shadow-subtle hover:shadow-glow transition-all"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Account
-        </Button>
       </div>
 
       <p className="text-text-secondary">
-        Connect your accounts and organize them with tags. Configure brief delivery in the Brief Configuration section.
+        Connect your accounts to automatically pull in data (inputs) or push out tasks and updates (outputs). Organize them with tags and configure what gets processed.
       </p>
 
       {/* First-Time Helper Banner */}
@@ -68,7 +63,7 @@ const IntegrationsSection = () => {
             <div>
               <h3 className="font-medium text-text-primary">Multiple accounts detected</h3>
               <p className="text-sm text-text-secondary mt-1">
-                Great! You can organize these accounts with tags and configure separate briefs in Brief Configuration.
+                Great! You can organize these accounts with tags and configure what data gets processed.
               </p>
             </div>
           </div>
@@ -113,38 +108,11 @@ const IntegrationsSection = () => {
         />
       )}
 
-      {/* Available Integrations */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-text-primary">Available Integrations</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[
-            { name: "Gmail", provider: "gmail", available: true },
-            { name: "Outlook", provider: "outlook", available: true },
-            { name: "Slack", provider: "slack", available: true },
-            { name: "Google Calendar", provider: "calendar", available: true },
-            { name: "Asana", provider: "asana", available: false },
-            { name: "Notion", provider: "notion", available: false }
-          ].map((integration) => (
-            <Button
-              key={integration.provider}
-              variant="outline"
-              className={`h-20 flex flex-col items-center justify-center space-y-2 ${
-                !integration.available ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-              onClick={() => integration.available && handleAddAccount(integration.provider)}
-              disabled={!integration.available}
-            >
-              <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
-                <span className="text-sm font-bold">{integration.name[0]}</span>
-              </div>
-              <span className="text-sm">{integration.name}</span>
-              {!integration.available && (
-                <span className="text-xs text-text-secondary">Coming Soon</span>
-              )}
-            </Button>
-          ))}
-        </div>
-      </div>
+      {/* Input Integrations */}
+      <InputIntegrationsSection onConnect={handleAddAccount} />
+
+      {/* Output Integrations */}
+      <OutputIntegrationsSection onConnect={handleAddAccount} />
     </div>
   );
 };

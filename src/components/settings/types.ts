@@ -1,4 +1,3 @@
-
 export interface ConnectedAccount {
   id: string;
   provider: string;
@@ -7,6 +6,7 @@ export interface ConnectedAccount {
   tagId: string;
   includeInCombined: boolean;
   connectedAt: Date;
+  type: 'input' | 'output';
 }
 
 export interface Tag {
