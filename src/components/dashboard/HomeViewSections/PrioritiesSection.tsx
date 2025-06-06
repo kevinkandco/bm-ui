@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
+
 const PrioritiesSection = () => {
   const navigate = useNavigate();
 
@@ -13,6 +14,7 @@ const PrioritiesSection = () => {
   const [channelsOpen, setChannelsOpen] = useState(true);
   const [triggersOpen, setTriggersOpen] = useState(true);
   const [integrationsOpen, setIntegrationsOpen] = useState(true);
+
   const priorityPeople = [{
     name: "Sandra Chen",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80",
@@ -49,7 +51,7 @@ const PrioritiesSection = () => {
   const handleOpenSettings = () => {
     navigate("/dashboard/settings");
   };
-  return <div className="p-4">
+  return <div className="p-4 pt-6">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-text-primary font-medium text-base">Priorities</h2>
         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleOpenSettings}>
@@ -142,4 +144,5 @@ const PrioritiesSection = () => {
       </Collapsible>
     </div>;
 };
+
 export default React.memo(PrioritiesSection);
