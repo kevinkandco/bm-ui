@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ConnectedAccountsList from "./ConnectedAccountsList";
 import TagManager from "./TagManager";
-import SplitBriefControls from "./SplitBriefControls";
 import { useIntegrationsState } from "./useIntegrationsState";
 
 const IntegrationsSection = () => {
@@ -22,7 +21,6 @@ const IntegrationsSection = () => {
     updateTag,
     deleteTag,
     mergeTag,
-    updateSplitBriefSettings,
     dismissFirstTimeHelper
   } = useIntegrationsState();
 
@@ -38,7 +36,6 @@ const IntegrationsSection = () => {
   };
 
   const hasMultipleTags = tags.length > 1;
-  const hasActiveSplitBriefs = tags.some(tag => tag.splitBriefEnabled);
 
   return (
     <div className="space-y-6">
@@ -53,8 +50,12 @@ const IntegrationsSection = () => {
         </Button>
       </div>
 
+      <p className="text-text-secondary">
+        Connect your accounts and organize them with tags. Configure brief delivery in the Brief Configuration section.
+      </p>
+
       {/* First-Time Helper Banner */}
-      {showFirstTimeHelper && hasMultipleTags && !hasActiveSplitBriefs && (
+      {showFirstTimeHelper && hasMultipleTags && (
         <div className="relative bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
           <button
             onClick={dismissFirstTimeHelper}
@@ -67,7 +68,7 @@ const IntegrationsSection = () => {
             <div>
               <h3 className="font-medium text-text-primary">Multiple accounts detected</h3>
               <p className="text-sm text-text-secondary mt-1">
-                Looks like you've got multiple inboxes. Want separate briefs for each? Flip the switch next to any tag.
+                Great! You can organize these accounts with tags and configure separate briefs in Brief Configuration.
               </p>
             </div>
           </div>
@@ -109,14 +110,6 @@ const IntegrationsSection = () => {
           onDeleteTag={deleteTag}
           onMergeTag={mergeTag}
           onClose={() => setShowTagManager(false)}
-        />
-      )}
-
-      {/* Split Brief Controls */}
-      {hasMultipleTags && (
-        <SplitBriefControls
-          tags={tags}
-          onUpdateSettings={updateSplitBriefSettings}
         />
       )}
 

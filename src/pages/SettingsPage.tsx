@@ -1,12 +1,13 @@
 
 import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import IntegrationsSection from "@/components/settings/IntegrationsSection";
 import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
+import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -38,6 +39,12 @@ const SettingsPage = () => {
       active: activeSection === "integrations"
     },
     {
+      id: "brief-config",
+      icon: Calendar,
+      name: "Brief Configuration",
+      active: activeSection === "brief-config"
+    },
+    {
       id: "feedback",
       icon: Brain,
       name: "Feedback & Training",
@@ -48,12 +55,6 @@ const SettingsPage = () => {
       icon: Bell,
       name: "Notifications",
       active: activeSection === "notifications"
-    },
-    {
-      id: "delivery",
-      icon: Clock,
-      name: "Delivery Schedule",
-      active: activeSection === "delivery"
     },
     {
       id: "privacy",
@@ -67,6 +68,8 @@ const SettingsPage = () => {
     switch (activeSection) {
       case "integrations":
         return <IntegrationsSection />;
+      case "brief-config":
+        return <BriefConfigurationSection />;
       case "feedback":
         return <FeedbackTrainingSection />;
       case "profile":
