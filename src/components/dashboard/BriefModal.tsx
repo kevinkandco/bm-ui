@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import {
   Pause,
   Bookmark,
   BookmarkPlus,
+  X,SkipForward, SkipBack, Volume2, Download, Share, ThumbsUp, ThumbsDown
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
@@ -31,6 +32,11 @@ import { useApi } from "@/hooks/useApi";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import BriefModalSkeleton from "./BriefModalSkeleton";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import ActionItemFeedback from "./ActionItemFeedback";
+import AddMissingContent from "./AddMissingContent";
+import { useFeedbackTracking } from "./useFeedbackTracking";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
@@ -39,238 +45,23 @@ interface BriefModalProps {
   briefId: number;
 }
 
-interface AudioWaveProps {
-  isPlaying: boolean;
-  currentTime?: number;
-  duration?: number;
-  barRef?: React.RefObject<HTMLDivElement>;
-  formatDuration: (durationSeconds: number) => string;
-  handleSeekStart: (e: React.MouseEvent) => void;
-  handleSeekMove: (e: React.MouseEvent) => void;
-  handleSeekEnd: () => void;
-}
-
-const AudioWave = ({
-  isPlaying,
-  currentTime = 28,
-  duration = 63,
-  barRef,
-  formatDuration,
-  handleSeekStart,
-  handleSeekMove,
-  handleSeekEnd,
-}: AudioWaveProps) => {
-  const [bookmarks, setBookmarks] = useState<number[]>([15, 35]);
-
-  const addBookmark = () => {
-    if (!bookmarks.includes(currentTime)) {
-      setBookmarks([...bookmarks, currentTime].sort((a, b) => a - b));
-    }
-  };
-
-  // Generate smooth wave points
-  const generateWavePoints = (
-    amplitude: number,
-    frequency: number,
-    phase: number = 0
-  ) => {
-    const points = [];
-    const width = 100; // percentage
-    const steps = 200; // More steps for smoother curve
-
-    for (let i = 0; i <= steps; i++) {
-      const x = (i / steps) * width;
-      const y =
-        50 +
-        amplitude * Math.sin((i / steps) * frequency * Math.PI * 2 + phase);
-      points.push(`${x},${y}`);
-    }
-    return points.join(" ");
-  };
-
-  const currentProgress = (currentTime / duration) * 100;
-
-  return (
-    <div className="relative w-full">
-      {/* Smooth Wave Visualization */}
-      <div
-        ref={barRef}
-        className="h-16 w-full relative overflow-hidden rounded-lg bg-gray-900/30 border border-gray-700/40"
-        onMouseDown={handleSeekStart}
-        onMouseMove={handleSeekMove}
-        onMouseUp={handleSeekEnd}
-        onMouseLeave={handleSeekEnd}
-      >
-        <svg
-          className="w-full h-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          {/* Background waves - multiple layers for depth */}
-          <polyline
-            points={generateWavePoints(12, 3, 0)}
-            fill="none"
-            stroke="rgba(107, 114, 128, 0.2)"
-            strokeWidth="0.5"
-            className={isPlaying ? "animate-pulse" : ""}
-          />
-          <polyline
-            points={generateWavePoints(8, 5, Math.PI / 4)}
-            fill="none"
-            stroke="rgba(107, 114, 128, 0.25)"
-            strokeWidth="0.8"
-            className={isPlaying ? "animate-pulse" : ""}
-            style={{ animationDelay: "0.2s" }}
-          />
-          <polyline
-            points={generateWavePoints(15, 2, Math.PI / 2)}
-            fill="none"
-            stroke="rgba(107, 114, 128, 0.15)"
-            strokeWidth="0.3"
-            className={isPlaying ? "animate-pulse" : ""}
-            style={{ animationDelay: "0.4s" }}
-          />
-
-          {/* Main active wave - changes color based on progress */}
-          <defs>
-            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset={`${currentProgress}%`} stopColor="#10B981" />
-              <stop
-                offset={`${currentProgress}%`}
-                stopColor="rgba(107, 114, 128, 0.4)"
-              />
-            </linearGradient>
-          </defs>
-
-          <polyline
-            points={generateWavePoints(20, 4, 0)}
-            fill="none"
-            stroke="url(#waveGradient)"
-            strokeWidth="2"
-            className={`transition-all duration-300 ${
-              isPlaying ? "animate-pulse" : ""
-            }`}
-            style={{
-              filter: isPlaying
-                ? "drop-shadow(0 0 8px rgba(16, 185, 129, 0.6))"
-                : "",
-              animationDuration: "1.5s",
-            }}
-          />
-
-          {/* Flowing overlay wave when playing */}
-          {isPlaying && (
-            <polyline
-              points={generateWavePoints(25, 3, 0)}
-              fill="none"
-              stroke="rgba(16, 185, 129, 0.4)"
-              strokeWidth="1.5"
-              className="animate-pulse"
-              style={{
-                animationDuration: "2s",
-                filter: "drop-shadow(0 0 4px rgba(16, 185, 129, 0.8))",
-              }}
-            />
-          )}
-
-          {/* Progress indicator line */}
-          <line
-            x1={currentProgress}
-            y1="0"
-            x2={currentProgress}
-            y2="100"
-            stroke="#E5E7EB"
-            strokeWidth="0.8"
-            opacity="0.9"
-          />
-        </svg>
-
-        {/* Bookmarks */}
-        {bookmarks.map((bookmark) => (
-          <div
-            key={bookmark}
-            className="absolute top-0 w-0.5 h-16 bg-amber-400 rounded-full"
-            style={{ left: `${(bookmark / duration) * 100}%` }}
-          >
-            <div className="absolute -top-1 -left-1.5 w-3 h-3 bg-amber-400 rounded-full flex items-center justify-center">
-              <Bookmark className="w-1.5 h-1.5 text-amber-900" />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Time labels and topics */}
-      <div className="flex justify-between text-xs text-gray-400 mt-2">
-        <div>{formatDuration(currentTime)}</div>
-        <div className="hidden sm:flex flex-1 justify-around px-4">
-          <div
-            className="text-emerald-400 text-xs cursor-pointer hover:text-emerald-300 transition-colors"
-            onClick={() => setBookmarks([...bookmarks, 18])}
-          >
-            Q4 Planning
-          </div>
-          <div
-            className="text-teal-400 text-xs cursor-pointer hover:text-teal-300 transition-colors"
-            onClick={() => setBookmarks([...bookmarks, 38])}
-          >
-            Project Deadlines
-          </div>
-          <div
-            className="text-red-400 text-xs cursor-pointer hover:text-red-300 transition-colors"
-            onClick={() => setBookmarks([...bookmarks, 52])}
-          >
-            Urgent Email
-          </div>
-        </div>
-        <div>{formatDuration(duration)}</div>
-      </div>
-
-      {/* Mobile topic indicators */}
-      <div className="sm:hidden flex justify-center space-x-4 mt-1 text-xs">
-        <div
-          className="text-emerald-400 cursor-pointer hover:text-emerald-300 transition-colors"
-          onClick={() => setBookmarks([...bookmarks, 18])}
-        >
-          Q4
-        </div>
-        <div
-          className="text-teal-400 cursor-pointer hover:text-teal-300 transition-colors"
-          onClick={() => setBookmarks([...bookmarks, 38])}
-        >
-          Deadlines
-        </div>
-        <div
-          className="text-red-400 cursor-pointer hover:text-red-300 transition-colors"
-          onClick={() => setBookmarks([...bookmarks, 52])}
-        >
-          Urgent
-        </div>
-      </div>
-
-      {/* Bookmark button */}
-      <div className="absolute -top-8 right-0">
-        <Button
-          size="icon"
-          variant="outline"
-          className="h-6 w-6 border-amber-400/40 hover:bg-amber-400/10 transition-colors"
-          onClick={addBookmark}
-        >
-          <BookmarkPlus className="h-3 w-3 text-amber-400" />
-        </Button>
-      </div>
-    </div>
-  );
-};
-
 const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
   const [showTranscript, setShowTranscript] = useState(false);
   const [showMessageTranscript, setMessageTranscript] = useState({
     open: false,
     message: "",
   });
-  const [brief, setBrief] = useState<Summary | null>(null);
+  const [briefData, setBriefData] = useState<Summary | null>(null);
+  const [currentSection, setCurrentSection] = useState(0);
+  const [feedbackState, setFeedbackState] = useState<'none' | 'up' | 'down'>('none');
+  const [showCommentInput, setShowCommentInput] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [comment, setComment] = useState("");
+  const [showTooltip, setShowTooltip] = useState(false);
   const { getUnreadCount } = useBriefStore();
+  const { handleSummaryFeedback, handleActionRelevance, handleAddMissingContent } = useFeedbackTracking();
+  const { call } = useApi();
+  const { toast } = useToast();
   const {
     audioRef,
     isPlaying,
@@ -285,12 +76,11 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     handleSeekEnd,
     handleSeekMove,
   } = useAudioPlayer(
-    brief?.audioPath ? BaseURL + brief?.audioPath : null,
+    briefData?.audioPath ? BaseURL + briefData?.audioPath : null,
     false
   );
-  const { call } = useApi();
-  const { toast } = useToast();
-  const getBrief = useCallback(async (): Promise<void> => {
+
+  const getBriefData = useCallback(async (): Promise<void> => {
     setLoading(true);
 
     const response = await call("get", `/api/summary/${briefId}/show`, {
@@ -301,7 +91,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     });
 
     if (response) {
-      setBrief(response?.data);
+      setBriefData(response?.data);
       getUnreadCount();
     }
 
@@ -310,7 +100,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
   useEffect(() => {
     if (briefId) {
-      getBrief();
+      getBriefData();
     }
 
     return () => {
@@ -320,9 +110,30 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
         message: '',
       });
 
-      setBrief(null);
+      setBriefData(null);
     };
-  }, [briefId, getBrief]);
+  }, [briefId, getBriefData]);
+
+  // Sample data matching the image
+
+  const sections = useMemo(() => briefData?.sections || [], [briefData?.sections]);
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // useEffect(() => {
+  //   let interval: NodeJS.Timeout;
+  //   if (isPlaying) {
+  //     interval = setInterval(() => {
+  //       setCurrentTime(prev => {
+  //         if (prev >= duration) {
+  //           setIsPlaying(false);
+  //           return duration;
+  //         }
+  //         return prev + 1;
+  //       });
+  //     }, 1000);
+  //   }
+  //   return () => clearInterval(interval);
+  // }, [isPlaying, duration]);
 
   const handleClose = () => {
     setShowTranscript(false);
@@ -355,7 +166,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
   const handlePlayStopBrief = useCallback(
       () => {
-        if (!brief?.audioPath) {
+        if (!briefData?.audioPath) {
           toast({
             title: "Audio not found",
             description: `Audio not found, please try again`,
@@ -365,336 +176,363 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
         }
         handlePlayPause();
       },
-      [toast, handlePlayPause, brief?.audioPath]
+      [toast, handlePlayPause, briefData?.audioPath]
     );
 
-  // const [isPlaying, setIsPlaying] = useState(false);
-
-  // const togglePlayPause = () => {
-  //   setIsPlaying(!isPlaying);
-  // };
-  const timeRange =
-    brief?.start_at && brief?.ended_at
-      ? `${brief?.start_at} - ${brief?.ended_at} Updates`
+    const timeRange =
+    briefData?.start_at && briefData?.ended_at
+      ? `${briefData?.start_at} - ${briefData?.ended_at} Updates`
       : "";
+
+  useEffect(() => {
+    // Update current section based on timestamp
+    const currentSectionIndex = sections.findIndex((section, index) => {
+      const nextSection = sections[index + 1];
+      return currentTime >= section.timestamp && (!nextSection || currentTime < nextSection.timestamp);
+    });
+    if (currentSectionIndex !== -1) {
+      setCurrentSection(currentSectionIndex);
+    }
+  }, [currentTime, sections]);
+
+  useEffect(() => {
+    // Hide tooltip after 3 seconds or 3 interactions
+    if (showTooltip) {
+      const timer = setTimeout(() => setShowTooltip(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showTooltip]);
+
+  // const togglePlayback = () => setIsPlaying(!isPlaying);
+
+  // const skipToSection = (sectionIndex: number) => {
+  //   setCurrentTime(sections[sectionIndex].timestamp);
+  //   setCurrentSection(sectionIndex);
+  // };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleFeedback = async (type: 'up' | 'down') => {
+    if (feedbackState !== 'none') return;
+    
+    setFeedbackState(type);
+    
+    if (type === 'up') {
+      await handleSummaryFeedback(briefData.id, 'up');
+    } else {
+      setShowCommentInput(true);
+    }
+  };
+
+  const handleCommentSubmit = async () => {
+    if (comment.trim()) {
+      await handleSummaryFeedback(briefData.id, 'down', comment.trim());
+      setComment("");
+    } else {
+      await handleSummaryFeedback(briefData.id, 'down');
+    }
+    setShowCommentInput(false);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleCommentSubmit();
+    }
+  };
+
+  const handleActionItemRelevance = async (itemId: string, relevant: boolean) => {
+    await handleActionRelevance(briefData.id, itemId, relevant);
+  };
+
+  const handleAddMissing = async (content: string) => {
+    await handleAddMissingContent(briefData.id, content);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] overflow-auto bg-gray-900/95 backdrop-blur-xl border border-gray-700/40 p-0">
-        <div className="flex flex-col h-full">
-          <DialogHeader className="px-4 md:px-6 py-3 border-b border-gray-700/40 flex-shrink-0">
-            <DialogTitle className="text-lg font-medium text-gray-100">
-              Brief Details
-            </DialogTitle>
-          </DialogHeader>
-
-         {brief ? <div className="flex-1 overflow-y-auto">
-            <div className="px-4 md:px-6 py-4 space-y-4">
-              <p className="text-gray-200 text-sm md:text-base">
-                I've been monitoring your channels for{" "}
-                <span className="font-semibold text-emerald-400">{brief?.duration}</span>
-                . Here's a brief of what you missed while you were away:
-              </p>
-               {brief?.status === "failed" && <p className="text-red-500 text-sm md:text-base">
-                Failed to Generate Summary: {brief?.error ? brief?.error : 'Something went wrong'}
-              </p>}
-
-              {/* Summary Cards - More compact */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <div className="bg-gray-800/60 rounded-lg border border-gray-700/40 p-3 shadow-sm">
-                  <h3 className="text-gray-400 text-xs mb-1">
-                    Messages Analyzed
-                  </h3>
-                  <p className="text-xl md:text-2xl font-medium text-gray-100">
-                    {brief?.messagesCount}
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Emails, Threads, Messages
-                  </p>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#1a1f23] border-[#2a3038] text-white overflow-hidden">
+        <ScrollArea className="max-h-[90vh]">
+          <div className="p-6">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-xl font-semibold text-white">{briefData?.title}</h2>
+                  <div className="text-sm text-primary-teal mt-4">{briefData?.duration} summarized in {formatDuration(duration)}</div>
                 </div>
-
-                <div className="bg-gray-800/60 rounded-lg border border-gray-700/40 p-3 shadow-sm">
-                  <h3 className="text-gray-400 text-xs mb-1">
-                    Estimated Time Saved
-                  </h3>
-                  <p className="text-xl md:text-2xl font-medium text-gray-100">
-                    {brief?.savedTime}
-                  </p>
-                  <div className="flex gap-1 mt-1">
-                    <div className="w-4 h-4 bg-gray-700/60 rounded-full flex items-center justify-center">
-                      <span className="text-xs text-gray-300">T</span>
-                    </div>
-                    <div className="w-4 h-4 bg-gray-700/60 rounded-full flex items-center justify-center">
-                      <span className="text-xs text-gray-300">M</span>
-                    </div>
-                    <div className="w-4 h-4 bg-gray-700/60 rounded-full flex items-center justify-center">
-                      <span className="text-xs text-gray-300">S</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-800/60 rounded-lg border border-gray-700/40 p-3 shadow-sm sm:col-span-2 lg:col-span-1">
-                  <h3 className="text-gray-400 text-xs mb-1">Tasks Found</h3>
-                  <p className="text-xl md:text-2xl font-medium text-gray-100">
-                    {brief?.taskCount}
-                  </p>
-                  <p className="text-gray-500 text-xs">Detected and Saved</p>
-                </div>
-              </div>
-
-              {/* Audio Brief Section - More compact */}
-              <div className="bg-gray-800/60 rounded-lg border border-gray-700/40 p-4 shadow-sm">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-2">
-                  <div>
-                    <h3 className="font-semibold text-gray-100 text-sm md:text-base">
-                      Afternoon Catch-up Brief
-                    </h3>
-                    <p className="text-gray-400 text-xs">{timeRange}</p>
-                  </div>
-                  <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full self-start">
-                     {brief?.duration} summarized in {formatDuration(duration)}
-                  </span>
-                </div>
-
-                <p className="text-xs text-gray-300 mb-3">
-                  A summary of{" "}
-                  <span className="font-medium">5 important messages</span> from
-                  Slack and <span className="font-medium">3 emails</span>{" "}
-                  requiring your attention. Key topics include the Q4 planning
-                  meeting and project deadlines.
-                </p>
-
-                {/* Audio Wave Component */}
-                <div className="mb-3 relative">
-                  <AudioWave
-                    isPlaying={isPlaying}
-                    currentTime={currentTime}
-                    duration={duration}
-                    formatDuration={formatDuration}
-                    barRef={barRef}
-                    handleSeekStart={handleSeekStart}
-                    handleSeekMove={handleSeekMove}
-                    handleSeekEnd={handleSeekEnd}
-                  />
-                  <Audio
-                    audioSrc={
-                      brief?.audioPath ? BaseURL + brief?.audioPath : null
-                    }
-                    audioRef={audioRef}
-                    handleTimeUpdate={handleTimeUpdate}
-                  />
-                </div>
-
-                {/* Audio controls - More compact */}
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-teal-400 border-gray-600/50 hover:bg-gray-700/50 w-full sm:w-auto text-xs h-7"
-                  >
-                    Skip Section
-                  </Button>
-
+                <div className="text-sm text-gray-400 mb-3">{timeRange}</div>
+                <p className="text-gray-300 mb-4">{briefData?.description}</p>
+                
+                {/* Feedback Controls */}
+                <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
                     <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-6 w-6 border-gray-600/50 hover:bg-gray-700/50"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleFeedback('up')}
+                      disabled={feedbackState !== 'none'}
+                      className={`h-8 w-8 p-0 transition-all ${
+                        feedbackState === 'up' 
+                          ? 'bg-green-500/20 text-green-400' 
+                          : 'text-gray-400 hover:text-green-400'
+                      }`}
                     >
-                      <ArrowDown className="h-3 w-3 text-gray-300" />
+                      <ThumbsUp className="h-4 w-4" />
                     </Button>
                     <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-6 w-6 border-gray-600/50 hover:bg-gray-700/50"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleFeedback('down')}
+                      disabled={feedbackState !== 'none'}
+                      className={`h-8 w-8 p-0 transition-all ${
+                        feedbackState === 'down' 
+                          ? 'bg-red-500/20 text-red-400' 
+                          : 'text-gray-400 hover:text-red-400'
+                      }`}
                     >
-                      <ArrowUp className="h-3 w-3 text-gray-300" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-8 w-8 rounded-full border-emerald-500 bg-emerald-500/20 hover:bg-emerald-500/30"
-                      onClick={handlePlayStopBrief}
-                    >
-                      {isPlaying ? (
-                        <Pause className="h-3 w-3 text-emerald-400" />
-                      ) : (
-                        <Play className="h-3 w-3 text-emerald-400" />
-                      )}
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-6 w-6 border-gray-600/50 hover:bg-gray-700/50"
-                    >
-                      <ArrowDown className="h-3 w-3 text-gray-300" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-6 w-6 border-gray-600/50 hover:bg-gray-700/50"
-                    >
-                      <ArrowUp className="h-3 w-3 text-gray-300" />
+                      <ThumbsDown className="h-4 w-4" />
                     </Button>
                   </div>
 
-                  <span className="text-xs font-medium text-gray-300">
-                    {formatDuration(duration)}
-                  </span>
+                  {/* Feedback Badge */}
+                  {feedbackState === 'up' && (
+                    <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-400 border-green-500/40">
+                      Rated 👍
+                    </Badge>
+                  )}
+                  {feedbackState === 'down' && !showCommentInput && (
+                    <Badge variant="secondary" className="text-xs bg-red-500/20 text-red-400 border-red-500/40">
+                      Rated 👎
+                    </Badge>
+                  )}
                 </div>
 
-                <div className="mt-2 text-center sm:text-right">
-                  <Button
-                    variant="link"
-                    className="text-teal-400 hover:text-teal-300 text-xs p-0 h-auto"
-                    onClick={handleTranscriptOpen}
-                  >
-                    View Transcript
-                  </Button>
+                {/* Comment Input for downvote */}
+                {showCommentInput && (
+                  <div className="mt-3 animate-fade-in">
+                    <Input
+                      placeholder="What did we miss?"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      onBlur={handleCommentSubmit}
+                      className="bg-[#1a1f23] border-gray-600 text-white placeholder-gray-400"
+                      autoFocus
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Stats Cards - Smaller */}
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              <div className="bg-[#2a3038] rounded-lg p-3">
+                <div className="text-xs text-gray-400 mb-1">Messages Analyzed</div>
+                <div className="text-lg font-bold text-white">{briefData?.messagesCount}</div>
+                <div className="text-xs text-gray-500">Emails, Threads, Messages</div>
+              </div>
+              <div className="bg-[#2a3038] rounded-lg p-3">
+                <div className="text-xs text-gray-400 mb-1">Estimated Time Saved</div>
+                <div className="text-lg font-bold text-white">{briefData?.savedTime}</div>
+                <div className="text-xs text-gray-500">T M S</div>
+              </div>
+              <div className="bg-[#2a3038] rounded-lg p-3">
+                <div className="text-xs text-gray-400 mb-1">Tasks Found</div>
+                <div className="text-lg font-bold text-white">{briefData?.taskCount}</div>
+                <div className="text-xs text-gray-500">Detected and Saved</div>
+              </div>
+            </div>
+
+            {/* Audio Player - Restored Design */}
+            <div className="bg-[#1a1f23] rounded-lg p-6 mb-6 border border-[#2a3038]">
+              {/* Waveform Visualization */}
+              <div
+              ref={barRef}
+                onMouseDown={handleSeekStart}
+                onMouseMove={handleSeekMove}
+                onMouseUp={handleSeekEnd}
+                onTouchStart={handleSeekStart}
+                onTouchMove={handleSeekMove}
+                onTouchEnd={handleSeekEnd}
+
+              className="relative mb-6 h-16 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent rounded-lg flex items-center justify-center overflow-hidden">
+                {/* Simple waveform representation */}
+                <div className="flex items-center gap-1 h-full w-full">
+                  {Array.from({ length: 100 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`flex-1 bg-gradient-to-t ${
+                        i < (progress / 100) * 100 
+                          ? 'from-primary-teal to-primary-teal/50' 
+                          : 'from-gray-600 to-gray-700'
+                      }`}
+                      style={{
+                        height: `${Math.random() * 40 + 20}%`,
+                      }}
+                    />
+                  ))}
                 </div>
+                <Audio
+                  audioSrc={
+                    briefData?.audioPath ? BaseURL + briefData?.audioPath : null
+                  }
+                  audioRef={audioRef}
+                  handleTimeUpdate={handleTimeUpdate}
+                />
+                
+                {/* Section markers */}
+                {sections.map((section, index) => (
+                  <div
+                    key={index}
+                    className="absolute top-0 bottom-0 w-0.5 bg-yellow-500"
+                    style={{ left: `${(section.timestamp / duration) * 100}%` }}
+                  >
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Current position marker */}
+                <div
+                  className="absolute top-0 bottom-0 w-0.5 bg-white"
+                  style={{ left: `${progress}%` }}
+                />
               </div>
 
-              {brief?.messages && brief?.messages?.length > 0 && (
-                <>
-                  {/* Recent Messages - Compact cards matching home dashboard style */}
-                  <div>
-                    <h3 className="text-base md:text-lg font-semibold text-gray-100 mb-3">
-                      Recent Messages
-                    </h3>
-
-                    {/* Mobile: Compact card layout */}
-                    <div className="block md:hidden space-y-2">
-                      {brief?.messages?.map((message, i) => (
-                        <div
-                          key={i}
-                          className="transition-all duration-300 cursor-pointer rounded-lg overflow-hidden hover:scale-[1.01] bg-gradient-to-r from-gray-800/40 to-gray-700/40 border border-gray-700/40 p-3"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <div className="w-5 h-5 rounded-md bg-gray-800/60 flex items-center justify-center flex-shrink-0">
-                                <span className="text-xs text-gray-300">
-                                  {message.platform}
-                                </span>
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <h4 className="font-medium text-gray-100 text-xs truncate break-all">
-                                  {message.title}
-                                </h4>
-                                <p className="text-gray-400 text-xs truncate break-all">
-                                  {message.sender} • {message.time}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              <span
-                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                  capitalizeFirstLetter(message.priority) ===
-                                  "High"
-                                    ? "bg-red-500/20 text-red-400"
-                                    : capitalizeFirstLetter(
-                                        message.priority
-                                      ) === "Medium"
-                                    ? "bg-orange-500/20 text-orange-400"
-                                    : "bg-emerald-500/20 text-emerald-400"
-                                }`}
-                              >
-                                {capitalizeFirstLetter(message.priority)}
-                              </span>
-                              <Button
-                                variant="link"
-                                className="text-teal-400 p-0 h-auto text-xs hover:text-teal-300"
-                              >
-                                View
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Desktop: Compact table layout */}
-                    <div className="hidden md:block bg-gray-800/40 rounded-lg border border-gray-700/40 shadow-sm overflow-hidden">
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full">
-                          <thead>
-                            <tr className="border-b border-gray-700/40 bg-gray-800/60">
-                              <th className="py-2 px-3 text-left text-xs font-medium text-gray-400">
-                                Platform
-                              </th>
-                              <th className="py-2 px-3 text-left text-xs font-medium text-gray-400">
-                                Message
-                              </th>
-                              <th className="py-2 px-3 text-left text-xs font-medium text-gray-400">
-                                Sender
-                              </th>
-                              <th className="py-2 px-3 text-left text-xs font-medium text-gray-400">
-                                Time
-                              </th>
-                              <th className="py-2 px-3 text-left text-xs font-medium text-gray-400">
-                                Priority
-                              </th>
-                              <th className="py-2 px-3 text-left text-xs font-medium text-gray-400">
-                                Action
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {brief?.messages?.map((message, i) => (
-                              <tr
-                                key={i}
-                                className="border-b border-gray-700/40 hover:bg-gray-800/40 transition-colors"
-                              >
-                                <td className="py-2 px-3">
-                                  <div className="w-5 h-5 rounded-md bg-gray-800/60 flex items-center justify-center">
-                                    <span className="text-xs text-gray-300">
-                                      {message.platform}
-                                    </span>
-                                  </div>
-                                </td>
-                                <td className="py-2 px-3 font-medium text-gray-100 text-sm break-all">
-                                  {message.title}
-                                </td>
-                                <td className="py-2 px-3 text-gray-300 text-sm break-all">
-                                  {message.sender}
-                                </td>
-                                <td className="py-2 px-3 text-gray-400 text-sm break-all">
-                                  {message.time}
-                                </td>
-                                <td className="py-2 px-3">
-                                  <span
-                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                      capitalizeFirstLetter(message.priority) === "High"
-                                        ? "bg-red-500/20 text-red-400"
-                                        : capitalizeFirstLetter(message.priority) === "Medium"
-                                        ? "bg-orange-500/20 text-orange-400"
-                                        : "bg-emerald-500/20 text-emerald-400"
-                                    }`}
-                                  >
-                                    {capitalizeFirstLetter(message.priority)}
-                                  </span>
-                                </td>
-                                <td className="py-2 px-3">
-                                  <Button
-                                    variant="link"
-                                    className="text-teal-400 p-0 h-auto text-sm hover:text-teal-300"
-                                    onClick={() => handleMessageTranscriptOpen(message?.message)}
-                                  >
-                                    View Transcript
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+              {/* Section Labels */}
+              <div className="flex justify-between items-center mb-4 text-sm">
+                <div className="text-gray-400">{formatDuration(currentTime)}</div>
+                {sections.map((section, index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div className={`text-xs ${currentSection === index ? 'text-primary-teal' : 'text-gray-400'}`}>
+                      {section.title}
                     </div>
                   </div>
-                </>
-              )}
+                ))}
+                <div className="text-gray-400">{formatDuration(duration)}</div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+                  <SkipBack className="h-4 w-4" />
+                </Button>
+                <Button onClick={handlePlayStopBrief} size="icon" className="bg-primary-teal hover:bg-primary-teal/80 text-white w-12 h-12">
+                  {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                </Button>
+                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
+                  <SkipForward className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Section Navigation */}
+              <div className="space-y-2 mb-4">
+                {sections.map((section, index) => (
+                  <button
+                    key={index}
+                    // onClick={() => skipToSection(index)}
+                    className={`w-full text-left p-2 rounded transition-colors ${
+                      currentSection === index 
+                        ? 'bg-primary-teal/20 text-primary-teal' 
+                        : 'hover:bg-gray-700 text-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{section.title}</span>
+                      <span className="text-xs text-gray-400">{formatTime(section.timestamp)}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </Button>
+                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                  <Share className="mr-2 h-4 w-4" />
+                  Share
+                </Button>
+                <Button variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
+                  View Transcript
+                </Button>
+              </div>
             </div>
-          </div> : <BriefModalSkeleton />}
-        </div>
+
+            {/* Recent Messages Table */}
+            {(briefData && briefData.messages && briefData.messages.length > 0) && <div className="mb-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Recent Messages</h3>
+              <div className="bg-[#2a3038] rounded-lg overflow-hidden">
+                <div className="grid grid-cols-6 gap-4 p-3 bg-[#1a1f23] text-sm text-gray-400">
+                  <div>Platform</div>
+                  <div>Message</div>
+                  <div>Sender</div>
+                  <div>Time</div>
+                  <div>Priority</div>
+                  <div>Action</div>
+                </div>
+                {briefData?.messages.map((message, index) => (
+                  <div key={index} className="grid grid-cols-6 gap-4 p-3 border-t border-gray-700 text-sm">
+                    <div className="text-white font-mono">{message.platform}</div>
+                    <div className="text-white">{message.title}</div>
+                    <div className="text-gray-300">{message.sender}</div>
+                    <div className="text-gray-400">{message.time}</div>
+                    <div>
+                      <Badge 
+                        variant={capitalizeFirstLetter(message.priority) === 'High' ? 'destructive' : capitalizeFirstLetter(message.priority) === 'Medium' ? 'default' : 'secondary'}
+                        className="text-xs"
+                      >
+                        {capitalizeFirstLetter(message.priority)}
+                      </Badge>
+                    </div>
+                    <div>
+                      <Button variant="ghost" size="sm" className="text-primary-teal hover:text-primary-teal/80 text-xs">
+                        View Transcript
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>}
+
+            {/* Action Items */}
+            {/* <div className="mb-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Action Items</h3>
+              <div className="space-y-3">
+                {briefData.actionItems.map((item) => (
+                  <div key={item.id} className="group flex items-start gap-3 p-3 rounded-lg bg-[#2a3038]">
+                    <div className="w-2 h-2 bg-primary-teal rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white">{item.text}</p>
+                      <Badge 
+                        variant={item.priority === 'high' ? 'destructive' : item.priority === 'medium' ? 'default' : 'secondary'}
+                        className="mt-1"
+                      >
+                        {item.priority} priority
+                      </Badge>
+                    </div>
+                    <ActionItemFeedback 
+                      itemId={item.id}
+                      onRelevanceFeedback={handleActionItemRelevance}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div> */}
+
+            {/* Add Missing Content */}
+            <AddMissingContent onAddContent={handleAddMissing} />
+          </div>
+        </ScrollArea>
       </DialogContent>
-      <ViewTranscript
+      {/* <ViewTranscript
         open={showTranscript || showMessageTranscript?.open}
         summary={
           showTranscript
@@ -702,7 +540,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             : showMessageTranscript.message
         }
         onClose={handleTranscriptClose}
-      />
+      /> */}
     </Dialog>
   );
 };

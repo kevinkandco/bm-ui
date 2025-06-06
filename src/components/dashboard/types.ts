@@ -47,6 +47,12 @@ export interface Summary {
   emailCount: number;
   meetingCount: number;
   actionCount: number;
+  sections:
+    {
+      title: string;
+      timestamp: number;
+      content: string;
+    }[];  // Array of objects, optional
 }
 
 export interface PriorityPeople {

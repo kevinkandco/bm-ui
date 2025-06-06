@@ -1,18 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import Profile from "@/components/settings/Profile";
-// import Notifications from "@/components/settings/Notifications";
-// import DeliverySchedule from "@/components/settings/DeliverySchedule";
-// import PrivacySecurity from "@/components/settings/PrivacySecurity";
-import Integrations from "@/components/settings/Integrations";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Voices from "@/components/settings/modal/Voices";
 import { useApi } from "@/hooks/useApi";
 import useAuthStore from "@/store/useAuthStore";
+import IntegrationsSection from "@/components/settings/IntegrationsSection";
+import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -22,9 +19,17 @@ const SettingsPage = () => {
   const navigate = useNavigate();
   const { call } = useApi();
   const { logout, gotoLogin } = useAuthStore();
+  const [activeSection, setActiveSection] = React.useState("profile");
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
+  };
+
+  const handleSaveSettings = () => {
+    toast({
+      title: "Settings Saved",
+      description: "Your preferences have been updated successfully",
+    });
   };
 
   const settingCategories = [
@@ -32,25 +37,31 @@ const SettingsPage = () => {
       id: "profile",
       icon: User,
       name: "Profile",
-      component: <Profile />
+      active: activeSection === "profile"
+    },
+    {
+      id: "integrations",
+      icon: Zap,
+      name: "Integrations",
+      active: activeSection === "integrations"
+    },
+    {
+      id: "feedback",
+      icon: Brain,
+      name: "Feedback & Training",
+      active: activeSection === "feedback"
     },
     {
       id: "notifications",
       icon: Bell,
       name: "Notifications",
-      // component: <Notifications />
+      active: activeSection === "notifications"
     },
     {
       id: "delivery",
       icon: Clock,
       name: "Delivery Schedule",
-      // component: <DeliverySchedule />
-    },
-    {
-      id: "privacy",
-      icon: Shield,
-      name: "Privacy & Security",
-      // component: <PrivacySecurity />
+      active: activeSection === "delivery"
     },
     {
       id: "voices",
@@ -59,10 +70,10 @@ const SettingsPage = () => {
       component: <Voices />
     },
     {
-      id: "integrations",
-      icon: Zap,
-      name: "Integrations",
-      component: <Integrations />
+      id: "privacy",
+      icon: Shield,
+      name: "Privacy & Security",
+      active: activeSection === "privacy"
     },
     {
       id: "logout",
@@ -111,9 +122,105 @@ const SettingsPage = () => {
     }
   }, [searchParams, handleCategoryClick]);
 
-  const activeComponent = settingCategories.find(
-    category => category.id === activeCategory
-  )?.component;
+  
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case "integrations":
+        return <IntegrationsSection />;
+      case "feedback":
+        return <FeedbackTrainingSection />;
+      case "profile":
+        return (
+          <>
+            <h2 className="text-xl font-semibold text-text-primary mb-6">Profile Settings</h2>
+            
+            <div className="mb-8">
+              <h3 className="text-lg font-medium text-text-primary mb-4">Personal Information</h3>
+              <div className="space-y-4 max-w-2xl">
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">Full Name</label>
+                  <input 
+                    type="text" 
+                    defaultValue="Alex Johnson"
+                    className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">Email Address</label>
+                  <input 
+                    type="email" 
+                    defaultValue="alex.johnson@example.com"
+                    className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">Job Title</label>
+                  <input 
+                    type="text" 
+                    defaultValue="Senior Product Manager"
+                    className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">Department</label>
+                  <input 
+                    type="text" 
+                    defaultValue="Product Development"
+                    className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <Separator className="bg-border-subtle my-8" />
+            
+            <div className="mb-8">
+              <h3 className="text-lg font-medium text-text-primary mb-4">Brief Preferences</h3>
+              <div className="space-y-4 max-w-2xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-text-primary">Daily Briefs</h4>
+                    <p className="text-sm text-text-secondary">Receive a summary of your day every morning</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-white/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-primary"></div>
+                  </label>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-text-primary">Weekly Summaries</h4>
+                    <p className="text-sm text-text-secondary">Get a comprehensive summary at the end of each week</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-white/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-primary"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-end">
+              <Button 
+                onClick={handleSaveSettings}
+                className="shadow-subtle hover:shadow-glow transition-all"
+              >
+                <Save className="mr-2 h-5 w-5" /> Save Changes
+              </Button>
+            </div>
+          </>
+        );
+      default:
+        return (
+          <div className="text-center py-12">
+            <h2 className="text-xl font-semibold text-text-primary mb-2">{settingCategories.find(cat => cat.id === activeSection)?.name}</h2>
+            <p className="text-text-secondary">This section is coming soon.</p>
+          </div>
+        );
+    }
+  };
+
 
   return (
     <DashboardLayout 
@@ -150,7 +257,7 @@ const SettingsPage = () => {
                 {settingCategories.map((category) => (
                   <button 
                     key={category.id}
-                    onClick={() => handleCategoryClick(category.id)}
+                    onClick={() => setActiveSection(category.id)}
                     className={`w-full flex items-center p-3 rounded-xl transition-all ${
                       activeCategory === category.id
                         ? 'bg-white/10 text-white' 
@@ -166,7 +273,7 @@ const SettingsPage = () => {
             
             {/* Settings Content */}
             <div className="md:col-span-3 p-6">
-              {activeComponent}
+              {renderContent()}
             </div>
           </div>
         </div>
