@@ -60,7 +60,6 @@ interface HomeViewProps {
   focusModeExitLoading: boolean;
   onToggleSignOff: () => void;
   onStartFocusMode: (focusTime: number) => void;
-  onSignOffForDay: () => void;
   fetchDashboardData: () => void;
 }
 const HomeView = ({
@@ -72,7 +71,7 @@ const HomeView = ({
   onToggleCatchMeUp,
   onOpenBriefModal,
   onStartFocusMode,
-  onSignOffForDay,
+  onToggleSignOff,
   fetchDashboardData,
 }: HomeViewProps) => {
   const { toast } = useToast();
@@ -319,7 +318,7 @@ const HomeView = ({
                   </div>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={onSignOffForDay}
+                onClick={onToggleSignOff}
                 disabled={status === "focus" || status === "away"}
                 className="text-white-text hover:bg-light-gray-text/10"
               >
@@ -469,7 +468,7 @@ const HomeView = ({
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={onSignOffForDay}
+                  onClick={onToggleSignOff}
                   disabled={status === "focus" || status === "away"}
                   className="text-text-primary hover:bg-white/5"
                 >

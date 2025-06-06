@@ -328,16 +328,18 @@ const Dashboard = () => {
     if (!response) {
       return;
     }
+    fetchDashboardData();
+
     setUiState(prev => ({
       ...prev,
-      userStatus: "away" as UserStatus
+      SignOffModalOpen: false
     }));
     
     toast({
       title: "Signed Off",
       description: "We'll monitor your channels until your next auto-scheduled brief"
     });
-  }, [toast, call]);
+  }, [toast, call, fetchDashboardData]);
 
   const handleCloseEndFocusModal = useCallback(() => {
     setUiState(prev => ({
@@ -402,28 +404,6 @@ const Dashboard = () => {
     }));
   }, []);
 
-  const handleSignOffStart = useCallback(async () => {
-    const response = await call("post", "/api/sign-off", {
-      showToast: true,
-      toastTitle: "Sign Off Failed",
-      toastDescription: "Something went wrong. Please try again later."
-    });
-
-    if (response) {
-      toast({
-        title: "Sign Off Successful",
-        description: "Your sign off has been recorded successfully.",
-      });
-
-      fetchDashboardData();
-      setUiState((prev) => ({
-        ...prev,
-        isSignoff: true,
-        SignOffModalOpen: false,
-      }));
-    }
-  }, [call, fetchDashboardData, toast]);
-
 
   const handleCloseSignOffModal = useCallback(() => {
     setUiState(prev => ({
@@ -482,7 +462,6 @@ const Dashboard = () => {
           focusModeExitLoading={uiState.focusModeExitLoading}
           onToggleSignOff={handleOpenSignOffModal}
           onStartFocusMode={handleStartFocusMode}
-          onSignOffForDay={handleSignOffForDay}
           fetchDashboardData={fetchDashboardData}
         />
       </div>
@@ -496,7 +475,7 @@ const Dashboard = () => {
       />
       <SignOff 
         open={uiState.SignOffModalOpen}
-        onConfirmSignOut={handleSignOffStart}
+        onConfirmSignOut={handleSignOffForDay}
         onClose={handleCloseSignOffModal}
       />
       <CatchMeUp 
