@@ -67,7 +67,6 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     isPlaying,
     currentTime,
     duration,
-    handleTimeUpdate,
     handlePlayPause,
     formatDuration,
     barRef,
@@ -205,10 +204,10 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
   // const togglePlayback = () => setIsPlaying(!isPlaying);
 
-  // const skipToSection = (sectionIndex: number) => {
-  //   setCurrentTime(sections[sectionIndex].timestamp);
-  //   setCurrentSection(sectionIndex);
-  // };
+  const skipToSection = (sectionIndex: number) => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = sections[sectionIndex].timestamp;
+  };
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -381,7 +380,6 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                     briefData?.audioPath ? BaseURL + briefData?.audioPath : null
                   }
                   audioRef={audioRef}
-                  handleTimeUpdate={handleTimeUpdate}
                 />
                 
                 {/* Section markers */}
@@ -435,7 +433,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                 {sections.map((section, index) => (
                   <button
                     key={index}
-                    // onClick={() => skipToSection(index)}
+                    onClick={() => skipToSection(index)}
                     className={`w-full text-left p-2 rounded transition-colors ${
                       currentSection === index 
                         ? 'bg-primary-teal/20 text-primary-teal' 
@@ -460,7 +458,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                   <Share className="mr-2 h-4 w-4" />
                   Share
                 </Button>
-                <Button variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
+                <Button onClick={handleTranscriptOpen} variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
                   View Transcript
                 </Button>
               </div>
@@ -480,10 +478,10 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                 </div>
                 {briefData?.messages.map((message, index) => (
                   <div key={index} className="grid grid-cols-6 gap-4 p-3 border-t border-gray-700 text-sm">
-                    <div className="text-white font-mono">{message.platform}</div>
-                    <div className="text-white">{message.title}</div>
-                    <div className="text-gray-300">{message.sender}</div>
-                    <div className="text-gray-400">{message.time}</div>
+                    <div className="text-white font-mono break-all">{message.platform}</div>
+                    <div className="text-white break-all">{message.title}</div>
+                    <div className="text-gray-300 break-all">{message.sender}</div>
+                    <div className="text-gray-400 break-all">{message.time}</div>
                     <div>
                       <Badge 
                         variant={capitalizeFirstLetter(message.priority) === 'High' ? 'destructive' : capitalizeFirstLetter(message.priority) === 'Medium' ? 'default' : 'secondary'}
@@ -493,7 +491,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                       </Badge>
                     </div>
                     <div>
-                      <Button variant="ghost" size="sm" className="text-primary-teal hover:text-primary-teal/80 text-xs">
+                      <Button onClick={() => handleMessageTranscriptOpen(message?.message)} variant="ghost" size="sm" className="text-primary-teal hover:text-primary-teal/80 text-xs">
                         View Transcript
                       </Button>
                     </div>
@@ -532,15 +530,15 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
           </div>
         </ScrollArea>
       </DialogContent>
-      {/* <ViewTranscript
+      <ViewTranscript
         open={showTranscript || showMessageTranscript?.open}
         summary={
           showTranscript
-            ? brief?.summary
+            ? briefData?.summary
             : showMessageTranscript.message
         }
         onClose={handleTranscriptClose}
-      /> */}
+      />
     </Dialog>
   );
 };
