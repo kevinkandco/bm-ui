@@ -1,151 +1,38 @@
 
-import React, { useState, useEffect } from "react";
-import { X, Play, Pause, SkipForward, SkipBack, Volume2, Download, Share, ThumbsUp, ThumbsDown } from "lucide-react";
+import React, { useState } from "react";
+import { X, Play, Pause, Download, FileText, MessageSquare, Mail, CheckSquare, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import ActionItemFeedback from "./ActionItemFeedback";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import AddMissingContent from "./AddMissingContent";
-import { useFeedbackTracking } from "./useFeedbackTracking";
+import SummaryFeedback from "./SummaryFeedback";
+import ActionItemFeedback from "./ActionItemFeedback";
 
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;
+  briefId?: number;
 }
 
-const BriefModal = ({ open, onClose }: BriefModalProps) => {
+const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
+  const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(183); // 3:03 minutes to match image
-  const [currentSection, setCurrentSection] = useState(0);
-  const [feedbackState, setFeedbackState] = useState<'none' | 'up' | 'down'>('none');
-  const [showCommentInput, setShowCommentInput] = useState(false);
-  const [comment, setComment] = useState("");
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [duration] = useState(180); // 3 minutes in seconds
 
-  const { handleSummaryFeedback, handleActionRelevance, handleAddMissingContent } = useFeedbackTracking();
-
-  // Sample data matching the image
-  const briefData = {
-    id: "1",
-    title: "Afternoon Catch-up Brief",
-    timeRange: "2:00 PM - 4:30 PM Updates",
-    monitoringTime: "1.25 hrs",
-    summary: "A summary of 5 important messages from Slack and 3 emails requiring your attention. Key topics include the Q4 planning meeting and project deadlines.",
-    stats: {
-      messagesAnalyzed: 349,
-      timeSaved: "48 Minutes",
-      tasksFound: 4
-    },
-    sections: [
-      {
-        title: "Q4 Planning",
-        timestamp: 28,
-        content: "Team discussion about quarterly planning and resource allocation"
-      },
-      {
-        title: "Project Deadlines", 
-        timestamp: 45,
-        content: "Multiple deadline updates and timeline adjustments"
-      },
-      {
-        title: "Urgent Email",
-        timestamp: 183,
-        content: "High priority client communication requiring immediate attention"
-      }
-    ],
-    messages: [
-      {
-        platform: "S",
-        title: "Daily Standup Notes",
-        sender: "@devops",
-        time: "08:00 AM",
-        priority: "High"
-      },
-      {
-        platform: "M", 
-        title: "Project Deadline Reminder",
-        sender: "ali@apple.com",
-        time: "09:00 AM",
-        priority: "Medium"
-      },
-      {
-        platform: "M",
-        title: "Urgent Client Request", 
-        sender: "jane@apple.com",
-        time: "10:00 AM",
-        priority: "High"
-      },
-      {
-        platform: "M",
-        title: "Lunch Meeting Agenda",
-        sender: "john@apple.com", 
-        time: "12:00 PM",
-        priority: "Low"
-      },
-      {
-        platform: "M",
-        title: "Feedback on Design Mockup",
-        sender: "design@brief.me",
-        time: "02:00 PM", 
-        priority: "Medium"
-      }
-    ],
-    actionItems: [
-      { id: "1", text: "Review and approve Q4 budget proposal by EOD", priority: "high" },
-      { id: "2", text: "Schedule follow-up meeting with product team", priority: "medium" },
-      { id: "3", text: "Update project timeline based on new requirements", priority: "high" },
-      { id: "4", text: "Send weekly report to stakeholders", priority: "low" }
-    ]
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+    toast({
+      title: isPlaying ? "Brief Paused" : "Playing Brief",
+      description: isPlaying ? "Audio playback paused" : "Audio playback started"
+    });
   };
 
-  const sections = briefData.sections;
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setCurrentTime(prev => {
-          if (prev >= duration) {
-            setIsPlaying(false);
-            return duration;
-          }
-          return prev + 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying, duration]);
-
-  useEffect(() => {
-    // Update current section based on timestamp
-    const currentSectionIndex = sections.findIndex((section, index) => {
-      const nextSection = sections[index + 1];
-      return currentTime >= section.timestamp && (!nextSection || currentTime < nextSection.timestamp);
+  const handleDownload = () => {
+    toast({
+      title: "Downloading Brief",
+      description: "Your brief transcript is being downloaded"
     });
-    if (currentSectionIndex !== -1) {
-      setCurrentSection(currentSectionIndex);
-    }
-  }, [currentTime, sections]);
-
-  useEffect(() => {
-    // Hide tooltip after 3 seconds or 3 interactions
-    if (showTooltip) {
-      const timer = setTimeout(() => setShowTooltip(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showTooltip]);
-
-  const togglePlayback = () => setIsPlaying(!isPlaying);
-
-  const skipToSection = (sectionIndex: number) => {
-    setCurrentTime(sections[sectionIndex].timestamp);
-    setCurrentSection(sectionIndex);
   };
 
   const formatTime = (seconds: number) => {
@@ -154,308 +41,199 @@ const BriefModal = ({ open, onClose }: BriefModalProps) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleFeedback = async (type: 'up' | 'down') => {
-    if (feedbackState !== 'none') return;
-    
-    setFeedbackState(type);
-    
-    if (type === 'up') {
-      await handleSummaryFeedback(briefData.id, 'up');
-    } else {
-      setShowCommentInput(true);
+  // Sample brief data
+  const briefData = {
+    id: briefId,
+    name: "Morning Brief",
+    timeCreated: "Today, 8:00 AM",
+    timeRange: "5:00 AM - 8:00 AM",
+    slackMessages: {
+      total: 12,
+      fromPriorityPeople: 3
+    },
+    emails: {
+      total: 5,
+      fromPriorityPeople: 2
+    },
+    actionItems: 4,
+    timeSaved: {
+      reading: 25,
+      processing: 8,
+      total: 33
     }
   };
 
-  const handleCommentSubmit = async () => {
-    if (comment.trim()) {
-      await handleSummaryFeedback(briefData.id, 'down', comment.trim());
-      setComment("");
-    } else {
-      await handleSummaryFeedback(briefData.id, 'down');
+  React.useEffect(() => {
+    if (isPlaying) {
+      const interval = setInterval(() => {
+        setCurrentTime(prev => {
+          if (prev >= duration) {
+            setIsPlaying(false);
+            return duration;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
     }
-    setShowCommentInput(false);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleCommentSubmit();
-    }
-  };
-
-  const handleActionItemRelevance = async (itemId: string, relevant: boolean) => {
-    await handleActionRelevance(briefData.id, itemId, relevant);
-  };
-
-  const handleAddMissing = async (content: string) => {
-    await handleAddMissingContent(briefData.id, content);
-  };
+  }, [isPlaying, duration]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#1a1f23] border-[#2a3038] text-white overflow-hidden">
-        <ScrollArea className="max-h-[90vh]">
-          <div className="p-6">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-semibold text-white">{briefData.title}</h2>
-                  <div className="text-sm text-primary-teal">{briefData.monitoringTime} summarized in {formatTime(duration)}</div>
-                </div>
-                <div className="text-sm text-gray-400 mb-3">{briefData.timeRange}</div>
-                <p className="text-gray-300 mb-4">{briefData.summary}</p>
-                
-                {/* Feedback Controls */}
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleFeedback('up')}
-                      disabled={feedbackState !== 'none'}
-                      className={`h-8 w-8 p-0 transition-all ${
-                        feedbackState === 'up' 
-                          ? 'bg-green-500/20 text-green-400' 
-                          : 'text-gray-400 hover:text-green-400'
-                      }`}
-                    >
-                      <ThumbsUp className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleFeedback('down')}
-                      disabled={feedbackState !== 'none'}
-                      className={`h-8 w-8 p-0 transition-all ${
-                        feedbackState === 'down' 
-                          ? 'bg-red-500/20 text-red-400' 
-                          : 'text-gray-400 hover:text-red-400'
-                      }`}
-                    >
-                      <ThumbsDown className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  {/* Feedback Badge */}
-                  {feedbackState === 'up' && (
-                    <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-400 border-green-500/40">
-                      Rated 👍
-                    </Badge>
-                  )}
-                  {feedbackState === 'down' && !showCommentInput && (
-                    <Badge variant="secondary" className="text-xs bg-red-500/20 text-red-400 border-red-500/40">
-                      Rated 👎
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Comment Input for downvote */}
-                {showCommentInput && (
-                  <div className="mt-3 animate-fade-in">
-                    <Input
-                      placeholder="What did we miss?"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      onBlur={handleCommentSubmit}
-                      className="bg-[#1a1f23] border-gray-600 text-white placeholder-gray-400"
-                      autoFocus
-                    />
-                  </div>
-                )}
+      <DialogContent className="max-w-4xl h-[90vh] bg-surface border-border-subtle p-0 overflow-hidden">
+        <DialogHeader className="p-6 pb-4 border-b border-border-subtle">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center">
+                <FileText className="h-6 w-6 text-accent-primary" />
               </div>
-              <Button variant="ghost" size="icon" onClick={onClose} className="text-gray-400 hover:text-white ml-4">
-                <X className="h-5 w-5" />
+              <div>
+                <DialogTitle className="text-xl font-semibold text-text-primary">
+                  {briefData.name}
+                </DialogTitle>
+                <p className="text-text-secondary">{briefData.timeCreated}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleDownload} className="border-border-subtle">
+                <Download className="mr-2 h-4 w-4" />
+                Download
+              </Button>
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+        </DialogHeader>
 
-            {/* Stats Cards - Smaller */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              <div className="bg-[#2a3038] rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1">Messages Analyzed</div>
-                <div className="text-lg font-bold text-white">{briefData.stats.messagesAnalyzed}</div>
-                <div className="text-xs text-gray-500">Emails, Threads, Messages</div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-6">
+            {/* Header Stats and Controls */}
+            <div className="space-y-4 mb-6">
+              {/* Range */}
+              <p className="text-text-secondary text-sm">
+                Range: {briefData.timeRange}
+              </p>
+
+              {/* Stats */}
+              <div className="flex items-center gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-accent-primary" />
+                  <span className="text-text-primary">{briefData.slackMessages.total} Slack Messages</span>
+                  <span className="px-2 py-1 bg-accent-primary/20 text-accent-primary rounded-full text-xs">
+                    {briefData.slackMessages.fromPriorityPeople} priority
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-blue-400" />
+                  <span className="text-text-primary">{briefData.emails.total} Emails</span>
+                  <span className="px-2 py-1 bg-blue-400/20 text-blue-400 rounded-full text-xs">
+                    {briefData.emails.fromPriorityPeople} priority
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckSquare className="h-4 w-4 text-orange-400" />
+                  <span className="text-text-primary">{briefData.actionItems} Action Items</span>
+                </div>
               </div>
-              <div className="bg-[#2a3038] rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1">Estimated Time Saved</div>
-                <div className="text-lg font-bold text-white">{briefData.stats.timeSaved}</div>
-                <div className="text-xs text-gray-500">T M S</div>
+
+              {/* Time Saved Breakdown */}
+              <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <Clock className="h-4 w-4" />
+                <span>
+                  Time saved: ~{briefData.timeSaved.reading}min reading + {briefData.timeSaved.processing}min processing = {briefData.timeSaved.total}min total
+                </span>
               </div>
-              <div className="bg-[#2a3038] rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1">Tasks Found</div>
-                <div className="text-lg font-bold text-white">{briefData.stats.tasksFound}</div>
-                <div className="text-xs text-gray-500">Detected and Saved</div>
+
+              {/* Audio Player */}
+              <div className="bg-surface-overlay/50 rounded-xl p-4 border border-border-subtle">
+                <div className="flex items-center gap-4 mb-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handlePlayPause}
+                    className="w-10 h-10 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30"
+                  >
+                    {isPlaying ? (
+                      <Pause className="h-4 w-4 text-accent-primary" />
+                    ) : (
+                      <Play className="h-4 w-4 text-accent-primary" />
+                    )}
+                  </Button>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between text-sm text-text-secondary mb-1">
+                      <span>Audio Brief</span>
+                      <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Waveform Visualization */}
+                <div className="w-full h-12 bg-surface-raised/30 rounded-lg p-2 flex items-center">
+                  <div className="w-full h-full flex items-center justify-center gap-0.5">
+                    {Array.from({ length: 60 }, (_, i) => (
+                      <div
+                        key={i}
+                        className={`w-1 rounded-full transition-all duration-300 ${
+                          isPlaying && (currentTime * 60 / duration) > i
+                            ? 'bg-accent-primary'
+                            : 'bg-surface-raised'
+                        }`}
+                        style={{
+                          height: `${20 + Math.sin(i * 0.3) * 15 + Math.cos(i * 0.1) * 10}%`,
+                          animationDelay: `${i * 50}ms`
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Audio Player - Restored Design */}
-            <div className="bg-[#1a1f23] rounded-lg p-6 mb-6 border border-[#2a3038]">
-              {/* Waveform Visualization */}
-              <div className="relative mb-6 h-16 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent rounded-lg flex items-center justify-center overflow-hidden">
-                {/* Simple waveform representation */}
-                <div className="flex items-center gap-1 h-full w-full">
-                  {Array.from({ length: 100 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`flex-1 bg-gradient-to-t ${
-                        i < (progress / 100) * 100 
-                          ? 'from-primary-teal to-primary-teal/50' 
-                          : 'from-gray-600 to-gray-700'
-                      }`}
-                      style={{
-                        height: `${Math.random() * 40 + 20}%`,
-                      }}
-                    />
+            {/* Brief Content */}
+            <div className="space-y-6">
+              {/* Summary Section */}
+              <div className="border border-border-subtle rounded-xl p-6 bg-surface-overlay/30">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">Executive Summary</h3>
+                <div className="prose prose-invert max-w-none">
+                  <p className="text-text-secondary leading-relaxed">
+                    Your morning brief covers 12 Slack messages and 5 emails from 5:00 AM to 8:00 AM. 
+                    Key highlights include 3 priority messages from your team about the product launch, 
+                    2 urgent emails from stakeholders, and 4 action items that require your attention today.
+                  </p>
+                  <p className="text-text-secondary leading-relaxed mt-4">
+                    The product team shared updates on the upcoming release timeline, with Sarah mentioning 
+                    potential delays in the testing phase. Marketing requests your review of the launch 
+                    materials by 2 PM today. Finance needs approval for Q4 budget allocations.
+                  </p>
+                </div>
+                <SummaryFeedback />
+              </div>
+
+              {/* Action Items Section */}
+              <div className="border border-border-subtle rounded-xl p-6 bg-surface-overlay/30">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">Action Items</h3>
+                <div className="space-y-3">
+                  {[
+                    "Review launch materials for marketing team (Due: 2 PM today)",
+                    "Approve Q4 budget allocations for finance team",
+                    "Respond to Sarah about testing phase timeline concerns",
+                    "Schedule follow-up meeting with product team for next week"
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 bg-surface-raised/50 rounded-lg">
+                      <CheckSquare className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                      <span className="text-text-primary text-sm">{item}</span>
+                    </div>
                   ))}
                 </div>
-                
-                {/* Section markers */}
-                {sections.map((section, index) => (
-                  <div
-                    key={index}
-                    className="absolute top-0 bottom-0 w-0.5 bg-yellow-500"
-                    style={{ left: `${(section.timestamp / duration) * 100}%` }}
-                  >
-                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    </div>
-                  </div>
-                ))}
-                
-                {/* Current position marker */}
-                <div
-                  className="absolute top-0 bottom-0 w-0.5 bg-white"
-                  style={{ left: `${progress}%` }}
-                />
+                <ActionItemFeedback />
               </div>
 
-              {/* Section Labels */}
-              <div className="flex justify-between items-center mb-4 text-sm">
-                <div className="text-gray-400">{formatTime(currentTime)}</div>
-                {sections.map((section, index) => (
-                  <div key={index} className="flex flex-col items-center">
-                    <div className={`text-xs ${currentSection === index ? 'text-primary-teal' : 'text-gray-400'}`}>
-                      {section.title}
-                    </div>
-                  </div>
-                ))}
-                <div className="text-gray-400">{formatTime(duration)}</div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                  <SkipBack className="h-4 w-4" />
-                </Button>
-                <Button onClick={togglePlayback} size="icon" className="bg-primary-teal hover:bg-primary-teal/80 text-white w-12 h-12">
-                  {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                </Button>
-                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                  <SkipForward className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Section Navigation */}
-              <div className="space-y-2 mb-4">
-                {sections.map((section, index) => (
-                  <button
-                    key={index}
-                    onClick={() => skipToSection(index)}
-                    className={`w-full text-left p-2 rounded transition-colors ${
-                      currentSection === index 
-                        ? 'bg-primary-teal/20 text-primary-teal' 
-                        : 'hover:bg-gray-700 text-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">{section.title}</span>
-                      <span className="text-xs text-gray-400">{formatTime(section.timestamp)}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download
-                </Button>
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
-                  <Share className="mr-2 h-4 w-4" />
-                  Share
-                </Button>
-                <Button variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
-                  View Transcript
-                </Button>
-              </div>
+              {/* Add Missing Content */}
+              <AddMissingContent />
             </div>
-
-            {/* Recent Messages Table */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Recent Messages</h3>
-              <div className="bg-[#2a3038] rounded-lg overflow-hidden">
-                <div className="grid grid-cols-6 gap-4 p-3 bg-[#1a1f23] text-sm text-gray-400">
-                  <div>Platform</div>
-                  <div>Message</div>
-                  <div>Sender</div>
-                  <div>Time</div>
-                  <div>Priority</div>
-                  <div>Action</div>
-                </div>
-                {briefData.messages.map((message, index) => (
-                  <div key={index} className="grid grid-cols-6 gap-4 p-3 border-t border-gray-700 text-sm">
-                    <div className="text-white font-mono">{message.platform}</div>
-                    <div className="text-white">{message.title}</div>
-                    <div className="text-gray-300">{message.sender}</div>
-                    <div className="text-gray-400">{message.time}</div>
-                    <div>
-                      <Badge 
-                        variant={message.priority === 'High' ? 'destructive' : message.priority === 'Medium' ? 'default' : 'secondary'}
-                        className="text-xs"
-                      >
-                        {message.priority}
-                      </Badge>
-                    </div>
-                    <div>
-                      <Button variant="ghost" size="sm" className="text-primary-teal hover:text-primary-teal/80 text-xs">
-                        View Transcript
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Action Items */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Action Items</h3>
-              <div className="space-y-3">
-                {briefData.actionItems.map((item) => (
-                  <div key={item.id} className="group flex items-start gap-3 p-3 rounded-lg bg-[#2a3038]">
-                    <div className="w-2 h-2 bg-primary-teal rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white">{item.text}</p>
-                      <Badge 
-                        variant={item.priority === 'high' ? 'destructive' : item.priority === 'medium' ? 'default' : 'secondary'}
-                        className="mt-1"
-                      >
-                        {item.priority} priority
-                      </Badge>
-                    </div>
-                    <ActionItemFeedback 
-                      itemId={item.id}
-                      onRelevanceFeedback={handleActionItemRelevance}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Add Missing Content */}
-            <AddMissingContent onAddContent={handleAddMissing} />
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
