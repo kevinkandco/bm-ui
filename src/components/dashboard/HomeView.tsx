@@ -41,6 +41,7 @@ const HomeView = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [showSchedulingModal, setShowSchedulingModal] = useState(false);
+  const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
 
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
@@ -98,8 +99,9 @@ const HomeView = ({
   }, [toast]);
 
   const handleTeamInterest = useCallback(() => {
+    setWaitlistStatus('added');
     toast({
-      title: "Thank you for your interest!",
+      title: "Added to waitlist!",
       description: "We'll notify you when Brief Me Teams is available"
     });
   }, [toast]);
@@ -406,61 +408,61 @@ const HomeView = ({
             {/* Brief Me Teams - With enhanced blurred background mockups */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
               {/* Enhanced blurred background mockups */}
-              <div className="absolute inset-0 opacity-30 blur-[2px]">
+              <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
                 <div className="grid grid-cols-2 gap-4 h-full p-4">
                   {/* Team card mockup */}
-                  <div className="bg-gradient-to-br from-accent-primary/40 to-accent-primary/60 rounded-xl p-4 shadow-lg">
+                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-xl p-4 shadow-lg">
                     {/* Team header with profile pics */}
                     <div className="flex items-center gap-2 mb-4">
                       <div className="flex -space-x-2">
-                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40"></div>
-                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40"></div>
-                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40"></div>
-                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40 flex items-center justify-center">
-                          <span className="text-xs text-white/80 font-medium">+5</span>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
+                          <span className="text-xs text-white/90 font-medium">+5</span>
                         </div>
                       </div>
                     </div>
                     
                     {/* Team stats bars */}
                     <div className="space-y-3 mb-4">
-                      <div className="bg-white/30 rounded-full h-3 w-full"></div>
-                      <div className="bg-white/25 rounded-full h-3 w-3/4"></div>
-                      <div className="bg-white/20 rounded-full h-3 w-1/2"></div>
+                      <div className="bg-white/40 rounded-full h-3 w-full"></div>
+                      <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
+                      <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
                     </div>
                     
                     {/* Team name */}
-                    <div className="bg-white/40 rounded-lg h-4 w-2/3"></div>
+                    <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
                   </div>
                   
                   {/* Analytics card mockup */}
-                  <div className="bg-gradient-to-br from-surface/80 to-surface/90 rounded-xl p-4 shadow-lg">
+                  <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
                     {/* Chart header */}
-                    <div className="bg-white/30 rounded-lg h-3 w-2/3 mb-4"></div>
+                    <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
                     
                     {/* Mock chart bars - more detailed */}
                     <div className="flex items-end gap-2 h-16 mb-3">
-                      <div className="bg-accent-primary/60 rounded-sm w-3 h-8"></div>
-                      <div className="bg-accent-primary/60 rounded-sm w-3 h-12"></div>
-                      <div className="bg-accent-primary/60 rounded-sm w-3 h-6"></div>
-                      <div className="bg-accent-primary/60 rounded-sm w-3 h-14"></div>
-                      <div className="bg-accent-primary/60 rounded-sm w-3 h-10"></div>
-                      <div className="bg-accent-primary/60 rounded-sm w-3 h-16"></div>
-                      <div className="bg-accent-primary/60 rounded-sm w-3 h-4"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-12"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-6"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-14"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-10"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
                     </div>
                     
                     {/* Analytics labels */}
                     <div className="space-y-2">
-                      <div className="bg-white/25 rounded h-2 w-full"></div>
-                      <div className="bg-white/20 rounded h-2 w-3/4"></div>
-                      <div className="bg-white/15 rounded h-2 w-5/6"></div>
+                      <div className="bg-white/35 rounded h-2 w-full"></div>
+                      <div className="bg-white/30 rounded h-2 w-3/4"></div>
+                      <div className="bg-white/25 rounded h-2 w-5/6"></div>
                     </div>
                   </div>
                 </div>
               </div>
               
               {/* Clear content with better contrast */}
-              <div className="relative z-10 bg-surface-overlay/60 backdrop-blur-sm rounded-xl p-4">
+              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
                 <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   Brief Me Teams
@@ -476,22 +478,12 @@ const HomeView = ({
                   
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Automated onboarding/new hire briefs</p>
+                    <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
                   </div>
                   
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Pre-meeting briefs for your team</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Handoff briefs</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Shared daily briefs</p>
+                    <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
                   </div>
                   
                   <div className="flex items-center gap-3">
@@ -508,9 +500,14 @@ const HomeView = ({
                 <Button 
                   onClick={handleTeamInterest}
                   size="sm" 
-                  className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2 text-sm w-full"
+                  className={`rounded-lg px-4 py-2 text-sm w-full ${
+                    waitlistStatus === 'added' 
+                      ? 'bg-green-600 text-white hover:bg-green-600' 
+                      : 'bg-accent-primary text-white hover:bg-accent-primary/90'
+                  }`}
+                  disabled={waitlistStatus === 'added'}
                 >
-                  I'm interested
+                  {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
                 </Button>
               </div>
             </div>
