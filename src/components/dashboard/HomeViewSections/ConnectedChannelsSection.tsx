@@ -182,8 +182,8 @@ const ConnectedChannelsSection = ({
           </div>
           
           <Button variant="ghost" className="flex items-center gap-2 h-8 px-3" onClick={handleOpenSettings}>
-            <Settings className="h-4 w-4 text-text-secondary" />
             <span className="text-text-secondary text-sm">Settings</span>
+            <Settings className="h-4 w-4 text-text-secondary" />
           </Button>
         </div>
       </TooltipProvider>
