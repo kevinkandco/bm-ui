@@ -15,6 +15,7 @@ import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import ListeningScreen from "./ListeningScreen";
+import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -39,6 +40,8 @@ const HomeView = ({
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
+  const [showSchedulingModal, setShowSchedulingModal] = useState(false);
+
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
@@ -69,6 +72,30 @@ const HomeView = ({
       });
     }
   }, [playingBrief, toast]);
+
+  const handleGetBriefedNow = useCallback(() => {
+    setShowSchedulingModal(true);
+  }, []);
+
+  const handleCloseSchedulingModal = useCallback(() => {
+    setShowSchedulingModal(false);
+  }, []);
+
+  const handleGenerateSummaryWithScheduling = useCallback((timeDescription: string, skipScheduled?: boolean) => {
+    setShowSchedulingModal(false);
+    
+    if (skipScheduled) {
+      toast({
+        title: "Brief Generated",
+        description: "Your catch-up summary is ready and the scheduled brief has been skipped"
+      });
+    } else {
+      toast({
+        title: "Brief Generated", 
+        description: "Your catch-up summary is ready. Your scheduled brief will still arrive on time."
+      });
+    }
+  }, [toast]);
 
   // Sample brief data
   const recentBriefs = [{
@@ -117,6 +144,12 @@ const HomeView = ({
     actionItems: 3,
     hasTranscript: false
   }];
+
+  // Sample upcoming brief data
+  const upcomingBrief = {
+    name: "Midday Brief",
+    scheduledTime: "Today at 12:30 PM"
+  };
 
   // Mobile View
   if (isMobile) {
@@ -337,8 +370,17 @@ const HomeView = ({
                 <h2 className="text-xl font-semibold text-text-primary">Briefs</h2>
               </div>
               
-              {/* Unified Brief Container */}
-              <BriefsContainer briefs={recentBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} />
+              {/* Unified Brief Container with upcoming brief */}
+              <BriefsContainer 
+                briefs={recentBriefs} 
+                onViewBrief={onOpenBrief} 
+                onViewTranscript={handleViewTranscript} 
+                onPlayBrief={handlePlayBrief} 
+                playingBrief={playingBrief} 
+                onViewAllBriefs={handleViewAllBriefs}
+                onGetBriefedNow={handleGetBriefedNow}
+                upcomingBrief={upcomingBrief}
+              />
             </div>
           </div>
           
@@ -401,7 +443,17 @@ const HomeView = ({
             </div>
           </div>
         </div>
+
+        {/* Enhanced Catch Me Up Modal with Scheduling Options */}
+        <CatchMeUpWithScheduling
+          open={showSchedulingModal}
+          onClose={handleCloseSchedulingModal}
+          onGenerateSummary={handleGenerateSummaryWithScheduling}
+          upcomingBriefName={upcomingBrief.name}
+          upcomingBriefTime={upcomingBrief.scheduledTime}
+        />
       </div>
     </div>;
 };
+
 export default React.memo(HomeView);

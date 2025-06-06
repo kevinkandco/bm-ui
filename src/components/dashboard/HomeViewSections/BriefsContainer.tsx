@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import BriefCard from "./BriefCard";
+import UpcomingBriefCard from "./UpcomingBriefCard";
 import { Button } from "@/components/ui/button";
 
 interface Brief {
@@ -28,9 +28,23 @@ interface BriefsContainerProps {
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
   onViewAllBriefs: () => void;
+  onGetBriefedNow?: () => void;
+  upcomingBrief?: {
+    name: string;
+    scheduledTime: string;
+  };
 }
 
-const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, playingBrief, onViewAllBriefs }: BriefsContainerProps) => {
+const BriefsContainer = ({ 
+  briefs, 
+  onViewBrief, 
+  onViewTranscript, 
+  onPlayBrief, 
+  playingBrief, 
+  onViewAllBriefs,
+  onGetBriefedNow,
+  upcomingBrief
+}: BriefsContainerProps) => {
   return (
     <Card 
       className="w-full rounded-xl shadow-none border-0" 
@@ -41,6 +55,16 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
     >
       <CardContent className="p-4">
         <div className="space-y-3">
+          {/* Upcoming Brief Card */}
+          {upcomingBrief && onGetBriefedNow && (
+            <UpcomingBriefCard
+              briefName={upcomingBrief.name}
+              scheduledTime={upcomingBrief.scheduledTime}
+              onGetBriefedNow={onGetBriefedNow}
+            />
+          )}
+
+          {/* Existing Brief Cards */}
           {briefs.map((brief, index) => (
             <BriefCard
               key={brief.id}
