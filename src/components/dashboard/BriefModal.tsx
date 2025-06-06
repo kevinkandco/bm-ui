@@ -92,6 +92,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     if (response) {
       setBriefData(response?.data);
       getUnreadCount();
+      setFeedbackState(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : "none");
     }
 
     setLoading(false);

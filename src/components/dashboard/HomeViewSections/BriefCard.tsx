@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,11 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
   
   const { handleSummaryFeedback, handleAddMissingContent } = useFeedbackTracking();
 
+  useEffect(() => {
+    setFeedbackState(brief?.vote ? brief?.vote === "like" ? "up" : "down" : "none");
+  }, [brief?.vote]);
+
+
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
   };
@@ -40,7 +45,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
     setFeedbackState(type);
     
     if (type === 'up') {
-      await handleSummaryFeedback(brief.id.toString(), 'up');
+      await handleSummaryFeedback(brief?.id, 'up');
     } else {
       setShowCommentInput(true);
     }
@@ -48,17 +53,17 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
 
   const handleCommentSubmit = async () => {
     if (comment.trim()) {
-      await handleSummaryFeedback(brief.id.toString(), 'down', comment.trim());
+      await handleSummaryFeedback(brief?.id, 'down', comment.trim());
       setComment("");
     } else {
-      await handleSummaryFeedback(brief.id.toString(), 'down');
+      await handleSummaryFeedback(brief?.id, 'down');
     }
     setShowCommentInput(false);
   };
 
   const handleAddMissingSubmit = async () => {
     if (missingContent.trim()) {
-      await handleAddMissingContent(brief.id.toString(), missingContent.trim());
+      await handleAddMissingContent(brief?.id, missingContent.trim());
       setMissingContent("");
     }
     setShowAddMissing(false);

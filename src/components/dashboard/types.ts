@@ -47,6 +47,7 @@ export interface Summary {
   emailCount: number;
   meetingCount: number;
   actionCount: number;
+  vote: null | 'like' | 'dislike';
   sections:
     {
       title: string;
