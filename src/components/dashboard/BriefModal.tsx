@@ -43,9 +43,10 @@ interface BriefModalProps {
   open: boolean;
   onClose: () => void;
   briefId: number;
+  getRecentBriefs?: () => void;
 }
 
-const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
+const BriefModal = ({ open, onClose, briefId, getRecentBriefs=() => {} }: BriefModalProps) => {
   const [showTranscript, setShowTranscript] = useState(false);
   const [showMessageTranscript, setMessageTranscript] = useState({
     open: false,
@@ -59,7 +60,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
   const [comment, setComment] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
   const { getUnreadCount } = useBriefStore();
-  const { handleSummaryFeedback, handleActionRelevance, handleAddMissingContent } = useFeedbackTracking();
+  const { handleSummaryFeedback, handleActionRelevance, handleAddMissingContent } = useFeedbackTracking(getRecentBriefs);
   const { call } = useApi();
   const { toast } = useToast();
   const {

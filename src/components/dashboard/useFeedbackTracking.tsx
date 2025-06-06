@@ -10,7 +10,7 @@ interface FeedbackEvent {
   timestamp: Date;
 }
 
-export const useFeedbackTracking = () => {
+export const useFeedbackTracking = (callback: () => void = () => {}) => {
   const { call } = useApi();
   const trackFeedback = useCallback(async (event: Omit<FeedbackEvent, 'timestamp'>) => {
     const feedbackEvent: FeedbackEvent = {
@@ -41,9 +41,10 @@ export const useFeedbackTracking = () => {
     const existingFeedback = JSON.parse(localStorage.getItem('briefme_feedback') || '[]');
     existingFeedback.push(feedbackEvent);
     localStorage.setItem('briefme_feedback', JSON.stringify(existingFeedback));
+    callback();
     // In production, this would also send to your analytics service
     // analytics.track(event.type, feedbackEvent);
-  }, [call]);
+  }, [call, callback]);
 
   const handleSummaryFeedback = useCallback((briefId: number, type: 'up' | 'down', comment?: string) => {
     trackFeedback({

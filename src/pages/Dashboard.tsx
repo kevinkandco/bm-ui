@@ -487,6 +487,7 @@ const Dashboard = () => {
         open={uiState.briefModalOpen}
         briefId={uiState.selectedBrief}
         onClose={handleCloseBriefModal}
+        getRecentBriefs={getRecentBriefs}
       />
       <EndFocusModal {...endFocusModalProps} />
       <EndFocusModal {...catchUpModalProps} />
