@@ -51,7 +51,7 @@ const PrioritiesSection = () => {
   const handleOpenSettings = () => {
     navigate("/dashboard/settings");
   };
-  return <div className="p-4 pt-6">
+  return <div className="p-4 pt-8">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-text-primary font-medium text-base">Priorities</h2>
         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleOpenSettings}>
