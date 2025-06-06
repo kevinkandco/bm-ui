@@ -269,7 +269,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
             </div>
 
             {/* Add Missing Content */}
-            {!showAddMissing ? (
+            {/* {!showAddMissing ? (
               <div className="mb-3">
                 <Button
                   variant="ghost"
@@ -295,7 +295,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                   autoFocus
                 />
               </div>
-            )}
+            )} */}
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-2 pt-1">

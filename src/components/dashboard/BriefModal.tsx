@@ -530,7 +530,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
             </div> */}
 
             {/* Add Missing Content */}
-            <AddMissingContent onAddContent={handleAddMissing} />
+            {/* <AddMissingContent onAddContent={handleAddMissing} /> */}
           </div>) : <BriefModalSkeleton />}
         </ScrollArea>
       </DialogContent>
