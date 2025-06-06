@@ -403,7 +403,7 @@ const HomeView = ({
               <PrioritiesSection />
             </div>
             
-            {/* Brief Me Teams - Updated Section without blur effect */}
+            {/* Brief Me Teams - Updated Section with readable text */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
               <div>
                 <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
@@ -451,8 +451,8 @@ const HomeView = ({
                 </div>
               </div>
               
-              {/* Coming Soon Overlay with Interest CTA */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/80 backdrop-blur-sm">
+              {/* Coming Soon Overlay with Interest CTA - No blur effect */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/80">
                 <div className="text-center mb-4">
                   <Users className="h-8 w-8 text-accent-primary mx-auto mb-2" />
                   <p className="text-text-primary font-semibold mb-1">Brief Me Teams</p>
