@@ -403,15 +403,39 @@ const HomeView = ({
               <PrioritiesSection />
             </div>
             
-            {/* Brief Me Teams - Updated Section with feature list and Coming Soon overlay */}
+            {/* Brief Me Teams - With blurred background images and clear content */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-              <div className="blur-sm">
-                <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+              {/* Blurred background images */}
+              <div className="absolute inset-0 opacity-20">
+                <div className="grid grid-cols-2 gap-2 h-full">
+                  <div className="bg-gradient-to-br from-accent-primary/20 to-accent-primary/40 rounded-lg blur-sm p-4">
+                    <div className="bg-white/10 rounded h-16 mb-2"></div>
+                    <div className="space-y-1">
+                      <div className="bg-white/20 rounded h-2 w-3/4"></div>
+                      <div className="bg-white/20 rounded h-2 w-1/2"></div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-surface/40 to-surface/60 rounded-lg blur-sm p-4">
+                    <div className="bg-white/10 rounded h-12 mb-2"></div>
+                    <div className="space-y-2">
+                      <div className="bg-white/20 rounded h-3 w-full"></div>
+                      <div className="bg-white/20 rounded h-3 w-2/3"></div>
+                      <div className="bg-white/20 rounded h-3 w-4/5"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Clear content */}
+              <div className="relative z-10">
+                <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   Brief Me Teams
                 </h2>
                 
-                <div className="space-y-3">
+                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
+                
+                <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
                     <p className="text-sm text-text-primary">AI meeting proxy</p>
@@ -447,20 +471,11 @@ const HomeView = ({
                     <p className="text-sm text-text-primary">and more...</p>
                   </div>
                 </div>
-              </div>
-              
-              {/* Coming Soon Overlay with Interest CTA */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/80">
-                <div className="text-center">
-                  <Users className="h-8 w-8 text-accent-primary mx-auto mb-2" />
-                  <p className="text-text-primary font-semibold mb-1">Brief Me Teams</p>
-                  <p className="text-text-secondary text-xs mb-4">Coming soon...</p>
-                </div>
                 
                 <Button 
                   onClick={handleTeamInterest}
                   size="sm" 
-                  className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2 text-sm"
+                  className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2 text-sm w-full"
                 >
                   I'm interested
                 </Button>
