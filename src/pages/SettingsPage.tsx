@@ -48,6 +48,12 @@ const SettingsPage = () => {
       active: activeSection === "integrations"
     },
     {
+      id: "integrations-ui",
+      icon: Zap,
+      name: "Integrations UI",
+      active: activeSection === "integrations-ui"
+    },
+    {
       id: "feedback",
       icon: Brain,
       name: "Feedback & Training",
@@ -130,6 +136,8 @@ const SettingsPage = () => {
     switch (activeSection) {
       case "integrations":
         return <Integrations />;
+      case "integrations-ui":
+        return <IntegrationsSection />;
       case "feedback":
         return <FeedbackTrainingSection />;
       case "profile":
