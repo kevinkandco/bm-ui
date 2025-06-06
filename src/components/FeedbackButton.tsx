@@ -1,9 +1,9 @@
 import { Star } from "lucide-react";
 
 export default function Component() {
-   
+  
   const handleFeedbackClick = () => {
-    window.open("https://octalinfotech.featurebase.app/");
+    window.open(import.meta.env.VITE_FEEDBACK_PATH, "_blank");
   };
 
   return (
