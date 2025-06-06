@@ -54,9 +54,11 @@ const BriefCard = ({
     processing: 8,
     total: 33
   };
+
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
   };
+
   const handleFeedback = async (type: 'up' | 'down', e: React.MouseEvent) => {
     e.stopPropagation();
     if (feedbackState === type) return; // Already rated
@@ -68,6 +70,7 @@ const BriefCard = ({
       setShowCommentInput(true);
     }
   };
+
   const handleCommentSubmit = async () => {
     if (comment.trim()) {
       await handleSummaryFeedback(brief.id.toString(), 'down', comment.trim());
@@ -77,6 +80,7 @@ const BriefCard = ({
     }
     setShowCommentInput(false);
   };
+
   const handleAddMissingSubmit = async () => {
     if (missingContent.trim()) {
       await handleAddMissingContent(brief.id.toString(), missingContent.trim());
@@ -84,6 +88,7 @@ const BriefCard = ({
     }
     setShowAddMissing(false);
   };
+
   const handleKeyPress = (e: React.KeyboardEvent, type: 'comment' | 'missing') => {
     if (e.key === 'Enter') {
       if (type === 'comment') {
@@ -93,32 +98,38 @@ const BriefCard = ({
       }
     }
   };
-  return <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
-    background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
-  }} onClick={handleCardClick}>
+
+  return (
+    <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
+      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+    }} onClick={handleCardClick}>
       {/* Collapsed Header */}
-      <div className="p-4">
+      <div className="p-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* Play button moved to the left, doc icon removed */}
             <button onClick={e => {
-            e.stopPropagation();
-            onPlayBrief(brief.id);
-          }} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
-              {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
+              e.stopPropagation();
+              onPlayBrief(brief.id);
+            }} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
+              {playingBrief === brief.id ? (
+                <div className="flex items-center gap-0.5">
                   <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                animationDelay: '0ms'
-              }} />
+                    animationDelay: '0ms'
+                  }} />
                   <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
-                animationDelay: '150ms'
-              }} />
+                    animationDelay: '150ms'
+                  }} />
                   <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                animationDelay: '300ms'
-              }} />
+                    animationDelay: '300ms'
+                  }} />
                   <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
-                animationDelay: '450ms'
-              }} />
-                </div> : <Play className="h-5 w-5 text-primary-teal" />}
+                    animationDelay: '450ms'
+                  }} />
+                </div>
+              ) : (
+                <Play className="h-5 w-5 text-primary-teal" />
+              )}
             </button>
             
             <div className="min-w-0 flex-1">
@@ -138,51 +149,73 @@ const BriefCard = ({
                 </div>
 
                 {/* Feedback Badge - Always visible when rated */}
-                {feedbackState === 'up' && <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
+                {feedbackState === 'up' && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
                     👍
-                  </Badge>}
-                {feedbackState === 'down' && !showCommentInput && <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
+                  </Badge>
+                )}
+                {feedbackState === 'down' && !showCommentInput && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
                     👎
-                  </Badge>}
+                  </Badge>
+                )}
               </div>
               
               {/* Updated timestamp and range format */}
               <p className="text-xs text-light-gray-text">
-                Delivered at {brief.timeCreated.split(', ')[1]} • Brief range: {brief.timeRange}
+                Delivered at {brief.timeCreated.split(', ')[1].replace(':00 ', '')} (Summarizing: {brief.timeRange.replace(':00 ', '').replace(':00', '')})
               </p>
             </div>
           </div>
           
-          {/* Grouped right side items with center alignment */}
-          <div className="flex items-center gap-4 flex-shrink-0">
-            {/* Stats group */}
-            <div className="flex items-center gap-4 text-xs text-light-gray-text">
-              <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
-              <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
-              <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
-            </div>
-            
-            {/* Time Saved */}
-            <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-podia-padding">
-              <Clock className="h-2.5 w-2.5 text-green-400" />
-              <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+          {/* Stacked right side items with center alignment */}
+          <div className="flex items-center gap-6 flex-shrink-0">
+            {/* Stacked stats and time saved */}
+            <div className="flex flex-col items-end gap-1">
+              {/* Stats group */}
+              <div className="flex items-center gap-4 text-xs text-light-gray-text">
+                <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
+                <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
+                <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
+              </div>
+              
+              {/* Time Saved */}
+              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-podia-padding">
+                <Clock className="h-2.5 w-2.5 text-green-400" />
+                <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+              </div>
             </div>
             
             {/* Chevron */}
             <div className="ml-2">
-              {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4 text-light-gray-text" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-light-gray-text" />
+              )}
             </div>
           </div>
         </div>
         
         {/* Comment Input for downvote */}
-        {showCommentInput && <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-            <Input placeholder="What did we miss?" value={comment} onChange={e => setComment(e.target.value)} onKeyPress={e => handleKeyPress(e, 'comment')} onBlur={handleCommentSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />
-          </div>}
+        {showCommentInput && (
+          <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+            <Input 
+              placeholder="What did we miss?" 
+              value={comment} 
+              onChange={e => setComment(e.target.value)} 
+              onKeyPress={e => handleKeyPress(e, 'comment')} 
+              onBlur={handleCommentSubmit} 
+              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
+              autoFocus 
+            />
+          </div>
+        )}
       </div>
 
       {/* Expanded Content */}
-      {isExpanded && <div className="px-4 pb-4">
+      {isExpanded && (
+        <div className="px-6 pb-6">
           <div className="border-t border-white/20 pt-3">
             {/* Time Saved Breakdown - Expanded State */}
             <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
@@ -202,9 +235,11 @@ const BriefCard = ({
                     {brief.slackMessages.total} Slack Messages
                   </p>
                 </div>
-                {brief.slackMessages.fromPriorityPeople > 0 && <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                {brief.slackMessages.fromPriorityPeople > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
                     {brief.slackMessages.fromPriorityPeople} priority
-                  </Badge>}
+                  </Badge>
+                )}
               </div>
 
               {/* Emails */}
@@ -215,9 +250,11 @@ const BriefCard = ({
                     {brief.emails.total} Emails
                   </p>
                 </div>
-                {brief.emails.fromPriorityPeople > 0 && <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                {brief.emails.fromPriorityPeople > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
                     {brief.emails.fromPriorityPeople} priority
-                  </Badge>}
+                  </Badge>
+                )}
               </div>
 
               {/* Action Items */}
@@ -232,36 +269,52 @@ const BriefCard = ({
             </div>
 
             {/* Add Missing Content */}
-            {!showAddMissing ? <div className="mb-3">
+            {!showAddMissing ? (
+              <div className="mb-3">
                 <Button variant="ghost" size="sm" onClick={e => {
-            e.stopPropagation();
-            setShowAddMissing(true);
-          }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
+                  e.stopPropagation();
+                  setShowAddMissing(true);
+                }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
                   Add what's missing
                 </Button>
-              </div> : <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-                <Input placeholder="What important information did we miss?" value={missingContent} onChange={e => setMissingContent(e.target.value)} onKeyPress={e => handleKeyPress(e, 'missing')} onBlur={handleAddMissingSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />
-              </div>}
+              </div>
+            ) : (
+              <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+                <Input 
+                  placeholder="What important information did we miss?" 
+                  value={missingContent} 
+                  onChange={e => setMissingContent(e.target.value)} 
+                  onKeyPress={e => handleKeyPress(e, 'missing')} 
+                  onBlur={handleAddMissingSubmit} 
+                  className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
+                  autoFocus 
+                />
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-2 pt-1">
-              {brief.hasTranscript && <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent" onClick={e => {
-            e.stopPropagation();
-            onViewTranscript(brief.id);
-          }}>
+              {brief.hasTranscript && (
+                <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent" onClick={e => {
+                  e.stopPropagation();
+                  onViewTranscript(brief.id);
+                }}>
                   <ExternalLink className="h-3 w-3 mr-1" />
                   Transcript
-                </Button>}
+                </Button>
+              )}
               <Button size="sm" className="h-7 px-4 text-xs rounded-lg bg-primary-teal hover:bg-accent-green" onClick={e => {
-            e.stopPropagation();
-            onViewBrief(brief.id);
-          }}>
+                e.stopPropagation();
+                onViewBrief(brief.id);
+              }}>
                 View Brief
               </Button>
             </div>
           </div>
-        </div>}
-    </div>;
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default React.memo(BriefCard);
