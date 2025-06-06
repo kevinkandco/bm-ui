@@ -405,7 +405,7 @@ const HomeView = ({
             
             {/* Brief Me Teams - Updated Section with readable text */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-              <div>
+              <div className="blur-sm">
                 <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   Brief Me Teams
@@ -416,47 +416,54 @@ const HomeView = ({
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-2">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">AI meeting proxy</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Automated onboarding/new hire briefs</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Pre-meeting briefs for your team</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Handoff briefs</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Shared daily briefs</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Team analytics</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">and more...</p>
+                    <p className="text-sm text-text-primary">Placeholder content</p>
                   </div>
                 </div>
               </div>
               
-              {/* Coming Soon Overlay with Interest CTA - No blur effect */}
+              {/* Coming Soon Overlay with Interest CTA and feature list */}
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/80">
                 <div className="text-center mb-4">
                   <Users className="h-8 w-8 text-accent-primary mx-auto mb-2" />
                   <p className="text-text-primary font-semibold mb-1">Brief Me Teams</p>
-                  <p className="text-text-secondary text-xs">Coming soon...</p>
+                  <p className="text-text-secondary text-xs mb-4">Coming soon...</p>
+                  
+                  <div className="space-y-2 text-left">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                      <p className="text-sm text-text-primary">AI meeting proxy</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                      <p className="text-sm text-text-primary">Automated onboarding/new hire briefs</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                      <p className="text-sm text-text-primary">Pre-meeting briefs for your team</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                      <p className="text-sm text-text-primary">Handoff briefs</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                      <p className="text-sm text-text-primary">Shared daily briefs</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                      <p className="text-sm text-text-primary">Team analytics</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                      <p className="text-sm text-text-primary">and more...</p>
+                    </div>
+                  </div>
                 </div>
                 
                 <Button 
