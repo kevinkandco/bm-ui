@@ -179,18 +179,26 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="flex items-center gap-4 text-xs text-light-gray-text">
-              <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
-              <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
-              <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
+          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4 text-xs text-light-gray-text">
+                <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
+                <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
+                <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
+              </div>
+              <div className="ml-2">
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4 text-light-gray-text" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-light-gray-text" />
+                )}
+              </div>
             </div>
-            <div className="ml-2">
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4 text-light-gray-text" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-light-gray-text" />
-              )}
+            
+            {/* Time Saved - Collapsed State - Moved to right side */}
+            <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded px-1.5 py-0.5">
+              <Clock className="h-2.5 w-2.5 text-green-400" />
+              <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
             </div>
           </div>
         </div>
@@ -198,14 +206,6 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
         {/* Time Range */}
         <div className="text-xs text-light-gray-text mt-2">
           Range: {brief.timeRange}
-        </div>
-
-        {/* Time Saved - Collapsed State */}
-        <div className="flex items-center gap-2 text-xs text-light-gray-text mt-2 bg-green-400/10 rounded-lg px-2 py-1">
-          <Clock className="h-3 w-3 text-green-400" />
-          <span>
-            <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.total}min
-          </span>
         </div>
 
         {/* Comment Input for downvote */}
