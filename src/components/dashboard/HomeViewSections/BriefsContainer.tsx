@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import BriefCard from "./BriefCard";
@@ -29,6 +30,7 @@ interface BriefsContainerProps {
   playingBrief: number | null;
   onViewAllBriefs: () => void;
   onGetBriefedNow?: () => void;
+  onUpdateSchedule?: () => void;
   upcomingBrief?: {
     name: string;
     scheduledTime: string;
@@ -43,6 +45,7 @@ const BriefsContainer = ({
   playingBrief, 
   onViewAllBriefs,
   onGetBriefedNow,
+  onUpdateSchedule,
   upcomingBrief
 }: BriefsContainerProps) => {
   return (
@@ -53,29 +56,40 @@ const BriefsContainer = ({
         boxShadow: 'none'
       }}
     >
-      <CardContent className="p-4">
-        <div className="space-y-3">
-          {/* Upcoming Brief Card */}
-          {upcomingBrief && onGetBriefedNow && (
-            <UpcomingBriefCard
-              briefName={upcomingBrief.name}
-              scheduledTime={upcomingBrief.scheduledTime}
-              onGetBriefedNow={onGetBriefedNow}
-            />
+      <CardContent className="p-3">
+        <div className="space-y-4">
+          {/* Upcoming Briefs Section */}
+          {upcomingBrief && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-white-text/80 px-1">Upcoming</h3>
+              <UpcomingBriefCard
+                briefName={upcomingBrief.name}
+                scheduledTime={upcomingBrief.scheduledTime}
+                onGetBriefedNow={onGetBriefedNow}
+                onUpdateSchedule={onUpdateSchedule}
+              />
+            </div>
           )}
 
-          {/* Existing Brief Cards */}
-          {briefs.map((brief, index) => (
-            <BriefCard
-              key={brief.id}
-              brief={brief}
-              onViewBrief={onViewBrief}
-              onViewTranscript={onViewTranscript}
-              onPlayBrief={onPlayBrief}
-              playingBrief={playingBrief}
-              isLast={index === briefs.length - 1}
-            />
-          ))}
+          {/* Available Briefs Section */}
+          {briefs.length > 0 && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-white-text/80 px-1">Available</h3>
+              <div className="space-y-2">
+                {briefs.map((brief, index) => (
+                  <BriefCard
+                    key={brief.id}
+                    brief={brief}
+                    onViewBrief={onViewBrief}
+                    onViewTranscript={onViewTranscript}
+                    onPlayBrief={onPlayBrief}
+                    playingBrief={playingBrief}
+                    isLast={index === briefs.length - 1}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* View All Briefs link at bottom right */}
           <div className="flex justify-end pt-1">

@@ -379,6 +379,7 @@ const HomeView = ({
                 playingBrief={playingBrief} 
                 onViewAllBriefs={handleViewAllBriefs}
                 onGetBriefedNow={handleGetBriefedNow}
+                onUpdateSchedule={handleUpdateSchedule}
                 upcomingBrief={upcomingBrief}
               />
             </div>
