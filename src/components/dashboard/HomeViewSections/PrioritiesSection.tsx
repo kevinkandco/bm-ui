@@ -1,10 +1,10 @@
-
 import React, { useState } from "react";
 import { Settings, Hash, AlertTriangle, ChevronDown, Slack, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Separator } from "@/components/ui/separator";
 
 const PrioritiesSection = () => {
   const navigate = useNavigate();
@@ -98,6 +98,8 @@ const PrioritiesSection = () => {
         </CollapsibleContent>
       </Collapsible>
 
+      <Separator className="my-3 bg-border-subtle" />
+
       {/* Channels Section */}
       <Collapsible open={channelsOpen} onOpenChange={setChannelsOpen} className="mb-3">
         <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
@@ -125,6 +127,8 @@ const PrioritiesSection = () => {
         </CollapsibleContent>
       </Collapsible>
 
+      <Separator className="my-3 bg-border-subtle" />
+
       {/* Triggers Section */}
       <Collapsible open={triggersOpen} onOpenChange={setTriggersOpen} className="mb-3">
         <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
@@ -147,6 +151,8 @@ const PrioritiesSection = () => {
           </div>
         </CollapsibleContent>
       </Collapsible>
+
+      <Separator className="my-3 bg-border-subtle" />
 
       {/* Integrations Section */}
       <Collapsible open={integrationsOpen} onOpenChange={setIntegrationsOpen}>
