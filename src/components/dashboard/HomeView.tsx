@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -95,6 +95,13 @@ const HomeView = ({
         description: "Your catch-up summary is ready. Your scheduled brief will still arrive on time."
       });
     }
+  }, [toast]);
+
+  const handleTeamInterest = useCallback(() => {
+    toast({
+      title: "Thank you for your interest!",
+      description: "We'll notify you when Brief Me Teams is available"
+    });
   }, [toast]);
 
   // Sample brief data
@@ -396,36 +403,69 @@ const HomeView = ({
               <PrioritiesSection />
             </div>
             
-            {/* Upcoming Meetings - Blurred Coming Soon */}
+            {/* Brief Me Teams - Updated Section */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
               <div className="filter blur-sm">
-                <h2 className="text-lg font-semibold text-text-primary mb-4">Upcoming Meetings</h2>
+                <h2 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Brief Me Teams
+                </h2>
+                
+                <p className="text-sm text-text-secondary mb-4">Coming soon...</p>
                 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-2">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <div>
-                      <p className="font-medium text-text-primary">Weekly Standup</p>
-                      <p className="text-sm text-text-secondary">10:00 AM - 4 attendees</p>
-                    </div>
+                    <p className="text-sm text-text-primary">AI meeting proxy</p>
                   </div>
                   
                   <div className="flex items-center gap-3 p-2">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <div>
-                      <p className="font-medium text-text-primary">Product Review</p>
-                      <p className="text-sm text-text-secondary">1:30 PM - 6 attendees</p>
-                    </div>
+                    <p className="text-sm text-text-primary">Automated onboarding/new hire briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-2">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Pre-meeting briefs for your team</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-2">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Handoff briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-2">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Shared daily briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-2">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Team analytics</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-2">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">and more...</p>
                   </div>
                 </div>
               </div>
               
-              {/* Coming Soon Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center bg-surface/80 backdrop-blur-sm">
-                <div className="text-center">
-                  <p className="text-text-primary font-semibold mb-1">AI Meeting Proxy</p>
+              {/* Coming Soon Overlay with Interest CTA */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/80 backdrop-blur-sm">
+                <div className="text-center mb-4">
+                  <Users className="h-8 w-8 text-accent-primary mx-auto mb-2" />
+                  <p className="text-text-primary font-semibold mb-1">Brief Me Teams</p>
                   <p className="text-text-secondary text-xs">Coming soon...</p>
                 </div>
+                
+                <Button 
+                  onClick={handleTeamInterest}
+                  size="sm" 
+                  className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2 text-sm"
+                >
+                  I'm interested
+                </Button>
               </div>
             </div>
           </div>
