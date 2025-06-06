@@ -253,31 +253,52 @@ const BriefModal = ({ open, onClose, briefId, getRecentBriefs=() => {} }: BriefM
     await handleAddMissingContent(briefData.id, content);
   };
 
-const handleDownload = async () => {
+  const handleDownload = async () => {
+  const downloadUrl = `${BaseURL}/api/summary/${briefData.id}/download-audio`;
+
   try {
-    const response = await call("get", briefData?.audioPath);
+    const response = await fetch(downloadUrl, {
+      method: "GET",
+    });
 
-    const contentType = response.headers.get("Content-Type");
-
-    if (!response.ok || !contentType?.includes("audio")) {
-      const text = await response.text();
-      console.error("Not an audio file, got:", text.slice(0, 200));
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response from server:", errorText.slice(0, 200));
+      toast({
+        title: "Download failed",
+        description: "Download failed: file not found or server error",
+        variant: "destructive",
+      })
       return;
     }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    const contentType = response.headers.get("Content-Type");
+    if (!contentType?.startsWith("audio/")) {
+      const text = await response.text();
+      console.error("Expected audio, got:", text.slice(0, 200));
+      toast({
+        title: "Download failed",
+        description: "Download failed: invalid file type received",
+        variant: "destructive",
+      })
+      return;
+    }
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "summary_2055.mp3";
-    a.click();
-    window.URL.revokeObjectURL(url);
+    // If all checks pass, download the file
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", "audio.mp3");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
   } catch (error) {
-    console.error("Download failed", error);
+    console.error("Download failed due to error:", error);
+    alert("Download failed. Check your internet connection or try again.");
   }
 };
-
 
 
   return (
