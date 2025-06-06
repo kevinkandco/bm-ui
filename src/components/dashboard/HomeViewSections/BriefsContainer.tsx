@@ -70,7 +70,12 @@ const BriefsContainer = ({
             <div className="pt-2">
               <Collapsible open={upcomingOpen} onOpenChange={setUpcomingOpen}>
                 <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
-                  <h3 className="text-sm font-medium text-white-text/80 px-1">Upcoming</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-medium text-white-text/80 px-1">Upcoming</h3>
+                    <span className="text-xs text-white-text/60">
+                      {upcomingBrief.name} • {upcomingBrief.scheduledTime}
+                    </span>
+                  </div>
                   <ChevronDown 
                     className={`h-4 w-4 text-white-text/60 transition-transform duration-200 ${
                       upcomingOpen ? 'transform rotate-180' : ''
