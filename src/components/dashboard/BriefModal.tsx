@@ -264,6 +264,9 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
                   <div className="text-sm text-primary-teal mt-4">{briefData?.duration} summarized in {formatDuration(duration)}</div>
                 </div>
                 <div className="text-sm text-gray-400 mb-3">{timeRange}</div>
+                {briefData?.status === "failed" && <p className="text-red-500 text-sm md:text-base mb-3">
+                  Failed to Generate Summary: {briefData?.error ? briefData?.error : 'Something went wrong'}
+                </p>}
                 <p className="text-gray-300 mb-4">{briefData?.description}</p>
                 
                 {/* Feedback Controls */}
