@@ -403,62 +403,64 @@ const HomeView = ({
               <PrioritiesSection />
             </div>
             
-            {/* Brief Me Teams - With blurred background mockups and clear content */}
+            {/* Brief Me Teams - With enhanced blurred background mockups */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-              {/* Blurred background mockups */}
-              <div className="absolute inset-0 opacity-10 blur-sm">
-                <div className="grid grid-cols-2 gap-3 h-full p-2">
+              {/* Enhanced blurred background mockups */}
+              <div className="absolute inset-0 opacity-30 blur-[2px]">
+                <div className="grid grid-cols-2 gap-4 h-full p-4">
                   {/* Team card mockup */}
-                  <div className="bg-gradient-to-br from-accent-primary/30 to-accent-primary/50 rounded-lg p-3">
+                  <div className="bg-gradient-to-br from-accent-primary/40 to-accent-primary/60 rounded-xl p-4 shadow-lg">
                     {/* Team header with profile pics */}
-                    <div className="flex items-center gap-1 mb-3">
-                      <div className="flex -space-x-1">
-                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20"></div>
-                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20"></div>
-                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20"></div>
-                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20 flex items-center justify-center">
-                          <span className="text-xs text-white/60">+3</span>
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex -space-x-2">
+                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40"></div>
+                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40"></div>
+                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40"></div>
+                        <div className="w-6 h-6 bg-white/60 rounded-full border-2 border-white/40 flex items-center justify-center">
+                          <span className="text-xs text-white/80 font-medium">+5</span>
                         </div>
                       </div>
                     </div>
                     
-                    {/* Team stats */}
-                    <div className="space-y-2 mb-3">
-                      <div className="bg-white/20 rounded h-2 w-3/4"></div>
-                      <div className="bg-white/20 rounded h-2 w-1/2"></div>
+                    {/* Team stats bars */}
+                    <div className="space-y-3 mb-4">
+                      <div className="bg-white/30 rounded-full h-3 w-full"></div>
+                      <div className="bg-white/25 rounded-full h-3 w-3/4"></div>
+                      <div className="bg-white/20 rounded-full h-3 w-1/2"></div>
                     </div>
                     
                     {/* Team name */}
-                    <div className="bg-white/30 rounded h-3 w-2/3"></div>
+                    <div className="bg-white/40 rounded-lg h-4 w-2/3"></div>
                   </div>
                   
                   {/* Analytics card mockup */}
-                  <div className="bg-gradient-to-br from-surface/60 to-surface/80 rounded-lg p-3">
+                  <div className="bg-gradient-to-br from-surface/80 to-surface/90 rounded-xl p-4 shadow-lg">
                     {/* Chart header */}
-                    <div className="bg-white/20 rounded h-2 w-1/2 mb-3"></div>
+                    <div className="bg-white/30 rounded-lg h-3 w-2/3 mb-4"></div>
                     
-                    {/* Mock chart bars */}
-                    <div className="flex items-end gap-1 h-12 mb-2">
-                      <div className="bg-white/30 rounded-sm w-2 h-6"></div>
-                      <div className="bg-white/30 rounded-sm w-2 h-8"></div>
-                      <div className="bg-white/30 rounded-sm w-2 h-4"></div>
-                      <div className="bg-white/30 rounded-sm w-2 h-10"></div>
-                      <div className="bg-white/30 rounded-sm w-2 h-7"></div>
-                      <div className="bg-white/30 rounded-sm w-2 h-9"></div>
+                    {/* Mock chart bars - more detailed */}
+                    <div className="flex items-end gap-2 h-16 mb-3">
+                      <div className="bg-accent-primary/60 rounded-sm w-3 h-8"></div>
+                      <div className="bg-accent-primary/60 rounded-sm w-3 h-12"></div>
+                      <div className="bg-accent-primary/60 rounded-sm w-3 h-6"></div>
+                      <div className="bg-accent-primary/60 rounded-sm w-3 h-14"></div>
+                      <div className="bg-accent-primary/60 rounded-sm w-3 h-10"></div>
+                      <div className="bg-accent-primary/60 rounded-sm w-3 h-16"></div>
+                      <div className="bg-accent-primary/60 rounded-sm w-3 h-4"></div>
                     </div>
                     
                     {/* Analytics labels */}
-                    <div className="space-y-1">
-                      <div className="bg-white/20 rounded h-1.5 w-full"></div>
-                      <div className="bg-white/20 rounded h-1.5 w-2/3"></div>
-                      <div className="bg-white/20 rounded h-1.5 w-4/5"></div>
+                    <div className="space-y-2">
+                      <div className="bg-white/25 rounded h-2 w-full"></div>
+                      <div className="bg-white/20 rounded h-2 w-3/4"></div>
+                      <div className="bg-white/15 rounded h-2 w-5/6"></div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              {/* Clear content */}
-              <div className="relative z-10">
+              {/* Clear content with better contrast */}
+              <div className="relative z-10 bg-surface-overlay/60 backdrop-blur-sm rounded-xl p-4">
                 <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   Brief Me Teams
