@@ -15,6 +15,7 @@ import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import ListeningScreen from "./ListeningScreen";
+
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onToggleFocusMode: () => void;
@@ -333,15 +334,11 @@ const HomeView = ({
             {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Recent Briefs</h2>
-                <Button onClick={handleViewAllBriefs} variant="outline" className="rounded-xl border-border-subtle text-text-primary shadow-sm">
-                  <Archive className="mr-2 h-4 w-4" />
-                  View All Briefs
-                </Button>
+                <h2 className="text-xl font-semibold text-text-primary">Briefs</h2>
               </div>
               
               {/* Unified Brief Container */}
-              <BriefsContainer briefs={recentBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} />
+              <BriefsContainer briefs={recentBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} />
             </div>
           </div>
           

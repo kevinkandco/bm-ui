@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import BriefCard from "./BriefCard";
+import { Button } from "@/components/ui/button";
 
 interface Brief {
   id: number;
@@ -26,9 +27,10 @@ interface BriefsContainerProps {
   onViewTranscript: (briefId: number) => void;
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
+  onViewAllBriefs: () => void;
 }
 
-const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, playingBrief }: BriefsContainerProps) => {
+const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, playingBrief, onViewAllBriefs }: BriefsContainerProps) => {
   return (
     <Card 
       className="w-full rounded-xl shadow-none border-0" 
@@ -50,6 +52,16 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
               isLast={index === briefs.length - 1}
             />
           ))}
+          
+          {/* View All Briefs link at bottom right */}
+          <div className="flex justify-end pt-2">
+            <button 
+              onClick={onViewAllBriefs} 
+              className="text-sm text-text-secondary hover:text-text-primary transition-colors underline"
+            >
+              View all briefs
+            </button>
+          </div>
         </div>
       </CardContent>
     </Card>
