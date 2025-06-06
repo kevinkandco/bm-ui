@@ -9,11 +9,11 @@ import { Separator } from "@/components/ui/separator";
 const PrioritiesSection = () => {
   const navigate = useNavigate();
 
-  // State for collapsible sections
-  const [peopleOpen, setPeopleOpen] = useState(true);
-  const [channelsOpen, setChannelsOpen] = useState(true);
-  const [triggersOpen, setTriggersOpen] = useState(true);
-  const [integrationsOpen, setIntegrationsOpen] = useState(true);
+  // State for collapsible sections - all set to false (closed) by default
+  const [peopleOpen, setPeopleOpen] = useState(false);
+  const [channelsOpen, setChannelsOpen] = useState(false);
+  const [triggersOpen, setTriggersOpen] = useState(false);
+  const [integrationsOpen, setIntegrationsOpen] = useState(false);
 
   const priorityPeople = [{
     name: "Sandra Chen",
