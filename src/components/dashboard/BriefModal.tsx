@@ -252,6 +252,33 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     await handleAddMissingContent(briefData.id, content);
   };
 
+const handleDownload = async () => {
+  try {
+    const response = await call("get", briefData?.audioPath);
+
+    const contentType = response.headers.get("Content-Type");
+
+    if (!response.ok || !contentType?.includes("audio")) {
+      const text = await response.text();
+      console.error("Not an audio file, got:", text.slice(0, 200));
+      return;
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "summary_2055.mp3";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download failed", error);
+  }
+};
+
+
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#1a1f23] border-[#2a3038] text-white overflow-hidden">
@@ -454,7 +481,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
               {/* Action Buttons */}
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
                   <Download className="mr-2 h-4 w-4" />
                   Download
                 </Button>
