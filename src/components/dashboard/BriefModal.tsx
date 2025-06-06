@@ -340,7 +340,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
               </div>
               <div className="bg-[#2a3038] rounded-lg p-3">
                 <div className="text-xs text-gray-400 mb-1">Estimated Time Saved</div>
-                <div className="text-lg font-bold text-white">{briefData?.savedTime}</div>
+                <div className="text-lg font-bold text-white">{briefData?.savedTime} Minutes</div>
                 <div className="text-xs text-gray-500">T M S</div>
               </div>
               <div className="bg-[#2a3038] rounded-lg p-3">
