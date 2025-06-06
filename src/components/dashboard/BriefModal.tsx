@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import AddMissingContent from "./AddMissingContent";
 import SummaryFeedback from "./SummaryFeedback";
 import ActionItemFeedback from "./ActionItemFeedback";
+import { useFeedbackTracking } from "./useFeedbackTracking";
 
 interface BriefModalProps {
   open: boolean;
@@ -19,6 +20,12 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration] = useState(180); // 3 minutes in seconds
+
+  const {
+    handleSummaryFeedback,
+    handleActionRelevance,
+    handleAddMissingContent
+  } = useFeedbackTracking();
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -207,7 +214,10 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                     materials by 2 PM today. Finance needs approval for Q4 budget allocations.
                   </p>
                 </div>
-                <SummaryFeedback />
+                <SummaryFeedback 
+                  briefId={briefData.id.toString()}
+                  onFeedback={handleSummaryFeedback}
+                />
               </div>
 
               {/* Action Items Section */}
@@ -220,17 +230,22 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                     "Respond to Sarah about testing phase timeline concerns",
                     "Schedule follow-up meeting with product team for next week"
                   ].map((item, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-surface-raised/50 rounded-lg">
+                    <div key={index} className="flex items-start gap-3 p-3 bg-surface-raised/50 rounded-lg group">
                       <CheckSquare className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
-                      <span className="text-text-primary text-sm">{item}</span>
+                      <span className="text-text-primary text-sm flex-1">{item}</span>
+                      <ActionItemFeedback 
+                        itemId={`${briefData.id}-${index}`}
+                        onRelevanceFeedback={(itemId, relevant) => handleActionRelevance(briefData.id.toString(), itemId, relevant)}
+                      />
                     </div>
                   ))}
                 </div>
-                <ActionItemFeedback />
               </div>
 
               {/* Add Missing Content */}
-              <AddMissingContent />
+              <AddMissingContent 
+                onAddContent={(content) => handleAddMissingContent(briefData.id.toString(), content)}
+              />
             </div>
           </div>
         </div>
