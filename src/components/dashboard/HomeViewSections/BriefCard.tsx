@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown } from "lucide-react";
+import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,13 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
   const [missingContent, setMissingContent] = useState("");
   
   const { handleSummaryFeedback, handleAddMissingContent } = useFeedbackTracking();
+
+  // Sample time saved data - in a real app this would come from the brief data
+  const timeSaved = {
+    reading: 25,
+    processing: 8,
+    total: 33
+  };
 
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
@@ -193,6 +200,14 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
           Range: {brief.timeRange}
         </div>
 
+        {/* Time Saved - Collapsed State */}
+        <div className="flex items-center gap-2 text-xs text-light-gray-text mt-2 bg-green-400/10 rounded-lg px-2 py-1">
+          <Clock className="h-3 w-3 text-green-400" />
+          <span>
+            <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.total}min
+          </span>
+        </div>
+
         {/* Comment Input for downvote */}
         {showCommentInput && (
           <div className="mt-3 animate-fade-in" onClick={(e) => e.stopPropagation()}>
@@ -213,6 +228,14 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
       {isExpanded && (
         <div className="px-4 pb-4">
           <div className="border-t border-white/20 pt-3">
+            {/* Time Saved Breakdown - Expanded State */}
+            <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
+              <Clock className="h-4 w-4 text-green-400" />
+              <span>
+                <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
+              </span>
+            </div>
+
             {/* Condensed Stats Grid */}
             <div className="grid grid-cols-1 gap-2 mb-3">
               {/* Slack Messages */}
