@@ -1,6 +1,8 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 import BriefCard from "./BriefCard";
 import UpcomingBriefCard from "./UpcomingBriefCard";
 import { Button } from "@/components/ui/button";
@@ -48,6 +50,8 @@ const BriefsContainer = ({
   onUpdateSchedule,
   upcomingBrief
 }: BriefsContainerProps) => {
+  const [upcomingOpen, setUpcomingOpen] = useState(false);
+
   return (
     <Card 
       className="w-full rounded-xl shadow-none border-0" 
@@ -58,17 +62,26 @@ const BriefsContainer = ({
     >
       <CardContent className="p-3">
         <div className="space-y-4">
-          {/* Upcoming Briefs Section */}
+          {/* Upcoming Briefs Section - Collapsible */}
           {upcomingBrief && (
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium text-white-text/80 px-1">Upcoming</h3>
-              <UpcomingBriefCard
-                briefName={upcomingBrief.name}
-                scheduledTime={upcomingBrief.scheduledTime}
-                onGetBriefedNow={onGetBriefedNow}
-                onUpdateSchedule={onUpdateSchedule}
-              />
-            </div>
+            <Collapsible open={upcomingOpen} onOpenChange={setUpcomingOpen}>
+              <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
+                <h3 className="text-sm font-medium text-white-text/80 px-1">Upcoming</h3>
+                <ChevronDown 
+                  className={`h-4 w-4 text-white-text/60 transition-transform duration-200 ${
+                    upcomingOpen ? 'transform rotate-180' : ''
+                  }`} 
+                />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-2 pt-2">
+                <UpcomingBriefCard
+                  briefName={upcomingBrief.name}
+                  scheduledTime={upcomingBrief.scheduledTime}
+                  onGetBriefedNow={onGetBriefedNow}
+                  onUpdateSchedule={onUpdateSchedule}
+                />
+              </CollapsibleContent>
+            </Collapsible>
           )}
 
           {/* Available Briefs Section */}
