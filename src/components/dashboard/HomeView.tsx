@@ -151,6 +151,9 @@ const HomeView = ({
     scheduledTime: "Today at 12:30 PM"
   };
 
+  // Total briefs ever created (this would come from your backend/state in a real app)
+  const totalBriefs = 47;
+
   // Mobile View
   if (isMobile) {
     return <div className="h-screen flex flex-col px-4 py-4 overflow-hidden">
@@ -373,6 +376,7 @@ const HomeView = ({
               {/* Unified Brief Container with upcoming brief */}
               <BriefsContainer 
                 briefs={recentBriefs} 
+                totalBriefs={totalBriefs}
                 onViewBrief={onOpenBrief} 
                 onViewTranscript={handleViewTranscript} 
                 onPlayBrief={handlePlayBrief} 

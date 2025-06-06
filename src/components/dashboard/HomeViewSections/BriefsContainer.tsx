@@ -27,6 +27,7 @@ interface Brief {
 
 interface BriefsContainerProps {
   briefs: Brief[];
+  totalBriefs: number;
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
   onPlayBrief: (briefId: number) => void;
@@ -41,7 +42,8 @@ interface BriefsContainerProps {
 }
 
 const BriefsContainer = ({ 
-  briefs, 
+  briefs,
+  totalBriefs,
   onViewBrief, 
   onViewTranscript, 
   onPlayBrief, 
@@ -111,7 +113,7 @@ const BriefsContainer = ({
           {/* Bottom section with brief count and view all link */}
           <div className="flex justify-between items-center pt-1">
             <span className="text-sm text-text-secondary">
-              {briefs.length} brief{briefs.length !== 1 ? 's' : ''}
+              {totalBriefs} brief{totalBriefs !== 1 ? 's' : ''}
             </span>
             <button 
               onClick={onViewAllBriefs} 
