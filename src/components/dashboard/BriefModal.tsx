@@ -144,11 +144,11 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                 </div>
               </div>
 
-              {/* Time Saved Breakdown */}
-              <div className="flex items-center gap-2 text-sm text-text-secondary">
-                <Clock className="h-4 w-4" />
+              {/* Time Saved Breakdown - Made more prominent */}
+              <div className="flex items-center gap-2 text-sm text-text-secondary bg-surface-overlay/30 rounded-lg px-3 py-2 border border-border-subtle">
+                <Clock className="h-4 w-4 text-green-400" />
                 <span>
-                  Time saved: ~{briefData.timeSaved.reading}min reading + {briefData.timeSaved.processing}min processing = {briefData.timeSaved.total}min total
+                  <span className="text-green-400 font-medium">Time saved:</span> ~{briefData.timeSaved.reading}min reading + {briefData.timeSaved.processing}min processing = <span className="text-green-400 font-medium">{briefData.timeSaved.total}min total</span>
                 </span>
               </div>
 
