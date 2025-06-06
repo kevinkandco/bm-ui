@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Settings, Hash, AlertTriangle, ChevronDown, Slack, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -62,7 +63,10 @@ const PrioritiesSection = () => {
       {/* People Section */}
       <Collapsible open={peopleOpen} onOpenChange={setPeopleOpen} className="mb-3">
         <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
-          <span className="text-xs text-text-secondary font-medium">People</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-secondary font-medium">People</span>
+            <span className="text-xs text-text-secondary bg-surface-raised/30 px-1.5 py-0.5 rounded">{priorityPeople.length}</span>
+          </div>
           <ChevronDown className={`h-3 w-3 text-text-secondary transition-transform ${peopleOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-1">
@@ -88,7 +92,10 @@ const PrioritiesSection = () => {
       {/* Channels Section */}
       <Collapsible open={channelsOpen} onOpenChange={setChannelsOpen} className="mb-3">
         <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
-          <span className="text-xs text-text-secondary font-medium">Channels</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-secondary font-medium">Channels</span>
+            <span className="text-xs text-text-secondary bg-surface-raised/30 px-1.5 py-0.5 rounded">{priorityChannels.length}</span>
+          </div>
           <ChevronDown className={`h-3 w-3 text-text-secondary transition-transform ${channelsOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-1">
@@ -109,7 +116,10 @@ const PrioritiesSection = () => {
       {/* Triggers Section */}
       <Collapsible open={triggersOpen} onOpenChange={setTriggersOpen} className="mb-3">
         <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
-          <span className="text-xs text-text-secondary font-medium">Triggers</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-secondary font-medium">Triggers</span>
+            <span className="text-xs text-text-secondary bg-surface-raised/30 px-1.5 py-0.5 rounded">{priorityTriggers.length}</span>
+          </div>
           <ChevronDown className={`h-3 w-3 text-text-secondary transition-transform ${triggersOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-1">
@@ -130,7 +140,10 @@ const PrioritiesSection = () => {
       {/* Integrations Section */}
       <Collapsible open={integrationsOpen} onOpenChange={setIntegrationsOpen}>
         <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
-          <span className="text-xs text-text-secondary font-medium">Integrations</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-secondary font-medium">Integrations</span>
+            <span className="text-xs text-text-secondary bg-surface-raised/30 px-1.5 py-0.5 rounded">{connectedIntegrations.length}</span>
+          </div>
           <ChevronDown className={`h-3 w-3 text-text-secondary transition-transform ${integrationsOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-1">
