@@ -391,24 +391,6 @@ const HomeView = ({
           
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
-            {/* Next Brief Section - Now first */}
-            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm py-[9px]">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="font-semibold text-text-primary text-base">Next Scheduled Brief</h2>
-              </div>
-              
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="font-medium text-text-primary text-sm">Midday Brief</p>
-                  <p className="text-sm text-text-secondary">Today at 12:30 PM</p>
-                </div>
-              </div>
-              
-              <Button variant="outline" className="w-full rounded-xl border-border-subtle text-text-primary shadow-sm" onClick={handleUpdateSchedule}>
-                Update Schedule
-              </Button>
-            </div>
-
             {/* Priorities Section - Compact */}
             <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
               <PrioritiesSection />
