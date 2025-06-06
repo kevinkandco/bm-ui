@@ -255,7 +255,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#1a1f23] border-[#2a3038] text-white overflow-hidden">
         <ScrollArea className="max-h-[90vh]">
-          <div className="p-6">
+          {briefData ? (<div className="p-6">
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div className="flex-1">
@@ -527,7 +527,7 @@ const BriefModal = ({ open, onClose, briefId }: BriefModalProps) => {
 
             {/* Add Missing Content */}
             <AddMissingContent onAddContent={handleAddMissing} />
-          </div>
+          </div>) : <BriefModalSkeleton />}
         </ScrollArea>
       </DialogContent>
       <ViewTranscript
