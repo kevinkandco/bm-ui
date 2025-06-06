@@ -100,11 +100,7 @@ const HomeView = ({
 
   const handleTeamInterest = useCallback(() => {
     setWaitlistStatus('added');
-    toast({
-      title: "Added to waitlist!",
-      description: "We'll notify you when Brief Me Teams is available"
-    });
-  }, [toast]);
+  }, []);
 
   // Sample brief data
   const recentBriefs = [{
