@@ -105,7 +105,7 @@ const BriefCard = ({
       background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
     }} onClick={handleCardClick}>
       {/* Collapsed Header */}
-      <div className="p-6">
+      <div className="p-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* Play button moved to the left, doc icon removed */}
@@ -164,24 +164,24 @@ const BriefCard = ({
               
               {/* Updated timestamp and range format */}
               <p className="text-xs text-light-gray-text">
-                Delivered at {brief.timeCreated.split(', ')[1].replace(':00 ', '')} (Summarizing: {brief.timeRange.replace(':00 ', '').replace(':00', '')})
+                Delivered at {brief.timeCreated.split(', ')[1].replace(':00 ', '').replace(':00', '')} (Summarizing: {brief.timeRange.replace(':00 ', '').replace(':00', '')})
               </p>
             </div>
           </div>
           
-          {/* Stacked right side items with center alignment */}
+          {/* Vertically stacked right side items with center alignment */}
           <div className="flex items-center gap-6 flex-shrink-0">
             {/* Vertically stacked stats and time saved */}
-            <div className="flex flex-col items-end gap-2">
-              {/* Stats group */}
-              <div className="flex items-center gap-4 text-xs text-light-gray-text">
+            <div className="flex flex-col items-end gap-1">
+              {/* Stats group - Now vertical and more compact */}
+              <div className="flex flex-col items-end gap-0.5 text-xs text-light-gray-text">
                 <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
                 <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
                 <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
               </div>
               
               {/* Time Saved */}
-              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
+              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2 mt-1">
                 <Clock className="h-2.5 w-2.5 text-green-400" />
                 <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
               </div>
@@ -216,7 +216,7 @@ const BriefCard = ({
 
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="px-6 pb-6">
+        <div className="px-8 pb-8">
           <div className="border-t border-white/20 pt-3">
             {/* Time Saved Breakdown - Expanded State */}
             <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
