@@ -20,6 +20,7 @@ const SettingsPage = () => {
   const { call } = useApi();
   const { logout, gotoLogin } = useAuthStore();
   const [activeSection, setActiveSection] = React.useState("profile");
+  console.log(activeSection, "activeSection");
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -221,6 +222,30 @@ const SettingsPage = () => {
     }
   };
 
+  const handleClick = useCallback(async (id: string) => {
+    if (activeSection === id) return;
+
+    if (id === 'logout') {
+       const response = await call("get", "/api/logout", {
+          toastTitle: "Error",
+          toastDescription: "Failed to log out. Please try again.",
+          toastVariant: "destructive",
+        });
+        if (response) {
+          toast({
+            title: "Logged out",
+            description: "You have been successfully logged out.",
+          });
+          logout();
+          gotoLogin();
+          // }
+          return;
+        }
+    }
+
+    setActiveSection(id)
+  }, [activeSection, call, gotoLogin, logout, toast]);
+
 
   return (
     <DashboardLayout 
@@ -257,9 +282,9 @@ const SettingsPage = () => {
                 {settingCategories.map((category) => (
                   <button 
                     key={category.id}
-                    onClick={() => setActiveSection(category.id)}
+                    onClick={() => handleClick(category.id)}
                     className={`w-full flex items-center p-3 rounded-xl transition-all ${
-                      activeCategory === category.id
+                      category.active
                         ? 'bg-white/10 text-white' 
                         : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
                     }`}
