@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useFeedbackTracking } from "../useFeedbackTracking";
+
 interface BriefCardProps {
   brief: {
     id: number;
@@ -27,6 +28,7 @@ interface BriefCardProps {
   playingBrief: number | null;
   isLast?: boolean;
 }
+
 const BriefCard = ({
   brief,
   onViewBrief,
@@ -98,13 +100,11 @@ const BriefCard = ({
       <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-surface-raised/50 flex items-center justify-center flex-shrink-0">
-              <FileText className="h-5 w-5 text-primary-teal" />
-            </div>
+            {/* Play button moved to the left, doc icon removed */}
             <button onClick={e => {
             e.stopPropagation();
             onPlayBrief(brief.id);
-          }} className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
+          }} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
               {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
                   <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
                 animationDelay: '0ms'
@@ -118,8 +118,9 @@ const BriefCard = ({
                   <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
                 animationDelay: '450ms'
               }} />
-                </div> : <Play className="h-3 w-3 text-primary-teal" />}
+                </div> : <Play className="h-5 w-5 text-primary-teal" />}
             </button>
+            
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-semibold text-white-text truncate">
@@ -144,36 +145,36 @@ const BriefCard = ({
                     👎
                   </Badge>}
               </div>
-              <p className="text-xs text-light-gray-text truncate">
-                {brief.timeCreated}
+              
+              {/* Updated timestamp and range format */}
+              <p className="text-xs text-light-gray-text">
+                Delivered at {brief.timeCreated.split(', ')[1]} • Brief range: {brief.timeRange}
               </p>
             </div>
           </div>
-          <div className="flex flex-col items-end gap-1 flex-shrink-0">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-4 text-xs text-light-gray-text">
-                <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
-                <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
-                <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
-              </div>
-              <div className="ml-2">
-                {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
-              </div>
+          
+          {/* Grouped right side items with center alignment */}
+          <div className="flex items-center gap-4 flex-shrink-0">
+            {/* Stats group */}
+            <div className="flex items-center gap-4 text-xs text-light-gray-text">
+              <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
+              <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
+              <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
             </div>
             
-            {/* Time Saved - Collapsed State - Moved to right side */}
-            <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-podia-padding my-[11px]">
+            {/* Time Saved */}
+            <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-podia-padding">
               <Clock className="h-2.5 w-2.5 text-green-400" />
               <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+            </div>
+            
+            {/* Chevron */}
+            <div className="ml-2">
+              {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
             </div>
           </div>
         </div>
         
-        {/* Time Range */}
-        <div className="text-xs text-light-gray-text mt-2 my-0">
-          Range: {brief.timeRange}
-        </div>
-
         {/* Comment Input for downvote */}
         {showCommentInput && <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
             <Input placeholder="What did we miss?" value={comment} onChange={e => setComment(e.target.value)} onKeyPress={e => handleKeyPress(e, 'comment')} onBlur={handleCommentSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />
@@ -262,4 +263,5 @@ const BriefCard = ({
         </div>}
     </div>;
 };
+
 export default React.memo(BriefCard);
