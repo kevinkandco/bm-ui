@@ -403,24 +403,55 @@ const HomeView = ({
               <PrioritiesSection />
             </div>
             
-            {/* Brief Me Teams - With blurred background images and clear content */}
+            {/* Brief Me Teams - With blurred background mockups and clear content */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-              {/* Blurred background images */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="grid grid-cols-2 gap-2 h-full">
-                  <div className="bg-gradient-to-br from-accent-primary/20 to-accent-primary/40 rounded-lg blur-sm p-4">
-                    <div className="bg-white/10 rounded h-16 mb-2"></div>
-                    <div className="space-y-1">
+              {/* Blurred background mockups */}
+              <div className="absolute inset-0 opacity-10 blur-sm">
+                <div className="grid grid-cols-2 gap-3 h-full p-2">
+                  {/* Team card mockup */}
+                  <div className="bg-gradient-to-br from-accent-primary/30 to-accent-primary/50 rounded-lg p-3">
+                    {/* Team header with profile pics */}
+                    <div className="flex items-center gap-1 mb-3">
+                      <div className="flex -space-x-1">
+                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20"></div>
+                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20"></div>
+                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20"></div>
+                        <div className="w-4 h-4 bg-white/40 rounded-full border border-white/20 flex items-center justify-center">
+                          <span className="text-xs text-white/60">+3</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Team stats */}
+                    <div className="space-y-2 mb-3">
                       <div className="bg-white/20 rounded h-2 w-3/4"></div>
                       <div className="bg-white/20 rounded h-2 w-1/2"></div>
                     </div>
+                    
+                    {/* Team name */}
+                    <div className="bg-white/30 rounded h-3 w-2/3"></div>
                   </div>
-                  <div className="bg-gradient-to-br from-surface/40 to-surface/60 rounded-lg blur-sm p-4">
-                    <div className="bg-white/10 rounded h-12 mb-2"></div>
-                    <div className="space-y-2">
-                      <div className="bg-white/20 rounded h-3 w-full"></div>
-                      <div className="bg-white/20 rounded h-3 w-2/3"></div>
-                      <div className="bg-white/20 rounded h-3 w-4/5"></div>
+                  
+                  {/* Analytics card mockup */}
+                  <div className="bg-gradient-to-br from-surface/60 to-surface/80 rounded-lg p-3">
+                    {/* Chart header */}
+                    <div className="bg-white/20 rounded h-2 w-1/2 mb-3"></div>
+                    
+                    {/* Mock chart bars */}
+                    <div className="flex items-end gap-1 h-12 mb-2">
+                      <div className="bg-white/30 rounded-sm w-2 h-6"></div>
+                      <div className="bg-white/30 rounded-sm w-2 h-8"></div>
+                      <div className="bg-white/30 rounded-sm w-2 h-4"></div>
+                      <div className="bg-white/30 rounded-sm w-2 h-10"></div>
+                      <div className="bg-white/30 rounded-sm w-2 h-7"></div>
+                      <div className="bg-white/30 rounded-sm w-2 h-9"></div>
+                    </div>
+                    
+                    {/* Analytics labels */}
+                    <div className="space-y-1">
+                      <div className="bg-white/20 rounded h-1.5 w-full"></div>
+                      <div className="bg-white/20 rounded h-1.5 w-2/3"></div>
+                      <div className="bg-white/20 rounded h-1.5 w-4/5"></div>
                     </div>
                   </div>
                 </div>
