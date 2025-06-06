@@ -104,7 +104,7 @@ const BriefCard = ({
       background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
     }} onClick={handleCardClick}>
       {/* Collapsed Header */}
-      <div className="p-8">
+      <div className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* Play button moved to the left, doc icon removed */}
@@ -215,7 +215,7 @@ const BriefCard = ({
 
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="px-8 pb-8">
+        <div className="px-6 pb-6">
           <div className="border-t border-white/20 pt-3">
             {/* Time Saved Breakdown - Expanded State */}
             <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">

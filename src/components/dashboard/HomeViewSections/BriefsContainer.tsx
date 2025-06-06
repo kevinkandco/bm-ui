@@ -39,8 +39,8 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
         boxShadow: 'none'
       }}
     >
-      <CardContent className="p-6">
-        <div className="space-y-4">
+      <CardContent className="p-4">
+        <div className="space-y-3">
           {briefs.map((brief, index) => (
             <BriefCard
               key={brief.id}
@@ -54,7 +54,7 @@ const BriefsContainer = ({ briefs, onViewBrief, onViewTranscript, onPlayBrief, p
           ))}
           
           {/* View All Briefs link at bottom right */}
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end pt-1">
             <button 
               onClick={onViewAllBriefs} 
               className="text-sm text-text-secondary hover:text-text-primary transition-colors underline"
