@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -170,8 +171,8 @@ const BriefCard = ({
           
           {/* Stacked right side items with center alignment */}
           <div className="flex items-center gap-6 flex-shrink-0">
-            {/* Stacked stats and time saved */}
-            <div className="flex flex-col items-end gap-1">
+            {/* Vertically stacked stats and time saved */}
+            <div className="flex flex-col items-end gap-2">
               {/* Stats group */}
               <div className="flex items-center gap-4 text-xs text-light-gray-text">
                 <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
@@ -180,7 +181,7 @@ const BriefCard = ({
               </div>
               
               {/* Time Saved */}
-              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-podia-padding">
+              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
                 <Clock className="h-2.5 w-2.5 text-green-400" />
                 <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
               </div>
