@@ -17,10 +17,10 @@ import TagSelector from "./TagSelector";
 interface ConnectedAccountsListProps {
   accounts: ConnectedAccount[];
   tags: Tag[];
-  onUpdateTag: (accountId: string, tagId: string) => void;
-  onToggleCombined: (accountId: string) => void;
-  onDisconnect: (accountId: string) => void;
-  onCreateTag: (name: string, color: string, emoji: string) => void;
+  onUpdateTag: (accountId: number, tagId: number) => void;
+  onToggleCombined: (accountId: number) => void;
+  onDisconnect: (accountId: number) => void;
+  onCreateTag: (name: string, color: string, emoji: string, accountId: number) => void;
 }
 
 const ConnectedAccountsList = ({
@@ -31,7 +31,7 @@ const ConnectedAccountsList = ({
   onDisconnect,
   onCreateTag
 }: ConnectedAccountsListProps) => {
-  const [editingTag, setEditingTag] = useState<string | null>(null);
+  const [editingTag, setEditingTag] = useState<number | null>(null);
 
   const getProviderIcon = (provider: string) => {
     switch (provider?.toLowerCase()) {
@@ -47,7 +47,7 @@ const ConnectedAccountsList = ({
     }
   };
 
-  const getTag = (tagId: string) => tags.find(tag => tag.id === tagId);
+  const getTag = (tagId: number) => tags.find(tag => tag.id === tagId);
 
   return (
     <div className="space-y-3">
@@ -82,6 +82,7 @@ const ConnectedAccountsList = ({
                     <TagSelector
                       tags={tags}
                       selectedTagId={account.tagId}
+                      accountId={account.id}
                       onSelect={(tagId) => {
                         onUpdateTag(account.id, tagId);
                         setEditingTag(null);
@@ -121,7 +122,7 @@ const ConnectedAccountsList = ({
                   Include in Combined
                 </span>
                 <Switch
-                  checked={account.includeInCombined}
+                  checked={account.is_combined}
                   onCheckedChange={() => onToggleCombined(account.id)}
                 />
               </div>

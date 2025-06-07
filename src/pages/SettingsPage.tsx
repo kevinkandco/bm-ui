@@ -22,7 +22,6 @@ const SettingsPage = () => {
   const { call } = useApi();
   const { logout, gotoLogin } = useAuthStore();
   const [activeSection, setActiveSection] = React.useState("profile");
-  console.log(activeSection, "activeSection");
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);

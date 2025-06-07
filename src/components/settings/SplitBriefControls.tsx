@@ -8,19 +8,19 @@ import { Tag, SplitBriefSettings } from "./types";
 
 interface SplitBriefControlsProps {
   tags: Tag[];
-  onUpdateSettings: (tagId: string, settings: Partial<SplitBriefSettings>) => void;
+  onUpdateSettings: (tagId: number, settings: Partial<SplitBriefSettings>) => void;
 }
 
 const SplitBriefControls = ({ tags, onUpdateSettings }: SplitBriefControlsProps) => {
-  const handleToggle = (tagId: string, enabled: boolean) => {
+  const handleToggle = (tagId: number, enabled: boolean) => {
     onUpdateSettings(tagId, { enabled });
   };
 
-  const handleTimeChange = (tagId: string, time: string) => {
+  const handleTimeChange = (tagId: number, time: string) => {
     onUpdateSettings(tagId, { time });
   };
 
-  const handleDeliveryChange = (tagId: string, type: 'email' | 'audio', enabled: boolean) => {
+  const handleDeliveryChange = (tagId: number, type: 'email' | 'audio', enabled: boolean) => {
     onUpdateSettings(tagId, { [type]: enabled });
   };
 

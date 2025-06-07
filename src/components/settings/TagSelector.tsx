@@ -7,15 +7,17 @@ import { Tag } from "./types";
 
 interface TagSelectorProps {
   tags: Tag[];
-  selectedTagId: string;
-  onSelect: (tagId: string) => void;
-  onCreateTag: (name: string, color: string, emoji: string) => void;
+  selectedTagId: number;
+  accountId: number;
+  onSelect: (tagId: number) => void;
+  onCreateTag: (name: string, color: string, emoji: string, accountId: number) => void;
   onCancel: () => void;
 }
 
 const TagSelector = ({
   tags,
   selectedTagId,
+  accountId,
   onSelect,
   onCreateTag,
   onCancel
@@ -40,7 +42,7 @@ const TagSelector = ({
 
   const handleCreateTag = () => {
     if (newTagName.trim()) {
-      onCreateTag(newTagName.trim(), newTagColor, newTagEmoji);
+      onCreateTag(newTagName.trim(), newTagColor, newTagEmoji, accountId);
       setIsCreating(false);
       setNewTagName("");
       setNewTagEmoji("🏷️");

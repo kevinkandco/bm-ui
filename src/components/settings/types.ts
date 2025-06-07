@@ -1,24 +1,24 @@
 export interface ConnectedAccount {
-  id?: string;
+  id?: number;
   provider?: number;
   provider_name?: string;
   email?: string;
   name?: string;
-  tagId?: string;
-  includeInCombined?: boolean;
+  tagId?: number;
+  is_combined?: boolean;
   connectedAt?: Date;
   type?: 'input' | 'output';
 }
 
 export interface Tag {
-  id: string;
-  name: string;
-  color: string;
-  emoji: string;
-  splitBriefEnabled: boolean;
-  splitBriefTime: string;
-  splitBriefEmail: boolean;
-  splitBriefAudio: boolean;
+  id?: number;
+  name?: string;
+  color?: string;
+  emoji?: string;
+  splitBriefEnabled?: boolean;
+  splitBriefTime?: string;
+  splitBriefEmail?: boolean;
+  splitBriefAudio?: boolean;
   isDefault?: boolean;
 }
 

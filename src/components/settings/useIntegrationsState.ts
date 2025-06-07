@@ -14,7 +14,7 @@ export const useIntegrationsState = () => {
     //   provider: "gmail",
     //   email: "alex@company.com",
     //   tagId: "work",
-    //   includeInCombined: true,
+    //   is_combined: true,
     //   connectedAt: new Date("2024-01-15"),
     //   type: "input"
     // },
@@ -23,53 +23,66 @@ export const useIntegrationsState = () => {
     //   provider: "slack",
     //   name: "Company Workspace",
     //   tagId: "work",
-    //   includeInCombined: true,
+    //   is_combined: true,
     //   connectedAt: new Date("2024-01-20"),
     //   type: "input"
     // }
   ]);
 
   const [tags, setTags] = useState<Tag[]>([
-    {
-      id: "work",
-      name: "Work",
-      color: "#3B82F6",
-      emoji: "💼",
-      splitBriefEnabled: false,
-      splitBriefTime: "09:00",
-      splitBriefEmail: true,
-      splitBriefAudio: false,
-      isDefault: true
-    },
-    {
-      id: "personal",
-      name: "Personal", 
-      color: "#10B981",
-      emoji: "👤",
-      splitBriefEnabled: false,
-      splitBriefTime: "08:00",
-      splitBriefEmail: true,
-      splitBriefAudio: false,
-      isDefault: true
-    }
+    // {
+    //   id: 1,
+    //   name: "Work",
+    //   color: "#3B82F6",
+    //   emoji: "💼",
+    //   splitBriefEnabled: false,
+    //   splitBriefTime: "09:00",
+    //   splitBriefEmail: true,
+    //   splitBriefAudio: false,
+    //   isDefault: true
+    // },
+    // {
+    //   id: 2,
+    //   name: "Personal", 
+    //   color: "#10B981",
+    //   emoji: "👤",
+    //   splitBriefEnabled: false,
+    //   splitBriefTime: "08:00",
+    //   splitBriefEmail: true,
+    //   splitBriefAudio: false,
+    //   isDefault: true
+    // }
   ]);
 
   const [showFirstTimeHelper, setShowFirstTimeHelper] = useState(true);
 
   const getProvider = useCallback(async (): Promise<void> => {
-      const response = await call("get", "/api/settings/system-integrations", {
-        showToast: false,
-        returnOnFailure: false,
-      });
-  
-      if (response?.data) {
-        setConnectedAccounts(response?.data?.map((con) => ({...con, tagId: con?.tag?.name})));
-      }
-    }, [call]);
+    const response = await call("get", "/api/settings/system-integrations", {
+      showToast: false,
+      returnOnFailure: false,
+    });
+
+    if (response?.data) {
+      const data = response?.data?.map((con) => ({...con, tagId: con?.tag?.id}))
+      setConnectedAccounts(data);
+    }
+  }, [call]);
+
+  const getTags = useCallback(async (): Promise<void> => {
+    const response = await call("get", "/api/settings/integrations/tags", {
+      showToast: false,
+      returnOnFailure: false,
+    });
+
+    if (response?.data) {
+      setTags(response?.data);
+    }
+  }, [call]);
     
     useEffect(() => {
       getProvider();
-    }, [getProvider]);
+      getTags();
+    }, [getProvider, getTags]);
 
   const addAccount = useCallback((provider: string, type: 'input' | 'output' = 'input') => {
     // const newAccount: ConnectedAccount = {
@@ -77,7 +90,7 @@ export const useIntegrationsState = () => {
     //   provider,
     //   email: `user@${provider}.com`,
     //   tagId: provider.includes('gmail') && provider.includes('.com') ? 'personal' : 'work',
-    //   includeInCombined: true,
+    //   is_combined: true,
     //   connectedAt: new Date(),
     //   type
     // };
@@ -85,7 +98,19 @@ export const useIntegrationsState = () => {
     // setConnectedAccounts(prev => [...prev, newAccount]);
   }, []);
 
-  const updateAccountTag = useCallback((accountId: string, tagId: string) => {
+  const updateAccountTag = useCallback(async (accountId: number, tagId: number) => {
+    const response = await call("post", `/api/settings/system-integrations/${accountId}/select-tag `, {
+      body: {
+        tag_id: tagId
+      },
+      showToast: true,
+      toastTitle: "Error",
+      toastDescription: "There was an error updating tag. Please try again later.",
+      toastVariant: "destructive",
+    });
+
+    if (!response) return;
+
     setConnectedAccounts(prev => 
       prev.map(account => 
         account.id === accountId ? { ...account, tagId } : account
@@ -96,19 +121,26 @@ export const useIntegrationsState = () => {
       title: "Tag Updated",
       description: "Account tag has been updated successfully.",
     });
-  }, [toast]);
+  }, [toast, call]);
 
-  const toggleAccountInCombined = useCallback((accountId: string) => {
-    setConnectedAccounts(prev => 
-      prev.map(account => 
-        account.id === accountId 
-          ? { ...account, includeInCombined: !account.includeInCombined }
-          : account
-      )
-    );
-  }, []);
+  const toggleAccountInCombined = useCallback(async (accountId: number) => {
+    const is_combined = connectedAccounts.find(acc => acc.id === accountId).is_combined;
+    const response = await call("post", `/api/settings/system-integrations/${accountId}/combine`, {
+      body: {
+        is_combined: !is_combined
+      }
+    })
+    if(response)
+      setConnectedAccounts(prev => 
+        prev.map(account => 
+          account.id === accountId 
+            ? { ...account, is_combined: !account.is_combined }
+            : account
+        )
+      );
+  }, [connectedAccounts, call]);
 
-  const disconnectAccount = useCallback((accountId: string) => {
+  const disconnectAccount = useCallback((accountId: number) => {
     setConnectedAccounts(prev => prev.filter(account => account.id !== accountId));
     toast({
       title: "Account Disconnected",
@@ -116,9 +148,8 @@ export const useIntegrationsState = () => {
     });
   }, [toast]);
 
-  const createTag = useCallback((name: string, color: string, emoji: string) => {
+  const createTag = useCallback(async (name: string, color: string, emoji: string, accountId: number) => {
     const newTag: Tag = {
-      id: `tag_${Date.now()}`,
       name,
       color,
       emoji,
@@ -127,17 +158,60 @@ export const useIntegrationsState = () => {
       splitBriefEmail: true,
       splitBriefAudio: false
     };
+
+    const response = await call("post", "/api/settings/integrations/1/tag", {
+      body: {
+        name,
+        color,
+        emoji,
+      },
+      showToast: true,
+      toastTitle: "Tag Creation Failed",
+      toastDescription: "Tag creation failed. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false
+    }) 
     
-    setTags(prev => [...prev, newTag]);
+    if (!response) return;
+
+    if (!response?.data) return;
+
+    setConnectedAccounts(prev => 
+      prev.map(account => 
+        account.id === accountId ? {...response?.data, tagId: response?.data?.tag?.id} : account
+      )
+    );
+
+    setTags(prev => [...prev, response?.data?.tag]);
     toast({
       title: "Tag Created",
       description: `"${name}" tag has been created successfully.`,
     });
     
     return newTag.id;
-  }, [toast]);
+  }, [toast, call]);
 
-  const updateTag = useCallback((tagId: string, updates: Partial<Tag>) => {
+  const updateTag = useCallback(async (tagId: number, updates: Partial<Tag>) => {
+    const tag = tags.find(t => t.id === tagId);
+    const response = await call("post", "/api/settings/integrations/1/tag", {
+      body: {
+        ...{
+          name: tag?.name,
+          color: tag?.color,
+          emoji: tag?.emoji},
+        ...updates
+      },
+      showToast: true,
+      toastTitle: "Tag Creation Failed",
+      toastDescription: "Tag creation failed. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false
+    }) 
+    
+    if (!response) return;
+
+    if (!response?.data) return;
+
     setTags(prev => 
       prev.map(tag => 
         tag.id === tagId ? { ...tag, ...updates } : tag
@@ -150,7 +224,7 @@ export const useIntegrationsState = () => {
     });
   }, [toast]);
 
-  const deleteTag = useCallback((tagId: string) => {
+  const deleteTag = useCallback((tagId: number) => {
     const tag = tags.find(t => t.id === tagId);
     if (tag?.isDefault) {
       toast({
@@ -164,7 +238,7 @@ export const useIntegrationsState = () => {
     // Move accounts to default tag
     setConnectedAccounts(prev => 
       prev.map(account => 
-        account.tagId === tagId ? { ...account, tagId: 'work' } : account
+        account.tagId === tagId ? { ...account, tagId: tags[0].id } : account
       )
     );
     
@@ -176,7 +250,7 @@ export const useIntegrationsState = () => {
     });
   }, [tags, toast]);
 
-  const mergeTag = useCallback((sourceTagId: string, targetTagId: string) => {
+  const mergeTag = useCallback((sourceTagId: number, targetTagId: number) => {
     // Move all accounts from source to target
     setConnectedAccounts(prev => 
       prev.map(account => 
@@ -193,7 +267,7 @@ export const useIntegrationsState = () => {
     });
   }, [toast]);
 
-  const updateSplitBriefSettings = useCallback((tagId: string, settings: Partial<SplitBriefSettings>) => {
+  const updateSplitBriefSettings = useCallback((tagId: number, settings: Partial<SplitBriefSettings>) => {
     setTags(prev => 
       prev.map(tag => 
         tag.id === tagId 

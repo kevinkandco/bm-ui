@@ -14,9 +14,9 @@ import { Tag } from "./types";
 
 interface TagManagerProps {
   tags: Tag[];
-  onUpdateTag: (tagId: string, updates: Partial<Tag>) => void;
-  onDeleteTag: (tagId: string) => void;
-  onMergeTag: (sourceTagId: string, targetTagId: string) => void;
+  onUpdateTag: (tagId: number, updates: Partial<Tag>) => void;
+  onDeleteTag: (tagId: number) => void;
+  onMergeTag: (sourceTagId: number, targetTagId: number) => void;
   onClose: () => void;
 }
 
@@ -27,9 +27,9 @@ const TagManager = ({
   onMergeTag,
   onClose
 }: TagManagerProps) => {
-  const [editingTag, setEditingTag] = useState<string | null>(null);
+  const [editingTag, setEditingTag] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
-  const [mergingFrom, setMergingFrom] = useState<string | null>(null);
+  const [mergingFrom, setMergingFrom] = useState<number | null>(null);
 
   const predefinedColors = [
     "#3B82F6", "#10B981", "#F59E0B", "#EF4444", 
@@ -43,7 +43,7 @@ const TagManager = ({
     setEditName(tag.name);
   };
 
-  const saveEdit = (tagId: string) => {
+  const saveEdit = (tagId: number) => {
     if (editName.trim()) {
       onUpdateTag(tagId, { name: editName.trim() });
     }
@@ -56,7 +56,7 @@ const TagManager = ({
     setEditName("");
   };
 
-  const handleMerge = (targetTagId: string) => {
+  const handleMerge = (targetTagId: number) => {
     if (mergingFrom && mergingFrom !== targetTagId) {
       onMergeTag(mergingFrom, targetTagId);
       setMergingFrom(null);
