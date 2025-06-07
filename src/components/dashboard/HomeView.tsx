@@ -1,19 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import {
-  Zap,
-  Headphones,
-  Archive,
-  Menu,
-  X,
-  Power,
-  FileText,
-  Focus,
-  Clock,
-  ChevronDown,
-  Play,
-  Pause,
-  Settings,
-} from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -47,6 +33,7 @@ import Audio from "./Audio";
 import ViewTranscript from "./ViewTranscript";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
+import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -120,6 +107,8 @@ const HomeView = ({
       });
     };
   }, []);
+  const [showSchedulingModal, setShowSchedulingModal] = useState(false);
+  const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
 
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
@@ -143,9 +132,38 @@ const HomeView = ({
         title: "Transcript",
         description: `Opening transcript for brief ${briefId}`,
       });
-    },
+      },
     [toast]
   );
+
+  const handleGetBriefedNow = useCallback(() => {
+    setShowSchedulingModal(true);
+  }, []);
+
+  const handleCloseSchedulingModal = useCallback(() => {
+    setShowSchedulingModal(false);
+  }, []);
+
+  const handleGenerateSummaryWithScheduling = useCallback((timeDescription: string, skipScheduled?: boolean) => {
+    setShowSchedulingModal(false);
+    
+    if (skipScheduled) {
+      toast({
+        title: "Brief Generated",
+        description: "Your catch-up summary is ready and the scheduled brief has been skipped"
+      });
+    } else {
+      toast({
+        title: "Brief Generated", 
+        description: "Your catch-up summary is ready. Your scheduled brief will still arrive on time."
+      });
+    }
+  }, [toast]);
+
+  const handleTeamInterest = useCallback(() => {
+    setWaitlistStatus('added');
+  }, []);
+    
 
   const handleClose = () => {
     setMessageTranscript({
@@ -182,6 +200,15 @@ const HomeView = ({
     },
     [playingBrief, toast, recentBriefs]
   );
+
+  // Sample upcoming brief data
+  const upcomingBrief = {
+    name: "Midday Brief",
+    scheduledTime: "Today at 12:30 PM"
+  };
+
+  // Total briefs ever created (this would come from your backend/state in a real app)
+  const totalBriefs = 47;
 
   // Mobile View
   if (isMobile) {
@@ -500,26 +527,21 @@ const HomeView = ({
             {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">
-                  Recent Briefs
-                </h2>
-                <Button
-                  onClick={handleViewAllBriefs}
-                  variant="outline"
-                  className="rounded-xl border-border-subtle text-text-primary shadow-sm"
-                >
-                  <Archive className="mr-2 h-4 w-4" />
-                  View All Briefs
-                </Button>
+                <h2 className="text-xl font-semibold text-text-primary">Briefs</h2>
               </div>
-
-              {/* Unified Brief Container */}
-              <BriefsContainer
-                briefs={recentBriefs}
-                onViewBrief={onOpenBrief}
-                onViewTranscript={handleViewTranscript}
-                onPlayBrief={handlePlayBrief}
-                playingBrief={playingBrief}
+              
+              {/* Unified Brief Container with upcoming brief */}
+              <BriefsContainer 
+                briefs={recentBriefs} 
+                totalBriefs={totalBriefs}
+                onViewBrief={onOpenBrief} 
+                onViewTranscript={handleViewTranscript} 
+                onPlayBrief={handlePlayBrief} 
+                playingBrief={playingBrief} 
+                onViewAllBriefs={handleViewAllBriefs}
+                onGetBriefedNow={handleGetBriefedNow}
+                onUpdateSchedule={handleUpdateSchedule}
+                upcomingBrief={upcomingBrief}
               />
               <Audio audioSrc={currentAudioUrl} audioRef={audioRef} />
             </div>
@@ -527,34 +549,6 @@ const HomeView = ({
 
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
-            {/* Next Brief Section - Now first */}
-            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm py-[9px]">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="font-semibold text-text-primary text-base">
-                  Next Scheduled Brief
-                </h2>
-              </div>
-
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="font-medium text-text-primary text-sm">
-                    Midday Brief
-                  </p>
-                  <p className="text-sm text-text-secondary">
-                    Today at 12:30 PM
-                  </p>
-                </div>
-              </div>
-
-              <Button
-                variant="outline"
-                className="w-full rounded-xl border-border-subtle text-text-primary shadow-sm"
-                onClick={handleUpdateSchedule}
-              >
-                Update Schedule
-              </Button>
-            </div>
-
             {/* Priorities Section - Compact */}
             <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
               <PrioritiesSection
@@ -562,53 +556,124 @@ const HomeView = ({
                 fetchDashboardData={fetchDashboardData}
               />
             </div>
-
-            {/* Upcoming Meetings - Blurred Coming Soon */}
+            
+            {/* Brief Me Teams - With enhanced blurred background mockups */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-              <div className="filter blur-sm">
-                <h2 className="text-lg font-semibold text-text-primary mb-4">
-                  Upcoming Meetings
-                </h2>
-
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <div>
-                      <p className="font-medium text-text-primary">
-                        Weekly Standup
-                      </p>
-                      <p className="text-sm text-text-secondary">
-                        10:00 AM - 4 attendees
-                      </p>
+              {/* Enhanced blurred background mockups */}
+              <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
+                <div className="grid grid-cols-2 gap-4 h-full p-4">
+                  {/* Team card mockup */}
+                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-xl p-4 shadow-lg">
+                    {/* Team header with profile pics */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex -space-x-2">
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
+                          <span className="text-xs text-white/90 font-medium">+5</span>
+                        </div>
+                      </div>
                     </div>
+                    
+                    {/* Team stats bars */}
+                    <div className="space-y-3 mb-4">
+                      <div className="bg-white/40 rounded-full h-3 w-full"></div>
+                      <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
+                      <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
+                    </div>
+                    
+                    {/* Team name */}
+                    <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
                   </div>
-
-                  <div className="flex items-center gap-3 p-2">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <div>
-                      <p className="font-medium text-text-primary">
-                        Product Review
-                      </p>
-                      <p className="text-sm text-text-secondary">
-                        1:30 PM - 6 attendees
-                      </p>
+                  
+                  {/* Analytics card mockup */}
+                  <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
+                    {/* Chart header */}
+                    <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
+                    
+                    {/* Mock chart bars - more detailed */}
+                    <div className="flex items-end gap-2 h-16 mb-3">
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-12"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-6"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-14"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-10"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
+                    </div>
+                    
+                    {/* Analytics labels */}
+                    <div className="space-y-2">
+                      <div className="bg-white/35 rounded h-2 w-full"></div>
+                      <div className="bg-white/30 rounded h-2 w-3/4"></div>
+                      <div className="bg-white/25 rounded h-2 w-5/6"></div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Coming Soon Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center bg-surface/80 backdrop-blur-sm">
-                <div className="text-center">
-                  <p className="text-text-primary font-semibold mb-1">
-                    AI Meeting Proxy
-                  </p>
-                  <p className="text-text-secondary text-xs">Coming soon...</p>
+              
+              {/* Clear content with better contrast */}
+              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
+                <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Brief Me Teams
+                </h2>
+                
+                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
+                
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">AI meeting proxy</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Team analytics</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">and more...</p>
+                  </div>
                 </div>
+                
+                <Button 
+                  onClick={handleTeamInterest}
+                  size="sm" 
+                  className={`rounded-lg px-4 py-2 text-sm w-full ${
+                    waitlistStatus === 'added' 
+                      ? 'bg-green-600 text-white hover:bg-green-600' 
+                      : 'bg-accent-primary text-white hover:bg-accent-primary/90'
+                  }`}
+                  disabled={waitlistStatus === 'added'}
+                >
+                  {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
+                </Button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Enhanced Catch Me Up Modal with Scheduling Options */}
+        <CatchMeUpWithScheduling
+          open={showSchedulingModal}
+          onClose={handleCloseSchedulingModal}
+          onGenerateSummary={handleGenerateSummaryWithScheduling}
+          upcomingBriefName={upcomingBrief.name}
+          upcomingBriefTime={upcomingBrief.scheduledTime}
+        />
       </div>
       <ViewTranscript
         open={showMessageTranscript?.open}

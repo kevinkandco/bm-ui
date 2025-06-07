@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -11,6 +11,7 @@ import useAuthStore from "@/store/useAuthStore";
 import IntegrationsSection from "@/components/settings/IntegrationsSection";
 import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
 import Integrations from "@/components/settings/Integrations";
+import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -46,6 +47,12 @@ const SettingsPage = () => {
       icon: Zap,
       name: "Integrations",
       active: activeSection === "integrations"
+    },
+    {
+      id: "brief-config",
+      icon: Calendar,
+      name: "Brief Configuration",
+      active: activeSection === "brief-config"
     },
     {
       id: "feedback",
@@ -129,7 +136,9 @@ const SettingsPage = () => {
   const renderContent = () => {
     switch (activeSection) {
       case "integrations":
-        return <Integrations />;
+        return <IntegrationsSection />;
+      case "brief-config":
+        return <BriefConfigurationSection />;
       case "feedback":
         return <FeedbackTrainingSection />;
       case "profile":

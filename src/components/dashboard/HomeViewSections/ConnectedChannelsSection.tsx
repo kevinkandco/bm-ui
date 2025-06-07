@@ -209,7 +209,8 @@ const ConnectedChannelsSection = ({
             </div>
           </div>
           
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleOpenSettings}>
+          <Button variant="ghost" className="flex items-center gap-2 h-8 px-3" onClick={handleOpenSettings}>
+            <span className="text-text-secondary text-sm">Settings</span>
             <Settings className="h-4 w-4 text-text-secondary" />
           </Button>
         </div>

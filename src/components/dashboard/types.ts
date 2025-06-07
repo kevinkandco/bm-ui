@@ -1,3 +1,5 @@
+import { LucideProps } from "lucide-react";
+
 export interface BriefSchedules {
   id: string;
   name?: string;
@@ -71,4 +73,8 @@ export interface Priorities {
   priorityPeople: PriorityPeople[];
   priorityChannels: {name: string, active: boolean}[];
   triggers: string[];
+  integrations: {
+    name: string;
+    active: boolean;
+  }[];
 }

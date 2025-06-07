@@ -79,7 +79,8 @@ const Dashboard = () => {
           ...prev,
           priorityPeople: response.priorityPeople,
           priorityChannels: response.channels?.map((channel) => ({ name: channel, active: true })) || [],
-          triggers: response.triggers
+          triggers: response.triggers,
+          integrations: response.integrations ? response.integrations?.map((integration) => ({name: integration, active: true})) : [],
         };
       });
     }

@@ -1,12 +1,13 @@
-
 export interface ConnectedAccount {
-  id: string;
-  provider: string;
+  id?: string;
+  provider?: number;
+  provider_name?: string;
   email?: string;
   name?: string;
-  tagId: string;
-  includeInCombined: boolean;
-  connectedAt: Date;
+  tagId?: string;
+  includeInCombined?: boolean;
+  connectedAt?: Date;
+  type?: 'input' | 'output';
 }
 
 export interface Tag {

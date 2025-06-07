@@ -1,29 +1,32 @@
-
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ConnectedAccount, Tag, SplitBriefSettings } from "./types";
 import { useToast } from "@/hooks/use-toast";
+import { useApi } from "@/hooks/useApi";
 
 export const useIntegrationsState = () => {
   const { toast } = useToast();
+  const { call } = useApi();
   
   // Initialize with some sample data
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([
-    {
-      id: "1",
-      provider: "gmail",
-      email: "alex@company.com",
-      tagId: "work",
-      includeInCombined: true,
-      connectedAt: new Date("2024-01-15")
-    },
-    {
-      id: "2",
-      provider: "slack",
-      name: "Company Workspace",
-      tagId: "work",
-      includeInCombined: true,
-      connectedAt: new Date("2024-01-20")
-    }
+    // {
+    //   id: "1",
+    //   provider: "gmail",
+    //   email: "alex@company.com",
+    //   tagId: "work",
+    //   includeInCombined: true,
+    //   connectedAt: new Date("2024-01-15"),
+    //   type: "input"
+    // },
+    // {
+    //   id: "2",
+    //   provider: "slack",
+    //   name: "Company Workspace",
+    //   tagId: "work",
+    //   includeInCombined: true,
+    //   connectedAt: new Date("2024-01-20"),
+    //   type: "input"
+    // }
   ]);
 
   const [tags, setTags] = useState<Tag[]>([
@@ -53,17 +56,33 @@ export const useIntegrationsState = () => {
 
   const [showFirstTimeHelper, setShowFirstTimeHelper] = useState(true);
 
-  const addAccount = useCallback((provider: string) => {
-    const newAccount: ConnectedAccount = {
-      id: `${Date.now()}`,
-      provider,
-      email: `user@${provider}.com`,
-      tagId: provider.includes('gmail') && provider.includes('.com') ? 'personal' : 'work',
-      includeInCombined: true,
-      connectedAt: new Date()
-    };
+  const getProvider = useCallback(async (): Promise<void> => {
+      const response = await call("get", "/api/settings/system-integrations", {
+        showToast: false,
+        returnOnFailure: false,
+      });
+  
+      if (response?.data) {
+        setConnectedAccounts(response?.data?.map((con) => ({...con, tagId: con?.tag?.name})));
+      }
+    }, [call]);
     
-    setConnectedAccounts(prev => [...prev, newAccount]);
+    useEffect(() => {
+      getProvider();
+    }, [getProvider]);
+
+  const addAccount = useCallback((provider: string, type: 'input' | 'output' = 'input') => {
+    // const newAccount: ConnectedAccount = {
+    //   id: `${Date.now()}`,
+    //   provider,
+    //   email: `user@${provider}.com`,
+    //   tagId: provider.includes('gmail') && provider.includes('.com') ? 'personal' : 'work',
+    //   includeInCombined: true,
+    //   connectedAt: new Date(),
+    //   type
+    // };
+    
+    // setConnectedAccounts(prev => [...prev, newAccount]);
   }, []);
 
   const updateAccountTag = useCallback((accountId: string, tagId: string) => {

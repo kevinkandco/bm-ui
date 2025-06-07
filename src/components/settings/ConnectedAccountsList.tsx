@@ -34,8 +34,8 @@ const ConnectedAccountsList = ({
   const [editingTag, setEditingTag] = useState<string | null>(null);
 
   const getProviderIcon = (provider: string) => {
-    switch (provider) {
-      case "gmail":
+    switch (provider?.toLowerCase()) {
+      case "google":
       case "outlook":
         return <Mail className="h-4 w-4" />;
       case "slack":
@@ -62,14 +62,14 @@ const ConnectedAccountsList = ({
             <div className="flex items-center space-x-4 flex-1">
               {/* Provider Icon */}
               <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-                {getProviderIcon(account.provider)}
+                {getProviderIcon(account.provider_name)}
               </div>
 
               {/* Account Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2">
                   <h4 className="font-medium text-text-primary capitalize">
-                    {account.provider}
+                    {account.provider_name}
                   </h4>
                   <span className="text-sm text-text-secondary truncate">
                     {account.email || account.name}
