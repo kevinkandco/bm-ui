@@ -259,6 +259,9 @@ const BriefModal = ({ open, onClose, briefId, getRecentBriefs=() => {} }: BriefM
   try {
     const response = await fetch(downloadUrl, {
       method: "GET",
+      headers: {
+        "authorization": `Bearer ${localStorage.getItem("token")}`,
+      }
     });
 
     if (!response.ok) {
