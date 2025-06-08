@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Slack, Gmail } from "lucide-react";
+import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Slack } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -287,7 +286,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                 <h3 className="text-lg font-semibold text-text-primary mb-4">Action Items</h3>
                 <Table>
                   <TableHeader>
-                    <TableRow>
+                    <TableRow className="border-b border-border-subtle/60">
                       <TableHead className="w-8"></TableHead>
                       <TableHead>Source</TableHead>
                       <TableHead>Priority</TableHead>
@@ -300,7 +299,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                     {briefData.actionItems.map((item) => (
                       <React.Fragment key={item.id}>
                         <TableRow 
-                          className="cursor-pointer hover:bg-surface-raised/30" 
+                          className="cursor-pointer hover:bg-surface-raised/30 border-b border-border-subtle/60" 
                           onClick={() => toggleActionItemExpansion(item.id)}
                         >
                           <TableCell>
@@ -356,7 +355,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                           </TableCell>
                         </TableRow>
                         {expandedActionItems.has(item.id) && (
-                          <TableRow>
+                          <TableRow className="border-b border-border-subtle/60">
                             <TableCell colSpan={6} className="bg-surface-raised/20">
                               <div className="p-4 space-y-3">
                                 <div className="flex items-center justify-between">
