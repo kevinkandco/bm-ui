@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,13 @@ const HomeView = ({
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [showSchedulingModal, setShowSchedulingModal] = useState(false);
   const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
+
+  // Sample connected integrations
+  const connectedIntegrations = [
+    { name: "Slack", channels: 12 },
+    { name: "Gmail", emails: 5 },
+    { name: "Google Calendar", events: 3 }
+  ];
 
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
@@ -215,17 +223,17 @@ const HomeView = ({
         </div>
 
         {/* Mobile Welcome Section - Compact with reduced spacing */}
-        <div className="text-center flex-shrink-0 mt-4 mb-2">
+        <div className="text-center flex-shrink-0 mt-4 mb-1">
           <h1 className="text-xl font-semibold text-white-text mb-0">
             Good morning, Alex
           </h1>
           <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Central Audio Wave - Full Width */}
-        <div className="flex-1 flex flex-col items-center justify-center my-0 mx-0 px-0 py-[8px]">
+        {/* Central Audio Wave - Full Width with reduced padding */}
+        <div className="flex-1 flex flex-col items-center justify-center mx-0 px-0 py-2">
           <div className="w-full px-8">
-            <div className="w-full h-16 flex items-center justify-center gap-1">
+            <div className="w-full h-12 flex items-center justify-center gap-1">
               {/* Audio Wave Bars */}
               {Array.from({ length: 20 }).map((_, i) => (
                 <div
@@ -233,15 +241,26 @@ const HomeView = ({
                   className="bg-primary-teal rounded-full transition-all duration-300"
                   style={{
                     width: '3px',
-                    height: `${20 + Math.sin((Date.now() / 500) + i * 0.5) * 15}px`,
+                    height: `${15 + Math.sin((Date.now() / 500) + i * 0.5) * 10}px`,
                     animation: `audioWave 1.5s ease-in-out infinite`,
                     animationDelay: `${i * 0.1}s`
                   }}
                 />
               ))}
             </div>
-            <div className="text-center mt-4">
-              <p className="text-white text-sm">brief-me is monitoring</p>
+            <div className="text-center mt-3">
+              <p className="text-white text-sm mb-2">brief-me is monitoring</p>
+              <div className="flex flex-wrap justify-center gap-2 text-xs text-light-gray-text">
+                {connectedIntegrations.map((integration, index) => (
+                  <span key={integration.name} className="flex items-center">
+                    <span>{integration.name}</span>
+                    {integration.channels && <span className="ml-1">({integration.channels} channels)</span>}
+                    {integration.emails && <span className="ml-1">({integration.emails} emails)</span>}
+                    {integration.events && <span className="ml-1">({integration.events} events)</span>}
+                    {index < connectedIntegrations.length - 1 && <span className="mx-1">•</span>}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
