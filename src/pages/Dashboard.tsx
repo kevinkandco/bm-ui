@@ -1,9 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
 
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
