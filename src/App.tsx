@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense, useState, useEffect, memo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -25,6 +24,7 @@ const TasksList = lazyImport(() => import("./pages/TasksList"));
 const MeetingsList = lazyImport(() => import("./pages/MeetingsList"));
 const CatchUpPage = lazyImport(() => import("./pages/CatchUpPage"));
 const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
+const MacPage = lazyImport(() => import("./pages/MacPage"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
 
 // Create QueryClient with optimized settings
@@ -70,6 +70,7 @@ const App = () => (
                 <Route path="/dashboard/meetings" element={<MeetingsList />} />
                 <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
                 <Route path="/dashboard/settings" element={<SettingsPage />} />
+                <Route path="/mac" element={<MacPage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

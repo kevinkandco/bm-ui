@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
 import FocusMode from "@/components/dashboard/FocusMode";
-import StatusTimer from "@/components/dashboard/StatusTimer";
 import NewBriefModal from "@/components/dashboard/NewBriefModal";
 import TranscriptView from "@/components/dashboard/TranscriptView";
 import MenuBarContainer from "@/components/dashboard/MenuBarContainer";
@@ -86,14 +85,6 @@ const Dashboard = () => {
         onGetBriefedNow={handleToggleCatchMeUp}
         onUpdateSchedule={() => navigate("/dashboard/settings")}
         onOpenDashboard={() => navigate("/dashboard")}
-      />
-
-      {/* Status Timer */}
-      <StatusTimer 
-        status={userStatus}
-        onToggleCatchMeUp={handleToggleCatchMeUp}
-        onToggleFocusMode={handleToggleFocusMode}
-        onExitFocusMode={handleExitFocusMode}
       />
 
       {/* Main Content */}
