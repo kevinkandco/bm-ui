@@ -1,249 +1,126 @@
-import React, { useState, useCallback, useMemo } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import HomeView from "@/components/dashboard/HomeView";
-import BriefModal from "@/components/dashboard/BriefModal";
-import TranscriptModal from "@/components/dashboard/TranscriptModal";
-import FocusMode from "@/components/dashboard/FocusMode";
-import CatchMeUp from "@/components/dashboard/CatchMeUp";
-import EndFocusModal from "@/components/dashboard/EndFocusModal";
-import StatusTimer from "@/components/dashboard/StatusTimer";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 
-type UserStatus = "active" | "away" | "focus" | "vacation";
+import HomeView from "@/components/dashboard/HomeView";
+import ListeningScreen from "@/components/dashboard/ListeningScreen";
+import FocusMode from "@/components/dashboard/FocusMode";
+import StatusTimer from "@/components/dashboard/StatusTimer";
+import NewBriefModal from "@/components/dashboard/NewBriefModal";
+import TranscriptView from "@/components/dashboard/TranscriptView";
+import MenuBarContainer from "@/components/dashboard/MenuBarContainer";
 
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
-  
-  const [uiState, setUiState] = useState({
-    selectedBrief: null,
-    focusModeOpen: false,
-    catchMeUpOpen: false,
-    sidebarOpen: !isMobile,
-    briefModalOpen: false,
-    transcriptModalOpen: false,
-    endFocusModalOpen: false,
-    catchUpModalOpen: false,
-    userStatus: "active" as UserStatus,
-    focusModeActive: false
-  });
+  const [currentView, setCurrentView] = useState<"home" | "listening" | "focus">("home");
+  const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
+  const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
+  const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
+  const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
 
-  const handleOpenBrief = useCallback((briefId: number) => {
-    setUiState(prev => ({
-      ...prev,
-      selectedBrief: briefId,
-      briefModalOpen: true
-    }));
-  }, []);
-
-  const handleOpenTranscript = useCallback((briefId: number) => {
-    setUiState(prev => ({
-      ...prev,
-      selectedBrief: briefId,
-      transcriptModalOpen: true
-    }));
-  }, []);
-
+  const openBriefDetails = useCallback((briefId: number) => {
+    // Logic to open brief details
+    toast({
+      title: `Opening Brief ${briefId}`,
+      description: "Navigating to brief details..."
+    });
+  }, [toast]);
+  const openTranscript = useCallback((briefId: number) => {
+    setSelectedBriefId(briefId);
+    setIsTranscriptOpen(true);
+  }, [setSelectedBriefId, setIsTranscriptOpen]);
+  const closeTranscript = useCallback(() => {
+    setIsTranscriptOpen(false);
+    setSelectedBriefId(null);
+  }, [setIsTranscriptOpen, setSelectedBriefId]);
   const handleToggleFocusMode = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      focusModeOpen: !prev.focusModeOpen
-    }));
-  }, []);
-
-  const handleToggleCatchMeUp = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      catchMeUpOpen: !prev.catchMeUpOpen
-    }));
-  }, []);
-
-  const handleToggleSidebar = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      sidebarOpen: !prev.sidebarOpen
-    }));
-  }, []);
-
-  const handleCloseFocusMode = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      focusModeOpen: false
-    }));
-  }, []);
-
-  const handleStartFocusMode = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      focusModeOpen: false,
-      userStatus: "focus" as UserStatus,
-      focusModeActive: true
-    }));
-    
+    setUserStatus(prevStatus => prevStatus === "focus" ? "active" : "focus");
+    setCurrentView(prevView => prevView === "focus" ? "home" : "focus");
     toast({
-      title: "Focus Mode Started",
-      description: "Slack status set to 'focusing', Gmail status set to 'monitoring'"
+      title: "Focus Mode",
+      description: currentView === "home" ? "Entering focus mode" : "Exiting focus mode"
     });
-  }, [toast]);
-
+  }, [toast, currentView]);
   const handleExitFocusMode = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      endFocusModalOpen: true,
-      userStatus: "active" as UserStatus,
-      focusModeActive: false
-    }));
-    
+    setUserStatus("active");
+    setCurrentView("home");
     toast({
-      title: "Focus Mode Ended",
-      description: "Slack and Gmail status set to 'online'"
+      title: "Focus Mode",
+      description: "Exiting focus mode"
     });
   }, [toast]);
-
+  const handleToggleCatchMeUp = useCallback(() => {
+    setCurrentView(prevView => prevView === "listening" ? "home" : "listening");
+    toast({
+      title: "Catch Me Up",
+      description: currentView === "home" ? "Entering catch me up mode" : "Exiting catch me up mode"
+    });
+  }, [toast, currentView]);
+  const openBriefModal = useCallback(() => {
+    setIsBriefModalOpen(true);
+  }, [setIsBriefModalOpen]);
+  const closeBriefModal = useCallback(() => {
+    setIsBriefModalOpen(false);
+  }, [setIsBriefModalOpen]);
+  const handleStartFocusMode = useCallback(() => {
+    setUserStatus("focus");
+    setCurrentView("focus");
+    toast({
+      title: "Focus Mode",
+      description: "Starting focus mode"
+    });
+  }, [toast]);
   const handleSignOffForDay = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      userStatus: "away" as UserStatus
-    }));
-    
+    setUserStatus("vacation");
     toast({
-      title: "Signed Off",
-      description: "We'll monitor your channels until your next auto-scheduled brief"
+      title: "Signing Off",
+      description: "Signing off for the day"
     });
   }, [toast]);
-
-  const handleCloseEndFocusModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      endFocusModalOpen: false
-    }));
-    
-    toast({
-      title: "Focus Brief Ready",
-      description: "Your brief has been created and emailed to you"
-    });
-  }, [toast]);
-
-  const handleCloseCatchMeUp = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      catchMeUpOpen: false
-    }));
-  }, []);
-
-  const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
-    setUiState(prev => ({
-      ...prev,
-      catchMeUpOpen: false,
-      catchUpModalOpen: true
-    }));
-  }, []);
-
-  const handleCloseCatchUpModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      catchUpModalOpen: false
-    }));
-    
-    toast({
-      title: "Catch Me Up Summary Ready",
-      description: "Your summary has been created and emailed to you"
-    });
-    
-    navigate("/dashboard/catch-up");
-  }, [toast, navigate]);
-
-  const handleCloseBriefModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      briefModalOpen: false
-    }));
-  }, []);
-
-  const handleCloseTranscriptModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      transcriptModalOpen: false
-    }));
-  }, []);
-
-  const handleOpenBriefModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      briefModalOpen: true
-    }));
-  }, []);
-
-  const layoutProps = useMemo(() => ({
-    currentPage: "home", 
-    sidebarOpen: uiState.sidebarOpen, 
-    onToggleSidebar: handleToggleSidebar
-  }), [uiState.sidebarOpen, handleToggleSidebar]);
-
-  const endFocusModalProps = useMemo(() => ({
-    open: uiState.endFocusModalOpen,
-    onClose: handleCloseEndFocusModal,
-    title: "Creating Your Brief",
-    description: "We're preparing a summary of all updates during your focus session"
-  }), [uiState.endFocusModalOpen, handleCloseEndFocusModal]);
-
-  const catchUpModalProps = useMemo(() => ({
-    open: uiState.catchUpModalOpen,
-    onClose: handleCloseCatchUpModal,
-    title: "Creating Your Summary",
-    description: "We're preparing a summary of what you've missed",
-    timeRemaining: 60
-  }), [uiState.catchUpModalOpen, handleCloseCatchUpModal]);
 
   return (
-    <DashboardLayout {...layoutProps}>
-      {/* Focus Mode Timer - only show when focus mode is active */}
-      {uiState.focusModeActive && (
-        <StatusTimer 
-          status={uiState.userStatus}
-          onExitFocusMode={handleExitFocusMode}
-        />
-      )}
-      
-      {/* Add extra top padding here */}
-      <div className="pt-16">
-        <HomeView 
-          onOpenBrief={handleOpenBrief}
-          onViewTranscript={handleOpenTranscript}
-          onToggleFocusMode={handleToggleFocusMode}
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onOpenBriefModal={handleOpenBriefModal}
-          onStartFocusMode={handleStartFocusMode}
-          onSignOffForDay={handleSignOffForDay}
-        />
+    <div className="min-h-screen flex flex-col">
+      {/* Menu Bar Companion - macOS style */}
+      <MenuBarContainer
+        onGetBriefedNow={handleToggleCatchMeUp}
+        onUpdateSchedule={() => navigate("/dashboard/settings")}
+        onOpenDashboard={() => navigate("/dashboard")}
+      />
+
+      {/* Status Timer */}
+      <StatusTimer 
+        status={userStatus}
+        onToggleCatchMeUp={handleToggleCatchMeUp}
+        onToggleFocusMode={handleToggleFocusMode}
+        onExitFocusMode={handleExitFocusMode}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1">
+        {currentView === "home" && (
+          <HomeView
+            onOpenBrief={openBriefDetails}
+            onViewTranscript={openTranscript}
+            onToggleFocusMode={handleToggleFocusMode}
+            onToggleCatchMeUp={handleToggleCatchMeUp}
+            onOpenBriefModal={openBriefModal}
+            onStartFocusMode={handleStartFocusMode}
+            onSignOffForDay={handleSignOffForDay}
+          />
+        )}
+        {currentView === "listening" && <ListeningScreen />}
+        {currentView === "focus" && <FocusMode onExitFocusMode={handleExitFocusMode} />}
       </div>
-      
+
       {/* Modals */}
-      <FocusMode 
-        open={uiState.focusModeOpen}
-        onClose={handleStartFocusMode}
-      />
-      <CatchMeUp 
-        open={uiState.catchMeUpOpen}
-        onClose={handleCloseCatchMeUp}
-        onGenerateSummary={handleGenerateCatchMeUpSummary}
-      />
-      <BriefModal 
-        open={uiState.briefModalOpen}
-        onClose={handleCloseBriefModal}
-      />
-      <TranscriptModal
-        open={uiState.transcriptModalOpen}
-        onClose={handleCloseTranscriptModal}
-        briefId={uiState.selectedBrief}
-      />
-      <EndFocusModal {...endFocusModalProps} />
-      <EndFocusModal {...catchUpModalProps} />
-    </DashboardLayout>
+      <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
+      <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} />
+    </div>
   );
 };
 
-export default React.memo(Dashboard);
+export default Dashboard;
