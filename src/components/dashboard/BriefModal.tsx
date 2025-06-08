@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Calendar, ClockIcon, Target } from "lucide-react";
+import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Calendar, ClockIcon, Target, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
   const [expandedActionItems, setExpandedActionItems] = useState<Set<string>>(new Set());
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
+  const [markedImportantMessages, setMarkedImportantMessages] = useState<Set<string>>(new Set());
 
   const {
     handleActionRelevance,
@@ -79,6 +81,16 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
     });
   };
 
+  const handleMarkAsImportant = (messageId: string, messageType: string, messageTitle: string) => {
+    setMarkedImportantMessages(prev => new Set([...prev, messageId]));
+    
+    toast({
+      title: "Message Marked as Important",
+      description: `We'll look for similar ${messageType.toLowerCase()} messages in the future and prioritize them in your briefs.`,
+      duration: 4000
+    });
+  };
+
   const toggleActionItemExpansion = (itemId: string) => {
     setExpandedActionItems(prev => {
       const newSet = new Set(prev);
@@ -99,11 +111,63 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
     timeRange: "5:00 AM - 8:00 AM",
     slackMessages: {
       total: 12,
-      fromPriorityPeople: 3
+      fromPriorityPeople: 3,
+      items: [
+        {
+          id: "slack_1",
+          title: "Product launch timeline discussion",
+          sender: "Sarah Johnson",
+          channel: "#product-team",
+          time: "7:45 AM",
+          preview: "Hey team, I wanted to discuss the timeline for our product launch..."
+        },
+        {
+          id: "slack_2", 
+          title: "Testing phase concerns from Sarah",
+          sender: "Sarah Martinez",
+          channel: "#qa-team",
+          time: "7:15 AM",
+          preview: "I'm getting worried about our testing phase timeline. We're running into some issues..."
+        },
+        {
+          id: "slack_3",
+          title: "Team standup updates",
+          sender: "Mike Chen",
+          channel: "#daily-standup",
+          time: "6:30 AM",
+          preview: "Good morning everyone! Here are my updates from yesterday..."
+        }
+      ]
     },
     emails: {
       total: 5,
-      fromPriorityPeople: 2
+      fromPriorityPeople: 2,
+      items: [
+        {
+          id: "email_1",
+          title: "Marketing launch materials review",
+          sender: "Sarah Johnson",
+          subject: "Urgent: Launch Materials Review Needed",
+          time: "7:45 AM",
+          preview: "Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials..."
+        },
+        {
+          id: "email_2",
+          title: "Q4 budget approval request", 
+          sender: "Mike Chen",
+          subject: "Q4 Budget Allocations for Review",
+          time: "6:30 AM",
+          preview: "Hi Alex, I'm sending over the Q4 budget allocations for your review..."
+        },
+        {
+          id: "email_3",
+          title: "Weekly team updates",
+          sender: "David Kim", 
+          subject: "Weekly Progress Report",
+          time: "6:00 AM",
+          preview: "Hi everyone, here's this week's progress report for the team..."
+        }
+      ]
     },
     actionItems: [
       {
@@ -506,11 +570,36 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                             <MessageSquare className="h-4 w-4 text-accent-green" />
                             Slack Messages ({briefData.slackMessages.total})
                           </h4>
-                          <div className="space-y-1 text-sm text-text-secondary">
-                            <div className="p-2 bg-surface-raised/30 rounded">Product launch timeline discussion</div>
-                            <div className="p-2 bg-surface-raised/30 rounded">Testing phase concerns from Sarah</div>
-                            <div className="p-2 bg-surface-raised/30 rounded">Team standup updates</div>
-                            <div className="p-2 bg-surface-raised/30 rounded">+9 more messages</div>
+                          <div className="space-y-2 text-sm">
+                            {briefData.slackMessages.items.map((message) => (
+                              <div key={message.id} className="p-3 bg-surface-raised/30 rounded-lg">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="font-medium text-text-primary text-sm">{message.title}</span>
+                                      {markedImportantMessages.has(message.id) && (
+                                        <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                                      )}
+                                    </div>
+                                    <div className="text-xs text-text-secondary mb-1">
+                                      {message.sender} • {message.channel} • {message.time}
+                                    </div>
+                                    <div className="text-xs text-text-secondary">
+                                      {message.preview}
+                                    </div>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleMarkAsImportant(message.id, 'Slack', message.title)}
+                                    disabled={markedImportantMessages.has(message.id)}
+                                    className="h-6 w-6 p-0 flex-shrink-0"
+                                  >
+                                    <Star className={`h-3 w-3 ${markedImportantMessages.has(message.id) ? 'text-yellow-400 fill-current' : 'text-text-secondary'}`} />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                         <div className="space-y-2">
@@ -518,11 +607,36 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                             <Mail className="h-4 w-4 text-blue-400" />
                             Emails ({briefData.emails.total})
                           </h4>
-                          <div className="space-y-1 text-sm text-text-secondary">
-                            <div className="p-2 bg-surface-raised/30 rounded">Marketing launch materials review</div>
-                            <div className="p-2 bg-surface-raised/30 rounded">Q4 budget approval request</div>
-                            <div className="p-2 bg-surface-raised/30 rounded">Weekly team updates</div>
-                            <div className="p-2 bg-surface-raised/30 rounded">+2 more emails</div>
+                          <div className="space-y-2 text-sm">
+                            {briefData.emails.items.map((email) => (
+                              <div key={email.id} className="p-3 bg-surface-raised/30 rounded-lg">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="font-medium text-text-primary text-sm">{email.title}</span>
+                                      {markedImportantMessages.has(email.id) && (
+                                        <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                                      )}
+                                    </div>
+                                    <div className="text-xs text-text-secondary mb-1">
+                                      {email.sender} • {email.subject} • {email.time}
+                                    </div>
+                                    <div className="text-xs text-text-secondary">
+                                      {email.preview}
+                                    </div>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleMarkAsImportant(email.id, 'Email', email.title)}
+                                    disabled={markedImportantMessages.has(email.id)}
+                                    className="h-6 w-6 p-0 flex-shrink-0"
+                                  >
+                                    <Star className={`h-3 w-3 ${markedImportantMessages.has(email.id) ? 'text-yellow-400 fill-current' : 'text-text-secondary'}`} />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
