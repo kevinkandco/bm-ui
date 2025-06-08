@@ -277,6 +277,17 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
     }
   }, [isPlaying, duration]);
 
+  // Combine all messages for single column display
+  const allMessages = [
+    ...briefData.slackMessages.items.map(item => ({ ...item, type: 'slack' })),
+    ...briefData.emails.items.map(item => ({ ...item, type: 'email' }))
+  ].sort((a, b) => {
+    // Sort by time (newest first)
+    const timeA = new Date(`1970/01/01 ${a.time}`).getTime();
+    const timeB = new Date(`1970/01/01 ${b.time}`).getTime();
+    return timeB - timeA;
+  });
+
   return (
     <>
       <Dialog open={open} onOpenChange={onClose}>
@@ -551,7 +562,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                   </Table>
                 </div>
 
-                {/* All Messages Section */}
+                {/* All Messages Section - Single Column List */}
                 <div className="border border-border-subtle rounded-xl p-6 bg-surface-overlay/30">
                   <Collapsible open={showAllMessages} onOpenChange={setShowAllMessages}>
                     <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
@@ -563,89 +574,54 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                       )}
                     </CollapsibleTrigger>
                     <CollapsibleContent className="space-y-4 pt-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <h4 className="font-medium text-text-primary flex items-center gap-2">
-                            <MessageSquare className="h-4 w-4 text-accent-green" />
-                            Slack Messages ({briefData.slackMessages.total})
-                          </h4>
-                          <div className="space-y-2 text-sm">
-                            {briefData.slackMessages.items.map((message) => (
-                              <div key={message.id} className="p-3 bg-surface-raised/30 rounded-lg">
-                                <div className="flex items-start justify-between gap-2">
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                      <span className="font-medium text-text-primary text-sm">{message.title}</span>
-                                      {markedImportantMessages.has(message.id) && (
-                                        <Check className="h-3 w-3 text-green-400" />
-                                      )}
-                                    </div>
-                                    <div className="text-xs text-text-secondary mb-1">
-                                      {message.sender} • {message.channel} • {message.time}
-                                    </div>
-                                    <div className="text-xs text-text-secondary">
-                                      {message.preview}
-                                    </div>
-                                  </div>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleMarkAsImportant(message.id, 'Slack', message.title)}
-                                    disabled={markedImportantMessages.has(message.id)}
-                                    className="h-6 w-6 p-0 flex-shrink-0"
-                                  >
-                                    {markedImportantMessages.has(message.id) ? (
+                      <div className="space-y-3">
+                        {allMessages.map((message) => (
+                          <div key={message.id} className="p-4 bg-surface-raised/30 rounded-lg border border-border-subtle/20">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-3 flex-1 min-w-0">
+                                <div className="flex-shrink-0 mt-1">
+                                  {message.type === 'slack' ? (
+                                    <MessageSquare className="h-4 w-4 text-accent-green" />
+                                  ) : (
+                                    <Mail className="h-4 w-4 text-blue-400" />
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <span className="font-medium text-text-primary text-sm">{message.title}</span>
+                                    {markedImportantMessages.has(message.id) && (
                                       <Check className="h-3 w-3 text-green-400" />
-                                    ) : (
-                                      <Plus className="h-3 w-3 text-text-secondary" />
                                     )}
-                                  </Button>
+                                  </div>
+                                  <div className="text-xs text-text-secondary mb-2">
+                                    {message.sender} • {message.type === 'slack' ? message.channel : message.subject} • {message.time}
+                                  </div>
+                                  <div className="text-xs text-text-secondary">
+                                    {message.preview}
+                                  </div>
                                 </div>
                               </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <h4 className="font-medium text-text-primary flex items-center gap-2">
-                            <Mail className="h-4 w-4 text-blue-400" />
-                            Emails ({briefData.emails.total})
-                          </h4>
-                          <div className="space-y-2 text-sm">
-                            {briefData.emails.items.map((email) => (
-                              <div key={email.id} className="p-3 bg-surface-raised/30 rounded-lg">
-                                <div className="flex items-start justify-between gap-2">
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                      <span className="font-medium text-text-primary text-sm">{email.title}</span>
-                                      {markedImportantMessages.has(email.id) && (
-                                        <Check className="h-3 w-3 text-green-400" />
-                                      )}
-                                    </div>
-                                    <div className="text-xs text-text-secondary mb-1">
-                                      {email.sender} • {email.subject} • {email.time}
-                                    </div>
-                                    <div className="text-xs text-text-secondary">
-                                      {email.preview}
-                                    </div>
-                                  </div>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleMarkAsImportant(email.id, 'Email', email.title)}
-                                    disabled={markedImportantMessages.has(email.id)}
-                                    className="h-6 w-6 p-0 flex-shrink-0"
-                                  >
-                                    {markedImportantMessages.has(email.id) ? (
-                                      <Check className="h-3 w-3 text-green-400" />
-                                    ) : (
-                                      <Plus className="h-3 w-3 text-text-secondary" />
-                                    )}
-                                  </Button>
-                                </div>
+                              <div className="flex-shrink-0 relative group">
+                                <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 text-xs text-text-secondary bg-surface-overlay px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-all duration-200 transform translate-x-2 group-hover:translate-x-0 whitespace-nowrap">
+                                  Include
+                                </span>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleMarkAsImportant(message.id, message.type === 'slack' ? 'Slack' : 'Email', message.title)}
+                                  disabled={markedImportantMessages.has(message.id)}
+                                  className="h-6 w-6 p-0 flex-shrink-0"
+                                >
+                                  {markedImportantMessages.has(message.id) ? (
+                                    <Check className="h-3 w-3 text-green-400" />
+                                  ) : (
+                                    <Plus className="h-3 w-3 text-text-secondary" />
+                                  )}
+                                </Button>
                               </div>
-                            ))}
+                            </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
