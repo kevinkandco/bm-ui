@@ -222,14 +222,31 @@ const HomeView = ({
           <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Central Animated "Brief Me" Button - Reduced spacing */}
+        {/* Central Audio Wave - Full Width */}
         <div className="flex-1 flex flex-col items-center justify-center my-0 mx-0 px-0 py-[8px]">
-          <div className="relative">
-            <ListeningScreen isListening={true} title="brief-me is monitoring" />
+          <div className="w-full px-8">
+            <div className="w-full h-16 flex items-center justify-center gap-1">
+              {/* Audio Wave Bars */}
+              {Array.from({ length: 20 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-primary-teal rounded-full transition-all duration-300"
+                  style={{
+                    width: '3px',
+                    height: `${20 + Math.sin((Date.now() / 500) + i * 0.5) * 15}px`,
+                    animation: `audioWave 1.5s ease-in-out infinite`,
+                    animationDelay: `${i * 0.1}s`
+                  }}
+                />
+              ))}
+            </div>
+            <div className="text-center mt-4">
+              <p className="text-white text-sm">brief-me is monitoring</p>
+            </div>
           </div>
         </div>
 
-        {/* Action Buttons - Above Recent Briefs */}
+        {/* Action Buttons - Updated to separate status buttons */}
         <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0 my-[6px] py-[3px]">
           <button onClick={onOpenBriefModal} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
@@ -238,26 +255,19 @@ const HomeView = ({
             <FileText className="w-4 h-4 text-light-gray-text" />
           </button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
-                           flex items-center justify-center transition-all duration-200
-                           hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                           active:scale-95">
-                <ChevronDown className="w-4 h-4 text-light-gray-text" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-deep-blue border-light-gray-text/20">
-              <DropdownMenuItem onClick={onStartFocusMode} className="text-white-text hover:bg-light-gray-text/10">
-                <Headphones className="mr-2 h-4 w-4" />
-                Start Focus Mode
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={onSignOffForDay} className="text-white-text hover:bg-light-gray-text/10">
-                <Clock className="mr-2 h-4 w-4" />
-                Sign Off for the Day
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <button onClick={onStartFocusMode} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
+                       flex items-center justify-center transition-all duration-200
+                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                       active:scale-95">
+            <Focus className="w-4 h-4 text-light-gray-text" />
+          </button>
+
+          <button onClick={onSignOffForDay} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
+                       flex items-center justify-center transition-all duration-200
+                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                       active:scale-95">
+            <Clock className="w-4 h-4 text-light-gray-text" />
+          </button>
 
           <button onClick={onToggleCatchMeUp} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
                        flex items-center justify-center transition-all duration-200
@@ -319,6 +329,17 @@ const HomeView = ({
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
+
+        <style>{`
+          @keyframes audioWave {
+            0%, 100% {
+              transform: scaleY(1);
+            }
+            50% {
+              transform: scaleY(2);
+            }
+          }
+        `}</style>
       </div>;
   }
 
