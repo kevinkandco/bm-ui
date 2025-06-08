@@ -7,7 +7,6 @@ import ListeningScreen from "@/components/dashboard/ListeningScreen";
 import FocusMode from "@/components/dashboard/FocusMode";
 import NewBriefModal from "@/components/dashboard/NewBriefModal";
 import TranscriptView from "@/components/dashboard/TranscriptView";
-import MenuBarContainer from "@/components/dashboard/MenuBarContainer";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -80,13 +79,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Menu Bar Companion - macOS style */}
-      <MenuBarContainer
-        onGetBriefedNow={handleToggleCatchMeUp}
-        onUpdateSchedule={() => navigate("/dashboard/settings")}
-        onOpenDashboard={() => navigate("/dashboard")}
-      />
-
       {/* Main Content */}
       <div className="flex-1">
         {currentView === "home" && (
