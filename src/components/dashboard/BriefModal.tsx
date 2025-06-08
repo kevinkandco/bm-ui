@@ -1,11 +1,12 @@
 
 import React, { useState } from "react";
-import { X, Play, Pause, Download, FileText, MessageSquare, Mail, CheckSquare, Clock } from "lucide-react";
+import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import AddMissingContent from "./AddMissingContent";
-import SummaryFeedback from "./SummaryFeedback";
 import ActionItemFeedback from "./ActionItemFeedback";
 import { useFeedbackTracking } from "./useFeedbackTracking";
 
@@ -20,9 +21,9 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration] = useState(180); // 3 minutes in seconds
+  const [showAllMessages, setShowAllMessages] = useState(false);
 
   const {
-    handleSummaryFeedback,
     handleActionRelevance,
     handleAddMissingContent
   } = useFeedbackTracking();
@@ -35,20 +36,27 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
     });
   };
 
-  const handleDownload = () => {
-    toast({
-      title: "Downloading Brief",
-      description: "Your brief transcript is being downloaded"
-    });
-  };
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Sample brief data
+  const handleOpenInPlatform = (platform: string, messageId: string) => {
+    toast({
+      title: `Opening in ${platform}`,
+      description: `Redirecting to ${platform} message...`
+    });
+  };
+
+  const handleShowPriorityReason = (itemId: string) => {
+    toast({
+      title: "Priority Reasoning",
+      description: "This item was marked as priority due to deadline urgency and stakeholder importance."
+    });
+  };
+
+  // Sample brief data with enhanced action items
   const briefData = {
     id: briefId,
     name: "Morning Brief",
@@ -62,11 +70,61 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
       total: 5,
       fromPriorityPeople: 2
     },
-    actionItems: 4,
+    actionItems: [
+      {
+        id: "1",
+        text: "Review launch materials for marketing team (Due: 2 PM today)",
+        source: "gmail",
+        priority: "high",
+        messageId: "msg_123",
+        reasoning: "Time-sensitive deadline and critical for product launch timeline"
+      },
+      {
+        id: "2", 
+        text: "Approve Q4 budget allocations for finance team",
+        source: "gmail",
+        priority: "medium",
+        messageId: "msg_456",
+        reasoning: "Affects resource planning and team capacity for next quarter"
+      },
+      {
+        id: "3",
+        text: "Respond to Sarah about testing phase timeline concerns", 
+        source: "slack",
+        priority: "high",
+        messageId: "slack_789",
+        reasoning: "Blocking team progress and requires immediate leadership decision"
+      },
+      {
+        id: "4",
+        text: "Schedule follow-up meeting with product team for next week",
+        source: "slack", 
+        priority: "low",
+        messageId: "slack_101",
+        reasoning: "Important for alignment but not immediately blocking"
+      }
+    ],
     timeSaved: {
       reading: 25,
       processing: 8,
       total: 33
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high": return "text-red-400 bg-red-400/20 border-red-400/40";
+      case "medium": return "text-orange-400 bg-orange-400/20 border-orange-400/40";
+      case "low": return "text-green-400 bg-green-400/20 border-green-400/40";
+      default: return "text-text-secondary bg-surface-raised/20 border-border-subtle";
+    }
+  };
+
+  const getSourceIcon = (source: string) => {
+    switch (source) {
+      case "slack": return <MessageSquare className="h-4 w-4 text-accent-green" />;
+      case "gmail": return <Mail className="h-4 w-4 text-blue-400" />;
+      default: return <FileText className="h-4 w-4 text-text-secondary" />;
     }
   };
 
@@ -101,15 +159,6 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                 <p className="text-text-secondary">{briefData.timeCreated}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleDownload} className="border-border-subtle">
-                <Download className="mr-2 h-4 w-4" />
-                Download
-              </Button>
-              <Button variant="ghost" size="sm" onClick={onClose}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
         </DialogHeader>
 
@@ -140,11 +189,11 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckSquare className="h-4 w-4 text-orange-400" />
-                  <span className="text-text-primary">{briefData.actionItems} Action Items</span>
+                  <span className="text-text-primary">{briefData.actionItems.length} Action Items</span>
                 </div>
               </div>
 
-              {/* Time Saved Breakdown - Made more prominent */}
+              {/* Time Saved Breakdown */}
               <div className="flex items-center gap-2 text-sm text-text-secondary bg-surface-overlay/30 rounded-lg px-3 py-2 border border-border-subtle">
                 <Clock className="h-4 w-4 text-green-400" />
                 <span>
@@ -152,7 +201,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                 </span>
               </div>
 
-              {/* Audio Player */}
+              {/* Audio Player - Full Width Waveform */}
               <div className="bg-surface-overlay/50 rounded-xl p-4 border border-border-subtle">
                 <div className="flex items-center gap-4 mb-3">
                   <Button
@@ -175,14 +224,14 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                   </div>
                 </div>
                 
-                {/* Waveform Visualization */}
-                <div className="w-full h-12 bg-surface-raised/30 rounded-lg p-2 flex items-center">
+                {/* Full Width Waveform Visualization */}
+                <div className="w-full h-12 bg-surface-raised/30 rounded-lg p-2">
                   <div className="w-full h-full flex items-center justify-center gap-0.5">
-                    {Array.from({ length: 60 }, (_, i) => (
+                    {Array.from({ length: 120 }, (_, i) => (
                       <div
                         key={i}
-                        className={`w-1 rounded-full transition-all duration-300 ${
-                          isPlaying && (currentTime * 60 / duration) > i
+                        className={`flex-1 rounded-full transition-all duration-300 ${
+                          isPlaying && (currentTime * 120 / duration) > i
                             ? 'bg-accent-primary'
                             : 'bg-surface-raised'
                         }`}
@@ -199,47 +248,88 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
 
             {/* Brief Content */}
             <div className="space-y-6">
-              {/* Summary Section */}
-              <div className="border border-border-subtle rounded-xl p-6 bg-surface-overlay/30">
-                <h3 className="text-lg font-semibold text-text-primary mb-4">Executive Summary</h3>
-                <div className="prose prose-invert max-w-none">
-                  <p className="text-text-secondary leading-relaxed">
-                    Your morning brief covers 12 Slack messages and 5 emails from 5:00 AM to 8:00 AM. 
-                    Key highlights include 3 priority messages from your team about the product launch, 
-                    2 urgent emails from stakeholders, and 4 action items that require your attention today.
-                  </p>
-                  <p className="text-text-secondary leading-relaxed mt-4">
-                    The product team shared updates on the upcoming release timeline, with Sarah mentioning 
-                    potential delays in the testing phase. Marketing requests your review of the launch 
-                    materials by 2 PM today. Finance needs approval for Q4 budget allocations.
-                  </p>
-                </div>
-                <SummaryFeedback 
-                  briefId={briefData.id.toString()}
-                  onFeedback={handleSummaryFeedback}
-                />
-              </div>
-
-              {/* Action Items Section */}
+              {/* Action Items Section - Enhanced */}
               <div className="border border-border-subtle rounded-xl p-6 bg-surface-overlay/30">
                 <h3 className="text-lg font-semibold text-text-primary mb-4">Action Items</h3>
                 <div className="space-y-3">
-                  {[
-                    "Review launch materials for marketing team (Due: 2 PM today)",
-                    "Approve Q4 budget allocations for finance team",
-                    "Respond to Sarah about testing phase timeline concerns",
-                    "Schedule follow-up meeting with product team for next week"
-                  ].map((item, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-surface-raised/50 rounded-lg group">
-                      <CheckSquare className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
-                      <span className="text-text-primary text-sm flex-1">{item}</span>
-                      <ActionItemFeedback 
-                        itemId={`${briefData.id}-${index}`}
-                        onRelevanceFeedback={(itemId, relevant) => handleActionRelevance(briefData.id.toString(), itemId, relevant)}
-                      />
+                  {briefData.actionItems.map((item, index) => (
+                    <div key={item.id} className="flex items-start gap-3 p-4 bg-surface-raised/50 rounded-lg group">
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {getSourceIcon(item.source)}
+                        <Badge variant="secondary" className={`text-xs h-5 px-2 ${getPriorityColor(item.priority)}`}>
+                          {item.priority}
+                        </Badge>
+                      </div>
+                      
+                      <span className="text-text-primary text-sm flex-1">{item.text}</span>
+                      
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleOpenInPlatform(item.source, item.messageId)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleShowPriorityReason(item.id)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Info className="h-3 w-3" />
+                        </Button>
+                        <ActionItemFeedback 
+                          itemId={item.id}
+                          onRelevanceFeedback={(itemId, relevant) => handleActionRelevance(briefData.id.toString(), itemId, relevant)}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* All Messages Section */}
+              <div className="border border-border-subtle rounded-xl p-6 bg-surface-overlay/30">
+                <Collapsible open={showAllMessages} onOpenChange={setShowAllMessages}>
+                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
+                    <h3 className="text-lg font-semibold text-text-primary">All Messages & Items</h3>
+                    {showAllMessages ? (
+                      <ChevronUp className="h-4 w-4 text-text-secondary" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-text-secondary" />
+                    )}
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-4 pt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-text-primary flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4 text-accent-green" />
+                          Slack Messages ({briefData.slackMessages.total})
+                        </h4>
+                        <div className="space-y-1 text-sm text-text-secondary">
+                          <div className="p-2 bg-surface-raised/30 rounded">Product launch timeline discussion</div>
+                          <div className="p-2 bg-surface-raised/30 rounded">Testing phase concerns from Sarah</div>
+                          <div className="p-2 bg-surface-raised/30 rounded">Team standup updates</div>
+                          <div className="p-2 bg-surface-raised/30 rounded">+9 more messages</div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-text-primary flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-blue-400" />
+                          Emails ({briefData.emails.total})
+                        </h4>
+                        <div className="space-y-1 text-sm text-text-secondary">
+                          <div className="p-2 bg-surface-raised/30 rounded">Marketing launch materials review</div>
+                          <div className="p-2 bg-surface-raised/30 rounded">Q4 budget approval request</div>
+                          <div className="p-2 bg-surface-raised/30 rounded">Weekly team updates</div>
+                          <div className="p-2 bg-surface-raised/30 rounded">+2 more emails</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
 
               {/* Add Missing Content */}

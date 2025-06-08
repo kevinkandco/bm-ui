@@ -1,8 +1,8 @@
-
 import React, { useState, useCallback, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import HomeView from "@/components/dashboard/HomeView";
 import BriefModal from "@/components/dashboard/BriefModal";
+import TranscriptModal from "@/components/dashboard/TranscriptModal";
 import FocusMode from "@/components/dashboard/FocusMode";
 import CatchMeUp from "@/components/dashboard/CatchMeUp";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
@@ -24,6 +24,7 @@ const Dashboard = () => {
     catchMeUpOpen: false,
     sidebarOpen: !isMobile,
     briefModalOpen: false,
+    transcriptModalOpen: false,
     endFocusModalOpen: false,
     catchUpModalOpen: false,
     userStatus: "active" as UserStatus,
@@ -35,6 +36,14 @@ const Dashboard = () => {
       ...prev,
       selectedBrief: briefId,
       briefModalOpen: true
+    }));
+  }, []);
+
+  const handleOpenTranscript = useCallback((briefId: number) => {
+    setUiState(prev => ({
+      ...prev,
+      selectedBrief: briefId,
+      transcriptModalOpen: true
     }));
   }, []);
 
@@ -154,6 +163,13 @@ const Dashboard = () => {
     }));
   }, []);
 
+  const handleCloseTranscriptModal = useCallback(() => {
+    setUiState(prev => ({
+      ...prev,
+      transcriptModalOpen: false
+    }));
+  }, []);
+
   const handleOpenBriefModal = useCallback(() => {
     setUiState(prev => ({
       ...prev,
@@ -196,6 +212,7 @@ const Dashboard = () => {
       <div className="pt-16">
         <HomeView 
           onOpenBrief={handleOpenBrief}
+          onViewTranscript={handleOpenTranscript}
           onToggleFocusMode={handleToggleFocusMode}
           onToggleCatchMeUp={handleToggleCatchMeUp}
           onOpenBriefModal={handleOpenBriefModal}
@@ -217,6 +234,11 @@ const Dashboard = () => {
       <BriefModal 
         open={uiState.briefModalOpen}
         onClose={handleCloseBriefModal}
+      />
+      <TranscriptModal
+        open={uiState.transcriptModalOpen}
+        onClose={handleCloseTranscriptModal}
+        briefId={uiState.selectedBrief}
       />
       <EndFocusModal {...endFocusModalProps} />
       <EndFocusModal {...catchUpModalProps} />
