@@ -1,10 +1,11 @@
 
 import React, { useState } from "react";
-import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Slack, Gmail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import AddMissingContent from "./AddMissingContent";
 import ActionItemFeedback from "./ActionItemFeedback";
@@ -22,6 +23,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration] = useState(180); // 3 minutes in seconds
   const [showAllMessages, setShowAllMessages] = useState(false);
+  const [expandedActionItems, setExpandedActionItems] = useState<Set<string>>(new Set());
 
   const {
     handleActionRelevance,
@@ -56,7 +58,19 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
     });
   };
 
-  // Sample brief data with enhanced action items
+  const toggleActionItemExpansion = (itemId: string) => {
+    setExpandedActionItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+      } else {
+        newSet.add(itemId);
+      }
+      return newSet;
+    });
+  };
+
+  // Sample brief data with enhanced action items including full message content
   const briefData = {
     id: briefId,
     name: "Morning Brief",
@@ -77,7 +91,12 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
         source: "gmail",
         priority: "high",
         messageId: "msg_123",
-        reasoning: "Time-sensitive deadline and critical for product launch timeline"
+        reasoning: "Time-sensitive deadline and critical for product launch timeline",
+        fullMessage: "Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials we discussed yesterday. The marketing team needs your review and approval by 2 PM today to stay on track with our product launch timeline. The materials include the press release, social media assets, and the updated landing page copy. Please let me know if you have any questions or need any changes. Thanks!",
+        time: "7:45 AM",
+        sender: "Sarah Johnson",
+        subject: "Urgent: Launch Materials Review Needed",
+        relevancy: "Critical - blocking marketing team progress"
       },
       {
         id: "2", 
@@ -85,7 +104,12 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
         source: "gmail",
         priority: "medium",
         messageId: "msg_456",
-        reasoning: "Affects resource planning and team capacity for next quarter"
+        reasoning: "Affects resource planning and team capacity for next quarter",
+        fullMessage: "Hi Alex, I'm sending over the Q4 budget allocations for your review and approval. We've allocated resources based on our discussion last week and the priorities we outlined. The budget covers hiring, software tools, and project expenses. Please review and let me know if you'd like to make any adjustments before we finalize everything.",
+        time: "6:30 AM",
+        sender: "Mike Chen",
+        subject: "Q4 Budget Allocations for Review",
+        relevancy: "Important - affects next quarter planning"
       },
       {
         id: "3",
@@ -93,7 +117,12 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
         source: "slack",
         priority: "high",
         messageId: "slack_789",
-        reasoning: "Blocking team progress and requires immediate leadership decision"
+        reasoning: "Blocking team progress and requires immediate leadership decision",
+        fullMessage: "Hey @alex, I'm getting worried about our testing phase timeline. We're running into some issues with the automated tests and it might push back our release date. The QA team is working overtime but we might need to make some tough decisions about scope. Can we chat about this today? The team is looking for direction.",
+        time: "7:15 AM",
+        sender: "Sarah Martinez",
+        channel: "#product-team",
+        relevancy: "Urgent - team is blocked and needs decision"
       },
       {
         id: "4",
@@ -101,7 +130,12 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
         source: "slack", 
         priority: "low",
         messageId: "slack_101",
-        reasoning: "Important for alignment but not immediately blocking"
+        reasoning: "Important for alignment but not immediately blocking",
+        fullMessage: "Hi everyone! Great meeting today. I think we should schedule a follow-up for next week to review the progress on the action items we discussed. @alex when works best for you? I'm free Tuesday-Thursday afternoons.",
+        time: "5:30 AM",
+        sender: "David Kim",
+        channel: "#product-sync",
+        relevancy: "Low priority - scheduling item"
       }
     ],
     timeSaved: {
@@ -145,7 +179,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[90vh] bg-surface border-border-subtle p-0 overflow-hidden">
+      <DialogContent className="max-w-5xl h-[90vh] bg-surface border-border-subtle p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 border-b border-border-subtle">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -248,46 +282,137 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
 
             {/* Brief Content */}
             <div className="space-y-6">
-              {/* Action Items Section - Enhanced */}
+              {/* Action Items Section - Table Format */}
               <div className="border border-border-subtle rounded-xl p-6 bg-surface-overlay/30">
                 <h3 className="text-lg font-semibold text-text-primary mb-4">Action Items</h3>
-                <div className="space-y-3">
-                  {briefData.actionItems.map((item, index) => (
-                    <div key={item.id} className="flex items-start gap-3 p-4 bg-surface-raised/50 rounded-lg group">
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {getSourceIcon(item.source)}
-                        <Badge variant="secondary" className={`text-xs h-5 px-2 ${getPriorityColor(item.priority)}`}>
-                          {item.priority}
-                        </Badge>
-                      </div>
-                      
-                      <span className="text-text-primary text-sm flex-1">{item.text}</span>
-                      
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleOpenInPlatform(item.source, item.messageId)}
-                          className="h-6 w-6 p-0"
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-8"></TableHead>
+                      <TableHead>Source</TableHead>
+                      <TableHead>Priority</TableHead>
+                      <TableHead>Action Item</TableHead>
+                      <TableHead>Time</TableHead>
+                      <TableHead className="w-24">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {briefData.actionItems.map((item) => (
+                      <React.Fragment key={item.id}>
+                        <TableRow 
+                          className="cursor-pointer hover:bg-surface-raised/30" 
+                          onClick={() => toggleActionItemExpansion(item.id)}
                         >
-                          <ExternalLink className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleShowPriorityReason(item.id)}
-                          className="h-6 w-6 p-0"
-                        >
-                          <Info className="h-3 w-3" />
-                        </Button>
-                        <ActionItemFeedback 
-                          itemId={item.id}
-                          onRelevanceFeedback={(itemId, relevant) => handleActionRelevance(briefData.id.toString(), itemId, relevant)}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                          <TableCell>
+                            {expandedActionItems.has(item.id) ? (
+                              <ChevronUp className="h-4 w-4 text-text-secondary" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4 text-text-secondary" />
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {getSourceIcon(item.source)}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className={`text-xs h-5 px-2 ${getPriorityColor(item.priority)}`}>
+                              {item.priority}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-text-primary">
+                            {item.text}
+                          </TableCell>
+                          <TableCell className="text-text-secondary text-sm">
+                            {item.time}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenInPlatform(item.source, item.messageId);
+                                }}
+                                className="h-6 w-6 p-0"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleShowPriorityReason(item.id);
+                                }}
+                                className="h-6 w-6 p-0"
+                              >
+                                <Info className="h-3 w-3" />
+                              </Button>
+                              <ActionItemFeedback 
+                                itemId={item.id}
+                                onRelevanceFeedback={(itemId, relevant) => handleActionRelevance(briefData.id.toString(), itemId, relevant)}
+                              />
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                        {expandedActionItems.has(item.id) && (
+                          <TableRow>
+                            <TableCell colSpan={6} className="bg-surface-raised/20">
+                              <div className="p-4 space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium text-text-primary">From:</span>
+                                    <span className="text-text-secondary">{item.sender}</span>
+                                  </div>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleOpenInPlatform(item.source, item.messageId)}
+                                    className="flex items-center gap-2"
+                                  >
+                                    {getSourceIcon(item.source)}
+                                    Open in {item.source === 'slack' ? 'Slack' : 'Gmail'}
+                                  </Button>
+                                </div>
+                                
+                                {item.source === 'gmail' && (
+                                  <div>
+                                    <span className="font-medium text-text-primary">Subject:</span>
+                                    <span className="text-text-secondary ml-2">{item.subject}</span>
+                                  </div>
+                                )}
+                                
+                                {item.source === 'slack' && (
+                                  <div>
+                                    <span className="font-medium text-text-primary">Channel:</span>
+                                    <span className="text-text-secondary ml-2">{item.channel}</span>
+                                  </div>
+                                )}
+                                
+                                <div>
+                                  <span className="font-medium text-text-primary">Full Message:</span>
+                                  <div className="mt-1 p-3 bg-surface-raised/30 rounded-lg text-text-secondary text-sm">
+                                    {item.fullMessage}
+                                  </div>
+                                </div>
+                                
+                                <div>
+                                  <span className="font-medium text-text-primary">Relevancy:</span>
+                                  <span className="text-text-secondary ml-2">{item.relevancy}</span>
+                                </div>
+                                
+                                <div>
+                                  <span className="font-medium text-text-primary">Why this is an action item:</span>
+                                  <span className="text-text-secondary ml-2">{item.reasoning}</span>
+                                </div>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
 
               {/* All Messages Section */}
