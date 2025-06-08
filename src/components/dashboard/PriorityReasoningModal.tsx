@@ -3,7 +3,7 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Clock, User, Target, Brain, CheckSquare, X } from "lucide-react";
+import { ExternalLink, Clock, User, Target, Brain, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface PriorityReasoningModalProps {
@@ -182,26 +182,6 @@ const PriorityReasoningModal = ({ open, onClose, actionItem }: PriorityReasoning
                   {actionItem.confidence}
                 </Badge>
               </div>
-            </div>
-          </div>
-
-          {/* Suggested Next Steps */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-              <CheckSquare className="h-4 w-4" />
-              Suggested Next Steps
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              <Button variant="outline" size="sm" className="justify-start">
-                Add to Asana
-              </Button>
-              <Button variant="outline" size="sm" className="justify-start">
-                Schedule Follow-up
-              </Button>
-              <Button variant="outline" size="sm" className="justify-start">
-                Set Reminder
-              </Button>
             </div>
           </div>
 

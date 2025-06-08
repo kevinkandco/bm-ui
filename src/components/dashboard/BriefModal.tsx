@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Slack } from "lucide-react";
+import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Calendar, ClockIcon, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +56,27 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
   const handleShowPriorityReason = (item: any) => {
     setSelectedActionItem(item);
     setPriorityModalOpen(true);
+  };
+
+  const handleAddToAsana = (itemId: string) => {
+    toast({
+      title: "Added to Asana",
+      description: "Action item has been added to your Asana workspace."
+    });
+  };
+
+  const handleScheduleFollowup = (itemId: string) => {
+    toast({
+      title: "Follow-up Scheduled",
+      description: "A follow-up reminder has been set for this action item."
+    });
+  };
+
+  const handleSetReminder = (itemId: string) => {
+    toast({
+      title: "Reminder Set",
+      description: "A reminder has been set for this action item."
+    });
   };
 
   const toggleActionItemExpansion = (itemId: string) => {
@@ -196,7 +217,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
   return (
     <>
       <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className="max-w-5xl h-[90vh] bg-surface border-border-subtle p-0 overflow-hidden">
+        <DialogContent className="max-w-6xl h-[90vh] bg-surface border-border-subtle p-0 overflow-hidden">
           <DialogHeader className="p-6 pb-4 border-b border-border-subtle">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -304,20 +325,20 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                   <h3 className="text-lg font-semibold text-text-primary mb-4">Action Items</h3>
                   <Table>
                     <TableHeader>
-                      <TableRow className="border-b border-border-subtle/20">
+                      <TableRow className="border-b border-border-subtle/5">
                         <TableHead className="w-8"></TableHead>
                         <TableHead>Source</TableHead>
                         <TableHead>Priority</TableHead>
                         <TableHead>Action Item</TableHead>
                         <TableHead>Time</TableHead>
-                        <TableHead className="w-24">Actions</TableHead>
+                        <TableHead className="w-48">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {briefData.actionItems.map((item) => (
                         <React.Fragment key={item.id}>
                           <TableRow 
-                            className="cursor-pointer hover:bg-surface-raised/30 border-b border-border-subtle/20" 
+                            className="cursor-pointer hover:bg-surface-raised/30 border-b border-border-subtle/5" 
                             onClick={() => toggleActionItemExpansion(item.id)}
                           >
                             <TableCell>
@@ -343,6 +364,41 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-1">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAddToAsana(item.id);
+                                  }}
+                                  className="h-7 px-2 text-xs rounded-full"
+                                >
+                                  Add to Asana
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleScheduleFollowup(item.id);
+                                  }}
+                                  className="h-7 px-2 text-xs rounded-full"
+                                >
+                                  <Calendar className="h-3 w-3 mr-1" />
+                                  Follow-up
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleSetReminder(item.id);
+                                  }}
+                                  className="h-7 px-2 text-xs rounded-full"
+                                >
+                                  <ClockIcon className="h-3 w-3 mr-1" />
+                                  Reminder
+                                </Button>
                                 <Button
                                   variant="ghost"
                                   size="sm"
@@ -373,7 +429,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                             </TableCell>
                           </TableRow>
                           {expandedActionItems.has(item.id) && (
-                            <TableRow className="border-b border-border-subtle/20">
+                            <TableRow className="border-b border-border-subtle/5">
                               <TableCell colSpan={6} className="bg-surface-raised/20">
                                 <div className="p-4 space-y-3">
                                   <div className="flex items-center justify-between">
