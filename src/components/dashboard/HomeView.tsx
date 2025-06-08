@@ -19,6 +19,7 @@ import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
+  onViewTranscript: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
@@ -27,6 +28,7 @@ interface HomeViewProps {
 }
 const HomeView = ({
   onOpenBrief,
+  onViewTranscript,
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal,
@@ -53,11 +55,8 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
   const handleViewTranscript = useCallback((briefId: number) => {
-    toast({
-      title: "Transcript",
-      description: `Opening transcript for brief ${briefId}`
-    });
-  }, [toast]);
+    onViewTranscript(briefId);
+  }, [onViewTranscript]);
   const handlePlayBrief = useCallback((briefId: number) => {
     if (playingBrief === briefId) {
       setPlayingBrief(null);
