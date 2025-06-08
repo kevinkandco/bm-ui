@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Calendar, ClockIcon, Target, Star } from "lucide-react";
+import { Play, Pause, FileText, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Info, ChevronDown, ChevronUp, Calendar, ClockIcon, Target, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -578,7 +577,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                                     <div className="flex items-center gap-2 mb-1">
                                       <span className="font-medium text-text-primary text-sm">{message.title}</span>
                                       {markedImportantMessages.has(message.id) && (
-                                        <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                                        <Check className="h-3 w-3 text-green-400" />
                                       )}
                                     </div>
                                     <div className="text-xs text-text-secondary mb-1">
@@ -595,7 +594,11 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                                     disabled={markedImportantMessages.has(message.id)}
                                     className="h-6 w-6 p-0 flex-shrink-0"
                                   >
-                                    <Star className={`h-3 w-3 ${markedImportantMessages.has(message.id) ? 'text-yellow-400 fill-current' : 'text-text-secondary'}`} />
+                                    {markedImportantMessages.has(message.id) ? (
+                                      <Check className="h-3 w-3 text-green-400" />
+                                    ) : (
+                                      <Plus className="h-3 w-3 text-text-secondary" />
+                                    )}
                                   </Button>
                                 </div>
                               </div>
@@ -615,7 +618,7 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                                     <div className="flex items-center gap-2 mb-1">
                                       <span className="font-medium text-text-primary text-sm">{email.title}</span>
                                       {markedImportantMessages.has(email.id) && (
-                                        <Star className="h-3 w-3 text-yellow-400 fill-current" />
+                                        <Check className="h-3 w-3 text-green-400" />
                                       )}
                                     </div>
                                     <div className="text-xs text-text-secondary mb-1">
@@ -632,7 +635,11 @@ const BriefModal = ({ open, onClose, briefId = 1 }: BriefModalProps) => {
                                     disabled={markedImportantMessages.has(email.id)}
                                     className="h-6 w-6 p-0 flex-shrink-0"
                                   >
-                                    <Star className={`h-3 w-3 ${markedImportantMessages.has(email.id) ? 'text-yellow-400 fill-current' : 'text-text-secondary'}`} />
+                                    {markedImportantMessages.has(email.id) ? (
+                                      <Check className="h-3 w-3 text-green-400" />
+                                    ) : (
+                                      <Plus className="h-3 w-3 text-text-secondary" />
+                                    )}
                                   </Button>
                                 </div>
                               </div>
