@@ -8,9 +8,19 @@ import { useToast } from "@/hooks/use-toast";
 import IntegrationsSection from "@/components/settings/IntegrationsSection";
 import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
 import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { useNavigate } from "react-router-dom";
 
 const SettingsPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [activeSection, setActiveSection] = React.useState("profile");
 
@@ -170,6 +180,23 @@ const SettingsPage = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="container p-4 md:p-6 max-w-7xl mx-auto">
+        <Breadcrumb className="mb-4">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink 
+                onClick={() => navigate("/dashboard")} 
+                className="cursor-pointer"
+              >
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Settings</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text-primary flex items-center">
             <Settings className="mr-3 h-6 w-6" />
