@@ -53,7 +53,7 @@ const BriefsContainer = ({
   onUpdateSchedule,
   upcomingBrief
 }: BriefsContainerProps) => {
-  const [upcomingOpen, setUpcomingOpen] = useState(false);
+  const [upcomingOpen, setUpcomingOpen] = useState(true);
 
   return (
     <Card 
