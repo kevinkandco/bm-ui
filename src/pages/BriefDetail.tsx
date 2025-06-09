@@ -1,13 +1,12 @@
 
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { X, Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info } from "lucide-react";
+import { Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -15,6 +14,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useToast } from "@/hooks/use-toast";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SummaryFeedback from "@/components/dashboard/SummaryFeedback";
 
 const BriefDetail = () => {
@@ -22,6 +22,7 @@ const BriefDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Mock data - in a real app this would be fetched based on briefId
   const briefData = {
@@ -78,6 +79,10 @@ const BriefDetail = () => {
     }
   ];
 
+  const handleToggleSidebar = () => {
+    setSidebarOpen(prev => !prev);
+  };
+
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
     toast({
@@ -118,220 +123,273 @@ const BriefDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface-primary text-text-primary">
-      {/* Header with Breadcrumb */}
-      <div className="border-b border-border-subtle bg-surface-secondary/50">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col gap-2">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink 
-                      onClick={() => navigate('/dashboard')}
-                      className="cursor-pointer hover:text-accent-primary"
+    <DashboardLayout 
+      currentPage="briefs" 
+      sidebarOpen={sidebarOpen} 
+      onToggleSidebar={handleToggleSidebar}
+    >
+      <div className="min-h-screen bg-surface px-4 py-6">
+        {/* Breadcrumb */}
+        <Breadcrumb className="mb-4">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink 
+                onClick={() => navigate('/dashboard')}
+                className="cursor-pointer hover:text-accent-primary"
+              >
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink 
+                onClick={() => navigate('/dashboard/briefs')}
+                className="cursor-pointer hover:text-accent-primary"
+              >
+                Briefs
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{briefData.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <CheckSquare className="h-6 w-6 text-accent-primary flex-shrink-0" />
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{briefData.title}</h1>
+              <p className="text-sm text-text-secondary">{briefData.timestamp}</p>
+            </div>
+          </div>
+          <p className="text-sm text-text-secondary">Range: {briefData.timeRange}</p>
+        </div>
+
+        {/* Main Content */}
+        <div className="glass-card rounded-2xl overflow-hidden">
+          <div className="p-4 md:p-6 space-y-6">
+            {/* Stats Row */}
+            <div>
+              <div className="flex flex-wrap gap-4 md:gap-6 mb-4">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-accent-primary" />
+                  <span className="font-semibold text-text-primary text-sm md:text-base">{briefData.stats.slackMessages.total} Slack Messages</span>
+                  <Badge variant="secondary" className="text-xs">{briefData.stats.slackMessages.priority} priority</Badge>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-accent-primary" />
+                  <span className="font-semibold text-text-primary text-sm md:text-base">{briefData.stats.emails.total} Emails</span>
+                  <Badge variant="secondary" className="text-xs">{briefData.stats.emails.priority} priority</Badge>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <CheckSquare className="h-5 w-5 text-accent-primary" />
+                  <span className="font-semibold text-text-primary text-sm md:text-base">{briefData.stats.actionItems} Action Items</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-green-400">
+                <Clock className="h-4 w-4" />
+                <span className="text-sm">Time saved: {briefData.timeSaved}</span>
+              </div>
+            </div>
+
+            <Separator className="bg-border-subtle" />
+
+            {/* Audio Brief Section */}
+            <div>
+              <h2 className="text-lg font-semibold text-text-primary mb-4">Audio Brief</h2>
+              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handlePlayPause}
+                      className="h-8 w-8"
                     >
-                      Dashboard
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink 
-                      onClick={() => navigate('/dashboard/briefs')}
-                      className="cursor-pointer hover:text-accent-primary"
-                    >
-                      Briefs
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{briefData.title}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-              
-              <div className="flex items-center gap-3">
-                <CheckSquare className="h-6 w-6 text-accent-primary" />
-                <div>
-                  <h1 className="text-xl font-semibold text-text-primary">{briefData.title}</h1>
-                  <p className="text-sm text-text-secondary">{briefData.timestamp}</p>
+                      {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                    </Button>
+                    <span className="font-medium text-text-primary">Audio Brief</span>
+                  </div>
+                  <span className="text-sm text-text-secondary">0:00 / {briefData.audioDuration}</span>
+                </div>
+                
+                {/* Audio waveform placeholder */}
+                <div className="h-12 bg-white/5 rounded flex items-center px-4">
+                  <div className="flex items-center gap-1 h-full">
+                    {Array.from({ length: 40 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 bg-accent-primary/40 rounded-full"
+                        style={{ height: `${20 + Math.random() * 60}%` }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-6">
-        {/* Stats Row */}
-        <div className="mb-6">
-          <p className="text-sm text-text-secondary mb-4">Range: {briefData.timeRange}</p>
-          
-          <div className="flex flex-wrap gap-6 mb-4">
-            <div className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-accent-primary" />
-              <span className="font-semibold text-text-primary">{briefData.stats.slackMessages.total} Slack Messages</span>
-              <Badge variant="secondary" className="text-xs">{briefData.stats.slackMessages.priority} priority</Badge>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Mail className="h-5 w-5 text-accent-primary" />
-              <span className="font-semibold text-text-primary">{briefData.stats.emails.total} Emails</span>
-              <Badge variant="secondary" className="text-xs">{briefData.stats.emails.priority} priority</Badge>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <CheckSquare className="h-5 w-5 text-accent-primary" />
-              <span className="font-semibold text-text-primary">{briefData.stats.actionItems} Action Items</span>
-            </div>
-          </div>
+            <Separator className="bg-border-subtle" />
 
-          <div className="flex items-center gap-2 text-green-400">
-            <Clock className="h-4 w-4" />
-            <span className="text-sm">Time saved: {briefData.timeSaved}</span>
-          </div>
-        </div>
+            {/* Action Items Section */}
+            <div>
+              <h2 className="text-lg font-semibold text-text-primary mb-4">Action Items</h2>
+              
+              {/* Mobile-first action items */}
+              <div className="space-y-4">
+                {actionItems.map((item, index) => (
+                  <div key={item.id} className="group">
+                    <div className="p-4 hover:bg-white/5 rounded-lg transition-colors">
+                      {/* Mobile Layout */}
+                      <div className="block md:hidden space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <button className="p-1 hover:bg-white/10 rounded">
+                              <ExternalLink className="h-3 w-3 text-text-secondary" />
+                            </button>
+                            {getSourceIcon(item.source)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start gap-2 mb-2">
+                              <Badge className={`text-xs border ${getPriorityColor(item.priority)} flex-shrink-0`}>
+                                {item.priority}
+                              </Badge>
+                              <span className="text-xs text-text-secondary">{item.time}</span>
+                            </div>
+                            <div className="text-sm text-text-primary font-medium mb-1">
+                              {item.title}
+                            </div>
+                            {item.subtitle && (
+                              <div className="text-xs text-text-secondary mb-2">
+                                {item.subtitle}
+                              </div>
+                            )}
+                            <div className="flex flex-wrap gap-1">
+                              {item.actions.map((action) => (
+                                <Button
+                                  key={action}
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleActionClick(action, item)}
+                                  className="text-xs px-2 py-1 h-auto"
+                                >
+                                  {action === "Add to Asana" && <ExternalLink className="h-3 w-3 mr-1" />}
+                                  {action === "Follow-up" && <Calendar className="h-3 w-3 mr-1" />}
+                                  {action === "Reminder" && <Bell className="h-3 w-3 mr-1" />}
+                                  {action}
+                                </Button>
+                              ))}
+                              <Button variant="ghost" size="sm" className="text-xs px-2 py-1 h-auto">
+                                <Info className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-        {/* Audio Brief Section */}
-        <div className="mb-8">
-          <div className="bg-surface-overlay/20 rounded-lg p-4 border border-border-subtle">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handlePlayPause}
-                  className="h-8 w-8"
-                >
-                  {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                </Button>
-                <span className="font-medium text-text-primary">Audio Brief</span>
-              </div>
-              <span className="text-sm text-text-secondary">0:00 / {briefData.audioDuration}</span>
-            </div>
-            
-            {/* Audio waveform placeholder */}
-            <div className="mt-3 h-12 bg-surface-overlay/30 rounded flex items-center px-4">
-              <div className="flex items-center gap-1 h-full">
-                {Array.from({ length: 60 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-1 bg-accent-primary/40 rounded-full"
-                    style={{ height: `${20 + Math.random() * 60}%` }}
-                  />
+                      {/* Desktop Layout */}
+                      <div className="hidden md:grid md:grid-cols-12 md:gap-4 md:items-center">
+                        <div className="col-span-2">
+                          <div className="flex items-center gap-2">
+                            <button className="p-1 hover:bg-white/10 rounded">
+                              <ExternalLink className="h-3 w-3 text-text-secondary" />
+                            </button>
+                            {getSourceIcon(item.source)}
+                          </div>
+                        </div>
+                        
+                        <div className="col-span-1">
+                          <Badge className={`text-xs border ${getPriorityColor(item.priority)}`}>
+                            {item.priority}
+                          </Badge>
+                        </div>
+                        
+                        <div className="col-span-5">
+                          <div className="text-sm text-text-primary font-medium">
+                            {item.title}
+                          </div>
+                          {item.subtitle && (
+                            <div className="text-xs text-text-secondary">
+                              {item.subtitle}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="col-span-2">
+                          <span className="text-sm text-text-secondary">{item.time}</span>
+                        </div>
+                        
+                        <div className="col-span-2">
+                          <div className="flex gap-1">
+                            {item.actions.map((action) => (
+                              <Button
+                                key={action}
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleActionClick(action, item)}
+                                className="text-xs px-2 py-1 h-auto"
+                              >
+                                {action === "Add to Asana" && <ExternalLink className="h-3 w-3 mr-1" />}
+                                {action === "Follow-up" && <Calendar className="h-3 w-3 mr-1" />}
+                                {action === "Reminder" && <Bell className="h-3 w-3 mr-1" />}
+                                {action === "Add to Asana" ? "Add to Asana" : 
+                                 action === "Follow-up" ? "Follow-up" : 
+                                 action === "Reminder" ? "Reminder" : action}
+                              </Button>
+                            ))}
+                            <Button variant="ghost" size="sm" className="text-xs px-2 py-1 h-auto">
+                              <Info className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {index < actionItems.length - 1 && <Separator className="bg-border-subtle" />}
+                  </div>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Action Items Section */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold text-text-primary mb-4">Action Items</h2>
-          
-          <div className="space-y-4">
-            {/* Table Header */}
-            <div className="grid grid-cols-12 gap-4 text-sm text-text-secondary font-medium pb-2 border-b border-border-subtle">
-              <div className="col-span-2">Source</div>
-              <div className="col-span-1">Priority</div>
-              <div className="col-span-5">Action Item</div>
-              <div className="col-span-2">Time</div>
-              <div className="col-span-2">Actions</div>
+            <Separator className="bg-border-subtle" />
+
+            {/* All Messages & Items Section */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-text-primary">All Messages & Items</h2>
+                <Button variant="ghost" size="icon">
+                  <ExternalLink className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                <p className="text-text-secondary text-sm">Detailed message list would appear here...</p>
+              </div>
             </div>
 
-            {/* Action Items */}
-            {actionItems.map((item, index) => (
-              <div key={item.id} className="group">
-                <div className="grid grid-cols-12 gap-4 py-3 items-center hover:bg-surface-overlay/10 rounded-lg px-2 -mx-2">
-                  <div className="col-span-2">
-                    <div className="flex items-center gap-2">
-                      <button className="p-1 hover:bg-surface-overlay/20 rounded">
-                        <ExternalLink className="h-3 w-3 text-text-secondary" />
-                      </button>
-                      {getSourceIcon(item.source)}
-                    </div>
-                  </div>
-                  
-                  <div className="col-span-1">
-                    <Badge className={`text-xs border ${getPriorityColor(item.priority)}`}>
-                      {item.priority}
-                    </Badge>
-                  </div>
-                  
-                  <div className="col-span-5">
-                    <div className="text-sm text-text-primary font-medium">
-                      {item.title}
-                    </div>
-                    {item.subtitle && (
-                      <div className="text-xs text-text-secondary">
-                        {item.subtitle}
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="col-span-2">
-                    <span className="text-sm text-text-secondary">{item.time}</span>
-                  </div>
-                  
-                  <div className="col-span-2">
-                    <div className="flex gap-1">
-                      {item.actions.map((action) => (
-                        <Button
-                          key={action}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleActionClick(action, item)}
-                          className="text-xs px-2 py-1 h-auto"
-                        >
-                          {action === "Add to Asana" && <ExternalLink className="h-3 w-3 mr-1" />}
-                          {action === "Follow-up" && <Calendar className="h-3 w-3 mr-1" />}
-                          {action === "Reminder" && <Bell className="h-3 w-3 mr-1" />}
-                          {action === "Add to Asana" ? "Add to Asana" : 
-                           action === "Follow-up" ? "Follow-up" : 
-                           action === "Reminder" ? "Reminder" : action}
-                        </Button>
-                      ))}
-                      <Button variant="ghost" size="sm" className="text-xs px-2 py-1 h-auto">
-                        <Info className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                {index < actionItems.length - 1 && <Separator className="bg-border-subtle" />}
-              </div>
-            ))}
+            <Separator className="bg-border-subtle" />
+
+            {/* Add What's Missing Section */}
+            <div>
+              <Button variant="outline" className="w-full" size="lg">
+                <span className="mr-2">+</span>
+                Add what's missing
+              </Button>
+            </div>
+
+            {/* Feedback Section */}
+            <SummaryFeedback 
+              briefId={briefData.id || "1"} 
+              onFeedback={handleFeedback}
+              showTooltip={true}
+            />
           </div>
         </div>
-
-        {/* All Messages & Items Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-text-primary">All Messages & Items</h2>
-            <Button variant="ghost" size="icon">
-              <ExternalLink className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="bg-surface-overlay/10 rounded-lg p-4 border border-border-subtle">
-            <p className="text-text-secondary text-sm">Detailed message list would appear here...</p>
-          </div>
-        </div>
-
-        {/* Add What's Missing Section */}
-        <div className="mb-8">
-          <Button variant="outline" className="w-full" size="lg">
-            <span className="mr-2">+</span>
-            Add what's missing
-          </Button>
-        </div>
-
-        {/* Feedback Section */}
-        <SummaryFeedback 
-          briefId={briefData.id || "1"} 
-          onFeedback={handleFeedback}
-          showTooltip={true}
-        />
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
