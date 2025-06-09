@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense, useState, useEffect, memo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -5,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./hooks/use-theme";
+import { useIsMobile } from "./hooks/use-mobile";
 
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
@@ -51,6 +53,19 @@ const LoadingFallback = memo(() => (
 
 LoadingFallback.displayName = 'LoadingFallback';
 
+// Mobile Mac Route Guard Component
+const MacRouteGuard = memo(() => {
+  const isMobile = useIsMobile();
+  
+  if (isMobile) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <MacPage />;
+});
+
+MacRouteGuard.displayName = 'MacRouteGuard';
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark">
@@ -70,7 +85,7 @@ const App = () => (
                 <Route path="/dashboard/meetings" element={<MeetingsList />} />
                 <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
                 <Route path="/dashboard/settings" element={<SettingsPage />} />
-                <Route path="/mac" element={<MacPage />} />
+                <Route path="/mac" element={<MacRouteGuard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
