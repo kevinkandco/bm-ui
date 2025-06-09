@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useCallback } from "react";
-import { Clock, Headphones, Zap, Plane, X } from "lucide-react";
+import { Clock, Headphones, Zap, Plane, X, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -100,25 +101,31 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
     switch (status) {
       case "focus":
         return (
-          <div className="w-full bg-gradient-to-r from-accent-primary to-accent-green py-3 px-6">
+          <div className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary py-4 px-6">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div className="flex items-center gap-3">
                 <div className="bg-white/20 text-white p-2 rounded-full">
-                  <Headphones className="h-4 w-4" />
+                  <Headphones className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-white font-medium">Focus Mode</h3>
+                  <h3 className="text-white font-medium text-lg">Focus Mode</h3>
                   <p className="text-white/80 text-sm">{focusTimeRemaining} remaining</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4">
-                <ThemeToggle className="h-8 w-8 text-white" />
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                >
+                  <Sun className="h-5 w-5" />
+                </Button>
                 <Button 
                   onClick={onExitFocusMode}
                   variant="outline"
-                  size="sm"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-full"
+                  size="default"
+                  className="bg-transparent border-white/20 text-white hover:bg-white/10 rounded-full px-6"
                 >
                   <X className="h-4 w-4 mr-2" /> 
                   Exit
