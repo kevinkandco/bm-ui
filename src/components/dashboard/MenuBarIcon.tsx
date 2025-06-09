@@ -204,23 +204,22 @@ const MenuBarIcon = ({
 
               {/* Footer */}
               <div className="px-4 py-3 border-t border-gray-200/30 bg-gray-50/30">
-                <div className="flex justify-between items-center text-[11px]">
+                <div className="flex justify-center gap-4">
                   <button 
-                    onClick={onToggleMenu}
-                    className="text-gray-500 hover:text-gray-700 transition-colors duration-150 flex items-center gap-1"
+                    onClick={handleGetBriefedNow}
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-150 shadow-sm hover:shadow-md"
+                    title="Brief Me"
                   >
-                    <Settings className="w-3 h-3" />
-                    Preferences
+                    <Zap className="w-5 h-5" />
                   </button>
                   <button 
-                    onClick={onOpenDashboard}
-                    className="text-gray-500 hover:text-gray-700 transition-colors duration-150 flex items-center gap-1"
+                    onClick={handleStatusClick}
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-md text-gray-700 hover:bg-white/30 transition-all duration-150 border border-gray-200/50 shadow-sm hover:shadow-md"
+                    title="Toggle Status"
                   >
-                    <ExternalLink className="w-3 h-3" />
-                    Open Dashboard
-                  </button>
-                  <button className="text-red-500 hover:text-red-700 transition-colors duration-150">
-                    Quit
+                    <div className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${getStatusColor(currentStatus)}`} />
+                    </div>
                   </button>
                 </div>
               </div>
