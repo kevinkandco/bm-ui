@@ -4,9 +4,12 @@ import MenuBarIcon from "@/components/dashboard/MenuBarIcon";
 import MenuBarCompanion from "@/components/dashboard/MenuBarCompanion";
 import { useToast } from "@/hooks/use-toast";
 
+type StatusType = "active" | "offline" | "dnd";
+
 const MacPage = () => {
   const { toast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [status, setStatus] = useState<StatusType>("active");
 
   const handleToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -14,6 +17,14 @@ const MacPage = () => {
 
   const handleCloseMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleStatusChange = (newStatus: StatusType) => {
+    setStatus(newStatus);
+    toast({
+      title: "Status Updated",
+      description: `Status changed to ${newStatus === "dnd" ? "Do Not Disturb" : newStatus}`
+    });
   };
 
   const handleGetBriefedNow = () => {
@@ -54,7 +65,12 @@ const MacPage = () => {
       <div className="absolute inset-0 bg-black/10" />
       
       {/* Menu Bar Icon */}
-      <MenuBarIcon onClick={handleToggleMenu} isActive={isMenuOpen} />
+      <MenuBarIcon 
+        onToggleMenu={handleToggleMenu}
+        onStatusChange={handleStatusChange}
+        currentStatus={status}
+        isMenuOpen={isMenuOpen}
+      />
       
       {/* Menu Bar Companion */}
       <MenuBarCompanion
@@ -69,7 +85,7 @@ const MacPage = () => {
       <div className="relative z-10 flex items-center justify-center min-h-screen p-8">
         <div className="text-center text-white/80">
           <h1 className="text-6xl font-thin mb-4">macOS Desktop</h1>
-          <p className="text-xl">Click the menu bar icon in the top right to access Brief Me</p>
+          <p className="text-xl">Click the menu bar to access Brief Me or cycle through status by clicking the button</p>
         </div>
       </div>
     </div>
