@@ -12,6 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import SplitBriefControls from "./SplitBriefControls";
 import { useIntegrationsState } from "./useIntegrationsState";
 import { useApi } from "@/hooks/useApi";
+import { getTimePeriod } from "@/lib/utils";
+import moment from "moment";
 
 const BriefConfigurationSection = () => {
   const { toast } = useToast();
@@ -30,20 +32,44 @@ const BriefConfigurationSection = () => {
   });
   const [times, setTimes] = useState({
     morning: true,
-    midday: true,
+    midday: false,
     evening: false
+  });
+  const [time, setTime] = useState({
+    morning: "08:00 AM",
+    midday: "12:00 PM",
+    evening: "5:00 PM"
   });
 
   const getData = useCallback(async () => {
-    const response = await call('get' ,"/api/settings/brief-configuration/days", {
-      showToast: true,
-      toastTitle: "Failed to get data",
-      toastDescription: "Failed to get data",
-      returnOnFailure: false,
-      toastVariant: "destructive"
-    });
-    if (response) setDays(response?.data?.days);
-  }, [call]);
+  const response = await call('get', "/api/settings/brief-configuration/days", {
+    showToast: true,
+    toastTitle: "Failed to get data",
+    toastDescription: "Failed to get data",
+    returnOnFailure: false,
+    toastVariant: "destructive"
+  });
+
+  if (response) {
+    setDays(response?.data?.brief_days);
+
+    const briefTime = response?.data?.brief_time; // e.g., "08:00"
+    const timeFlags = getTimePeriod(briefTime);   // { morning: true, midday: false, evening: false }
+    setTimes(timeFlags);
+
+    const formattedTime = moment(briefTime, "HH:mm").format("h:mm A");
+
+    const activeKey = Object.keys(timeFlags).find(key => timeFlags[key as keyof typeof timeFlags]);
+
+    if (activeKey) {
+      setTime(prev => ({
+        ...prev,
+        [activeKey]: formattedTime
+      }));
+    }
+  }
+}, [call]);
+
 
   useEffect(() => {
     getData();
@@ -69,8 +95,20 @@ const BriefConfigurationSection = () => {
     if (response) setDays(updatedDays);
   };
 
-  const toggleTime = (time: keyof typeof times) => {
-    setTimes(prev => ({ ...prev, [time]: !prev[time] }));
+  const toggleTime = async (time: string, briefTime: keyof typeof times) => {
+    const formattedTime = moment(time, "h:mm A").format("HH:mm");
+    const response = await call('post' ,"/api/settings/brief-configuration/days", {
+      body: {...days, briefTime: formattedTime},
+      showToast: true,
+      toastTitle: "Failed to update data",
+      toastDescription: "Failed to update data",
+      returnOnFailure: false,
+      toastVariant: "destructive"
+    });
+    if (response) {
+      // setTimes(prev => ({ ...prev, [briefTime]: !prev[briefTime] }));
+      getData();
+    }
   };
 
   const hasMultipleTags = tags.length > 1;
@@ -146,12 +184,12 @@ const BriefConfigurationSection = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="time-morning" className="text-text-primary">Morning Brief</Label>
-                      <p className="text-xs text-text-secondary">Delivered at 8:00 AM</p>
+                      <p className="text-xs text-text-secondary">Delivered at {time.morning}</p>
                     </div>
                     <Switch 
                       id="time-morning"
                       checked={times.morning}
-                      onCheckedChange={() => toggleTime("morning")}
+                      onCheckedChange={() => toggleTime(time.morning, "morning")}
                     />
                   </div>
                   
@@ -160,12 +198,12 @@ const BriefConfigurationSection = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="time-midday" className="text-text-primary">Midday Brief</Label>
-                      <p className="text-xs text-text-secondary">Delivered at 12:30 PM</p>
+                      <p className="text-xs text-text-secondary">Delivered at {time.midday}</p>
                     </div>
                     <Switch 
                       id="time-midday"
                       checked={times.midday}
-                      onCheckedChange={() => toggleTime("midday")}
+                      onCheckedChange={() => toggleTime(time.midday, "midday")}
                     />
                   </div>
                   
@@ -174,12 +212,12 @@ const BriefConfigurationSection = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="time-evening" className="text-text-primary">Evening Brief</Label>
-                      <p className="text-xs text-text-secondary">Delivered at 6:00 PM</p>
+                      <p className="text-xs text-text-secondary">Delivered at {time.evening}</p>
                     </div>
                     <Switch 
                       id="time-evening"
                       checked={times.evening}
-                      onCheckedChange={() => toggleTime("evening")}
+                      onCheckedChange={() => toggleTime(time.evening, "evening")}
                     />
                   </div>
                 </div>
