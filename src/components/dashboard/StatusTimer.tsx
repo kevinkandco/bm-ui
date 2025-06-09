@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { Clock, Headphones, Zap, Plane, X, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -101,15 +100,15 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
     switch (status) {
       case "focus":
         return (
-          <div className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary py-4 px-6">
+          <div className="w-full bg-transparent py-4 px-6">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div className="flex items-center gap-3">
-                <div className="bg-white/20 text-white p-2 rounded-full">
+                <div className="bg-accent-primary/20 text-accent-primary p-2 rounded-full">
                   <Headphones className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-white font-medium text-lg">Focus Mode</h3>
-                  <p className="text-white/80 text-sm">{focusTimeRemaining} remaining</p>
+                  <h3 className="text-text-primary font-medium text-lg">Focus Mode</h3>
+                  <p className="text-text-secondary text-sm">{focusTimeRemaining} remaining</p>
                 </div>
               </div>
               
@@ -117,7 +116,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                  className="h-10 w-10 rounded-full bg-surface-raised/50 border border-border-subtle text-text-primary hover:bg-surface-raised"
                 >
                   <Sun className="h-5 w-5" />
                 </Button>
@@ -125,7 +124,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                   onClick={onExitFocusMode}
                   variant="outline"
                   size="default"
-                  className="bg-transparent border-white/20 text-white hover:bg-white/10 rounded-full px-6"
+                  className="bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised rounded-full px-6"
                 >
                   <X className="h-4 w-4 mr-2" /> 
                   Exit
