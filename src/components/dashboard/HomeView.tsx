@@ -42,6 +42,7 @@ interface HomeViewProps {
   onOpenBriefModal: () => void;
   priorities: Priorities | null;
   recentBriefs: Summary[];
+  upcomingBrief: Summary | null;
   status: "active" | "away" | "focus" | "vacation";
   onExitFocusMode: () => void;
   focusModeExitLoading: boolean;
@@ -54,6 +55,7 @@ const HomeView = ({
   onOpenBrief,
   priorities,
   status,
+  upcomingBrief,
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal,
@@ -200,12 +202,6 @@ const HomeView = ({
     },
     [playingBrief, toast, recentBriefs]
   );
-
-  // Sample upcoming brief data
-  const upcomingBrief = {
-    name: "Midday Brief",
-    scheduledTime: "Today at 12:30 PM"
-  };
 
   // Total briefs ever created (this would come from your backend/state in a real app)
   const totalBriefs = 47;
@@ -671,8 +667,8 @@ const HomeView = ({
           open={showSchedulingModal}
           onClose={handleCloseSchedulingModal}
           onGenerateSummary={handleGenerateSummaryWithScheduling}
-          upcomingBriefName={upcomingBrief.name}
-          upcomingBriefTime={upcomingBrief.scheduledTime}
+          upcomingBriefName={upcomingBrief?.title}
+          upcomingBriefTime={upcomingBrief?.time}
         />
       </div>
       <ViewTranscript

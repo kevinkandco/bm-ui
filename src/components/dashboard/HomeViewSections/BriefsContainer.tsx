@@ -21,10 +21,7 @@ interface BriefsContainerProps {
   onViewAllBriefs: () => void;
   onGetBriefedNow?: () => void;
   onUpdateSchedule?: () => void;
-  upcomingBrief?: {
-    name: string;
-    scheduledTime: string;
-  };
+  upcomingBrief?: Summary;
 }
 
 const BriefsContainer = ({ 
@@ -70,7 +67,7 @@ const BriefsContainer = ({
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-medium text-white-text/80 px-1">Upcoming</h3>
                     <span className="text-xs text-white-text/60">
-                      {upcomingBrief.name} • {upcomingBrief.scheduledTime}
+                      {upcomingBrief?.title} {upcomingBrief && `• ${upcomingBrief?.time}`}
                     </span>
                   </div>
                   <ChevronDown 
@@ -81,8 +78,8 @@ const BriefsContainer = ({
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-2 pt-2">
                   <UpcomingBriefCard
-                    briefName={upcomingBrief.name}
-                    scheduledTime={upcomingBrief.scheduledTime}
+                    briefName={upcomingBrief?.title}
+                    scheduledTime={upcomingBrief?.time}
                     onGetBriefedNow={onGetBriefedNow}
                     onUpdateSchedule={onUpdateSchedule}
                   />

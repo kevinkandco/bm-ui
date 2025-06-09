@@ -34,9 +34,9 @@ const UpcomingBriefCard = ({ briefName, scheduledTime, onGetBriefedNow, onUpdate
               <h3 className="text-base font-semibold text-white-text/70">
                 {briefName}
               </h3>
-              <p className="text-xs text-light-gray-text/70">
+              {scheduledTime && <p className="text-xs text-light-gray-text/70">
                 Scheduled for {scheduledTime}
-              </p>
+              </p>}
             </div>
           </div>
           

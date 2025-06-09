@@ -46,6 +46,7 @@ export interface Summary {
   read_at?: string | null;
   start_at?: string;
   slackMessageCount: number;
+  time: string;
   emailCount: number;
   meetingCount: number;
   actionCount: number;
