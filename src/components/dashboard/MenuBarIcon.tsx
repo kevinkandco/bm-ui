@@ -47,6 +47,14 @@ const MenuBarIcon = ({
     }
   };
 
+  const handleStatusClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const statusOptions: ("active" | "offline" | "dnd")[] = ["active", "offline", "dnd"];
+    const currentIndex = statusOptions.indexOf(currentStatus);
+    const nextIndex = (currentIndex + 1) % statusOptions.length;
+    onStatusChange(statusOptions[nextIndex]);
+  };
+
   return (
     <div className="fixed top-4 right-4 z-50">
       <DropdownMenu>
@@ -62,8 +70,11 @@ const MenuBarIcon = ({
                 <span className="text-sm font-medium">Brief Me</span>
               </div>
               
-              {/* Status Indicator */}
-              <div className="flex items-center gap-2">
+              {/* Status Indicator - Now clickable */}
+              <div 
+                className="flex items-center gap-2 cursor-pointer hover:bg-white/10 rounded-md px-2 py-1 transition-all duration-150"
+                onClick={handleStatusClick}
+              >
                 <div className={`w-2 h-2 rounded-full ${getStatusColor(currentStatus)}`} />
                 <span className="text-xs">{getStatusText(currentStatus)}</span>
               </div>
