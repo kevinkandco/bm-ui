@@ -151,13 +151,25 @@ export const useIntegrationsState = () => {
       );
   }, [connectedAccounts, call]);
 
-  const disconnectAccount = useCallback((accountId: number) => {
-    setConnectedAccounts(prev => prev.filter(account => account.id !== accountId));
-    toast({
-      title: "Account Disconnected",
-      description: "The account has been disconnected successfully.",
-    });
-  }, [toast]);
+  const disconnectAccount = useCallback(async (accountId: number) => {
+    const response = await call(
+      "get",
+      `/api/settings/system-integrations/${accountId}/disconnect`,
+      {
+        showToast: true,
+        toastTitle: "Failed to Disconnect",
+        toastDescription: `Could not disconnect because of an error. Please try again later.`,
+      }
+    );
+
+    if (response?.success) {
+      setConnectedAccounts(prev => prev.filter(account => account.id !== accountId));
+      toast({
+        title: "Account Disconnected",
+        description: "The account has been disconnected successfully.",
+      });
+    }
+  }, [toast, call]);
 
   const createTag = useCallback(async (name: string, color: string, emoji: string, accountId: number) => {
     const newTag: Tag = {
