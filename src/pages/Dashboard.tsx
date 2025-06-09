@@ -26,10 +26,6 @@ const Dashboard = () => {
     setIsTranscriptOpen(true);
   }, [setSelectedBriefId, setIsTranscriptOpen]);
   
-  const closeBriefDetails = useCallback(() => {
-    setIsBriefDetailOpen(false);
-    setSelectedBriefId(null);
-  }, [setIsBriefDetailOpen, setSelectedBriefId]);
   const closeTranscript = useCallback(() => {
     setIsTranscriptOpen(false);
     setSelectedBriefId(null);
