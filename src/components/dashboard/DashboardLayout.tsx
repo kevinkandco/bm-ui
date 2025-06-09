@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
-import MenuBarIcon from "./MenuBarIcon";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -17,8 +16,6 @@ interface DashboardLayoutProps {
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
 }
-
-type StatusType = "active" | "offline" | "dnd";
 
 const DashboardLayout = ({
   children,
@@ -32,7 +29,6 @@ const DashboardLayout = ({
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [status, setStatus] = useState<StatusType>("active");
   
   // Close mobile nav when changing routes
   useEffect(() => {
@@ -40,35 +36,6 @@ const DashboardLayout = ({
       setMobileNavOpen(false);
     }
   }, [currentPage, isMobile]);
-
-  const handleStatusChange = (newStatus: StatusType) => {
-    setStatus(newStatus);
-    toast({
-      title: "Status Updated",
-      description: `Status changed to ${newStatus === "dnd" ? "Do Not Disturb" : newStatus}`
-    });
-  };
-
-  const handleGetBriefedNow = () => {
-    toast({
-      title: "Brief Generated",
-      description: "Your brief is ready"
-    });
-  };
-
-  const handleUpdateSchedule = () => {
-    toast({
-      title: "Schedule Updated",
-      description: "Your brief schedule has been updated"
-    });
-  };
-
-  const handleOpenDashboard = () => {
-    toast({
-      title: "Opening Dashboard",
-      description: "Navigating to main dashboard"
-    });
-  };
 
   // Memoize main content classes
   const mainContentClasses = useMemo(() => cn(
@@ -78,30 +45,9 @@ const DashboardLayout = ({
 
   return (
     <div className="flex min-h-screen relative">
-      {/* Mobile Header - Brief Me Button */}
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 md:hidden">
-        <MenuBarIcon 
-          onToggleMenu={() => setMobileNavOpen(!mobileNavOpen)}
-          onStatusChange={handleStatusChange}
-          currentStatus={status}
-          isMenuOpen={mobileNavOpen}
-          onGetBriefedNow={handleGetBriefedNow}
-          onUpdateSchedule={handleUpdateSchedule}
-          onOpenDashboard={handleOpenDashboard}
-          integrations={[
-            { name: "Slack", count: 12, isConnected: true },
-            { name: "Mail", count: 5, isConnected: false },
-            { name: "Actions", count: 4, isConnected: false }
-          ]}
-        />
-      </div>
-      
       {/* Main Content */}
       <div className={mainContentClasses}>
-        {/* Add top padding on mobile to account for fixed header */}
-        <div className="pt-20 md:pt-0">
-          {children}
-        </div>
+        {children}
       </div>
     </div>
   );

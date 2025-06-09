@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import MenuBarIcon from "@/components/dashboard/MenuBarIcon";
 import MenuBarCompanion from "@/components/dashboard/MenuBarCompanion";
@@ -71,7 +72,7 @@ const MacPage = () => {
       {/* macOS Desktop Overlay */}
       <div className="absolute inset-0 bg-black/10" />
       
-      {/* Menu Bar Icon */}
+      {/* Menu Bar Icon - Only shown on Mac page */}
       <MenuBarIcon 
         onToggleMenu={handleToggleMenu}
         onStatusChange={handleStatusChange}
