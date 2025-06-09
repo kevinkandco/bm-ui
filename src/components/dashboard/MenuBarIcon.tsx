@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Zap, ChevronDown, Calendar, ExternalLink, Settings, X, CheckCircle, AlertCircle } from "lucide-react";
+import { Zap, ChevronDown, Calendar, ExternalLink, Settings, X, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
