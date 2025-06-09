@@ -23,7 +23,7 @@ const ConnectedChannelsSection = ({
       icon: "S",
       connected: true,
       comingSoon: false,
-      monitoring: "Active - Brief-me.app"
+      monitoring: "monitoring"
     }, 
     {
       name: "Gmail",
@@ -31,7 +31,7 @@ const ConnectedChannelsSection = ({
       icon: "G",
       connected: true,
       comingSoon: false,
-      monitoring: "Monitoring - Brief-me.app"
+      monitoring: "monitoring"
     }
   ];
 
