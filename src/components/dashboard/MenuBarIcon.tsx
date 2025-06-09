@@ -106,6 +106,34 @@ const MenuBarIcon = ({
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-[17px] font-semibold text-gray-900">Brief Me</h3>
               </div>
+              
+              {/* Status Control - Moved to top */}
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {["active", "offline", "dnd"].map((statusOption) => (
+                  <button
+                    key={statusOption}
+                    onClick={() => onStatusChange(statusOption as "active" | "offline" | "dnd")}
+                    className={`px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-150 ease-in-out ${
+                      currentStatus === statusOption
+                        ? "bg-gray-900 text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {statusOption === "dnd" ? "DND" : statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Primary Action - Moved to top */}
+              {onGetBriefedNow && (
+                <Button
+                  onClick={onGetBriefedNow}
+                  className="w-full bg-gradient-to-r from-[#458888] to-[#50A181] hover:from-[#3D7A7A] hover:to-[#489174] text-white rounded-xl py-3 text-[13px] font-medium transition-all duration-150 ease-in-out"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Get Briefed Now
+                </Button>
+              )}
             </div>
 
             {/* Brief Status */}
@@ -153,34 +181,6 @@ const MenuBarIcon = ({
                   </div>
                 ))}
               </div>
-
-              {/* Status Control */}
-              <div className="grid grid-cols-3 gap-2">
-                {["active", "offline", "dnd"].map((statusOption) => (
-                  <button
-                    key={statusOption}
-                    onClick={() => onStatusChange(statusOption as "active" | "offline" | "dnd")}
-                    className={`px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-150 ease-in-out ${
-                      currentStatus === statusOption
-                        ? "bg-gray-900 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
-                  >
-                    {statusOption === "dnd" ? "DND" : statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              {/* Primary Action */}
-              {onGetBriefedNow && (
-                <Button
-                  onClick={onGetBriefedNow}
-                  className="w-full bg-gradient-to-r from-[#458888] to-[#50A181] hover:from-[#3D7A7A] hover:to-[#489174] text-white rounded-xl py-3 text-[13px] font-medium transition-all duration-150 ease-in-out"
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  Get Briefed Now
-                </Button>
-              )}
             </div>
 
             {/* Footer */}
