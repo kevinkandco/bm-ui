@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Clock, Mail, Volume2, Calendar, Bell, Save } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -11,26 +11,43 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import SplitBriefControls from "./SplitBriefControls";
 import { useIntegrationsState } from "./useIntegrationsState";
+import { useApi } from "@/hooks/useApi";
 
 const BriefConfigurationSection = () => {
   const { toast } = useToast();
   const { tags, updateSplitBriefSettings } = useIntegrationsState();
+  const { call } = useApi();
   
   const [scheduleType, setScheduleType] = useState<"auto" | "custom">("auto");
   const [days, setDays] = useState({
-    monday: true,
-    tuesday: true,
-    wednesday: true,
-    thursday: true,
-    friday: true,
-    saturday: false,
-    sunday: false
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
+    Sunday: false
   });
   const [times, setTimes] = useState({
     morning: true,
     midday: true,
     evening: false
   });
+
+  const getData = useCallback(async () => {
+    const response = await call('get' ,"/api/settings/brief-configuration/days", {
+      showToast: true,
+      toastTitle: "Failed to get data",
+      toastDescription: "Failed to get data",
+      returnOnFailure: false,
+      toastVariant: "destructive"
+    });
+    if (response) setDays(response?.data?.days);
+  }, [call]);
+
+  useEffect(() => {
+    getData();
+  }, [getData])
 
   const handleSaveSettings = () => {
     toast({
@@ -39,8 +56,17 @@ const BriefConfigurationSection = () => {
     });
   };
 
-  const toggleDay = (day: keyof typeof days) => {
-    setDays(prev => ({ ...prev, [day]: !prev[day] }));
+  const toggleDay = async (day: keyof typeof days) => {
+    const updatedDays = { ...days, [day]: !days[day] };
+    const response = await call('post' ,"/api/settings/brief-configuration/days", {
+      body: updatedDays,
+      showToast: true,
+      toastTitle: "Failed to update data",
+      toastDescription: "Failed to update data",
+      returnOnFailure: false,
+      toastVariant: "destructive"
+    });
+    if (response) setDays(updatedDays);
   };
 
   const toggleTime = (time: keyof typeof times) => {
