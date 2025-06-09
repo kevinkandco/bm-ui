@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Zap, ChevronDown, Calendar, ExternalLink, Settings, X, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
+import BriefMeModal from "./BriefMeModal";
 import { useToast } from "@/hooks/use-toast";
 
 interface Integration {
@@ -44,7 +43,7 @@ const MenuBarIcon = ({
   ]
 }: MenuBarIconProps) => {
   const { toast } = useToast();
-  const [showCatchMeUp, setShowCatchMeUp] = useState(false);
+  const [showBriefMeModal, setShowBriefMeModal] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -73,15 +72,10 @@ const MenuBarIcon = ({
   };
 
   const handleGetBriefedNow = () => {
-    setShowCatchMeUp(true);
+    setShowBriefMeModal(true);
   };
 
-  const handleGenerateSummary = (timeDescription: string, skipScheduled?: boolean) => {
-    setShowCatchMeUp(false);
-    toast({
-      title: "Generating Brief",
-      description: `Creating your catch-up summary for ${timeDescription}`,
-    });
+  const handleGenerateBrief = () => {
     if (onGetBriefedNow) {
       onGetBriefedNow();
     }
@@ -229,13 +223,11 @@ const MenuBarIcon = ({
         </div>
       </div>
 
-      {/* Catch Me Up Modal */}
-      <CatchMeUpWithScheduling
-        open={showCatchMeUp}
-        onClose={() => setShowCatchMeUp(false)}
-        onGenerateSummary={handleGenerateSummary}
-        upcomingBriefName="Midday Brief"
-        upcomingBriefTime="12:30 PM"
+      {/* Brief Me Modal */}
+      <BriefMeModal
+        open={showBriefMeModal}
+        onClose={() => setShowBriefMeModal(false)}
+        onGenerateBrief={handleGenerateBrief}
       />
     </>
   );

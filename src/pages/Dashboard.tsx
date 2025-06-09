@@ -9,6 +9,7 @@ import NewBriefModal from "@/components/dashboard/NewBriefModal";
 import TranscriptView from "@/components/dashboard/TranscriptView";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
+import BriefMeModal from "@/components/dashboard/BriefMeModal";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
   const [showEndFocusModal, setShowEndFocusModal] = useState(false);
+  const [showBriefMeModal, setShowBriefMeModal] = useState(false);
 
   const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -56,12 +58,8 @@ const Dashboard = () => {
   }, [toast]);
 
   const handleToggleCatchMeUp = useCallback(() => {
-    setCurrentView(prevView => prevView === "listening" ? "home" : "listening");
-    toast({
-      title: "Catch Me Up",
-      description: currentView === "home" ? "Entering catch me up mode" : "Exiting catch me up mode"
-    });
-  }, [toast, currentView]);
+    setShowBriefMeModal(true);
+  }, []);
   
   const openBriefModal = useCallback(() => {
     setIsBriefModalOpen(true);
@@ -86,6 +84,11 @@ const Dashboard = () => {
       description: "Signing off for the day"
     });
   }, [toast]);
+
+  const handleGenerateBrief = useCallback(() => {
+    // This would typically trigger the creation of a new brief
+    console.log("Generating new brief...");
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -121,6 +124,11 @@ const Dashboard = () => {
         onClose={handleConfirmExitFocus}
         title="Creating Your Brief"
         description="We're preparing a summary of all updates during your focus session"
+      />
+      <BriefMeModal
+        open={showBriefMeModal}
+        onClose={() => setShowBriefMeModal(false)}
+        onGenerateBrief={handleGenerateBrief}
       />
     </div>
   );
