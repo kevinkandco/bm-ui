@@ -1,7 +1,14 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Zap, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface MenuBarIconProps {
   onToggleMenu: () => void;
@@ -16,8 +23,6 @@ const MenuBarIcon = ({
   currentStatus,
   isMenuOpen = false 
 }: MenuBarIconProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active": return "bg-green-500";
@@ -36,62 +41,73 @@ const MenuBarIcon = ({
     }
   };
 
-  const handleStatusClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const statuses: ("active" | "offline" | "dnd")[] = ["active", "offline", "dnd"];
-    const currentIndex = statuses.indexOf(currentStatus);
-    const nextStatus = statuses[(currentIndex + 1) % statuses.length];
-    onStatusChange(nextStatus);
-  };
-
   return (
     <div className="fixed top-4 right-4 z-50">
-      <div 
-        className="relative"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <Button
-          onClick={handleStatusClick}
-          variant="ghost"
-          className={`h-10 px-4 rounded-full transition-all duration-200 ease-in-out backdrop-blur-md ${
-            isMenuOpen 
-              ? "bg-white/20 text-white shadow-lg" 
-              : "bg-white/10 text-white hover:bg-white/20"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            {/* Brief Me Icon */}
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4" strokeWidth={1.5} />
-              <span className="text-sm font-medium">Brief Me</span>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="h-10 px-4 rounded-full transition-all duration-200 ease-in-out backdrop-blur-md bg-white/10 text-white hover:bg-white/20"
+          >
+            <div className="flex items-center gap-3">
+              {/* Brief Me Icon */}
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4" strokeWidth={1.5} />
+                <span className="text-sm font-medium">Brief Me</span>
+              </div>
+              
+              {/* Status Indicator */}
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${getStatusColor(currentStatus)}`} />
+                <span className="text-xs">{getStatusText(currentStatus)}</span>
+              </div>
+              
+              {/* Dropdown Arrow */}
+              <ChevronDown className="w-3 h-3" />
             </div>
-            
-            {/* Status Indicator */}
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${getStatusColor(currentStatus)}`} />
-              <span className="text-xs">{getStatusText(currentStatus)}</span>
-            </div>
-            
-            {/* Expand Arrow */}
-            <ChevronDown 
-              className={`w-3 h-3 transition-transform duration-200 ${
-                isMenuOpen ? "rotate-180" : ""
-              }`} 
-            />
-          </div>
-        </Button>
+          </Button>
+        </DropdownMenuTrigger>
         
-        {/* Expand Button */}
-        <Button
-          onClick={onToggleMenu}
-          variant="ghost"
-          size="sm"
-          className="absolute -right-2 top-1/2 -translate-y-1/2 w-6 h-6 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white opacity-0 hover:opacity-100 transition-opacity duration-200"
+        <DropdownMenuContent 
+          align="end" 
+          className="w-48 bg-white/95 backdrop-blur-xl border border-gray-200/50"
         >
-          <ChevronDown className="w-3 h-3" />
-        </Button>
-      </div>
+          {/* Status Options */}
+          <DropdownMenuItem 
+            onClick={() => onStatusChange("active")}
+            className="flex items-center gap-2"
+          >
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            Active
+            {currentStatus === "active" && <span className="ml-auto">✓</span>}
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem 
+            onClick={() => onStatusChange("offline")}
+            className="flex items-center gap-2"
+          >
+            <div className="w-2 h-2 rounded-full bg-gray-500" />
+            Offline
+            {currentStatus === "offline" && <span className="ml-auto">✓</span>}
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem 
+            onClick={() => onStatusChange("dnd")}
+            className="flex items-center gap-2"
+          >
+            <div className="w-2 h-2 rounded-full bg-red-500" />
+            Do Not Disturb
+            {currentStatus === "dnd" && <span className="ml-auto">✓</span>}
+          </DropdownMenuItem>
+          
+          <DropdownMenuSeparator />
+          
+          {/* Open Full Menu Option */}
+          <DropdownMenuItem onClick={onToggleMenu}>
+            Open Menu
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
