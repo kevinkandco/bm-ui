@@ -1,7 +1,6 @@
 
 import React, { useState, useCallback } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BriefModal from "@/components/dashboard/BriefModal";
 import { Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,22 +21,14 @@ const BriefsList = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBrief, setSelectedBrief] = useState<number | null>(null);
-  const [briefModalOpen, setBriefModalOpen] = useState(false);
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
 
   const handleOpenBrief = useCallback((briefId: number) => {
-    setSelectedBrief(briefId);
-    setBriefModalOpen(true);
-  }, []);
-
-  const handleCloseBriefModal = useCallback(() => {
-    setBriefModalOpen(false);
-    setSelectedBrief(null);
-  }, []);
+    navigate(`/dashboard/briefs/${briefId}`);
+  }, [navigate]);
 
   const briefs = [
     { 
@@ -169,12 +160,6 @@ const BriefsList = () => {
           </div>
         </div>
       </div>
-      
-      {/* Brief Modal */}
-      <BriefModal 
-        open={briefModalOpen}
-        onClose={handleCloseBriefModal}
-      />
     </DashboardLayout>
   );
 };
