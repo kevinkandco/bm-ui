@@ -50,6 +50,7 @@ const Dashboard = () => {
   const [recentBriefs, setRecentBriefs] = useState<Summary[] | null>(null);
   const [upcomingBrief, setUpcomingBrief] = useState<Summary | null>(null);
   const [pendingData, setPendingData] = useState<PendingData[] | null>(null);
+  const [totalBriefs, setTotalBriefs] = useState(0);
   const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [searchParams] = useSearchParams();
 
@@ -96,6 +97,7 @@ const Dashboard = () => {
       returnOnFailure: false,
     });
     setRecentBriefs(response?.data);
+    setTotalBriefs(response?.meta?.total);
   }, [call]);
 
   const getBrief = useCallback(
@@ -459,6 +461,7 @@ const Dashboard = () => {
           onToggleCatchMeUp={handleToggleCatchMeUp}
           onOpenBriefModal={handleOpenBriefModal}
           priorities={priorities}
+          totalBriefs={totalBriefs}
           upcomingBrief={upcomingBrief}
           recentBriefs={recentBriefs}
           status={uiState.userStatus}

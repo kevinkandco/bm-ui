@@ -42,6 +42,7 @@ interface HomeViewProps {
   onOpenBriefModal: () => void;
   priorities: Priorities | null;
   recentBriefs: Summary[];
+  totalBriefs: number;
   upcomingBrief: Summary | null;
   status: "active" | "away" | "focus" | "vacation";
   onExitFocusMode: () => void;
@@ -55,6 +56,7 @@ const HomeView = ({
   onOpenBrief,
   priorities,
   status,
+  totalBriefs,
   upcomingBrief,
   onToggleFocusMode,
   onToggleCatchMeUp,
@@ -202,9 +204,6 @@ const HomeView = ({
     },
     [playingBrief, toast, recentBriefs]
   );
-
-  // Total briefs ever created (this would come from your backend/state in a real app)
-  const totalBriefs = 47;
 
   // Mobile View
   if (isMobile) {
