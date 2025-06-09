@@ -53,6 +53,7 @@ function useVerifyAuth() {
         }
       } else {
         logout();
+        gotoLogin();
       }
 
       setChecked(true);
