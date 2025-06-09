@@ -75,7 +75,18 @@ export const useIntegrationsState = () => {
     });
 
     if (response?.data) {
-      setTags(response?.data);
+      setTags(
+        response?.data?.map((tag) => ({
+          id: tag.id,
+          name: tag?.name,
+          color: tag?.color,
+          emoji: tag?.emoji,
+          splitBriefTime: tag?.send_at,
+          splitBriefEnabled: !!tag?.is_split,
+          splitBriefEmail: !!tag?.delivery_email,
+          splitBriefAudio: !!tag?.delivery_audio
+        }))
+      );
     }
   }, [call]);
     
@@ -159,7 +170,7 @@ export const useIntegrationsState = () => {
       splitBriefAudio: false
     };
 
-    const response = await call("post", "/api/settings/integrations/1/tag", {
+    const response = await call("post", `/api/settings/integrations/${accountId}/tag`, {
       body: {
         name,
         color,
@@ -192,25 +203,16 @@ export const useIntegrationsState = () => {
   }, [toast, call]);
 
   const updateTag = useCallback(async (tagId: number, updates: Partial<Tag>) => {
-    const tag = tags.find(t => t.id === tagId);
-    const response = await call("post", "/api/settings/integrations/1/tag", {
-      body: {
-        ...{
-          name: tag?.name,
-          color: tag?.color,
-          emoji: tag?.emoji},
-        ...updates
-      },
+    const response = await call("post", `/api/settings/integrations/${tagId}/update-tag`, {
+      body: updates,
       showToast: true,
-      toastTitle: "Tag Creation Failed",
-      toastDescription: "Tag creation failed. Please try again later.",
+      toastTitle: "Tag Update Failed",
+      toastDescription: "Tag Update failed. Please try again later.",
       toastVariant: "destructive",
       returnOnFailure: false
     }) 
     
     if (!response) return;
-
-    if (!response?.data) return;
 
     setTags(prev => 
       prev.map(tag => 
@@ -222,9 +224,19 @@ export const useIntegrationsState = () => {
       title: "Tag Updated",
       description: "Tag has been updated successfully.",
     });
-  }, [toast]);
+  }, [toast, call]);
 
-  const deleteTag = useCallback((tagId: number) => {
+  const deleteTag = useCallback(async (tagId: number) => {
+    const response = await call("delete", `/api/settings/integrations/${tagId}/delete-tag`, {
+      showToast: true,
+      toastTitle: "Tag Deletion Failed",
+      toastDescription: "Tag Deletion failed. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false
+    }) 
+    
+    if (!response) return;
+
     const tag = tags.find(t => t.id === tagId);
     if (tag?.isDefault) {
       toast({
@@ -238,7 +250,7 @@ export const useIntegrationsState = () => {
     // Move accounts to default tag
     setConnectedAccounts(prev => 
       prev.map(account => 
-        account.tagId === tagId ? { ...account, tagId: tags[0].id } : account
+        account.tagId === tagId ? { ...account, tagId: response?.data || null } : account
       )
     );
     
@@ -248,7 +260,7 @@ export const useIntegrationsState = () => {
       title: "Tag Deleted",
       description: "Tag has been deleted and accounts moved to default tag.",
     });
-  }, [tags, toast]);
+  }, [tags, toast, call]);
 
   const mergeTag = useCallback((sourceTagId: number, targetTagId: number) => {
     // Move all accounts from source to target
@@ -267,7 +279,29 @@ export const useIntegrationsState = () => {
     });
   }, [toast]);
 
-  const updateSplitBriefSettings = useCallback((tagId: number, settings: Partial<SplitBriefSettings>) => {
+  const updateSplitBriefSettings = useCallback(async(tagId: number, settings: Partial<SplitBriefSettings>) => {
+    const tag = tags.find(t => t.id === tagId);
+    const body = {
+      is_split: settings.enabled ?? tag.splitBriefEnabled,
+      send_at: settings.time ?? tag.splitBriefTime,
+      delivery_email: settings.email ?? tag.splitBriefEmail,
+      delivery_audio: settings.audio ?? tag.splitBriefAudio
+    }
+
+    console.log(body, ": body");
+
+    const response = await call("post", `/api/settings/integrations/${tagId}/update-tag`, {
+      body,
+      showToast: true,
+      toastTitle: "Tag Update Failed",
+      toastDescription: "Tag Update failed. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false
+    }) 
+    
+    if (!response) return;
+
+
     setTags(prev => 
       prev.map(tag => 
         tag.id === tagId 
@@ -281,7 +315,7 @@ export const useIntegrationsState = () => {
           : tag
       )
     );
-  }, []);
+  }, [tags]);
 
   const dismissFirstTimeHelper = useCallback(() => {
     setShowFirstTimeHelper(false);
