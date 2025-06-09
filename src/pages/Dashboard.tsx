@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +8,7 @@ import ListeningScreen from "@/components/dashboard/ListeningScreen";
 import FocusMode from "@/components/dashboard/FocusMode";
 import NewBriefModal from "@/components/dashboard/NewBriefModal";
 import TranscriptView from "@/components/dashboard/TranscriptView";
+import BriefModal from "@/components/dashboard/BriefModal";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -16,14 +18,18 @@ const Dashboard = () => {
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
+  const [isBriefDetailOpen, setIsBriefDetailOpen] = useState(false);
 
   const openBriefDetails = useCallback((briefId: number) => {
-    // Logic to open brief details
-    toast({
-      title: `Opening Brief ${briefId}`,
-      description: "Navigating to brief details..."
-    });
-  }, [toast]);
+    setSelectedBriefId(briefId);
+    setIsBriefDetailOpen(true);
+  }, []);
+
+  const closeBriefDetails = useCallback(() => {
+    setIsBriefDetailOpen(false);
+    setSelectedBriefId(null);
+  }, []);
+
   const openTranscript = useCallback((briefId: number) => {
     setSelectedBriefId(briefId);
     setIsTranscriptOpen(true);
@@ -99,6 +105,7 @@ const Dashboard = () => {
       {/* Modals */}
       <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
       <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} />
+      <BriefModal open={isBriefDetailOpen} onClose={closeBriefDetails} />
     </div>
   );
 };
