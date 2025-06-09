@@ -202,24 +202,25 @@ const MenuBarIcon = ({
                 </div>
               </div>
 
-              {/* Footer */}
+              {/* Footer - Updated to match the design */}
               <div className="px-4 py-3 border-t border-gray-200/30 bg-gray-50/30">
-                <div className="flex justify-center gap-4">
+                <div className="flex justify-center gap-3">
+                  {/* Brief Me Button */}
                   <button 
                     onClick={handleGetBriefedNow}
-                    className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-150 shadow-sm hover:shadow-md"
+                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
                     title="Brief Me"
                   >
                     <Zap className="w-5 h-5" />
                   </button>
+                  
+                  {/* Status Button */}
                   <button 
                     onClick={handleStatusClick}
-                    className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-md text-gray-700 hover:bg-white/30 transition-all duration-150 border border-gray-200/50 shadow-sm hover:shadow-md"
+                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
                     title="Toggle Status"
                   >
-                    <div className="flex items-center gap-1">
-                      <div className={`w-2 h-2 rounded-full ${getStatusColor(currentStatus)}`} />
-                    </div>
+                    <div className={`w-3 h-3 rounded-full ${getStatusColor(currentStatus)}`} />
                   </button>
                 </div>
               </div>
