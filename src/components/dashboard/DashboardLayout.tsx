@@ -2,12 +2,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Zap, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
+import MenuBarIcon from "./MenuBarIcon";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,8 @@ interface DashboardLayoutProps {
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
 }
+
+type StatusType = "active" | "offline" | "dnd";
 
 const DashboardLayout = ({
   children,
@@ -29,6 +32,7 @@ const DashboardLayout = ({
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [status, setStatus] = useState<StatusType>("active");
   
   // Close mobile nav when changing routes
   useEffect(() => {
@@ -36,6 +40,35 @@ const DashboardLayout = ({
       setMobileNavOpen(false);
     }
   }, [currentPage, isMobile]);
+
+  const handleStatusChange = (newStatus: StatusType) => {
+    setStatus(newStatus);
+    toast({
+      title: "Status Updated",
+      description: `Status changed to ${newStatus === "dnd" ? "Do Not Disturb" : newStatus}`
+    });
+  };
+
+  const handleGetBriefedNow = () => {
+    toast({
+      title: "Brief Generated",
+      description: "Your brief is ready"
+    });
+  };
+
+  const handleUpdateSchedule = () => {
+    toast({
+      title: "Schedule Updated",
+      description: "Your brief schedule has been updated"
+    });
+  };
+
+  const handleOpenDashboard = () => {
+    toast({
+      title: "Opening Dashboard",
+      description: "Navigating to main dashboard"
+    });
+  };
 
   // Memoize main content classes
   const mainContentClasses = useMemo(() => cn(
@@ -45,98 +78,22 @@ const DashboardLayout = ({
 
   return (
     <div className="flex min-h-screen relative">
-      {/* Mobile Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border-subtle md:hidden">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center">
-            <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
-              <span className="font-bold text-white text-lg">B</span>
-            </div>
-            <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
-          </div>
-          
-          <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="ghost" className="h-9 w-9">
-                <Menu className="h-4 w-4 text-text-primary" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="p-0 w-full max-w-none bg-surface border-border-subtle">
-              <div className="flex flex-col h-full">
-                <div className="p-4 flex items-center justify-between border-b border-border-subtle">
-                  <div className="flex items-center">
-                    <div className="h-8 w-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-md flex items-center justify-center">
-                      <span className="font-bold text-white text-lg">B</span>
-                    </div>
-                    <span className="ml-3 font-semibold text-lg text-text-primary">Brief-me</span>
-                  </div>
-                  <Button 
-                    size="icon" 
-                    variant="ghost" 
-                    onClick={() => setMobileNavOpen(false)}
-                    className="h-8 w-8"
-                  >
-                    <X className="h-5 w-5 text-text-secondary" />
-                  </Button>
-                </div>
-                
-                <div className="flex-1 p-6">
-                  <div className="space-y-8">
-                    <a
-                      href="/dashboard/settings"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/dashboard/settings");
-                        setMobileNavOpen(false);
-                      }}
-                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
-                    >
-                      Brief Schedule
-                    </a>
-                    
-                    <a
-                      href="/dashboard/settings"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/dashboard/settings");
-                        setMobileNavOpen(false);
-                      }}
-                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
-                    >
-                      Priorities
-                    </a>
-                    
-                    <a
-                      href="/dashboard/settings"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/dashboard/settings");
-                        setMobileNavOpen(false);
-                      }}
-                      className="block text-lg text-text-primary hover:text-accent-primary transition-colors"
-                    >
-                      Integrations
-                    </a>
-                    
-                    <span className="block text-lg text-text-secondary">
-                      Feedback
-                    </span>
-                    
-                    <span className="block text-lg text-text-secondary">
-                      Contact Us
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="mt-auto p-4 border-t border-border-subtle">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-text-secondary">Version 1.0.0</span>
-                  </div>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
+      {/* Mobile Header - Brief Me Button */}
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 md:hidden">
+        <MenuBarIcon 
+          onToggleMenu={() => setMobileNavOpen(!mobileNavOpen)}
+          onStatusChange={handleStatusChange}
+          currentStatus={status}
+          isMenuOpen={mobileNavOpen}
+          onGetBriefedNow={handleGetBriefedNow}
+          onUpdateSchedule={handleUpdateSchedule}
+          onOpenDashboard={handleOpenDashboard}
+          integrations={[
+            { name: "Slack", count: 12, isConnected: true },
+            { name: "Mail", count: 5, isConnected: false },
+            { name: "Actions", count: 4, isConnected: false }
+          ]}
+        />
       </div>
       
       {/* Main Content */}
