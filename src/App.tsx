@@ -27,6 +27,7 @@ const MeetingsList = lazyImport(() => import("./pages/MeetingsList"));
 const CatchUpPage = lazyImport(() => import("./pages/CatchUpPage"));
 const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
 const MacPage = lazyImport(() => import("./pages/MacPage"));
+const BriefDetail = lazyImport(() => import("./pages/BriefDetail"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
 
 // Create QueryClient with optimized settings
@@ -81,6 +82,7 @@ const App = () => (
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/dashboard/briefs" element={<BriefsList />} />
+                <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
                 <Route path="/dashboard/tasks" element={<TasksList />} />
                 <Route path="/dashboard/meetings" element={<MeetingsList />} />
                 <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
