@@ -71,7 +71,7 @@ const EndFocusModal = ({
         <div className="py-4">
           <ListeningScreen 
             isListening={true}
-            title="Podia is listening"
+            title="Brief Me is listening"
             subtitle="Analyzing your updates and creating your brief..."
           />
           
@@ -89,6 +89,15 @@ const EndFocusModal = ({
                 />
               </div>
             </div>
+            
+            <Button 
+              onClick={onClose}
+              variant="outline"
+              size="sm"
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-full mt-4"
+            >
+              Stop
+            </Button>
           </div>
         </div>
       </DialogContent>

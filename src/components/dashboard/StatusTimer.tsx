@@ -18,7 +18,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
   const [timeUntilNextBrief, setTimeUntilNextBrief] = useState<string>("00:00:00");
   const [startTime] = useState<number>(Date.now());
-  const [focusTimeRemaining, setFocusTimeRemaining] = useState<string>("00:00:00");
+  const [focusTimeRemaining, setFocusTimeRemaining] = useState<string>("00:29:56");
   
   // For focus mode - default 30 minutes
   const focusDuration = 30 * 60; // 30 minutes in seconds
@@ -95,54 +95,35 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
     return () => clearInterval(countdownTimer);
   }, [startTime, status, calculateTimeUntilNextBrief, calculateFocusTimeRemaining, focusTimeRemaining]);
 
-  // Calculate next brief time after focus mode
-  const getNextBriefAfterFocus = () => {
-    const now = new Date();
-    const focusEndTime = new Date(startTime + focusDuration * 1000);
-    
-    // If focus ends before 9 AM tomorrow, next brief at 9 AM
-    const nextBrief = new Date(focusEndTime);
-    if (focusEndTime.getHours() >= 9) {
-      nextBrief.setDate(nextBrief.getDate() + 1);
-    }
-    nextBrief.setHours(9, 0, 0, 0);
-    
-    return nextBrief.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + 
-           ' on ' + 
-           nextBrief.toLocaleDateString([], {month: 'short', day: 'numeric'});
-  };
-
   // Render different content based on user status - improved mobile layout
   const renderContent = () => {
     switch (status) {
       case "focus":
         return (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
-            <div className="flex items-center">
-              <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
-                <Headphones className="h-4 w-4" />
+          <div className="w-full bg-gradient-to-r from-accent-primary to-accent-green py-3 px-6">
+            <div className="flex items-center justify-between max-w-7xl mx-auto">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 text-white p-2 rounded-full">
+                  <Headphones className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="text-white font-medium">Focus Mode</h3>
+                  <p className="text-white/80 text-sm">{focusTimeRemaining} remaining</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm sm:text-base font-medium text-text-primary">Focus Mode</h3>
-                <p className="text-xs sm:text-sm text-text-secondary">{focusTimeRemaining} remaining</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              {/* Theme toggle removed on mobile */}
-              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
               
-              {onExitFocusMode && (
+              <div className="flex items-center gap-4">
+                <ThemeToggle className="h-8 w-8 text-white" />
                 <Button 
                   onClick={onExitFocusMode}
                   variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
+                  size="sm"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-full"
                 >
-                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Exit</span>
+                  <X className="h-4 w-4 mr-2" /> 
+                  Exit
                 </Button>
-              )}
+              </div>
             </div>
           </div>
         );
@@ -255,6 +236,11 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
         );
     }
   };
+
+  // Only show status timer for non-focus states, or show focus mode header for focus state
+  if (status === "focus") {
+    return renderContent();
+  }
 
   return (
     <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">

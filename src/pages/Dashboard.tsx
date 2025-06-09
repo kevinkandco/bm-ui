@@ -1,21 +1,24 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
-import FocusMode from "@/components/dashboard/FocusMode";
 import NewBriefModal from "@/components/dashboard/NewBriefModal";
 import TranscriptView from "@/components/dashboard/TranscriptView";
+import EndFocusModal from "@/components/dashboard/EndFocusModal";
+import StatusTimer from "@/components/dashboard/StatusTimer";
 
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [currentView, setCurrentView] = useState<"home" | "listening" | "focus">("home");
+  const [currentView, setCurrentView] = useState<"home" | "listening">("home");
   const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
+  const [showEndFocusModal, setShowEndFocusModal] = useState(false);
 
   const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -30,22 +33,28 @@ const Dashboard = () => {
     setIsTranscriptOpen(false);
     setSelectedBriefId(null);
   }, [setIsTranscriptOpen, setSelectedBriefId]);
+
   const handleToggleFocusMode = useCallback(() => {
     setUserStatus(prevStatus => prevStatus === "focus" ? "active" : "focus");
-    setCurrentView(prevView => prevView === "focus" ? "home" : "focus");
     toast({
       title: "Focus Mode",
-      description: currentView === "home" ? "Entering focus mode" : "Exiting focus mode"
+      description: userStatus === "active" ? "Entering focus mode" : "Exiting focus mode"
     });
-  }, [toast, currentView]);
+  }, [toast, userStatus]);
+
   const handleExitFocusMode = useCallback(() => {
+    setShowEndFocusModal(true);
+  }, []);
+
+  const handleConfirmExitFocus = useCallback(() => {
     setUserStatus("active");
-    setCurrentView("home");
+    setShowEndFocusModal(false);
     toast({
       title: "Focus Mode",
       description: "Exiting focus mode"
     });
   }, [toast]);
+
   const handleToggleCatchMeUp = useCallback(() => {
     setCurrentView(prevView => prevView === "listening" ? "home" : "listening");
     toast({
@@ -53,20 +62,23 @@ const Dashboard = () => {
       description: currentView === "home" ? "Entering catch me up mode" : "Exiting catch me up mode"
     });
   }, [toast, currentView]);
+  
   const openBriefModal = useCallback(() => {
     setIsBriefModalOpen(true);
   }, [setIsBriefModalOpen]);
+  
   const closeBriefModal = useCallback(() => {
     setIsBriefModalOpen(false);
   }, [setIsBriefModalOpen]);
+  
   const handleStartFocusMode = useCallback(() => {
     setUserStatus("focus");
-    setCurrentView("focus");
     toast({
       title: "Focus Mode",
       description: "Starting focus mode"
     });
   }, [toast]);
+  
   const handleSignOffForDay = useCallback(() => {
     setUserStatus("vacation");
     toast({
@@ -77,6 +89,14 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Focus Mode Timer Header */}
+      {userStatus === "focus" && (
+        <StatusTimer 
+          status={userStatus}
+          onExitFocusMode={handleExitFocusMode}
+        />
+      )}
+
       {/* Main Content */}
       <div className="flex-1">
         {currentView === "home" && (
@@ -91,12 +111,17 @@ const Dashboard = () => {
           />
         )}
         {currentView === "listening" && <ListeningScreen />}
-        {currentView === "focus" && <FocusMode onExitFocusMode={handleExitFocusMode} />}
       </div>
 
       {/* Modals */}
       <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
       <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} />
+      <EndFocusModal 
+        open={showEndFocusModal} 
+        onClose={handleConfirmExitFocus}
+        title="Creating Your Brief"
+        description="We're preparing a summary of all updates during your focus session"
+      />
     </div>
   );
 };
