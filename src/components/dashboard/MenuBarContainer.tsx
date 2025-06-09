@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import MenuBarIcon from "./MenuBarIcon";
 import MenuBarCompanion from "./MenuBarCompanion";
@@ -37,7 +36,19 @@ const MenuBarContainer = ({
         onToggleMenu={handleToggle} 
         onStatusChange={handleStatusChange}
         currentStatus={status}
-        isMenuOpen={isOpen} 
+        isMenuOpen={isOpen}
+        onGetBriefedNow={() => {
+          onGetBriefedNow();
+          handleClose();
+        }}
+        onUpdateSchedule={() => {
+          onUpdateSchedule();
+          handleClose();
+        }}
+        onOpenDashboard={() => {
+          onOpenDashboard();
+          handleClose();
+        }}
       />
       <MenuBarCompanion
         isOpen={isOpen}

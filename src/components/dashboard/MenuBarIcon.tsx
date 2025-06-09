@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Zap, ChevronDown } from "lucide-react";
+import { Zap, ChevronDown, Calendar, ExternalLink, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,13 +15,19 @@ interface MenuBarIconProps {
   onStatusChange: (status: "active" | "offline" | "dnd") => void;
   currentStatus: "active" | "offline" | "dnd";
   isMenuOpen?: boolean;
+  onGetBriefedNow?: () => void;
+  onUpdateSchedule?: () => void;
+  onOpenDashboard?: () => void;
 }
 
 const MenuBarIcon = ({ 
   onToggleMenu, 
   onStatusChange, 
   currentStatus,
-  isMenuOpen = false 
+  isMenuOpen = false,
+  onGetBriefedNow,
+  onUpdateSchedule,
+  onOpenDashboard
 }: MenuBarIconProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -70,8 +76,43 @@ const MenuBarIcon = ({
         
         <DropdownMenuContent 
           align="end" 
-          className="w-48 bg-white/95 backdrop-blur-xl border border-gray-200/50"
+          className="w-56 bg-white/95 backdrop-blur-xl border border-gray-200/50"
         >
+          {/* Primary Actions */}
+          {onGetBriefedNow && (
+            <DropdownMenuItem 
+              onClick={onGetBriefedNow}
+              className="flex items-center gap-2 font-medium"
+            >
+              <Zap className="w-4 h-4" />
+              Get Briefed Now
+            </DropdownMenuItem>
+          )}
+          
+          {onUpdateSchedule && (
+            <DropdownMenuItem 
+              onClick={onUpdateSchedule}
+              className="flex items-center gap-2"
+            >
+              <Calendar className="w-4 h-4" />
+              Update Schedule
+            </DropdownMenuItem>
+          )}
+          
+          {onOpenDashboard && (
+            <DropdownMenuItem 
+              onClick={onOpenDashboard}
+              className="flex items-center gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Open Dashboard
+            </DropdownMenuItem>
+          )}
+          
+          {(onGetBriefedNow || onUpdateSchedule || onOpenDashboard) && (
+            <DropdownMenuSeparator />
+          )}
+          
           {/* Status Options */}
           <DropdownMenuItem 
             onClick={() => onStatusChange("active")}
@@ -104,7 +145,8 @@ const MenuBarIcon = ({
           
           {/* Open Full Menu Option */}
           <DropdownMenuItem onClick={onToggleMenu}>
-            Open Menu
+            <Settings className="w-4 h-4 mr-2" />
+            Open Full Menu
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
