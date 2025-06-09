@@ -5,6 +5,15 @@ import { X, Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { 
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { useToast } from "@/hooks/use-toast";
 import SummaryFeedback from "@/components/dashboard/SummaryFeedback";
 
@@ -110,25 +119,45 @@ const BriefDetail = () => {
 
   return (
     <div className="min-h-screen bg-surface-primary text-text-primary">
-      {/* Header */}
+      {/* Header with Breadcrumb */}
       <div className="border-b border-border-subtle bg-surface-secondary/50">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <CheckSquare className="h-6 w-6 text-accent-primary" />
-              <div>
-                <h1 className="text-xl font-semibold text-text-primary">{briefData.title}</h1>
-                <p className="text-sm text-text-secondary">{briefData.timestamp}</p>
+            <div className="flex flex-col gap-2">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink 
+                      onClick={() => navigate('/dashboard')}
+                      className="cursor-pointer hover:text-accent-primary"
+                    >
+                      Dashboard
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink 
+                      onClick={() => navigate('/dashboard/briefs')}
+                      className="cursor-pointer hover:text-accent-primary"
+                    >
+                      Briefs
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{briefData.title}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+              
+              <div className="flex items-center gap-3">
+                <CheckSquare className="h-6 w-6 text-accent-primary" />
+                <div>
+                  <h1 className="text-xl font-semibold text-text-primary">{briefData.title}</h1>
+                  <p className="text-sm text-text-secondary">{briefData.timestamp}</p>
+                </div>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate(-1)}
-              className="text-text-secondary hover:text-text-primary"
-            >
-              <X className="h-5 w-5" />
-            </Button>
           </div>
         </div>
       </div>
