@@ -9,12 +9,15 @@ interface MenuBarContainerProps {
   onOpenDashboard: () => void;
 }
 
+type StatusType = "active" | "offline" | "dnd";
+
 const MenuBarContainer = ({ 
   onGetBriefedNow, 
   onUpdateSchedule, 
   onOpenDashboard 
 }: MenuBarContainerProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [status, setStatus] = useState<StatusType>("active");
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -24,9 +27,18 @@ const MenuBarContainer = ({
     setIsOpen(false);
   };
 
+  const handleStatusChange = (newStatus: StatusType) => {
+    setStatus(newStatus);
+  };
+
   return (
     <>
-      <MenuBarIcon onClick={handleToggle} isActive={isOpen} />
+      <MenuBarIcon 
+        onToggleMenu={handleToggle} 
+        onStatusChange={handleStatusChange}
+        currentStatus={status}
+        isMenuOpen={isOpen} 
+      />
       <MenuBarCompanion
         isOpen={isOpen}
         onClose={handleClose}
