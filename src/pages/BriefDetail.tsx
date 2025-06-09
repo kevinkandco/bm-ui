@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SummaryFeedback from "@/components/dashboard/SummaryFeedback";
+import PriorityReasoningModal from "@/components/dashboard/PriorityReasoningModal";
 
 const BriefDetail = () => {
   const { briefId } = useParams();
@@ -37,6 +38,9 @@ const BriefDetail = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedActionItem, setExpandedActionItem] = useState<number | null>(null);
+  const [allMessagesOpen, setAllMessagesOpen] = useState(false);
+  const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
+  const [priorityModalOpen, setPriorityModalOpen] = useState(false);
 
   // Mock data - in a real app this would be fetched based on briefId
   const briefData = {
@@ -65,10 +69,17 @@ const BriefDetail = () => {
       title: "Review launch materials for marketing team",
       subtitle: "(Due: 2 PM today)",
       time: "7:45 AM",
-      sender: "Meta for Business <update@global.metamail.com>",
-      originalMessage: "Hi team, we need to review the launch materials for the Q4 campaign. The deadline is approaching and we need your input on the creative assets. Please review by 2 PM today.",
-      justification: "This message contains a specific deadline (2 PM today) and requires action from the recipient to review materials, making it a high-priority actionable item.",
-      originalLink: "https://mail.google.com/mail/u/0/#inbox/message123"
+      sender: "Sarah Johnson",
+      subject: "Urgent: Launch Materials Review Needed",
+      originalMessage: "Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials we discussed yesterday. The marketing team needs your review and approval by 2 PM today to stay on track with our product launch timeline. The materials include the press release, social media assets, and the updated landing page copy. Please let me know if you have any questions or need any changes. Thanks!",
+      justification: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+      originalLink: "https://mail.google.com/mail/u/0/#inbox/message123",
+      relevancy: "Critical - blocking marketing team progress",
+      triggerPhrase: "needs your review and approval by 2 PM today",
+      ruleHit: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+      priorityLogic: "Ranked as High priority due to same-day deadline (2 PM today) and potential to block team progress if delayed.",
+      confidence: "High",
+      messageId: "msg_123"
     },
     {
       id: 2,
@@ -78,9 +89,16 @@ const BriefDetail = () => {
       subtitle: "",
       time: "6:30 AM",
       sender: "Finance Team <finance@company.com>",
+      subject: "Q4 Budget Approval Required",
       originalMessage: "Please review and approve the Q4 budget allocations. The finance team needs your approval to proceed with the quarterly planning.",
       justification: "Requires approval action from the recipient and involves budget decisions that impact quarterly planning.",
-      originalLink: "https://mail.google.com/mail/u/0/#inbox/message124"
+      originalLink: "https://mail.google.com/mail/u/0/#inbox/message124",
+      relevancy: "Important - quarterly planning dependency",
+      triggerPhrase: "review and approve",
+      ruleHit: "Contains approval request with business impact",
+      priorityLogic: "Medium priority due to quarterly timeline and business planning impact.",
+      confidence: "Medium",
+      messageId: "msg_124"
     },
     {
       id: 3,
@@ -90,9 +108,16 @@ const BriefDetail = () => {
       subtitle: "",
       time: "7:15 AM",
       sender: "Sarah Johnson",
+      channel: "#product-dev",
       originalMessage: "Hey @channel, I'm concerned about the testing phase timeline. We might need to extend it by a week to ensure quality. Can we discuss this in our next meeting?",
       justification: "Direct mention requiring response about timeline concerns that could impact project delivery.",
-      originalLink: "https://app.slack.com/client/workspace/channel/message456"
+      originalLink: "https://app.slack.com/client/workspace/channel/message456",
+      relevancy: "Critical - project timeline impact",
+      triggerPhrase: "Can we discuss this",
+      ruleHit: "Direct mention with discussion request about project concerns",
+      priorityLogic: "High priority due to potential project timeline impact and quality concerns.",
+      confidence: "High",
+      messageId: "msg_456"
     },
     {
       id: 4,
@@ -102,9 +127,16 @@ const BriefDetail = () => {
       subtitle: "",
       time: "5:30 AM",
       sender: "Product Team",
+      channel: "#general",
       originalMessage: "We should schedule a follow-up meeting to discuss the roadmap updates. Next week would work well for most of the team.",
       justification: "Scheduling request that requires coordination but is not time-sensitive.",
-      originalLink: "https://app.slack.com/client/workspace/channel/message789"
+      originalLink: "https://app.slack.com/client/workspace/channel/message789",
+      relevancy: "Low - scheduling coordination",
+      triggerPhrase: "should schedule",
+      ruleHit: "Contains scheduling request without urgency",
+      priorityLogic: "Low priority due to flexible timeline and routine coordination.",
+      confidence: "Medium",
+      messageId: "msg_789"
     }
   ];
 
@@ -179,6 +211,11 @@ const BriefDetail = () => {
 
   const toggleActionItem = (itemId: number) => {
     setExpandedActionItem(expandedActionItem === itemId ? null : itemId);
+  };
+
+  const handleInfoClick = (item: any) => {
+    setSelectedActionItem(item);
+    setPriorityModalOpen(true);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -358,44 +395,42 @@ const BriefDetail = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-white/10">
-                  <TableHead className="text-text-secondary px-2">Source</TableHead>
-                  <TableHead className="text-text-secondary px-2">Priority</TableHead>
-                  <TableHead className="text-text-secondary px-2">Action Item</TableHead>
-                  <TableHead className="text-text-secondary px-2">Time</TableHead>
-                  <TableHead className="text-text-secondary px-2">Actions</TableHead>
+                  <TableHead className="text-text-secondary px-1">Source</TableHead>
+                  <TableHead className="text-text-secondary px-1">Priority</TableHead>
+                  <TableHead className="text-text-secondary px-1">Action Item</TableHead>
+                  <TableHead className="text-text-secondary px-1">Time</TableHead>
+                  <TableHead className="text-text-secondary px-1">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {actionItems.map((item) => (
                   <React.Fragment key={item.id}>
-                    <TableRow className="border-white/10 hover:bg-white/5">
-                      <TableCell className="px-2">
+                    <TableRow 
+                      className="border-white/10 hover:bg-white/5 cursor-pointer"
+                      onClick={() => toggleActionItem(item.id)}
+                    >
+                      <TableCell className="px-1">
                         <div className="flex items-center gap-2">
-                          <Collapsible>
-                            <CollapsibleTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6 p-0"
-                                onClick={() => toggleActionItem(item.id)}
-                              >
-                                {expandedActionItem === item.id ? (
-                                  <ChevronDown className="h-3 w-3" />
-                                ) : (
-                                  <ChevronRight className="h-3 w-3" />
-                                )}
-                              </Button>
-                            </CollapsibleTrigger>
-                          </Collapsible>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 p-0"
+                          >
+                            {expandedActionItem === item.id ? (
+                              <ChevronDown className="h-3 w-3" />
+                            ) : (
+                              <ChevronRight className="h-3 w-3" />
+                            )}
+                          </Button>
                           {getSourceIcon(item.source)}
                         </div>
                       </TableCell>
-                      <TableCell className="px-2">
+                      <TableCell className="px-1">
                         <Badge className={`text-xs border ${getPriorityColor(item.priority)}`}>
                           {item.priority}
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-2">
+                      <TableCell className="px-1">
                         <div className="text-sm text-text-primary font-medium">
                           {item.title}
                         </div>
@@ -405,39 +440,32 @@ const BriefDetail = () => {
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="px-2">
+                      <TableCell className="px-1">
                         <span className="text-sm text-text-secondary">{item.time}</span>
                       </TableCell>
-                      <TableCell className="px-2">
+                      <TableCell className="px-1">
                         <div className="flex gap-1">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleActionClick("Add to Asana", item)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleActionClick("Add to Asana", item);
+                            }}
                             className="text-xs px-2 py-1 h-auto"
                           >
                             <ExternalLink className="h-3 w-3 mr-1" />
                             Add to Asana
                           </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleActionClick("Follow-up", item)}
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
                             className="text-xs px-2 py-1 h-auto"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleInfoClick(item);
+                            }}
                           >
-                            <Calendar className="h-3 w-3 mr-1" />
-                            Follow-up
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleActionClick("Reminder", item)}
-                            className="text-xs px-2 py-1 h-auto"
-                          >
-                            <Bell className="h-3 w-3 mr-1" />
-                            Reminder
-                          </Button>
-                          <Button variant="ghost" size="sm" className="text-xs px-2 py-1 h-auto">
                             <Info className="h-3 w-3" />
                           </Button>
                         </div>
@@ -447,33 +475,45 @@ const BriefDetail = () => {
                     {/* Expanded Details */}
                     {expandedActionItem === item.id && (
                       <TableRow className="border-white/10">
-                        <TableCell colSpan={5} className="px-2">
-                          <div className="bg-white/5 rounded-lg p-4 space-y-3">
-                            <div>
-                              <div className="text-sm font-medium text-text-primary mb-1">Original Message</div>
-                              <div className="text-sm text-text-secondary bg-white/5 rounded p-3 border border-white/10">
-                                <div className="font-medium mb-1">From: {item.sender}</div>
-                                <div>{item.originalMessage}</div>
+                        <TableCell colSpan={5} className="px-1">
+                          <div className="bg-white/5 rounded-lg p-4 space-y-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="text-sm font-medium text-text-primary mb-1">From: {item.sender}</div>
+                                {item.subject && (
+                                  <div className="text-sm font-medium text-text-primary mb-1">Subject: {item.subject}</div>
+                                )}
+                                {item.channel && (
+                                  <div className="text-sm font-medium text-text-primary mb-1">Channel: {item.channel}</div>
+                                )}
                               </div>
-                            </div>
-                            
-                            <div>
-                              <div className="text-sm font-medium text-text-primary mb-1">AI Justification</div>
-                              <div className="text-sm text-text-secondary bg-white/5 rounded p-3 border border-white/10">
-                                {item.justification}
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => window.open(item.originalLink, '_blank')}
-                                className="text-xs"
+                                className="text-xs flex items-center gap-1"
                               >
-                                <ExternalLink className="h-3 w-3 mr-1" />
-                                View Original Message
+                                <Mail className="h-3 w-3" />
+                                Open in {item.source === 'slack' ? 'Slack' : 'Gmail'}
                               </Button>
+                            </div>
+                            
+                            <div>
+                              <div className="text-sm font-medium text-text-primary mb-2">Full Message:</div>
+                              <div className="text-sm text-text-secondary bg-white/5 rounded p-3 border border-white/10">
+                                {item.originalMessage}
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <div className="text-sm font-medium text-text-primary mb-1">Relevancy:</div>
+                                <div className="text-sm text-text-secondary">{item.relevancy}</div>
+                              </div>
+                              <div>
+                                <div className="text-sm font-medium text-text-primary mb-1">Why this is an action item:</div>
+                                <div className="text-sm text-text-secondary">{item.justification}</div>
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -487,47 +527,58 @@ const BriefDetail = () => {
 
           {/* All Messages & Items Section */}
           <div className="glass-card rounded-2xl p-4 md:p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-text-primary">All Messages & Items</h2>
-              <Button variant="ghost" size="icon">
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <div className="space-y-1">
-              <div className="text-lg font-semibold text-text-primary mb-4">Recent Messages</div>
+            <Collapsible open={allMessagesOpen} onOpenChange={setAllMessagesOpen}>
+              <div className="flex items-center justify-between mb-4">
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto">
+                    <h2 className="text-lg font-semibold text-text-primary">All Messages & Items</h2>
+                    {allMessagesOpen ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4" />
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
+                <Button variant="ghost" size="icon">
+                  <ExternalLink className="h-4 w-4" />
+                </Button>
+              </div>
               
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-white/10">
-                    <TableHead className="text-text-secondary">Platform</TableHead>
-                    <TableHead className="text-text-secondary">Message</TableHead>
-                    <TableHead className="text-text-secondary">Sender</TableHead>
-                    <TableHead className="text-text-secondary">Time</TableHead>
-                    <TableHead className="text-text-secondary">Priority</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentMessages.map((message) => (
-                    <TableRow key={message.id} className="border-white/10 hover:bg-white/5">
-                      <TableCell>
-                        <div className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium">
-                          {getPlatformIcon(message.platform)}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-text-primary">{message.message}</TableCell>
-                      <TableCell className="text-text-secondary">{message.sender}</TableCell>
-                      <TableCell className="text-text-secondary">{message.time}</TableCell>
-                      <TableCell>
-                        <Badge className={`text-xs border ${getPriorityColor(message.priority)}`}>
-                          {message.priority}
-                        </Badge>
-                      </TableCell>
+              <CollapsibleContent className="space-y-1">
+                <div className="text-lg font-semibold text-text-primary mb-4">Recent Messages</div>
+                
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-white/10">
+                      <TableHead className="text-text-secondary">Platform</TableHead>
+                      <TableHead className="text-text-secondary">Message</TableHead>
+                      <TableHead className="text-text-secondary">Sender</TableHead>
+                      <TableHead className="text-text-secondary">Time</TableHead>
+                      <TableHead className="text-text-secondary">Priority</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {recentMessages.map((message) => (
+                      <TableRow key={message.id} className="border-white/10 hover:bg-white/5">
+                        <TableCell>
+                          <div className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium">
+                            {getPlatformIcon(message.platform)}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-text-primary">{message.message}</TableCell>
+                        <TableCell className="text-text-secondary">{message.sender}</TableCell>
+                        <TableCell className="text-text-secondary">{message.time}</TableCell>
+                        <TableCell>
+                          <Badge className={`text-xs border ${getPriorityColor(message.priority)}`}>
+                            {message.priority}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
 
           {/* Add What's Missing Section */}
@@ -547,6 +598,35 @@ const BriefDetail = () => {
             />
           </div>
         </div>
+
+        {/* Priority Reasoning Modal */}
+        {selectedActionItem && (
+          <PriorityReasoningModal
+            open={priorityModalOpen}
+            onClose={() => {
+              setPriorityModalOpen(false);
+              setSelectedActionItem(null);
+            }}
+            actionItem={{
+              id: selectedActionItem.messageId,
+              text: selectedActionItem.title,
+              source: selectedActionItem.source,
+              priority: selectedActionItem.priority,
+              messageId: selectedActionItem.messageId,
+              reasoning: selectedActionItem.justification,
+              fullMessage: selectedActionItem.originalMessage,
+              time: selectedActionItem.time,
+              sender: selectedActionItem.sender,
+              subject: selectedActionItem.subject,
+              channel: selectedActionItem.channel,
+              relevancy: selectedActionItem.relevancy,
+              triggerPhrase: selectedActionItem.triggerPhrase,
+              ruleHit: selectedActionItem.ruleHit,
+              priorityLogic: selectedActionItem.priorityLogic,
+              confidence: selectedActionItem.confidence
+            }}
+          />
+        )}
       </div>
     </DashboardLayout>
   );
