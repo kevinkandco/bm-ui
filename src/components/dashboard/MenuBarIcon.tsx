@@ -10,6 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+interface Integration {
+  name: string;
+  count: number;
+  isConnected?: boolean;
+}
+
 interface MenuBarIconProps {
   onToggleMenu: () => void;
   onStatusChange: (status: "active" | "offline" | "dnd") => void;
@@ -18,6 +24,7 @@ interface MenuBarIconProps {
   onGetBriefedNow?: () => void;
   onUpdateSchedule?: () => void;
   onOpenDashboard?: () => void;
+  integrations?: Integration[];
 }
 
 const MenuBarIcon = ({ 
@@ -27,7 +34,12 @@ const MenuBarIcon = ({
   isMenuOpen = false,
   onGetBriefedNow,
   onUpdateSchedule,
-  onOpenDashboard
+  onOpenDashboard,
+  integrations = [
+    { name: "Slack", count: 12, isConnected: true },
+    { name: "Mail", count: 5, isConnected: false },
+    { name: "Actions", count: 4, isConnected: false }
+  ]
 }: MenuBarIconProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -129,21 +141,17 @@ const MenuBarIcon = ({
                 </div>
               </div>
 
-              {/* Integration Counts */}
-              <div className="grid grid-cols-3 gap-4 py-2">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">12</div>
-                  <div className="text-[13px] text-gray-600">Slack</div>
-                  <div className="w-2 h-2 rounded-full bg-green-500 mx-auto mt-1"></div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">5</div>
-                  <div className="text-[13px] text-gray-600">Mail</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">4</div>
-                  <div className="text-[13px] text-gray-600">Actions</div>
-                </div>
+              {/* Dynamic Integration Counts */}
+              <div className={`grid gap-4 py-2 ${integrations.length <= 3 ? 'grid-cols-3' : integrations.length <= 4 ? 'grid-cols-4' : 'grid-cols-2'}`}>
+                {integrations.map((integration, index) => (
+                  <div key={integration.name} className="text-center">
+                    <div className="text-2xl font-bold text-gray-900">{integration.count}</div>
+                    <div className="text-[13px] text-gray-600">{integration.name}</div>
+                    {integration.isConnected && (
+                      <div className="w-2 h-2 rounded-full bg-green-500 mx-auto mt-1"></div>
+                    )}
+                  </div>
+                ))}
               </div>
 
               {/* Status Control */}

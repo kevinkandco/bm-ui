@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import MenuBarIcon from "@/components/dashboard/MenuBarIcon";
 import MenuBarCompanion from "@/components/dashboard/MenuBarCompanion";
@@ -10,6 +9,14 @@ const MacPage = () => {
   const { toast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [status, setStatus] = useState<StatusType>("active");
+
+  // Example dynamic integrations data
+  const integrations = [
+    { name: "Slack", count: 12, isConnected: true },
+    { name: "Notion", count: 8, isConnected: true },
+    { name: "Teams", count: 5, isConnected: false },
+    { name: "Mail", count: 3, isConnected: false }
+  ];
 
   const handleToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -70,6 +77,7 @@ const MacPage = () => {
         onStatusChange={handleStatusChange}
         currentStatus={status}
         isMenuOpen={isMenuOpen}
+        integrations={integrations}
       />
       
       {/* Menu Bar Companion */}

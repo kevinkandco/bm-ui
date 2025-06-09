@@ -1,11 +1,19 @@
+
 import React, { useState } from "react";
 import MenuBarIcon from "./MenuBarIcon";
 import MenuBarCompanion from "./MenuBarCompanion";
+
+interface Integration {
+  name: string;
+  count: number;
+  isConnected?: boolean;
+}
 
 interface MenuBarContainerProps {
   onGetBriefedNow: () => void;
   onUpdateSchedule: () => void;
   onOpenDashboard: () => void;
+  integrations?: Integration[];
 }
 
 type StatusType = "active" | "offline" | "dnd";
@@ -13,7 +21,8 @@ type StatusType = "active" | "offline" | "dnd";
 const MenuBarContainer = ({ 
   onGetBriefedNow, 
   onUpdateSchedule, 
-  onOpenDashboard 
+  onOpenDashboard,
+  integrations
 }: MenuBarContainerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<StatusType>("active");
@@ -37,6 +46,7 @@ const MenuBarContainer = ({
         onStatusChange={handleStatusChange}
         currentStatus={status}
         isMenuOpen={isOpen}
+        integrations={integrations}
         onGetBriefedNow={() => {
           onGetBriefedNow();
           handleClose();
