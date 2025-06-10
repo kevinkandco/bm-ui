@@ -62,7 +62,7 @@ const OnboardingLayout = ({
         </div>
         
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-black/30"></div>
         
         {/* Color overlay */}
         <div className={`absolute inset-0 ${gradientClassName} opacity-40`}></div>

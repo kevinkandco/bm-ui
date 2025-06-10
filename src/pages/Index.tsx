@@ -40,7 +40,7 @@ const Index = () => {
         </div>
         
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-black/30"></div>
         
         {/* Color overlay with reduced opacity */}
         <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-30`}></div>
