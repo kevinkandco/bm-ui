@@ -50,19 +50,22 @@ const OnboardingLayout = ({
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 pb-6 pt-0 relative overflow-hidden bg-surface">
       {/* Background with new image */}
       <div className="absolute inset-0 w-full h-full">
-        {/* Background image with blur */}
+        {/* Background image with heavy blur */}
         <div className="absolute inset-0 w-full h-full">
           <img 
             src="/lovable-uploads/108ead20-e97f-4d4b-b521-533474e0989c.png" 
             alt="Dashboard background" 
             className="w-full h-full object-cover"
-            style={{ filter: 'blur(0.8px)' }}
+            style={{ filter: 'blur(85px)' }}
             loading="eager"
           />
         </div>
         
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60"></div>
+        
         {/* Color overlay */}
-        <div className={`absolute inset-0 ${gradientClassName} opacity-80`}></div>
+        <div className={`absolute inset-0 ${gradientClassName} opacity-40`}></div>
         
         {/* Subtle radial gradient for depth */}
         <div className="absolute inset-0 bg-gradient-radial from-surface-raised/10 to-transparent opacity-30"></div>
