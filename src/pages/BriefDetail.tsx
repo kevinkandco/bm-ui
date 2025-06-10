@@ -347,8 +347,8 @@ const BriefDetail = () => {
             {/* Audio Player */}
             <div className="bg-white/5 rounded-lg p-6 border border-white/10">
               {/* Waveform */}
-              <div className="h-32 bg-surface/60 rounded-lg flex items-end justify-center px-6 mb-4 relative overflow-hidden">
-                <div className="flex items-end gap-[2px] h-full w-full max-w-4xl">
+              <div className="h-32 bg-surface/60 rounded-lg flex items-end px-6 mb-4 relative overflow-hidden">
+                <div className="flex items-end gap-[2px] h-full w-full">
                   {Array.from({ length: 120 }).map((_, i) => {
                     const height = Math.random();
                     const isActive = i < 30; // Simulate progress
