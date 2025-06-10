@@ -19,14 +19,6 @@ const InputIntegrationsSection = ({ onConnect }: InputIntegrationsSectionProps) 
       features: ["Email summaries", "Priority detection", "Action items extraction"]
     },
     { 
-      name: "Outlook", 
-      provider: "outlook", 
-      available: true, 
-      icon: Mail,
-      description: "Sync emails and calendar events for comprehensive briefings",
-      features: ["Email processing", "Meeting summaries", "Task extraction"]
-    },
-    { 
       name: "Slack", 
       provider: "slack", 
       available: true, 
@@ -35,9 +27,17 @@ const InputIntegrationsSection = ({ onConnect }: InputIntegrationsSectionProps) 
       features: ["Channel monitoring", "Message summaries", "Mention tracking"]
     },
     { 
+      name: "Outlook", 
+      provider: "outlook", 
+      available: false, 
+      icon: Mail,
+      description: "Sync emails and calendar events for comprehensive briefings",
+      features: ["Email processing", "Meeting summaries", "Task extraction"]
+    },
+    { 
       name: "Google Calendar", 
       provider: "calendar", 
-      available: true, 
+      available: false, 
       icon: Calendar,
       description: "Track meetings, deadlines, and schedule changes",
       features: ["Meeting prep", "Schedule conflicts", "Deadline tracking"]
