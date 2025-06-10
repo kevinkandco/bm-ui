@@ -114,7 +114,7 @@ const IntegrationsSection = () => {
       <InputIntegrationsSection onConnect={handleAddAccount} />
 
       {/* Output Integrations */}
-      {/* <OutputIntegrationsSection onConnect={handleAddAccount} /> */}
+      <OutputIntegrationsSection onConnect={handleAddAccount} />
     </div>
   );
 };

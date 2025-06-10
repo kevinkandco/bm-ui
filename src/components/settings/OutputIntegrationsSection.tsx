@@ -15,7 +15,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
     { 
       name: "Todoist", 
       provider: "todoist", 
-      available: true, 
+      available: false, 
       icon: CheckSquare,
       description: "Automatically create tasks from action items in your briefs",
       outputs: ["Action items", "Follow-ups", "Deadlines"],
@@ -42,7 +42,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
     { 
       name: "Google Calendar", 
       provider: "calendar-output", 
-      available: true, 
+      available: false, 
       icon: Calendar,
       description: "Create calendar events from meeting requests and deadlines",
       outputs: ["Calendar events", "Meeting reminders", "Deadline alerts"],
@@ -51,7 +51,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
     { 
       name: "Slack", 
       provider: "slack-output", 
-      available: true, 
+      available: false, 
       icon: MessageSquare,
       description: "Send important updates and summaries to team channels",
       outputs: ["Channel updates", "Direct messages", "Status updates"],
@@ -60,7 +60,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
     { 
       name: "Email", 
       provider: "email-output", 
-      available: true, 
+      available: false, 
       icon: Mail,
       description: "Send digest emails and follow-up reminders",
       outputs: ["Daily digests", "Weekly summaries", "Follow-up emails"],
