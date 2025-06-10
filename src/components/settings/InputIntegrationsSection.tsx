@@ -12,7 +12,7 @@ const InputIntegrationsSection = ({ onConnect }: InputIntegrationsSectionProps) 
   const inputIntegrations = [
     { 
       name: "Gmail", 
-      provider: "gmail", 
+      provider: "google", 
       available: true, 
       icon: Mail,
       description: "Pull emails and automatically summarize important messages",

@@ -3,6 +3,8 @@ import { ConnectedAccount, Tag, SplitBriefSettings } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 
+const BaseURL = import.meta.env.VITE_API_HOST;
+
 export const useIntegrationsState = () => {
   const { toast } = useToast();
   const { call } = useApi();
@@ -96,17 +98,37 @@ export const useIntegrationsState = () => {
     }, [getProvider, getTags]);
 
   const addAccount = useCallback((provider: string, type: 'input' | 'output' = 'input') => {
-    // const newAccount: ConnectedAccount = {
-    //   id: `${Date.now()}`,
-    //   provider,
-    //   email: `user@${provider}.com`,
-    //   tagId: provider.includes('gmail') && provider.includes('.com') ? 'personal' : 'work',
-    //   is_combined: true,
-    //   connectedAt: new Date(),
-    //   type
-    // };
     
-    // setConnectedAccounts(prev => [...prev, newAccount]);
+
+    const openAuthUrl = async (provider: string) => {
+      const urls: Record<string, string> = {
+        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${BaseURL}/google/auth?redirectURL=dashboard/settings`,
+        calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${BaseURL}/outlook/auth`,
+      };
+      window.open(urls[provider], "_self");
+    };
+
+    if (provider === "slack") {
+      if (provider === "slack") {
+        openAuthUrl("slack");
+      }
+    } else if (provider === "google") {
+        openAuthUrl("google");
+    } else {
+      const newAccount: ConnectedAccount = {
+      id: Math.floor(Math.random() * 1000),
+      provider: Math.floor(Math.random() * 3),
+      email: `user@${provider}.com`,
+      tagId: Math.floor(Math.random() * 3),
+      is_combined: true,
+      connectedAt: new Date(),
+      type
+    };
+    
+    setConnectedAccounts(prev => [...prev, newAccount]);
+    }
   }, []);
 
   const updateAccountTag = useCallback(async (accountId: number, tagId: number) => {
