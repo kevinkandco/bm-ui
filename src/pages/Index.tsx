@@ -26,14 +26,15 @@ const Index = () => {
   return <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-surface">
       <style>{pulseAnimationCSS}</style>
       
-      {/* Background with image overlay */}
+      {/* Background with new image */}
       <div className="absolute inset-0 w-full h-full">
-        {/* Background image - slightly increased blur */}
+        {/* Background image with blur */}
         <div className="absolute inset-0 w-full h-full">
           <img 
-            src="/lovable-uploads/8ea55fb5-fb6e-49d0-881c-5d96263e886d.png" 
+            src="/lovable-uploads/108ead20-e97f-4d4b-b521-533474e0989c.png" 
             alt="Dashboard background" 
-            className="w-full h-full object-cover filter blur"
+            className="w-full h-full object-cover"
+            style={{ filter: 'blur(0.8px)' }}
             loading="eager"
           />
         </div>
