@@ -1,7 +1,6 @@
+
 import React from "react";
-import { Settings, MessageSquare, Mail, Slack, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { MessageSquare, Mail, Slack, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -26,7 +25,6 @@ interface ConnectedChannelsSectionProps {
 const ConnectedChannelsSection = ({
   showAsHorizontal = false
 }: ConnectedChannelsSectionProps) => {
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
   
   // Mock data - in real app this would come from props/API
@@ -76,10 +74,6 @@ const ConnectedChannelsSection = ({
     if (accounts.some(acc => acc.status === "monitoring")) return "monitoring";
     if (accounts.some(acc => acc.status === "active")) return "active";
     return "offline";
-  };
-
-  const handleOpenSettings = () => {
-    navigate("/dashboard/settings");
   };
 
   // Helper function to render the appropriate icon
@@ -143,11 +137,6 @@ const ConnectedChannelsSection = ({
               })}
             </div>
           </div>
-          
-          <Button variant="ghost" className="flex items-center gap-2 h-8 px-3" onClick={handleOpenSettings}>
-            <span className="text-text-secondary text-sm">Settings</span>
-            <Settings className="h-4 w-4 text-text-secondary" />
-          </Button>
         </div>
       </TooltipProvider>
     );
@@ -159,9 +148,6 @@ const ConnectedChannelsSection = ({
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-text-primary text-lg font-medium">Connected Channels</h2>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleOpenSettings}>
-            <Settings className="h-4 w-4 text-text-secondary" />
-          </Button>
         </div>
         
         {/* Condensed Integration Display for Sidebar */}
