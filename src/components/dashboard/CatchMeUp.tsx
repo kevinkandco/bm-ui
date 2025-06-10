@@ -94,17 +94,17 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
     const now = moment();
 
     const diffInHours = now.diff(inputDate, "hours");
-    console.log(`Past hours: ${diffInHours}`);
     setCustomHours(diffInHours);
     setCustomStartDate(date);
   };
 
   const handleChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value) {
-      setCustomStartTime(e.target.value);
-      const hourString = moment(e.target.value, "HH:mm").format("HH");
-      setCustomHours(Number(hourString));
-    }
+      if (e.target.value) {
+        
+        setCustomStartTime(e.target.value);
+        const hourString = moment(e.target.value, "HH:mm").format("HH");
+        setCustomHours(Number(hourString));
+      }
   };
 
   return (
