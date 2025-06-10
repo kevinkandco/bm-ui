@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -365,37 +364,37 @@ const HomeView = ({
   // Desktop View
   return <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
-        {/* Desktop Header - Horizontal Layout */}
-        <div className="flex items-center justify-between mb-8">
+        {/* Desktop Header - Updated with Light Mode styling */}
+        <div className="flex items-center justify-between mb-8 p-6 rounded-xl backdrop-blur-sm light:bg-white/80 light:border light:border-light-border-subtle light:shadow-light-shadow-card dark:bg-surface-overlay/30">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary mb-2">
+            <h1 className="text-3xl font-bold light:text-light-text-primary dark:text-text-primary mb-2">
               Good morning, Alex
             </h1>
-            <p className="text-text-secondary font-light text-gray-50">Let's get you caught up.</p>
+            <p className="light:text-light-text-secondary dark:text-text-secondary font-light">Let's get you caught up.</p>
           </div>
           
-          {/* Updated CTAs on the right */}
+          {/* Updated CTAs with Light Mode styling */}
           <div className="flex gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
+                <Button variant="status-navy" className="rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
                   Update Status
                   <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle">
-                <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-white/5">
+              <DropdownMenuContent className="light:bg-light-surface-card light:border-light-border-subtle dark:bg-surface dark:border-border-subtle">
+                <DropdownMenuItem onClick={onStartFocusMode} className="light:text-light-text-primary light:hover:bg-gray-50 dark:text-text-primary dark:hover:bg-white/5">
                   <Headphones className="mr-2 h-4 w-4" />
                   Start Focus Mode
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-white/5">
+                <DropdownMenuItem onClick={onSignOffForDay} className="light:text-light-text-primary light:hover:bg-gray-50 dark:text-text-primary dark:hover:bg-white/5">
                   <Clock className="mr-2 h-4 w-4" />
                   Sign Off for the Day
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
+            <Button onClick={onToggleCatchMeUp} variant="brief-me" className="rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
               <Zap className="mr-2 h-4 w-4" />
               Brief Me
             </Button>
@@ -414,7 +413,7 @@ const HomeView = ({
             {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Briefs</h2>
+                <h2 className="text-xl font-semibold light:text-light-text-primary dark:text-text-primary">Briefs</h2>
               </div>
               
               {/* Unified Brief Container with upcoming brief */}
@@ -433,15 +432,15 @@ const HomeView = ({
             </div>
           </div>
           
-          {/* Sidebar - 4 columns */}
+          {/* Sidebar - 4 columns with Light Mode styling */}
           <div className="col-span-4 space-y-4">
-            {/* Priorities Section - Compact */}
-            <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
+            {/* Priorities Section - Light Mode card */}
+            <div className="rounded-xl p-4 light:bg-light-surface-card light:border-2 light:border-light-border-subtle light:shadow-light-shadow-card dark:bg-surface-overlay/30 dark:border dark:border-border-subtle dark:shadow-sm">
               <PrioritiesSection />
             </div>
             
-            {/* Brief Me Teams - With enhanced blurred background mockups */}
-            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+            {/* Brief Me Teams - Light Mode styling */}
+            <div className="rounded-2xl p-6 relative overflow-hidden light:bg-light-surface-card light:border-2 light:border-light-border-subtle light:shadow-light-shadow-card dark:bg-surface-overlay/30 dark:border dark:border-border-subtle dark:shadow-sm">
               {/* Enhanced blurred background mockups */}
               <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
                 <div className="grid grid-cols-2 gap-4 h-full p-4">
@@ -496,14 +495,14 @@ const HomeView = ({
                 </div>
               </div>
               
-              {/* Clear content with better contrast */}
-              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
-                <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
+              {/* Clear content with Light Mode styling */}
+              <div className="relative z-10 light:bg-white/70 dark:bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
+                <h2 className="text-lg font-semibold light:text-light-text-primary dark:text-text-primary mb-2 flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   Brief Me Teams
                 </h2>
                 
-                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
+                <p className="light:text-light-text-secondary dark:text-text-secondary text-sm mb-4">Coming soon...</p>
                 
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-3">
@@ -538,7 +537,7 @@ const HomeView = ({
                   className={`rounded-lg px-4 py-2 text-sm w-full ${
                     waitlistStatus === 'added' 
                       ? 'bg-green-600 text-white hover:bg-green-600' 
-                      : 'bg-accent-primary text-white hover:bg-accent-primary/90'
+                      : 'light:bg-light-accent-green light:text-white light:hover:opacity-90 dark:bg-accent-primary dark:text-white dark:hover:bg-accent-primary/90'
                   }`}
                   disabled={waitlistStatus === 'added'}
                 >
