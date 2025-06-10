@@ -57,9 +57,9 @@ const BriefConfigurationSection = () => {
     const timeFlags = getTimePeriod(briefTime);   // { morning: true, midday: false, evening: false }
     setTimes(timeFlags);
 
-    const formattedTime = moment(briefTime, "HH:mm").format("h:mm A");
+    const formattedTime = moment(briefTime, "HH:mm")?.format("h:mm A");
 
-    const activeKey = Object.keys(timeFlags).find(key => timeFlags[key as keyof typeof timeFlags]);
+    const activeKey = Object?.keys(timeFlags)?.find(key => timeFlags[key as keyof typeof timeFlags]);
 
     if (activeKey) {
       setTime(prev => ({
@@ -105,10 +105,23 @@ const BriefConfigurationSection = () => {
       returnOnFailure: false,
       toastVariant: "destructive"
     });
+    // setTimes(prev => ({ ...prev, [briefTime]: !prev[briefTime] }));
     if (response) {
-      // setTimes(prev => ({ ...prev, [briefTime]: !prev[briefTime] }));
-      getData();
+    const briefTime = response?.data?.brief_time; // e.g., "08:00"
+    const timeFlags = getTimePeriod(briefTime);   // { morning: true, midday: false, evening: false }
+    setTimes(timeFlags);
+
+    const formattedTime = moment(briefTime, "HH:mm").format("h:mm A");
+
+    const activeKey = Object.keys(timeFlags).find(key => timeFlags[key as keyof typeof timeFlags]);
+
+    if (activeKey) {
+      setTime(prev => ({
+        ...prev,
+        [activeKey]: formattedTime
+      }));
     }
+  }
   };
 
   const hasMultipleTags = tags.length > 1;
