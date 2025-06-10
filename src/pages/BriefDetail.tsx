@@ -225,13 +225,20 @@ const BriefDetail = () => {
     setSidebarOpen(prev => !prev);
   };
 
-  // const handlePlayPause = () => {
-    // setIsPlaying(!isPlaying);
-    // toast({
-    //   title: isPlaying ? "Audio Paused" : "Playing Audio Brief",
-    //   description: isPlaying ? "Audio brief paused" : "Starting audio playback"
-    // });
-  // };
+  const handlePlayStopBrief = useCallback(
+      () => {
+        if (!briefData?.audioPath) {
+          toast({
+            title: "Audio not found",
+            description: `Audio not found, please try again`,
+            variant: "destructive",
+          })
+          return;
+        }
+        handlePlayPause();
+      },
+      [toast, handlePlayPause, briefData?.audioPath]
+    );
 
   const handleActionClick = (action: string, item: any) => {
     toast({
@@ -405,15 +412,15 @@ const BriefDetail = () => {
                 </div>
               </div> */}
 
-              <div
-              ref={barRef}
-                onMouseDown={handleSeekStart}
-                onMouseMove={handleSeekMove}
-                onMouseUp={handleSeekEnd}
-                onTouchStart={handleSeekStart}
-                onTouchMove={handleSeekMove}
-                onTouchEnd={handleSeekEnd}
-
+              <div {...(briefData?.audioPath ? {
+                ref: barRef,
+                onMouseDown: handleSeekStart,
+                onMouseMove: handleSeekMove,
+                onMouseUp: handleSeekEnd,
+                onTouchStart: handleSeekStart,
+                onTouchMove: handleSeekMove,
+                onTouchEnd: handleSeekEnd,
+              } : {})}
               className="relative mb-6 h-16 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent rounded-lg flex items-center justify-center overflow-hidden">
                 {/* Simple waveform representation */}
                 <div className="flex items-center gap-1 h-full w-full">
@@ -456,7 +463,7 @@ const BriefDetail = () => {
                   <Button
                     variant="primary"
                     size="icon"
-                    onClick={handlePlayPause}
+                    onClick={handlePlayStopBrief}
                     className="h-16 w-16 rounded-full"
                   >
                     {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 ml-1" />}
