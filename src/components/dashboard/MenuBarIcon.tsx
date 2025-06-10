@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Zap, ChevronDown, Calendar, ExternalLink, Settings, X, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -47,10 +48,10 @@ const MenuBarIcon = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-500";
+      case "active": return "bg-green-500 shadow-status-green";
       case "offline": return "bg-gray-500";
-      case "dnd": return "bg-red-500";
-      default: return "bg-green-500";
+      case "dnd": return "bg-red-500 shadow-status-red";
+      default: return "bg-green-500 shadow-status-green";
     }
   };
 
@@ -84,14 +85,14 @@ const MenuBarIcon = ({
   return (
     <>
       <div className="fixed top-4 right-4 z-50">
-        <div className="flex items-center gap-0 rounded-full transition-all duration-200 ease-in-out backdrop-blur-md bg-white/10 text-white">
-          {/* Status Indicator - Clickable outside dropdown */}
+        <div className="flex items-center gap-0 chrome-pill glass-layer-group text-glass-primary">
+          {/* Status Indicator - glass styling */}
           <div 
-            className="flex items-center gap-2 cursor-pointer hover:bg-white/10 rounded-l-full px-4 py-2.5 transition-all duration-150"
+            className="flex items-center gap-2 cursor-pointer hover:bg-glass-ultra-thin rounded-l-full px-4 py-2.5 transition-all duration-150 spring-scale"
             onClick={handleStatusClick}
           >
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4" strokeWidth={1.5} />
+              <Zap className="w-4 h-4 glass-icon" strokeWidth={1.5} />
               <span className="text-sm font-medium">Brief Me</span>
             </div>
             
@@ -101,37 +102,37 @@ const MenuBarIcon = ({
             </div>
           </div>
 
-          {/* Dropdown Menu - Separate clickable area */}
+          {/* Dropdown Menu with glass styling */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-auto px-3 py-2.5 rounded-r-full hover:bg-white/20 border-l border-white/20"
+                className="h-auto px-3 py-2.5 rounded-r-full hover:bg-glass-ultra-thin glass-divider border-l spring-scale"
               >
-                <ChevronDown className="w-3 h-3" />
+                <ChevronDown className="w-3 h-3 glass-icon" />
               </Button>
             </DropdownMenuTrigger>
             
             <DropdownMenuContent 
               align="end" 
-              className="w-80 bg-white/95 backdrop-blur-xl border border-gray-200/50 p-0 rounded-xl shadow-2xl"
+              className="w-80 glass-thick border border-rim-light p-0 rounded-3xl shadow-glass-elevated"
             >
-              {/* Header with Close */}
-              <div className="p-4 border-b border-gray-200/30">
+              {/* Header */}
+              <div className="p-4 glass-divider">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-[17px] font-semibold text-gray-900">Brief Me</h3>
+                  <h3 className="text-[17px] font-semibold text-glass-primary">Brief Me</h3>
                 </div>
                 
-                {/* Status Control - Moved to top */}
+                {/* Status Control - glass chips */}
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   {["active", "offline", "dnd"].map((statusOption) => (
                     <button
                       key={statusOption}
                       onClick={() => onStatusChange(statusOption as "active" | "offline" | "dnd")}
-                      className={`px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-150 ease-in-out ${
+                      className={`monitoring-chip px-3 py-2 text-[13px] font-medium transition-all duration-150 ease-in-out spring-scale ${
                         currentStatus === statusOption
-                          ? "bg-gray-900 text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          ? "glass-thick text-glass-primary"
+                          : "glass-ultra-thin text-glass-secondary hover:bg-glass-thin"
                       }`}
                     >
                       {statusOption === "dnd" ? "DND" : statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
@@ -139,79 +140,79 @@ const MenuBarIcon = ({
                   ))}
                 </div>
 
-                {/* Primary Action - Moved to top */}
+                {/* Primary Action */}
                 <Button
                   onClick={handleGetBriefedNow}
-                  className="w-full bg-gradient-to-r from-[#458888] to-[#50A181] hover:from-[#3D7A7A] hover:to-[#489174] text-white rounded-xl py-3 text-[13px] font-medium transition-all duration-150 ease-in-out"
+                  className="chrome-pill w-full py-3 text-[13px] font-medium"
                 >
-                  <Zap className="w-4 h-4 mr-2" />
+                  <Zap className="w-4 h-4 mr-2 glass-icon" />
                   Get Briefed Now
                 </Button>
               </div>
 
-              {/* Brief Status */}
+              {/* Brief Status with glass styling */}
               <div className="p-4 space-y-4">
                 <div className="space-y-2">
-                  <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/30">
+                  <div className="glass-ultra-thin rounded-xl p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
-                          <CheckCircle className="w-3 h-3 text-green-600" />
+                        <div className="w-6 h-6 rounded-full status-glow-green flex items-center justify-center">
+                          <CheckCircle className="w-3 h-3 text-green-600 glass-icon" />
                         </div>
-                        <span className="text-[15px] font-medium text-gray-900">Morning Brief Ready</span>
+                        <span className="text-[15px] font-medium text-glass-primary">Morning Brief Ready</span>
                       </div>
-                      <X className="w-4 h-4 text-gray-400" />
+                      <X className="w-4 h-4 text-glass-secondary glass-icon" />
                     </div>
-                    <p className="text-[13px] text-gray-600">~33 min saved so far</p>
+                    <p className="text-[13px] text-glass-secondary">~33 min saved so far</p>
                   </div>
                 </div>
 
                 {/* Upcoming Brief */}
                 <div className="space-y-2">
-                  <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/30">
+                  <div className="glass-ultra-thin rounded-xl p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-gray-500" />
-                        <span className="text-[13px] font-medium text-gray-900">Midday Brief • 12:30 PM</span>
+                        <Calendar className="w-4 h-4 text-glass-secondary glass-icon" />
+                        <span className="text-[13px] font-medium text-glass-primary">Midday Brief • 12:30 PM</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-gray-500">Edit</span>
-                        <ChevronRight className="w-3 h-3 text-gray-400" />
+                        <span className="text-[11px] text-glass-secondary">Edit</span>
+                        <ChevronRight className="w-3 h-3 text-glass-secondary glass-icon" />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Dynamic Integration Counts */}
+                {/* Dynamic Integration Counts with glass styling */}
                 <div className={`grid gap-4 py-2 ${integrations.length <= 3 ? 'grid-cols-3' : integrations.length <= 4 ? 'grid-cols-4' : 'grid-cols-2'}`}>
                   {integrations.map((integration, index) => (
                     <div key={integration.name} className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{integration.count}</div>
-                      <div className="text-[13px] text-gray-600">{integration.name}</div>
+                      <div className="text-2xl font-bold text-glass-primary">{integration.count}</div>
+                      <div className="text-[13px] text-glass-secondary">{integration.name}</div>
                       {integration.isConnected && (
-                        <div className="w-2 h-2 rounded-full bg-green-500 mx-auto mt-1"></div>
+                        <div className="w-2 h-2 rounded-full bg-green-500 shadow-status-green mx-auto mt-1"></div>
                       )}
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Footer - Updated to match the design */}
-              <div className="px-4 py-3 border-t border-gray-200/30 bg-gray-50/30">
+              {/* Footer with glass styling */}
+              <div className="px-4 py-3 glass-divider">
                 <div className="flex justify-center gap-3">
                   {/* Brief Me Button */}
                   <button 
                     onClick={handleGetBriefedNow}
-                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
+                    className="chrome-pill w-12 h-12 flex items-center justify-center spring-scale"
                     title="Brief Me"
                   >
-                    <Zap className="w-5 h-5" />
+                    <Zap className="w-5 h-5 glass-icon" />
                   </button>
                   
                   {/* Status Button */}
                   <button 
                     onClick={handleStatusClick}
-                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
+                    className="chrome-pill w-12 h-12 flex items-center justify-center spring-scale"
                     title="Toggle Status"
                   >
                     <div className={`w-3 h-3 rounded-full ${getStatusColor(currentStatus)}`} />
