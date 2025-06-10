@@ -150,7 +150,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
               
               {/* Updated timestamp and range format */}
               <p className="text-xs text-light-gray-text">
-                Delivered at {brief?.created_at?.split(', ')[1].replace(':00 ', '').replace(':00', '')} (Summarizing: {timeRange})
+                Delivered at {brief?.delivery_at} (Summarizing: {timeRange})
               </p>
             </div>
           </div>
