@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Hash, AlertTriangle, ChevronDown, Slack, Mail, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -255,25 +254,12 @@ const PrioritiesSection = () => {
   };
 
   return (
-    <div>
-      {/* Title and Edit link outside the card */}
-      <div className="flex items-center justify-between mb-3 px-4">
-        <h2 className="text-text-primary font-medium text-base">Priorities</h2>
-        <Button 
-          variant="ghost" 
-          onClick={handleOpenSettings}
-          className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
-        >
-          Edit
-        </Button>
-      </div>
-      
-      {/* Card content */}
-      <div className="p-4 pt-0">
-        {sections.map(renderSection)}
-      </div>
+    <div className="p-4">
+      {sections.map(renderSection)}
     </div>
   );
 };
 
 export default React.memo(PrioritiesSection);
+
+}

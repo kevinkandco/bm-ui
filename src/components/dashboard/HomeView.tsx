@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -435,9 +434,21 @@ const HomeView = ({
           
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
-            {/* Priorities Section - Compact */}
-            <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
-              <PrioritiesSection />
+            {/* Priorities Section with title outside */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-text-primary">Priorities</h2>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate("/dashboard/settings")}
+                  className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
+                >
+                  Edit
+                </Button>
+              </div>
+              <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
+                <PrioritiesSection />
+              </div>
             </div>
             
             {/* Brief Me Teams - With enhanced blurred background mockups */}
@@ -562,3 +573,5 @@ const HomeView = ({
 };
 
 export default React.memo(HomeView);
+
+}
