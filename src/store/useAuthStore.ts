@@ -7,6 +7,8 @@ export interface AuthUser {
 	name: string;
 	email: string;
 	email_verified_at: string | null;
+	job_title: string;
+	department: string;
 	provider: string;
 	provider_id: string;
 	slack_token: string;

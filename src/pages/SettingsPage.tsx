@@ -23,6 +23,7 @@ import {
 
 const SettingsPage = () => {
   const { toast } = useToast();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [activeCategory, setActiveCategory] = React.useState("profile");
@@ -30,13 +31,24 @@ const SettingsPage = () => {
   const { call } = useApi();
   const { logout, gotoLogin } = useAuthStore();
   const [activeSection, setActiveSection] = React.useState("profile");
+  const [settings, setSettings] = React.useState({
+    name: "",
+    job_title: "",
+    department: "",
+  });
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
 
-  const handleSaveSettings = () => {
-    toast({
+  const handleSaveSettings = async () => {
+    const response = await call("post", "/api/settings/profile-update", {
+      body: settings,
+      showToast: true,
+      toastTitle: "Settings Save Failed",
+      toastDescription: "Failed to save settings",
+    });
+    if (response) toast({
       title: "Settings Saved",
       description: "Your preferences have been updated successfully",
     });
@@ -126,6 +138,14 @@ const SettingsPage = () => {
     const tab = searchParams.get("tab");
     const selected = searchParams.get("selected");
 
+    if (user) {
+      setSettings({
+        name: user.name,
+        job_title: user.job_title,
+        department: user.department
+      })
+    }
+
     if (tab) {
       const url = new URL(window.location.href);
       url.searchParams.delete("tab");
@@ -137,6 +157,14 @@ const SettingsPage = () => {
       handleCategoryClick(tab);
     }
   }, [searchParams, handleCategoryClick]);
+
+  const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e)
+    setSettings({
+      ...settings,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   
 
@@ -160,7 +188,9 @@ const SettingsPage = () => {
                   <label className="block text-sm font-medium text-text-secondary mb-1">Full Name</label>
                   <input 
                     type="text" 
-                    defaultValue="Alex Johnson"
+                    value={settings?.name}
+                    name="name"
+                    onChange={handleUpdate}
                     className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
                   />
                 </div>
@@ -168,7 +198,8 @@ const SettingsPage = () => {
                   <label className="block text-sm font-medium text-text-secondary mb-1">Email Address</label>
                   <input 
                     type="email" 
-                    defaultValue="alex.johnson@example.com"
+                    defaultValue={user?.email}
+                    disabled
                     className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
                   />
                 </div>
@@ -176,7 +207,9 @@ const SettingsPage = () => {
                   <label className="block text-sm font-medium text-text-secondary mb-1">Job Title</label>
                   <input 
                     type="text" 
-                    defaultValue="Senior Product Manager"
+                    name="job_title"
+                    value={settings?.job_title}
+                    onChange={handleUpdate}
                     className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
                   />
                 </div>
@@ -184,7 +217,9 @@ const SettingsPage = () => {
                   <label className="block text-sm font-medium text-text-secondary mb-1">Department</label>
                   <input 
                     type="text" 
-                    defaultValue="Product Development"
+                    name="department"
+                    value={settings?.department}
+                    onChange={handleUpdate}
                     className="w-full p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent"
                   />
                 </div>
