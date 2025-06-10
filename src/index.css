@@ -267,7 +267,7 @@
   /* Glass Badge */
   .glass-badge {
     @apply glass-ultra-thin rounded-full px-3 py-1 text-xs text-glass-secondary
-           border border-accent-primary/30;
+           border border-primary-teal/30;
     box-shadow: inset 0 0 8px var(--accent-primary);
   }
   
