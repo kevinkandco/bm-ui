@@ -19,8 +19,9 @@ import { useNavigate } from "react-router-dom";
 import { useApi } from "@/hooks/useApi";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
+import moment from "moment";
 
 interface CatchMeUpProps {
   open: boolean;
@@ -44,6 +45,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
     // Simulate detection of offline time
     // In a real app, this would be calculated from last activity
     setDetectedTime("3 hours");
+
   }, [open]);
 
   const handleGenerate = async () => {
@@ -84,6 +86,24 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
           response?.message || "Summary generated successfully.",
       });
       onGenerateSummary(timeDescription);
+    }
+  };
+
+  const getPastHours = (date: Date) => {
+    const inputDate = moment(date);
+    const now = moment();
+
+    const diffInHours = now.diff(inputDate, "hours");
+    console.log(`Past hours: ${diffInHours}`);
+    setCustomHours(diffInHours);
+    setCustomStartDate(date);
+  };
+
+  const handleChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value) {
+      setCustomStartTime(e.target.value);
+      const hourString = moment(e.target.value, "HH:mm").format("HH");
+      setCustomHours(Number(hourString));
     }
   };
 
@@ -145,16 +165,19 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
                         <CalendarComponent
                           mode="single"
                           selected={customStartDate}
-                          onSelect={setCustomStartDate}
+                          onSelect={getPastHours}
                           initialFocus
                           className="pointer-events-auto"
-                        />
+                          disabled={[
+                           { before: subDays(new Date(), 7)},
+                           { after: new Date()},
+                          ]}/>
                       </PopoverContent>
                     </Popover>
                     <input
                       type="time"
                       value={customStartTime}
-                      onChange={(e) => setCustomStartTime(e.target.value)}
+                      onChange={(e) => handleChangeStartTime(e)}
                       className="px-2 py-2 bg-white/5 border border-white/20 rounded-md text-white text-xs w-20"
                     />
                   </div>
