@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -8,6 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
@@ -108,6 +109,23 @@ const HomeView = ({
     setWaitlistStatus('added');
   }, []);
 
+  // Profile dropdown handlers
+  const handleProfileClick = useCallback(() => {
+    navigate("/dashboard/settings", { state: { activeSection: "profile" } });
+  }, [navigate]);
+
+  const handleIntegrationsClick = useCallback(() => {
+    navigate("/dashboard/settings", { state: { activeSection: "integrations" } });
+  }, [navigate]);
+
+  const handleBriefConfigClick = useCallback(() => {
+    navigate("/dashboard/settings", { state: { activeSection: "brief-config" } });
+  }, [navigate]);
+
+  const handleAllSettingsClick = useCallback(() => {
+    navigate("/dashboard/settings");
+  }, [navigate]);
+
   // Sample brief data
   const recentBriefs = [{
     id: 1,
@@ -182,7 +200,7 @@ const HomeView = ({
                   <h2 className="text-lg font-semibold text-white-text">Menu</h2>
                 </div>
 
-                {/* Simple Menu Links */}
+                {/* Simple Menu Links - Removed Settings link */}
                 <div className="space-y-8">
                   <a href="/dashboard/settings" onClick={e => {
                   e.preventDefault();
@@ -373,8 +391,8 @@ const HomeView = ({
             <p className="text-text-secondary font-light text-gray-50">Let's get you caught up.</p>
           </div>
           
-          {/* Updated CTAs on the right */}
-          <div className="flex gap-3">
+          {/* Updated CTAs on the right with Profile Dropdown */}
+          <div className="flex gap-3 items-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
@@ -398,6 +416,38 @@ const HomeView = ({
               <Zap className="mr-2 h-4 w-4" />
               Brief Me
             </Button>
+
+            {/* Profile Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-0 h-auto">
+                  <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
+                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
+                    <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
+                      AJ
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
+                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
+                  <Zap className="mr-2 h-4 w-4" />
+                  Integrations
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Brief Configuration
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
+                  <Settings className="mr-2 h-4 w-4" />
+                  All Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -573,3 +623,5 @@ const HomeView = ({
 };
 
 export default React.memo(HomeView);
+
+}

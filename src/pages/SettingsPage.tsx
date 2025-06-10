@@ -1,4 +1,3 @@
-
 import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain, Calendar } from "lucide-react";
@@ -16,13 +15,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SettingsPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  const [activeSection, setActiveSection] = React.useState("profile");
+  
+  // Get activeSection from navigation state or default to "profile"
+  const [activeSection, setActiveSection] = React.useState(
+    location.state?.activeSection || "profile"
+  );
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -207,7 +211,6 @@ const SettingsPage = () => {
         
         <div className="glass-card rounded-3xl overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-4">
-            {/* Settings Categories Sidebar */}
             <div className="p-6 border-r border-border-subtle">
               <h2 className="text-lg font-medium text-text-primary mb-4">Categories</h2>
               <div className="space-y-1">
@@ -228,7 +231,6 @@ const SettingsPage = () => {
               </div>
             </div>
             
-            {/* Settings Content */}
             <div className="md:col-span-3 p-6">
               {renderContent()}
             </div>
