@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import HomeView from "@/components/dashboard/HomeView";
-import BriefModal from "@/components/dashboard/BriefModal";
-import FocusMode from "@/components/dashboard/FocusMode";
-import CatchMeUp from "@/components/dashboard/CatchMeUp";
+import ListeningScreen from "@/components/dashboard/ListeningScreen";
+import NewBriefModal from "@/components/dashboard/NewBriefModal";
+import TranscriptView from "@/components/dashboard/TranscriptView";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Pagination from "@/components/dashboard/Pagination";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
+import BriefMeModal from "@/components/dashboard/BriefMeModal";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -26,31 +27,28 @@ const Dashboard = () => {
   const { toast } = useToast();
   const { call } = useApi();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
-  
-  const [uiState, setUiState] = useState({
-    selectedBrief: null,
-    focusModeOpen: false,
-    focusTime: 0,
-    focusModeExitLoading: false,
-    catchMeUpOpen: false,
-    sidebarOpen: !isMobile,
-    briefModalOpen: false,
-    endFocusModalOpen: false,
-    catchUpModalOpen: false,
-    isSignoff: false,
-    SignOffModalOpen: false,
-    userStatus: "active" as UserStatus,
-    focusModeActive: false,
-    focusModeActivationLoading: false
-  });
-  const [priorities, setPriorities] = useState<Priorities | null>(null);
-  const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[] | null>(null);
+  const [currentView, setCurrentView] = useState<"home" | "listening">("home");
+  const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
+  const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
+  const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
+  const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
+  const [showEndFocusModal, setShowEndFocusModal] = useState(false);
+  const [showBriefMeModal, setShowBriefMeModal] = useState(false);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
-  const [recentBriefs, setRecentBriefs] = useState<Summary[] | null>(null);
+  const [briefSchedules, SetBriefSchedules] = useState<BriefSchedules[]>([]);
   const [upcomingBrief, setUpcomingBrief] = useState<Summary | null>(null);
-  const [pendingData, setPendingData] = useState<PendingData[] | null>(null);
+  const [focusTime, setFocusTime] = useState(0);
+  const [recentBriefs, setRecentBriefs] = useState<Summary[]>([]);
   const [totalBriefs, setTotalBriefs] = useState(0);
+  const [pendingData, setPendingData] = useState<PendingData[]>([]);
+  const [focusModeExitLoading, setFocusModeExitLoading] = useState(false);
+  const [priorities, setPriorities] = useState<Priorities>({
+    priorityPeople: [],
+    priorityChannels: [],
+    triggers: [],
+    integrations: [],
+  });
+
   const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [searchParams] = useSearchParams();
 
@@ -62,21 +60,11 @@ const Dashboard = () => {
     });
 
     if (response) {
-      setUiState((prev) => ({
-        ...prev,
-        userStatus: response?.mode === 'focus'
-          ? 'focus'
-          : response.sign_off
-          ? 'away'
-          : 'active',
-        focusModeActive: response?.mode === 'focus',
-        isSignoff: response.sign_off || false,
-        focusTime: response.focusRemainingTime,
-      }));
-
+      setUserStatus(response?.mode === 'focus' ? 'focus' : response.sign_off ? 'away' : 'active');
       setUserSchedule(response.userSchedule);
       SetBriefSchedules(response.briefSchedules);
       setUpcomingBrief(response.upComingBrief);
+      setFocusTime(response.focusRemainingTime);
       setPriorities((prev) => {
         return {
           ...prev,
@@ -114,7 +102,7 @@ const Dashboard = () => {
       [call]
     );
 
-  useEffect(() => {
+    useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
 
     if (tokenFromUrl) {
@@ -185,321 +173,127 @@ const Dashboard = () => {
           };
         }, [pendingData, getBrief]);
 
-  const handleExitFocusMode = useCallback(async () => {
-    setUiState((prev) => ({
-      ...prev,
-      focusModeExitLoading: true,
-    }));
+  const openBriefDetails = useCallback((briefId: number) => {
+    navigate(`/dashboard/briefs/${briefId}`);
+  }, [navigate]);
 
-    const response = await call("get", "/api/exit-focus-mode", {
-      showToast: true,
-      toastTitle: "Focus Mode Exit failed",
-      toastDescription: "Something went wrong. Please try again later.",
-    });
-
-    if (response) {
-      setUiState(prev => ({
-        ...prev,
-        endFocusModalOpen: true,
-        userStatus: "active" as UserStatus,
-        focusModeActive: false
-      }));
-    
-      toast({
-        title: "Focus Mode Ended",
-        description: "Slack and Gmail status set to 'online'"
-      });
-      fetchDashboardData();
-      getRecentBriefs();
-    }
-
-    setUiState((prev) => ({
-      ...prev,
-      focusModeExitLoading: false,
-    }));
-  }, [call, fetchDashboardData, getRecentBriefs, toast]);
-
-  const handleFocusModeClose = useCallback(() => {
-			setUiState((prev) => ({
-				...prev,
-				focusModeOpen: false,
-			}));
-		}, []);
-
-  const handleOpenBrief = useCallback((briefId: number) => {
-    setUiState(prev => ({
-      ...prev,
-      selectedBrief: briefId,
-      briefModalOpen: true
-    }));
-  }, []);
+  const openTranscript = useCallback((briefId: number) => {
+    setSelectedBriefId(briefId);
+    setIsTranscriptOpen(true);
+  }, [setSelectedBriefId, setIsTranscriptOpen]);
+  
+  const closeTranscript = useCallback(() => {
+    setIsTranscriptOpen(false);
+    setSelectedBriefId(null);
+  }, [setIsTranscriptOpen, setSelectedBriefId]);
 
   const handleToggleFocusMode = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      focusModeOpen: !prev.focusModeOpen
-    }));
+    setUserStatus(prevStatus => prevStatus === "focus" ? "active" : "focus");
+    toast({
+      title: "Focus Mode",
+      description: userStatus === "active" ? "Entering focus mode" : "Exiting focus mode"
+    });
+  }, [toast, userStatus]);
+
+  const handleExitFocusMode = useCallback(() => {
+    setShowEndFocusModal(true);
   }, []);
+
+  const handleConfirmExitFocus = useCallback(() => {
+    setUserStatus("active");
+    setShowEndFocusModal(false);
+    toast({
+      title: "Focus Mode",
+      description: "Exiting focus mode"
+    });
+  }, [toast]);
 
   const handleToggleCatchMeUp = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      catchMeUpOpen: !prev.catchMeUpOpen
-    }));
+    setShowBriefMeModal(true);
   }, []);
-
-  const handleToggleSidebar = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      sidebarOpen: !prev.sidebarOpen
-    }));
-  }, []);
-
-  const handleCloseFocusMode = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      focusModeOpen: false
-    }));
-  }, []);
-
-  // Handler for when focus mode is started
-  const handleStartFocusMode = useCallback(
-    async (
-      focusTime: number,
-      options: {
-        updateStatus?: boolean;
-        closeApps?: boolean;
-        monitorNotifications?: boolean;
-        enableDnd?: boolean;
-      } = {}
-    ) => {
-      setUiState((prev) => ({
-        ...prev,
-        focusModeActivationLoading: true,
-      }))
-
-      const response = await call("post", "/api/focus-mode", {
-        body: { ...options, focusDuration: focusTime },
-        showToast: true,
-        toastTitle: "Focus Mode Activation Failed",
-        toastDescription:
-          "Focus mode activation failed. please try again sometime later.",
-        toastVariant: "destructive",
-        returnOnFailure: false,
-      });
-      if (response) {
-        setUiState((prev) => ({
-          ...prev,
-          focusModeOpen: false,
-          focusTime: focusTime * 60,
-          userStatus: "focus" as UserStatus,
-          focusModeActive: true,
-          focusModeActivationLoading: false
-        }));
-
-        toast({
-          title: "Focus Mode Started",
-          description:
-            "Slack status set to 'focusing', Gmail status set to 'monitoring'",
-        });
-      }
-    },
-    [toast, call]
-  );
-
-  // const handleExitFocusMode = useCallback(() => {
-  //   setUiState(prev => ({
-  //     ...prev,
-  //     endFocusModalOpen: true,
-  //     userStatus: "active" as UserStatus,
-  //     focusModeActive: false
-  //   }));
-    
-  //   toast({
-  //     title: "Focus Mode Ended",
-  //     description: "Slack and Gmail status set to 'online'"
-  //   });
-  // }, [toast]);
-
+  
+  const openBriefModal = useCallback(() => {
+    setIsBriefModalOpen(true);
+  }, [setIsBriefModalOpen]);
+  
+  const closeBriefModal = useCallback(() => {
+    setIsBriefModalOpen(false);
+  }, [setIsBriefModalOpen]);
+  
+  const handleStartFocusMode = useCallback(() => {
+    setUserStatus("focus");
+    toast({
+      title: "Focus Mode",
+      description: "Starting focus mode"
+    });
+  }, [toast]);
+  
   const handleSignOffForDay = useCallback(() => {
-    const response = call("post", "/api/sign-off", {
-      showToast: true,
-      toastTitle: "Sign Off Failed",
-      toastDescription:
-        "Sign off failed. please try again sometime later.",
-      toastVariant: "destructive"
-    })
-
-    if (!response) {
-      return;
-    }
-    fetchDashboardData();
-
-    setUiState(prev => ({
-      ...prev,
-      SignOffModalOpen: false
-    }));
-    
+    setUserStatus("vacation");
     toast({
-      title: "Signed Off",
-      description: "We'll monitor your channels until your next auto-scheduled brief"
-    });
-  }, [toast, call, fetchDashboardData]);
-
-  const handleCloseEndFocusModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      endFocusModalOpen: false
-    }));
-    
-    toast({
-      title: "Focus Brief Ready",
-      description: "Your brief has been created and emailed to you"
+      title: "Signing Off",
+      description: "Signing off for the day"
     });
   }, [toast]);
 
-  const handleCloseCatchMeUp = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      catchMeUpOpen: false
-    }));
-    getRecentBriefs();
-  }, [getRecentBriefs]);
-
-  const handleGenerateCatchMeUpSummary = useCallback((timeDescription: string) => {
-    setUiState(prev => ({
-      ...prev,
-      catchMeUpOpen: false,
-      catchUpModalOpen: true
-    }));
+  const handleGenerateBrief = useCallback(() => {
+    // This would typically trigger the creation of a new brief
+    console.log("Generating new brief...");
   }, []);
-
-  const handleCloseCatchUpModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      catchUpModalOpen: false
-    }));
-    
-    toast({
-      title: "Catch Me Up Summary Ready",
-      description: "Your summary has been created and emailed to you"
-    });
-    
-    // navigate("/dashboard/catch-up");
-  }, [toast]);
-
-  const handleCloseBriefModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      briefModalOpen: false
-    }));
-  }, []);
-
-  const handleOpenBriefModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      briefModalOpen: true
-    }));
-  }, []);
-
-  const handleOpenSignOffModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      SignOffModalOpen: true
-    }));
-  }, []);
-
-
-  const handleCloseSignOffModal = useCallback(() => {
-    setUiState(prev => ({
-      ...prev,
-      SignOffModalOpen: false
-    }));
-  }, []);
-
-  // Memoized props to prevent unnecessary re-renders
-  const layoutProps = useMemo(() => ({
-    currentPage: "home", 
-    sidebarOpen: uiState.sidebarOpen, 
-    onToggleSidebar: handleToggleSidebar
-  }), [uiState.sidebarOpen, handleToggleSidebar]);
-
-  const endFocusModalProps = useMemo(() => ({
-    open: uiState.endFocusModalOpen,
-    onClose: handleCloseEndFocusModal,
-    title: "Creating Your Brief",
-    description: "We're preparing a summary of all updates during your focus session"
-  }), [uiState.endFocusModalOpen, handleCloseEndFocusModal]);
-
-  const catchUpModalProps = useMemo(() => ({
-    open: uiState.catchUpModalOpen,
-    onClose: handleCloseCatchUpModal,
-    title: "Creating Your Summary",
-    description: "We're preparing a summary of what you've missed",
-    timeRemaining: 60
-  }), [uiState.catchUpModalOpen, handleCloseCatchUpModal]);
 
   return (
-    <DashboardLayout {...layoutProps}>
-      {/* Focus Mode Timer - only show when focus mode is active */}
-      {(uiState.focusModeActive || uiState.userStatus === "away") && (
+    <div className="min-h-screen flex flex-col">
+      {/* Focus Mode Timer Header */}
+      {userStatus === "focus" && (
         <StatusTimer 
-          status={uiState.userStatus}
-          onExitFocusMode={handleExitFocusMode}
-          focusTime={uiState.focusTime}
+          status={userStatus}
+          focusTime={focusTime}
           briefSchedules={briefSchedules}
           userSchedule={userSchedule}
-          focusModeExitLoading={uiState.focusModeExitLoading}
+          focusModeExitLoading={focusModeExitLoading}
+          onExitFocusMode={handleExitFocusMode}
         />
       )}
-      
-      {/* Add extra top padding here */}
-      <div className="pt-16">
-        <HomeView 
-          onOpenBrief={handleOpenBrief}
-          onToggleFocusMode={handleToggleFocusMode}
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onOpenBriefModal={handleOpenBriefModal}
-          priorities={priorities}
-          totalBriefs={totalBriefs}
-          upcomingBrief={upcomingBrief}
-          recentBriefs={recentBriefs}
-          status={uiState.userStatus}
-          onExitFocusMode={handleExitFocusMode}
-          focusModeExitLoading={uiState.focusModeExitLoading}
-          onToggleSignOff={handleOpenSignOffModal}
-          onStartFocusMode={handleStartFocusMode}
-          fetchDashboardData={fetchDashboardData}
-        />
+
+      {/* Main Content */}
+      <div className="flex-1">
+        {currentView === "home" && (
+          <HomeView
+            status={userStatus}
+            priorities={priorities}
+            recentBriefs={recentBriefs}
+            totalBriefs={totalBriefs}
+            upcomingBrief={upcomingBrief}
+            onOpenBrief={openBriefDetails}
+            onViewTranscript={openTranscript}
+            onStartFocusMode={handleStartFocusMode}
+            onToggleFocusMode={handleToggleFocusMode}
+            onToggleCatchMeUp={handleToggleCatchMeUp}
+            onOpenBriefModal={openBriefModal}
+            onExitFocusMode={handleExitFocusMode}
+            onSignOffForDay={handleSignOffForDay}
+            fetchDashboardData={fetchDashboardData}
+          />
+        )}
+        {currentView === "listening" && <ListeningScreen />}
       </div>
-      
+
       {/* Modals */}
-      <FocusMode 
-        open={uiState.focusModeOpen}
-        loading={uiState.focusModeActivationLoading}
-        SaveChangesAndClose={handleStartFocusMode}
-        onClose={handleFocusModeClose}
+      <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
+      <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} />
+      <EndFocusModal 
+        open={showEndFocusModal} 
+        onClose={handleConfirmExitFocus}
+        title="Creating Your Brief"
+        description="We're preparing a summary of all updates during your focus session"
       />
-      <SignOff 
-        open={uiState.SignOffModalOpen}
-        onConfirmSignOut={handleSignOffForDay}
-        onClose={handleCloseSignOffModal}
+      <BriefMeModal
+        open={showBriefMeModal}
+        onClose={() => setShowBriefMeModal(false)}
+        onGenerateBrief={handleGenerateBrief}
       />
-      <CatchMeUp 
-        open={uiState.catchMeUpOpen}
-        onClose={handleCloseCatchMeUp}
-        onGenerateSummary={handleGenerateCatchMeUpSummary}
-      />
-      <BriefModal 
-        open={uiState.briefModalOpen}
-        briefId={uiState.selectedBrief}
-        onClose={handleCloseBriefModal}
-        getRecentBriefs={getRecentBriefs}
-      />
-      <EndFocusModal {...endFocusModalProps} />
-      <EndFocusModal {...catchUpModalProps} />
-    </DashboardLayout>
+    </div>
   );
 };
 
-export default React.memo(Dashboard);
+export default Dashboard;

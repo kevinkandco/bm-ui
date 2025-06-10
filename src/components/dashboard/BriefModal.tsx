@@ -1,601 +1,229 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  Mail,
-  MessageSquare,
-  CheckSquare,
-  Clock,
-  ArrowUp,
-  ArrowDown,
-  Play,
-  Pause,
-  Bookmark,
-  BookmarkPlus,
-  X,SkipForward, SkipBack, Volume2, Download, Share, ThumbsUp, ThumbsDown
-} from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import Audio from "./Audio";
-import useAudioPlayer from "@/hooks/useAudioPlayer";
-import { Summary } from "./types";
-import ViewTranscript from "./ViewTranscript";
-import { capitalizeFirstLetter } from "@/lib/utils";
-import BriefLoadingSkeleton from "./BriefLoadingSkeleton";
-import { useBriefStore } from "@/store/useBriefStore";
-import { useApi } from "@/hooks/useApi";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/hooks/use-toast";
-import BriefModalSkeleton from "./BriefModalSkeleton";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import ActionItemFeedback from "./ActionItemFeedback";
-import AddMissingContent from "./AddMissingContent";
-import { useFeedbackTracking } from "./useFeedbackTracking";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Mail, MessageSquare, Plus, Check } from "lucide-react";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;
-  briefId: number;
-  getRecentBriefs?: () => void;
 }
 
-const BriefModal = ({ open, onClose, briefId, getRecentBriefs=() => {} }: BriefModalProps) => {
-  const [showTranscript, setShowTranscript] = useState(false);
-  const [showMessageTranscript, setMessageTranscript] = useState({
-    open: false,
-    message: "",
-  });
-  const [briefData, setBriefData] = useState<Summary | null>(null);
-  const [currentSection, setCurrentSection] = useState(0);
-  const [feedbackState, setFeedbackState] = useState<'none' | 'up' | 'down'>('none');
-  const [showCommentInput, setShowCommentInput] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [comment, setComment] = useState("");
-  const [showTooltip, setShowTooltip] = useState(false);
-  const { getUnreadCount } = useBriefStore();
-  const { handleSummaryFeedback, handleActionRelevance, handleAddMissingContent } = useFeedbackTracking(getRecentBriefs);
-  const { call } = useApi();
+interface SlackMessage {
+  id: string;
+  type: 'slack';
+  sender: string;
+  channel: string;
+  preview: string;
+  time: string;
+}
+
+interface EmailMessage {
+  id: string;
+  type: 'email';
+  sender: string;
+  subject: string;
+  preview: string;
+  time: string;
+}
+
+type Message = SlackMessage | EmailMessage;
+
+const BriefModal = ({ open, onClose }: BriefModalProps) => {
   const { toast } = useToast();
-  const {
-    audioRef,
-    isPlaying,
-    currentTime,
-    duration,
-    handlePlayPause,
-    formatDuration,
-    barRef,
-    handlePause,
-    handleSeekStart,
-    handleSeekEnd,
-    handleSeekMove,
-  } = useAudioPlayer(
-    briefData?.audioPath ? BaseURL + briefData?.audioPath : null,
-    false
-  );
+  const [markedImportant, setMarkedImportant] = useState(new Set<string>());
+  const [hoveredMessage, setHoveredMessage] = useState<string | null>(null);
 
-  const getBriefData = useCallback(async (): Promise<void> => {
-    setLoading(true);
-
-    const response = await call("get", `/api/summary/${briefId}/show`, {
-      showToast: true,
-      toastTitle: "Failed to fetch brief",
-      toastDescription: "Could not retrieve brief data.",
-      returnOnFailure: false,
+  const handleMarkImportant = useCallback((messageId: string) => {
+    setMarkedImportant(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
+      }
+      return newSet;
     });
+  }, []);
 
-    if (response) {
-      setBriefData(response?.data);
-      getUnreadCount();
-      setFeedbackState(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : "none");
-    }
-
-    setLoading(false);
-  }, [call, briefId, getUnreadCount]);
-
-  useEffect(() => {
-    if (briefId) {
-      getBriefData();
-    }
-
-    return () => {
-      setShowTranscript(false);
-      setMessageTranscript({
-        open: false,
-        message: '',
-      });
-
-      setBriefData(null);
-    };
-  }, [briefId, getBriefData]);
-
-  // Sample data matching the image
-
-  const sections = useMemo(() => briefData?.sections || [], [briefData?.sections]);
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
-
-  // useEffect(() => {
-  //   let interval: NodeJS.Timeout;
-  //   if (isPlaying) {
-  //     interval = setInterval(() => {
-  //       setCurrentTime(prev => {
-  //         if (prev >= duration) {
-  //           setIsPlaying(false);
-  //           return duration;
-  //         }
-  //         return prev + 1;
-  //       });
-  //     }, 1000);
-  //   }
-  //   return () => clearInterval(interval);
-  // }, [isPlaying, duration]);
-
-  const handleClose = () => {
-    setShowTranscript(false);
-    setMessageTranscript({
-      open: false,
-      message: '',
+  const handleSubmit = () => {
+    toast({
+      title: "Brief Submitted",
+      description: "Your brief has been submitted for processing.",
     });
-    handlePause();
     onClose();
   };
 
-  const handleTranscriptClose = () => {
-    setShowTranscript(false);
-    setMessageTranscript({
-      open: false,
-      message: '',
-    });
-  };
+  const messages: Message[] = [
+    {
+      id: "1",
+      type: 'slack',
+      sender: "John Doe",
+      channel: "#general",
+      preview: "Hey, did you see the latest update on the project?",
+      time: "9:00 AM",
+    },
+    {
+      id: "2",
+      type: 'email',
+      sender: "Jane Smith",
+      subject: "Project Update",
+      preview: "Attached is the latest project report for your review.",
+      time: "10:30 AM",
+    },
+    {
+      id: "3",
+      type: 'slack',
+      sender: "Peter Jones",
+      channel: "#random",
+      preview: "Anyone up for a coffee break?",
+      time: "11:15 AM",
+    },
+  ];
 
-  const handleTranscriptOpen = () => {
-    setShowTranscript(true);
-  };
-
-  const handleMessageTranscriptOpen = (message: string) => {
-    setMessageTranscript({
-      open: true,
-      message,
-    });
-  };
-
-  const handlePlayStopBrief = useCallback(
-      () => {
-        if (!briefData?.audioPath) {
-          toast({
-            title: "Audio not found",
-            description: `Audio not found, please try again`,
-            variant: "destructive",
-          })
-          return;
-        }
-        handlePlayPause();
-      },
-      [toast, handlePlayPause, briefData?.audioPath]
-    );
-
-    const timeRange =
-    briefData?.start_at && briefData?.ended_at
-      ? `${briefData?.start_at} - ${briefData?.ended_at} Updates`
-      : "";
-
-  useEffect(() => {
-    // Update current section based on timestamp
-    const currentSectionIndex = sections.findIndex((section, index) => {
-      const nextSection = sections[index + 1];
-      return currentTime >= section.timestamp && (!nextSection || currentTime < nextSection.timestamp);
-    });
-    if (currentSectionIndex !== -1) {
-      setCurrentSection(currentSectionIndex);
-    }
-  }, [currentTime, sections]);
-
-  useEffect(() => {
-    // Hide tooltip after 3 seconds or 3 interactions
-    if (showTooltip) {
-      const timer = setTimeout(() => setShowTooltip(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showTooltip]);
-
-  // const togglePlayback = () => setIsPlaying(!isPlaying);
-
-  const skipToSection = (sectionIndex: number) => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime = sections[sectionIndex].timestamp;
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const handleFeedback = async (type: 'up' | 'down') => {
-    if (feedbackState !== 'none') return;
-    
-    setFeedbackState(type);
-    
-    if (type === 'up') {
-      await handleSummaryFeedback(briefData.id, 'up');
-    } else {
-      setShowCommentInput(true);
-    }
-  };
-
-  const handleCommentSubmit = async () => {
-    if (comment.trim()) {
-      await handleSummaryFeedback(briefData.id, 'down', comment.trim());
-      setComment("");
-    } else {
-      await handleSummaryFeedback(briefData.id, 'down');
-    }
-    setShowCommentInput(false);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleCommentSubmit();
-    }
-  };
-
-  const handleActionItemRelevance = async (itemId: string, relevant: boolean) => {
-    await handleActionRelevance(briefData.id, itemId, relevant);
-  };
-
-  const handleAddMissing = async (content: string) => {
-    await handleAddMissingContent(briefData.id, content);
-  };
-
-  const handleDownload = async () => {
-  const downloadUrl = `${BaseURL}/api/summary/${briefData.id}/download-audio`;
-
-  try {
-    const response = await fetch(downloadUrl, {
-      method: "GET",
-      headers: {
-        "authorization": `Bearer ${localStorage.getItem("token")}`,
-      }
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Error response from server:", errorText.slice(0, 200));
-      toast({
-        title: "Download failed",
-        description: "Download failed: file not found or server error",
-        variant: "destructive",
-      })
-      return;
-    }
-
-    const contentType = response.headers.get("Content-Type");
-    if (!contentType?.startsWith("audio/")) {
-      const text = await response.text();
-      console.error("Expected audio, got:", text.slice(0, 200));
-      toast({
-        title: "Download failed",
-        description: "Download failed: invalid file type received",
-        variant: "destructive",
-      })
-      return;
-    }
-
-    // If all checks pass, download the file
-    const blob = await response.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.setAttribute("download", "audio.mp3");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(blobUrl);
-  } catch (error) {
-    console.error("Download failed due to error:", error);
-    alert("Download failed. Check your internet connection or try again.");
-  }
-};
-
+  const renderMessageItem = (message: Message) => (
+    <div key={message.id} className="group relative flex items-start gap-3 p-3 bg-surface-overlay/20 rounded-lg hover:bg-surface-overlay/30 transition-colors">
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center">
+        {message.type === 'slack' ? (
+          <MessageSquare className="h-4 w-4 text-accent-primary" />
+        ) : (
+          <Mail className="h-4 w-4 text-accent-primary" />
+        )}
+      </div>
+      
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="font-medium text-text-primary text-sm">{message.sender}</span>
+              <span className="text-xs text-text-secondary">
+                {message.type === 'slack' ? (message as SlackMessage).channel : (message as EmailMessage).subject}
+              </span>
+            </div>
+            <p className="text-sm text-text-secondary line-clamp-2 mb-1">
+              {message.preview}
+            </p>
+            <span className="text-xs text-text-tertiary">{message.time}</span>
+          </div>
+          
+          <div className="relative flex items-center">
+            <div 
+              className={`transition-all duration-300 ease-out ${
+                hoveredMessage === message.id 
+                  ? 'opacity-100 translate-x-0' 
+                  : 'opacity-0 translate-x-2 pointer-events-none'
+              }`}
+            >
+              <span className="text-xs text-text-secondary whitespace-nowrap mr-2">
+                Include
+              </span>
+            </div>
+            
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => handleMarkImportant(message.id)}
+              onMouseEnter={() => setHoveredMessage(message.id)}
+              onMouseLeave={() => setHoveredMessage(null)}
+              className={`h-7 w-7 transition-all duration-200 ${
+                markedImportant.has(message.id)
+                  ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30'
+                  : 'hover:bg-surface-overlay/50 text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              {markedImportant.has(message.id) ? (
+                <Check className="h-3.5 w-3.5" />
+              ) : (
+                <Plus className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] p-0 bg-[#1a1f23] border-[#2a3038] text-white overflow-hidden">
-        <ScrollArea className="max-h-[90vh]">
-          {briefData ? (<div className="p-6">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-semibold text-white">{briefData?.title}</h2>
-                  <div className="text-sm text-primary-teal mt-4">{briefData?.duration} summarized in {formatDuration(duration)}</div>
-                </div>
-                <div className="text-sm text-gray-400 mb-3">{timeRange}</div>
-                {briefData?.status === "failed" && <p className="text-red-500 text-sm md:text-base mb-3">
-                  Failed to Generate Summary: {briefData?.error ? briefData?.error : 'Something went wrong'}
-                </p>}
-                <p className="text-gray-300 mb-4">{briefData?.description}</p>
-                
-                {/* Feedback Controls */}
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleFeedback('up')}
-                      disabled={feedbackState !== 'none'}
-                      className={`h-8 w-8 p-0 transition-all ${
-                        feedbackState === 'up' 
-                          ? 'bg-green-500/20 text-green-400' 
-                          : 'text-gray-400 hover:text-green-400'
-                      }`}
-                    >
-                      <ThumbsUp className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleFeedback('down')}
-                      disabled={feedbackState !== 'none'}
-                      className={`h-8 w-8 p-0 transition-all ${
-                        feedbackState === 'down' 
-                          ? 'bg-red-500/20 text-red-400' 
-                          : 'text-gray-400 hover:text-red-400'
-                      }`}
-                    >
-                      <ThumbsDown className="h-4 w-4" />
-                    </Button>
-                  </div>
+    <Sheet open={open} onOpenChange={onClose}>
+      {/* SheetTrigger can be added here if needed */}
+      <SheetContent className="sm:max-w-[480px]">
+        <SheetHeader>
+          <SheetTitle>Create New Brief</SheetTitle>
+          <SheetDescription>
+            Select the messages you want to include in your brief.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="grid gap-4 py-4">
+          <div className="relative">
+            <Input
+              id="search"
+              placeholder="Search messages..."
+              className="pr-12"
+            />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full"
+            >
+              {/* Search Icon */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-search h-4 w-4 text-muted-foreground"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </Button>
+          </div>
 
-                  {/* Feedback Badge */}
-                  {feedbackState === 'up' && (
-                    <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-400 border-green-500/40">
-                      Rated 👍
-                    </Badge>
-                  )}
-                  {feedbackState === 'down' && !showCommentInput && (
-                    <Badge variant="secondary" className="text-xs bg-red-500/20 text-red-400 border-red-500/40">
-                      Rated 👎
-                    </Badge>
-                  )}
-                </div>
+          <div className="grid gap-2">
+            <Label htmlFor="name">Brief Name</Label>
+            <Input id="name" placeholder="Brief Name" />
+          </div>
 
-                {/* Comment Input for downvote */}
-                {showCommentInput && (
-                  <div className="mt-3 animate-fade-in">
-                    <Input
-                      placeholder="What did we miss?"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      onBlur={handleCommentSubmit}
-                      className="bg-[#1a1f23] border-gray-600 text-white placeholder-gray-400"
-                      autoFocus
-                    />
-                  </div>
-                )}
-              </div>
+          <div className="border-y border-border-subtle py-2">
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-medium text-text-primary">
+                Recent Messages
+              </h4>
+              <Button variant="link" size="sm">
+                View All
+              </Button>
             </div>
+          </div>
 
-            {/* Stats Cards - Smaller */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              <div className="bg-[#2a3038] rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1">Messages Analyzed</div>
-                <div className="text-lg font-bold text-white">{briefData?.messagesCount}</div>
-                <div className="text-xs text-gray-500">Emails, Threads, Messages</div>
-              </div>
-              <div className="bg-[#2a3038] rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1">Estimated Time Saved</div>
-                <div className="text-lg font-bold text-white">{briefData?.savedTime} Minutes</div>
-                <div className="text-xs text-gray-500">T M S</div>
-              </div>
-              <div className="bg-[#2a3038] rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1">Tasks Found</div>
-                <div className="text-lg font-bold text-white">{briefData?.taskCount}</div>
-                <div className="text-xs text-gray-500">Detected and Saved</div>
-              </div>
+          <ScrollArea className="h-[300px]">
+            <div className="pb-2">
+              {messages.map(renderMessageItem)}
             </div>
-
-            {/* Audio Player - Restored Design */}
-            <div className="bg-[#1a1f23] rounded-lg p-6 mb-6 border border-[#2a3038]">
-              {/* Waveform Visualization */}
-              <div
-              ref={barRef}
-                onMouseDown={handleSeekStart}
-                onMouseMove={handleSeekMove}
-                onMouseUp={handleSeekEnd}
-                onTouchStart={handleSeekStart}
-                onTouchMove={handleSeekMove}
-                onTouchEnd={handleSeekEnd}
-
-              className="relative mb-6 h-16 bg-gradient-to-r from-transparent via-primary-teal/20 to-transparent rounded-lg flex items-center justify-center overflow-hidden">
-                {/* Simple waveform representation */}
-                <div className="flex items-center gap-1 h-full w-full">
-                  {Array.from({ length: 100 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`flex-1 bg-gradient-to-t ${
-                        i < (progress / 100) * 100 
-                          ? 'from-primary-teal to-primary-teal/50' 
-                          : 'from-gray-600 to-gray-700'
-                      }`}
-                      style={{
-                        height: `${Math.random() * 40 + 20}%`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <Audio
-                  audioSrc={
-                    briefData?.audioPath ? BaseURL + briefData?.audioPath : null
-                  }
-                  audioRef={audioRef}
-                />
-                
-                {/* Section markers */}
-                {sections.map((section, index) => (
-                  <div
-                    key={index}
-                    className="absolute top-0 bottom-0 w-0.5 bg-yellow-500"
-                    style={{ left: `${(section.timestamp / duration) * 100}%` }}
-                  >
-                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    </div>
-                  </div>
-                ))}
-                
-                {/* Current position marker */}
-                <div
-                  className="absolute top-0 bottom-0 w-0.5 bg-white"
-                  style={{ left: `${progress}%` }}
-                />
-              </div>
-
-              {/* Section Labels */}
-              <div className="flex justify-between items-center mb-4 text-sm">
-                <div className="text-gray-400">{formatDuration(currentTime)}</div>
-                {sections.map((section, index) => (
-                  <div key={index} className="flex flex-col items-center">
-                    <div className={`text-xs ${currentSection === index ? 'text-primary-teal' : 'text-gray-400'}`}>
-                      {section.title}
-                    </div>
-                  </div>
-                ))}
-                <div className="text-gray-400">{formatDuration(duration)}</div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                  <SkipBack className="h-4 w-4" />
-                </Button>
-                <Button onClick={handlePlayStopBrief} size="icon" className="bg-primary-teal hover:bg-primary-teal/80 text-white w-12 h-12">
-                  {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                </Button>
-                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                  <SkipForward className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Section Navigation */}
-              <div className="space-y-2 mb-4">
-                {sections.map((section, index) => (
-                  <button
-                    key={index}
-                    onClick={() => skipToSection(index)}
-                    className={`w-full text-left p-2 rounded transition-colors ${
-                      currentSection === index 
-                        ? 'bg-primary-teal/20 text-primary-teal' 
-                        : 'hover:bg-gray-700 text-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">{section.title}</span>
-                      <span className="text-xs text-gray-400">{formatTime(section.timestamp)}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download
-                </Button>
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
-                  <Share className="mr-2 h-4 w-4" />
-                  Share
-                </Button>
-                <Button onClick={handleTranscriptOpen} variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
-                  View Transcript
-                </Button>
-              </div>
-            </div>
-
-            {/* Recent Messages Table */}
-            {(briefData && briefData.messages && briefData.messages.length > 0) && <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Recent Messages</h3>
-              <div className="bg-[#2a3038] rounded-lg overflow-hidden">
-                <div className="grid grid-cols-6 gap-4 p-3 bg-[#1a1f23] text-sm text-gray-400">
-                  <div>Platform</div>
-                  <div>Message</div>
-                  <div>Sender</div>
-                  <div>Time</div>
-                  <div>Priority</div>
-                  <div>Action</div>
-                </div>
-                {briefData?.messages.map((message, index) => (
-                  <div key={index} className="grid grid-cols-6 gap-4 p-3 border-t border-gray-700 text-sm">
-                    <div className="text-white font-mono break-all">{message.platform}</div>
-                    <div className="text-white break-all">{message.title}</div>
-                    <div className="text-gray-300 break-all">{message.sender}</div>
-                    <div className="text-gray-400 break-all">{message.time}</div>
-                    <div>
-                      <Badge 
-                        variant={capitalizeFirstLetter(message.priority) === 'High' ? 'destructive' : capitalizeFirstLetter(message.priority) === 'Medium' ? 'default' : 'secondary'}
-                        className="text-xs"
-                      >
-                        {capitalizeFirstLetter(message.priority)}
-                      </Badge>
-                    </div>
-                    <div>
-                      <Button onClick={() => handleMessageTranscriptOpen(message?.message)} variant="ghost" size="sm" className="text-primary-teal hover:text-primary-teal/80 text-xs">
-                        View Transcript
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>}
-
-            {/* Action Items */}
-            {/* <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Action Items</h3>
-              <div className="space-y-3">
-                {briefData.actionItems.map((item) => (
-                  <div key={item.id} className="group flex items-start gap-3 p-3 rounded-lg bg-[#2a3038]">
-                    <div className="w-2 h-2 bg-primary-teal rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white">{item.text}</p>
-                      <Badge 
-                        variant={item.priority === 'high' ? 'destructive' : item.priority === 'medium' ? 'default' : 'secondary'}
-                        className="mt-1"
-                      >
-                        {item.priority} priority
-                      </Badge>
-                    </div>
-                    <ActionItemFeedback 
-                      itemId={item.id}
-                      onRelevanceFeedback={handleActionItemRelevance}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div> */}
-
-            {/* Add Missing Content */}
-            {/* <AddMissingContent onAddContent={handleAddMissing} /> */}
-          </div>) : <BriefModalSkeleton />}
-        </ScrollArea>
-      </DialogContent>
-      <ViewTranscript
-        open={showTranscript || showMessageTranscript?.open}
-        summary={
-          showTranscript
-            ? briefData?.summary
-            : showMessageTranscript.message
-        }
-        onClose={handleTranscriptClose}
-      />
-    </Dialog>
+          </ScrollArea>
+        </div>
+        <SheetFooter>
+          <Button type="submit" onClick={handleSubmit}>
+            Submit Brief
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 };
 

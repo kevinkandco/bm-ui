@@ -89,6 +89,15 @@ const EndFocusModal = ({
                 />
               </div>
             </div>
+            
+            <Button 
+              onClick={onClose}
+              variant="outline"
+              size="sm"
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-full mt-4"
+            >
+              Stop
+            </Button>
           </div>
         </div>
       </DialogContent>

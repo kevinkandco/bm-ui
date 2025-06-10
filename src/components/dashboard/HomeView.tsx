@@ -36,33 +36,34 @@ const BaseURL = import.meta.env.VITE_API_HOST;
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 
 interface HomeViewProps {
-  onOpenBrief: (briefId: number) => void;
-  onToggleFocusMode: () => void;
-  onToggleCatchMeUp: () => void;
-  onOpenBriefModal: () => void;
+  status: "active" | "away" | "focus" | "vacation";
   priorities: Priorities | null;
   recentBriefs: Summary[];
   totalBriefs: number;
   upcomingBrief: Summary | null;
-  status: "active" | "away" | "focus" | "vacation";
-  onExitFocusMode: () => void;
-  focusModeExitLoading: boolean;
-  onToggleSignOff: () => void;
+  onOpenBrief: (briefId: number) => void;
+  onViewTranscript: (briefId: number) => void;
   onStartFocusMode: (focusTime: number) => void;
+  onToggleFocusMode: () => void;
+  onToggleCatchMeUp: () => void;
+  onOpenBriefModal: () => void;
+  onExitFocusMode: () => void;
+  onSignOffForDay: () => void;
   fetchDashboardData: () => void;
 }
 const HomeView = ({
-  recentBriefs,
-  onOpenBrief,
-  priorities,
   status,
+  priorities,
+  recentBriefs,
   totalBriefs,
   upcomingBrief,
+  onOpenBrief,
+  onViewTranscript,
+  onStartFocusMode,
   onToggleFocusMode,
   onToggleCatchMeUp,
   onOpenBriefModal,
-  onStartFocusMode,
-  onToggleSignOff,
+  onSignOffForDay,
   fetchDashboardData,
 }: HomeViewProps) => {
   const { toast } = useToast();
@@ -114,6 +115,13 @@ const HomeView = ({
   const [showSchedulingModal, setShowSchedulingModal] = useState(false);
   const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
 
+  // Sample connected integrations
+  const connectedIntegrations = [
+    { name: "Slack", channels: 12 },
+    { name: "Gmail", emails: 5 },
+    { name: "Google Calendar", events: 3 }
+  ];
+
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
@@ -126,19 +134,10 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  const handleViewTranscript = useCallback(
-    (message: string, briefId: number) => {
-      setMessageTranscript({
-        open: true,
-        message,
-      });
-      toast({
-        title: "Transcript",
-        description: `Opening transcript for brief ${briefId}`,
-      });
-      },
-    [toast]
-  );
+  const handleViewTranscript = useCallback((briefId: number) => {
+    onViewTranscript(briefId);
+  }, [onViewTranscript]);
+
 
   const handleGetBriefedNow = useCallback(() => {
     setShowSchedulingModal(true);
@@ -284,7 +283,7 @@ const HomeView = ({
         </div>
 
         {/* Mobile Welcome Section - Compact with reduced spacing */}
-        <div className="text-center flex-shrink-0 mt-4 mb-2">
+        <div className="text-center flex-shrink-0 mt-4 mb-1">
           <h1 className="text-xl font-semibold text-white-text mb-0">
             Good morning, {user?.name}
           </h1>
@@ -293,17 +292,42 @@ const HomeView = ({
           </p>
         </div>
 
-        {/* Central Animated "Brief Me" Button - Reduced spacing */}
-        <div className="flex-1 flex flex-col items-center justify-center my-0 mx-0 px-0 py-[8px]">
-          <div className="relative">
-            <ListeningScreen
-              isListening={true}
-              title="brief-me is monitoring"
-            />
+        {/* Central Audio Wave - Full Width with reduced padding */}
+        <div className="flex-1 flex flex-col items-center justify-center mx-0 px-0 py-2">
+          <div className="w-full px-8">
+            <div className="w-full h-12 flex items-center justify-center gap-1">
+              {/* Audio Wave Bars */}
+              {Array.from({ length: 20 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-primary-teal rounded-full transition-all duration-300"
+                  style={{
+                    width: '3px',
+                    height: `${15 + Math.sin((Date.now() / 500) + i * 0.5) * 10}px`,
+                    animation: `audioWave 1.5s ease-in-out infinite`,
+                    animationDelay: `${i * 0.1}s`
+                  }}
+                />
+              ))}
+            </div>
+            <div className="text-center mt-3">
+              <p className="text-white text-sm mb-2">brief-me is monitoring</p>
+              <div className="flex flex-wrap justify-center gap-2 text-xs text-light-gray-text">
+                {connectedIntegrations.map((integration, index) => (
+                  <span key={integration.name} className="flex items-center">
+                    <span>{integration.name}</span>
+                    {integration.channels && <span className="ml-1">({integration.channels} channels)</span>}
+                    {integration.emails && <span className="ml-1">({integration.emails} emails)</span>}
+                    {integration.events && <span className="ml-1">({integration.events} events)</span>}
+                    {index < connectedIntegrations.length - 1 && <span className="mx-1">•</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Action Buttons - Above Recent Briefs */}
+        {/* Action Buttons - Updated to separate status buttons */}
         <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0 my-[6px] py-[3px]">
           <button
             onClick={onOpenBriefModal}
@@ -315,40 +339,19 @@ const HomeView = ({
             <FileText className="w-4 h-4 text-light-gray-text" />
           </button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
-                           flex items-center justify-center transition-all duration-200
-                           hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                           active:scale-95"
-              >
-                <ChevronDown className="w-4 h-4 text-light-gray-text" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-deep-blue border-light-gray-text/20">
-              <DropdownMenuItem
-                disabled={status === "focus" || status === "away"}
-                className="text-white-text hover:bg-light-gray-text/10 p-0"
-              >
-                 <div className="flex items-center pl-2 py-1.5" onClick={() => onStartFocusMode(30)}>
-                    <Headphones className="mr-2 h-4 w-4" />
-                    Start Focus Mode
-                  </div>
-                  <div className="flex items-center rounded-full p-1 text-sm cursor-pointer" onClick={onToggleFocusMode}>
-                     <Settings size={16}>Configure Slack</Settings>
-                  </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={onToggleSignOff}
-                disabled={status === "focus" || status === "away"}
-                className="text-white-text hover:bg-light-gray-text/10"
-              >
-                <Clock className="mr-2 h-4 w-4" />
-                Sign Off for the Day
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <button onClick={() => onStartFocusMode(30)} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
+                       flex items-center justify-center transition-all duration-200
+                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                       active:scale-95">
+            <Focus className="w-4 h-4 text-light-gray-text" />
+          </button>
+
+          <button onClick={onSignOffForDay} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
+                       flex items-center justify-center transition-all duration-200
+                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
+                       active:scale-95">
+            <Clock className="w-4 h-4 text-light-gray-text" />
+          </button>
 
           <button
             onClick={onToggleCatchMeUp}
@@ -445,8 +448,19 @@ const HomeView = ({
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
+
+        <style>{`
+          @keyframes audioWave {
+            0%, 100% {
+              transform: scaleY(1);
+            }
+            50% {
+              transform: scaleY(2);
+            }
+          }
+        `}</style>
       </div>
-    );
+      )
   }
 
   // Desktop View
@@ -490,7 +504,7 @@ const HomeView = ({
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={onToggleSignOff}
+                  onClick={onSignOffForDay}
                   disabled={status === "focus" || status === "away"}
                   className="text-text-primary hover:bg-white/5"
                 >

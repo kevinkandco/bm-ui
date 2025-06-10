@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BriefModal from "@/components/dashboard/BriefModal";
 import { Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,16 +11,23 @@ import Pagination from "@/components/dashboard/Pagination";
 import { useApi } from "@/hooks/useApi";
 import { PendingData } from "./Dashboard";
 import ViewErrorMessage from "@/components/dashboard/ViewErrorMessage";
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const BriefsList = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [briefs, setBriefs] = useState<Summary[] | null>(null);
   const { call } = useApi();
-  const navigate = useNavigate();
   const [uiState, setUiState] = useState({
     selectedBrief: null,
     briefModalOpen: false
@@ -34,8 +40,6 @@ const BriefsList = () => {
     itemsPerPage: 2,
   });
   const [searchQuery, setSearchQuery] = useState("");
-  // const [selectedBrief, setSelectedBrief] = useState<number | null>(null);
-  // const [briefModalOpen, setBriefModalOpen] = useState(false);
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -151,20 +155,8 @@ const BriefsList = () => {
     }, [pendingData, getBrief]);
 
   const handleOpenBrief = useCallback((briefId: number) => {
-    setUiState(prev => ({
-      ...prev,
-      selectedBrief: briefId,
-      briefModalOpen: true
-    }));
-  }, []);
-
-  const handleCloseBriefModal = useCallback(() => {
-    getBriefs(pagination.currentPage);
-    setUiState(prev => ({
-      ...prev,
-      briefModalOpen: false
-    }));
-  }, [pagination.currentPage, getBriefs]);
+    navigate(`/dashboard/briefs/${briefId}`);
+  }, [navigate]);
 
   const filteredBriefs = briefs?.filter(brief =>
     brief.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -178,19 +170,26 @@ const BriefsList = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="min-h-screen bg-surface px-4 py-6">
-        <div className="flex justify-between items-center">
-          <div className="mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
-            <p className="text-text-secondary">Search and view your brief history</p>
-          </div>
-          <Button
-            variant="outline"
-            size="default"
-            className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all"
-            onClick={() => navigate("/dashboard")}
-          >
-            <span className="text-xs sm:text-sm">Go to Dashboard</span>
-          </Button>
+        <Breadcrumb className="mb-4">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink 
+                onClick={() => navigate("/dashboard")} 
+                className="cursor-pointer"
+              >
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Briefs</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+          <p className="text-text-secondary">Search and view your brief history</p>
         </div>
         
         {/* Search */}
@@ -277,12 +276,6 @@ const BriefsList = () => {
           />
         )}
       </div>
-      <BriefModal
-        open={uiState.briefModalOpen}
-        briefId={uiState.selectedBrief}
-        onClose={handleCloseBriefModal}
-      />
-      <ViewErrorMessage open={open} onClose={handleClose} message={message} />
     </DashboardLayout>
   );
 };

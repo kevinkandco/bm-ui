@@ -12,13 +12,21 @@ import IntegrationsSection from "@/components/settings/IntegrationsSection";
 import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
 import Integrations from "@/components/settings/Integrations";
 import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const SettingsPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [activeCategory, setActiveCategory] = React.useState("profile");
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { call } = useApi();
   const { logout, gotoLogin } = useAuthStore();
   const [activeSection, setActiveSection] = React.useState("profile");
@@ -265,23 +273,29 @@ const SettingsPage = () => {
       onToggleSidebar={handleToggleSidebar}
     >
       <div className="container p-4 md:p-6 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-text-primary flex items-center">
-              <Settings className="mr-3 h-6 w-6" />
-              Settings
-            </h1>
-            <p className="text-text-secondary mt-1">Manage your account and preferences</p>
-          </div>
+        <Breadcrumb className="mb-4">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink 
+                onClick={() => navigate("/dashboard")} 
+                className="cursor-pointer"
+              >
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Settings</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-          <Button
-            variant="outline"
-            size="default"
-            className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all"
-            onClick={() => navigate("/dashboard")}
-          >
-            <span className="text-xs sm:text-sm">Go to Dashboard</span>
-          </Button>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-text-primary flex items-center">
+            <Settings className="mr-3 h-6 w-6" />
+            Settings
+          </h1>
+          <p className="text-text-secondary mt-1">Manage your account and preferences</p>
         </div>
         
         <div className="glass-card rounded-3xl overflow-hidden">

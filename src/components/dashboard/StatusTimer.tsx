@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Clock, Headphones, Zap, Plane, X, SquareArrowOutUpRight, Power } from "lucide-react";
+import { Clock, Headphones, Zap, Plane, X, SquareArrowOutUpRight, Power, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -10,14 +10,14 @@ export interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   focusTime: number; //in seconds
   focusModeExitLoading: boolean;
-  // isSignoff: boolean;
   briefSchedules: BriefSchedules[];
   userSchedule: UserSchedule;
+  onExitFocusMode?: () => void;
+  // isSignoff: boolean;
   // fetchDashboardData: () => void;
   // onToggleCatchMeUp?: () => void;
   // onToggleFocusMode?: () => void;
   // onToggleSignOff?: () => void;
-  onExitFocusMode?: () => void;
 }
 
 const StatusTimer = React.memo(
@@ -220,36 +220,37 @@ const StatusTimer = React.memo(
       );
     };
 
-    // Render different content based on user status - improved mobile layout
-    const renderContent = () => {
-      switch (status) {
-        case "focus":
-          return (
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
-              <div className="flex items-center">
-                <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
-                  <Headphones className="h-4 w-4" />
+  // Render different content based on user status - improved mobile layout
+  const renderContent = () => {
+    switch (status) {
+      case "focus":
+        return (
+          <div className="w-full bg-transparent py-4 px-6">
+            <div className="flex items-center justify-between max-w-7xl mx-auto">
+              <div className="flex items-center gap-3">
+                <div className="bg-accent-primary/20 text-accent-primary p-2 rounded-full">
+                  <Headphones className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-medium text-text-primary">
-                    Focus Mode
-                  </h3>
-                  <p className="text-xs sm:text-sm text-text-secondary">
-                    {focusTimeRemaining} remaining
-                  </p>
+                  <h3 className="text-text-primary font-medium text-lg">Focus Mode</h3>
+                  <p className="text-text-secondary text-sm">{focusTimeRemaining} remaining</p>
                 </div>
               </div>
-
-              {/* <div className="flex items-center space-x-2 mt-2 sm:mt-0"> */}
-              {/* Theme toggle removed on mobile */}
-              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
-
-              {onExitFocusMode && (
-                <Button 
+              
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10 rounded-full bg-surface-raised/50 border border-border-subtle text-text-primary hover:bg-surface-raised"
+                >
+                  <Sun className="h-5 w-5" />
+                </Button>
+                {onExitFocusMode && (
+                  <Button 
                   onClick={onExitFocusMode}
                   variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className={`rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle`}
+                  size="default"
+                  className="bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised rounded-full px-6"
                   disabled={focusModeExitLoading}
                 >
                   {focusModeExitLoading ? (
@@ -257,13 +258,13 @@ const StatusTimer = React.memo(
                       <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                       <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
                     </svg>
-                    ) : <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  } 
-                  <span className="text-xs sm:text-sm">Exit</span>
+                    ) : <X className="h-4 w-4 mr-2" />
+                  } Exit
                 </Button>
               )}
-              {/* </div> */}
+              </div>
             </div>
+          </div>
           );
 
         case "away":
@@ -414,13 +415,17 @@ const StatusTimer = React.memo(
       }
     };
 
-    return (
-      <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
-        {renderContent()}
-      </div>
-    );
+  // Only show status timer for non-focus states, or show focus mode header for focus state
+  if (status === "focus") {
+    return renderContent();
   }
-);
+
+  return (
+    <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
+      {renderContent()}
+    </div>
+  );
+});
 
 StatusTimer.displayName = 'StatusTimer';
 export default StatusTimer;

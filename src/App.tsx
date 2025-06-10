@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./hooks/use-theme";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ProtectedOnboardingRoute from "./components/auth/ProtectedOnboardingRoute";
+import { useIsMobile } from "./hooks/use-mobile";
 
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
@@ -27,6 +28,8 @@ const TasksList = lazyImport(() => import("./pages/TasksList"));
 const MeetingsList = lazyImport(() => import("./pages/MeetingsList"));
 const CatchUpPage = lazyImport(() => import("./pages/CatchUpPage"));
 const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
+const MacPage = lazyImport(() => import("./pages/MacPage"));
+const BriefDetail = lazyImport(() => import("./pages/BriefDetail"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
 
 // Create QueryClient with optimized settings
@@ -53,6 +56,19 @@ const LoadingFallback = memo(() => (
 
 LoadingFallback.displayName = 'LoadingFallback';
 
+// Mobile Mac Route Guard Component
+const MacRouteGuard = memo(() => {
+  const isMobile = useIsMobile();
+  
+  if (isMobile) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <MacPage />;
+});
+
+MacRouteGuard.displayName = 'MacRouteGuard';
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark">
@@ -73,11 +89,13 @@ const App = () => (
                 <Route element={<ProtectedRoute element="protected" />}>
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/dashboard/briefs" element={<BriefsList />} />
+                      <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
                       <Route path="/dashboard/tasks" element={<TasksList />} />
                       <Route path="/dashboard/meetings" element={<MeetingsList />} />
                       <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
                       <Route path="/dashboard/settings" element={<SettingsPage />} />
                 </Route>
+                <Route path="/mac" element={<MacRouteGuard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
