@@ -65,7 +65,7 @@ const PriorityReasoningModal = ({ open, onClose, actionItem }: PriorityReasoning
   };
 
   const getConfidenceColor = (confidence: string) => {
-    switch (confidence.toLowerCase()) {
+    switch (confidence?.toLowerCase()) {
       case "high": return "text-green-400";
       case "medium": return "text-orange-400";
       case "low": return "text-red-400";

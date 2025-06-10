@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SummaryFeedbackProps {
-  briefId: string;
+  briefId: number;
   onFeedback: (type: 'up' | 'down', comment?: string) => void;
   showTooltip?: boolean;
+  selectedFeedback?: 'up' | 'down';
+  setSelectedFeedback?: (type: 'up' | 'down') => void;
 }
 
-const SummaryFeedback = ({ briefId, onFeedback, showTooltip = false }: SummaryFeedbackProps) => {
-  const [selectedFeedback, setSelectedFeedback] = useState<'up' | 'down' | null>(null);
+const SummaryFeedback = ({ briefId, onFeedback, showTooltip = false, selectedFeedback, setSelectedFeedback }: SummaryFeedbackProps) => {
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

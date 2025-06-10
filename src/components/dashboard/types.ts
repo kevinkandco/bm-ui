@@ -16,6 +16,7 @@ export interface UserSchedule {
 }
 
 export interface SummaryMassage {
+  id: number;
 	platform?: string;
 	message?: string;
 	sender?: string;
@@ -23,6 +24,7 @@ export interface SummaryMassage {
 	priority?: string;
   title?: string;
   redirectLink?: string;
+  channel?: string;
 }
 
 export interface Summary {
