@@ -50,6 +50,7 @@ export interface Summary {
   emailCount: number;
   meetingCount: number;
   actionCount: number;
+  delivery_at: string,
   vote: null | 'like' | 'dislike';
   sections:
     {
