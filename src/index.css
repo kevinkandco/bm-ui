@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,7 +6,7 @@
 
 @layer base {
   :root {
-    /* New Podia Color System */
+    /* New Podia Color System - Dark Mode */
     --surface: #0A0F19;  /* Dark Navy */
     --surface-raised: #131B2B;  /* Deep Blue */
     --surface-overlay: rgba(19, 27, 43, 0.95);  /* Deep Blue with opacity */
@@ -47,6 +46,45 @@
     /* Accent colors with opacity for hover states */
     --accent-primary-hover: rgba(46, 226, 173, 0.2);
     --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
+  }
+
+  .light {
+    /* Light Mode Color System */
+    --surface: #FFFFFF;
+    --surface-raised: #F8FAFC;
+    --surface-overlay: rgba(248, 250, 252, 0.95);
+    --glow-highlight: rgba(46, 226, 173, 0.05);
+    --glow-line: rgba(46, 226, 173, 0.1);
+    --accent-primary: #2EE2AD;
+    --accent-secondary: #3DE48D;
+    --text-primary: #1A1A1C;
+    --text-secondary: #6B7280;
+    --text-muted: rgba(107, 114, 128, 0.7);
+    --border-subtle: rgba(229, 231, 235, 0.8);
+
+    /* Light mode shadcn variables */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 162 84% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 162 84% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 162 84% 55%;
+
+    --accent-primary-hover: rgba(46, 226, 173, 0.1);
+    --accent-primary-hover-light: rgba(46, 226, 173, 0.05);
   }
 
   .dark {
@@ -100,6 +138,14 @@
     background-attachment: fixed;
     color: var(--text-primary);
     min-height: 100vh;
+  }
+
+  body.light {
+    background: linear-gradient(
+      to bottom,
+      #FFFFFF 0%,
+      #F8FAFC 100%
+    );
   }
 }
 
