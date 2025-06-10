@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Settings, MessageSquare, Mail, Slack, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -129,24 +130,26 @@ const ConnectedChannelsSection = ({
   // Helper function to render the appropriate icon based on platform ID
   const renderIcon = (platform: typeof connectedPlatforms[0] | typeof comingSoonPlatforms[0], isComingSoon = false) => {
     const iconSize = isComingSoon ? 12 : 16;
+    const iconClass = "text-white dark:text-white light:text-gray-700";
+    
     switch (platform.id) {
       case "slack":
         return (
           <div className="relative">
-            <Slack className="text-white" size={iconSize} />
+            <Slack className={iconClass} size={iconSize} />
             {!isComingSoon && (
-              <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-white/20"></span>
+              <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-white/20 dark:border-white/20 light:border-gray-200"></span>
             )}
           </div>
         );
       case "gmail":
-        return <Mail className="text-white" size={iconSize} />;
+        return <Mail className={iconClass} size={iconSize} />;
       case "outlook":
-        return <Mail className="text-white" size={iconSize} />;
+        return <Mail className={iconClass} size={iconSize} />;
       case "calendar":
-        return <Calendar className="text-white" size={iconSize} />;
+        return <Calendar className={iconClass} size={iconSize} />;
       default:
-        return <span className={`text-white font-medium ${isComingSoon ? 'text-xs' : 'text-sm'}`}>{platform.icon}</span>;
+        return <span className={`font-medium ${isComingSoon ? 'text-xs' : 'text-sm'} text-white dark:text-white light:text-gray-700`}>{platform.icon}</span>;
     }
   };
 
@@ -163,12 +166,12 @@ const ConnectedChannelsSection = ({
               {connectedPlatforms.map((platform, i) => (
                 <Tooltip key={i}>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200 shadow-inner">
+                    <div className="flex items-center gap-3 px-4 py-2 rounded-full backdrop-blur-sm border cursor-pointer transition-all duration-200 shadow-inner bg-green-500/20 border-green-500/40 hover:bg-green-500/30 dark:bg-white/10 dark:border-white/10 dark:hover:bg-white/15">
                       <div className="flex items-center justify-center">
                         {renderIcon(platform)}
                       </div>
-                      <span className="text-white text-sm font-medium">{platform.name}</span>
-                      <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-400 border-green-500/40">
+                      <span className="text-sm font-medium text-green-700 dark:text-white">{platform.name}</span>
+                      <Badge variant="secondary" className="text-xs bg-green-600/30 text-green-800 border-green-600/50 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/40">
                         {platform.monitoring}
                       </Badge>
                     </div>

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,8 +52,8 @@
   .light {
     /* Light Mode Color System */
     --surface: #FFFFFF;
-    --surface-raised: #F8FAFC;
-    --surface-overlay: rgba(248, 250, 252, 0.95);
+    --surface-raised: #FFFFFF;
+    --surface-overlay: rgba(255, 255, 255, 0.95);
     --glow-highlight: rgba(46, 226, 173, 0.05);
     --glow-line: rgba(46, 226, 173, 0.1);
     --accent-primary: #2EE2AD;
@@ -277,14 +278,25 @@
   
   /* Glass Card Component - updated for Podia theme */
   .glass-card {
-    @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
-    background: linear-gradient(to bottom, var(--surface-raised), var(--surface));
+    @apply rounded-xl border backdrop-blur-md transition-all duration-300 ease-out overflow-hidden;
+    background: var(--surface-raised);
     border-color: var(--border-subtle);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .light .glass-card {
+    background: var(--surface);
+    border-color: rgba(229, 231, 235, 0.6);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
   
   .glass-card:hover {
     @apply shadow-lg;
     border-color: rgba(46, 226, 173, 0.2);
+  }
+  
+  .light .glass-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 }
 
