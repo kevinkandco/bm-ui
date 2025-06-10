@@ -57,28 +57,27 @@ export const useIntegrationsState = () => {
   ]);
 
   const [showFirstTimeHelper, setShowFirstTimeHelper] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const getProvider = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/settings/system-integrations", {
+    setLoading(true);
+    const DaysResponse = await call("get", "/api/settings/system-integrations", {
+      showToast: false,
+      returnOnFailure: false,
+    });
+    const TagsResponse = await call("get", "/api/settings/integrations/tags", {
       showToast: false,
       returnOnFailure: false,
     });
 
-    if (response?.data) {
-      const data = response?.data?.map((con) => ({...con, tagId: con?.tag?.id}))
+    if (DaysResponse?.data) {
+      const data = DaysResponse?.data?.map((con) => ({...con, tagId: con?.tag?.id}))
       setConnectedAccounts(data);
     }
-  }, [call]);
 
-  const getTags = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/settings/integrations/tags", {
-      showToast: false,
-      returnOnFailure: false,
-    });
-
-    if (response?.data) {
+    if (TagsResponse?.data) {
       setTags(
-        response?.data?.map((tag) => ({
+        TagsResponse?.data?.map((tag) => ({
           id: tag.id,
           name: tag?.name,
           color: tag?.color,
@@ -90,12 +89,12 @@ export const useIntegrationsState = () => {
         }))
       );
     }
+    setLoading(false);
   }, [call]);
     
-    useEffect(() => {
-      getProvider();
-      getTags();
-    }, [getProvider, getTags]);
+  useEffect(() => {
+    getProvider();
+  }, [getProvider]);
 
   const addAccount = useCallback((provider: string, type: 'input' | 'output' = 'input') => {
     
@@ -368,6 +367,7 @@ export const useIntegrationsState = () => {
     deleteTag,
     mergeTag,
     updateSplitBriefSettings,
-    dismissFirstTimeHelper
+    dismissFirstTimeHelper,
+    loading
   };
 };

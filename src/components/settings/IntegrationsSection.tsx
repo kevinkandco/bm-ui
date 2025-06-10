@@ -8,6 +8,7 @@ import TagManager from "./TagManager";
 import InputIntegrationsSection from "./InputIntegrationsSection";
 import OutputIntegrationsSection from "./OutputIntegrationsSection";
 import { useIntegrationsState } from "./useIntegrationsState";
+import FancyLoader from "./modal/FancyLoader";
 
 const IntegrationsSection = () => {
   const { toast } = useToast();
@@ -23,7 +24,8 @@ const IntegrationsSection = () => {
     updateTag,
     deleteTag,
     mergeTag,
-    dismissFirstTimeHelper
+    dismissFirstTimeHelper,
+    loading
   } = useIntegrationsState();
 
   const [showTagManager, setShowTagManager] = useState(false);
@@ -87,14 +89,14 @@ const IntegrationsSection = () => {
           )}
         </div>
 
-        <ConnectedAccountsList
+        {loading ?  <FancyLoader /> : <ConnectedAccountsList
           accounts={connectedAccounts}
           tags={tags}
           onUpdateTag={updateAccountTag}
           onToggleCombined={toggleAccountInCombined}
           onDisconnect={disconnectAccount}
           onCreateTag={createTag}
-        />
+        />}
       </div>
 
       {/* Tag Manager */}

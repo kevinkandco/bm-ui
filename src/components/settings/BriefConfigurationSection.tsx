@@ -14,10 +14,11 @@ import { useIntegrationsState } from "./useIntegrationsState";
 import { useApi } from "@/hooks/useApi";
 import { getTimePeriod } from "@/lib/utils";
 import moment from "moment";
+import FancyLoader from "./modal/FancyLoader";
 
 const BriefConfigurationSection = () => {
   const { toast } = useToast();
-  const { tags, updateSplitBriefSettings } = useIntegrationsState();
+  const { tags, updateSplitBriefSettings, loading } = useIntegrationsState();
   const { call } = useApi();
   
   const [scheduleType, setScheduleType] = useState<"auto" | "custom">("auto");
@@ -129,8 +130,10 @@ const BriefConfigurationSection = () => {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-text-primary">Brief Configuration</h2>
-        <Button 
+        <h2 className="text-xl font-semibold text-text-primary">
+          Brief Configuration
+        </h2>
+        <Button
           onClick={handleSaveSettings}
           className="shadow-subtle hover:shadow-glow transition-all"
         >
@@ -142,29 +145,37 @@ const BriefConfigurationSection = () => {
       {/* Delivery Schedule Section */}
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-medium text-text-primary mb-4">Delivery Schedule</h3>
+          <h3 className="text-lg font-medium text-text-primary mb-4">
+            Delivery Schedule
+          </h3>
           <p className="text-sm text-text-secondary mb-6">
             Configure when and how you receive your briefs
           </p>
         </div>
 
         <div className="glass-card rounded-2xl p-6">
-          <RadioGroup 
-            defaultValue="auto" 
+          <RadioGroup
+            defaultValue="auto"
             value={scheduleType}
-            onValueChange={(value) => setScheduleType(value as "auto" | "custom")}
+            onValueChange={(value) =>
+              setScheduleType(value as "auto" | "custom")
+            }
             className="space-y-4"
           >
             <div className="flex items-center space-x-3">
               <RadioGroupItem value="auto" id="auto" />
-              <Label htmlFor="auto" className="text-text-primary">Use AI-recommended schedule</Label>
+              <Label htmlFor="auto" className="text-text-primary">
+                Use AI-recommended schedule
+              </Label>
             </div>
             <div className="flex items-center space-x-3">
               <RadioGroupItem value="custom" id="custom" />
-              <Label htmlFor="custom" className="text-text-primary">Set custom schedule</Label>
+              <Label htmlFor="custom" className="text-text-primary">
+                Set custom schedule
+              </Label>
             </div>
           </RadioGroup>
-          
+
           {scheduleType === "custom" && (
             <div className="mt-6 space-y-6">
               <div className="bg-white/5 rounded-lg border border-white/10 p-4">
@@ -174,20 +185,28 @@ const BriefConfigurationSection = () => {
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   {Object.entries(days).map(([day, isActive]) => (
-                    <div key={day} className="flex items-center justify-between">
-                      <Label htmlFor={`day-${day}`} className="text-text-primary capitalize">
+                    <div
+                      key={day}
+                      className="flex items-center justify-between"
+                    >
+                      <Label
+                        htmlFor={`day-${day}`}
+                        className="text-text-primary capitalize"
+                      >
                         {day}
                       </Label>
-                      <Switch 
+                      <Switch
                         id={`day-${day}`}
                         checked={isActive}
-                        onCheckedChange={() => toggleDay(day as keyof typeof days)}
+                        onCheckedChange={() =>
+                          toggleDay(day as keyof typeof days)
+                        }
                       />
                     </div>
                   ))}
                 </div>
               </div>
-              
+
               <div className="bg-white/5 rounded-lg border border-white/10 p-4">
                 <h4 className="text-sm font-medium text-text-primary mb-4 flex items-center">
                   <Clock className="h-4 w-4 mr-2" />
@@ -196,41 +215,66 @@ const BriefConfigurationSection = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="time-morning" className="text-text-primary">Morning Brief</Label>
-                      <p className="text-xs text-text-secondary">Delivered at {time.morning}</p>
+                      <Label
+                        htmlFor="time-morning"
+                        className="text-text-primary"
+                      >
+                        Morning Brief
+                      </Label>
+                      <p className="text-xs text-text-secondary">
+                        Delivered at {time.morning}
+                      </p>
                     </div>
-                    <Switch 
+                    <Switch
                       id="time-morning"
                       checked={times.morning}
-                      onCheckedChange={() => toggleTime(time.morning, "morning")}
+                      onCheckedChange={() =>
+                        toggleTime(time.morning, "morning")
+                      }
                     />
                   </div>
-                  
+
                   <Separator className="bg-white/10" />
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="time-midday" className="text-text-primary">Midday Brief</Label>
-                      <p className="text-xs text-text-secondary">Delivered at {time.midday}</p>
+                      <Label
+                        htmlFor="time-midday"
+                        className="text-text-primary"
+                      >
+                        Midday Brief
+                      </Label>
+                      <p className="text-xs text-text-secondary">
+                        Delivered at {time.midday}
+                      </p>
                     </div>
-                    <Switch 
+                    <Switch
                       id="time-midday"
                       checked={times.midday}
                       onCheckedChange={() => toggleTime(time.midday, "midday")}
                     />
                   </div>
-                  
+
                   <Separator className="bg-white/10" />
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="time-evening" className="text-text-primary">Evening Brief</Label>
-                      <p className="text-xs text-text-secondary">Delivered at {time.evening}</p>
+                      <Label
+                        htmlFor="time-evening"
+                        className="text-text-primary"
+                      >
+                        Evening Brief
+                      </Label>
+                      <p className="text-xs text-text-secondary">
+                        Delivered at {time.evening}
+                      </p>
                     </div>
-                    <Switch 
+                    <Switch
                       id="time-evening"
                       checked={times.evening}
-                      onCheckedChange={() => toggleTime(time.evening, "evening")}
+                      onCheckedChange={() =>
+                        toggleTime(time.evening, "evening")
+                      }
                     />
                   </div>
                 </div>
@@ -242,22 +286,32 @@ const BriefConfigurationSection = () => {
 
       <Separator className="bg-border-subtle" />
 
-      {/* Split Brief Controls */}
-      {tags?.length && (
-        <div>
-          <SplitBriefControls
-            tags={tags}
-            onUpdateSettings={updateSplitBriefSettings}
-          />
-        </div>
-      )}
+      {loading ? (
+        <FancyLoader />
+      ) : (
+        <>
+          {/* Split Brief Controls */}
+          {!loading && tags?.length > 0 && (
+            <div>
+              <SplitBriefControls
+                tags={tags}
+                onUpdateSettings={updateSplitBriefSettings}
+              />
+            </div>
+          )}
 
-      {!tags?.length && (
-        <div className="text-center py-8 text-text-secondary">
-          <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <h3 className="text-lg font-medium text-text-primary mb-2">Split Briefs</h3>
-          <p className="text-sm">Connect multiple accounts to enable split brief configuration</p>
-        </div>
+          {!(tags?.length > 0) && (
+            <div className="text-center py-8 text-text-secondary">
+              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-medium text-text-primary mb-2">
+                Split Briefs
+              </h3>
+              <p className="text-sm">
+                Connect multiple accounts to enable split brief configuration
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
