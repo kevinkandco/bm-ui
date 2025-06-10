@@ -28,13 +28,13 @@ const Index = () => {
       
       {/* Background with new image */}
       <div className="absolute inset-0 w-full h-full">
-        {/* Background image with heavy blur */}
+        {/* Background image with reduced blur */}
         <div className="absolute inset-0 w-full h-full">
           <img 
             src="/lovable-uploads/108ead20-e97f-4d4b-b521-533474e0989c.png" 
             alt="Dashboard background" 
             className="w-full h-full object-cover"
-            style={{ filter: 'blur(85px)' }}
+            style={{ filter: 'blur(20px)' }}
             loading="eager"
           />
         </div>
