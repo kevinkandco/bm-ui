@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -101,7 +100,9 @@ const BriefCard = ({
   };
 
   return (
-    <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group bg-white dark:bg-gradient-to-br dark:from-gray-700/60 dark:to-gray-800/60 border border-gray-200 dark:border-gray-600/40 shadow-sm hover:shadow-md dark:shadow-lg dark:hover:shadow-xl" onClick={handleCardClick}>
+    <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
+      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+    }} onClick={handleCardClick}>
       {/* Collapsed Header */}
       <div className="p-6">
         <div className="flex items-center justify-between">
@@ -133,7 +134,7 @@ const BriefCard = ({
             
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
+                <h3 className="text-base font-semibold text-white-text truncate">
                   {brief.name}
                 </h3>
                 
@@ -161,7 +162,7 @@ const BriefCard = ({
               </div>
               
               {/* Updated timestamp and range format */}
-              <p className="text-xs text-gray-600 dark:text-gray-400">
+              <p className="text-xs text-light-gray-text">
                 Delivered at {brief.timeCreated.split(', ')[1].replace(':00 ', '').replace(':00', '')} (Summarizing: {brief.timeRange.replace(':00 ', '').replace(':00', '')})
               </p>
             </div>
@@ -172,25 +173,25 @@ const BriefCard = ({
             {/* Stats and time saved section */}
             <div className="flex flex-col items-end gap-2">
               {/* Horizontally aligned stats */}
-              <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
+              <div className="flex items-center gap-3 text-xs text-light-gray-text">
                 <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
                 <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
                 <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
               </div>
               
               {/* Time Saved below the stats */}
-              <div className="flex items-center gap-1 text-xs bg-green-50 dark:bg-green-400/10 rounded py-px px-2 border border-green-200 dark:border-green-400/20">
-                <Clock className="h-2.5 w-2.5 text-green-600 dark:text-green-400" />
-                <span className="text-green-700 dark:text-green-400 font-medium">~{timeSaved.total}min saved</span>
+              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
+                <Clock className="h-2.5 w-2.5 text-green-400" />
+                <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
               </div>
             </div>
             
             {/* Chevron */}
             <div className="ml-2">
               {isExpanded ? (
-                <ChevronUp className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <ChevronUp className="h-4 w-4 text-light-gray-text" />
               ) : (
-                <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <ChevronDown className="h-4 w-4 text-light-gray-text" />
               )}
             </div>
           </div>
@@ -205,7 +206,7 @@ const BriefCard = ({
               onChange={e => setComment(e.target.value)} 
               onKeyPress={e => handleKeyPress(e, 'comment')} 
               onBlur={handleCommentSubmit} 
-              className="bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/20 text-text-primary h-7 text-xs" 
+              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
               autoFocus 
             />
           </div>
@@ -215,22 +216,22 @@ const BriefCard = ({
       {/* Expanded Content */}
       {isExpanded && (
         <div className="px-6 pb-6">
-          <div className="border-t border-gray-200 dark:border-white/20 pt-3">
+          <div className="border-t border-white/20 pt-3">
             {/* Time Saved Breakdown - Expanded State */}
-            <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-50 dark:bg-green-400/10 rounded-lg px-3 py-2 border border-green-200 dark:border-green-400/20 mb-3">
-              <Clock className="h-4 w-4 text-green-600 dark:text-green-400" />
+            <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
+              <Clock className="h-4 w-4 text-green-400" />
               <span>
-                <span className="text-green-700 dark:text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-700 dark:text-green-400 font-medium">{timeSaved.total}min total</span>
+                <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
               </span>
             </div>
 
             {/* Condensed Stats Grid */}
             <div className="grid grid-cols-1 gap-2 mb-3">
               {/* Slack Messages */}
-              <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-surface-raised/30">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
                 <div className="flex items-center gap-3">
                   <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-white-text">
                     {brief.slackMessages.total} Slack Messages
                   </p>
                 </div>
@@ -242,10 +243,10 @@ const BriefCard = ({
               </div>
 
               {/* Emails */}
-              <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-surface-raised/30">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
                 <div className="flex items-center gap-3">
                   <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-white-text">
                     {brief.emails.total} Emails
                   </p>
                 </div>
@@ -257,10 +258,10 @@ const BriefCard = ({
               </div>
 
               {/* Action Items */}
-              <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-surface-raised/30">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
                 <div className="flex items-center gap-3">
                   <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-white-text">
                     {brief.actionItems} Action Items
                   </p>
                 </div>
@@ -285,7 +286,7 @@ const BriefCard = ({
                   onChange={e => setMissingContent(e.target.value)} 
                   onKeyPress={e => handleKeyPress(e, 'missing')} 
                   onBlur={handleAddMissingSubmit} 
-                  className="bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/20 text-text-primary h-7 text-xs" 
+                  className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
                   autoFocus 
                 />
               </div>
@@ -294,7 +295,7 @@ const BriefCard = ({
             {/* Action Buttons */}
             <div className="flex justify-end gap-2 pt-1">
               {brief.hasTranscript && (
-                <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-gray-300 dark:border-border-subtle/20 hover:border-gray-400 dark:hover:border-border-subtle/40 bg-transparent" onClick={e => {
+                <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent" onClick={e => {
                   e.stopPropagation();
                   onViewTranscript(brief.id);
                 }}>

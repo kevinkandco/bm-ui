@@ -10,7 +10,6 @@ import TranscriptView from "@/components/dashboard/TranscriptView";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -93,11 +92,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Theme Toggle - Fixed position in top right */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
-
       {/* Focus Mode Timer Header */}
       {userStatus === "focus" && (
         <StatusTimer 
