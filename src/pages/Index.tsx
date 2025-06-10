@@ -28,19 +28,19 @@ const Index = () => {
       
       {/* Background with new image */}
       <div className="absolute inset-0 w-full h-full">
-        {/* Background image with reduced blur */}
+        {/* Background image with minimal blur */}
         <div className="absolute inset-0 w-full h-full">
           <img 
             src="/lovable-uploads/108ead20-e97f-4d4b-b521-533474e0989c.png" 
             alt="Dashboard background" 
             className="w-full h-full object-cover"
-            style={{ filter: 'blur(20px)' }}
+            style={{ filter: 'blur(5px)' }}
             loading="eager"
           />
         </div>
         
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 bg-black/70"></div>
         
         {/* Color overlay with reduced opacity */}
         <div className={`absolute inset-0 ${theme === "dark" ? "bg-gradient-dark" : "bg-gradient-light"} opacity-30`}></div>
