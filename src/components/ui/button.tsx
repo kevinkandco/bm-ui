@@ -10,24 +10,21 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl",
-        primary: "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
-        "podia-primary": "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
-        "podia-chip": "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl font-normal text-chip rounded-lg",
-        "podia-chip-outline": "bg-transparent text-light-gray-text border border-light-gray-text/40 hover:border-light-gray-text/60 transition-all duration-200 font-normal text-chip rounded-lg",
-        destructive:
-          "bg-hot-coral text-white hover:bg-hot-coral/90 shadow-sm",
-        outline:
-          "border bg-surface-overlay backdrop-blur-md hover:bg-white/15 text-text-primary hover:text-text-primary dark:border-white/40 light:border-black/20",
-        secondary:
-          "bg-white/25 backdrop-blur-md text-text-primary hover:bg-white/35 shadow-sm",
-        ghost: "hover:bg-white/15 hover:text-text-primary text-text-secondary",
-        link: "text-text-secondary underline-offset-4 hover:text-accent-primary",
-        plain: "bg-transparent text-text-primary hover:text-accent-primary p-0 border-none",
-        glow: "bg-black/80 text-white hover:bg-black/70 transition-all duration-300 shadow-none hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-white/10 dark:text-white light:text-text-primary",
-        black: "bg-black text-white hover:bg-black/90 rounded-full border border-white/10 transition-all duration-300 shadow-none hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]",
-        back: "bg-transparent text-white hover:text-primary-teal p-0 border-none transition-colors",
-        voice: "w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] active:scale-95 shadow-lg hover:shadow-xl transition-all duration-300 p-0",
+        default: "glass-button-primary",
+        primary: "glass-button-primary font-medium text-button rounded-glass-button",
+        "podia-primary": "glass-button-primary font-medium text-button rounded-glass-button",
+        "podia-chip": "glass-chip font-normal text-chip",
+        "podia-chip-outline": "glass-ultra-thin text-glass-secondary border border-rim-light hover:border-rim-light-hover transition-all duration-200 font-normal text-chip rounded-glass-pill",
+        destructive: "bg-hot-coral text-white hover:bg-hot-coral/90 shadow-sm",
+        outline: "glass-thin hover:glass-regular text-glass-primary border-rim-light hover:border-rim-light-hover",
+        secondary: "glass-thin text-glass-primary hover:glass-regular shadow-sm",
+        ghost: "hover:glass-ultra-thin hover:text-glass-primary text-glass-secondary",
+        link: "text-glass-secondary underline-offset-4 hover:text-accent-primary",
+        plain: "bg-transparent text-glass-primary hover:text-accent-primary p-0 border-none",
+        glow: "glass-thin text-glass-primary hover:glass-regular transition-all duration-300 border border-rim-light hover:border-rim-light-hover",
+        black: "glass-regular text-glass-primary hover:glass-thick rounded-full border border-rim-light transition-all duration-300",
+        back: "bg-transparent text-glass-primary hover:text-primary-teal p-0 border-none transition-colors",
+        voice: "glass-button-primary w-12 h-12 rounded-full glass-press p-0",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-lg",

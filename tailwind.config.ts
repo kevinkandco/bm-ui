@@ -63,7 +63,27 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				
-				// New Podia Color Palette
+				// Liquid Glass Design System Colors
+				'glass': {
+					'ultra-thin': 'var(--glass-ultra-thin)',
+					'thin': 'var(--glass-thin)',
+					'regular': 'var(--glass-regular)',
+					'thick': 'var(--glass-thick)',
+				},
+				'rim-light': 'var(--rim-light)',
+				'rim-light-hover': 'var(--rim-light-hover)',
+				'text-glass': {
+					'primary': 'var(--text-on-glass)',
+					'secondary': 'var(--text-on-glass-secondary)',
+					'muted': 'var(--text-on-glass-muted)',
+				},
+				'wallpaper': {
+					'primary': 'var(--wallpaper-primary)',
+					'secondary': 'var(--wallpaper-secondary)',
+					'accent': 'var(--wallpaper-accent)',
+				},
+				
+				// Existing Podia Color Palette
 				'primary-teal': '#2EE2AD',
 				'accent-green': '#3DE48D',
 				'dark-navy': '#0A0F19',
@@ -71,7 +91,7 @@ export default {
 				'light-gray-text': '#B3B8C1',
 				'white-text': '#FFFFFF',
 				
-				// Glass morphism design system colors - updated for new palette
+				// ... keep existing code (legacy colors) the same ...
 				'surface': 'var(--surface)',
 				'surface-raised': 'var(--surface-raised)',
 				'surface-overlay': 'var(--surface-overlay)',
@@ -83,13 +103,11 @@ export default {
 				'border-subtle': 'var(--border-subtle)',
 				'glow-highlight': 'var(--glow-highlight)',
 				'glow-line': 'var(--glow-line)',
-				
-				// Keep legacy colors for compatibility
 				'canvas-black': '#1A1A1C',
 				'deep-plum': '#222222',  
 				'cranberry': '#6E0039',
-				'electric-teal': '#2EE2AD',  // Updated to match new primary
-				'hot-coral': '#3DE48D',     // Updated to match accent green
+				'electric-teal': '#2EE2AD',
+				'hot-coral': '#3DE48D',
 				'ice-grey': '#E0E4EA',
 				'cool-slate': '#B0B3BE',
 				'slate-grey': '#696E79',
@@ -115,6 +133,7 @@ export default {
 			fontFamily: {
 				'sans': ['Inter', 'system-ui', 'sans-serif'],
 				'inter': ['Inter', 'system-ui', 'sans-serif'],
+				'sf-display': ['SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
 			},
 			fontSize: {
 				// Podia Typography Scale
@@ -137,11 +156,22 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
 				xl: '16px',
+				'2xl': '24px',
+				'3xl': '32px',
 				'podia-button': '12px',
 				'podia-chip': '20px',
 				'podia-card': '16px',
+				'glass-pill': '24pt',
+				'glass-button': '22px',
+			},
+			backdropBlur: {
+				'glass-ultra-thin': 'var(--blur-ultra-thin)',
+				'glass-thin': 'var(--blur-thin)',
+				'glass-regular': 'var(--blur-regular)',
+				'glass-thick': 'var(--blur-thick)',
 			},
 			boxShadow: {
+				// ... keep existing code (existing shadows) the same ...
 				'podia-button': '0 4px 8px rgba(46, 226, 173, 0.2)',
 				'glass': '0 4px 30px rgba(0, 0, 0, 0.2)',
 				'elevated': '0 10px 30px rgba(0, 0, 0, 0.15)',
@@ -149,12 +179,18 @@ export default {
 				'neon': '0 0 15px rgba(46, 226, 173, 0.4)',
 				'subtle': '0 8px 32px rgba(0, 0, 0, 0.2)',
 				'light-subtle': '0 8px 32px rgba(0, 0, 0, 0.1)',
+				// New glass shadows
+				'glass-shadow': 'var(--glass-shadow)',
+				'glass-elevated': 'var(--glass-shadow-elevated)',
+				'glass-glow-green': '0 0 12px rgba(61, 228, 141, 0.4)',
+				'glass-glow-amber': '0 0 12px rgba(251, 191, 36, 0.4)',
 			},
 			transitionDuration: {
 				'400': '400ms',
 				'160': '160ms',
 			},
 			keyframes: {
+				// ... keep existing code (existing keyframes) the same ...
 				'accordion-down': {
 					from: {
 						height: '0'
@@ -254,8 +290,46 @@ export default {
 						transform: 'translateY(-8px) translateX(5px)',
 					},
 				},
+				// New liquid glass animations
+				'wallpaper-drift': {
+					'0%, 100%': {
+						backgroundPosition: '0% 50%, 0% 50%, 0% 50%, 0% 50%'
+					},
+					'25%': {
+						backgroundPosition: '25% 25%, 50% 75%, 75% 25%, 0% 50%'
+					},
+					'50%': {
+						backgroundPosition: '50% 0%, 100% 50%, 50% 50%, 0% 50%'
+					},
+					'75%': {
+						backgroundPosition: '75% 75%, 50% 25%, 25% 75%, 0% 50%'
+					}
+				},
+				'caustic-sweep': {
+					'0%': {
+						left: '-100%'
+					},
+					'100%': {
+						left: '100%'
+					}
+				},
+				'glass-float': {
+					'0%, 100%': {
+						transform: 'translateY(0px) translateX(0px)'
+					},
+					'25%': {
+						transform: 'translateY(-2px) translateX(1px)'
+					},
+					'50%': {
+						transform: 'translateY(0px) translateX(2px)'
+					},
+					'75%': {
+						transform: 'translateY(2px) translateX(1px)'
+					}
+				},
 			},
 			animation: {
+				// ... keep existing code (existing animations) the same ...
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
@@ -267,12 +341,20 @@ export default {
 				'float': 'float 6s infinite ease-in-out',
 				'glow': 'glow 3s infinite ease-in-out',
 				'float-delay': 'float-delay 8s infinite ease-in-out 1s',
+				// New liquid glass animations
+				'wallpaper-drift': 'wallpaper-drift 60s ease-in-out infinite',
+				'caustic-sweep': 'caustic-sweep 2s linear infinite',
+				'glass-float': 'glass-float 6s ease-in-out infinite',
 			},
 			backgroundImage: {
+				// ... keep existing code (existing gradients) the same ...
 				'gradient-primary': 'linear-gradient(90deg, #2B88FF, #6BA5FF)',
 				'gradient-neon': 'linear-gradient(90deg, #2B88FF, #6BA5FF)',
 				'gradient-dark': 'radial-gradient(circle at center, #232326 0%, #1A1A1C 100%)',
 				'gradient-light': 'radial-gradient(circle at center, #FFFFFF 0%, #F5F5F7 100%)',
+				// New liquid glass gradients
+				'glass-rim': 'linear-gradient(90deg, transparent, var(--rim-light), transparent)',
+				'caustic-highlight': 'linear-gradient(90deg, transparent, var(--rim-light-hover), transparent)',
 			}
 		}
 	},
