@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 
 interface OnboardingLayoutProps {
@@ -60,11 +59,6 @@ const OnboardingLayout = ({
       {/* Glow shapes - Subtle background elements */}
       <div className="glow-shape absolute top-0 -left-20 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-20" data-speed="0.5"></div>
       <div className="glow-shape absolute top-1/5 -right-20 w-96 h-96 rounded-full bg-accent-secondary/5 filter blur-3xl opacity-15" data-speed="0.8"></div>
-      
-      {/* Theme Toggle */}
-      <div className="absolute top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
       
       <div className={cn("w-full max-w-md z-10 p-6 sm:p-8 mt-0 rounded-xl glass-card", className)}>
         {children}
