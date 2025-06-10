@@ -28,9 +28,6 @@ const buttonVariants = cva(
         black: "bg-black text-white hover:bg-black/90 rounded-full border border-white/10 transition-all duration-300 shadow-none hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]",
         back: "bg-transparent text-white hover:text-primary-teal p-0 border-none transition-colors",
         voice: "w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] active:scale-95 shadow-lg hover:shadow-xl transition-all duration-300 p-0",
-        // Light mode specific variants
-        "status-navy": "bg-slate-800 text-white hover:bg-slate-700 transition-colors light:bg-slate-800 light:text-white light:hover:bg-slate-700",
-        "brief-me": "bg-light-accent-green text-white hover:opacity-90 transition-all dark:bg-accent-primary dark:hover:opacity-90",
       },
       size: {
         default: "h-10 px-4 py-2 rounded-lg",

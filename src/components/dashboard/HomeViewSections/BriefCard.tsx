@@ -100,104 +100,104 @@ const BriefCard = ({
   };
 
   return (
-    <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group light:bg-light-surface-card light:border-2 light:border-light-border-subtle light:shadow-light-shadow-card light:hover:shadow-light-shadow-hover dark:bg-surface-overlay/60 dark:border dark:border-white/20" onClick={handleCardClick}>
+    <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
+      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+    }} onClick={handleCardClick}>
       {/* Collapsed Header */}
       <div className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Play button with Light Mode styling */}
+            {/* Play button moved to the left, doc icon removed */}
             <button onClick={e => {
               e.stopPropagation();
               onPlayBrief(brief.id);
-            }} className="w-8 h-8 rounded-full border-2 flex items-center justify-center hover:opacity-80 transition-colors flex-shrink-0 light:border-light-accent-green light:bg-white dark:border-primary-teal dark:bg-primary-teal/20" style={{
-              filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.07))'
-            }}>
+            }} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
               {playingBrief === brief.id ? (
                 <div className="flex items-center gap-0.5">
-                  <div className="w-0.5 h-3 rounded-full animate-pulse light:bg-light-accent-green dark:bg-primary-teal" style={{
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '0ms'
                   }} />
-                  <div className="w-0.5 h-4 rounded-full animate-pulse light:bg-light-accent-green dark:bg-primary-teal" style={{
+                  <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '150ms'
                   }} />
-                  <div className="w-0.5 h-3 rounded-full animate-pulse light:bg-light-accent-green dark:bg-primary-teal" style={{
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '300ms'
                   }} />
-                  <div className="w-0.5 h-2 rounded-full animate-pulse light:bg-light-accent-green dark:bg-primary-teal" style={{
+                  <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '450ms'
                   }} />
                 </div>
               ) : (
-                <Play className="h-4 w-4 light:text-light-accent-green dark:text-primary-teal" />
+                <Play className="h-5 w-5 text-primary-teal" />
               )}
             </button>
             
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold truncate light:text-light-text-primary dark:text-white-text">
+                <h3 className="text-base font-semibold text-white-text truncate">
                   {brief.name}
                 </h3>
                 
-                {/* Feedback Controls - Light Mode styling */}
+                {/* Feedback Controls - Show on hover, next to brief name */}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
-                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'light:text-light-text-secondary light:hover:text-green-500 dark:text-text-secondary dark:hover:text-green-400'}`}>
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
                     <ThumbsUp className="h-3 w-3" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'light:text-light-text-secondary light:hover:text-red-500 dark:text-text-secondary dark:hover:text-red-400'}`}>
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
                     <ThumbsDown className="h-3 w-3" />
                   </Button>
                 </div>
 
-                {/* Feedback Badge - Light Mode styling */}
+                {/* Feedback Badge - Always visible when rated */}
                 {feedbackState === 'up' && (
                   <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
                     👍
                   </Badge>
                 )}
                 {feedbackState === 'down' && !showCommentInput && (
-                  <Badge variant="error-light" className="text-xs h-4 px-2">
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
                     👎
                   </Badge>
                 )}
               </div>
               
-              {/* Updated timestamp with Light Mode styling */}
-              <p className="text-xs light:text-light-text-secondary dark:text-light-gray-text">
+              {/* Updated timestamp and range format */}
+              <p className="text-xs text-light-gray-text">
                 Delivered at {brief.timeCreated.split(', ')[1].replace(':00 ', '').replace(':00', '')} (Summarizing: {brief.timeRange.replace(':00 ', '').replace(':00', '')})
               </p>
             </div>
           </div>
           
-          {/* Right side items with Light Mode styling */}
+          {/* Right side items with new layout */}
           <div className="flex items-center gap-6 flex-shrink-0">
             {/* Stats and time saved section */}
             <div className="flex flex-col items-end gap-2">
               {/* Horizontally aligned stats */}
-              <div className="flex items-center gap-3 text-xs light:text-light-text-secondary dark:text-light-gray-text">
+              <div className="flex items-center gap-3 text-xs text-light-gray-text">
                 <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
                 <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
                 <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
               </div>
               
-              {/* Time Saved with Light Mode styling */}
-              <Badge variant="time-saved" className="text-xs flex items-center gap-1">
-                <Clock className="h-2.5 w-2.5" />
-                <span className="font-medium">~{timeSaved.total}min saved</span>
-              </Badge>
+              {/* Time Saved below the stats */}
+              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
+                <Clock className="h-2.5 w-2.5 text-green-400" />
+                <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+              </div>
             </div>
             
-            {/* Chevron with Light Mode styling */}
+            {/* Chevron */}
             <div className="ml-2">
               {isExpanded ? (
-                <ChevronUp className="h-4 w-4 light:text-light-text-secondary dark:text-light-gray-text" />
+                <ChevronUp className="h-4 w-4 text-light-gray-text" />
               ) : (
-                <ChevronDown className="h-4 w-4 light:text-light-text-secondary dark:text-light-gray-text" />
+                <ChevronDown className="h-4 w-4 text-light-gray-text" />
               )}
             </div>
           </div>
         </div>
         
-        {/* Comment Input for downvote with Light Mode styling */}
+        {/* Comment Input for downvote */}
         {showCommentInput && (
           <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
             <Input 
@@ -206,26 +206,26 @@ const BriefCard = ({
               onChange={e => setComment(e.target.value)} 
               onKeyPress={e => handleKeyPress(e, 'comment')} 
               onBlur={handleCommentSubmit} 
-              className="light:bg-gray-50 light:border-light-border-subtle light:text-light-text-primary dark:bg-white/5 dark:border-white/20 dark:text-text-primary h-7 text-xs" 
+              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
               autoFocus 
             />
           </div>
         )}
       </div>
 
-      {/* Expanded Content with Light Mode styling */}
+      {/* Expanded Content */}
       {isExpanded && (
         <div className="px-6 pb-6">
-          <div className="border-t light:border-light-border-subtle dark:border-white/20 pt-3">
-            {/* Time Saved Breakdown - Expanded State with Light Mode styling */}
-            <div className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 border mb-3 light:text-light-text-secondary light:bg-green-50 light:border-green-200 dark:text-text-secondary dark:bg-green-400/10 dark:border-green-400/20">
-              <Clock className="h-4 w-4 light:text-light-accent-green dark:text-green-400" />
+          <div className="border-t border-white/20 pt-3">
+            {/* Time Saved Breakdown - Expanded State */}
+            <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
+              <Clock className="h-4 w-4 text-green-400" />
               <span>
-                <span className="light:text-light-accent-green dark:text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="light:text-light-accent-green dark:text-green-400 font-medium">{timeSaved.total}min total</span>
+                <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
               </span>
             </div>
 
-            {/* Condensed Stats Grid with Light Mode styling */}
+            {/* Condensed Stats Grid */}
             <div className="grid grid-cols-1 gap-2 mb-3">
               {/* Slack Messages */}
               <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
