@@ -95,20 +95,20 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
     return () => clearInterval(countdownTimer);
   }, [startTime, status, calculateTimeUntilNextBrief, calculateFocusTimeRemaining, focusTimeRemaining]);
 
-  // Render different content with glass styling
+  // Render different content based on user status - improved mobile layout
   const renderContent = () => {
     switch (status) {
       case "focus":
         return (
-          <div className="w-full glass-panel-elevated py-4 px-6">
+          <div className="w-full bg-transparent py-4 px-6">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div className="flex items-center gap-3">
-                <div className="glass-thick p-2 rounded-full">
-                  <Headphones className="h-5 w-5 glass-icon" />
+                <div className="bg-accent-primary/20 text-accent-primary p-2 rounded-full">
+                  <Headphones className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-glass-primary font-medium text-lg">Focus Mode</h3>
-                  <p className="text-glass-secondary text-sm">{focusTimeRemaining} remaining</p>
+                  <h3 className="text-text-primary font-medium text-lg">Focus Mode</h3>
+                  <p className="text-text-secondary text-sm">{focusTimeRemaining} remaining</p>
                 </div>
               </div>
               
@@ -116,17 +116,17 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="chrome-pill w-10 h-10"
+                  className="h-10 w-10 rounded-full bg-surface-raised/50 border border-border-subtle text-text-primary hover:bg-surface-raised"
                 >
-                  <Sun className="h-5 w-5 glass-icon" />
+                  <Sun className="h-5 w-5" />
                 </Button>
                 <Button 
                   onClick={onExitFocusMode}
                   variant="outline"
                   size="default"
-                  className="chrome-pill px-6"
+                  className="bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised rounded-full px-6"
                 >
-                  <X className="h-4 w-4 mr-2 glass-icon" /> 
+                  <X className="h-4 w-4 mr-2" /> 
                   Exit
                 </Button>
               </div>
@@ -138,16 +138,17 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
         return (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
-              <div className="glass-thick p-2 rounded-full mr-2 status-glow-amber">
-                <Clock className="h-4 w-4 glass-icon" />
+              <div className="bg-yellow-500 text-white p-2 rounded-full mr-2">
+                <Clock className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-medium text-glass-primary">Away</h3>
-                <p className="text-xs sm:text-sm text-glass-secondary">{timeElapsed}</p>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Away</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{timeElapsed}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
               
               {onToggleCatchMeUp && (
@@ -155,9 +156,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
                   size={isMobile ? "sm" : "default"}
-                  className="chrome-pill"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2 glass-icon" /> 
+                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
               )}
@@ -169,16 +170,17 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
         return (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
-              <div className="glass-thick p-2 rounded-full mr-2 status-glow-amber">
-                <Plane className="h-4 w-4 glass-icon" />
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-2">
+                <Plane className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-medium text-glass-primary">Out of Office</h3>
-                <p className="text-xs sm:text-sm text-glass-secondary">{timeElapsed}</p>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Out of Office</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{timeElapsed}</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
               
               {onToggleCatchMeUp && (
@@ -186,9 +188,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                   onClick={onToggleCatchMeUp}
                   variant="outline"
                   size={isMobile ? "sm" : "default"}
-                  className="chrome-pill"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2 glass-icon" /> 
+                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
               )}
@@ -196,20 +198,21 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
           </div>
         );
       
-      default: // Active status
+      default: // Active status - improved mobile layout
         return (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
-              <div className="glass-thick p-2 rounded-full mr-2 status-glow-green">
-                <Zap className="h-4 w-4 glass-icon" />
+              <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
+                <Zap className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-medium text-glass-primary">Next Brief</h3>
-                <p className="text-xs sm:text-sm text-glass-secondary">{timeUntilNextBrief}</p>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Next Brief</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{timeUntilNextBrief}</p>
               </div>
             </div>
             
             <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
+              {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
               
               {onToggleFocusMode && (
@@ -217,9 +220,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                   onClick={onToggleFocusMode}
                   variant="outline"
                   size={isMobile ? "sm" : "default"}
-                  className="chrome-pill"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
                 >
-                  <Headphones className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2 glass-icon" /> 
+                  <Headphones className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Focus</span>
                 </Button>
               )}
@@ -228,9 +231,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                 <Button 
                   onClick={onToggleCatchMeUp}
                   size={isMobile ? "sm" : "default"}
-                  className="chrome-pill"
+                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
                 >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2 glass-icon" /> 
+                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
               )}
@@ -240,13 +243,13 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
     }
   };
 
-  // Focus mode gets full glass treatment
+  // Only show status timer for non-focus states, or show focus mode header for focus state
   if (status === "focus") {
     return renderContent();
   }
 
   return (
-    <div className="glass-thin py-2 px-3 sm:py-4 sm:px-6 glass-divider">
+    <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
       {renderContent()}
     </div>
   );

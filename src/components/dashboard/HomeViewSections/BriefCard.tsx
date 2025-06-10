@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, Play, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
+import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -49,7 +48,7 @@ const BriefCard = ({
     handleAddMissingContent
   } = useFeedbackTracking();
 
-  // Sample time saved data
+  // Sample time saved data - in a real app this would come from the brief data
   const timeSaved = {
     reading: 25,
     processing: 8,
@@ -62,7 +61,7 @@ const BriefCard = ({
 
   const handleFeedback = async (type: 'up' | 'down', e: React.MouseEvent) => {
     e.stopPropagation();
-    if (feedbackState === type) return;
+    if (feedbackState === type) return; // Already rated
 
     setFeedbackState(type);
     if (type === 'up') {
@@ -101,121 +100,104 @@ const BriefCard = ({
   };
 
   return (
-    <div 
-      className="w-full brief-glass-card cursor-pointer group glass-layer-group" 
-      onClick={handleCardClick}
-    >
+    <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
+      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+    }} onClick={handleCardClick}>
       {/* Collapsed Header */}
       <div className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Play button with glass styling */}
-            <button 
-              onClick={e => {
-                e.stopPropagation();
-                onPlayBrief(brief.id);
-              }} 
-              className="glass-thin w-10 h-10 rounded-full flex items-center justify-center hover:shadow-status-green transition-all duration-300 flex-shrink-0 spring-scale"
-            >
+            {/* Play button moved to the left, doc icon removed */}
+            <button onClick={e => {
+              e.stopPropagation();
+              onPlayBrief(brief.id);
+            }} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
               {playingBrief === brief.id ? (
                 <div className="flex items-center gap-0.5">
-                  <div className="w-0.5 h-3 bg-accent-primary rounded-full animate-pulse" style={{
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '0ms'
                   }} />
-                  <div className="w-0.5 h-4 bg-accent-primary rounded-full animate-pulse" style={{
+                  <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '150ms'
                   }} />
-                  <div className="w-0.5 h-3 bg-accent-primary rounded-full animate-pulse" style={{
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '300ms'
                   }} />
-                  <div className="w-0.5 h-2 bg-accent-primary rounded-full animate-pulse" style={{
+                  <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
                     animationDelay: '450ms'
                   }} />
                 </div>
               ) : (
-                <Play className="h-5 w-5 text-accent-primary glass-icon" />
+                <Play className="h-5 w-5 text-primary-teal" />
               )}
             </button>
             
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold text-glass-primary truncate">
+                <h3 className="text-base font-semibold text-white-text truncate">
                   {brief.name}
                 </h3>
                 
-                {/* Feedback Controls with glass styling */}
+                {/* Feedback Controls - Show on hover, next to brief name */}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={e => handleFeedback('up', e)} 
-                    disabled={feedbackState !== 'none'} 
-                    className={`h-6 w-6 p-0 transition-all spring-scale ${
-                      feedbackState === 'up' ? 'status-glow-green text-green-400' : 'text-glass-secondary hover:text-green-400'
-                    }`}
-                  >
-                    <ThumbsUp className="h-3 w-3 glass-icon" />
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
+                    <ThumbsUp className="h-3 w-3" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={e => handleFeedback('down', e)} 
-                    disabled={feedbackState !== 'none'} 
-                    className={`h-6 w-6 p-0 transition-all spring-scale ${
-                      feedbackState === 'down' ? 'status-glow-red text-red-400' : 'text-glass-secondary hover:text-red-400'
-                    }`}
-                  >
-                    <ThumbsDown className="h-3 w-3 glass-icon" />
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
+                    <ThumbsDown className="h-3 w-3" />
                   </Button>
                 </div>
 
-                {/* Feedback Badges - glass styling */}
+                {/* Feedback Badge - Always visible when rated */}
                 {feedbackState === 'up' && (
-                  <Badge variant="secondary" className="text-xs h-4 px-2 status-glow-green text-green-400">
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
                     👍
                   </Badge>
                 )}
                 {feedbackState === 'down' && !showCommentInput && (
-                  <Badge variant="secondary" className="text-xs h-4 px-2 status-glow-red text-red-400">
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
                     👎
                   </Badge>
                 )}
               </div>
               
-              <p className="text-xs text-glass-secondary">
+              {/* Updated timestamp and range format */}
+              <p className="text-xs text-light-gray-text">
                 Delivered at {brief.timeCreated.split(', ')[1].replace(':00 ', '').replace(':00', '')} (Summarizing: {brief.timeRange.replace(':00 ', '').replace(':00', '')})
               </p>
             </div>
           </div>
           
-          {/* Right side with glass styling */}
+          {/* Right side items with new layout */}
           <div className="flex items-center gap-6 flex-shrink-0">
+            {/* Stats and time saved section */}
             <div className="flex flex-col items-end gap-2">
-              <div className="flex items-center gap-3 text-xs text-glass-secondary">
+              {/* Horizontally aligned stats */}
+              <div className="flex items-center gap-3 text-xs text-light-gray-text">
                 <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
                 <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
                 <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
               </div>
               
-              {/* Time Saved Badge - glass styling */}
-              <div className="glass-badge flex items-center gap-1 text-xs">
-                <Clock className="h-2.5 w-2.5 text-green-400 glass-icon" />
+              {/* Time Saved below the stats */}
+              <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
+                <Clock className="h-2.5 w-2.5 text-green-400" />
                 <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
               </div>
             </div>
             
-            {/* Dual-layer glass chevron */}
+            {/* Chevron */}
             <div className="ml-2">
-              <div className={`glass-chevron w-4 h-4 text-glass-secondary ${isExpanded ? 'expanded' : ''}`}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4 text-light-gray-text" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-light-gray-text" />
+              )}
             </div>
           </div>
         </div>
         
-        {/* Comment Input with glass styling */}
+        {/* Comment Input for downvote */}
         {showCommentInput && (
           <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
             <Input 
@@ -224,7 +206,7 @@ const BriefCard = ({
               onChange={e => setComment(e.target.value)} 
               onKeyPress={e => handleKeyPress(e, 'comment')} 
               onBlur={handleCommentSubmit} 
-              className="glass-input h-7 text-xs" 
+              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
               autoFocus 
             />
           </div>
@@ -234,106 +216,100 @@ const BriefCard = ({
       {/* Expanded Content */}
       {isExpanded && (
         <div className="px-6 pb-6">
-          <div className="glass-divider mb-3"></div>
-          
-          {/* Time Saved Breakdown - glass styling */}
-          <div className="glass-badge flex items-center gap-2 text-sm bg-green-400/10 rounded-lg px-3 py-2 mb-3">
-            <Clock className="h-4 w-4 text-green-400 glass-icon" />
-            <span>
-              <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
-            </span>
-          </div>
+          <div className="border-t border-white/20 pt-3">
+            {/* Time Saved Breakdown - Expanded State */}
+            <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
+              <Clock className="h-4 w-4 text-green-400" />
+              <span>
+                <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
+              </span>
+            </div>
 
-          {/* Stats Grid with glass styling */}
-          <div className="grid grid-cols-1 gap-2 mb-3">
-            <div className="glass-ultra-thin flex items-center justify-between p-2 rounded-lg">
-              <div className="flex items-center gap-3">
-                <MessageSquare className="h-4 w-4 text-accent-green glass-icon flex-shrink-0" />
-                <p className="text-sm font-medium text-glass-primary">
-                  {brief.slackMessages.total} Slack Messages
-                </p>
+            {/* Condensed Stats Grid */}
+            <div className="grid grid-cols-1 gap-2 mb-3">
+              {/* Slack Messages */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
+                  <p className="text-sm font-medium text-white-text">
+                    {brief.slackMessages.total} Slack Messages
+                  </p>
+                </div>
+                {brief.slackMessages.fromPriorityPeople > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                    {brief.slackMessages.fromPriorityPeople} priority
+                  </Badge>
+                )}
               </div>
-              {brief.slackMessages.fromPriorityPeople > 0 && (
-                <Badge variant="secondary" className="text-xs h-4 px-2">
-                  {brief.slackMessages.fromPriorityPeople} priority
-                </Badge>
-              )}
-            </div>
 
-            <div className="glass-ultra-thin flex items-center justify-between p-2 rounded-lg">
-              <div className="flex items-center gap-3">
-                <Mail className="h-4 w-4 text-blue-400 glass-icon flex-shrink-0" />
-                <p className="text-sm font-medium text-glass-primary">
-                  {brief.emails.total} Emails
-                </p>
+              {/* Emails */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                  <p className="text-sm font-medium text-white-text">
+                    {brief.emails.total} Emails
+                  </p>
+                </div>
+                {brief.emails.fromPriorityPeople > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                    {brief.emails.fromPriorityPeople} priority
+                  </Badge>
+                )}
               </div>
-              {brief.emails.fromPriorityPeople > 0 && (
-                <Badge variant="secondary" className="text-xs h-4 px-2">
-                  {brief.emails.fromPriorityPeople} priority
-                </Badge>
-              )}
-            </div>
 
-            <div className="glass-ultra-thin flex items-center justify-between p-2 rounded-lg">
-              <div className="flex items-center gap-3">
-                <CheckSquare className="h-4 w-4 text-orange-400 glass-icon flex-shrink-0" />
-                <p className="text-sm font-medium text-glass-primary">
-                  {brief.actionItems} Action Items
-                </p>
+              {/* Action Items */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                  <p className="text-sm font-medium text-white-text">
+                    {brief.actionItems} Action Items
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Add Missing Content */}
-          {!showAddMissing ? (
-            <div className="mb-3">
-              <Button variant="ghost" size="sm" onClick={e => {
-                e.stopPropagation();
-                setShowAddMissing(true);
-              }} className="text-glass-secondary hover:text-glass-primary text-xs h-7 px-2">
-                Add what's missing
-              </Button>
-            </div>
-          ) : (
-            <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-              <Input 
-                placeholder="What important information did we miss?" 
-                value={missingContent} 
-                onChange={e => setMissingContent(e.target.value)} 
-                onKeyPress={e => handleKeyPress(e, 'missing')} 
-                onBlur={handleAddMissingSubmit} 
-                className="glass-input h-7 text-xs" 
-                autoFocus 
-              />
-            </div>
-          )}
+            {/* Add Missing Content */}
+            {!showAddMissing ? (
+              <div className="mb-3">
+                <Button variant="ghost" size="sm" onClick={e => {
+                  e.stopPropagation();
+                  setShowAddMissing(true);
+                }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
+                  Add what's missing
+                </Button>
+              </div>
+            ) : (
+              <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+                <Input 
+                  placeholder="What important information did we miss?" 
+                  value={missingContent} 
+                  onChange={e => setMissingContent(e.target.value)} 
+                  onKeyPress={e => handleKeyPress(e, 'missing')} 
+                  onBlur={handleAddMissingSubmit} 
+                  className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
+                  autoFocus 
+                />
+              </div>
+            )}
 
-          {/* Action Buttons with glass styling */}
-          <div className="flex justify-end gap-2 pt-1">
-            {brief.hasTranscript && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-7 px-3 text-xs rounded-lg" 
-                onClick={e => {
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-2 pt-1">
+              {brief.hasTranscript && (
+                <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent" onClick={e => {
                   e.stopPropagation();
                   onViewTranscript(brief.id);
-                }}
-              >
-                <ExternalLink className="h-3 w-3 mr-1 glass-icon" />
-                Transcript
-              </Button>
-            )}
-            <Button 
-              size="sm" 
-              className="chrome-pill h-7 px-4 text-xs" 
-              onClick={e => {
+                }}>
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Transcript
+                </Button>
+              )}
+              <Button size="sm" className="h-7 px-4 text-xs rounded-lg bg-primary-teal hover:bg-accent-green" onClick={e => {
                 e.stopPropagation();
                 onViewBrief(brief.id);
-              }}
-            >
-              View Brief
-            </Button>
+              }}>
+                View Brief
+              </Button>
+            </div>
           </div>
         </div>
       )}

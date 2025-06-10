@@ -63,18 +63,6 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				
-				// Liquid Glass Design Tokens
-				'glass': {
-					'ultra-thin': 'var(--glass-ultra-thin)',
-					'thin': 'var(--glass-thin)',
-					'thick': 'var(--glass-thick)',
-					'primary': 'var(--text-on-glass)',
-					'secondary': 'var(--text-on-glass-secondary)',
-					'muted': 'var(--text-on-glass-muted)'
-				},
-				'rim-light': 'var(--rim-light)',
-				'rim-light-hover': 'var(--rim-light-hover)',
-				
 				// New Podia Color Palette
 				'primary-teal': '#2EE2AD',
 				'accent-green': '#3DE48D',
@@ -83,7 +71,7 @@ export default {
 				'light-gray-text': '#B3B8C1',
 				'white-text': '#FFFFFF',
 				
-				// Glass morphism design system colors
+				// Glass morphism design system colors - updated for new palette
 				'surface': 'var(--surface)',
 				'surface-raised': 'var(--surface-raised)',
 				'surface-overlay': 'var(--surface-overlay)',
@@ -96,19 +84,12 @@ export default {
 				'glow-highlight': 'var(--glow-highlight)',
 				'glow-line': 'var(--glow-line)',
 				
-				// Wallpaper tint sources
-				'wallpaper': {
-					'primary': 'var(--wallpaper-primary)',
-					'secondary': 'var(--wallpaper-secondary)',
-					'accent': 'var(--wallpaper-accent)'
-				},
-				
 				// Keep legacy colors for compatibility
 				'canvas-black': '#1A1A1C',
 				'deep-plum': '#222222',  
 				'cranberry': '#6E0039',
-				'electric-teal': '#2EE2AD',
-				'hot-coral': '#3DE48D',
+				'electric-teal': '#2EE2AD',  // Updated to match new primary
+				'hot-coral': '#3DE48D',     // Updated to match accent green
 				'ice-grey': '#E0E4EA',
 				'cool-slate': '#B0B3BE',
 				'slate-grey': '#696E79',
@@ -136,7 +117,7 @@ export default {
 				'inter': ['Inter', 'system-ui', 'sans-serif'],
 			},
 			fontSize: {
-				// Podia Typography Scale with optical sizing
+				// Podia Typography Scale
 				'heading': ['32px', { lineHeight: '1.2', fontWeight: '600' }],
 				'subheading': ['20px', { lineHeight: '1.3', fontWeight: '400' }],
 				'body': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
@@ -145,11 +126,6 @@ export default {
 				'chip': ['14px', { lineHeight: '1', fontWeight: '400' }],
 			},
 			spacing: {
-				// Liquid Glass specific spacing
-				'chrome-pill': '44px', // 44pt for chrome elements
-				'glass-padding': '24px',
-				'parallax': '2px', // ±2px parallax movement
-				
 				// Podia Spacing Scale
 				'podia-padding': '20px',
 				'podia-section': '24px',
@@ -161,31 +137,11 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
 				xl: '16px',
-				'2xl': '20px',
-				'3xl': '24px', // 24pt for glass cards
-				'chrome': '22px', // For 44pt chrome pills
 				'podia-button': '12px',
 				'podia-chip': '20px',
 				'podia-card': '16px',
 			},
-			blur: {
-				'ultra-thin': 'var(--blur-ultra-thin)',
-				'thin': 'var(--blur-thin)',
-				'thick': 'var(--blur-thick)',
-			},
 			boxShadow: {
-				// Glass-specific shadows
-				'glass': 'var(--glass-shadow)',
-				'glass-elevated': 'var(--glass-shadow-elevated)',
-				'glass-inset': 'inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-				'caustic': '0 0 20px rgba(255, 255, 255, 0.1)',
-				
-				// Status glows
-				'status-green': '0 0 12px rgba(61, 228, 141, 0.4), inset 0 -2px 8px rgba(61, 228, 141, 0.3)',
-				'status-amber': '0 0 12px rgba(251, 191, 36, 0.4), inset 0 -2px 8px rgba(251, 191, 36, 0.3)',
-				'status-red': '0 0 12px rgba(239, 68, 68, 0.4), inset 0 -2px 8px rgba(239, 68, 68, 0.3)',
-				
-				// Legacy shadows
 				'podia-button': '0 4px 8px rgba(46, 226, 173, 0.2)',
 				'glass': '0 4px 30px rgba(0, 0, 0, 0.2)',
 				'elevated': '0 10px 30px rgba(0, 0, 0, 0.15)',
@@ -198,51 +154,7 @@ export default {
 				'400': '400ms',
 				'160': '160ms',
 			},
-			transitionTimingFunction: {
-				'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-				'glass': 'cubic-bezier(0.4, 0, 0.2, 1)',
-			},
-			backdropBlur: {
-				'ultra-thin': 'var(--blur-ultra-thin)',
-				'thin': 'var(--blur-thin)',
-				'thick': 'var(--blur-thick)',
-			},
 			keyframes: {
-				// Liquid Glass animations
-				'wallpaper-drift': {
-					'0%, 100%': {
-						backgroundPosition: '0% 50%, 0% 50%, 0% 50%, 0% 50%, 0% 50%'
-					},
-					'25%': {
-						backgroundPosition: '0% 50%, 25% 25%, 50% 75%, 75% 25%, 0% 50%'
-					},
-					'50%': {
-						backgroundPosition: '0% 50%, 50% 0%, 100% 50%, 50% 50%, 0% 50%'
-					},
-					'75%': {
-						backgroundPosition: '0% 50%, 75% 75%, 50% 25%, 25% 75%, 0% 50%'
-					}
-				},
-				'caustic-sweep': {
-					'0%': { left: '-100%' },
-					'100%': { left: '100%' }
-				},
-				'glass-float': {
-					'0%, 100%': {
-						transform: 'translateY(0px) translateX(0px)'
-					},
-					'25%': {
-						transform: 'translateY(-1px) translateX(0.5px)'
-					},
-					'50%': {
-						transform: 'translateY(0px) translateX(1px)'
-					},
-					'75%': {
-						transform: 'translateY(1px) translateX(0.5px)'
-					}
-				},
-				
-				// Keep existing animations
 				'accordion-down': {
 					from: {
 						height: '0'
@@ -344,12 +256,6 @@ export default {
 				},
 			},
 			animation: {
-				// Liquid Glass animations
-				'wallpaper-drift': 'wallpaper-drift 120s ease-in-out infinite',
-				'caustic-sweep': 'caustic-sweep 2s linear infinite',
-				'glass-float': 'glass-float 6s ease-in-out infinite',
-				
-				// Keep existing animations
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
