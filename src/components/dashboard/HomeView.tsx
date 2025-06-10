@@ -573,5 +573,3 @@ const HomeView = ({
 };
 
 export default React.memo(HomeView);
-
-}

@@ -261,5 +261,3 @@ const PrioritiesSection = () => {
 };
 
 export default React.memo(PrioritiesSection);
-
-}
