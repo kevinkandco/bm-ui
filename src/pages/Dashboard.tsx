@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
@@ -86,12 +87,16 @@ const Dashboard = () => {
   }, [toast]);
 
   const handleGenerateBrief = useCallback(() => {
-    // This would typically trigger the creation of a new brief
     console.log("Generating new brief...");
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Theme Toggle - positioned in upper right */}
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
+        <ThemeToggle />
+      </div>
+
       {/* Focus Mode Timer Header */}
       {userStatus === "focus" && (
         <StatusTimer 

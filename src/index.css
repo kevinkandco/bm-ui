@@ -7,50 +7,79 @@
 
 @layer base {
   :root {
-    /* New Podia Color System */
-    --surface: #0A0F19;  /* Dark Navy */
-    --surface-raised: #131B2B;  /* Deep Blue */
-    --surface-overlay: rgba(19, 27, 43, 0.95);  /* Deep Blue with opacity */
+    /* Light Mode Palette */
+    --light-bg-gradient-start: #FFFFFF;
+    --light-bg-gradient-end: #F2F5F9;
+    --light-surface: rgba(255, 255, 255, 0.96);
+    --light-text-primary: #1A1A1A;
+    --light-text-secondary: #5E6B7A;
+    --light-border: rgba(0, 0, 0, 0.05);
+    --light-accent-green: #22C978;
+    --light-shadow-1: 0 2px 4px rgba(16, 24, 40, 0.04);
+    --light-shadow-hover: 0 4px 12px rgba(16, 24, 40, 0.08);
+    
+    /* Dark Mode Colors (existing) */
+    --surface: #0A0F19;
+    --surface-raised: #131B2B;
+    --surface-overlay: rgba(19, 27, 43, 0.95);
     --glow-highlight: rgba(46, 226, 173, 0.1);
     --glow-line: rgba(46, 226, 173, 0.2);
-    --accent-primary: #2EE2AD;  /* Primary Teal */
-    --accent-secondary: #3DE48D;  /* Accent Green */
-    --text-primary: #FFFFFF;  /* White Text */
-    --text-secondary: #B3B8C1;  /* Light Gray Text */
+    --accent-primary: #2EE2AD;
+    --accent-secondary: #3DE48D;
+    --text-primary: #FFFFFF;
+    --text-secondary: #B3B8C1;
     --text-muted: rgba(179, 184, 193, 0.7);
     --border-subtle: rgba(179, 184, 193, 0.2);
     
-    /* Standard radius */
     --radius: 16px;
 
     /* Updated shadcn variables for Podia theme */
-    --background: 218 42% 8%;     /* Dark Navy */
-    --foreground: 0 0% 100%;      /* White */
-    --card: 218 42% 11%;          /* Deep Blue */
-    --card-foreground: 0 0% 100%; /* White */
-    --popover: 218 42% 11%;       /* Deep Blue */
-    --popover-foreground: 0 0% 100%; /* White */
-    --primary: 162 84% 55%;       /* Primary Teal */
-    --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 218 42% 11%;     /* Deep Blue */
-    --secondary-foreground: 0 0% 100%; /* White */
-    --muted: 218 42% 15%;         /* Lighter Deep Blue */
-    --muted-foreground: 221 12% 73%; /* Light Gray Text */
-    --accent: 162 84% 55%;        /* Primary Teal */
-    --accent-foreground: 0 0% 100%; /* White */
+    --background: 218 42% 8%;
+    --foreground: 0 0% 100%;
+    --card: 218 42% 11%;
+    --card-foreground: 0 0% 100%;
+    --popover: 218 42% 11%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 162 84% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 218 42% 11%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 218 42% 15%;
+    --muted-foreground: 221 12% 73%;
+    --accent: 162 84% 55%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 221 12% 50%;        /* Light Gray border */
-    --input: 221 12% 50%;         /* Light Gray */
-    --ring: 162 84% 55%;          /* Primary Teal */
-    
-    /* Accent colors with opacity for hover states */
-    --accent-primary-hover: rgba(46, 226, 173, 0.2);
-    --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
+    --border: 221 12% 50%;
+    --input: 221 12% 50%;
+    --ring: 162 84% 55%;
+  }
+
+  .light {
+    /* Light mode shadcn variables */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 150 65% 46%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 11% 93%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 210 11% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 150 65% 46%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 0% / 0.05;
+    --input: 0 0% 0% / 0.05;
+    --ring: 150 65% 46%;
   }
 
   .dark {
-    /* Same as root for dark mode */
+    /* Keep existing dark mode variables */
     --surface: #0A0F19;
     --surface-raised: #131B2B;
     --surface-overlay: rgba(19, 27, 43, 0.85);
@@ -62,11 +91,7 @@
     --text-secondary: #B3B8C1;
     --text-muted: rgba(179, 184, 193, 0.5);
     --border-subtle: rgba(179, 184, 193, 0.08);
-    
-    --accent-primary-hover: rgba(46, 226, 173, 0.2);
-    --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
 
-    /* Update shadcn variables to match */
     --background: 218 42% 8%;
     --foreground: 0 0% 100%;
     --card: 218 42% 11%;
@@ -91,6 +116,13 @@
   body {
     @apply font-inter;
     font-feature-settings: "rlig" 1, "calt" 1;
+    color: hsl(var(--foreground));
+    min-height: 100vh;
+    transition: background 200ms ease-in-out, color 200ms ease-in-out;
+  }
+
+  /* Dark mode background */
+  .dark body {
     background: radial-gradient(
       circle at top left,
       #2A8A5F 0%,
@@ -98,35 +130,97 @@
       #000000 70%
     );
     background-attachment: fixed;
-    color: var(--text-primary);
-    min-height: 100vh;
+  }
+
+  /* Light mode background */
+  .light body {
+    background: linear-gradient(
+      to bottom,
+      var(--light-bg-gradient-start) 0%,
+      var(--light-bg-gradient-end) 100%
+    );
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
-  /* Podia specific utilities */
+  /* Light mode specific utilities */
+  .light-surface {
+    background: var(--light-surface);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--light-border);
+    box-shadow: var(--light-shadow-1);
+  }
+
+  .light-surface:hover {
+    box-shadow: var(--light-shadow-hover);
+  }
+
+  .light-text-primary {
+    color: var(--light-text-primary);
+  }
+
+  .light-text-secondary {
+    color: var(--light-text-secondary);
+  }
+
+  /* Enhanced transition utilities */
+  .theme-transition {
+    transition: background-color 200ms ease-in-out, 
+                border-color 200ms ease-in-out,
+                box-shadow 200ms ease-in-out,
+                color 200ms ease-in-out,
+                transform 200ms ease-in-out;
+  }
+  
+  .theme-transition-scale {
+    transition: background-color 200ms ease-in-out, 
+                border-color 200ms ease-in-out,
+                box-shadow 200ms ease-in-out,
+                color 200ms ease-in-out,
+                transform 200ms ease-in-out,
+                scale 200ms ease-in-out;
+  }
+
+  /* Keep existing utilities */
   .podia-heading {
-    @apply text-heading text-white-text font-semibold;
+    @apply text-heading font-semibold;
+    color: hsl(var(--foreground));
   }
   
   .podia-subheading {
-    @apply text-subheading text-white-text font-normal;
+    @apply text-subheading font-normal;
+    color: hsl(var(--foreground));
   }
   
   .podia-body {
-    @apply text-body text-white-text font-normal;
+    @apply text-body font-normal;
+    color: hsl(var(--foreground));
   }
   
   .podia-secondary {
-    @apply text-secondary text-light-gray-text font-normal;
+    @apply text-secondary font-normal;
+    color: hsl(var(--muted-foreground));
   }
-  
-  /* Glass effect utilities - updated for new palette */
+
   .glass-panel {
-    background: var(--surface-overlay);
     backdrop-filter: blur(16px);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
+    transition: all 200ms ease-in-out;
+  }
+
+  /* Light mode glass panel */
+  .light .glass-panel {
+    background: var(--light-surface);
+    border-color: var(--light-border);
+    box-shadow: var(--light-shadow-1);
+  }
+
+  /* Dark mode glass panel */
+  .dark .glass-panel {
+    background: var(--surface-overlay);
+    border-color: var(--border-subtle);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
   
@@ -149,100 +243,140 @@
     );
   }
 
-  /* Shadow utilities */
   .shadow-subtle {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .light .shadow-subtle {
+    box-shadow: var(--light-shadow-1);
   }
 
   .shadow-glow {
     box-shadow: 0 0 20px rgba(46, 226, 173, 0.4);
   }
 
-  /* Text gradient with new colors */
+  .light .shadow-glow {
+    box-shadow: var(--light-shadow-hover);
+  }
+
   .text-gradient-teal {
     @apply bg-gradient-to-r bg-clip-text text-transparent from-primary-teal to-accent-green;
   }
   
-  /* Voice listening animation */
   .voice-ripple {
     @apply animate-ping;
     background: radial-gradient(circle, rgba(46, 226, 173, 0.4) 0%, transparent 70%);
   }
   
-  /* Microphone gradient */
   .mic-gradient {
     background: radial-gradient(circle, rgba(46, 226, 173, 0.3) 0%, transparent 70%);
   }
 }
 
 @layer components {
-  /* Podia Button Components */
   .podia-button-primary {
-    @apply bg-primary-teal text-white-text font-medium text-button
-           rounded-podia-button px-4 py-2.5 transition-all duration-200
-           hover:bg-accent-green focus:outline-none focus:ring-2 focus:ring-primary-teal/50
-           active:scale-95 shadow-podia-button;
+    @apply font-medium text-button rounded-podia-button px-4 py-2.5 
+           focus:outline-none focus:ring-2 focus:ring-primary/50
+           active:scale-95 theme-transition-scale;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .podia-button-primary:hover {
+    background: hsl(var(--primary) / 0.9);
   }
   
   .podia-chip-secondary {
-    @apply bg-deep-blue text-white-text font-normal text-chip
-           rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
-           hover:bg-opacity-90 border border-transparent;
+    @apply font-normal text-chip rounded-podia-chip px-3.5 py-1.5 
+           border border-transparent theme-transition;
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+  }
+
+  .podia-chip-secondary:hover {
+    background: hsl(var(--secondary) / 0.8);
   }
   
   .podia-chip-outline {
-    @apply bg-transparent text-light-gray-text font-normal text-chip
-           rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
-           border border-light-gray-text/40 hover:border-light-gray-text/60;
+    @apply bg-transparent font-normal text-chip rounded-podia-chip px-3.5 py-1.5 
+           theme-transition;
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .podia-chip-outline:hover {
+    border-color: hsl(var(--border) / 0.8);
   }
   
-  /* Podia Cards */
   .podia-card {
-    @apply bg-dark-navy rounded-podia-card p-4 transition-all duration-300;
+    @apply rounded-podia-card p-4 theme-transition;
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
   }
   
-  /* Podia Input/Message Bar */
   .podia-input {
-    @apply bg-deep-blue border border-border-subtle rounded-xl px-4 py-3
-           text-white-text placeholder:text-light-gray-text placeholder:text-secondary
-           focus:outline-none focus:ring-1 focus:ring-primary-teal focus:border-primary-teal
-           transition-all duration-200;
+    @apply rounded-xl px-4 py-3 theme-transition
+           focus:outline-none focus:ring-1 focus:ring-primary;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  .podia-input::placeholder {
+    color: hsl(var(--muted-foreground));
   }
   
-  /* Voice Input Button */
   .podia-voice-button {
-    @apply w-12 h-12 rounded-full bg-primary-teal text-white-text
-           flex items-center justify-center transition-all duration-200
-           hover:bg-accent-green active:scale-95 shadow-podia-button;
+    @apply w-12 h-12 rounded-full flex items-center justify-center 
+           theme-transition-scale active:scale-95;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .podia-voice-button:hover {
+    background: hsl(var(--primary) / 0.9);
   }
   
   .podia-voice-button.active {
-    @apply bg-primary-teal animate-pulse;
+    @apply animate-pulse;
+    background: hsl(var(--primary));
   }
   
-  /* Icon Container */
   .podia-icon-container {
-    @apply w-10 h-10 rounded-full bg-dark-navy flex items-center justify-center;
+    @apply w-10 h-10 rounded-full flex items-center justify-center theme-transition;
+    background: hsl(var(--secondary));
   }
   
   .podia-icon-container .icon {
-    @apply text-primary-teal w-5 h-5;
+    @apply w-5 h-5;
+    color: hsl(var(--primary));
   }
   
-  /* Glass Card Component - updated for Podia theme */
   .glass-card {
-    @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
-    background: linear-gradient(to bottom, var(--surface-raised), var(--surface));
-    border-color: var(--border-subtle);
+    @apply rounded-xl border backdrop-blur-md shadow-subtle 
+           transition-all duration-300 ease-out overflow-hidden theme-transition;
+    background: hsl(var(--card) / 0.8);
+    border-color: hsl(var(--border));
   }
   
   .glass-card:hover {
     @apply shadow-lg;
-    border-color: rgba(46, 226, 173, 0.2);
+    border-color: hsl(var(--primary) / 0.2);
+  }
+
+  /* Light mode specific card styling */
+  .light .glass-card {
+    background: var(--light-surface);
+    border-color: var(--light-border);
+    box-shadow: var(--light-shadow-1);
+  }
+
+  .light .glass-card:hover {
+    box-shadow: var(--light-shadow-hover);
   }
 }
 
-/* Animation keyframes - keep existing ones and add voice ripple */
+/* Animation keyframes */
 @keyframes voice-ripple {
   0% {
     transform: scale(1);

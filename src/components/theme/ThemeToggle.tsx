@@ -11,17 +11,22 @@ interface ThemeToggleProps {
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   
+  const handleToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+  
   return (
     <Button
       variant="outline"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className={`rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-10 ${className}`}
+      size="icon"
+      onClick={handleToggle}
+      className={`rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle h-11 w-11 ${className}`}
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
-        <Sun className="h-4 w-4" />
+        <Sun className="h-5 w-5 transition-transform duration-200" />
       ) : (
-        <Moon className="h-4 w-4" />
+        <Moon className="h-5 w-5 transition-transform duration-200" />
       )}
     </Button>
   );

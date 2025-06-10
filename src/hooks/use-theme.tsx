@@ -23,13 +23,22 @@ const ThemeProviderContext = React.createContext<ThemeProviderState>(initialStat
 
 export function ThemeProvider({
   children,
-  defaultTheme = "dark", // Change default to dark to match our app
+  defaultTheme = "dark",
   storageKey = "brief-me-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = React.useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = React.useState<Theme>(() => {
+    const stored = localStorage.getItem(storageKey) as Theme;
+    if (stored) return stored;
+    
+    // Respect OS-level preference on first load
+    if (typeof window !== "undefined") {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return prefersDark ? "dark" : "light";
+    }
+    
+    return defaultTheme;
+  });
 
   React.useEffect(() => {
     const root = window.document.documentElement;
