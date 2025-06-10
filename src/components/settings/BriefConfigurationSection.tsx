@@ -124,7 +124,7 @@ const BriefConfigurationSection = () => {
   }
   };
 
-  const hasMultipleTags = tags.length > 1;
+  // const hasMultipleTags = tags.length > 1;
 
   return (
     <div className="space-y-8">
@@ -243,7 +243,7 @@ const BriefConfigurationSection = () => {
       <Separator className="bg-border-subtle" />
 
       {/* Split Brief Controls */}
-      {hasMultipleTags && (
+      {tags?.length && (
         <div>
           <SplitBriefControls
             tags={tags}
@@ -252,7 +252,7 @@ const BriefConfigurationSection = () => {
         </div>
       )}
 
-      {!hasMultipleTags && (
+      {!tags?.length && (
         <div className="text-center py-8 text-text-secondary">
           <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
           <h3 className="text-lg font-medium text-text-primary mb-2">Split Briefs</h3>
