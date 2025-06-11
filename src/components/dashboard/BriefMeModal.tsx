@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,7 @@ const BriefMeModal = ({
   const [customHours, setCustomHours] = useState(3);
   const [detectedTime, setDetectedTime] = useState("3 hours");
   const [customStartDate, setCustomStartDate] = useState<Date>();
-  const [customStartTime, setCustomStartTime] = useState("09:00");
+  const [customStartTime, setCustomStartTime] = useState(moment().format("HH:mm"));
   const [currentTime] = useState(new Date());
   const [showAnalyzing, setShowAnalyzing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -93,45 +93,40 @@ const BriefMeModal = ({
     }
   };
 
-  const getCombinedDateTime = () => {
-    const date = customStartDate || new Date(); // fallback to today
-    const time = customStartTime || moment().format("HH:mm"); // fallback to now time
+  const getCombinedDateTime = (date: Date, time: string) => {
+    date = date || new Date(); // fallback to today
+    time = time || moment().format("HH:mm"); // fallback to now time
+    console.log(date, time);
 
     return moment(`${moment(date).format("YYYY-MM-DD")} ${time}`, "YYYY-MM-DD HH:mm");
   };
 
-  const updateCustomHours = () => {
-  const combinedDateTime = getCombinedDateTime();
-  const now = moment();
+  const updateCustomHours = (date: Date, time: string) => {
+    const combinedDateTime = getCombinedDateTime(date, time);
+    const now = moment();
 
-  if (combinedDateTime.isAfter(now)) {
-    // Prevent setting future hours
-    setCustomHours(0); // Or null / error state, depending on UX
-    return;
-  }
+    if (combinedDateTime.isAfter(now)) {
+      // Prevent setting future hours
+      setCustomHours(0); // Or null / error state, depending on UX
+      return;
+    }
 
-  const diffInHours = now.diff(combinedDateTime, "hours");
-  setCustomHours(diffInHours);
-};
+    const diffInHours = now.diff(combinedDateTime, "hours");
+    setCustomHours(diffInHours);
+  };
 
 
   // Called when user selects a new date
   const getPastHours = (date: Date) => {
     setCustomStartDate(date);
-    console.log(date, 'date');
-    updateCustomHours(); // Update hours after changing date
+    updateCustomHours(date, customStartTime); // Update hours after changing date
   };
 
   // Called when user selects a new time
   const handleChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomStartTime(e.target.value);
-    updateCustomHours(); // Update hours after changing time
+    updateCustomHours(customStartDate, e.target.value); // Update hours after changing time
   };
-
-  // Inside your component
-  const isToday = moment(customStartDate).isSame(new Date(), 'day');
-  const maxTime = isToday ? moment().format("HH:mm") : undefined;
-
 
   if (showAnalyzing) {
     return (
