@@ -359,12 +359,12 @@ const BriefDetail = () => {
 
           {/* Audio Brief Section */}
           <div className="glass-card rounded-2xl p-4 md:p-6">
-            <h2 className="text-lg font-semibold text-text-primary mb-6">Audio Brief</h2>
+            <h2 className="text-lg font-semibold text-text-primary mb-4">Audio Brief</h2>
             
             {/* Audio Player */}
-            <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
               {/* Waveform */}
-              <div className="h-32 bg-surface/60 rounded-lg flex items-end px-6 mb-4 relative overflow-hidden">
+              <div className="h-16 bg-surface/60 rounded-lg flex items-end px-4 mb-3 relative overflow-hidden">
                 <div className="flex items-end gap-[2px] h-full w-full">
                   {Array.from({ length: 120 }).map((_, i) => {
                     const height = Math.random();
@@ -378,8 +378,8 @@ const BriefDetail = () => {
                             : 'bg-text-secondary/40'
                         }`}
                         style={{ 
-                          height: `${Math.max(8, height * 80)}%`,
-                          minHeight: '4px'
+                          height: `${Math.max(8, height * 60)}%`,
+                          minHeight: '3px'
                         }}
                       />
                     );
@@ -387,7 +387,7 @@ const BriefDetail = () => {
                 </div>
                 
                 {/* Progress indicator */}
-                <div className="absolute left-6 top-0 bottom-0 w-[25%] pointer-events-none">
+                <div className="absolute left-4 top-0 bottom-0 w-[25%] pointer-events-none">
                   <div className="h-full w-px bg-accent-primary/60 ml-auto" />
                 </div>
               </div>
@@ -396,22 +396,22 @@ const BriefDetail = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-text-secondary">0:45</span>
                 
-                <div className="flex items-center gap-4">
-                  <Button variant="ghost" size="icon" className="h-12 w-12">
-                    <SkipBack className="h-5 w-5" />
+                <div className="flex items-center gap-3">
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <SkipBack className="h-4 w-4" />
                   </Button>
                   
                   <Button
                     variant="primary"
                     size="icon"
                     onClick={handlePlayPause}
-                    className="h-16 w-16 rounded-full"
+                    className="h-12 w-12 rounded-full"
                   >
-                    {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 ml-1" />}
+                    {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-1" />}
                   </Button>
                   
-                  <Button variant="ghost" size="icon" className="h-12 w-12">
-                    <SkipForward className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <SkipForward className="h-4 w-4" />
                   </Button>
                 </div>
                 
@@ -686,3 +686,5 @@ const BriefDetail = () => {
 };
 
 export default BriefDetail;
+
+}
