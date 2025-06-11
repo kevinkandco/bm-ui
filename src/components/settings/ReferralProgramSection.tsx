@@ -4,10 +4,19 @@ import { Copy, Mail, Share, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const ReferralProgramSection = () => {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const [linkedinModalOpen, setLinkedinModalOpen] = useState(false);
   
   // Mock data - would come from API in real implementation
   const username = "alexjohnson";
@@ -42,29 +51,33 @@ const ReferralProgramSection = () => {
         window.open(url, '_blank');
         break;
       case 'linkedin':
-        // Copy message to clipboard for LinkedIn
-        const linkedinMessage = `${shareText}\n\nCheck it out: ${shareUrl}`;
-        try {
-          await navigator.clipboard.writeText(linkedinMessage);
-          toast({
-            title: "Message Copied!",
-            description: "LinkedIn message copied to clipboard. Paste it when LinkedIn opens.",
-          });
-        } catch (err) {
-          toast({
-            title: "Copy Failed",
-            description: "Failed to copy message to clipboard",
-            variant: "destructive"
-          });
-        }
-        // Open LinkedIn sharing page
-        url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-        window.open(url, '_blank');
+        setLinkedinModalOpen(true);
         break;
       case 'email':
         url = `mailto:?subject=${encodeURIComponent('Check out Brief.me')}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`;
         window.open(url, '_blank');
         break;
+    }
+  };
+
+  const handleLinkedinShare = async () => {
+    const linkedinMessage = `${shareText}\n\nCheck it out: ${shareUrl}`;
+    try {
+      await navigator.clipboard.writeText(linkedinMessage);
+      toast({
+        title: "Message Copied!",
+        description: "LinkedIn message copied to clipboard. Paste it when LinkedIn opens.",
+      });
+      // Open LinkedIn sharing page
+      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+      window.open(url, '_blank');
+      setLinkedinModalOpen(false);
+    } catch (err) {
+      toast({
+        title: "Copy Failed",
+        description: "Failed to copy message to clipboard",
+        variant: "destructive"
+      });
     }
   };
 
@@ -180,6 +193,43 @@ const ReferralProgramSection = () => {
           </CollapsibleContent>
         </Collapsible>
       </div>
+
+      {/* LinkedIn Share Modal */}
+      <Dialog open={linkedinModalOpen} onOpenChange={setLinkedinModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-text-primary">Share on LinkedIn</DialogTitle>
+            <DialogDescription className="text-text-secondary">
+              We'll copy your personalized message to your clipboard so you can easily paste it when LinkedIn opens.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="bg-white/5 border border-white/10 rounded-lg p-4 my-4">
+            <p className="text-sm text-text-secondary mb-2">Message that will be copied:</p>
+            <p className="text-text-primary font-mono text-sm">
+              "{shareText}"
+              <br /><br />
+              Check it out: {shareUrl}
+            </p>
+          </div>
+
+          <DialogFooter className="sm:justify-start">
+            <Button
+              onClick={handleLinkedinShare}
+              className="w-full sm:w-auto"
+            >
+              Copy & Open LinkedIn
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setLinkedinModalOpen(false)}
+              className="w-full sm:w-auto"
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
