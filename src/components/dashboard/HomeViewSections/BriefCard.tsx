@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -431,5 +432,3 @@ const BriefCard = ({
 };
 
 export default React.memo(BriefCard);
-
-</edits_to_apply>
