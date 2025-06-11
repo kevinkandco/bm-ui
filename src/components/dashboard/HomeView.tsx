@@ -606,9 +606,12 @@ const HomeView = ({
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="p-0 h-auto">
                   <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
-                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
+                    <AvatarImage src={user.profile_path} alt={user.name} onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
                     <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
-                      AJ
+                      {user.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
