@@ -21,20 +21,20 @@ import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import ListeningScreen from "./ListeningScreen";
 import moment from "moment";
+import { useApi } from "@/hooks/useApi";
 
 interface BriefMeModalProps {
   open: boolean;
   onClose: () => void;
-  onGenerateBrief: () => void;
 }
 
 const BriefMeModal = ({ 
   open, 
-  onClose, 
-  onGenerateBrief
+  onClose,
 }: BriefMeModalProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { call } = useApi();
   const [timePeriod, setTimePeriod] = useState<"auto" | "custom">("auto");
   const [customHours, setCustomHours] = useState(3);
   const [detectedTime, setDetectedTime] = useState("3 hours");
@@ -42,45 +42,96 @@ const BriefMeModal = ({
   const [customStartTime, setCustomStartTime] = useState("09:00");
   const [currentTime] = useState(new Date());
   const [showAnalyzing, setShowAnalyzing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Simulate detection of offline time
     setDetectedTime("3 hours");
   }, [open]);
 
-  const handleGenerateBrief = () => {
+  const handleGenerateBrief = async () => {
     setShowAnalyzing(true);
-    
-    // Simulate brief generation process
-    setTimeout(() => {
-      setShowAnalyzing(false);
-      onClose();
-      onGenerateBrief();
-      
-      toast({
-        title: "Brief Created",
-        description: "Your brief has been generated successfully"
-      });
-    }, 3000);
+
+    let timeDescription = "";
+
+    if (timePeriod === "auto") {
+      timeDescription = detectedTime;
+    } else {
+      if (customStartDate) {
+        const endTime = format(currentTime, "HH:mm");
+        timeDescription = `${format(
+          customStartDate,
+          "MMM d"
+        )} ${customStartTime} - ${format(currentTime, "MMM d")} ${endTime}`;
+      } else {
+        timeDescription = `${customHours} hours`;
+      }
+    }
+
+    const response = await call("post", "/api/catch-me", {
+      body: {
+        time_period:
+          timePeriod === "auto" ? parseInt(detectedTime) : customHours,
+      },
+      showToast: true,
+      toastTitle: "Generate Summary failed",
+      toastDescription: "Summary generation failed. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false, // returns null on failure
+    });
+
+    if (response) {
+      setTimeout(() => {
+        setShowAnalyzing(false);
+        onClose();
+
+        toast({
+          title: "Brief Created",
+          description: "Your brief has been generated successfully",
+        });
+      }, 30000);
+    }
   };
 
-    const getPastHours = (date: Date) => {
-      const inputDate = moment(date);
-      const now = moment();
-  
-      const diffInHours = now.diff(inputDate, "hours");
-      setCustomHours(diffInHours);
-      setCustomStartDate(date);
-    };
-  
-    const handleChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value) {
-  
-          setCustomStartTime(e.target.value);
-          const hourString = moment(e.target.value, "HH:mm").format("HH");
-          setCustomHours(Number(hourString));
-        }
-    };
+  const getCombinedDateTime = () => {
+    const date = customStartDate || new Date(); // fallback to today
+    const time = customStartTime || moment().format("HH:mm"); // fallback to now time
+
+    return moment(`${moment(date).format("YYYY-MM-DD")} ${time}`, "YYYY-MM-DD HH:mm");
+  };
+
+  const updateCustomHours = () => {
+  const combinedDateTime = getCombinedDateTime();
+  const now = moment();
+
+  if (combinedDateTime.isAfter(now)) {
+    // Prevent setting future hours
+    setCustomHours(0); // Or null / error state, depending on UX
+    return;
+  }
+
+  const diffInHours = now.diff(combinedDateTime, "hours");
+  setCustomHours(diffInHours);
+};
+
+
+  // Called when user selects a new date
+  const getPastHours = (date: Date) => {
+    setCustomStartDate(date);
+    console.log(date, 'date');
+    updateCustomHours(); // Update hours after changing date
+  };
+
+  // Called when user selects a new time
+  const handleChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomStartTime(e.target.value);
+    updateCustomHours(); // Update hours after changing time
+  };
+
+  // Inside your component
+  const isToday = moment(customStartDate).isSame(new Date(), 'day');
+  const maxTime = isToday ? moment().format("HH:mm") : undefined;
+
 
   if (showAnalyzing) {
     return (

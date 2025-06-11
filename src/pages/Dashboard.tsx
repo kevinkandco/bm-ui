@@ -236,11 +236,6 @@ const Dashboard = () => {
     });
   }, [toast]);
 
-  const handleGenerateBrief = useCallback(() => {
-    // This would typically trigger the creation of a new brief
-    console.log("Generating new brief...");
-  }, []);
-
   return (
     <div className="min-h-screen flex flex-col">
       {/* Focus Mode Timer Header */}
@@ -290,7 +285,6 @@ const Dashboard = () => {
       <BriefMeModal
         open={showBriefMeModal}
         onClose={() => setShowBriefMeModal(false)}
-        onGenerateBrief={handleGenerateBrief}
       />
     </div>
   );
