@@ -1,7 +1,9 @@
+
 import React from "react";
 import { Clock, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
 
 interface NextBriefSectionProps {
   onUpdateSchedule: () => void;
@@ -9,6 +11,11 @@ interface NextBriefSectionProps {
 
 export const NextBriefSection = React.memo(({ onUpdateSchedule }: NextBriefSectionProps) => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  
+  const handleUpdateSchedule = () => {
+    navigate("/dashboard/settings", { state: { activeSection: "brief-config" } });
+  };
   
   return (
     <div>
@@ -29,7 +36,7 @@ export const NextBriefSection = React.memo(({ onUpdateSchedule }: NextBriefSecti
             variant="outline" 
             size={isMobile ? "sm" : "default"}
             className="w-full text-text-primary border-border-subtle hover:bg-surface-raised/20 text-xs md:text-sm"
-            onClick={onUpdateSchedule}
+            onClick={handleUpdateSchedule}
           >
             Update Schedule
           </Button>
