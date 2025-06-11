@@ -9,6 +9,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Separator } from "@/components/ui/separator";
 import { capitalizeFirstLetter } from "@/lib/utils";
 
+const BaseURL = import.meta.env.VITE_API_HOST;
+
 
 interface PrioritiesSectionProps {
   priorities: Priorities;
@@ -96,7 +98,7 @@ const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionP
         {priorities?.priorityPeople?.slice(0, 4).map((person, i) => (
           <div key={i} className="relative">
             <Avatar className="h-6 w-6 ring-1 ring-background">
-              <AvatarImage src={person.avatar} alt={person.name} />
+              <AvatarImage src={BaseURL + person.avatar} alt={person.name} />
               <AvatarFallback className={`${person.active ? "bg-accent-primary/20 text-accent-primary" : "bg-surface-raised/30 text-text-secondary"} text-xs`}>
                 {person.name.charAt(0)}
               </AvatarFallback>
