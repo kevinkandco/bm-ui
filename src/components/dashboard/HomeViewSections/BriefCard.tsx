@@ -1,8 +1,10 @@
+
 import React, { useState } from "react";
-import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock } from "lucide-react";
+import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { useFeedbackTracking } from "../useFeedbackTracking";
 
 interface BriefCardProps {
@@ -43,6 +45,14 @@ const BriefCard = ({
   const [showAddMissing, setShowAddMissing] = useState(false);
   const [comment, setComment] = useState("");
   const [missingContent, setMissingContent] = useState("");
+  
+  // Audio player state
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(300); // 5 minutes mock duration
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  
   const {
     handleSummaryFeedback,
     handleAddMissingContent
@@ -57,6 +67,38 @@ const BriefCard = ({
 
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handlePlayClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(true); // Open the dropdown
+    onPlayBrief(brief.id);
+    setIsAudioPlaying(!isAudioPlaying);
+  };
+
+  const handleAudioToggle = () => {
+    setIsAudioPlaying(!isAudioPlaying);
+  };
+
+  const handleMuteToggle = () => {
+    setIsMuted(!isMuted);
+  };
+
+  const handleTimeChange = (value: number[]) => {
+    setCurrentTime(value[0]);
+  };
+
+  const handleSpeedChange = () => {
+    const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    const currentIndex = speeds.indexOf(playbackSpeed);
+    const nextIndex = (currentIndex + 1) % speeds.length;
+    setPlaybackSpeed(speeds[nextIndex]);
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   const handleFeedback = async (type: 'up' | 'down', e: React.MouseEvent) => {
@@ -108,10 +150,7 @@ const BriefCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* Play button moved to the left, doc icon removed */}
-            <button onClick={e => {
-              e.stopPropagation();
-              onPlayBrief(brief.id);
-            }} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
+            <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
               {playingBrief === brief.id ? (
                 <div className="flex items-center gap-0.5">
                   <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
@@ -217,6 +256,64 @@ const BriefCard = ({
       {isExpanded && (
         <div className="px-6 pb-6">
           <div className="border-t border-white/20 pt-3">
+            {/* Audio Player Section - Only show when playing */}
+            {playingBrief === brief.id && (
+              <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={handleAudioToggle}
+                      className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+                    >
+                      {isAudioPlaying ? (
+                        <Pause className="h-4 w-4 text-primary-teal" />
+                      ) : (
+                        <Play className="h-4 w-4 text-primary-teal" />
+                      )}
+                    </button>
+                    
+                    <div className="text-sm">
+                      <div className="text-white-text font-medium">Playing: {brief.name}</div>
+                      <div className="text-light-gray-text text-xs">
+                        {formatTime(currentTime)} / {formatTime(duration)}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={handleSpeedChange}
+                      className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors"
+                    >
+                      {playbackSpeed}x
+                    </button>
+                    
+                    <button 
+                      onClick={handleMuteToggle}
+                      className="w-6 h-6 flex items-center justify-center text-light-gray-text hover:text-white-text transition-colors"
+                    >
+                      {isMuted ? (
+                        <VolumeX className="h-4 w-4" />
+                      ) : (
+                        <Volume2 className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="mb-2">
+                  <Slider
+                    value={[currentTime]}
+                    max={duration}
+                    step={1}
+                    onValueChange={handleTimeChange}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Time Saved Breakdown - Expanded State */}
             <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
               <Clock className="h-4 w-4 text-green-400" />
