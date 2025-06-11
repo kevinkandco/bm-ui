@@ -287,6 +287,7 @@ const Dashboard = () => {
       <BriefMeModal
         open={showBriefMeModal}
         onClose={() => setShowBriefMeModal(false)}
+        getRecentBriefs={getRecentBriefs}
       />
     </div>
   );

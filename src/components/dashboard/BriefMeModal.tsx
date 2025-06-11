@@ -26,11 +26,13 @@ import { useApi } from "@/hooks/useApi";
 interface BriefMeModalProps {
   open: boolean;
   onClose: () => void;
+  getRecentBriefs: () => void;
 }
 
 const BriefMeModal = ({ 
   open, 
   onClose,
+  getRecentBriefs
 }: BriefMeModalProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -81,6 +83,7 @@ const BriefMeModal = ({
     });
 
     if (response) {
+      getRecentBriefs();
       setTimeout(() => {
         setShowAnalyzing(false);
         onClose();
@@ -129,7 +132,7 @@ const BriefMeModal = ({
 
   if (showAnalyzing) {
     return (
-      <Dialog open={open} onOpenChange={() => {}}>
+      <Dialog open={open} onOpenChange={onClose}>
         <DialogContent className={`sm:max-w-md max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10 ${isMobile ? 'p-4' : 'p-6'}`}>
           <ListeningScreen
             isListening={true}
