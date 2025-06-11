@@ -1,12 +1,14 @@
+
 import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain, Calendar } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain, Calendar, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import IntegrationsSection from "@/components/settings/IntegrationsSection";
 import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
 import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
+import ReferralProgramSection from "@/components/settings/ReferralProgramSection";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -65,6 +67,12 @@ const SettingsPage = () => {
       active: activeSection === "feedback"
     },
     {
+      id: "referral",
+      icon: Gift,
+      name: "Referral Program",
+      active: activeSection === "referral"
+    },
+    {
       id: "notifications",
       icon: Bell,
       name: "Notifications",
@@ -86,6 +94,8 @@ const SettingsPage = () => {
         return <BriefConfigurationSection />;
       case "feedback":
         return <FeedbackTrainingSection />;
+      case "referral":
+        return <ReferralProgramSection />;
       case "profile":
         return (
           <>
