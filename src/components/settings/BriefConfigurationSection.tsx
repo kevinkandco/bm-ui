@@ -155,9 +155,14 @@ const BriefConfigurationSection = () => {
             onValueChange={(value) => setScheduleType(value as "auto" | "custom")}
             className="space-y-4"
           >
-            <div className="flex items-center space-x-3">
-              <RadioGroupItem value="auto" id="auto" />
-              <Label htmlFor="auto" className="text-text-primary">Use AI-recommended schedule</Label>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-3">
+                <RadioGroupItem value="auto" id="auto" />
+                <Label htmlFor="auto" className="text-text-primary">Use AI-recommended schedule</Label>
+              </div>
+              <p className="text-sm text-text-secondary ml-7">
+                AI Recommended quietly notices when you're tied up—back-to-back meetings, offline stretches, deep-work blocks—and automatically serves a concise, privacy-safe catch-up on what you missed, so you can jump back in without the scroll.
+              </p>
             </div>
             <div className="flex items-center space-x-3">
               <RadioGroupItem value="custom" id="custom" />
