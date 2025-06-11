@@ -96,7 +96,6 @@ const BriefMeModal = ({
   const getCombinedDateTime = (date: Date, time: string) => {
     date = date || new Date(); // fallback to today
     time = time || moment().format("HH:mm"); // fallback to now time
-    console.log(date, time);
 
     return moment(`${moment(date).format("YYYY-MM-DD")} ${time}`, "YYYY-MM-DD HH:mm");
   };
