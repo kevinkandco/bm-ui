@@ -34,6 +34,7 @@ import { useApi } from "@/hooks/useApi";
 import { Summary, SummaryMassage } from "@/components/dashboard/types";
 import Audio from "@/components/dashboard/Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
+import TranscriptView from "@/components/dashboard/TranscriptView";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -51,6 +52,7 @@ const BriefDetail = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState<'up' | 'down' | null>(null);
   const [actionItems, setActionItems] = useState<SummaryMassage[]>([]);
+  const [transcriptOpen, setTranscriptOpen] = useState(false);
   const {
     audioRef,
     isPlaying,
@@ -491,6 +493,13 @@ const BriefDetail = () => {
                 
                 <span className="text-sm text-text-secondary">{formatDuration(duration)}</span>
               </div>
+              <div className="flex justify-end">
+                <Button 
+                onClick={() => setTranscriptOpen(true)} 
+                variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
+                  View Transcript
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -736,6 +745,13 @@ const BriefDetail = () => {
           />
         )}
       </div>
+      <TranscriptView 
+        open={transcriptOpen}
+        onClose={() => setTranscriptOpen(false)}
+        briefId={briefData?.id}
+        transcript={briefData?.summary}
+        title={briefData?.title}
+      />
     </DashboardLayout>
   );
 };

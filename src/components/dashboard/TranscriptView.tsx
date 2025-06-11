@@ -9,9 +9,10 @@ interface TranscriptViewProps {
   onClose: () => void;
   briefId: number | null;
   transcript: string;
+  title?: string;
 }
 
-const TranscriptView = ({ open, onClose, briefId, transcript }: TranscriptViewProps) => {
+const TranscriptView = ({ open, onClose, briefId, transcript, title }: TranscriptViewProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -19,11 +20,8 @@ const TranscriptView = ({ open, onClose, briefId, transcript }: TranscriptViewPr
         <DialogHeader className="p-6 pb-4 border-b">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-semibold">
-              Audio Transcript - Brief {briefId}
+              Audio Transcript - {title ?? `Brief ${briefId}`}
             </DialogTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         </DialogHeader>
 
@@ -31,7 +29,7 @@ const TranscriptView = ({ open, onClose, briefId, transcript }: TranscriptViewPr
           <div className="prose max-w-none">
             <div className="bg-muted/30 rounded-lg p-4 border">
               <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
-                {transcript.trim()}
+                {transcript?.trim()}
               </pre>
             </div>
           </div>
