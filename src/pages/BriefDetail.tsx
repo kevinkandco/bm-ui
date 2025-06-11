@@ -361,27 +361,6 @@ const BriefDetail = () => {
           <div className="glass-card rounded-2xl p-4 md:p-6">
             <h2 className="text-lg font-semibold text-text-primary mb-6">Audio Brief</h2>
             
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <div className="text-2xl font-bold text-text-primary">{briefData.stats.messagesAnalyzed}</div>
-                <div className="text-sm text-text-secondary">Messages Analyzed</div>
-                <div className="text-xs text-text-secondary mt-1">Emails, Threads, Messages</div>
-              </div>
-              
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <div className="text-2xl font-bold text-text-primary">{briefData.stats.timeSaved}</div>
-                <div className="text-sm text-text-secondary">Estimated Time Saved</div>
-                <div className="text-xs text-text-secondary mt-1">T M S</div>
-              </div>
-              
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <div className="text-2xl font-bold text-text-primary">{briefData.stats.tasksFound}</div>
-                <div className="text-sm text-text-secondary">Tasks Found</div>
-                <div className="text-xs text-text-secondary mt-1">Detected and Saved</div>
-              </div>
-            </div>
-
             {/* Audio Player */}
             <div className="bg-white/5 rounded-lg p-6 border border-white/10">
               {/* Waveform */}
