@@ -605,7 +605,7 @@ const HomeView = ({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="p-0 h-auto">
-                  <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
+                  <Avatar className="h-10 w-10 border-2 border-border-subtle border-accent-primary transition-colors cursor-pointer">
                     <AvatarImage src={BaseURL + user.profile_path} alt={user.name} onError={(e) => {
                       (e.currentTarget as HTMLImageElement).style.display = "none";
                     }}
