@@ -305,30 +305,55 @@ const BriefDetail = () => {
 
         {/* Main Content */}
         <div className="space-y-6">
-          {/* Stats Row */}
+          {/* Condensed Stats Section */}
           <div className="glass-card rounded-2xl p-4 md:p-6">
-            <div className="flex flex-wrap gap-4 md:gap-6 mb-4">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-accent-primary" />
-                <span className="font-semibold text-text-primary text-sm md:text-base">{briefData.stats.slackMessages.total} Slack Messages</span>
-                <Badge variant="secondary" className="text-xs">{briefData.stats.slackMessages.priority} priority</Badge>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Mail className="h-5 w-5 text-accent-primary" />
-                <span className="font-semibold text-text-primary text-sm md:text-base">{briefData.stats.emails.total} Emails</span>
-                <Badge variant="secondary" className="text-xs">{briefData.stats.emails.priority} priority</Badge>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <CheckSquare className="h-5 w-5 text-accent-primary" />
-                <span className="font-semibold text-text-primary text-sm md:text-base">{briefData.stats.actionItems} Action Items</span>
-              </div>
+            {/* Time Saved Banner */}
+            <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-4">
+              <Clock className="h-4 w-4" />
+              <span>Time saved: {briefData.timeSaved}</span>
             </div>
 
-            <div className="flex items-center gap-2 text-green-400">
-              <Clock className="h-4 w-4" />
-              <span className="text-sm">Time saved: {briefData.timeSaved}</span>
+            {/* Condensed Stats Grid */}
+            <div className="space-y-2">
+              {/* Slack Messages */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
+                  <span className="text-sm font-medium text-text-primary">
+                    {briefData.stats.slackMessages.total} Slack Messages
+                  </span>
+                </div>
+                {briefData.stats.slackMessages.priority > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                    {briefData.stats.slackMessages.priority} priority
+                  </Badge>
+                )}
+              </div>
+
+              {/* Emails */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                  <span className="text-sm font-medium text-text-primary">
+                    {briefData.stats.emails.total} Emails
+                  </span>
+                </div>
+                {briefData.stats.emails.priority > 0 && (
+                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                    {briefData.stats.emails.priority} priority
+                  </Badge>
+                )}
+              </div>
+
+              {/* Action Items */}
+              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+                <div className="flex items-center gap-3">
+                  <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                  <span className="text-sm font-medium text-text-primary">
+                    {briefData.stats.actionItems} Action Items
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
