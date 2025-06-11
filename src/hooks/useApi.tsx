@@ -11,6 +11,7 @@ interface ApiCallOptions {
   toastVariant?: "default" | "destructive";
   body?: any;
   returnOnFailure?: boolean; // whether to return false or throw
+  headers?: any;
 }
 
 export function useApi() {
@@ -38,7 +39,8 @@ export function useApi() {
         const response = await Http.callApi(
           method,
           `${BaseURL}${endpoint}`,
-          options?.body
+          options?.body,
+          options?.headers
         );
 
         return response?.data ?? null;

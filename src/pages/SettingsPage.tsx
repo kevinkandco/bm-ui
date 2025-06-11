@@ -21,6 +21,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+const BaseURL = import.meta.env.VITE_API_HOST;
+
 const SettingsPage = () => {
   const { toast } = useToast();
   const { user } = useAuthStore();
@@ -35,7 +37,9 @@ const SettingsPage = () => {
     name: "",
     job_title: "",
     department: "",
+    profileImage: "",
   });
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
   
   // Get activeSection from navigation state or default to "profile"
   const [activeSection, setActiveSection] = React.useState(
@@ -47,8 +51,21 @@ const SettingsPage = () => {
   };
 
   const handleSaveSettings = async () => {
+
+    const formData = new FormData();
+    formData.append("name", settings.name);
+    formData.append("job_title", settings.job_title);
+    formData.append("department", settings.department);
+    if (imageFile) {
+      formData.append("profile_path", imageFile); // must match backend field
+    }
+
+
     const response = await call("post", "/api/settings/profile-update", {
-      body: settings,
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
       showToast: true,
       toastTitle: "Settings Save Failed",
       toastDescription: "Failed to save settings",
@@ -147,7 +164,8 @@ const SettingsPage = () => {
       setSettings({
         name: user.name,
         job_title: user.job_title,
-        department: user.department
+        department: user.department,
+        profileImage: BaseURL + user.profile_path
       })
     }
 
@@ -161,7 +179,7 @@ const SettingsPage = () => {
       );
       handleCategoryClick(tab);
     }
-  }, [searchParams, handleCategoryClick]);
+  }, [searchParams, handleCategoryClick, user]);
 
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e)
@@ -171,7 +189,23 @@ const SettingsPage = () => {
     });
   };
 
-  
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+
+      // Optional: Show preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSettings((prev) => ({
+          ...prev,
+          profileImage: reader.result as string, // just for preview
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   const renderContent = () => {
     switch (activeSection) {
@@ -189,6 +223,22 @@ const SettingsPage = () => {
             <div className="mb-8">
               <h3 className="text-lg font-medium text-text-primary mb-4">Personal Information</h3>
               <div className="space-y-4 max-w-2xl">
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">Profile Picture</label>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={settings?.profileImage || '/default-avatar.png'} // fallback image
+                      alt="Profile"
+                      className="w-16 h-16 rounded-full border border-white/20 object-cover"
+                    />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="text-sm text-text-primary"
+                    />
+                  </div>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-text-secondary mb-1">Full Name</label>
                   <input 
