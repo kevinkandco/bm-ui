@@ -184,7 +184,7 @@ const ConnectedChannelsSection = ({
                         {integration.accounts.map((account, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-xs">
                             <div className={`h-1.5 w-1.5 rounded-full ${getStatusColor(account.status)}`}></div>
-                            <span>{account.email}</span>
+                            <span>{integration.id === "slack" ? account.workspace ?? account.email : account.email}</span>
                             <span className="text-gray-400">• {account.status}</span>
                           </div>
                         ))}
@@ -233,7 +233,7 @@ const ConnectedChannelsSection = ({
                     {integration.accounts.map((account, idx) => (
                       <div key={idx} className="flex items-center gap-2 text-xs">
                         <div className={`h-1.5 w-1.5 rounded-full ${getStatusColor(account.status)}`}></div>
-                        <span>{integration.id === "slack" ? account.workspace ?? account.email :account.email}</span>
+                        <span>{integration.id === "slack" ? account.workspace ?? account.email : account.email}</span>
                         <span className="text-gray-400">• {account.status}</span>
                       </div>
                     ))}
