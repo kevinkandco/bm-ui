@@ -8,6 +8,7 @@ export interface ConnectedAccount {
   is_combined?: boolean;
   connectedAt?: Date;
   type?: 'input' | 'output';
+  workspace?: string;
 }
 
 export interface Tag {

@@ -72,7 +72,7 @@ const ConnectedAccountsList = ({
                     {account.provider_name}
                   </h4>
                   <span className="text-sm text-text-secondary truncate">
-                    {account.email || account.name}
+                    {account.provider_name.toLowerCase() === 'slack' ? account.workspace ?? (account.email || account.name) : (account.email || account.name)}
                   </span>
                 </div>
                 
