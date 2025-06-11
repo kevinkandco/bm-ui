@@ -1,10 +1,15 @@
-
 import React, { useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useFeedbackTracking } from "../useFeedbackTracking";
 
 interface BriefCardProps {
@@ -65,6 +70,8 @@ const BriefCard = ({
     total: 33
   };
 
+  const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
+
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
   };
@@ -88,11 +95,8 @@ const BriefCard = ({
     setCurrentTime(value[0]);
   };
 
-  const handleSpeedChange = () => {
-    const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
-    const currentIndex = speeds.indexOf(playbackSpeed);
-    const nextIndex = (currentIndex + 1) % speeds.length;
-    setPlaybackSpeed(speeds[nextIndex]);
+  const handleSpeedChange = (speed: number) => {
+    setPlaybackSpeed(speed);
   };
 
   const formatTime = (time: number) => {
@@ -281,12 +285,24 @@ const BriefCard = ({
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <button 
-                      onClick={handleSpeedChange}
-                      className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors"
-                    >
-                      {playbackSpeed}x
-                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors">
+                          {playbackSpeed}x
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
+                        {playbackSpeeds.map((speed) => (
+                          <DropdownMenuItem
+                            key={speed}
+                            onClick={() => handleSpeedChange(speed)}
+                            className="text-white-text hover:bg-white/10 cursor-pointer"
+                          >
+                            {speed}x
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     
                     <button 
                       onClick={handleMuteToggle}
@@ -415,3 +431,5 @@ const BriefCard = ({
 };
 
 export default React.memo(BriefCard);
+
+</edits_to_apply>

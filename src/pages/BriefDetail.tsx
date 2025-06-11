@@ -25,6 +25,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SummaryFeedback from "@/components/dashboard/SummaryFeedback";
@@ -40,6 +46,7 @@ const BriefDetail = () => {
   const [allMessagesOpen, setAllMessagesOpen] = useState(false);
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
   // Mock data - in a real app this would be fetched based on briefId
   const briefData = {
@@ -59,6 +66,8 @@ const BriefDetail = () => {
     audioUrl: "/path/to/audio.mp3",
     audioDuration: "3:00"
   };
+
+  const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
 
   const actionItems = [
     {
@@ -215,6 +224,10 @@ const BriefDetail = () => {
   const handleInfoClick = (item: any) => {
     setSelectedActionItem(item);
     setPriorityModalOpen(true);
+  };
+
+  const handleSpeedChange = (speed: number) => {
+    setPlaybackSpeed(speed);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -398,7 +411,28 @@ const BriefDetail = () => {
                   </Button>
                 </div>
                 
-                <span className="text-sm text-text-secondary">{briefData.audioDuration}</span>
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors">
+                        {playbackSpeed}x
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
+                      {playbackSpeeds.map((speed) => (
+                        <DropdownMenuItem
+                          key={speed}
+                          onClick={() => handleSpeedChange(speed)}
+                          className="text-white-text hover:bg-white/10 cursor-pointer"
+                        >
+                          {speed}x
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  
+                  <span className="text-sm text-text-secondary">{briefData.audioDuration}</span>
+                </div>
               </div>
             </div>
           </div>
