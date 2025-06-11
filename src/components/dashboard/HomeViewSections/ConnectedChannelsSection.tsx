@@ -8,13 +8,42 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useApi } from "@/hooks/useApi";
 
-interface IntegrationOption {
-  name: string;
+type BackendIntegration = {
+  id: number;
+  provider: number;
+  provider_name: string;
+  email: string;
+  is_connected: boolean;
+  is_combined: number;
+  tag: {
+    id: number;
+    name: string;
+    color: string;
+    emoji: string;
+    send_at: string;
+    delivery_email: number;
+    delivery_audio: number;
+  } | null;
+  created_at: string;
+  updated_at: string;
+  workspace: string;
+};
+
+type AccountStatus = 'active' | 'monitoring' | 'offline';
+
+interface Account {
+  email: string;
+  workspace: string;
+  status: AccountStatus;
+}
+
+interface Integration {
   id: string;
+  name: string;
   icon: string;
-  connected: boolean;
-  monitoring: string;
-  comingSoon: boolean;
+  accounts: Account[];
+  totalCount: number;
+  workspace?: string;
 }
 
 interface ConnectedChannelsSectionProps {
@@ -24,127 +53,62 @@ interface ConnectedChannelsSectionProps {
 const ConnectedChannelsSection = ({
   showAsHorizontal = false
 }: ConnectedChannelsSectionProps) => {
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { call } = useApi();
-  const [connectedPlatforms, setConnectedPlatforms] = React.useState([]);
+  const navigate = useNavigate();
+  const [connectedPlatforms, setConnectedPlatforms] = React.useState<Integration[]>([]);
 
-  const comingSoonPlatforms = [
-    // V2 integrations - coming soon
-    {
-      name: "Outlook",
-      id: "outlook",
-      icon: "O",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Google Calendar",
-      id: "calendar",
-      icon: "C",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Asana",
-      id: "asana",
-      icon: "A",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Notion",
-      id: "notion",
-      icon: "N",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Zoom/Meet",
-      id: "zoom",
-      icon: "Z",
-      connected: false,
-      comingSoon: true
-    },
-    // V3 integrations - coming soon
-    {
-      name: "Microsoft Teams",
-      id: "teams",
-      icon: "T",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Salesforce",
-      id: "salesforce",
-      icon: "SF",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Hubspot",
-      id: "hubspot",
-      icon: "H",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Jira",
-      id: "jira",
-      icon: "J",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Confluence",
-      id: "confluence",
-      icon: "CF",
-      connected: false,
-      comingSoon: true
-    },
-    // Future integrations - coming soon
-    {
-      name: "GitHub/GitLab",
-      id: "github",
-      icon: "GH",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "Zendesk",
-      id: "zendesk",
-      icon: "ZD",
-      connected: false,
-      comingSoon: true
-    }, {
-      name: "ServiceNow",
-      id: "servicenow",
-      icon: "SN",
-      connected: false,
-      comingSoon: true
-    }
-  ];
-
-  const getProvider = useCallback(async (): Promise<void> => {
+    const getProvider = useCallback(async (): Promise<void> => {
       const response = await call("get", "/api/settings/system-integrations", {
         showToast: false,
         returnOnFailure: false,
       });
-  
+
       if (response?.data) {
-        
-        const data = response.data.reduce(
-          (
-            acc: IntegrationOption[],
-            integration: { provider_name: string; is_connected: boolean }
-          ) => {
-            acc.push({
-              name: integration?.provider_name,
-              id: integration?.provider_name?.toLowerCase(),
-              icon: integration?.provider_name?.charAt(0)?.toLocaleUpperCase(),
-              connected: integration.is_connected,
-              monitoring: integration?.provider_name?.toLowerCase() === 'slack' ? "Active - Brief-me.app" : "Monitoring - Brief-me.app",
-              comingSoon: false,
+        const grouped = response.data.reduce(
+          (acc: Record<string, Integration>, integration: BackendIntegration) => {
+            const provider = integration.provider_name;
+            const providerId = provider.toLowerCase();
+
+            if (!acc[provider]) {
+              acc[provider] = {
+                name: provider,
+                id: providerId,
+                icon: provider.charAt(0).toUpperCase(),
+                accounts: [],
+                totalCount: 0,
+              };
+            }
+
+            const status: AccountStatus = integration.is_connected
+              ? integration.is_combined
+                ? "active"
+                : "monitoring"
+              : "offline";
+
+            acc[provider].accounts.push({
+              email: integration.email,
+              workspace: integration.workspace,
+              status,
             });
+
             return acc;
           },
-          []
+          {}
         );
-  
-        setConnectedPlatforms(data);
+
+        const result: Integration[] = Object.values(grouped).map(
+          (provider: Integration) => ({
+            ...provider,
+            totalCount: provider.accounts.length,
+          })
+        );
+
+        setConnectedPlatforms(result);
       }
     }, [call]);
+
+
     
     useEffect(() => {
       getProvider();
@@ -152,29 +116,36 @@ const ConnectedChannelsSection = ({
 
   const handleOpenSettings = () => {
     navigate("/dashboard/settings?tab=integrations");
+  }
+    
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "monitoring": return "bg-green-500";
+      case "active": return "bg-blue-500";
+      case "offline": return "bg-gray-500";
+      default: return "bg-gray-500";
+    }
+  }
+  
+
+  const getOverallStatus = (accounts: Account[]) => {
+    if (accounts.some(acc => acc.status === "monitoring")) return "monitoring";
+    if (accounts.some(acc => acc.status === "active")) return "active";
+    return "offline";
   };
 
-  // Helper function to render the appropriate icon based on platform ID
-  const renderIcon = (platform: typeof connectedPlatforms[0] | typeof comingSoonPlatforms[0], isComingSoon = false) => {
-    const iconSize = isComingSoon ? 12 : 16;
-    switch (platform.id) {
+  // Helper function to render the appropriate icon
+  const renderIcon = (integration: Integration) => {
+    const iconSize = 16;
+    switch (integration.id) {
       case "slack":
-        return (
-          <div className="relative">
-            <Slack className="text-white" size={iconSize} />
-            {!isComingSoon && (
-              <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-white/20"></span>
-            )}
-          </div>
-        );
+        return <Slack className="text-white" size={iconSize} />;
       case "gmail":
-        return <Mail className="text-white" size={iconSize} />;
-      case "outlook":
         return <Mail className="text-white" size={iconSize} />;
       case "calendar":
         return <Calendar className="text-white" size={iconSize} />;
       default:
-        return <span className={`text-white font-medium ${isComingSoon ? 'text-xs' : 'text-sm'}`}>{platform.icon}</span>;
+        return <span className="text-white font-medium text-sm">{integration.icon}</span>;
     }
   };
 
@@ -186,93 +157,91 @@ const ConnectedChannelsSection = ({
           <div className="flex items-center gap-4">
             <h2 className="text-text-primary font-light text-sm">Monitoring:</h2>
             
-            {/* Connected Platforms */}
-            <div className="flex items-center gap-3">
-              {connectedPlatforms.map((platform, i) => (
-                <Tooltip key={i}>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200 shadow-inner">
-                      <div className="flex items-center justify-center">
-                        {renderIcon(platform)}
+            {/* Condensed Integration Display */}
+            <div className="flex items-center gap-2">
+              {connectedPlatforms?.map((integration, i) => {
+                const overallStatus = getOverallStatus(integration.accounts);
+                return (
+                  <Tooltip key={i}>
+                    <TooltipTrigger asChild>
+                      <div className="relative flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200">
+                        <div className="flex items-center justify-center relative">
+                          {renderIcon(integration)}
+                          {/* Status dot - positioned as overlay */}
+                          <div className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-white/20 ${getStatusColor(overallStatus)}`}></div>
+                        </div>
+                        {/* Count badge */}
+                        {integration.totalCount > 1 && (
+                          <span className="text-xs font-medium text-white bg-white/20 rounded-full px-1.5 py-0.5 min-w-[18px] text-center">
+                            {integration.totalCount}
+                          </span>
+                        )}
                       </div>
-                      <span className="text-white text-sm font-medium">{platform.name}</span>
-                      <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-400 border-green-500/40">
-                        {platform.monitoring}
-                      </Badge>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-sm">
-                    <p>{platform.name} - {platform.monitoring}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-sm max-w-xs">
+                      <div className="space-y-1">
+                        <div className="font-medium">{integration.name}</div>
+                        {integration.accounts.map((account, idx) => (
+                          <div key={idx} className="flex items-center gap-2 text-xs">
+                            <div className={`h-1.5 w-1.5 rounded-full ${getStatusColor(account.status)}`}></div>
+                            <span>{account.email}</span>
+                            <span className="text-gray-400">• {account.status}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
             </div>
           </div>
-          
-          <Button variant="ghost" className="flex items-center gap-2 h-8 px-3" onClick={handleOpenSettings}>
-            <span className="text-text-secondary text-sm">Settings</span>
-            <Settings className="h-4 w-4 text-text-secondary" />
-          </Button>
         </div>
       </TooltipProvider>
     );
   }
 
-  // Original vertical layout for mobile/sidebar
+  // Original vertical layout for mobile/sidebar - also updated to use condensed view
   return (
     <TooltipProvider delayDuration={300}>
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-text-primary text-lg font-medium">Connected Channels</h2>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleOpenSettings}>
-            <Settings className="h-4 w-4 text-text-secondary" />
-          </Button>
         </div>
         
-        {/* Available/Connected Platforms */}
-        <div className="flex items-center gap-3 flex-wrap mb-4">
-          {connectedPlatforms.map((platform, i) => (
-            <Tooltip key={i}>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200 shadow-inner">
-                  <div className="flex items-center justify-center">
-                    {renderIcon(platform)}
+        {/* Condensed Integration Display for Sidebar */}
+        <div className="flex items-center gap-2 flex-wrap mb-4">
+          {connectedPlatforms?.map((integration, i) => {
+            const overallStatus = getOverallStatus(integration.accounts);
+            return (
+              <Tooltip key={i}>
+                <TooltipTrigger asChild>
+                  <div className="relative flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200">
+                    <div className="flex items-center justify-center relative">
+                      {renderIcon(integration)}
+                      <div className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-white/20 ${getStatusColor(overallStatus)}`}></div>
+                    </div>
+                    {integration.totalCount > 1 && (
+                      <span className="text-xs font-medium text-white bg-white/20 rounded-full px-1.5 py-0.5 min-w-[18px] text-center">
+                        {integration.totalCount}
+                      </span>
+                    )}
                   </div>
-                  <span className="text-white text-sm font-medium">{platform.name}</span>
-                  {platform.connected && (
-                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-sm">
-                <p>{platform.name}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
-
-        {/* Coming Soon Label */}
-        <div className="text-sm text-text-secondary font-medium mb-2">
-          Coming Soon
-        </div>
-
-        {/* Coming Soon Platforms - Compact Pills */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {comingSoonPlatforms.map((platform, i) => (
-            <Tooltip key={i}>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/7 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/10 transition-all duration-200 shadow-inner opacity-70">
-                  <div className="flex items-center justify-center">
-                    {renderIcon(platform, true)}
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-sm max-w-xs">
+                  <div className="space-y-1">
+                    <div className="font-medium">{integration.name}</div>
+                    {integration.accounts.map((account, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs">
+                        <div className={`h-1.5 w-1.5 rounded-full ${getStatusColor(account.status)}`}></div>
+                        <span>{integration.id === "slack" ? account.workspace ?? account.email :account.email}</span>
+                        <span className="text-gray-400">• {account.status}</span>
+                      </div>
+                    ))}
                   </div>
-                  <span className="text-white text-xs font-medium">{platform.name}</span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-sm">
-                <p>{platform.name} - coming soon!</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
         </div>
       </div>
     </TooltipProvider>

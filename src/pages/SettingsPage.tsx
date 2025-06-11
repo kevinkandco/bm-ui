@@ -3,7 +3,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Voices from "@/components/settings/modal/Voices";
 import { useApi } from "@/hooks/useApi";
@@ -25,17 +25,22 @@ const SettingsPage = () => {
   const { toast } = useToast();
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [activeCategory, setActiveCategory] = React.useState("profile");
   const [searchParams] = useSearchParams();
   const { call } = useApi();
   const { logout, gotoLogin } = useAuthStore();
-  const [activeSection, setActiveSection] = React.useState("profile");
   const [settings, setSettings] = React.useState({
     name: "",
     job_title: "",
     department: "",
   });
+  
+  // Get activeSection from navigation state or default to "profile"
+  const [activeSection, setActiveSection] = React.useState(
+    location.state?.activeSection || "profile"
+  );
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -335,7 +340,6 @@ const SettingsPage = () => {
         
         <div className="glass-card rounded-3xl overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-4">
-            {/* Settings Categories Sidebar */}
             <div className="p-6 border-r border-border-subtle">
               <h2 className="text-lg font-medium text-text-primary mb-4">Categories</h2>
               <div className="space-y-1">
@@ -356,7 +360,6 @@ const SettingsPage = () => {
               </div>
             </div>
             
-            {/* Settings Content */}
             <div className="md:col-span-3 p-6">
               {renderContent()}
             </div>

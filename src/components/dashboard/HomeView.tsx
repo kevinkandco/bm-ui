@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, Settings } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -10,12 +10,8 @@ import StatusTimer, {
   StatusTimerProps,
 } from "@/components/dashboard/StatusTimer";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
@@ -34,6 +30,7 @@ import ViewTranscript from "./ViewTranscript";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
+import SlackSettingsModal from "../settings/modal/SlackSettingsModal";
 
 interface HomeViewProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -42,7 +39,7 @@ interface HomeViewProps {
   totalBriefs: number;
   upcomingBrief: Summary | null;
   onOpenBrief: (briefId: number) => void;
-  onViewTranscript: (briefId: number) => void;
+  onViewTranscript: (message: string, briefId: number) => void;
   onStartFocusMode: (focusTime: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
@@ -51,6 +48,7 @@ interface HomeViewProps {
   onSignOffForDay: () => void;
   fetchDashboardData: () => void;
 }
+
 const HomeView = ({
   status,
   priorities,
@@ -72,10 +70,20 @@ const HomeView = ({
   const { user } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
+  const [isSlackModalOpen, setSlackModalOpen] = useState(false);
   const [showMessageTranscript, setMessageTranscript] = useState({
     open: false,
     message: "",
   });
+
+  const handleOpenSettings = () => {
+      setSlackModalOpen(true);
+    };
+  
+    const handleCloseSettings = () => {
+      setSlackModalOpen(false);
+      fetchDashboardData();
+    };
 
   const currentAudioUrl = useMemo(() => {
     const audioPath = recentBriefs?.find(
@@ -134,8 +142,8 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  const handleViewTranscript = useCallback((briefId: number) => {
-    onViewTranscript(briefId);
+  const handleViewTranscript = useCallback((message: string, briefId: number) => {
+    onViewTranscript(message, briefId);
   }, [onViewTranscript]);
 
 
@@ -173,7 +181,78 @@ const HomeView = ({
       open: false,
       message: "",
     });
-  };
+  }
+
+  // Profile dropdown handlers
+  const handleProfileClick = useCallback(() => {
+    navigate("/dashboard/settings", { state: { activeSection: "profile" } });
+  }, [navigate]);
+
+  const handleIntegrationsClick = useCallback(() => {
+    navigate("/dashboard/settings", { state: { activeSection: "integrations" } });
+  }, [navigate]);
+
+  const handleBriefConfigClick = useCallback(() => {
+    navigate("/dashboard/settings", { state: { activeSection: "brief-config" } });
+  }, [navigate]);
+
+  const handleAllSettingsClick = useCallback(() => {
+    navigate("/dashboard/settings");
+  }, [navigate]);
+
+  // Sample brief data
+  // const recentBriefs = [{
+  //   id: 1,
+  //   name: "Morning Brief",
+  //   timeCreated: "Today, 8:00 AM",
+  //   timeRange: "5:00 AM - 8:00 AM",
+  //   slackMessages: {
+  //     total: 12,
+  //     fromPriorityPeople: 3
+  //   },
+  //   emails: {
+  //     total: 5,
+  //     fromPriorityPeople: 2
+  //   },
+  //   actionItems: 4,
+  //   hasTranscript: true
+  // }, {
+  //   id: 2,
+  //   name: "Midday Brief",
+  //   timeCreated: "Today, 12:30 PM",
+  //   timeRange: "8:00 AM - 12:30 PM",
+  //   slackMessages: {
+  //     total: 18,
+  //     fromPriorityPeople: 5
+  //   },
+  //   emails: {
+  //     total: 8,
+  //     fromPriorityPeople: 3
+  //   },
+  //   actionItems: 6,
+  //   hasTranscript: true
+  // }, {
+  //   id: 3,
+  //   name: "Evening Brief",
+  //   timeCreated: "Yesterday, 6:00 PM",
+  //   timeRange: "12:30 PM - 6:00 PM",
+  //   slackMessages: {
+  //     total: 14,
+  //     fromPriorityPeople: 2
+  //   },
+  //   emails: {
+  //     total: 6,
+  //     fromPriorityPeople: 1
+  //   },
+  //   actionItems: 3,
+  //   hasTranscript: false
+  // }];
+
+  // Sample upcoming brief data
+  // const upcomingBrief = {
+  //   name: "Midday Brief",
+  //   scheduledTime: "Today at 12:30 PM"
+  // };
 
   const handlePlayBrief = useCallback(
     (briefId: number) => {
@@ -231,7 +310,7 @@ const HomeView = ({
                   </h2>
                 </div>
 
-                {/* Simple Menu Links */}
+                {/* Simple Menu Links - Removed Settings link */}
                 <div className="space-y-8">
                   <a
                     href="/dashboard/settings"
@@ -477,9 +556,9 @@ const HomeView = ({
               Let's get you caught up.
             </p>
           </div>
-
-          {/* Updated CTAs on the right */}
-          <div className="flex gap-3">
+          
+          {/* Updated CTAs on the right with Profile Dropdown */}
+          <div className="flex gap-3 items-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -521,6 +600,38 @@ const HomeView = ({
               <Zap className="mr-2 h-4 w-4" />
               Brief Me
             </Button>
+
+            {/* Profile Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-0 h-auto">
+                  <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
+                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
+                    <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
+                      AJ
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
+                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
+                  <Zap className="mr-2 h-4 w-4" />
+                  Integrations
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Brief Configuration
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
+                  <Settings className="mr-2 h-4 w-4" />
+                  All Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -558,12 +669,24 @@ const HomeView = ({
 
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
-            {/* Priorities Section - Compact */}
-            <div className="border border-border-subtle p-4 bg-surface-overlay/30 shadow-sm px-[10px] py-0 rounded-2xl">
-              <PrioritiesSection
+            {/* Priorities Section with title outside */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-text-primary">Priorities</h2>
+                <Button 
+                  variant="ghost" 
+                  onClick={handleOpenSettings}
+                  className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
+                >
+                  Edit
+                </Button>
+              </div>
+              <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
+                <PrioritiesSection
                 priorities={priorities}
                 fetchDashboardData={fetchDashboardData}
               />
+              </div>
             </div>
             
             {/* Brief Me Teams - With enhanced blurred background mockups */}
@@ -688,6 +811,11 @@ const HomeView = ({
         open={showMessageTranscript?.open}
         summary={showMessageTranscript.message}
         onClose={handleClose}
+      />
+      <SlackSettingsModal
+        open={isSlackModalOpen}
+        onClose={handleCloseSettings}
+        initialTab={"priorityPeople"}
       />
     </div>
   );

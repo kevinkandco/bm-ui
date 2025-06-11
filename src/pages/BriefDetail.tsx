@@ -400,15 +400,30 @@ const BriefDetail = () => {
             {/* Audio Player */}
             <div className="bg-white/5 rounded-lg p-6 border border-white/10">
               {/* Waveform */}
-              {/* <div className="h-24 bg-white/5 rounded flex items-center px-4 mb-4">
-                <div className="flex items-center gap-1 h-full w-full">
-                  {Array.from({ length: 80 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-1 bg-accent-primary/60 rounded-full"
-                      style={{ height: `${20 + Math.random() * 60}%` }}
-                    />
-                  ))}
+              {/* <div className="h-32 bg-surface/60 rounded-lg flex items-end px-6 mb-4 relative overflow-hidden">
+                <div className="flex items-end gap-[2px] h-full w-full">
+                  {Array.from({ length: 120 }).map((_, i) => {
+                    const height = Math.random();
+                    const isActive = i < 30; // Simulate progress
+                    return (
+                      <div
+                        key={i}
+                        className={`flex-1 rounded-sm transition-all duration-200 ${
+                          isActive 
+                            ? 'bg-accent-primary' 
+                            : 'bg-text-secondary/40'
+                        }`}
+                        style={{ 
+                          height: `${Math.max(8, height * 80)}%`,
+                          minHeight: '4px'
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+                
+                <div className="absolute left-6 top-0 bottom-0 w-[25%] pointer-events-none">
+                  <div className="h-full w-px bg-accent-primary/60 ml-auto" />
                 </div>
               </div> */}
 

@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 
 interface OnboardingLayoutProps {
@@ -49,9 +48,24 @@ const OnboardingLayout = ({
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 pb-6 pt-0 relative overflow-hidden bg-surface">
-      {/* Background with gradient */}
+      {/* Background with new image */}
       <div className="absolute inset-0 w-full h-full">
-        <div className={`absolute inset-0 ${gradientClassName} opacity-80`}></div>
+        {/* Background image with minimal blur */}
+        <div className="absolute inset-0 w-full h-full">
+          <img 
+            src="/lovable-uploads/108ead20-e97f-4d4b-b521-533474e0989c.png" 
+            alt="Dashboard background" 
+            className="w-full h-full object-cover"
+            style={{ filter: 'blur(5px)' }}
+            loading="eager"
+          />
+        </div>
+        
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/70"></div>
+        
+        {/* Color overlay */}
+        <div className={`absolute inset-0 ${gradientClassName} opacity-40`}></div>
         
         {/* Subtle radial gradient for depth */}
         <div className="absolute inset-0 bg-gradient-radial from-surface-raised/10 to-transparent opacity-30"></div>
@@ -60,11 +74,6 @@ const OnboardingLayout = ({
       {/* Glow shapes - Subtle background elements */}
       <div className="glow-shape absolute top-0 -left-20 w-80 h-80 rounded-full bg-accent-primary/5 filter blur-3xl opacity-20" data-speed="0.5"></div>
       <div className="glow-shape absolute top-1/5 -right-20 w-96 h-96 rounded-full bg-accent-secondary/5 filter blur-3xl opacity-15" data-speed="0.8"></div>
-      
-      {/* Theme Toggle */}
-      <div className="absolute top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
       
       <div className={cn("w-full max-w-md z-10 p-6 sm:p-8 mt-0 rounded-xl glass-card", className)}>
         {children}

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Settings, Hash, AlertTriangle, ChevronDown, Slack, Mail, PlugZap, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,8 +23,6 @@ const integrationIcons: Record<string, React.ElementType> = {
 };
 
 const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionProps) => {
-  const [isSlackModalOpen, setSlackModalOpen] = useState(false);
-  const navigate = useNavigate();
 
   const [peopleOpen, setPeopleOpen] = useState(true);
   const [channelsOpen, setChannelsOpen] = useState(true);
@@ -39,15 +36,6 @@ const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionP
     'triggers',
     'integrations'
   ]);
-  
-  const handleOpenSettings = () => {
-    setSlackModalOpen(true);
-  };
-
-  const handleCloseSettings = () => {
-    setSlackModalOpen(false);
-    fetchDashboardData();
-  };
 
   const handleDragStart = (e: React.DragEvent, sectionId: string) => {
     setDraggedItem(sectionId);
@@ -245,25 +233,8 @@ const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionP
   };
 
   return (
-    <div className="p-4 pt-8">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-text-primary font-medium text-base">Priorities</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6"
-          onClick={handleOpenSettings}
-        >
-          <Settings className="h-3 w-3 text-text-secondary" />
-        </Button>
-      </div>
-      
+    <div className="p-4">
       {sections.map(renderSection)}
-      <SlackSettingsModal
-        open={isSlackModalOpen}
-        onClose={handleCloseSettings}
-        initialTab={"priorityPeople"}
-      />
     </div>
   );
 };

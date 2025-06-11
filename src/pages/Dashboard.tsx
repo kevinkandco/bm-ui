@@ -32,6 +32,7 @@ const Dashboard = () => {
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
+  const [transcript, setTranscript] = useState("");
   const [showEndFocusModal, setShowEndFocusModal] = useState(false);
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
@@ -177,8 +178,9 @@ const Dashboard = () => {
     navigate(`/dashboard/briefs/${briefId}`);
   }, [navigate]);
 
-  const openTranscript = useCallback((briefId: number) => {
+  const openTranscript = useCallback((message: string, briefId: number) => {
     setSelectedBriefId(briefId);
+    setTranscript(message)
     setIsTranscriptOpen(true);
   }, [setSelectedBriefId, setIsTranscriptOpen]);
   
@@ -275,7 +277,7 @@ const Dashboard = () => {
 
       {/* Modals */}
       <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
-      <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} />
+      <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} transcript={transcript} />
       <EndFocusModal 
         open={showEndFocusModal} 
         onClose={handleConfirmExitFocus}

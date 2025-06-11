@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
 import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
@@ -102,13 +103,10 @@ const GetStartedStep = ({
   
   const summaryData = formatSummary();
   
-  const cardBgClass = theme === 'light' 
-    ? 'bg-white/60 border-black/10' 
-    : 'bg-white/15 border-white/20';
+  // Much darker card background to match image 2
+  const cardBgClass = 'bg-black/40 border-white/10';
   
-  const dividerClass = theme === 'light'
-    ? 'divide-black/10'
-    : 'divide-white/20';
+  const dividerClass = 'divide-white/10';
 
   const handleContinue = async () => {
     const response = await call("post", "/api/slack/on-boarding", {
@@ -124,6 +122,7 @@ const GetStartedStep = ({
 
     onNext();
   };
+
 
   
   return (
