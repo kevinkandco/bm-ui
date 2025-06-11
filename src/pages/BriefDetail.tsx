@@ -313,10 +313,10 @@ const BriefDetail = () => {
               <span>Time saved: {briefData.timeSaved}</span>
             </div>
 
-            {/* Condensed Stats Grid */}
-            <div className="space-y-2">
+            {/* Horizontal Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {/* Slack Messages */}
-              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-surface-raised/30">
                 <div className="flex items-center gap-3">
                   <MessageSquare className="h-4 w-4 text-accent-green flex-shrink-0" />
                   <span className="text-sm font-medium text-text-primary">
@@ -324,14 +324,14 @@ const BriefDetail = () => {
                   </span>
                 </div>
                 {briefData.stats.slackMessages.priority > 0 && (
-                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                  <Badge variant="secondary" className="text-xs h-5 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
                     {briefData.stats.slackMessages.priority} priority
                   </Badge>
                 )}
               </div>
 
               {/* Emails */}
-              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-surface-raised/30">
                 <div className="flex items-center gap-3">
                   <Mail className="h-4 w-4 text-blue-400 flex-shrink-0" />
                   <span className="text-sm font-medium text-text-primary">
@@ -339,14 +339,14 @@ const BriefDetail = () => {
                   </span>
                 </div>
                 {briefData.stats.emails.priority > 0 && (
-                  <Badge variant="secondary" className="text-xs h-4 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
+                  <Badge variant="secondary" className="text-xs h-5 px-2 bg-primary-teal/20 text-primary-teal border-primary-teal/40">
                     {briefData.stats.emails.priority} priority
                   </Badge>
                 )}
               </div>
 
               {/* Action Items */}
-              <div className="flex items-center justify-between p-2 rounded-lg bg-surface-raised/30">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-surface-raised/30">
                 <div className="flex items-center gap-3">
                   <CheckSquare className="h-4 w-4 text-orange-400 flex-shrink-0" />
                   <span className="text-sm font-medium text-text-primary">
