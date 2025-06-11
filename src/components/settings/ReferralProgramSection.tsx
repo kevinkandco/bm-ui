@@ -33,22 +33,39 @@ const ReferralProgramSection = () => {
   const shareText = "Stop doom-scrolling. Get briefed.";
   const shareUrl = `https://${referralLink}`;
 
-  const handleShare = (platform: 'twitter' | 'linkedin' | 'email') => {
+  const handleShare = async (platform: 'twitter' | 'linkedin' | 'email') => {
     let url = '';
     
     switch (platform) {
       case 'twitter':
         url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+        window.open(url, '_blank');
         break;
       case 'linkedin':
+        // Copy message to clipboard for LinkedIn
+        const linkedinMessage = `${shareText}\n\nCheck it out: ${shareUrl}`;
+        try {
+          await navigator.clipboard.writeText(linkedinMessage);
+          toast({
+            title: "Message Copied!",
+            description: "LinkedIn message copied to clipboard. Paste it when LinkedIn opens.",
+          });
+        } catch (err) {
+          toast({
+            title: "Copy Failed",
+            description: "Failed to copy message to clipboard",
+            variant: "destructive"
+          });
+        }
+        // Open LinkedIn sharing page
         url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        window.open(url, '_blank');
         break;
       case 'email':
         url = `mailto:?subject=${encodeURIComponent('Check out Brief.me')}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`;
+        window.open(url, '_blank');
         break;
     }
-    
-    window.open(url, '_blank');
   };
 
   return (
