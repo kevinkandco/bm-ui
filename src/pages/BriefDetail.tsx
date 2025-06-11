@@ -686,5 +686,3 @@ const BriefDetail = () => {
 };
 
 export default BriefDetail;
-
-}
