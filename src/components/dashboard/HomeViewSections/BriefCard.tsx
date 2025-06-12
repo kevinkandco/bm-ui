@@ -291,6 +291,24 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
             </div>
           </div>
           
+          <div className="flex items-center justify-between mt-3">
+					<div className="text-xs text-light-gray-text mt-2">
+						{brief?.description}
+					</div>
+					<div>
+						{(brief?.status !== "failed" && brief?.status !== "success")  && (
+							<span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
+								Generating summary
+							</span>
+						)}
+						{brief?.status === "failed" && (
+							<span onClick={(e) => handleClick(brief?.error, e)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+								Failed to generate the summary
+							</span>
+						)}
+					</div>
+				</div>
+
           {/* Comment Input for downvote */}
           {showCommentInput && (
             <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
