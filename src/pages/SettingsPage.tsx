@@ -172,7 +172,7 @@ const SettingsPage = () => {
         name: user.name,
         job_title: user.job_title,
         department: user.department,
-        profileImage: BaseURL + user.profile_path
+        profileImage: user?.profile_path ? BaseURL + user.profile_path : null,
       })
     }
 
@@ -213,6 +213,14 @@ const SettingsPage = () => {
     }
   };
 
+  const handleRemoveImage = () => {
+    setSettings(prev => ({
+      ...prev,
+      profileImage: "", // or null
+    }));
+    setImageFile(null);
+  };
+
 
   const renderContent = () => {
     switch (activeSection) {
@@ -233,19 +241,44 @@ const SettingsPage = () => {
               <h3 className="text-lg font-medium text-text-primary mb-4">Personal Information</h3>
               <div className="space-y-4 max-w-2xl">
                 <div>
-                  <label className="block text-sm font-medium text-text-secondary mb-1">Profile Picture</label>
                   <div className="flex items-center gap-4">
                     <img
-                      src={settings?.profileImage || '/default-avatar.png'} // fallback image
+                      src={settings?.profileImage || '/images/default.png'} // fallback image
                       alt="Profile"
-                      className="w-16 h-16 rounded-full border border-white/20 object-cover"
+                      className="object-cover rounded-full shadow w-24 h-24 sm:w-36 sm:h-36 border-2 border-accent-primary cursor-pointer"
                     />
+                    <div className="flex flex-col justify-center gap-5">
+                        <h1 className="text-xl text-center md:text-start">Profile Picture</h1>
+                        <div
+                            className="flex flex-col items-center justify-center gap-3 md:flex-row md:justify-start">
+                            <div
+                                className="py-2 px-3 flex items-center gap-2 bg-[#377E7F] text-white rounded-lg cursor-pointer relative">
+                                {/* <img src="/images/upload.svg" className="w-6 h-6"> */}
+                                <span className="cursor-pointer text-sm">Upload Photo</span>
+                                <input 
+                                    accept="image/png, image/gif, image/jpeg" 
+                                    onChange={handleImageUpload}
+                                    type="file" 
+                                    className="absolute right-0 z-0 w-full opacity-0 cursor-pointer" />
+                            </div>
+  
+                            {settings?.profileImage && (
+                              <div>
+                                  <button onClick={handleRemoveImage} type="button" className="w-full sm:w-auto sm:text-sm py-2 px-3 flex items-center gap-2 bg-[#377E7F] text-white rounded-lg cursor-pointer relative">
+                                      Remove
+                                  </button>
+                              </div>
+                            )}
+                        </div>
+                        <p className="text-sm">We support PNGs,JPEGs, and GIFs under 2Mb</p>
+                    </div>
+                  {/* <label className="block text-sm font-medium text-text-secondary mb-1">Profile Picture</label>
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
                       className="text-sm text-text-primary"
-                    />
+                    /> */}
                   </div>
                 </div>
                 <div>
