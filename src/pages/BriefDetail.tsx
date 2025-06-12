@@ -62,7 +62,6 @@ const BriefDetail = () => {
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
   const [briefData, setBriefData] = useState<Summary | null>(null);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [loading, setLoading] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState<'up' | 'down' | null>(null);
   const [actionItems, setActionItems] = useState<SummaryMassage[]>([]);
@@ -79,6 +78,8 @@ const BriefDetail = () => {
     handleSeekStart,
     handleSeekEnd,
     handleSeekMove,
+    playbackRate,
+    updatePlaybackRate
   } = useAudioPlayer(
     briefData?.audioPath ? BaseURL + briefData?.audioPath : null,
     false
@@ -248,7 +249,7 @@ const BriefDetail = () => {
   };
   
   const handleSpeedChange = (speed: number) => {
-    setPlaybackSpeed(speed);
+    updatePlaybackRate(speed);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -455,7 +456,7 @@ const BriefDetail = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors">
-                          {playbackSpeed}x
+                          {playbackRate}x
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
@@ -493,7 +494,7 @@ const BriefDetail = () => {
                 </TableHeader>
                 <TableBody>
                   {actionItems.map((item) => (
-                    <React.Fragment key={item.id}>
+                    <div key={item.id}>
                       <TableRow 
                         className="border-white/10 hover:bg-white/5 cursor-pointer"
                         onClick={() => toggleActionItem(item.id)}
@@ -608,7 +609,7 @@ const BriefDetail = () => {
                           </TableCell>
                         </TableRow>
                       )}
-                    </React.Fragment>
+                    </div>
                   ))}
                 </TableBody>
               </Table>
