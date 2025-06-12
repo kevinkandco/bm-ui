@@ -56,65 +56,40 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
     total: 33
   };
 
-  // Mock priority breakdown based on total messages
-  const totalMessages = 10 + 20;
-  const mockStats = {
-    totalMessagesAnalyzed: {
-      total: totalMessages,
-      breakdown: { slack: 10, gmail: 20 }
-    },
-    lowPriority: {
-      total: Math.floor(totalMessages * 0.4),
-      breakdown: { slack: Math.floor(10 * 0.4), gmail: Math.floor(20 * 0.4) }
-    },
-    mediumPriority: {
-      total: Math.floor(totalMessages * 0.35),
-      breakdown: { slack: Math.floor(10 * 0.35), gmail: Math.floor(20 * 0.35) }
-    },
-    highPriority: {
-      total: Math.floor(totalMessages * 0.25),
-      breakdown: { slack: Math.floor(10 * 0.25), gmail: Math.floor(20 * 0.25) }
-    },
-    actionItems: {
-      total: 20,
-      breakdown: { slack: Math.floor(20 * 0.5), gmail: Math.ceil(20 * 0.5) }
-    }
-  };
-
   const statsConfig = [
     {
       icon: BarChart3,
       label: "Total Messages Analyzed",
-      value: mockStats.totalMessagesAnalyzed.total,
-      breakdown: mockStats.totalMessagesAnalyzed.breakdown,
+      value: brief?.stats?.totalMessagesAnalyzed?.total,
+      breakdown: brief?.stats?.totalMessagesAnalyzed.breakdown,
       color: "text-blue-400"
     },
     {
       icon: CheckCircle,
       label: "Low Priority",
-      value: mockStats.lowPriority.total,
-      breakdown: mockStats.lowPriority.breakdown,
+      value: brief?.stats?.lowPriority?.total,
+      breakdown: brief?.stats?.lowPriority?.breakdown,
       color: "text-gray-400"
     },
     {
       icon: AlertCircle,
       label: "Medium Priority",
-      value: mockStats.mediumPriority.total,
-      breakdown: mockStats.mediumPriority.breakdown,
+      value: brief?.stats?.mediumPriority?.total,
+      breakdown: brief?.stats?.mediumPriority?.breakdown,
       color: "text-orange-400"
     },
     {
       icon: AlertCircle,
       label: "High Priority",
-      value: mockStats.highPriority.total,
-      breakdown: mockStats.highPriority.breakdown,
+      value: brief?.stats?.highPriority?.total,
+      breakdown: brief?.stats?.highPriority?.breakdown,
       color: "text-red-400"
     },
     {
       icon: CheckSquare,
       label: "Action Items",
-      value: mockStats.actionItems.total,
-      breakdown: mockStats.actionItems.breakdown,
+      value: brief?.stats?.actionItems?.total,
+      breakdown: brief?.stats?.actionItems?.breakdown,
       color: "text-accent-primary"
     }
   ];

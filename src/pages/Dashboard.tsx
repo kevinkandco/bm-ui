@@ -15,6 +15,7 @@ import Pagination from "@/components/dashboard/Pagination";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
+import { enrichBriefsWithStats } from "@/lib/utils";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -45,6 +46,7 @@ const Dashboard = () => {
   const [upcomingBrief, setUpcomingBrief] = useState<Summary | null>(null);
   const [focusTime, setFocusTime] = useState(0);
   const [recentBriefs, setRecentBriefs] = useState<Summary[]>([]);
+  console.log(recentBriefs)
   const [totalBriefs, setTotalBriefs] = useState(0);
   const [pendingData, setPendingData] = useState<PendingData[]>([]);
   const [focusModeExitLoading, setFocusModeExitLoading] = useState(false);
@@ -90,7 +92,7 @@ const Dashboard = () => {
       toastDescription: "Something went wrong while fetching the briefs.",
       returnOnFailure: false,
     });
-    setRecentBriefs(response?.data);
+    setRecentBriefs(enrichBriefsWithStats(response?.data));
     setTotalBriefs(response?.meta?.total);
   }, [call]);
 

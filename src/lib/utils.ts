@@ -1,4 +1,4 @@
-import { Stats } from "@/components/dashboard/types";
+import { Stats, Summary } from "@/components/dashboard/types";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -27,7 +27,7 @@ export function getTimePeriod(time: string) {
 }
 
 
-export const transformToStats: (data: any) => Stats = (data: any) => {
+export const transformToStats: (data: Summary) => Stats = (data: Summary) => {
   const stats = {
     totalMessagesAnalyzed: {
       total: data.messagesCount || 0,
@@ -59,7 +59,7 @@ export const transformToStats: (data: any) => Stats = (data: any) => {
     G: "gmail",
   };
 
-  data.messages.forEach((msg: any) => {
+  data.messages.forEach((msg) => {
     const platform = platformMap[msg.platform];
     const priority = msg.priority as Priority;
 
@@ -83,3 +83,62 @@ export const transformToStats: (data: any) => Stats = (data: any) => {
   return stats;
 };
 
+export const enrichBriefsWithStats = (briefs: Summary[]) => {
+  return briefs.map((brief) => {
+    const { messages = [], slackMessageCount = 0, emailCount = 0, messagesCount = 0, actionCount = 0 } = brief;
+
+    const stats = {
+      totalMessagesAnalyzed: {
+        total: messagesCount,
+        breakdown: {
+          slack: slackMessageCount,
+          gmail: emailCount,
+        },
+      },
+      lowPriority: {
+        total: 0,
+        breakdown: { slack: 0, gmail: 0 },
+      },
+      mediumPriority: {
+        total: 0,
+        breakdown: { slack: 0, gmail: 0 },
+      },
+      highPriority: {
+        total: 0,
+        breakdown: { slack: 0, gmail: 0 },
+      },
+      actionItems: {
+        total: actionCount,
+        breakdown: { slack: 0, gmail: 0 },
+      },
+    };
+
+    const platformMap: Record<string, "slack" | "gmail"> = {
+      S: "slack",
+      G: "gmail",
+    };
+
+    for (const msg of messages) {
+      const platform = platformMap[msg.platform];
+      const priority = msg.priority;
+
+      if (priority && stats[`${priority}Priority`]) {
+        stats[`${priority}Priority`].total += 1;
+        stats[`${priority}Priority`].breakdown[platform] += 1;
+      }
+    }
+
+    // Proportional action item split
+    const total = slackMessageCount + emailCount;
+    if (total > 0 && actionCount) {
+      const slackRatio = slackMessageCount / total;
+      stats.actionItems.breakdown.slack = Math.round(slackRatio * actionCount);
+      stats.actionItems.breakdown.gmail = actionCount - stats.actionItems.breakdown.slack;
+    }
+
+    return {
+      ...brief,
+      stats,
+    };
+  });
+}
