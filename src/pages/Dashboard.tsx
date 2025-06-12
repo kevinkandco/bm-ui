@@ -46,7 +46,6 @@ const Dashboard = () => {
   const [upcomingBrief, setUpcomingBrief] = useState<Summary | null>(null);
   const [focusTime, setFocusTime] = useState(0);
   const [recentBriefs, setRecentBriefs] = useState<Summary[]>([]);
-  console.log(recentBriefs)
   const [totalBriefs, setTotalBriefs] = useState(0);
   const [pendingData, setPendingData] = useState<PendingData[]>([]);
   const [focusModeExitLoading, setFocusModeExitLoading] = useState(false);

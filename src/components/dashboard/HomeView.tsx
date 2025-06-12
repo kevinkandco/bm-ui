@@ -24,7 +24,7 @@ import {
 import { Priorities, PriorityPeople, Summary } from "./types";
 import useAuthStore from "@/store/useAuthStore";
 import ListeningScreen from "./ListeningScreen";
-import useAudioPlayer from "@/hooks/useAudioPlayer";
+import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
 import Audio from "./Audio";
 import ViewTranscript from "./ViewTranscript";
 
@@ -101,7 +101,8 @@ const HomeView = ({
     });
   }, [toast]);
 
-  const { audioRef } = useAudioPlayer(currentAudioUrl, true, handleAudioEnded);
+  const audioPlayer: UseAudioPlayerType = useAudioPlayer(currentAudioUrl, true, handleAudioEnded, 1.0);
+  const {audioRef} = audioPlayer;
 
   useEffect(() => {
     return () => {
@@ -200,60 +201,6 @@ const HomeView = ({
     navigate("/dashboard/settings");
   }, [navigate]);
 
-  // Sample brief data
-  // const recentBriefs = [{
-  //   id: 1,
-  //   name: "Morning Brief",
-  //   timeCreated: "Today, 8:00 AM",
-  //   timeRange: "5:00 AM - 8:00 AM",
-  //   slackMessages: {
-  //     total: 12,
-  //     fromPriorityPeople: 3
-  //   },
-  //   emails: {
-  //     total: 5,
-  //     fromPriorityPeople: 2
-  //   },
-  //   actionItems: 4,
-  //   hasTranscript: true
-  // }, {
-  //   id: 2,
-  //   name: "Midday Brief",
-  //   timeCreated: "Today, 12:30 PM",
-  //   timeRange: "8:00 AM - 12:30 PM",
-  //   slackMessages: {
-  //     total: 18,
-  //     fromPriorityPeople: 5
-  //   },
-  //   emails: {
-  //     total: 8,
-  //     fromPriorityPeople: 3
-  //   },
-  //   actionItems: 6,
-  //   hasTranscript: true
-  // }, {
-  //   id: 3,
-  //   name: "Evening Brief",
-  //   timeCreated: "Yesterday, 6:00 PM",
-  //   timeRange: "12:30 PM - 6:00 PM",
-  //   slackMessages: {
-  //     total: 14,
-  //     fromPriorityPeople: 2
-  //   },
-  //   emails: {
-  //     total: 6,
-  //     fromPriorityPeople: 1
-  //   },
-  //   actionItems: 3,
-  //   hasTranscript: false
-  // }];
-
-  // Sample upcoming brief data
-  // const upcomingBrief = {
-  //   name: "Midday Brief",
-  //   scheduledTime: "Today at 12:30 PM"
-  // };
-
   const handlePlayBrief = useCallback(
     (briefId: number) => {
       const brief = recentBriefs?.find((b) => b.id === briefId);
@@ -282,6 +229,7 @@ const HomeView = ({
     },
     [playingBrief, toast, recentBriefs]
   );
+
 
   // Mobile View
   if (isMobile) {
@@ -659,12 +607,13 @@ const HomeView = ({
                 totalBriefs={totalBriefs}
                 onViewBrief={onOpenBrief} 
                 onViewTranscript={handleViewTranscript} 
-                onPlayBrief={handlePlayBrief} 
-                playingBrief={playingBrief} 
                 onViewAllBriefs={handleViewAllBriefs}
                 onGetBriefedNow={handleGetBriefedNow}
                 onUpdateSchedule={handleUpdateSchedule}
                 upcomingBrief={upcomingBrief}
+                playingBrief={playingBrief}
+                onPlayBrief={handlePlayBrief}
+                audioPlayer={audioPlayer}
               />
               <Audio audioSrc={currentAudioUrl} audioRef={audioRef} />
             </div>

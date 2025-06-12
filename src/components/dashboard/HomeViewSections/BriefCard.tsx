@@ -18,31 +18,47 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFeedbackTracking } from "../useFeedbackTracking";
+import { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
 
 interface BriefCardProps {
   brief: Summary;
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number, title: string, transcript: string) => void;
-  onPlayBrief: (briefId: number) => void;
-  playingBrief: number | null;
 	handleClick: (message: string, e: React.MouseEvent) => void
   isLast?: boolean;
+  playingBrief: number | null;
+  onPlayBrief: (briefId: number) => void;
+  audioPlayer: UseAudioPlayerType;
 }
 
-const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingBrief, handleClick, isLast }: BriefCardProps) => {
+const BriefCard = ({
+  brief,
+  onViewBrief,
+  onViewTranscript,
+  handleClick,
+  isLast,
+  playingBrief,
+  onPlayBrief,
+  audioPlayer,
+}: BriefCardProps) => {
+  const {
+    isPlaying,
+    currentTime,
+    duration,
+    formatDuration,
+    handleMuteToggle,
+    handlePlayPause,
+    isMuted,
+    playbackRate,
+    seekTo,
+    updatePlaybackRate,
+  } = audioPlayer;
   const [isExpanded, setIsExpanded] = useState(false);
   const [feedbackState, setFeedbackState] = useState<'none' | 'up' | 'down'>('none');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [showAddMissing, setShowAddMissing] = useState(false);
   const [comment, setComment] = useState("");
   const [missingContent, setMissingContent] = useState("");
-  
-  // Audio player state
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(300); // 5 minutes mock duration
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
   
   const {
     handleSummaryFeedback,
@@ -103,25 +119,17 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
   const timeRange = brief?.start_at && brief?.ended_at ? `${brief?.start_at} - ${brief?.ended_at}` : "";
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsExpanded(true); // Open the dropdown
+    updatePlaybackRate(1.0);
+    setIsExpanded(true);
     onPlayBrief(brief.id);
-    setIsAudioPlaying(!isAudioPlaying);
   };
 
   const handleAudioToggle = () => {
-    setIsAudioPlaying(!isAudioPlaying);
-  };
-
-  const handleMuteToggle = () => {
-    setIsMuted(!isMuted);
-  };
-
-  const handleTimeChange = (value: number[]) => {
-    setCurrentTime(value[0]);
+    handlePlayPause();
   };
 
   const handleSpeedChange = (speed: number) => {
-    setPlaybackSpeed(speed);
+    updatePlaybackRate(speed);
   };
 
   const formatTime = (time: number) => {
@@ -306,14 +314,14 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
             <div className="border-t border-white/20 pt-3">
               {/* Audio Player Section - Only show when playing */}
               {playingBrief === brief.id && (
-                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
+                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10" onClick={e => e.stopPropagation()}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <button 
                         onClick={handleAudioToggle}
                         className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
                       >
-                        {isAudioPlaying ? (
+                        {playingBrief === brief.id && isPlaying ? (
                           <Pause className="h-4 w-4 text-primary-teal" />
                         ) : (
                           <Play className="h-4 w-4 text-primary-teal" />
@@ -323,7 +331,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                       <div className="text-sm">
                         <div className="text-white-text font-medium">Playing: {brief.title}</div>
                         <div className="text-light-gray-text text-xs">
-                          {formatTime(currentTime)} / {formatTime(duration)}
+                          {formatDuration(currentTime)} / {formatDuration(duration)}
                         </div>
                       </div>
                     </div>
@@ -332,7 +340,7 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <button className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors">
-                            {playbackSpeed}x
+                            {playbackRate}x
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
@@ -367,7 +375,9 @@ const BriefCard = ({ brief, onViewBrief, onViewTranscript, onPlayBrief, playingB
                       value={[currentTime]}
                       max={duration}
                       step={1}
-                      onValueChange={handleTimeChange}
+                      onValueChange={([value]) => {
+                        seekTo(value);
+                      }}
                       className="w-full"
                     />
                   </div>

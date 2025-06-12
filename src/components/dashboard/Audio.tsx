@@ -1,4 +1,3 @@
-import useAudioPlayer from "@/hooks/useAudioPlayer";
 import { useEffect } from "react";
 
 const Audio = ({

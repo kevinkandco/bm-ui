@@ -42,7 +42,6 @@ const Voices = () => {
     handleSeekStart,
     handleSeekMove,
     handleSeekEnd,
-    handleTimeUpdate,
     handlePlayPause,
     barRef,
     formatDuration,
@@ -214,7 +213,6 @@ const Voices = () => {
       <Audio
         audioSrc={currentAudioUrl}
         audioRef={audioRef}
-        handleTimeUpdate={handleTimeUpdate}
       />
     </div>
   );

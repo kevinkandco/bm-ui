@@ -9,29 +9,33 @@ import ViewErrorMessage from "../ViewErrorMessage";
 import BriefCardSkeleton from "./BriefCardSkeleton";
 import UpcomingBriefCard from "./UpcomingBriefCard";
 import { Button } from "@/components/ui/button";
+import { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
+
 interface BriefsContainerProps {
   briefs: Summary[];
   totalBriefs: number;
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number, title: string, transcript: string) => void;
-  onPlayBrief: (briefId: number) => void;
-  playingBrief: number | null;
   onViewAllBriefs: () => void;
   onGetBriefedNow?: () => void;
   onUpdateSchedule?: () => void;
   upcomingBrief?: Summary;
+  playingBrief: number | null;
+  onPlayBrief: (briefId: number) => void
+  audioPlayer: UseAudioPlayerType;
 }
 const BriefsContainer = ({
   briefs,
   totalBriefs,
   onViewBrief,
   onViewTranscript,
-  onPlayBrief,
-  playingBrief,
   onViewAllBriefs,
   onGetBriefedNow,
   onUpdateSchedule,
-  upcomingBrief
+  upcomingBrief,
+  playingBrief,
+  onPlayBrief,
+  audioPlayer
 }: BriefsContainerProps) => {
   const [upcomingOpen, setUpcomingOpen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -88,10 +92,11 @@ const BriefsContainer = ({
                       brief={brief}
                       onViewBrief={onViewBrief}
                       onViewTranscript={onViewTranscript}
-                      onPlayBrief={onPlayBrief}
-                      playingBrief={playingBrief}
                       handleClick={handleClick}
                       isLast={index === briefs?.length - 1}
+                      playingBrief={playingBrief}
+                      onPlayBrief={onPlayBrief}
+                      audioPlayer={audioPlayer}
                     />
                   ))}
                 </div>

@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 const useAudioPlayer = (
   audioSrc: string | null,
   autoplay: boolean,
-  onAudioEnded?: () => void
+  onAudioEnded?: () => void,
+  initialPlaybackRate = 1.0
 ) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -12,6 +13,8 @@ const useAudioPlayer = (
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const barRef = useRef<HTMLDivElement | null>(null);
+  const [playbackRate, setPlaybackRate] = useState(initialPlaybackRate);
+  const [isMuted, setIsMuted] = useState(false);
 
   // Seek audio to position based on mouse or touch event
   const seekToPosition = (
@@ -61,6 +64,14 @@ const useAudioPlayer = (
     setIsSeeking(false);
   };
 
+  const seekTo = (time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+
   const handlePlay = () => {
     audioRef.current?.play();
     setIsPlaying(true);
@@ -102,6 +113,8 @@ const useAudioPlayer = (
     }
 
     if (!audio) return;
+    audio.playbackRate = playbackRate;
+    audio.muted = isMuted;
 
     const onLoadedMetadata = () => {
       setDuration(audio.duration);
@@ -138,6 +151,21 @@ const useAudioPlayer = (
     };
   }, [audioSrc, autoplay, isSeeking, onAudioEnded]);
 
+  const updatePlaybackRate = (rate: number) => {
+    if (audioRef.current && audioRef.current.playbackRate !== rate) {
+      const clampedRate = Math.max(0.5, Math.min(3, rate));
+      audioRef.current.playbackRate = clampedRate;
+      setPlaybackRate(clampedRate);
+    }
+  };
+
+  const handleMuteToggle = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !audioRef.current.muted;
+      setIsMuted(audioRef.current.muted);
+    }
+  };
+
   return {
     audioRef,
     isPlaying,
@@ -151,7 +179,15 @@ const useAudioPlayer = (
     handleSeekStart,
     handleSeekMove,
     handleSeekEnd,
+    seekTo,
+    playbackRate,
+    updatePlaybackRate,
+    isMuted,
+    handleMuteToggle
   };
 };
+
+export type UseAudioPlayerType = ReturnType<typeof useAudioPlayer>;
+
 
 export default useAudioPlayer;
