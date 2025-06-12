@@ -90,26 +90,28 @@ const IgnoreSetting = ({
             )
         );
       setSearchResults(filtered);
-    } else if (selectedTab === "keyword" && isInputFocused) {
-      const filtered = suggestedTopics
-        ?.filter((topic) =>
-          topic?.toLowerCase()?.includes(inputValue.toLowerCase())
-        )
-        ?.filter(
-          (topic) =>
-            !slackData?.priorityTopics?.some(
-              (priority: string) =>
-                priority.toLowerCase() === topic.toLowerCase()
-            )
-        )
-        ?.filter(
-          (topic) =>
-            !slackData?.ignoreKeywords?.some(
-              (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
-            )
-        );
-      setSearchResults(filtered);
-    } else {
+    } 
+    // else if (selectedTab === "keyword" && isInputFocused) {
+    //   const filtered = suggestedTopics
+    //     ?.filter((topic) =>
+    //       topic?.toLowerCase()?.includes(inputValue.toLowerCase())
+    //     )
+    //     ?.filter(
+    //       (topic) =>
+    //         !slackData?.priorityTopics?.some(
+    //           (priority: string) =>
+    //             priority.toLowerCase() === topic.toLowerCase()
+    //         )
+    //     )
+    //     ?.filter(
+    //       (topic) =>
+    //         !slackData?.ignoreKeywords?.some(
+    //           (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
+    //         )
+    //     );
+    //   setSearchResults(filtered);
+    // }
+    else {
       setSearchResults([]);
     }
   }, [
@@ -140,16 +142,17 @@ const IgnoreSetting = ({
         ...(prev || []),
         { id: trimmedInput, name: trimmedInput },
       ]);
-    } else if (selectedTab === "keyword") {
-      if (slackData?.ignoreKeywords?.includes(trimmedInput)) {
-        return;
-      }
-      // Update slackData?.ignoreKeywords with new keyword
-      setSlackData((prev) => ({
-        ...prev,
-        ignoreKeywords: [...(prev.ignoreKeywords || []), trimmedInput],
-      }));
-    }
+    } 
+    // else if (selectedTab === "keyword") {
+    //   if (slackData?.ignoreKeywords?.includes(trimmedInput)) {
+    //     return;
+    //   }
+    //   // Update slackData?.ignoreKeywords with new keyword
+    //   setSlackData((prev) => ({
+    //     ...prev,
+    //     ignoreKeywords: [...(prev.ignoreKeywords || []), trimmedInput],
+    //   }));
+    // }
 
     setInputValue("");
   };
@@ -185,12 +188,13 @@ const selectKeyword = (topic: string) => {
         ...prev,
         ignoreChannels: prev.ignoreChannels?.filter((item) => item !== value),
       }));
-    } else if (type === "keyword") {
-      setSlackData((prev) => ({
-        ...prev,
-        ignoreKeywords: prev.ignoreKeywords?.filter((item) => item !== value),
-      }));
-    }
+    } 
+    // else if (type === "keyword") {
+    //   setSlackData((prev) => ({
+    //     ...prev,
+    //     ignoreKeywords: prev.ignoreKeywords?.filter((item) => item !== value),
+    //   }));
+    // }
   };
 
   // Handle click outside to close dropdown
@@ -242,27 +246,28 @@ const selectKeyword = (topic: string) => {
           ))}
         </div>
       );
-    } else if (selectedTab === "keyword" && slackData?.ignoreKeywords?.length > 0) {
-      return (
-        <div className="flex flex-wrap gap-2 pt-3 mt-2">
-          {slackData?.ignoreKeywords?.map((keyword) => (
-            <div
-              key={keyword}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white"
-            >
-              <BellOff size={14} className="text-glass-blue/80" />
-              <span>{keyword}</span>
-              <button
-                onClick={() => removeItem("keyword", keyword)}
-                className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          ))}
-        </div>
-      );
-    }
+    } 
+    // else if (selectedTab === "keyword" && slackData?.ignoreKeywords?.length > 0) {
+    //   return (
+    //     <div className="flex flex-wrap gap-2 pt-3 mt-2">
+    //       {slackData?.ignoreKeywords?.map((keyword) => (
+    //         <div
+    //           key={keyword}
+    //           className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white"
+    //         >
+    //           <BellOff size={14} className="text-glass-blue/80" />
+    //           <span>{keyword}</span>
+    //           <button
+    //             onClick={() => removeItem("keyword", keyword)}
+    //             className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange transition-colors"
+    //           >
+    //             <X size={14} />
+    //           </button>
+    //         </div>
+    //       ))}
+    //     </div>
+    //   );
+    // }
 
     return null;
   };
@@ -324,7 +329,7 @@ const selectKeyword = (topic: string) => {
           )}
         </button>
 
-        <button
+        {/* <button
           className={cn(
             "py-3 px-4 focus:outline-none relative",
             selectedTab === "keyword"
@@ -340,7 +345,7 @@ const selectKeyword = (topic: string) => {
           {selectedTab === "keyword" && (
             <div className="absolute bottom-0 left-0 w-full h-0.5 bg-glass-blue" />
           )}
-        </button>
+        </button> */}
       </div>
       {loadingIgnore ? (
         <FancyLoader />
@@ -401,7 +406,7 @@ const selectKeyword = (topic: string) => {
             </div>
           )}
 
-          {selectedTab === "keyword" && (
+          {/* {selectedTab === "keyword" && (
             <div className="space-y-3 mt-4">
               <Label htmlFor="ignore-keyword" className="text-off-white">
                 Ignore keywords
@@ -446,10 +451,10 @@ const selectKeyword = (topic: string) => {
                 </Button>
               </div>
 
-              {/* Always render selected keywords for immediate feedback */}
-              {renderSelectedItems()}
+              {/* Always render selected keywords for immediate feedback
+               {renderSelectedItems()}
             </div>
-          )}
+          )} */}
 
           <div className="flex items-center space-x-2 pt-2">
             <Switch
