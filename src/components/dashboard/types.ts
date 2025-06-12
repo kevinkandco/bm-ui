@@ -27,6 +27,44 @@ export interface SummaryMassage {
   channel?: string;
 }
 
+export interface Stats {
+    totalMessagesAnalyzed: {
+        total: number;
+        breakdown: {
+            slack: number;
+            gmail: number;
+        };
+    };
+    lowPriority: {
+        total: number;
+        breakdown: {
+            slack: number;
+            gmail: number;
+        };
+    };
+    mediumPriority: {
+        total: number;
+        breakdown: {
+            slack: number;
+            gmail: number;
+        };
+    };
+    highPriority: {
+        total: number;
+        breakdown: {
+            slack: number;
+            gmail: number;
+        };
+    };
+    actionItems: {
+        total: number;
+        breakdown: {
+            slack: number;
+            gmail: number;
+        };
+    };
+}
+
 export interface Summary {
   id: number;
   user_id?: number;
@@ -54,6 +92,7 @@ export interface Summary {
   actionCount: number;
   delivery_at: string,
   vote: null | 'like' | 'dislike';
+  stats: Stats;
   sections:
     {
       title: string;

@@ -47,6 +47,7 @@ import { Summary, SummaryMassage } from "@/components/dashboard/types";
 import Audio from "@/components/dashboard/Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import TranscriptView from "@/components/dashboard/TranscriptView";
+import { transformToStats } from "@/lib/utils";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -57,7 +58,7 @@ const BriefDetail = () => {
   const { call } = useApi();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedActionItem, setExpandedActionItem] = useState<number | null>(null);
-  const [allMessagesOpen, setAllMessagesOpen] = useState(false);
+  // const [allMessagesOpen, setAllMessagesOpen] = useState(false);
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
   const [briefData, setBriefData] = useState<Summary | null>(null);
@@ -94,166 +95,53 @@ const BriefDetail = () => {
     });
 
     if (response) {
-      setBriefData(response?.data);
+      const stats = transformToStats(response?.data);
+      setBriefData({...response?.data, stats});
       setActionItems(response?.data?.messages?.map((item: SummaryMassage, index: number) => ({...item, id: index})));
       setSelectedFeedback(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : null);
     }
     setLoading(false);
   }, [call, briefId]);
 
-  // Mock data - in a real app this would be fetched based on briefId
-  // const briefData = {
-  //   id: briefId,
-  //   title: "Morning Brief",
-  //   timestamp: "Today, 8:00 AM",
-  //   timeRange: "5:00 AM - 8:00 AM",
-  //   timeSaved: "~25min reading + 8min processing = 33min total",
-  //   stats: {
-  //     totalMessagesAnalyzed: {
-  //       total: 46,
-  //       breakdown: { slack: 25, gmail: 21 }
-  //     },
-  //     lowPriority: {
-  //       total: 18,
-  //       breakdown: { slack: 10, gmail: 8 }
-  //     },
-  //     mediumPriority: {
-  //       total: 15,
-  //       breakdown: { slack: 8, gmail: 7 }
-  //     },
-  //     highPriority: {
-  //       total: 13,
-  //       breakdown: { slack: 7, gmail: 6 }
-  //     },
-  //     actionItems: {
-  //       total: 4,
-  //       breakdown: { slack: 2, gmail: 2 }
-  //     }
-  //   },
-  //   audioUrl: "/path/to/audio.mp3",
-  //   audioDuration: "3:00"
-  // };
-
   const statsConfig = [
     {
       icon: BarChart3,
       label: "Total Messages Analyzed",
-      value: 10,
-      breakdown: { slack: 5, gmail: 5 },
+      value: briefData?.stats?.totalMessagesAnalyzed?.total,
+      breakdown: briefData?.stats?.totalMessagesAnalyzed?.breakdown,
       color: "text-blue-400"
     },
     {
       icon: CheckCircle,
       label: "Low Priority",
-      value: 10,
-      breakdown: { slack: 50, gmail: 10},
+      value: briefData?.stats?.lowPriority?.total,
+      breakdown: briefData?.stats?.lowPriority?.breakdown,
       color: "text-gray-400"
     },
     {
       icon: AlertCircle,
       label: "Medium Priority",
-      value: 10,
-      breakdown: { slack: 50, gmail: 10},
+      value: briefData?.stats?.mediumPriority?.total,
+      breakdown: briefData?.stats?.mediumPriority?.breakdown,
       color: "text-orange-400"
     },
     {
       icon: AlertCircle,
       label: "High Priority",
-      value: 10,
-      breakdown: { slack: 50, gmail: 10},
+      value: briefData?.stats?.highPriority?.total,
+      breakdown: briefData?.stats?.highPriority?.breakdown,
       color: "text-red-400"
     },
     {
       icon: CheckSquare,
       label: "Action Items",
-      value: 10,
-      breakdown: { slack: 50, gmail: 10},
+      value: briefData?.stats?.actionItems?.total,
+      breakdown: briefData?.stats?.actionItems?.breakdown,
       color: "text-accent-primary"
     }
   ];
 
   const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
-
-  // const actionItems = [
-  //   {
-  //     id: 1,
-  //     source: "gmail",
-  //     priority: "high",
-  //     title: "Review launch materials for marketing team",
-  //     subtitle: "(Due: 2 PM today)",
-  //     time: "7:45 AM",
-  //     sender: "Sarah Johnson",
-  //     subject: "Urgent: Launch Materials Review Needed",
-  //     originalMessage: "Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials we discussed yesterday. The marketing team needs your review and approval by 2 PM today to stay on track with our product launch timeline. The materials include the press release, social media assets, and the updated landing page copy. Please let me know if you have any questions or need any changes. Thanks!",
-  //     justification: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-  //     originalLink: "https://mail.google.com/mail/u/0/#inbox/message123",
-  //     relevancy: "Critical - blocking marketing team progress",
-  //     triggerPhrase: "needs your review and approval by 2 PM today",
-  //     ruleHit: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-  //     priorityLogic: "Ranked as High priority due to same-day deadline (2 PM today) and potential to block team progress if delayed.",
-  //     confidence: "High",
-  //     messageId: "msg_123"
-  //   },
-  //   {
-  //     id: 2,
-  //     source: "gmail", 
-  //     priority: "medium",
-  //     title: "Approve Q4 budget allocations for finance team",
-  //     subtitle: "",
-  //     time: "6:30 AM",
-  //     sender: "Finance Team <finance@company.com>",
-  //     subject: "Q4 Budget Approval Required",
-  //     originalMessage: "Please review and approve the Q4 budget allocations. The finance team needs your approval to proceed with the quarterly planning.",
-  //     justification: "Requires approval action from the recipient and involves budget decisions that impact quarterly planning.",
-  //     originalLink: "https://mail.google.com/mail/u/0/#inbox/message124",
-  //     relevancy: "Important - quarterly planning dependency",
-  //     triggerPhrase: "review and approve",
-  //     ruleHit: "Contains approval request with business impact",
-  //     priorityLogic: "Medium priority due to quarterly timeline and business planning impact.",
-  //     confidence: "Medium",
-  //     messageId: "msg_124"
-  //   },
-  //   {
-  //     id: 3,
-  //     source: "slack",
-  //     priority: "high", 
-  //     title: "Respond to Sarah about testing phase timeline concerns",
-  //     subtitle: "",
-  //     time: "7:15 AM",
-  //     sender: "Sarah Johnson",
-  //     channel: "#product-dev",
-  //     originalMessage: "Hey @channel, I'm concerned about the testing phase timeline. We might need to extend it by a week to ensure quality. Can we discuss this in our next meeting?",
-  //     justification: "Direct mention requiring response about timeline concerns that could impact project delivery.",
-  //     originalLink: "https://app.slack.com/client/workspace/channel/message456",
-  //     relevancy: "Critical - project timeline impact",
-  //     triggerPhrase: "Can we discuss this",
-  //     ruleHit: "Direct mention with discussion request about project concerns",
-  //     priorityLogic: "High priority due to potential project timeline impact and quality concerns.",
-  //     confidence: "High",
-  //     messageId: "msg_456"
-  //   },
-  //   {
-  //     id: 4,
-  //     source: "slack",
-  //     priority: "low",
-  //     title: "Schedule follow-up meeting with product team for next week",
-  //     subtitle: "",
-  //     time: "5:30 AM",
-  //     sender: "Product Team",
-  //     channel: "#general",
-  //     originalMessage: "We should schedule a follow-up meeting to discuss the roadmap updates. Next week would work well for most of the team.",
-  //     justification: "Scheduling request that requires coordination but is not time-sensitive.",
-  //     originalLink: "https://app.slack.com/client/workspace/channel/message789",
-  //     relevancy: "Low - scheduling coordination",
-  //     triggerPhrase: "should schedule",
-  //     ruleHit: "Contains scheduling request without urgency",
-  //     priorityLogic: "Low priority due to flexible timeline and routine coordination.",
-  //     confidence: "Medium",
-  //     messageId: "msg_789"
-  //   }
-  // ];
-
-    
 
   useEffect(() => {
     if (briefId) {
@@ -265,129 +153,6 @@ const BriefDetail = () => {
       setBriefData(null);
     };
   }, [briefId, getBriefData]);
-  
-
-  // const actionItems = [
-  //   {
-  //     id: 1,
-  //     source: "gmail",
-  //     priority: "high",
-  //     title: "Review launch materials for marketing team",
-  //     subtitle: "(Due: 2 PM today)",
-  //     time: "7:45 AM",
-  //     sender: "Sarah Johnson",
-  //     subject: "Urgent: Launch Materials Review Needed",
-  //     originalMessage: "Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials we discussed yesterday. The marketing team needs your review and approval by 2 PM today to stay on track with our product launch timeline. The materials include the press release, social media assets, and the updated landing page copy. Please let me know if you have any questions or need any changes. Thanks!",
-  //     justification: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-  //     originalLink: "https://mail.google.com/mail/u/0/#inbox/message123",
-  //     relevancy: "Critical - blocking marketing team progress",
-  //     triggerPhrase: "needs your review and approval by 2 PM today",
-  //     ruleHit: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-  //     priorityLogic: "Ranked as High priority due to same-day deadline (2 PM today) and potential to block team progress if delayed.",
-  //     confidence: "High",
-  //     messageId: "msg_123"
-  //   },
-  //   {
-  //     id: 2,
-  //     source: "gmail", 
-  //     priority: "medium",
-  //     title: "Approve Q4 budget allocations for finance team",
-  //     subtitle: "",
-  //     time: "6:30 AM",
-  //     sender: "Finance Team <finance@company.com>",
-  //     subject: "Q4 Budget Approval Required",
-  //     originalMessage: "Please review and approve the Q4 budget allocations. The finance team needs your approval to proceed with the quarterly planning.",
-  //     justification: "Requires approval action from the recipient and involves budget decisions that impact quarterly planning.",
-  //     originalLink: "https://mail.google.com/mail/u/0/#inbox/message124",
-  //     relevancy: "Important - quarterly planning dependency",
-  //     triggerPhrase: "review and approve",
-  //     ruleHit: "Contains approval request with business impact",
-  //     priorityLogic: "Medium priority due to quarterly timeline and business planning impact.",
-  //     confidence: "Medium",
-  //     messageId: "msg_124"
-  //   },
-  //   {
-  //     id: 3,
-  //     source: "slack",
-  //     priority: "high", 
-  //     title: "Respond to Sarah about testing phase timeline concerns",
-  //     subtitle: "",
-  //     time: "7:15 AM",
-  //     sender: "Sarah Johnson",
-  //     channel: "#product-dev",
-  //     originalMessage: "Hey @channel, I'm concerned about the testing phase timeline. We might need to extend it by a week to ensure quality. Can we discuss this in our next meeting?",
-  //     justification: "Direct mention requiring response about timeline concerns that could impact project delivery.",
-  //     originalLink: "https://app.slack.com/client/workspace/channel/message456",
-  //     relevancy: "Critical - project timeline impact",
-  //     triggerPhrase: "Can we discuss this",
-  //     ruleHit: "Direct mention with discussion request about project concerns",
-  //     priorityLogic: "High priority due to potential project timeline impact and quality concerns.",
-  //     confidence: "High",
-  //     messageId: "msg_456"
-  //   },
-  //   {
-  //     id: 4,
-  //     source: "slack",
-  //     priority: "low",
-  //     title: "Schedule follow-up meeting with product team for next week",
-  //     subtitle: "",
-  //     time: "5:30 AM",
-  //     sender: "Product Team",
-  //     channel: "#general",
-  //     originalMessage: "We should schedule a follow-up meeting to discuss the roadmap updates. Next week would work well for most of the team.",
-  //     justification: "Scheduling request that requires coordination but is not time-sensitive.",
-  //     originalLink: "https://app.slack.com/client/workspace/channel/message789",
-  //     relevancy: "Low - scheduling coordination",
-  //     triggerPhrase: "should schedule",
-  //     ruleHit: "Contains scheduling request without urgency",
-  //     priorityLogic: "Low priority due to flexible timeline and routine coordination.",
-  //     confidence: "Medium",
-  //     messageId: "msg_789"
-  //   }
-  // ];
-
-  // const recentMessages = [
-  //   {
-  //     id: 1,
-  //     platform: "Gmail",
-  //     message: "Performance Improvement",
-  //     sender: "Meta for Business <update@global.metamail.com>",
-  //     time: "7:04 AM",
-  //     priority: "Medium"
-  //   },
-  //   {
-  //     id: 2,
-  //     platform: "Gmail",
-  //     message: "Upcoming Meeting Overview",
-  //     sender: "Otter.ai Insights <no-reply@otter.ai>",
-  //     time: "3:45 PM",
-  //     priority: "High"
-  //   },
-  //   {
-  //     id: 3,
-  //     platform: "Gmail",
-  //     message: "New Property Listing",
-  //     sender: "Redfin <redmail@redfin.com>",
-  //     time: "5:35 PM",
-  //     priority: "Medium"
-  //   },
-  //   {
-  //     id: 4,
-  //     platform: "Gmail",
-  //     message: "Product Demo",
-  //     sender: "Atomic Thoughts <techtwitter@substack.com>",
-  //     time: "6:33 PM",
-  //     priority: "Low"
-  //   },
-  //   {
-  //     id: 5,
-  //     platform: "Gmail",
-  //     message: "Business for Sale",
-  //     sender: "newbizopps@bizbuysell.com",
-  //     time: "7:44 PM",
-  //     priority: "High"
-  //   }
-  // ];
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -602,7 +367,7 @@ const BriefDetail = () => {
                         <div className="space-y-1">
                           <div className="text-sm font-medium text-text-primary">{stat.label}</div>
                           <div className="space-y-1">
-                            {Object.entries(stat.breakdown).map(([platform, count]) => (
+                            {stat?.breakdown && Object?.entries(stat?.breakdown)?.map(([platform, count]) => (
                               <div key={platform} className="flex justify-between text-xs">
                                 <span className="text-text-secondary capitalize">{platform}:</span>
                                 <span className="text-text-primary font-medium">{count}</span>
