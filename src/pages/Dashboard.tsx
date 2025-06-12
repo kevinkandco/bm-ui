@@ -250,7 +250,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Focus Mode Timer Header */}
-      {userStatus === "focus" && (
+      {userStatus === "focus" || userStatus === "away" && (
         <StatusTimer 
           status={userStatus}
           focusTime={focusTime}
