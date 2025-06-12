@@ -1,7 +1,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info, ChevronDown, ChevronRight, SkipBack, SkipForward } from "lucide-react";
+import { Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info, ChevronDown, ChevronRight, SkipBack, SkipForward, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -265,6 +265,57 @@ const BriefDetail = () => {
     setPriorityModalOpen(true);
   };
 
+  const handleDownload = async () => {
+    const downloadUrl = `${BaseURL}/api/summary/${briefData.id}/download-audio`;
+
+    try {
+      const response = await fetch(downloadUrl, {
+        method: "GET",
+        headers: {
+          "authorization": `Bearer ${localStorage.getItem("token")}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from server:", errorText.slice(0, 200));
+        toast({
+          title: "Download failed",
+          description: "Download failed: file not found or server error",
+          variant: "destructive",
+        })
+        return;
+      }
+
+      const contentType = response.headers.get("Content-Type");
+      if (!contentType?.startsWith("audio/")) {
+        const text = await response.text();
+        console.error("Expected audio, got:", text.slice(0, 200));
+        toast({
+          title: "Download failed",
+          description: "Download failed: invalid file type received",
+          variant: "destructive",
+        })
+        return;
+      }
+
+      // If all checks pass, download the file
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.setAttribute("download", "audio.mp3");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed due to error:", error);
+      alert("Download failed. Check your internet connection or try again.");
+    }
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "High": return "bg-red-500/20 text-red-400 border-red-500/30";
@@ -493,7 +544,11 @@ const BriefDetail = () => {
                 
                 <span className="text-sm text-text-secondary">{formatDuration(duration)}</span>
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-between">
+                <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </Button>
                 <Button 
                 onClick={() => setTranscriptOpen(true)} 
                 variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
