@@ -165,7 +165,6 @@ const SettingsPage = () => {
 
   useEffect(() => {
     const tab = searchParams.get("tab");
-    const selected = searchParams.get("selected");
 
     if (user) {
       setSettings({

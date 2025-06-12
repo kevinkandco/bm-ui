@@ -77,7 +77,7 @@ const HomeView = ({
   });
 
   const handleOpenSettings = () => {
-      setSlackModalOpen(true);
+      navigate("/dashboard/settings", { state: { activeSection: "integrations" } });
     };
   
     const handleCloseSettings = () => {

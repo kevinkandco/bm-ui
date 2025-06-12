@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Mail, Slack, Calendar, ChevronDown, Trash2 } from "lucide-react";
+import { Mail, Slack, Calendar, ChevronDown, Trash2, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,7 @@ interface ConnectedAccountsListProps {
   onToggleCombined: (accountId: number) => void;
   onDisconnect: (accountId: number) => void;
   onCreateTag: (name: string, color: string, emoji: string, accountId: number) => void;
+  setSlackModalOpen?: (open: boolean) => void
 }
 
 const ConnectedAccountsList = ({
@@ -29,7 +30,8 @@ const ConnectedAccountsList = ({
   onUpdateTag,
   onToggleCombined,
   onDisconnect,
-  onCreateTag
+  onCreateTag,
+  setSlackModalOpen
 }: ConnectedAccountsListProps) => {
   const [editingTag, setEditingTag] = useState<number | null>(null);
 
@@ -118,6 +120,9 @@ const ConnectedAccountsList = ({
             <div className="flex items-center space-x-4">
               {/* Include in Combined Brief Switch */}
               <div className="flex items-center space-x-2">
+                {(account?.provider_name?.toLowerCase() === "slack" && setSlackModalOpen) && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2 cursor-pointer" onClick={() => setSlackModalOpen(true)}>
+                  <Settings size={20}>Configure Slack</Settings>
+                </div>}
                 <span className="text-sm text-text-secondary whitespace-nowrap">
                   Include in Combined
                 </span>

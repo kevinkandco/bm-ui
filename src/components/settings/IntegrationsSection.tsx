@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Settings as SettingsIcon, AlertCircle, X, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +9,8 @@ import InputIntegrationsSection from "./InputIntegrationsSection";
 import OutputIntegrationsSection from "./OutputIntegrationsSection";
 import { useIntegrationsState } from "./useIntegrationsState";
 import FancyLoader from "./modal/FancyLoader";
+import { useSearchParams } from "react-router-dom";
+import SlackSettingsModal from "./modal/SlackSettingsModal";
 
 const IntegrationsSection = () => {
   const { toast } = useToast();
@@ -27,8 +29,26 @@ const IntegrationsSection = () => {
     dismissFirstTimeHelper,
     loading
   } = useIntegrationsState();
-
+  const [searchParams] = useSearchParams();
   const [showTagManager, setShowTagManager] = useState(false);
+  const [isSlackModalOpen, setSlackModalOpen] = useState(false);
+  const [firstTimeSlackConnected, setFirstTimeSlackConnected] = useState(false);
+
+  useEffect(() => {
+      const selected = searchParams.get("selected");
+  
+      const url = new URL(window.location.href);
+      url.searchParams.delete("selected");
+      if (selected === "slack") {
+        window.history.replaceState(
+          {},
+          document.title,
+          url.pathname + url.search
+        );  
+        setSlackModalOpen(true);
+        setFirstTimeSlackConnected(true);
+      }
+    }, [searchParams]);
 
   const handleAddAccount = (provider: string, type: 'input' | 'output') => {
     // Simulate OAuth flow
@@ -96,6 +116,7 @@ const IntegrationsSection = () => {
           onToggleCombined={toggleAccountInCombined}
           onDisconnect={disconnectAccount}
           onCreateTag={createTag}
+          setSlackModalOpen={setSlackModalOpen}
         />}
       </div>
 
@@ -115,6 +136,12 @@ const IntegrationsSection = () => {
 
       {/* Output Integrations */}
       <OutputIntegrationsSection onConnect={handleAddAccount} />
+      <SlackSettingsModal
+        open={isSlackModalOpen}
+        onClose={() => setSlackModalOpen(false)}
+        firstTimeSlackConnected={firstTimeSlackConnected}
+        setFirstTimeSlackConnected={setFirstTimeSlackConnected}
+      />
     </div>
   );
 };
