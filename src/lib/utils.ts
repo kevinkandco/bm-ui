@@ -13,9 +13,12 @@ export function getTimePeriod(time: string) {
   const [hours, minutes] = time.split(":").map(Number);
   const totalMinutes = hours * 60 + minutes;
 
-  return {
-    morning: totalMinutes >= 360 && totalMinutes < 720,     // 06:00 to 11:59
-    midday: totalMinutes >= 720 && totalMinutes < 1020,     // 12:00 to 16:59
-    evening: totalMinutes >= 1020 && totalMinutes < 1440    // 17:00 to 23:59
+  const periods = {
+    morning: totalMinutes >= 360 && totalMinutes < 720,
+    midday: totalMinutes >= 720 && totalMinutes < 1020,
+    evening: totalMinutes >= 1020 && totalMinutes < 1440
   };
+
+  return periods;
 }
+
