@@ -169,9 +169,9 @@ const SettingsPage = () => {
 
     if (user) {
       setSettings({
-        name: user.name,
-        job_title: user.job_title,
-        department: user.department,
+        name: user.name ?? "",
+        job_title: user.job_title ?? "",
+        department: user.department ?? "",
         profileImage: user?.profile_path ? BaseURL + user.profile_path : null,
       })
     }
