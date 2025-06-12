@@ -13,7 +13,7 @@ interface BriefsContainerProps {
   briefs: Summary[];
   totalBriefs: number;
   onViewBrief: (briefId: number) => void;
-  onViewTranscript: (message: string, briefId: number) => void;
+  onViewTranscript: (briefId: number, title: string, transcript: string) => void;
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
   onViewAllBriefs: () => void;

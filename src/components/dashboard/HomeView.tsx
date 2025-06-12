@@ -39,7 +39,7 @@ interface HomeViewProps {
   totalBriefs: number;
   upcomingBrief: Summary | null;
   onOpenBrief: (briefId: number) => void;
-  onViewTranscript: (message: string, briefId: number) => void;
+  onViewTranscript: (briefId: number, title: string, transcript: string) => void;
   onStartFocusMode: (focusTime: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
@@ -142,8 +142,8 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  const handleViewTranscript = useCallback((message: string, briefId: number) => {
-    onViewTranscript(message, briefId);
+  const handleViewTranscript = useCallback((briefId: number, title: string, transcript: string) => {
+    onViewTranscript(briefId, title, transcript);
   }, [onViewTranscript]);
 
 

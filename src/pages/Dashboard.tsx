@@ -23,6 +23,12 @@ export interface PendingData {
   status: boolean;
 }
 
+interface Transcript {
+  id: number;
+  title: string;
+  transcript: string;
+}
+
 const Dashboard = () => {
   const { toast } = useToast();
   const { call } = useApi();
@@ -31,8 +37,7 @@ const Dashboard = () => {
   const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
-  const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
-  const [transcript, setTranscript] = useState("");
+  const [transcript, setTranscript] = useState<Transcript | null>(null);
   const [showEndFocusModal, setShowEndFocusModal] = useState(false);
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
   const [userSchedule, setUserSchedule] = useState<UserSchedule | null>(null);
@@ -178,16 +183,19 @@ const Dashboard = () => {
     navigate(`/dashboard/briefs/${briefId}`);
   }, [navigate]);
 
-  const openTranscript = useCallback((message: string, briefId: number) => {
-    setSelectedBriefId(briefId);
-    setTranscript(message)
+  const openTranscript = useCallback((briefId: number, title: string, transcript: string) => {
+    setTranscript({
+      id: briefId,
+      title: title,
+      transcript: transcript
+    })
     setIsTranscriptOpen(true);
-  }, [setSelectedBriefId, setIsTranscriptOpen]);
+  }, [setIsTranscriptOpen]);
   
   const closeTranscript = useCallback(() => {
     setIsTranscriptOpen(false);
-    setSelectedBriefId(null);
-  }, [setIsTranscriptOpen, setSelectedBriefId]);
+    setTranscript(null);
+  }, [setIsTranscriptOpen]);
 
   const handleToggleFocusMode = useCallback(() => {
     setUserStatus(prevStatus => prevStatus === "focus" ? "active" : "focus");
@@ -277,7 +285,7 @@ const Dashboard = () => {
 
       {/* Modals */}
       <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
-      <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} transcript={transcript} />
+      <TranscriptView briefId={transcript?.id} open={isTranscriptOpen} onClose={closeTranscript} transcript={transcript?.transcript} title={transcript?.title} />
       <EndFocusModal 
         open={showEndFocusModal} 
         onClose={handleConfirmExitFocus}

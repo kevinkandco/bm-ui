@@ -16,8 +16,8 @@ const TranscriptView = ({ open, onClose, briefId, transcript, title }: Transcrip
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[80vh] p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 border-b">
+      <DialogContent className="max-w-3xl max-h-[80vh] h-auto p-0 overflow-auto">
+        <DialogHeader className="p-6 pb-4 border-b max-h-[69px]">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-semibold">
               Audio Transcript - {title ?? `Brief ${briefId}`}
