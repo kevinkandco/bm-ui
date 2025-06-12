@@ -16,6 +16,7 @@ import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import { enrichBriefsWithStats } from "@/lib/utils";
+import FocusMode from "@/components/dashboard/FocusMode";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -49,6 +50,8 @@ const Dashboard = () => {
   const [totalBriefs, setTotalBriefs] = useState(0);
   const [pendingData, setPendingData] = useState<PendingData[]>([]);
   const [focusModeExitLoading, setFocusModeExitLoading] = useState(false);
+  const [focusModalOpen, setFocusModalOpen] = useState(false);
+  const [focusModeActivationLoading, setFocusModeActivationLoading] = useState(false);
   const [priorities, setPriorities] = useState<Priorities>({
     priorityPeople: [],
     priorityChannels: [],
@@ -199,16 +202,31 @@ const Dashboard = () => {
   }, [setIsTranscriptOpen]);
 
   const handleToggleFocusMode = useCallback(() => {
-    setUserStatus(prevStatus => prevStatus === "focus" ? "active" : "focus");
-    toast({
-      title: "Focus Mode",
-      description: userStatus === "active" ? "Entering focus mode" : "Exiting focus mode"
-    });
-  }, [toast, userStatus]);
-
-  const handleExitFocusMode = useCallback(() => {
-    setShowEndFocusModal(true);
+    setFocusModalOpen(true);
   }, []);
+
+  const handleExitFocusMode = useCallback(async () => {
+    setFocusModeExitLoading(true);
+
+    const response = await call("get", "/api/exit-focus-mode", {
+      showToast: true,
+      toastTitle: "Focus Mode Exit failed",
+      toastDescription: "Something went wrong. Please try again later.",
+    });
+
+    if (response) {
+      setShowEndFocusModal(true);
+      fetchDashboardData();
+      getRecentBriefs();
+    
+      toast({
+        title: "Focus Mode Ended",
+        description: "Slack and Gmail status set to 'online'"
+      });
+    }
+
+    setFocusModeExitLoading(false);
+  }, [call, fetchDashboardData, getRecentBriefs, toast]);
 
   const handleConfirmExitFocus = useCallback(() => {
     setUserStatus("active");
@@ -230,27 +248,72 @@ const Dashboard = () => {
   const closeBriefModal = useCallback(() => {
     setIsBriefModalOpen(false);
   }, [setIsBriefModalOpen]);
+
+  const handleFocusModalClose = useCallback(() => {
+    setFocusModalOpen(false);
+  }, []);
   
-  const handleStartFocusMode = useCallback(() => {
-    setUserStatus("focus");
-    toast({
-      title: "Focus Mode",
-      description: "Starting focus mode"
-    });
-  }, [toast]);
-  
+  const handleStartFocusMode = useCallback(
+    async (
+      focusTime: number,
+      options: {
+        updateStatus?: boolean;
+        closeApps?: boolean;
+        monitorNotifications?: boolean;
+        enableDnd?: boolean;
+      } = {}
+    ) => {
+      setFocusModeActivationLoading(true);
+
+      const response = await call("post", "/api/focus-mode", {
+        body: { ...options, focusDuration: focusTime },
+        showToast: true,
+        toastTitle: "Focus Mode Activation Failed",
+        toastDescription:
+          "Focus mode activation failed. please try again sometime later.",
+        toastVariant: "destructive",
+        returnOnFailure: false,
+      });
+      if (response) {
+        setUserStatus("focus");
+        setFocusTime(focusTime * 60);
+        setFocusModeActivationLoading(false);
+        setFocusModalOpen(false);
+
+        toast({
+          title: "Focus Mode Started",
+          description:
+            "Slack status set to 'focusing', Gmail status set to 'monitoring'",
+        });
+      }
+    },
+    [toast, call]
+  );
+
   const handleSignOffForDay = useCallback(() => {
-    setUserStatus("vacation");
+    const response = call("post", "/api/sign-off", {
+      showToast: true,
+      toastTitle: "Sign Off Failed",
+      toastDescription:
+        "Sign off failed. please try again sometime later.",
+      toastVariant: "destructive"
+    })
+
+    if (!response) {
+      return;
+    }
+    setUserStatus("away");
+    
     toast({
       title: "Signing Off",
       description: "Signing off for the day"
     });
-  }, [toast]);
+  }, [toast, call]);
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Focus Mode Timer Header */}
-      {userStatus === "focus" || userStatus === "away" && (
+      {(userStatus === "focus" || userStatus === "away") && (
         <StatusTimer 
           status={userStatus}
           focusTime={focusTime}
@@ -292,6 +355,12 @@ const Dashboard = () => {
         onClose={handleConfirmExitFocus}
         title="Creating Your Brief"
         description="We're preparing a summary of all updates during your focus session"
+      />
+      <FocusMode
+        open={focusModalOpen}
+        loading={focusModeActivationLoading}
+        SaveChangesAndClose={handleStartFocusMode}
+        onClose={handleFocusModalClose}
       />
       <BriefMeModal
         open={showBriefMeModal}
