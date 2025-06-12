@@ -9,8 +9,6 @@ import { useState } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
-
 interface SuggestedContactsProps {
   suggestedContacts: Contact[];
   priorityPeople: PriorityPerson[];
@@ -121,7 +119,7 @@ export const SuggestedContacts = ({
                     : "bg-foreground/90 dark:bg-deep-plum"
                 )}>
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={BaseURL + contact?.avatar} alt={contact?.name} />
+                    <AvatarImage src={contact?.avatar} alt={contact?.name} />
                     <AvatarFallback className="bg-accent-primary/20 text-accent-primary">
                       {person?.name.charAt(0)}
                     </AvatarFallback>
