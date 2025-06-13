@@ -10,7 +10,7 @@ export default function Component() {
     <>
       <button
         onClick={handleFeedbackClick}
-        className="fixed right-0 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-6 shadow-white-20 rounded-l-lg rounded-r-none shadow-lg transition-all duration-200 hover:shadow-xl z-50 hover:translate-x-[-10px]"
+        className="fixed right-0 top-1/2 -translate-y-1/2 bg-[#2E3E41] hover:bg-[#182224] text-white px-3 py-6 shadow-white-20 rounded-l-lg rounded-r-none shadow-lg transition-all duration-200 hover:shadow-xl z-50 hover:translate-x-[-10px]"
         style={{
           writingMode: "vertical-rl",
           textOrientation: "mixed",
