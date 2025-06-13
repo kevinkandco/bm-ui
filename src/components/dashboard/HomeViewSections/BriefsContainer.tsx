@@ -1,8 +1,9 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Clock, Zap } from "lucide-react";
 import BriefCard from "./BriefCard";
 import { Summary } from "../types";
 import ViewErrorMessage from "../ViewErrorMessage";
@@ -24,6 +25,7 @@ interface BriefsContainerProps {
   onPlayBrief: (briefId: number) => void
   audioPlayer: UseAudioPlayerType;
 }
+
 const BriefsContainer = ({
   briefs,
   totalBriefs,
@@ -39,7 +41,9 @@ const BriefsContainer = ({
 }: BriefsContainerProps) => {
   const [upcomingOpen, setUpcomingOpen] = useState(false);
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState<string>("");  
+  const [message, setMessage] = useState<string>("");
+  const isFirstTimeUser = briefs.length === 0 && totalBriefs === 0 && upcomingBrief;
+
   const handleClick = (message: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(true);
@@ -49,7 +53,6 @@ const BriefsContainer = ({
   const handleClose = () => {
     setOpen(false);
   }
-
   return (<>
     <Card className="w-full rounded-xl shadow-none border-0" style={{
       background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
@@ -81,27 +84,61 @@ const BriefsContainer = ({
                 <Separator className="mt-4 bg-white-text/10" />
               </div>}
 
-            {/* Available Briefs Section */}
-            {briefs ? (
-              <div className="space-y-2">
-                {briefs.length > 0 && <h3 className="text-sm font-medium text-white-text/80 px-1">Available</h3>}
-                <div className="space-y-2">
-                  {briefs.map((brief, index) => (
-                    <BriefCard
-                      key={brief.id}
-                      brief={brief}
-                      onViewBrief={onViewBrief}
-                      onViewTranscript={onViewTranscript}
-                      handleClick={handleClick}
-                      isLast={index === briefs?.length - 1}
-                      playingBrief={playingBrief}
-                      onPlayBrief={onPlayBrief}
-                      audioPlayer={audioPlayer}
-                    />
-                  ))}
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-white-text/80 px-1">Ready</h3>
+
+              {isFirstTimeUser ? (
+                // Empty state for first-time users
+                <div className="text-center py-8 px-4">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-overlay/50 flex items-center justify-center">
+                    <Clock className="w-8 h-8 text-text-secondary" />
+                  </div>
+                  <h4 className="text-sm font-medium text-text-primary mb-2">
+                    Your first brief is on the way!
+                  </h4>
+                  <p className="text-xs text-text-secondary mb-4 max-w-xs mx-auto">
+                    We're monitoring your connected accounts. Your first brief will appear here once it's ready based on your schedule.
+                  </p>
+                  {onGetBriefedNow && (
+                    <Button 
+                      onClick={onGetBriefedNow}
+                      size="sm"
+                      className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2"
+                    >
+                      <Zap className="w-3 h-3 mr-1" />
+                      Get briefed now
+                    </Button>
+                  )}
                 </div>
-              </div>
-            ) : [...Array(3)].map(() => <BriefCardSkeleton />)}
+              ) : briefs.length > 0 ? (
+                  <div className="space-y-2">
+                    {briefs.map((brief, index) => (
+                      <BriefCard
+                        key={brief.id}
+                        brief={brief}
+                        onViewBrief={onViewBrief}
+                        onViewTranscript={onViewTranscript}
+                        handleClick={handleClick}
+                        isLast={index === briefs?.length - 1}
+                        playingBrief={playingBrief}
+                        onPlayBrief={onPlayBrief}
+                        audioPlayer={audioPlayer}
+                      />
+                    ))}
+                </div>
+              ) : (
+                // Empty state for returning users with no current briefs
+                <div className="text-center py-6 px-4">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-surface-overlay/30 flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-text-secondary" />
+                  </div>
+                  <p className="text-xs text-text-secondary">
+                    No briefs ready right now
+                  </p>
+                </div>
+              )}
+            </div>
+            {/* [...Array(3)].map(() => <BriefCardSkeleton />) */}
             
             {/* Bottom section with brief count and view all link */}
             <div className="flex justify-between items-center pt-1">
@@ -119,4 +156,5 @@ const BriefsContainer = ({
     </>
   );
 };
+
 export default React.memo(BriefsContainer);

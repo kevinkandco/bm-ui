@@ -126,7 +126,7 @@ useEffect(() => {
               fill="#EA4335"
             />
           </svg>
-          Sign in with Google
+          Sign up with Google
         </Button>
 
         <Button
@@ -145,7 +145,7 @@ useEffect(() => {
               fill="currentColor"
             />
           </svg>
-          Sign in with Slack
+          Sign up with Slack
         </Button>
       </div>
     </div>
