@@ -213,19 +213,21 @@ const [data, setData] = useState<UserData>({});
 
   if (id === "slack") {
     if (isIntegrated || isConnected) {
-      setConnected((prev) => ({
-        ...prev,
-        [id]: !prev[id],
-      }));
+      // setConnected((prev) => ({
+      //   ...prev,
+      //   [id]: !prev[id],
+      // }));
+      return;
     } else {
       openAuthUrl("slack");
     }
   } else if (id === "google") {
     if (isConnected || isIntegrated) {
-      setConnected((prev) => ({
-        ...prev,
-        [id]: !prev[id],
-      }));
+      // setConnected((prev) => ({
+      //   ...prev,
+      //   [id]: !prev[id],
+      // }));
+      return;
     } else {
       openAuthUrl("google");
     }
