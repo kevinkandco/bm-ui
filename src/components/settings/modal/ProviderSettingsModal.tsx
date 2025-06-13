@@ -12,11 +12,13 @@ import PriorityChannelsSetting from "./PriorityChannelsSetting";
 import IgnoreSetting from "./IgnoreSetting";
 import PriorityTopics from "./PriorityTopics";
 import { useApi } from "@/hooks/useApi";
-import { SlackData } from "./types";
+import { SettingsTabProps, SlackData } from "./types";
+import { capitalizeFirstLetter } from "@/lib/utils";
 
-interface SlackSettingsModalProps {
+interface ProviderSettingsModalProps {
   open: boolean;
   onClose: () => void;
+  provider: { id: number; name: string };
   firstTimeSlackConnected?: boolean;
   setFirstTimeSlackConnected?: React.Dispatch<React.SetStateAction<boolean>>;
   initialTab?: SettingsTab;
@@ -32,52 +34,60 @@ interface TabConfig {
   id: SettingsTab;
   label: string;
   icon?: React.ReactNode;
-  Component: React.ComponentType<{
-    slackData?: SlackData;
-    setSlackData: React.Dispatch<React.SetStateAction<SlackData | undefined>>;
-    syncData: () => void;
-    SyncLoading: boolean;
-  }>;
+  Component: React.ComponentType<SettingsTabProps>;
+  active: boolean;
 }
 
-const SlackSettingsModal = ({
+const ProviderSettingsModal = ({
   open,
   onClose,
+  provider,
   firstTimeSlackConnected = false,
   setFirstTimeSlackConnected,
   initialTab = "priorityPeople",
-}: SlackSettingsModalProps) => {
+}: ProviderSettingsModalProps) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
   const [isSaving, setIsSaving] = useState(false);
   const [slackData, setSlackData] = useState<SlackData>();
   const [SyncLoading, setSyncLoading] = useState(false);
   const { call } = useApi();
+
+  
+  const priorityPeopleActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
+  const priorityChannelsActive = useMemo(() => ['slack'], []);
+  const priorityTopicsActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
+  const ignoreActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
+
   const tabs: TabConfig[] = useMemo(() => [
     {
       id: "priorityPeople",
       label: "Priority People",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: PriorityPeople,
+      active: priorityPeopleActive.includes(provider?.name?.toLowerCase() || ''),
     },
     {
       id: "priorityChannels",
       label: "Priority Channels",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: PriorityChannelsSetting,
+      active: priorityChannelsActive.includes(provider?.name?.toLowerCase() || ''),
     },
     {
       id: "priorityTopics",
       label: "Priority Topics",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: PriorityTopics,
+      active: priorityTopicsActive.includes(provider?.name?.toLowerCase() || ''),
     },
     {
       id: "ignore",
       label: "Ignore Channels",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: IgnoreSetting,
+      active: ignoreActive.includes(provider?.name?.toLowerCase() || ''),
     },
-  ], []);
+  ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, ignoreActive, provider?.name]);
 
   const getSlackData = useCallback(async (): Promise<void> => {
     const response = await call("get", "/api/settings/slack-data");
@@ -141,7 +151,7 @@ const SlackSettingsModal = ({
         <DialogHeader>
           <div className="flex justify-between items-center">
             <DialogTitle className="text-lg font-medium text-white">
-              Slack Settings
+              {capitalizeFirstLetter(provider?.name)} Settings
             </DialogTitle>
           </div>
         </DialogHeader>
@@ -150,7 +160,10 @@ const SlackSettingsModal = ({
           {/* Sidebar */}
           <div className="w-56 pr-4 border-r border-white/10 flex flex-col">
             <ul className="space-y-1 flex-1">
-              {tabs.map((tab) => (
+              {tabs.map((tab) => {
+                if (!tab.active) return null
+
+                return (
                 <li key={tab.id}>
                   <Button
                     variant={activeTab === tab.id ? "secondary" : "ghost"}
@@ -165,7 +178,7 @@ const SlackSettingsModal = ({
                     {tab.icon}
                   </Button>
                 </li>
-              ))}
+              )})}
             </ul>
           </div>
 
@@ -178,6 +191,7 @@ const SlackSettingsModal = ({
                   setSlackData={setSlackData}
                   syncData={syncData}
                   SyncLoading={SyncLoading}
+                  provider={provider}
                 />
               )}
             </div>
@@ -217,4 +231,4 @@ const SlackSettingsModal = ({
   );
 };
 
-export default SlackSettingsModal;
+export default ProviderSettingsModal;

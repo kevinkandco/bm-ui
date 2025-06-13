@@ -30,7 +30,6 @@ import ViewTranscript from "./ViewTranscript";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
-import SlackSettingsModal from "../settings/modal/SlackSettingsModal";
 
 interface HomeViewProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -763,11 +762,6 @@ const HomeView = ({
         open={showMessageTranscript?.open}
         summary={showMessageTranscript.message}
         onClose={handleClose}
-      />
-      <SlackSettingsModal
-        open={isSlackModalOpen}
-        onClose={handleCloseSettings}
-        initialTab={"priorityPeople"}
       />
     </div>
   );

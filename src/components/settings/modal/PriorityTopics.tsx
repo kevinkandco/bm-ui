@@ -13,6 +13,7 @@ const PriorityTopics = ({
   setSlackData,
   SyncLoading,
   syncData,
+  provider
 }: SettingsTabProps) => {
   const [inputValue, setInputValue] = useState("");
   const isMobile = useIsMobile();

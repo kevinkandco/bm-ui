@@ -15,4 +15,5 @@ export interface SettingsTabProps {
   setSlackData: React.Dispatch<React.SetStateAction<SlackData>>;
   SyncLoading: boolean;
   syncData: () => Promise<void>;
+  provider: { id: number; name: string };
 }

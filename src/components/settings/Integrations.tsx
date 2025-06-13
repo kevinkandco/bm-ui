@@ -8,7 +8,7 @@ import useAuthStore from "@/store/useAuthStore";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DisconnectModal from "./DisconnectModal";
 import { useApi } from "@/hooks/useApi";
-import SlackSettingsModal from "./modal/SlackSettingsModal";
+// import SlackSettingsModal from "./modal/SlackSettingsModal";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -397,12 +397,12 @@ const Integrations = () => {
         </div>
       </div>
       <DisconnectModal provider={provider} open={isOpen} onClose={handleCloseModal} onDisconnect={handleDisconnect}  />
-      <SlackSettingsModal
+      {/* <SlackSettingsModal
         open={isSlackModalOpen}
         onClose={() => setSlackModalOpen(false)}
         firstTimeSlackConnected={firstTimeSlackConnected}
         setFirstTimeSlackConnected={setFirstTimeSlackConnected}
-      />
+      /> */}
     </div>
   );
 };

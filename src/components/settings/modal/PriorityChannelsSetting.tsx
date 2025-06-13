@@ -15,6 +15,7 @@ const PriorityChannelsSetting = ({
   setSlackData,
   SyncLoading,
   syncData,
+  provider
 }: SettingsTabProps) => {
   const [allSlackChannels, setAllSlackChannels] = useState<
     PriorityChannels[] | null

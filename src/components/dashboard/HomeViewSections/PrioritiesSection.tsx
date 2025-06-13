@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { Priorities, PriorityPeople } from "../types";
-import SlackSettingsModal from "@/components/settings/modal/SlackSettingsModal";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 import { capitalizeFirstLetter } from "@/lib/utils";

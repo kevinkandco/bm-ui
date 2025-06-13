@@ -19,6 +19,7 @@ const PriorityPeople = ({
   setSlackData,
   SyncLoading,
   syncData,
+  provider
 }: SettingsTabProps) => {
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");

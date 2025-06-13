@@ -10,7 +10,7 @@ import OutputIntegrationsSection from "./OutputIntegrationsSection";
 import { useIntegrationsState } from "./useIntegrationsState";
 import FancyLoader from "./modal/FancyLoader";
 import { useSearchParams } from "react-router-dom";
-import SlackSettingsModal from "./modal/SlackSettingsModal";
+import ProviderSettingsModal from "./modal/ProviderSettingsModal";
 
 const IntegrationsSection = () => {
   const { toast } = useToast();
@@ -31,7 +31,11 @@ const IntegrationsSection = () => {
   } = useIntegrationsState();
   const [searchParams] = useSearchParams();
   const [showTagManager, setShowTagManager] = useState(false);
-  const [isSlackModalOpen, setSlackModalOpen] = useState(false);
+  const [providerModal, setProviderModal] = useState({
+    open: false,
+    id: 0,
+    name: "",
+  });
   const [firstTimeSlackConnected, setFirstTimeSlackConnected] = useState(false);
 
   useEffect(() => {
@@ -45,7 +49,11 @@ const IntegrationsSection = () => {
           document.title,
           url.pathname + url.search
         );  
-        setSlackModalOpen(true);
+        setProviderModal({
+          open: true,
+          id: 0,
+          name: selected,
+        });
         setFirstTimeSlackConnected(true);
       }
     }, [searchParams]);
@@ -116,7 +124,7 @@ const IntegrationsSection = () => {
           onToggleCombined={toggleAccountInCombined}
           onDisconnect={disconnectAccount}
           onCreateTag={createTag}
-          setSlackModalOpen={setSlackModalOpen}
+          setProviderModal={setProviderModal}
         />}
       </div>
 
@@ -136,12 +144,13 @@ const IntegrationsSection = () => {
 
       {/* Output Integrations */}
       <OutputIntegrationsSection onConnect={handleAddAccount} />
-      <SlackSettingsModal
-        open={isSlackModalOpen}
-        onClose={() => setSlackModalOpen(false)}
+      {providerModal.open && <ProviderSettingsModal
+        open={providerModal.open}
+        onClose={() => setProviderModal({open: false, id: 0, name: ""})}
+        provider={{ id: providerModal.id, name: providerModal.name }}
         firstTimeSlackConnected={firstTimeSlackConnected}
         setFirstTimeSlackConnected={setFirstTimeSlackConnected}
-      />
+      />}
     </div>
   );
 };

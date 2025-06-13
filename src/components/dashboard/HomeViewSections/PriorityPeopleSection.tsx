@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { PriorityPeople } from "../types";
-import SlackSettingsModal from "@/components/settings/modal/SlackSettingsModal";
+// import SlackSettingsModal from "@/components/settings/modal/SlackSettingsModal";
 
 interface PriorityPeopleSectionProps {
   priorityPeople: PriorityPeople[];
@@ -59,11 +59,11 @@ const [isSlackModalOpen, setSlackModalOpen] = useState(false);
         )}
       </div>
     </div>
-    <SlackSettingsModal
+    {/* <SlackSettingsModal
         open={isSlackModalOpen}
         onClose={() => setSlackModalOpen(false)}
         initialTab={"priorityPeople"}
-      />
+      /> */}
     </>
   );
 };
