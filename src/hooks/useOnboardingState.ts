@@ -1,4 +1,5 @@
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
+import { PriorityPerson } from "@/components/onboarding/priority-people/types";
 import { useState, useCallback, useEffect } from "react";
 
 export interface UserData {
@@ -7,7 +8,8 @@ export interface UserData {
   authProvider: string;
 
   // User preferences
-  priorityPeople: any[];
+  slackPriorityPeople: PriorityPerson[];
+  googlePriorityPeople: PriorityPerson[];
   priorityChannels: string[];
   priorityTopics: string[];
 
@@ -39,7 +41,8 @@ export const defaultUserData: UserData = {
   authProvider: "",
 
   // User preferences
-  priorityPeople: [],
+  slackPriorityPeople: [],
+  googlePriorityPeople: [],
   priorityChannels: [],
   priorityTopics: [],
 

@@ -55,15 +55,16 @@ const GetStartedStep = ({
     }
 
     // Priority items
-    const priorityPeople = userData.priorityPeople || [];
+    const slackPriorityPeople = userData.slackPriorityPeople || [];
+    const googlePriorityPeople = userData.googlePriorityPeople || [];
     const priorityChannels = userData.priorityChannels || [];
     const priorityTopics = userData.priorityTopics || [];
-    const totalPriorities = priorityPeople.length + priorityChannels.length + priorityTopics.length;
+    const totalPriorities = slackPriorityPeople.length + googlePriorityPeople.length + priorityChannels.length + priorityTopics.length;
     if (totalPriorities > 0) {
       sections.push({
         title: "Priority Items",
         value: totalPriorities.toString(),
-        detail: `${priorityPeople.length} people, ${priorityChannels.length} channels, ${priorityTopics.length} topics`
+        detail: `${slackPriorityPeople.length + googlePriorityPeople.length} people, ${priorityChannels.length} channels, ${priorityTopics.length} topics`
       });
     }
 

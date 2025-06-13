@@ -4,9 +4,9 @@ import { PriorityPerson, Contact } from "./types";
 
 interface PriorityPeopleListProps {
   priorityPeople: PriorityPerson[];
-  removePerson: (name: string) => void;
-  designateContact: (personName: string, contact: Contact) => void;
-  addLabel: (personName: string, label: string) => void;
+  removePerson: (personId: string | number) => void;
+  designateContact: (personId: string | number, contact: Contact) => void;
+  addLabel: (personId: string | number, label: string) => void;
   contacts: Contact[];
 }
 
@@ -25,7 +25,7 @@ export const PriorityPeopleList = ({
     <div className="space-y-1.5">
       {priorityPeople?.map((person) => (
         <PriorityPersonCard
-          key={person.name}
+          key={person.id}
           person={person}
           removePerson={removePerson}
           designateContact={designateContact}

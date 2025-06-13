@@ -1,10 +1,8 @@
-
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
 import { useApi } from "@/hooks/useApi";
 
-
-export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
+export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLabel, setSelectedLabel] = useState<Label | "">("");
@@ -13,8 +11,8 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   const [platformContacts, setPlatformContacts] = useState<Contact[] | null>(null);
   const { call } = useApi();
 
-  const getContact = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/slack/dms/contacts");
+  const fetchContacts = useCallback(async () => {
+    const response = await call("get", "/api/slack/contacts");
 
     if (response) {
       setPlatformContacts(response?.contacts);
@@ -23,64 +21,59 @@ export function usePriorityPeopleState(initialPeople: PriorityPerson[] = []) {
   }, [call]);
 
   useEffect(() => {
-		getContact();
-	}, [getContact]);
+    fetchContacts();
+  }, [fetchContacts]);
 
-  // Get filtered contacts based on input value - memoized for performance
-  const filteredManualContacts = useMemo(() => 
+  const filteredManualContacts = useMemo(() =>
     platformContacts?.filter(contact =>
       contact.name.toLowerCase().includes(inputValue.toLowerCase()) ||
       contact.email.toLowerCase().includes(inputValue.toLowerCase())
     ),
     [platformContacts, inputValue]
   );
-  
-  // Function to add a person to the priority list
-  const addPerson = useCallback((name: string, email?: string, avatar?: string) => {
+
+  const addPerson = useCallback((id: number | string, name: string, email?: string, avatar?: string) => {
     if (!name.trim()) return;
-    
+
     setPriorityPeople(prev => {
-      // Check if person already exists
       if (prev.some(p => p.name === name)) return prev;
-      
-      return [...prev, { 
-        name: name.trim(), 
+
+      return [...prev, {
+        id,
+        name: name.trim(),
         email,
         label: selectedLabel || undefined,
         avatar: avatar || undefined,
       }];
     });
-    
+
     setInputValue("");
     setSelectedLabel("");
   }, [selectedLabel]);
-  
-  // Function to remove a person from the priority list
-  const removePerson = useCallback((personName: string) => {
-    setPriorityPeople(prev => prev.filter(person => person.name !== personName));
+
+  const removePerson = useCallback((personId: number | string) => {
+    setPriorityPeople((prev) => prev.filter((person) => person.id !== personId));
   }, []);
-  
-  // Function to designate a contact for a person
-  const designateContact = useCallback((personName: string, contact: Contact) => {
-    setPriorityPeople(prev => 
-      prev.map(person => 
-        person.name === personName 
-          ? { 
-              ...person, 
-              contactName: contact.name || undefined, 
-              email: contact.email || undefined 
-            } 
+
+  const designateContact = useCallback((personId: number | string, contact: Contact) => {
+    setPriorityPeople((prev) =>
+      prev.map((person) =>
+        person.id === personId
+          ? {
+              ...person,
+              contactName: contact.name || undefined,
+              email: contact.email || undefined,
+            }
           : person
       )
     );
   }, []);
-  
-  // Function to add a label to a person
-  const addLabel = useCallback((personName: string, label: string) => {
-    setPriorityPeople(prev => 
-      prev.map(person => 
-        person.name === personName 
-          ? { ...person, label } 
+
+  const addLabel = useCallback((personId: number | string, label: string) => {
+    setPriorityPeople((prev) =>
+      prev.map((person) =>
+        person.id === personId
+          ? { ...person, label }
           : person
       )
     );

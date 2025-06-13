@@ -15,6 +15,12 @@ export interface UserSchedule {
   workday_end: string;
 }
 
+export interface DailySchedule {
+  workdayStart: string;
+  workdayEnd: string;
+  weekendMode: boolean;
+}
+
 export interface SummaryMassage {
   id: number;
 	platform?: string;

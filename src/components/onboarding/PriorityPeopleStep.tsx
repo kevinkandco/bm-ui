@@ -5,54 +5,60 @@ import ProgressIndicator from "./ProgressIndicator";
 import { PriorityPeopleList } from "./priority-people/PriorityPeopleList";
 import { SuggestedContacts } from "./priority-people/SuggestedContacts";
 import { ManualInputSection } from "./priority-people/ManualInputSection";
-import { usePriorityPeopleState } from "./priority-people/usePriorityPeopleState";
+import { useSlackPriorityPeopleState } from "./priority-people/useSlackPriorityPeopleState";
 import { PriorityPerson } from "./priority-people/types";
-import { memo } from "react";
+import { memo, useMemo, useState } from "react";
+import { useGmailPriorityPeopleState } from "./priority-people/useGmailPriorityPeopleState";
+import { UserData } from "@/hooks/useOnboardingState";
 
 interface PriorityPeopleStepProps {
   onNext: () => void;
   onBack: () => void;
   updateUserData: (data: any) => void;
-  userData: {
-    priorityPeople: Array<PriorityPerson>;
-    [key: string]: any;
-  };
+  userData: UserData;
 }
 
 const PriorityPeopleStep = memo(
   ({ onNext, onBack, updateUserData, userData }: PriorityPeopleStepProps) => {
     // Get the state and functions from the custom hook
-    const {
-      inputValue,
-      setInputValue,
-      searchQuery,
-      setSearchQuery,
-      selectedLabel,
-      setSelectedLabel,
-      priorityPeople,
-      platformContacts,
-      suggestedContacts,
-      filteredManualContacts,
-      addPerson,
-      removePerson,
-      designateContact,
-      addLabel,
-    } = usePriorityPeopleState(
-      // Convert userData.priorityPeople to the correct type
-      (userData.priorityPeople || []).map((person) => ({
-        name: person.name,
-        role: person.role,
-        email: person.email,
-        contactName: person.contactName,
-        label: person.label,
-        avatar: person.avatar,
-      }))
+    const slackState = useSlackPriorityPeopleState(userData.slackPriorityPeople || []);
+    const gmailState = useGmailPriorityPeopleState(userData.googlePriorityPeople || []);
+
+    const [platformIndex, setPlatformIndex] = useState(0);
+    const allowedPlatforms = useMemo(() => 
+      (userData?.integrations || []).filter(p => p === "slack" || p === "google"), 
+      [userData?.integrations]
     );
+    const currentPlatform = allowedPlatforms?.[platformIndex]; // "slack" or "google"
+
+    const platformState = useMemo(() => {
+      switch (currentPlatform) {
+        case 'slack': return slackState;
+        case 'google': return gmailState;
+        default: return slackState;
+      }
+    }, [currentPlatform, slackState, gmailState]);
 
     const handleContinue = () => {
-      // Update user data with the current priority people list
-      updateUserData({ priorityPeople });
-      onNext();
+      const platformKey = `${currentPlatform}PriorityPeople` as keyof UserData;
+
+      if (currentPlatform === "slack" || currentPlatform === "google") {
+        updateUserData({ [platformKey]: platformState.priorityPeople });
+      }
+
+      if (platformIndex + 1 < allowedPlatforms.length) {
+        setPlatformIndex(platformIndex + 1);
+      } else {
+        onNext();
+      }
+    };
+
+    const handleBackClick = () => {
+      if (platformIndex > 0) {
+        setPlatformIndex(platformIndex - 1);
+      } else {
+        onBack();
+      }
     };
 
     const handleSkip = () => {
@@ -66,7 +72,7 @@ const PriorityPeopleStep = memo(
 
         <div className="space-y-3">
           <h2 className="text-2xl font-semibold text-foreground tracking-tighter">
-            Who are your priority people?
+            Who are your priority people? ({currentPlatform})
           </h2>
           <p className="text-foreground/70 dark:text-white/70">
             Designate important people who should be able to break through
@@ -78,48 +84,50 @@ const PriorityPeopleStep = memo(
           {/* Search input */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50 dark:text-white/40" />
+
             <Input
               placeholder="Search contacts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={platformState.searchQuery}
+              onChange={(e) => platformState.setSearchQuery(e.target.value)}
               className="pl-10 bg-white/20 dark:bg-white/10 border-black/30 dark:border-white/20 text-foreground dark:text-ice-grey placeholder:text-foreground/60 dark:placeholder:text-white/50"
             />
+
           </div>
 
           {/* Added people list */}
           <PriorityPeopleList
-            priorityPeople={priorityPeople}
-            removePerson={removePerson}
-            designateContact={designateContact}
-            addLabel={addLabel}
-            contacts={platformContacts}
+            priorityPeople={platformState.priorityPeople}
+            removePerson={platformState.removePerson}
+            designateContact={platformState.designateContact}
+            addLabel={platformState.addLabel}
+            contacts={platformState.platformContacts}
           />
 
           {/* Manual input with dropdown */}
           <ManualInputSection
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            selectedLabel={selectedLabel}
-            setSelectedLabel={setSelectedLabel}
-            addPerson={addPerson}
-            filteredManualContacts={filteredManualContacts}
+            inputValue={platformState.inputValue}
+            setInputValue={platformState.setInputValue}
+            selectedLabel={platformState.selectedLabel}
+            setSelectedLabel={platformState.setSelectedLabel}
+            addPerson={platformState.addPerson}
+            filteredManualContacts={platformState.filteredManualContacts}
           />
 
           {/* Suggested contacts */}
           <SuggestedContacts
-            suggestedContacts={suggestedContacts}
-            priorityPeople={priorityPeople}
-            platformContacts={platformContacts}
-            addPerson={addPerson}
-            removePerson={removePerson}
-            designateContact={designateContact}
-            addLabel={addLabel}
-            searchQuery={searchQuery}
+            suggestedContacts={platformState.suggestedContacts}
+            priorityPeople={platformState.priorityPeople}
+            platformContacts={platformState.platformContacts}
+            addPerson={platformState.addPerson}
+            removePerson={platformState.removePerson}
+            designateContact={platformState.designateContact}
+            addLabel={platformState.addLabel}
+            searchQuery={platformState.searchQuery}
           />
         </div>
 
         <div className="flex justify-between pt-4">
-          <Button onClick={onBack} variant="back" size="none">
+          <Button onClick={handleBackClick} variant="back" size="none">
             Back
           </Button>
           <Button onClick={handleContinue} variant="primary" size="pill">

@@ -11,9 +11,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface PriorityPersonCardProps {
   person: PriorityPerson;
-  removePerson: (name: string) => void;
-  designateContact: (personName: string, contact: Contact) => void;
-  addLabel: (personName: string, label: string) => void;
+  removePerson: (personId: string | number) => void;
+  designateContact: (personId: string | number, contact: Contact) => void;
+  addLabel: (personId: string | number, label: string) => void;
   contacts: Contact[];
 }
 
@@ -100,7 +100,7 @@ export const PriorityPersonCard = ({
                       if (label === "Other") {
                         setShowLabelInput(true);
                       } else {
-                        addLabel(person.name, label);
+                        addLabel(person.id, label);
                       }
                     }}
                   >
@@ -165,7 +165,7 @@ export const PriorityPersonCard = ({
           size="sm" 
           variant="ghost" 
           className="h-6 w-6 p-0 text-white/50 hover:text-hot-coral"
-          onClick={() => removePerson(person.name)}
+          onClick={() => removePerson(person.id)}
         >
           <X size={14} />
         </Button>

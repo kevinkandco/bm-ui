@@ -3,13 +3,14 @@ export type Role = "Team Lead" | "CEO" | "Project Manager" | "Spouse" | "Client"
 export type Label = "Spouse" | "Manager" | "Collaborator" | "CFO" | "Team Member" | "Client" | "Other";
 
 export interface Contact {
-  id: string;
+  id: number | string;
   name: string;
   email: string;
   avatar?: string;
 }
 
 export interface PriorityPerson {
+  id: number | string;
   name: string;
   role?: Role;
   email?: string;

@@ -15,7 +15,7 @@ interface ManualInputSectionProps {
   setInputValue: (value: string) => void;
   selectedLabel: ContactLabel | "";
   setSelectedLabel: (value: ContactLabel | "") => void;
-  addPerson: (name: string, email?: string) => void;
+  addPerson: (id: number | string, name: string, email?: string, avatar?: string) => void;
   filteredManualContacts: Contact[];
 }
 
@@ -62,7 +62,7 @@ export const ManualInputSection = ({
   // Handle final designation with optional label
   const handleDesignate = () => {
     if (selectedContact) {
-      addPerson(selectedContact.name, selectedContact.email);
+      addPerson(selectedContact.id ,selectedContact.name, selectedContact.email, selectedContact.avatar);
       if (selectedLabel) {
         // The label will be added in the parent component based on selectedLabel
       }

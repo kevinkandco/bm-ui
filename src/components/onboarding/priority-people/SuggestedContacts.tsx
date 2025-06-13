@@ -13,10 +13,10 @@ interface SuggestedContactsProps {
   suggestedContacts: Contact[];
   priorityPeople: PriorityPerson[];
   platformContacts: Contact[];
-  addPerson: (name: string, email?: string, avatar?: string) => void;
-  removePerson: (name: string) => void;
-  designateContact: (personName: string, contact: Contact) => void;
-  addLabel: (personName: string, label: string) => void;
+  addPerson: (id: number | string,name: string, email?: string, avatar?: string) => void;
+  removePerson: (personId: number | string) => void;
+  designateContact: (personId: number | string, contact: Contact) => void;
+  addLabel: (personId: number | string, label: string) => void;
   searchQuery: string;
 }
 
@@ -31,7 +31,7 @@ export const SuggestedContacts = ({
   searchQuery
 }: SuggestedContactsProps) => {
   const [contactSearchQuery, setContactSearchQuery] = useState("");
-  const [showLabelSelector, setShowLabelSelector] = useState<string | null>(null);
+  const [showLabelSelector, setShowLabelSelector] = useState<string | number |null>(null);
   const [customLabel, setCustomLabel] = useState("");
   const [showLabelInput, setShowLabelInput] = useState(false);
   const [showAllContents, setShowAllContents] = useState(false);
@@ -64,7 +64,7 @@ export const SuggestedContacts = ({
     // Check if a contact is already in priority people
     const isContactAdded = (contact: Contact) => {
       // return priorityPeople.some(p => p.name === contact.name || p.email === contact.email);
-      return priorityPeople?.some(p => p.name === contact.name || (p.email != "N/A" && p.email === contact.email) );
+      return priorityPeople?.some(p => p.id === contact.id || (p.email != "N/A" && p.email === contact.email) );
     };
 
   // Handle designation and label selection
@@ -74,18 +74,18 @@ export const SuggestedContacts = ({
   };
 
   // Handle label selection
-  const handleLabelSelect = (contactId: string, label: string) => {
+  const handleLabelSelect = (contactId: number | string, label: string) => {
     // Find the contact
     const contact = suggestedContacts.find(c => c.id === contactId);
     if (contact) {
       // Add the person first if not already added
       if (!isContactAdded(contact)) {
-        addPerson(contact.name, contact.email, contact.avatar);
+        addPerson(contact.id, contact.name, contact.email, contact.avatar);
       }
       
       // Then add the label with a slight delay to ensure person is added first
       setTimeout(() => {
-        addLabel(contact.name, label);
+        addLabel(contact.id, label);
         setShowLabelSelector(null);
         setCustomLabel("");
       }, 100);
@@ -250,7 +250,7 @@ export const SuggestedContacts = ({
                       size="sm" 
                       variant="ghost" 
                       className="h-8 w-8 p-0 text-foreground/60 dark:text-white/50 hover:text-destructive"
-                      onClick={() => removePerson(contact.name)}
+                      onClick={() => removePerson(contact.id)}
                     >
                       <X size={14} />
                     </Button>
