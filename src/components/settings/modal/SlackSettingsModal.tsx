@@ -25,7 +25,8 @@ interface SlackSettingsModalProps {
 type SettingsTab =
   | "priorityPeople"
   | "priorityChannels"
-  | "ignoreChannels";
+  | "priorityTopics"
+  | "ignore";
 
 interface TabConfig {
   id: SettingsTab;
@@ -65,7 +66,13 @@ const SlackSettingsModal = ({
       Component: PriorityChannelsSetting,
     },
     {
-      id: "ignoreChannels",
+      id: "priorityTopics",
+      label: "Priority Topics",
+      icon: <ChevronRight className="h-4 w-4" />,
+      Component: PriorityTopics,
+    },
+    {
+      id: "ignore",
       label: "Ignore Channels",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: IgnoreSetting,
