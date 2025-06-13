@@ -82,7 +82,7 @@ const ProviderSettingsModal = ({
     },
     {
       id: "ignore",
-      label: "Ignore Channels",
+      label: "Ignore Configuration",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: IgnoreSetting,
       active: ignoreActive.includes(provider?.name?.toLowerCase() || ''),
