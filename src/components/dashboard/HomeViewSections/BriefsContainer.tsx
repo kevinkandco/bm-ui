@@ -15,6 +15,7 @@ import { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
 interface BriefsContainerProps {
   briefs: Summary[];
   totalBriefs: number;
+  briefsLoading: boolean;
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number, title: string, transcript: string) => void;
   onViewAllBriefs: () => void;
@@ -29,6 +30,7 @@ interface BriefsContainerProps {
 const BriefsContainer = ({
   briefs,
   totalBriefs,
+  briefsLoading,
   onViewBrief,
   onViewTranscript,
   onViewAllBriefs,
@@ -87,7 +89,7 @@ const BriefsContainer = ({
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-white-text/80 px-1">Ready</h3>
 
-              {isFirstTimeUser ? (
+              {!briefsLoading ? isFirstTimeUser ? (
                 // Empty state for first-time users
                 <div className="text-center py-8 px-4">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-overlay/50 flex items-center justify-center">
@@ -136,9 +138,8 @@ const BriefsContainer = ({
                     No briefs ready right now
                   </p>
                 </div>
-              )}
+              ) : [...Array(3)].map(() => <BriefCardSkeleton />)}
             </div>
-            {/* [...Array(3)].map(() => <BriefCardSkeleton />) */}
             
             {/* Bottom section with brief count and view all link */}
             <div className="flex justify-between items-center pt-1">

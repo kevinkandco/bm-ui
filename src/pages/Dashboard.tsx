@@ -48,6 +48,7 @@ const Dashboard = () => {
   const [focusTime, setFocusTime] = useState(0);
   const [recentBriefs, setRecentBriefs] = useState<Summary[]>([]);
   const [totalBriefs, setTotalBriefs] = useState(0);
+  const [briefsLoading, setBriefsLoading] = useState(false);
   const [pendingData, setPendingData] = useState<PendingData[]>([]);
   const [focusModeExitLoading, setFocusModeExitLoading] = useState(false);
   const [focusModalOpen, setFocusModalOpen] = useState(false);
@@ -88,6 +89,7 @@ const Dashboard = () => {
   }, [call]);
 
   const getRecentBriefs = useCallback(async () => {
+    setBriefsLoading(true);
     const response = await call("get", `/api/summaries?per_page=3`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
@@ -96,6 +98,7 @@ const Dashboard = () => {
     });
     setRecentBriefs(enrichBriefsWithStats(response?.data));
     setTotalBriefs(response?.meta?.total);
+    setBriefsLoading(false);
   }, [call]);
 
   const getBrief = useCallback(
@@ -332,6 +335,7 @@ const Dashboard = () => {
             priorities={priorities}
             recentBriefs={recentBriefs}
             totalBriefs={totalBriefs}
+            briefsLoading={briefsLoading}
             upcomingBrief={upcomingBrief}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}

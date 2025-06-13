@@ -36,6 +36,7 @@ interface HomeViewProps {
   priorities: Priorities | null;
   recentBriefs: Summary[];
   totalBriefs: number;
+  briefsLoading: boolean;
   upcomingBrief: Summary | null;
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number, title: string, transcript: string) => void;
@@ -53,6 +54,7 @@ const HomeView = ({
   priorities,
   recentBriefs,
   totalBriefs,
+  briefsLoading,
   upcomingBrief,
   onOpenBrief,
   onViewTranscript,
@@ -604,6 +606,7 @@ const HomeView = ({
               <BriefsContainer 
                 briefs={recentBriefs} 
                 totalBriefs={totalBriefs}
+                briefsLoading={briefsLoading}
                 onViewBrief={onOpenBrief} 
                 onViewTranscript={handleViewTranscript} 
                 onViewAllBriefs={handleViewAllBriefs}
