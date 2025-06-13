@@ -1,8 +1,10 @@
+
 export interface ConnectedAccount {
   id: string;
   provider: string;
   email?: string;
   name?: string;
+  customName?: string; // User-defined name for the account
   tagId: string;
   includeInCombined: boolean;
   connectedAt: Date;

@@ -99,6 +99,19 @@ export const useIntegrationsState = () => {
     });
   }, [toast]);
 
+  const updateAccountName = useCallback((accountId: string, customName: string) => {
+    setConnectedAccounts(prev => 
+      prev.map(account => 
+        account.id === accountId ? { ...account, customName } : account
+      )
+    );
+    
+    toast({
+      title: "Account Name Updated",
+      description: "Account name has been updated successfully.",
+    });
+  }, [toast]);
+
   const createTag = useCallback((name: string, color: string, emoji: string) => {
     const newTag: Tag = {
       id: `tag_${Date.now()}`,
@@ -202,6 +215,7 @@ export const useIntegrationsState = () => {
     showFirstTimeHelper,
     addAccount,
     updateAccountTag,
+    updateAccountName,
     toggleAccountInCombined,
     disconnectAccount,
     createTag,
