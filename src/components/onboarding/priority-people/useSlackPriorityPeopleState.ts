@@ -3,6 +3,7 @@ import { Contact, PriorityPerson, Label } from "./types";
 import { useApi } from "@/hooks/useApi";
 
 export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []) {
+  const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLabel, setSelectedLabel] = useState<Label | "">("");
@@ -12,12 +13,14 @@ export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []
   const { call } = useApi();
 
   const fetchContacts = useCallback(async () => {
+    setLoading(true);
     const response = await call("get", "/api/slack/contacts");
 
     if (response) {
       setPlatformContacts(response?.contacts);
       setSuggestedContacts(response?.contacts);
     }
+    setLoading(false);
   }, [call]);
 
   useEffect(() => {
@@ -80,6 +83,7 @@ export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []
   }, []);
 
   return {
+    loading,
     inputValue,
     setInputValue,
     searchQuery,

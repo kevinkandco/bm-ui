@@ -3,6 +3,7 @@ import { Contact, PriorityPerson, Label } from "./types";
 import { useApi } from "@/hooks/useApi";
 
 export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []) {
+  const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLabel, setSelectedLabel] = useState<Label | "">("");
@@ -12,11 +13,13 @@ export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []
   const { call } = useApi();
 
   const fetchContacts = useCallback(async () => {
+    setLoading(true);
     const response = await call("get", '/api/email/contacts');
     if (response) {
       setPlatformContacts(response.contacts || []);
       setSuggestedContacts(response.contacts || []);
     }
+    setLoading(false);
   }, [call]);
 
   useEffect(() => {
@@ -82,6 +85,7 @@ export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []
   }, []);
 
   return {
+    loading,
     inputValue,
     setInputValue,
     searchQuery,

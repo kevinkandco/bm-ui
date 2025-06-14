@@ -10,6 +10,7 @@ import { PriorityPerson } from "./priority-people/types";
 import { memo, useMemo, useState } from "react";
 import { useGmailPriorityPeopleState } from "./priority-people/useGmailPriorityPeopleState";
 import { UserData } from "@/hooks/useOnboardingState";
+import FancyLoader from "../settings/modal/FancyLoader";
 
 interface PriorityPeopleStepProps {
   onNext: () => void;
@@ -80,7 +81,9 @@ const PriorityPeopleStep = memo(
           </p>
         </div>
 
-        <div className="space-y-4">
+        {platformState.loading ?
+         <FancyLoader /> :
+         <div className="space-y-4">
           {/* Search input */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50 dark:text-white/40" />
@@ -124,7 +127,7 @@ const PriorityPeopleStep = memo(
             addLabel={platformState.addLabel}
             searchQuery={platformState.searchQuery}
           />
-        </div>
+        </div>}
 
         <div className="flex justify-between pt-4">
           <Button onClick={handleBackClick} variant="back" size="none">

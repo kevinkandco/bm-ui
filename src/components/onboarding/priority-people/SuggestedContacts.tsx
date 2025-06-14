@@ -128,7 +128,7 @@ export const SuggestedContacts = ({
                 
                 <div>
                   <p className="text-foreground dark:text-white text-sm font-medium">{contact.name}</p>
-                  <div className="text-xs text-foreground/80 dark:text-white/50 flex items-center gap-1">
+                  <div className="text-xs text-foreground/80 dark:text-white/50 flex items-center gap-1 break-all">
                     <Mail size={10} /> {contact.email}
                   </div>
                   {person?.label && (
