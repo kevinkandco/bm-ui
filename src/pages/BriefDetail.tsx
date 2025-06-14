@@ -494,7 +494,7 @@ const BriefDetail = () => {
                 </TableHeader>
                 <TableBody>
                   {actionItems.map((item) => (
-                    <div key={item.id}>
+                    <React.Fragment key={item.id}>
                       <TableRow 
                         className="border-white/10 hover:bg-white/5 cursor-pointer"
                         onClick={() => toggleActionItem(item.id)}
@@ -609,7 +609,7 @@ const BriefDetail = () => {
                           </TableCell>
                         </TableRow>
                       )}
-                    </div>
+                    </React.Fragment>
                   ))}
                 </TableBody>
               </Table>
