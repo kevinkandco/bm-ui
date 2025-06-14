@@ -10,7 +10,7 @@ interface TagSelectorProps {
   selectedTagId: number;
   accountId: number;
   onSelect: (tagId: number) => void;
-  onCreateTag: (name: string, color: string, emoji: string, accountId: number) => void;
+  onCreateTag: (name: string, color: string, emoji: string, accountId: number | string) => void;
   onCancel: () => void;
 }
 

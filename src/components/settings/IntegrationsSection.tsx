@@ -20,6 +20,7 @@ const IntegrationsSection = () => {
     showFirstTimeHelper,
     addAccount,
     updateAccountTag,
+    updateAccountName,
     toggleAccountInCombined,
     disconnectAccount,
     createTag,
@@ -121,6 +122,7 @@ const IntegrationsSection = () => {
           accounts={connectedAccounts}
           tags={tags}
           onUpdateTag={updateAccountTag}
+          onUpdateAccountName={updateAccountName}
           onToggleCombined={toggleAccountInCombined}
           onDisconnect={disconnectAccount}
           onCreateTag={createTag}
