@@ -90,12 +90,12 @@ const ProviderSettingsModal = ({
   ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, ignoreActive, provider?.name]);
 
   const getSlackData = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/settings/slack-data");
+    const response = await call("get", "/api/settings/system-integrations/" + provider.id);
 
     if (response) {
       setSlackData(response);
     }
-  }, [call]);
+  }, [call, provider.id]);
 
   useEffect(() => {
     getSlackData();

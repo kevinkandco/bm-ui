@@ -213,7 +213,7 @@ const ConnectedAccountsList = ({
               <div className="flex items-center space-x-4">
                 {/* Include in Combined Brief Switch */}
                 <div className="flex items-center space-x-2">
-                  {setProviderModal && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2 cursor-pointer" onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name })}>
+                  {setProviderModal && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2 cursor-pointer" onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name?.toLowerCase() })}>
                     <Settings size={20}>Configure Slack</Settings>
                   </div>}
                   <span className="text-sm text-text-secondary whitespace-nowrap">

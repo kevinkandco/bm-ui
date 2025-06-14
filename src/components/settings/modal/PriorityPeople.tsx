@@ -14,6 +14,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettingsTabProps } from "./types";
 import FancyLoader from "./FancyLoader";
 
+const Provider = {
+  slack: "slack",
+  google: "google",
+}
+
 const PriorityPeople = ({
   slackData,
   setSlackData,
@@ -31,14 +36,14 @@ const PriorityPeople = ({
 
   const getContact = useCallback(async (): Promise<void> => {
     setLoadingContacts(true);
-    const response = await call("get", "/api/slack/dms/contacts");
+    const response = await call("get", `/api/${Provider[provider?.name]}/contacts`);
 
     if (response) {
       setPlatformContacts(response?.contacts);
       setSuggestedContacts(response?.contacts);
     }
     setLoadingContacts(false);
-  }, [call]);
+  }, [call, provider]);
 
   useEffect(() => {
     getContact();
@@ -67,6 +72,7 @@ const PriorityPeople = ({
           priorityPeople: [
             ...prev.priorityPeople,
             {
+              id: Math.random(),
               name: name.trim(),
               email,
               label: selectedLabel || undefined,
