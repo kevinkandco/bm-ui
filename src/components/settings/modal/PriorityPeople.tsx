@@ -36,7 +36,7 @@ const PriorityPeople = ({
 
   const getContact = useCallback(async (): Promise<void> => {
     setLoadingContacts(true);
-    const response = await call("get", `/api/${Provider[provider?.name]}/contacts`);
+    const response = await call("get", `/api/${Provider[provider?.name]}/contacts?id=${provider?.id}`);
 
     if (response) {
       setPlatformContacts(response?.contacts);
