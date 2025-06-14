@@ -61,8 +61,8 @@ const ConnectedAccountsList = ({
   const getTag = (tagId: number) => tags.find(tag => tag.id === tagId);
 
   const getDisplayName = (account: ConnectedAccount) => {
-    if (account.customName) {
-      return account.customName;
+    if (account.name) {
+      return account.name;
     }
     // Auto-generate names based on provider
     switch (account.provider_name.toLowerCase()) {
@@ -83,7 +83,7 @@ const ConnectedAccountsList = ({
 
   const handleEditName = (account: ConnectedAccount) => {
     setEditingName(account.id);
-    setTempName(account.customName || getDisplayName(account));
+    setTempName(account.name || getDisplayName(account));
   };
 
   const handleSaveName = (accountId: number) => {

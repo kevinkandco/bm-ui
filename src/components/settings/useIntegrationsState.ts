@@ -192,10 +192,21 @@ export const useIntegrationsState = () => {
     }
   }, [toast, call]);
 
-  const updateAccountName = useCallback((accountId: string | number, customName: string) => {
+  const updateAccountName = useCallback(async (accountId: string | number, customName: string) => {
+    const response = await call("post", `/api/settings/system-integrations/${accountId}/update-name`, {
+      body: {name: customName},
+      showToast: true,
+      toastTitle: "Name Update Failed",
+      toastDescription: "Name update failed. Please try again later.",
+      toastVariant: "destructive",
+      returnOnFailure: false
+    }) 
+    
+    if (!response) return;
+
     setConnectedAccounts(prev => 
       prev.map(account => 
-        account.id === accountId ? { ...account, customName } : account
+        account.id === accountId ? { ...account, name: customName } : account
       )
     );
     
@@ -203,7 +214,7 @@ export const useIntegrationsState = () => {
       title: "Account Name Updated",
       description: "Account name has been updated successfully.",
     });
-  }, [toast]);
+  }, [toast, call]);
 
   const createTag = useCallback(async (name: string, color: string, emoji: string, accountId: number) => {
     const newTag: Tag = {

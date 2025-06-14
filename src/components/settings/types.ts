@@ -5,7 +5,6 @@ export interface ConnectedAccount {
   provider_name?: string;
   email?: string;
   name?: string;
-  customName?: string; // User-defined name for the account
   tagId?: number;
   is_combined?: boolean;
   connectedAt?: Date;
