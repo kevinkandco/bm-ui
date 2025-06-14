@@ -76,10 +76,14 @@ const Dashboard = () => {
       SetBriefSchedules(response.briefSchedules);
       setUpcomingBrief(response.upComingBrief);
       setFocusTime(response.focusRemainingTime);
+      const priorityPeople = [
+        ...(Array.isArray(response?.slackPriorityPeople) ? response.slackPriorityPeople : []),
+        ...(Array.isArray(response?.googlePriorityPeople) ? response.googlePriorityPeople : []),
+      ];
       setPriorities((prev) => {
         return {
           ...prev,
-          priorityPeople: response.priorityPeople,
+          priorityPeople: priorityPeople,
           priorityChannels: response.channels?.map((channel) => ({ name: channel, active: true })) || [],
           triggers: response.triggers,
           integrations: response.integrations ? response.integrations?.map((integration) => ({name: integration, active: true})) : [],
