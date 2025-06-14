@@ -66,24 +66,25 @@ const BriefConfigurationSection = () => {
       const briefTime = response?.data?.brief_time; // e.g., "08:00"
       const timeFlags = getTimePeriod(briefTime);   // { morning: true, midday: false, evening: false }
 
-      const updatedTimes = {
-        morning: { ...times.morning, enabled: timeFlags.morning },
-        midday: { ...times.midday, enabled: timeFlags.midday },
-        evening: { ...times.evening, enabled: timeFlags.evening },
-      };
+      setTimes(prevTimes => {
+        const updatedTimes = {
+          morning: { ...prevTimes.morning, enabled: timeFlags.morning },
+          midday: { ...prevTimes.midday, enabled: timeFlags.midday },
+          evening: { ...prevTimes.evening, enabled: timeFlags.evening },
+        };
 
-      // Get which period is active
-      const activeKey = Object.keys(timeFlags).find(
-        key => timeFlags[key as keyof typeof timeFlags]
-      );
+        const activeKey = Object.keys(timeFlags).find(
+          key => timeFlags[key as keyof typeof timeFlags]
+        );
 
-      if (activeKey) {
-        updatedTimes[activeKey as keyof typeof updatedTimes].time = briefTime;
-      }
+        if (activeKey) {
+          updatedTimes[activeKey as keyof typeof updatedTimes].time = briefTime;
+        }
 
-      setTimes(updatedTimes);
+        return updatedTimes;
+      });
     }
-  }, [call, times]);
+  }, [call]);
 
 
 
