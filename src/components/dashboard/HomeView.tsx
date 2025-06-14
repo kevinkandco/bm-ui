@@ -544,6 +544,7 @@ const HomeView = ({
 
             <Button
               onClick={onToggleCatchMeUp}
+              disabled={status === "focus"}
               className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all"
             >
               <Zap className="mr-2 h-4 w-4" />
