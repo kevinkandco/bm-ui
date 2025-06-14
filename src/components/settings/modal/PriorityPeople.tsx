@@ -16,7 +16,7 @@ import FancyLoader from "./FancyLoader";
 
 const Provider = {
   slack: "slack",
-  google: "google",
+  google: "email",
 }
 
 const PriorityPeople = ({
