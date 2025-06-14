@@ -64,13 +64,14 @@ const ConnectedAccountsList = ({
     if (account.customName) {
       return account.customName;
     }
-    
     // Auto-generate names based on provider
     switch (account.provider_name.toLowerCase()) {
       case "slack":
         return account.name ? `${account.name}` : "Slack Workspace";
       case "gmail":
         return account.email ? `Gmail (${account.email})` : "Gmail";
+      case "google":
+        return account.email ? `Google (${account.email})` : "Google";
       case "outlook":
         return account.email ? `Outlook (${account.email})` : "Outlook";
       case "calendar":
