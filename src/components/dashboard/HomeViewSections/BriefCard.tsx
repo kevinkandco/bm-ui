@@ -413,7 +413,7 @@ const BriefCard = ({
                         <div className="space-y-1">
                           <div className="text-sm font-medium text-text-primary">{stat.label}</div>
                           <div className="space-y-1">
-                            {Object.entries(stat.breakdown).map(([platform, count]) => (
+                            {stat?.breakdown && Object.entries(stat?.breakdown).map(([platform, count]) => (
                               <div key={platform} className="flex justify-between text-xs">
                                 <span className="text-text-secondary capitalize">{platform}:</span>
                                 <span className="text-text-primary font-medium">{count}</span>
