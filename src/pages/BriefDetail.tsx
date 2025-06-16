@@ -290,7 +290,8 @@ const BriefDetail = () => {
       if (!briefData?.summary) {
         toast({
           title: "Transcript Not found",
-          description: "Transcript not found. Please try again"
+          description: "Transcript not found. Please try again",
+          variant: "destructive",
       });
       return;
       }
