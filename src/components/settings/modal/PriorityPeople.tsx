@@ -41,16 +41,69 @@ const PriorityPeople = ({
   const [hasTriedToSave, setHasTriedToSave] = useState(false);
   const { call } = useApi();
 
+  // const getContact = useCallback(async (): Promise<void> => {
+  //   setLoadingContacts(true);
+  //   const response = await call("get", `/api/${Provider[provider?.name]}/contacts?id=${provider?.id}`);
+
+  //   if (response) {
+  //     setPlatformContacts(response?.contacts);
+  //     setSuggestedContacts(response?.contacts);
+  //   }
+  //   setLoadingContacts(false);
+  // }, [call, provider]);
+
   const getContact = useCallback(async (): Promise<void> => {
     setLoadingContacts(true);
-    const response = await call("get", `/api/${Provider[provider?.name]}/contacts?id=${provider?.id}`);
+
+    const cacheKey = `/api/${Provider[provider?.name]}/contacts?id=${
+      provider?.id
+    }`;
+    const CACHE_EXPIRY_HOURS = 24;
+
+    const cache = await caches.open("contacts-cache");
+    const cachedResponse = await cache.match(cacheKey);
+
+    if (cachedResponse) {
+      const cachedJson = await cachedResponse.json();
+
+      const now = Date.now();
+      const cachedTime = cachedJson?.cachedAt ?? 0;
+      const isExpired = now - cachedTime > CACHE_EXPIRY_HOURS * 60 * 60 * 1000;
+
+      if (!isExpired) {
+        setPlatformContacts(cachedJson.contacts);
+        setSuggestedContacts(cachedJson.contacts);
+        setLoadingContacts(false);
+        return;
+      } else {
+        // Optionally delete expired cache
+        await cache.delete(cacheKey);
+      }
+    }
+
+    // If not cached or expired, fetch fresh
+    const response = await call("get", cacheKey);
 
     if (response) {
-      setPlatformContacts(response?.contacts);
-      setSuggestedContacts(response?.contacts);
+      const now = Date.now();
+
+      setPlatformContacts(response.contacts);
+      setSuggestedContacts(response.contacts);
+
+      const wrappedResponse = {
+        cachedAt: now,
+        contacts: response.contacts,
+      };
+
+      const cacheResponse = new Response(JSON.stringify(wrappedResponse), {
+        headers: { "Content-Type": "application/json" },
+      });
+      await cache.put(cacheKey, cacheResponse);
     }
+
     setLoadingContacts(false);
   }, [call, provider]);
+
 
   useEffect(() => {
     getContact();
