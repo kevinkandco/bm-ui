@@ -13,7 +13,7 @@ interface SuggestedContactsProps {
   suggestedContacts: Contact[];
   priorityPeople: PriorityPerson[];
   platformContacts: Contact[];
-  addPerson: (id: number | string,name: string, email?: string, avatar?: string) => void;
+  addPerson: (id: number | string, name: string, email?: string, avatar?: string) => void;
   removePerson: (personId: number | string) => void;
   designateContact: (personId: number | string, contact: Contact) => void;
   addLabel: (personId: number | string, label: string) => void;

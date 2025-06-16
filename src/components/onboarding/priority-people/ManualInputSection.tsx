@@ -17,6 +17,7 @@ interface ManualInputSectionProps {
   setSelectedLabel: (value: ContactLabel | "") => void;
   addPerson: (id: number | string, name: string, email?: string, avatar?: string) => void;
   filteredManualContacts: Contact[];
+  openPriorityPeopleModal?: () => void;
 }
 
 export const ManualInputSection = ({
@@ -25,7 +26,8 @@ export const ManualInputSection = ({
   selectedLabel,
   setSelectedLabel,
   addPerson,
-  filteredManualContacts
+  filteredManualContacts,
+  openPriorityPeopleModal=null
 }: ManualInputSectionProps) => {
   const [showContactsDropdown, setShowContactsDropdown] = useState(false);
   const [showLabelInput, setShowLabelInput] = useState(false);
@@ -77,15 +79,25 @@ export const ManualInputSection = ({
   return (
     <div className="relative">
       <Popover>
-        <PopoverTrigger asChild>
-          <Button 
+        <div className="flex gap-1">
+          <PopoverTrigger asChild>
+            <Button 
+              variant="black" 
+              className="w-full flex-2 justify-start text-left font-normal"
+              >
+              <Plus className="mr-2 h-4 w-4" />
+              Designate
+            </Button>
+          </PopoverTrigger>
+          {openPriorityPeopleModal &&<Button 
             variant="black" 
-            className="w-full justify-start text-left font-normal"
-          >
+            className="w-full flex-1 justify-start text-left font-normal"
+            onClick={openPriorityPeopleModal}
+            >
             <Plus className="mr-2 h-4 w-4" />
-            Designate
-          </Button>
-        </PopoverTrigger>
+            Priority People
+          </Button>}
+        </div>
         <PopoverContent className="w-full p-0 bg-card border-border">
           <div className="p-2 space-y-2">
             <div className="relative">

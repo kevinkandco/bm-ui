@@ -30,3 +30,13 @@ export interface SplitBriefSettings {
   email: boolean;
   audio: boolean;
 }
+
+export interface Person {
+  name: string;
+  email: string;
+}
+
+export interface ValidationError {
+  index: number;
+  message: string;
+}

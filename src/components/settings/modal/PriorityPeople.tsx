@@ -13,6 +13,8 @@ import { Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettingsTabProps } from "./types";
 import FancyLoader from "./FancyLoader";
+import AddEmailModal from "./AddEmailModal";
+import { Person, ValidationError } from "../types";
 
 const Provider = {
   slack: "slack",
@@ -32,6 +34,11 @@ const PriorityPeople = ({
   const [suggestedContacts, setSuggestedContacts] = useState<Contact[]>([]);
   const [platformContacts, setPlatformContacts] = useState<Contact[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(false);
+  const [addEmailModalOpen, setAddEmailModalOpen] = useState(false);
+  const [people, setPeople] = useState<Person[]>([{ name: "", email: "" }]);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [hasTriedToSave, setHasTriedToSave] = useState(false);
   const { call } = useApi();
 
   const getContact = useCallback(async (): Promise<void> => {
@@ -60,7 +67,7 @@ const PriorityPeople = ({
   );
 
   const addPerson = useCallback(
-    (name: string, email?: string, avatar?: string) => {
+    (id: number | string, name: string, email?: string, avatar?: string) => {
       if (!name.trim()) return;
 
       setSlackData((prev) => {
@@ -129,6 +136,58 @@ const PriorityPeople = ({
     },
     [setSlackData]
   );
+
+  // for add priority person modal
+  const handleCancel = () => {
+    setAddEmailModalOpen(false);
+    setPeople([{ name: "", email: "" }]);
+  };
+
+  const handleSave = async () => {
+    setHasTriedToSave(true);
+
+    const filtered = people.filter((p) => p.name || p.email);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const errors: ValidationError[] = [];
+    const seenEmails = new Set<string>();
+
+    filtered.forEach((p, i) => {
+      const name = p.name.trim();
+      const email = p.email.trim();
+
+      if ((name && !email) || (!name && email)) {
+        errors.push({
+          index: i,
+          message: "Both name and email must be filled.",
+        });
+      } else if (email && /[A-Z]/.test(email)) {
+        errors.push({
+          index: i,
+          message: "Email cannot contain uppercase letters.",
+        });
+      } else if (email && !emailRegex.test(email)) {
+        errors.push({
+          index: i,
+          message: "Email is not valid.",
+        });
+      } else if (email && seenEmails.has(email.toLowerCase())) {
+        errors.push({
+          index: i,
+          message: "Duplicate email not allowed.",
+        });
+      } else if (email) {
+        seenEmails.add(email.toLowerCase());
+      }
+    });
+
+    setValidationErrors(errors);
+
+    if (errors.length > 0) return;
+
+    filtered.forEach((p) => addPerson(Math.random(), p.name, p.email?.toLowerCase()));
+    handleCancel();
+  };
 
   return (
     <>
@@ -202,6 +261,7 @@ const PriorityPeople = ({
             setSelectedLabel={setSelectedLabel}
             addPerson={addPerson}
             filteredManualContacts={filteredManualContacts}
+            openPriorityPeopleModal={provider.name?.toLowerCase() === 'google' ? () => setAddEmailModalOpen(true) : null}
           />
 
           {/* Suggested contacts */}
@@ -217,6 +277,18 @@ const PriorityPeople = ({
           />
         </div>
       )}
+      <AddEmailModal
+        open={addEmailModalOpen}
+        onClose={handleCancel}
+        people={people}
+        setPeople={setPeople}
+        saveLoading={saveLoading}
+        hasTriedToSave={hasTriedToSave}
+        setHasTriedToSave={setHasTriedToSave}
+        validationErrors={validationErrors}
+        onSave={handleSave}
+        provider={provider}
+      />
     </>
   );
 };
