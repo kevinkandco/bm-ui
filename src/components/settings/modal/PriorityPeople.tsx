@@ -65,7 +65,7 @@ const PriorityPeople = ({
 
       setSlackData((prev) => {
         // Check if person already exists
-        if (prev.priorityPeople.some((p) => p.name === name)) return prev;
+        if (prev.priorityPeople.some((p) => p.id === id)) return prev;
 
         return {
           ...prev,
@@ -89,11 +89,11 @@ const PriorityPeople = ({
   );
 
   const removePerson = useCallback(
-    (personName: string) => {
+    (personId: string | number, ) => {
       setSlackData((prev) => ({
         ...prev,
         priorityPeople: prev.priorityPeople.filter(
-          (p) => p.name !== personName
+          (p) => p.id !== personId
         ),
       }));
     },
@@ -101,11 +101,11 @@ const PriorityPeople = ({
   );
 
   const designateContact = useCallback(
-    (personName: string, contact: Contact) => {
+    (personId: string | number, contact: Contact) => {
       setSlackData((prev) => ({
         ...prev,
         priorityPeople: prev.priorityPeople.map((person) =>
-          person.name === personName
+          person.id === personId
             ? {
                 ...person,
                 contactName: contact.name || undefined,
@@ -119,11 +119,11 @@ const PriorityPeople = ({
   );
 
   const addLabel = useCallback(
-    (personName: string, label: string) => {
+    (personId: string | number, label: string) => {
       setSlackData((prev) => ({
         ...prev,
         priorityPeople: prev.priorityPeople.map((person) =>
-          person.name === personName ? { ...person, label } : person
+          person.id === personId ? { ...person, label } : person
         ),
       }));
     },
