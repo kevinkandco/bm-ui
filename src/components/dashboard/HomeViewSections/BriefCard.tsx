@@ -214,6 +214,35 @@ const BriefCard = ({
     }
   };
 
+  // Extract date and time from the timeCreated string
+  const formatDeliveryText = (timeCreated: string, timeRange: string) => {
+    // Parse the timeCreated string (e.g., "Today, 8:00 AM" or "December 8, 2024, 8:00 AM")
+    const [datePart, timePart] = timeCreated.split(', ');
+    const time = timePart?.replace(':00 ', '').replace(':00', '') || '8am';
+    const formattedTimeRange = timeRange.replace(':00 ', '').replace(':00', '');
+    
+    // Handle different date formats
+    let dateText = datePart;
+    if (datePart === 'Today') {
+      const today = new Date();
+      dateText = today.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+    } else if (datePart === 'Yesterday') {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      dateText = yesterday.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+    }
+    
+    return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
+  };
+
   return (
     <TooltipProvider>
       <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
@@ -274,9 +303,9 @@ const BriefCard = ({
                   )}
                 </div>
                 
-                {/* Updated timestamp and range format */}
+                {/* Updated timestamp and range format with date */}
                 <p className="text-xs text-light-gray-text">
-                  Delivered at {brief.timeCreated.split(', ')[1].replace(':00 ', '').replace(':00', '')} (Summarizing: {brief.timeRange.replace(':00 ', '').replace(':00', '')})
+                  {formatDeliveryText(brief.timeCreated, brief.timeRange)}
                 </p>
               </div>
             </div>
