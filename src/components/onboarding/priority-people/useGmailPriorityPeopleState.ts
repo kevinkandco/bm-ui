@@ -34,7 +34,7 @@ export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []
     [platformContacts, inputValue]
   );
 
-  const addPerson = useCallback((id: number | string,name: string, email?: string, avatar?: string) => {
+  const addPerson = useCallback((id: number | string,name: string, email?: string, avatar?: string, label?: string) => {
     if (!name.trim()) return;
 
     setPriorityPeople(prev => {
@@ -43,11 +43,11 @@ export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []
       return [
         ...prev,
         {
-          id,
+          id: id || Math.random(),
           name: name.trim(),
           email,
           avatar,
-          label: selectedLabel || undefined,
+          label: label || selectedLabel || undefined,
         },
       ];
     });

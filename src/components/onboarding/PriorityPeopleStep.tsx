@@ -11,6 +11,8 @@ import { memo, useMemo, useState } from "react";
 import { useGmailPriorityPeopleState } from "./priority-people/useGmailPriorityPeopleState";
 import { UserData } from "@/hooks/useOnboardingState";
 import FancyLoader from "../settings/modal/FancyLoader";
+import { Person, ValidationError } from "../settings/types";
+import AddEmailModal from "../settings/modal/AddEmailModal";
 
 interface PriorityPeopleStepProps {
   onNext: () => void;
@@ -24,13 +26,18 @@ const PriorityPeopleStep = memo(
     // Get the state and functions from the custom hook
     const slackState = useSlackPriorityPeopleState(userData.slackPriorityPeople || []);
     const gmailState = useGmailPriorityPeopleState(userData.googlePriorityPeople || []);
+    const [people, setPeople] = useState<Person[]>([{ name: "", email: "", label: "" }]);
+    const [addEmailModalOpen, setAddEmailModalOpen] = useState(false);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+    const [hasTriedToSave, setHasTriedToSave] = useState(false);
 
     const [platformIndex, setPlatformIndex] = useState(0);
     const allowedPlatforms = useMemo(() => 
       (userData?.integrations || []).filter(p => p === "slack" || p === "google"), 
       [userData?.integrations]
     );
-    const currentPlatform = allowedPlatforms?.[platformIndex]; // "slack" or "google"
+    const currentPlatform: "slack" | "google" = allowedPlatforms?.[platformIndex]; // "slack" or "google"
 
     const platformState = useMemo(() => {
       switch (currentPlatform) {
@@ -66,6 +73,58 @@ const PriorityPeopleStep = memo(
       // Just proceed to next step without saving any priority people
       onNext();
     };
+
+    // for add priority person modal
+      const handleCancel = () => {
+        setAddEmailModalOpen(false);
+        setPeople([{ name: "", email: "", label: "" }]);
+      };
+    
+      const handleSave = async () => {
+        setHasTriedToSave(true);
+    
+        const filtered = people.filter((p) => p.name || p.email);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+        const errors: ValidationError[] = [];
+        const seenEmails = new Set<string>();
+    
+        filtered.forEach((p, i) => {
+          const name = p.name.trim();
+          const email = p.email.trim();
+    
+          if ((name && !email) || (!name && email)) {
+            errors.push({
+              index: i,
+              message: "Both name and email must be filled.",
+            });
+          } else if (email && /[A-Z]/.test(email)) {
+            errors.push({
+              index: i,
+              message: "Email cannot contain uppercase letters.",
+            });
+          } else if (email && !emailRegex.test(email)) {
+            errors.push({
+              index: i,
+              message: "Email is not valid.",
+            });
+          } else if (email && seenEmails.has(email.toLowerCase())) {
+            errors.push({
+              index: i,
+              message: "Duplicate email not allowed.",
+            });
+          } else if (email) {
+            seenEmails.add(email.toLowerCase());
+          }
+        });
+    
+        setValidationErrors(errors);
+    
+        if (errors.length > 0) return;
+    
+        filtered.forEach((p) => platformState.addPerson(Math.random(), p.name, p.email?.toLowerCase(), undefined, p.label));
+        handleCancel();
+      };
 
     return (
       <div className="space-y-6">
@@ -114,6 +173,7 @@ const PriorityPeopleStep = memo(
             setSelectedLabel={platformState.setSelectedLabel}
             addPerson={platformState.addPerson}
             filteredManualContacts={platformState.filteredManualContacts}
+            openPriorityPeopleModal={currentPlatform === "google" ? () => setAddEmailModalOpen(true) : null}
           />
 
           {/* Suggested contacts */}
@@ -147,6 +207,18 @@ const PriorityPeopleStep = memo(
             Skip this step
           </Button>
         </div> */}
+        <AddEmailModal
+            open={addEmailModalOpen}
+            onClose={handleCancel}
+            people={people}
+            setPeople={setPeople}
+            saveLoading={saveLoading}
+            hasTriedToSave={hasTriedToSave}
+            setHasTriedToSave={setHasTriedToSave}
+            validationErrors={validationErrors}
+            onSave={handleSave}
+            provider={{id: null, name: currentPlatform}}
+          />
       </div>
     );
   }
