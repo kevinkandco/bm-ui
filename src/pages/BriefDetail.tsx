@@ -1,7 +1,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info, ChevronDown, ChevronRight, SkipBack, SkipForward, Download, BarChart3, AlertCircle, CheckCircle, Users } from "lucide-react";
+import { Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info, ChevronDown, ChevronRight, SkipBack, SkipForward, Download, BarChart3, AlertCircle, CheckCircle, Users, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -286,6 +286,17 @@ const BriefDetail = () => {
       ? `Range: ${briefData?.start_at} - ${briefData?.ended_at}`
       : "";
 
+    const handleTranscriptOpen = () => {
+      if (!briefData?.summary) {
+        toast({
+          title: "Transcript Not found",
+          description: "Transcript not found. Please try again"
+      });
+      return;
+      }
+      setTranscriptOpen(true)
+    }
+
   return (
     <TooltipProvider>
       <DashboardLayout 
@@ -475,6 +486,19 @@ const BriefDetail = () => {
                     <span className="text-sm text-text-secondary">{formatDuration(duration)}</span>
                   </div>
                 </div>
+                  <div className="flex gap-2">
+                    <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </Button>
+                    <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                      <Share className="mr-2 h-4 w-4" />
+                      Share
+                    </Button>
+                    <Button onClick={handleTranscriptOpen} variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
+                      View Transcript
+                    </Button>
+                  </div>
               </div>
             </div>
 
