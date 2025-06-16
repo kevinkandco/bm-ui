@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useMemo } from 'react';
 
 export interface UserData {
@@ -26,6 +25,20 @@ export interface UserData {
     enabled: boolean;
     days: string[];
   }[];
+  
+  // Weekend brief preferences
+  weekendBrief: {
+    enabled: boolean;
+    deliveryMethod: "email" | "audio" | "both";
+    deliveryTime: string;
+    weekendDays: string[];
+    coveragePeriod: {
+      startDay: string;
+      startTime: string;
+      endDay: string;
+      endTime: string;
+    };
+  };
   
   // Daily schedule
   dailySchedule: {
@@ -66,6 +79,20 @@ export const defaultUserData: UserData = {
       days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     }
   ],
+  
+  // Weekend brief preferences
+  weekendBrief: {
+    enabled: false,
+    deliveryMethod: "email",
+    deliveryTime: "09:00",
+    weekendDays: ["Monday"],
+    coveragePeriod: {
+      startDay: "Friday",
+      startTime: "17:00",
+      endDay: "Monday",
+      endTime: "09:00"
+    }
+  },
   
   // Daily schedule
   dailySchedule: {
