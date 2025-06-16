@@ -126,7 +126,7 @@ const ProviderSettingsModal = ({
 
   const handleSave = useCallback(async (): Promise<void> => {
     setIsSaving(true);
-    const response = await call("post", "/api/settings/update/slack-data", {
+    const response = await call("post", `/api/settings/system-integrations/${provider.id}/update`, {
       body: slackData,
     });
 
@@ -135,7 +135,7 @@ const ProviderSettingsModal = ({
     }
     if (setFirstTimeSlackConnected) setFirstTimeSlackConnected(false);
     setIsSaving(false);
-  }, [call, slackData, onClose, setFirstTimeSlackConnected]);
+  }, [call, slackData, onClose, setFirstTimeSlackConnected, provider.id]);
 
   const handleClose = () => {
     onClose();
