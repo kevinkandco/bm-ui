@@ -35,7 +35,7 @@ const PriorityPeople = ({
   const [platformContacts, setPlatformContacts] = useState<Contact[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(false);
   const [addEmailModalOpen, setAddEmailModalOpen] = useState(false);
-  const [people, setPeople] = useState<Person[]>([{ name: "", email: "" }]);
+  const [people, setPeople] = useState<Person[]>([{ name: "", email: "", label: "" }]);
   const [saveLoading, setSaveLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const [hasTriedToSave, setHasTriedToSave] = useState(false);
@@ -67,7 +67,7 @@ const PriorityPeople = ({
   );
 
   const addPerson = useCallback(
-    (id: number | string, name: string, email?: string, avatar?: string) => {
+    (id: number | string, name: string, email?: string, avatar?: string, label?: string) => {
       if (!name.trim()) return;
 
       setSlackData((prev) => {
@@ -82,7 +82,7 @@ const PriorityPeople = ({
               id: Math.random(),
               name: name.trim(),
               email,
-              label: selectedLabel || undefined,
+              label: label || selectedLabel || undefined,
               avatar: avatar || undefined,
             },
           ],
@@ -140,7 +140,7 @@ const PriorityPeople = ({
   // for add priority person modal
   const handleCancel = () => {
     setAddEmailModalOpen(false);
-    setPeople([{ name: "", email: "" }]);
+    setPeople([{ name: "", email: "", label: "" }]);
   };
 
   const handleSave = async () => {
@@ -185,7 +185,7 @@ const PriorityPeople = ({
 
     if (errors.length > 0) return;
 
-    filtered.forEach((p) => addPerson(Math.random(), p.name, p.email?.toLowerCase()));
+    filtered.forEach((p) => addPerson(Math.random(), p.name, p.email?.toLowerCase(), undefined, p.label));
     handleCancel();
   };
 

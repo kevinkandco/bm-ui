@@ -34,6 +34,7 @@ export interface SplitBriefSettings {
 export interface Person {
   name: string;
   email: string;
+  label: string;
 }
 
 export interface ValidationError {

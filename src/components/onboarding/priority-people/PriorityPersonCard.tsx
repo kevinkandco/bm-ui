@@ -123,7 +123,7 @@ export const PriorityPersonCard = ({
                         className="text-xs h-7"
                         onClick={() => {
                           if (customLabel) {
-                            addLabel(person.name, customLabel);
+                            addLabel(person.id, customLabel);
                             setShowLabelInput(false);
                             setCustomLabel("");
                           }
@@ -150,7 +150,7 @@ export const PriorityPersonCard = ({
                 {person.label && (
                   <div 
                     className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
-                    onClick={() => addLabel(person.name, "")}
+                    onClick={() => addLabel(person.id, "")}
                   >
                     <span className="text-white/70 text-xs">Remove Label</span>
                   </div>

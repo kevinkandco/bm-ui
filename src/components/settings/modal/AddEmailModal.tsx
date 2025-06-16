@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,6 +7,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Person, ValidationError } from "../types";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/onboarding/priority-people/types";
 
 interface ProviderSettingsModalProps {
   open: boolean;
@@ -33,7 +39,6 @@ const AddEmailModal = ({
   onSave,
   provider,
 }: ProviderSettingsModalProps) => {
-
   useEffect(() => {
     // Remove any fully empty row that is not the last one
     if (people.length > 1) {
@@ -49,28 +54,60 @@ const AddEmailModal = ({
     }
   }, [people, setPeople]);
 
-  const handleChange = (index: number, field: keyof Person, value: string) => {
-    setHasTriedToSave(false);
-    setPeople((prev) => {
-      const updated = [...prev];
-      updated[index][field] = value;
+  const labels: Label[] = [
+    "Spouse",
+    "Manager",
+    "Collaborator",
+    "CFO",
+    "Team Member",
+    "Client",
+    "Other",
+  ];
 
-      const isLast = index === updated.length - 1;
-      const last = updated[updated.length - 1];
+  const handleChange = useCallback(
+    (index: number, field: keyof Person, value: string) => {
+      setHasTriedToSave(false);
+      setPeople((prev) => {
+        const updated = [...prev];
+        updated[index][field] = value;
 
-      // If typing into last row, auto-add one more row
-      if (isLast && (last.email.trim())) {
-        updated.push({ name: "", email: "" });
-      }
+        const isLast = index === updated.length - 1;
+        const last = updated[updated.length - 1];
 
-      return updated;
-    });
-  };
+        // If typing into last row, auto-add one more row
+        if (isLast && last.email.trim()) {
+          updated.push({ name: "", email: "", label: "" });
+        }
 
-  const removePerson = (index: number) => {
-    const updated = people.filter((_, i) => i !== index);
-    setPeople(updated.length === 0 ? [{ name: "", email: "" }] : updated);
-  };
+        return updated;
+      });
+    },
+    [setPeople, setHasTriedToSave]
+  );
+
+  const addLabel = useCallback(
+    (index: number, label: string) => {
+      setPeople((prev) => {
+        const updated = [...prev];
+        updated[index] = {
+          ...updated[index],
+          label,
+        };
+        return updated;
+      });
+    },
+    [setPeople]
+  );
+
+  const removePerson = useCallback(
+    (index: number) => {
+      const updated = people.filter((_, i) => i !== index);
+      setPeople(
+        updated.length === 0 ? [{ name: "", email: "", label: "" }] : updated
+      );
+    },
+    [people, setPeople]
+  );
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -118,16 +155,62 @@ const AddEmailModal = ({
                         placeholder="Enter email"
                       />
                     </div>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={index === people.length - 1}
+                          className={`sm:mt-6 sm:min-w-28 h-[44px] p-[10px] min-w-full sm:w-auto w-full text-sm rounded-lg transition font-medium
+                            ${
+                              index === people.length - 1
+                                ? "bg-white/10 border-white/20 text-white/50 !cursor-not-allowed opacity-50"
+                                : "bg-white/20 dark:bg-white/10 border-black/30 dark:border-white/20 text-foreground/80 dark:text-white/70 hover:bg-white/30"
+                            }`}
+                        >
+                          {person?.label ? person.label : "Add Label"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-48 p-0 bg-card border-border">
+                        <div className="p-2">
+                          <div className="space-y-1">
+                            {labels.map((label) => (
+                              <div
+                                key={label}
+                                className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
+                                onClick={() => addLabel(index, label)}
+                              >
+                                <span className="text-foreground dark:text-white text-sm">
+                                  {label}
+                                </span>
+                              </div>
+                            ))}
+                            {person?.label && (
+                              <div
+                                className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
+                                onClick={() => addLabel(index, "")}
+                              >
+                                <span className="text-foreground/70 dark:text-white/70 text-xs">
+                                  Remove Label
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <div className="sm:w-auto w-full">
                       <button
                         onClick={() =>
                           index < people.length - 1 && removePerson(index)
                         }
-                        className={`self-end sm:mt-6 p-[10px] sm:w-auto w-full text-sm rounded-lg transition border ${
-                          index === people.length - 1
-                            ? "invisible"
-                            : " text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium "
-                        }`}
+                        disabled={index === people.length - 1}
+                        className={`self-end sm:mt-6 p-[10px] sm:h-[44px] h-11 sm:w-auto w-full text-sm rounded-lg transition font-medium border
+                          ${
+                            index === people.length - 1
+                              ? "text-red-400 border-red-400 bg-transparent cursor-not-allowed opacity-50"
+                              : "text-red-700 border-red-700 hover:text-white hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300"
+                          }`}
                       >
                         DELETE
                       </button>
@@ -141,7 +224,7 @@ const AddEmailModal = ({
                             ?.message
                         }
                       </div>
-                  )}
+                    )}
                 </div>
               ))}
             </div>

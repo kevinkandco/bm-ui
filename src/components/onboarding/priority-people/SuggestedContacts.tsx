@@ -227,7 +227,7 @@ export const SuggestedContacts = ({
                               <div 
                                 key={label}
                                 className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
-                                onClick={() => addLabel(contact.name, label)}
+                                onClick={() => addLabel(contact.id, label)}
                               >
                                 <span className="text-foreground dark:text-white text-xs">{label}</span>
                               </div>
@@ -236,7 +236,7 @@ export const SuggestedContacts = ({
                             {person?.label && (
                               <div 
                                 className="flex items-center p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
-                                onClick={() => addLabel(contact.name, "")}
+                                onClick={() => addLabel(contact.id, "")}
                               >
                                 <span className="text-foreground/70 dark:text-white/70 text-xs">Remove Label</span>
                               </div>
