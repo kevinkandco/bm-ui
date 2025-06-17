@@ -85,6 +85,14 @@ const Dashboard = () => {
     });
   }, [toast]);
 
+  const handleSignBackOn = useCallback(() => {
+    setUserStatus("active");
+    toast({
+      title: "Welcome Back",
+      description: "You're now back online and monitoring"
+    });
+  }, [toast]);
+
   const handleGenerateBrief = useCallback(() => {
     // This would typically trigger the creation of a new brief
     console.log("Generating new brief...");
@@ -97,6 +105,15 @@ const Dashboard = () => {
         <StatusTimer 
           status={userStatus}
           onExitFocusMode={handleExitFocusMode}
+        />
+      )}
+
+      {/* Vacation/Out of Office Timer Header */}
+      {userStatus === "vacation" && (
+        <StatusTimer 
+          status={userStatus}
+          onToggleCatchMeUp={handleToggleCatchMeUp}
+          onSignBackOn={handleSignBackOn}
         />
       )}
 
