@@ -181,9 +181,6 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              {/* Theme toggle removed on mobile */}
-              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
-              
               {onSignBackOn && (
                 <Button 
                   onClick={onSignBackOn}
@@ -192,18 +189,6 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
                 >
                   <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Sign Back On</span>
-                </Button>
-              )}
-              
-              {onToggleCatchMeUp && (
-                <Button 
-                  onClick={onToggleCatchMeUp}
-                  variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
-                >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Catch Up</span>
                 </Button>
               )}
             </div>
