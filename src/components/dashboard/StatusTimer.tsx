@@ -152,11 +152,12 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
               {onSignBackOn && (
                 <Button 
                   onClick={onSignBackOn}
+                  variant="black"
                   size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
+                  className="rounded-full"
                 >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Sign Back On</span>
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Exit</span>
                 </Button>
               )}
             </div>
@@ -180,11 +181,12 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
               {onSignBackOn && (
                 <Button 
                   onClick={onSignBackOn}
+                  variant="black"
                   size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
+                  className="rounded-full"
                 >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Sign Back On</span>
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Exit</span>
                 </Button>
               )}
             </div>
