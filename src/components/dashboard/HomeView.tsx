@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -159,7 +160,36 @@ const HomeView = ({
 
   // Sample brief data
   const recentBriefs = [
-    // ... keep existing code (brief data array)
+    {
+      id: 1,
+      name: "Morning Brief",
+      timeCreated: "Today, 8:00 AM",
+      timeRange: "5:00 AM - 8:00 AM",
+      slackMessages: { total: 12, fromPriorityPeople: 3 },
+      emails: { total: 5, fromPriorityPeople: 2 },
+      actionItems: 4,
+      hasTranscript: true
+    },
+    {
+      id: 2,
+      name: "Evening Brief",
+      timeCreated: "Yesterday, 8:00 PM",
+      timeRange: "5:00 PM - 8:00 PM",
+      slackMessages: { total: 8, fromPriorityPeople: 1 },
+      emails: { total: 3, fromPriorityPeople: 0 },
+      actionItems: 2,
+      hasTranscript: true
+    },
+    {
+      id: 3,
+      name: "Afternoon Brief",
+      timeCreated: "Yesterday, 4:00 PM",
+      timeRange: "1:00 PM - 4:00 PM",
+      slackMessages: { total: 15, fromPriorityPeople: 4 },
+      emails: { total: 7, fromPriorityPeople: 3 },
+      actionItems: 5,
+      hasTranscript: true
+    }
   ];
 
   // Sample upcoming brief data
@@ -309,7 +339,7 @@ const HomeView = ({
 
         {/* Upcoming Brief Section - More faded */}
         <div className="mb-3 flex-shrink-0">
-          <div className="bg-deep-blue/30 border border-light-gray-text/10 rounded-xl p-3 opacity-60">
+          <div className="bg-deep-blue/20 border border-light-gray-text/10 rounded-xl p-3 opacity-40">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-medium text-white-text/70">Upcoming Brief</h3>
               <Clock className="w-4 h-4 text-primary-teal/70" />
@@ -323,7 +353,7 @@ const HomeView = ({
                 onClick={handleGetBriefedNow}
                 size="sm"
                 variant="outline"
-                className="border-primary-teal/60 text-primary-teal/80 hover:border-primary-teal hover:text-primary-teal rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
+                className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
               >
                 <Zap className="w-3 h-3 mr-1" />
                 Get Briefed Now
