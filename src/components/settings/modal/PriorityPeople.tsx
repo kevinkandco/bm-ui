@@ -15,17 +15,14 @@ import { SettingsTabProps } from "./types";
 import FancyLoader from "./FancyLoader";
 import AddEmailModal from "./AddEmailModal";
 import { Person, ValidationError } from "../types";
-
-const Provider = {
-  slack: "slack",
-  google: "email",
-}
+import { Provider } from "@radix-ui/react-toast";
 
 const PriorityPeople = ({
-  slackData,
-  setSlackData,
+  providerData,
+  setProviderData,
   SyncLoading,
   syncData,
+  loadingProviderData,
   provider
 }: SettingsTabProps) => {
   const [inputValue, setInputValue] = useState("");
@@ -123,7 +120,7 @@ const PriorityPeople = ({
     (id: number | string, name: string, email?: string, avatar?: string, label?: string) => {
       if (!name.trim()) return;
 
-      setSlackData((prev) => {
+      setProviderData((prev) => {
         // Check if person already exists
         if (prev.priorityPeople.some((p) => p.id === id)) return prev;
 
@@ -145,24 +142,24 @@ const PriorityPeople = ({
       setInputValue("");
       setSelectedLabel("");
     },
-    [selectedLabel, setSlackData]
+    [selectedLabel, setProviderData]
   );
 
   const removePerson = useCallback(
     (personId: string | number, ) => {
-      setSlackData((prev) => ({
+      setProviderData((prev) => ({
         ...prev,
         priorityPeople: prev.priorityPeople.filter(
           (p) => p.id !== personId
         ),
       }));
     },
-    [setSlackData]
+    [setProviderData]
   );
 
   const designateContact = useCallback(
     (personId: string | number, contact: Contact) => {
-      setSlackData((prev) => ({
+      setProviderData((prev) => ({
         ...prev,
         priorityPeople: prev.priorityPeople.map((person) =>
           person.id === personId
@@ -175,19 +172,19 @@ const PriorityPeople = ({
         ),
       }));
     },
-    [setSlackData]
+    [setProviderData]
   );
 
   const addLabel = useCallback(
     (personId: string | number, label: string) => {
-      setSlackData((prev) => ({
+      setProviderData((prev) => ({
         ...prev,
         priorityPeople: prev.priorityPeople.map((person) =>
           person.id === personId ? { ...person, label } : person
         ),
       }));
     },
-    [setSlackData]
+    [setProviderData]
   );
 
   // for add priority person modal
@@ -282,7 +279,7 @@ const PriorityPeople = ({
           Brief-Me barriers.
         </p>
       </div>
-      {loadingContacts ? (
+      {loadingContacts || loadingProviderData ? (
         <FancyLoader />
       ) : (
         <div className="space-y-4">
@@ -299,7 +296,7 @@ const PriorityPeople = ({
 
           {/* Added people list */}
           <PriorityPeopleList
-            priorityPeople={slackData?.priorityPeople}
+            priorityPeople={providerData?.priorityPeople}
             removePerson={removePerson}
             designateContact={designateContact}
             addLabel={addLabel}
@@ -320,7 +317,7 @@ const PriorityPeople = ({
           {/* Suggested contacts */}
           <SuggestedContacts
             suggestedContacts={suggestedContacts}
-            priorityPeople={slackData?.priorityPeople}
+            priorityPeople={providerData?.priorityPeople}
             platformContacts={platformContacts}
             addPerson={addPerson}
             removePerson={removePerson}

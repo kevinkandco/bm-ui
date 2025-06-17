@@ -12,15 +12,16 @@ import PriorityChannelsSetting from "./PriorityChannelsSetting";
 import IgnoreSetting from "./IgnoreSetting";
 import PriorityTopics from "./PriorityTopics";
 import { useApi } from "@/hooks/useApi";
-import { SettingsTabProps, SlackData } from "./types";
+import { SettingsTabProps, ProviderData } from "./types";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { Provider } from "@radix-ui/react-toast";
 
 interface ProviderSettingsModalProps {
   open: boolean;
   onClose: () => void;
   provider: { id: number; name: string };
-  firstTimeSlackConnected?: boolean;
-  setFirstTimeSlackConnected?: React.Dispatch<React.SetStateAction<boolean>>;
+  firstTimeProviderConnected?: boolean;
+  setFirstTimeProviderConnected?: React.Dispatch<React.SetStateAction<boolean>>;
   initialTab?: SettingsTab;
 }
 
@@ -42,13 +43,14 @@ const ProviderSettingsModal = ({
   open,
   onClose,
   provider,
-  firstTimeSlackConnected = false,
-  setFirstTimeSlackConnected,
+  firstTimeProviderConnected = false,
+  setFirstTimeProviderConnected,
   initialTab = "priorityPeople",
 }: ProviderSettingsModalProps) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
   const [isSaving, setIsSaving] = useState(false);
-  const [slackData, setSlackData] = useState<SlackData>();
+  const [providerData, setProviderData] = useState<ProviderData>();
+  const [loadingProviderData, setLoadingProviderData] = useState(false);
   const [SyncLoading, setSyncLoading] = useState(false);
   const { call } = useApi();
 
@@ -89,34 +91,36 @@ const ProviderSettingsModal = ({
     },
   ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, ignoreActive, provider?.name]);
 
-  const getSlackData = useCallback(async (): Promise<void> => {
+  const getProviderData = useCallback(async (): Promise<void> => {
+    setLoadingProviderData(true);
     const response = await call("get", "/api/settings/system-integrations/" + provider.id);
 
     if (response) {
-      setSlackData(response);
+      setProviderData(response);
     }
+    setLoadingProviderData(false);
   }, [call, provider.id]);
 
   useEffect(() => {
-    getSlackData();
-  }, [getSlackData]);
+    getProviderData();
+  }, [getProviderData]);
 
   const syncData = useCallback(async (): Promise<void> => {
     setSyncLoading(true);
-    const response = await call("get", "/api/slack/fetch");
+    const response = await call("get", `/api/${Provider[provider?.name]}/fetch?id=${provider?.id}`);
 
     if (response) {
-      getSlackData();
+      getProviderData();
     }
     setSyncLoading(false);
-  }, [call, getSlackData]);
+  }, [call, getProviderData, provider]);
 
     useEffect(() => {
-    if (firstTimeSlackConnected) {
+    if (firstTimeProviderConnected) {
       setActiveTab("priorityPeople");
       syncData();
     }
-  }, [firstTimeSlackConnected, syncData]);
+  }, [firstTimeProviderConnected, syncData]);
 
   const handleNext = useCallback(() => {
     const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
@@ -127,20 +131,20 @@ const ProviderSettingsModal = ({
   const handleSave = useCallback(async (): Promise<void> => {
     setIsSaving(true);
     const response = await call("post", `/api/settings/system-integrations/${provider.id}/update`, {
-      body: slackData,
+      body: providerData,
     });
 
     if (response) {
       onClose();
     }
-    if (setFirstTimeSlackConnected) setFirstTimeSlackConnected(false);
+    if (setFirstTimeProviderConnected) setFirstTimeProviderConnected(false);
     setIsSaving(false);
-  }, [call, slackData, onClose, setFirstTimeSlackConnected, provider.id]);
+  }, [call, providerData, onClose, setFirstTimeProviderConnected, provider.id]);
 
   const handleClose = () => {
     onClose();
-    if (setFirstTimeSlackConnected) setFirstTimeSlackConnected(false);
-    getSlackData();
+    if (setFirstTimeProviderConnected) setFirstTimeProviderConnected(false);
+    getProviderData();
   }
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.Component;
@@ -187,10 +191,11 @@ const ProviderSettingsModal = ({
             <div className="flex-1 overflow-y-auto pr-4">
               {ActiveComponent && (
                 <ActiveComponent
-                  slackData={slackData}
-                  setSlackData={setSlackData}
+                  providerData={providerData}
+                  setProviderData={setProviderData}
                   syncData={syncData}
                   SyncLoading={SyncLoading}
+                  loadingProviderData={loadingProviderData}
                   provider={provider}
                 />
               )}
@@ -205,7 +210,7 @@ const ProviderSettingsModal = ({
                 >
                   Cancel
                 </Button>
-                {firstTimeSlackConnected &&
+                {firstTimeProviderConnected &&
                 activeTab !== tabs[tabs.length - 1].id ? (
                   <Button
                     className="bg-blue-500 hover:bg-blue-600 min-w-32"

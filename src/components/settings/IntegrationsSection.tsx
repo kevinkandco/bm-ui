@@ -37,7 +37,7 @@ const IntegrationsSection = () => {
     id: 0,
     name: "",
   });
-  const [firstTimeSlackConnected, setFirstTimeSlackConnected] = useState(false);
+  const [firstTimeProviderConnected, setFirstTimeProviderConnected] = useState(false);
 
   useEffect(() => {
       const selected = searchParams.get("selected");
@@ -55,7 +55,7 @@ const IntegrationsSection = () => {
           id: 0,
           name: selected,
         });
-        setFirstTimeSlackConnected(true);
+        setFirstTimeProviderConnected(true);
       }
     }, [searchParams]);
 
@@ -150,8 +150,8 @@ const IntegrationsSection = () => {
         open={providerModal.open}
         onClose={() => setProviderModal({open: false, id: 0, name: ""})}
         provider={{ id: providerModal.id, name: providerModal.name }}
-        firstTimeSlackConnected={firstTimeSlackConnected}
-        setFirstTimeSlackConnected={setFirstTimeSlackConnected}
+        firstTimeProviderConnected={firstTimeProviderConnected}
+        setFirstTimeProviderConnected={setFirstTimeProviderConnected}
       />}
     </div>
   );

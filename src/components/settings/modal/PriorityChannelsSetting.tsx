@@ -11,10 +11,11 @@ import { MessageSquare } from "lucide-react";
 import FancyLoader from "./FancyLoader";
 
 const PriorityChannelsSetting = ({
-  slackData,
-  setSlackData,
+  providerData,
+  setProviderData,
   SyncLoading,
   syncData,
+  loadingProviderData,
   provider
 }: SettingsTabProps) => {
   const [allSlackChannels, setAllSlackChannels] = useState<
@@ -43,25 +44,25 @@ const PriorityChannelsSetting = ({
 
   // Update available channels whenever priority channels change
   useEffect(() => {
-    const priority = slackData?.priorityChannels ?? [];
+    const priority = providerData?.priorityChannels ?? [];
 
     setSlackChannels(
       allSlackChannels?.filter(
         (channel) => !priority.some((c) => c === channel?.name)
       ) ?? []
     );
-  }, [slackData?.priorityChannels, allSlackChannels]);
+  }, [providerData?.priorityChannels, allSlackChannels]);
 
   const addChannel = (channelName: string) => {
     const trimmed = channelName.trim();
-    if (!trimmed || slackData?.priorityChannels?.includes(trimmed)) return;
+    if (!trimmed || providerData?.priorityChannels?.includes(trimmed)) return;
 
     setAllSlackChannels((prev) => [
       ...(prev ?? []),
       { id: trimmed, name: trimmed },
     ]);
 
-    setSlackData((prev) => ({
+    setProviderData((prev) => ({
       ...prev,
       priorityChannels: [...(prev.priorityChannels ?? []), trimmed],
     }));
@@ -69,8 +70,8 @@ const PriorityChannelsSetting = ({
 
   const selectChannel = (channel: string) => {
     const trimmed = channel.trim();
-    if (!slackData?.priorityChannels?.includes(trimmed)) {
-      setSlackData((prev) => ({
+    if (!providerData?.priorityChannels?.includes(trimmed)) {
+      setProviderData((prev) => ({
         ...prev,
         priorityChannels: [...(prev.priorityChannels ?? []), trimmed],
       }));
@@ -78,7 +79,7 @@ const PriorityChannelsSetting = ({
   };
 
   const removeChannel = (channel: string) => {
-    setSlackData((prev) => ({
+    setProviderData((prev) => ({
       ...prev,
       priorityChannels:
         prev.priorityChannels?.filter((item) => item !== channel) ?? [],
@@ -131,7 +132,7 @@ const PriorityChannelsSetting = ({
         Mark your most important channels. We'll highlight updates from these
         channels in your brief.
       </p>
-      {loadingChannels ? (
+      {loadingChannels || loadingProviderData ? (
           <FancyLoader />
         ) : (
         <div className="space-y-5">
@@ -143,14 +144,14 @@ const PriorityChannelsSetting = ({
             <ChannelInput
               onAddChannel={addChannel}
               onSelectChannel={selectChannel}
-              existingChannels={slackData?.priorityChannels ?? []}
+              existingChannels={providerData?.priorityChannels ?? []}
               availableChannels={slackChannels}
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
             />
 
             <SelectedChannels
-              channels={slackData?.priorityChannels ?? []}
+              channels={providerData?.priorityChannels ?? []}
               slackChannels={allSlackChannels}
               onRemoveChannel={removeChannel}
             />
@@ -167,7 +168,7 @@ const PriorityChannelsSetting = ({
 
             <SlackChannelsList
               slackChannels={filteredChannels}
-              priorityChannels={slackData?.priorityChannels ?? []}
+              priorityChannels={providerData?.priorityChannels ?? []}
               onSelectChannel={selectChannel}
             />
           </div>

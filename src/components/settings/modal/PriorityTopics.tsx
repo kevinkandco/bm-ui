@@ -7,12 +7,14 @@ import { cn } from "@/lib/utils";
 import { Plus, Tag, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import FancyLoader from "./FancyLoader";
 
 const PriorityTopics = ({
-  slackData,
-  setSlackData,
+  providerData,
+  setProviderData,
   SyncLoading,
   syncData,
+  loadingProviderData,
   provider
 }: SettingsTabProps) => {
   const [inputValue, setInputValue] = useState("");
@@ -22,9 +24,9 @@ const PriorityTopics = ({
 
   const addTopic = () => {
     const trimmed = inputValue.trim();
-    if (!trimmed || slackData?.priorityTopics?.includes(trimmed)) return;
+    if (!trimmed || providerData?.priorityTopics?.includes(trimmed)) return;
 
-    setSlackData((prev) => ({
+    setProviderData((prev) => ({
       ...prev,
       priorityTopics: [...(prev.priorityTopics ?? []), trimmed],
     }));
@@ -33,7 +35,7 @@ const PriorityTopics = ({
   };
 
   const removeTopic = (topic: string) => {
-    setSlackData((prev) => ({
+    setProviderData((prev) => ({
       ...prev,
       priorityTopics: (prev.priorityTopics ?? []).filter(
         (item) => item !== topic
@@ -42,7 +44,7 @@ const PriorityTopics = ({
   };
 
   const addSuggestedTopic = (topic: { name: string }) => {
-    setSlackData((prev) => {
+    setProviderData((prev) => {
       const currentTopics = prev.priorityTopics ?? [];
       if (currentTopics.includes(topic.name)) return prev;
 
@@ -91,146 +93,150 @@ const PriorityTopics = ({
         Add keywords or topics that are important across your communications.
         We'll flag any messages containing these keywords.
       </p>
-      <div className="space-y-4 sm:space-y-6">
-        <div className="space-y-2 sm:space-y-3">
-          <Label htmlFor="priority-topic" className="text-off-white text-sm">
-            Add important topics
-          </Label>
-          <p className="text-xs sm:text-sm text-off-white/70 -mt-1">
-            Enter keywords like "urgent", "site down", or specific project names
-            that should be highlighted.
-          </p>
-          <div className="flex gap-2">
-            <Input
-              id="priority-topic"
-              placeholder="Enter keyword or topic"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && addTopic()}
-              className="bg-white/15 border-white/20 text-off-white placeholder:text-white/50 text-sm"
-            />
-            <Button
-              onClick={addTopic}
-              variant="outline"
-              className="shrink-0"
-              size={isMobile ? "sm" : "default"}
-            >
-              <Plus size={isMobile ? 14 : 16} />
-              <span className={isMobile ? "ml-1" : "ml-2"}>Add</span>
-            </Button>
+      {loadingProviderData ? (
+        <FancyLoader />
+      ) : (
+        <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-2 sm:space-y-3">
+            <Label htmlFor="priority-topic" className="text-off-white text-sm">
+              Add important topics
+            </Label>
+            <p className="text-xs sm:text-sm text-off-white/70 -mt-1">
+              Enter keywords like "urgent", "site down", or specific project names
+              that should be highlighted.
+            </p>
+            <div className="flex gap-2">
+              <Input
+                id="priority-topic"
+                placeholder="Enter keyword or topic"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && addTopic()}
+                className="bg-white/15 border-white/20 text-off-white placeholder:text-white/50 text-sm"
+              />
+              <Button
+                onClick={addTopic}
+                variant="outline"
+                className="shrink-0"
+                size={isMobile ? "sm" : "default"}
+              >
+                <Plus size={isMobile ? 14 : 16} />
+                <span className={isMobile ? "ml-1" : "ml-2"}>Add</span>
+              </Button>
+            </div>
+
+            {providerData?.priorityTopics?.length > 0 && (
+              <div className="flex flex-wrap gap-1 sm:gap-2 pt-2">
+                {providerData?.priorityTopics?.map((topic) => (
+                  <div
+                    key={topic}
+                    className="flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-xs sm:text-sm text-off-white"
+                  >
+                    <Tag
+                      size={isMobile ? 12 : 14}
+                      className="text-glass-blue/80"
+                    />
+                    {topic}
+                    <button
+                      onClick={() => removeTopic(topic)}
+                      className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange"
+                    >
+                      <X size={isMobile ? 12 : 14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {slackData?.priorityTopics?.length > 0 && (
-            <div className="flex flex-wrap gap-1 sm:gap-2 pt-2">
-              {slackData?.priorityTopics?.map((topic) => (
-                <div
-                  key={topic}
-                  className="flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-xs sm:text-sm text-off-white"
+          {/* Suggested topics section */}
+          <div className="space-y-2 sm:space-y-3 pt-1 sm:pt-2">
+            <h3 className="text-base sm:text-lg font-medium text-off-white">
+              Common Topics
+            </h3>
+            <p className="text-xs sm:text-sm text-off-white/70">
+              Click to add these suggested topics to your priority list.
+            </p>
+
+            <div className="flex flex-wrap gap-1 sm:gap-2">
+              {suggestedTopics.map((topic) => (
+                <button
+                  key={topic.id}
+                  onClick={() => addSuggestedTopic(topic)}
+                  className={cn(
+                    "px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border text-xs sm:text-sm",
+                    providerData?.priorityTopics?.includes(topic.name)
+                      ? "bg-glass-blue/10 border-glass-blue/40 text-glass-blue"
+                      : "bg-white/10 border-white/20 text-off-white hover:border-white/40"
+                  )}
                 >
-                  <Tag
-                    size={isMobile ? 12 : 14}
-                    className="text-glass-blue/80"
-                  />
-                  {topic}
-                  <button
-                    onClick={() => removeTopic(topic)}
-                    className="ml-1 focus:outline-none text-off-white/70 hover:text-bright-orange"
-                  >
-                    <X size={isMobile ? 12 : 14} />
-                  </button>
-                </div>
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <Tag size={isMobile ? 10 : 12} />
+                    {topic.name}
+                  </div>
+                </button>
               ))}
             </div>
-          )}
-        </div>
 
-        {/* Suggested topics section */}
-        <div className="space-y-2 sm:space-y-3 pt-1 sm:pt-2">
-          <h3 className="text-base sm:text-lg font-medium text-off-white">
-            Common Topics
-          </h3>
-          <p className="text-xs sm:text-sm text-off-white/70">
-            Click to add these suggested topics to your priority list.
-          </p>
-
-          <div className="flex flex-wrap gap-1 sm:gap-2">
-            {suggestedTopics.map((topic) => (
-              <button
-                key={topic.id}
-                onClick={() => addSuggestedTopic(topic)}
-                className={cn(
-                  "px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border text-xs sm:text-sm",
-                  slackData?.priorityTopics?.includes(topic.name)
-                    ? "bg-glass-blue/10 border-glass-blue/40 text-glass-blue"
-                    : "bg-white/10 border-white/20 text-off-white hover:border-white/40"
-                )}
-              >
-                <div className="flex items-center gap-1 sm:gap-1.5">
-                  <Tag size={isMobile ? 10 : 12} />
-                  {topic.name}
+            {/* Topics by category - stack vertically on mobile */}
+            <div
+              className={`${
+                isMobile ? "space-y-4" : "grid grid-cols-1 sm:grid-cols-2 gap-4"
+              } mt-4`}
+            >
+              <div className="space-y-2">
+                <h4 className="text-xs sm:text-sm font-medium text-off-white/80">
+                  Priority & Work
+                </h4>
+                <div className="flex flex-wrap gap-1 sm:gap-2">
+                  {suggestedTopics
+                    .filter(
+                      (t) => t.category === "Priority" || t.category === "Work"
+                    )
+                    .map((topic) => (
+                      <button
+                        key={`cat-${topic.id}`}
+                        onClick={() => addSuggestedTopic(topic)}
+                        className={cn(
+                          "px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs",
+                          providerData?.priorityTopics?.includes(topic.name)
+                            ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
+                            : "bg-white/10 text-off-white/70 hover:text-off-white"
+                        )}
+                      >
+                        {topic.name}
+                      </button>
+                    ))}
                 </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Topics by category - stack vertically on mobile */}
-          <div
-            className={`${
-              isMobile ? "space-y-4" : "grid grid-cols-1 sm:grid-cols-2 gap-4"
-            } mt-4`}
-          >
-            <div className="space-y-2">
-              <h4 className="text-xs sm:text-sm font-medium text-off-white/80">
-                Priority & Work
-              </h4>
-              <div className="flex flex-wrap gap-1 sm:gap-2">
-                {suggestedTopics
-                  .filter(
-                    (t) => t.category === "Priority" || t.category === "Work"
-                  )
-                  .map((topic) => (
-                    <button
-                      key={`cat-${topic.id}`}
-                      onClick={() => addSuggestedTopic(topic)}
-                      className={cn(
-                        "px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs",
-                        slackData?.priorityTopics?.includes(topic.name)
-                          ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
-                          : "bg-white/10 text-off-white/70 hover:text-off-white"
-                      )}
-                    >
-                      {topic.name}
-                    </button>
-                  ))}
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <h4 className="text-xs sm:text-sm font-medium text-off-white/80">
-                Technical
-              </h4>
-              <div className="flex flex-wrap gap-1 sm:gap-2">
-                {suggestedTopics
-                  .filter((t) => t.category === "Technical")
-                  .map((topic) => (
-                    <button
-                      key={`cat-${topic.id}`}
-                      onClick={() => addSuggestedTopic(topic)}
-                      className={cn(
-                        "px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs",
-                        slackData?.priorityTopics?.includes(topic.name)
-                          ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
-                          : "bg-white/10 text-off-white/70 hover:text-off-white"
-                      )}
-                    >
-                      {topic.name}
-                    </button>
-                  ))}
+              <div className="space-y-2">
+                <h4 className="text-xs sm:text-sm font-medium text-off-white/80">
+                  Technical
+                </h4>
+                <div className="flex flex-wrap gap-1 sm:gap-2">
+                  {suggestedTopics
+                    .filter((t) => t.category === "Technical")
+                    .map((topic) => (
+                      <button
+                        key={`cat-${topic.id}`}
+                        onClick={() => addSuggestedTopic(topic)}
+                        className={cn(
+                          "px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs",
+                          providerData?.priorityTopics?.includes(topic.name)
+                            ? "bg-glass-blue/10 border border-glass-blue/40 text-glass-blue"
+                            : "bg-white/10 text-off-white/70 hover:text-off-white"
+                        )}
+                      >
+                        {topic.name}
+                      </button>
+                    ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

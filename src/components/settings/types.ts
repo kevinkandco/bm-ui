@@ -1,3 +1,7 @@
+export const Provider = {
+  slack: "slack",
+  google: "email",
+}
 
 export interface ConnectedAccount {
   id?: number;

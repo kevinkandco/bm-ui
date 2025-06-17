@@ -1,6 +1,6 @@
 import { PriorityPerson } from "@/components/onboarding/priority-people/types";
 
-export interface SlackData {
+export interface ProviderData {
   priorityPeople: PriorityPerson[];
   priorityChannels: string[];
   priorityTopics: string[];
@@ -11,9 +11,10 @@ export interface SlackData {
 
 
 export interface SettingsTabProps {
-  slackData: SlackData;
-  setSlackData: React.Dispatch<React.SetStateAction<SlackData>>;
+  providerData: ProviderData;
+  setProviderData: React.Dispatch<React.SetStateAction<ProviderData>>;
   SyncLoading: boolean;
   syncData: () => Promise<void>;
+  loadingProviderData: boolean;
   provider: { id: number; name: string };
 }

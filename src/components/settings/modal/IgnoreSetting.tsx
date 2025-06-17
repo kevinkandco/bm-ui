@@ -12,10 +12,11 @@ import { Switch } from "@/components/ui/switch";
 import FancyLoader from "./FancyLoader";
 
 const IgnoreSetting = ({
-  slackData,
-  setSlackData,
+  providerData,
+  setProviderData,
   SyncLoading,
   syncData,
+  loadingProviderData,
   provider
 }: SettingsTabProps) => {
   const channelActive = useMemo(() => ['slack'], []);
@@ -53,7 +54,7 @@ const IgnoreSetting = ({
     const allChannels: PriorityChannels[] = response;
 
     const extraChannels =
-      slackData?.ignoreChannels
+      providerData?.ignoreChannels
         ?.filter((channelName: string) => {
           return !allChannels?.some((c) => c.name === channelName);
         })
@@ -66,7 +67,7 @@ const IgnoreSetting = ({
 
     setSlackChannels(combinedChannels);
     setLoadingIgnore(false);
-  }, [call, slackData]);
+  }, [call, providerData]);
 
   useEffect(() => {
     if (channelActive.includes(provider?.name?.toLowerCase() || '')) {
@@ -83,14 +84,14 @@ const IgnoreSetting = ({
         )
         ?.filter(
           (channel) =>
-            !slackData?.priorityChannels?.some(
+            !providerData?.priorityChannels?.some(
               (priority: string) =>
                 priority?.toLowerCase() === channel?.name?.toLowerCase()
             )
         )
         ?.filter(
           (channel) =>
-            !slackData?.ignoreChannels?.some(
+            !providerData?.ignoreChannels?.some(
               (ignore: string) =>
                 ignore?.toLowerCase() === channel?.name?.toLowerCase()
             )
@@ -103,14 +104,14 @@ const IgnoreSetting = ({
         )
         ?.filter(
           (topic) =>
-            !slackData?.priorityTopics?.some(
+            !providerData?.priorityTopics?.some(
               (priority: string) =>
                 priority.toLowerCase() === topic.toLowerCase()
             )
         )
         ?.filter(
           (topic) =>
-            !slackData?.ignoreKeywords?.some(
+            !providerData?.ignoreKeywords?.some(
               (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
             )
         );
@@ -123,10 +124,10 @@ const IgnoreSetting = ({
     isInputFocused,
     selectedTab,
     slackChannels,
-    slackData,
+    providerData,
     suggestedTopics,
-    slackData?.ignoreKeywords,
-    slackData?.ignoreChannels,
+    providerData?.ignoreKeywords,
+    providerData?.ignoreChannels,
     provider?.name,
     channelActive,
     keywordActive
@@ -137,11 +138,11 @@ const IgnoreSetting = ({
     if (!trimmedInput) return;
 
     if (selectedTab === "channel" && channelActive.includes(provider?.name?.toLowerCase() || '')) {
-      if (slackData?.ignoreChannels?.includes(trimmedInput)) {
+      if (providerData?.ignoreChannels?.includes(trimmedInput)) {
         return;
       }
       // Update slackData?.ignoreChannels with new channel
-      setSlackData((prev) => ({
+      setProviderData((prev) => ({
         ...prev,
         ignoreChannels: [...(prev.ignoreChannels || []), trimmedInput],
       }));
@@ -150,11 +151,11 @@ const IgnoreSetting = ({
         { id: trimmedInput, name: trimmedInput },
       ]);
     } else if (selectedTab === "keyword" && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
-      if (slackData?.ignoreKeywords?.includes(trimmedInput)) {
+      if (providerData?.ignoreKeywords?.includes(trimmedInput)) {
         return;
       }
       // Update slackData?.ignoreKeywords with new keyword
-      setSlackData((prev) => ({
+      setProviderData((prev) => ({
         ...prev,
         ignoreKeywords: [...(prev.ignoreKeywords || []), trimmedInput],
       }));
@@ -164,8 +165,8 @@ const IgnoreSetting = ({
   };
 
  const selectChannel = (channel: string) => {
-  if (!slackData?.ignoreChannels?.includes(channel) && channelActive.includes(provider?.name?.toLowerCase() || '')) {
-    setSlackData((prev) => ({
+  if (!providerData?.ignoreChannels?.includes(channel) && channelActive.includes(provider?.name?.toLowerCase() || '')) {
+    setProviderData((prev) => ({
       ...prev,
       ignoreChannels: [...(prev.ignoreChannels || []), channel],
     }));
@@ -176,8 +177,8 @@ const IgnoreSetting = ({
 };
 
 const selectKeyword = (topic: string) => {
-  if (!slackData?.ignoreKeywords?.includes(topic) && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
-    setSlackData((prev) => ({
+  if (!providerData?.ignoreKeywords?.includes(topic) && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
+    setProviderData((prev) => ({
       ...prev,
       ignoreKeywords: [...(prev.ignoreKeywords || []), topic],
     }));
@@ -190,12 +191,12 @@ const selectKeyword = (topic: string) => {
 
   const removeItem = (type: "channel" | "keyword", value: string) => {
     if (type === "channel" && channelActive.includes(provider?.name?.toLowerCase() || '')) {
-      setSlackData((prev) => ({
+      setProviderData((prev) => ({
         ...prev,
         ignoreChannels: prev.ignoreChannels?.filter((item) => item !== value),
       }));
     } else if (type === "keyword" && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
-      setSlackData((prev) => ({
+      setProviderData((prev) => ({
         ...prev,
         ignoreKeywords: prev.ignoreKeywords?.filter((item) => item !== value),
       }));
@@ -220,13 +221,13 @@ const selectKeyword = (topic: string) => {
   }, []);
 
   const handleIncludeInSummary = (status: boolean) => {
-    setSlackData((prev) => ({ ...prev, includeIgnoredInSummary: status }));
+    setProviderData((prev) => ({ ...prev, includeIgnoredInSummary: status }));
   };
 
   const renderSelectedItems = () => {
-    if (selectedTab === "channel" && slackData?.ignoreChannels?.length > 0 && channelActive.includes(provider?.name?.toLowerCase() || '')) {
+    if (selectedTab === "channel" && providerData?.ignoreChannels?.length > 0 && channelActive.includes(provider?.name?.toLowerCase() || '')) {
       const channels: PriorityChannels[] = slackChannels?.filter((channel) =>
-        slackData?.ignoreChannels?.includes(channel?.name)
+        providerData?.ignoreChannels?.includes(channel?.name)
       );
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
@@ -251,10 +252,10 @@ const selectKeyword = (topic: string) => {
           ))}
         </div>
       );
-    } else if (selectedTab === "keyword" && slackData?.ignoreKeywords?.length > 0 && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
+    } else if (selectedTab === "keyword" && providerData?.ignoreKeywords?.length > 0 && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
-          {slackData?.ignoreKeywords?.map((keyword) => (
+          {providerData?.ignoreKeywords?.map((keyword) => (
             <div
               key={keyword}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-glass-blue/10 border border-glass-blue/40 text-sm text-off-white"
@@ -351,7 +352,7 @@ const selectKeyword = (topic: string) => {
           )}
         </button>}
       </div>
-      {loadingIgnore ? (
+      {loadingIgnore || loadingProviderData ? (
         <FancyLoader />
       ) : (
         <div className="space-y-6">
@@ -463,7 +464,7 @@ const selectKeyword = (topic: string) => {
           <div className="flex items-center space-x-2 pt-2">
             <Switch
               id="include-in-summary"
-              checked={slackData?.includeIgnoredInSummary}
+              checked={providerData?.includeIgnoredInSummary}
               onCheckedChange={handleIncludeInSummary}
               className="data-[state=checked]:bg-glass-blue"
             />
