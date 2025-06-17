@@ -26,13 +26,13 @@ const BriefsList = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<string>("");
-  const [briefs, setBriefs] = useState<Summary[] | null>(null);
+  const [briefs, setBriefs] = useState<Summary[]>([]);
+  const [pendingData, setPendingData] = useState<PendingData[]>([]);
   const { call } = useApi();
   const [uiState, setUiState] = useState({
     selectedBrief: null,
     briefModalOpen: false
-  })
-  const [pendingData, setPendingData] = useState<PendingData[] | null>(null);
+  });
   const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -56,33 +56,38 @@ const BriefsList = () => {
   // }, []);
 
   const handleClick = (message: string) => {
-    setOpen(true);
+    if (!message) return;
     setMessage(message);
+    setOpen(true);
   };
   
   const handleClose = () => {
     setOpen(false);
   }
 
-  const getBriefs = useCallback(async (page = 1): Promise<void> => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const getBriefs = useCallback(
+    async (page = 1): Promise<void> => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
 
-    const response = await call("get", `/api/summaries?page=${page}`, {
-      showToast: true,
-      toastTitle: "Failed to fetch summaries",
-      toastDescription: "Unable to load briefs. Please try again.",
-    });
+      const response = await call("get", `/api/summaries?page=${page}`, {
+        showToast: true,
+        toastTitle: "Failed to fetch summaries",
+        toastDescription: "Unable to load briefs. Please try again.",
+      });
 
-    if (response) {
-      setBriefs(response?.data);
-
-      setPagination((prev) => ({
-        ...prev,
-        currentPage: response?.meta?.current_page || 1,
-        totalPages: response?.meta?.last_page || 1,
-      }));
-    }
-  }, [call]);
+      if (response?.data && Array.isArray(response.data)) {
+        setBriefs(response.data);
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response?.meta?.current_page || 1,
+          totalPages: response?.meta?.last_page || 1,
+        }));
+      } else {
+        setBriefs([]);
+      }
+    },
+    [call]
+  );
 
   const getBrief = useCallback(
     async (briefId: number): Promise<false | Summary> => {
@@ -93,7 +98,13 @@ const BriefsList = () => {
         returnOnFailure: false, 
       });
 
-      return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
+      if (!response?.data) return false;
+
+      const status = response.data.status;
+      if (status === "success" || status === "failed") {
+        return response.data;
+      }
+      return false;
     },
     [call]
   );
@@ -115,52 +126,46 @@ const BriefsList = () => {
   }, [briefs, setPendingData]);
 
   useEffect(() => {
-      // Clear existing intervals first
-      intervalIDsRef.current.forEach(clearInterval);
-      intervalIDsRef.current = [];
-  
-      if (!pendingData?.length) return;
-  
-      const ids = pendingData.map((item) => {
-        const intervalId = setInterval(async () => {
+    intervalIDsRef.current.forEach((id) => id && clearInterval(id));
+    intervalIDsRef.current = [];
+
+    if (!pendingData?.length) return;
+
+    const ids = pendingData.map((item) => {
+      const intervalId = setInterval(async () => {
+        try {
           const data = await getBrief(item.id);
-  
           if (data) {
-            setPendingData(
-              (prev) => prev?.filter((data) => data.id !== item.id) ?? []
+            setPendingData((prev) => prev?.filter((d) => d.id !== item.id) ?? []);
+            setBriefs((prev) =>
+              prev ? prev.map((b) => (b.id === item.id ? data : b)) : []
             );
-  
-            setBriefs((prev) => {
-              if (!prev) return null;
-              return prev?.map((brief) => brief.id === item.id ? data : brief) || null;
-            });
-  
             clearInterval(intervalId);
-  
-            intervalIDsRef.current = intervalIDsRef.current?.filter(
-              (id) => id !== intervalId
-            );
+            intervalIDsRef.current = intervalIDsRef.current.filter((id) => id !== intervalId);
           }
-        }, 3000);
-  
-        return intervalId;
-      });
-  
-      intervalIDsRef.current = ids;
-  
-      return () => {
-        intervalIDsRef.current.forEach(clearInterval);
-        intervalIDsRef.current = [];
-      };
-    }, [pendingData, getBrief]);
+        } catch (error) {
+          console.error(`Error polling brief ${item.id}:`, error);
+        }
+      }, 3000);
+      return intervalId;
+    });
+
+    intervalIDsRef.current = ids;
+
+    return () => {
+      intervalIDsRef.current.forEach((id) => clearInterval(id));
+      intervalIDsRef.current = [];
+    };
+  }, [pendingData, getBrief]);
 
   const handleOpenBrief = useCallback((briefId: number) => {
+    if (!briefId) return;
     navigate(`/dashboard/briefs/${briefId}`);
   }, [navigate]);
 
-  const filteredBriefs = briefs?.filter(brief =>
-    brief.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    brief.summary.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredBriefs = briefs?.filter((brief) =>
+    (brief.title?.toLowerCase() ?? "").includes(searchQuery.toLowerCase()) ||
+    (brief.summary?.toLowerCase() ?? "").includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -225,7 +230,7 @@ const BriefsList = () => {
                     <React.Fragment key={brief.id}>
                       <div 
                         className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
-                        onClick={isClickable ? () => handleOpenBrief(id) : null}
+                        onClick={isClickable ? () => handleOpenBrief(id) : undefined}
                       >
                         <div className="flex items-center flex-1">
                           <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />

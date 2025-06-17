@@ -1,7 +1,8 @@
-import { useCallback } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import Http from "@/Http";
+
 const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface ApiCallOptions {
@@ -9,9 +10,9 @@ interface ApiCallOptions {
   toastTitle?: string;
   toastDescription?: string;
   toastVariant?: "default" | "destructive";
-  body?: any;
-  returnOnFailure?: boolean; // whether to return false or throw
-  headers?: any;
+  body?: unknown;
+  returnOnFailure?: boolean;
+  headers?: Record<string, string>;
 }
 
 export function useApi() {
@@ -19,21 +20,30 @@ export function useApi() {
   const { toast } = useToast();
 
   const call = useCallback(
-    async (
+    async <T = any>(
       method: "get" | "post" | "put" | "delete",
       endpoint: string,
       options: ApiCallOptions = {}
-    ) => {
-      try {
-        if (!BaseURL) {
-          throw new Error("VITE_API_HOST environment variable is missing");
+    ): Promise<T | null | false> => {
+      if (!BaseURL) {
+        console.error("Missing VITE_API_HOST environment variable");
+        if (options.showToast) {
+          toast({
+            title: "Configuration Error",
+            variant: "destructive",
+            description: "API base URL is not configured properly.",
+          });
         }
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/");
-          return null;
-        }
+        return options.returnOnFailure === false ? false : null;
+      }
 
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/");
+        return null;
+      }
+
+      try {
         Http.setBearerToken(token);
 
         const response = await Http.callApi(
@@ -45,18 +55,25 @@ export function useApi() {
 
         return response?.data ?? null;
       } catch (error: any) {
+        if (error?.name === "AbortError") {
+          console.log("API call aborted:", endpoint);
+          return null;
+        }
+
         console.error("API error:", error);
-        if (options?.showToast) {
+
+        if (options.showToast) {
           toast({
             title: options.toastTitle || "API Error",
             variant: options.toastVariant || "default",
             description:
               error?.response?.data?.message ||
               error?.message ||
-              options?.toastDescription ||
+              options.toastDescription ||
               "Something went wrong.",
           });
         }
+
         return options.returnOnFailure === false ? false : null;
       }
     },
