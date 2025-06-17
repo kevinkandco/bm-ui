@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage, isSupported } from "firebase/messaging";
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported
+} from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-lEbLkQN0dic-2hPT5I4eIdGVAePwwQI",
@@ -15,10 +20,31 @@ const app = initializeApp(firebaseConfig);
 
 let messaging: ReturnType<typeof getMessaging> | null = null;
 
-isSupported().then((supported) => {
+// Async setup
+const initMessaging = async () => {
+  const supported = await isSupported();
   if (supported) {
     messaging = getMessaging(app);
   }
-});
+};
 
-export { app, messaging, getToken, onMessage };
+initMessaging();
+
+const onMessageListener = async (callback: (payload: any) => void) => {
+  const supported = await isSupported();
+  if (!supported) {
+    console.warn("Messaging not supported");
+    return;
+  }
+
+  if (!messaging) {
+    messaging = getMessaging(app);
+  }
+
+  onMessage(messaging, (payload) => {
+    console.log("Message received. ", payload);
+    callback(payload);
+  });
+};
+
+export { app, messaging, getToken, onMessageListener };

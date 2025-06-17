@@ -8,7 +8,7 @@ import { ThemeProvider } from "./hooks/use-theme";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ProtectedOnboardingRoute from "./components/auth/ProtectedOnboardingRoute";
 import { useIsMobile } from "./hooks/use-mobile";
-
+import { onMessageListener } from "./firebase/firebase";
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
   return lazy(() =>
@@ -71,7 +71,7 @@ const MacRouteGuard = memo(() => {
 MacRouteGuard.displayName = "MacRouteGuard";
 
 const App = () => {
-  
+
   useEffect(() => {
     navigator.serviceWorker
       .register("/firebase-messaging-sw.js")
@@ -81,6 +81,7 @@ const App = () => {
       .catch((err) => {
         console.error("Service Worker registration failed:", err);
       });
+      onMessageListener((payload) => console.log(payload));
   }, []);
 
   return (
