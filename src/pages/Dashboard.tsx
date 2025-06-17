@@ -120,15 +120,15 @@ const Dashboard = () => {
       [call]
     );
 
-    const handleLoginSuccess = async () => {
-      // After login logic
+    const handleLoginSuccess = useCallback(async () => {
       const token = await requestNotificationPermission();
 
       if (token) {
-        // Send this token to your backend if needed
-        console.log("User FCM token saved:", token);
+        await call("get", `/api/store-token`, {
+          body: { token },
+        });
       }
-    };
+    }, [call]);
 
     useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
@@ -147,7 +147,7 @@ const Dashboard = () => {
     }
     fetchDashboardData();
     getRecentBriefs(); 
-  }, [searchParams, getRecentBriefs, fetchDashboardData]);
+  }, [searchParams, getRecentBriefs, fetchDashboardData, handleLoginSuccess]);
 
   useEffect(() => {
       if (!recentBriefs) return;
