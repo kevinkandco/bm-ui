@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -159,57 +158,25 @@ const HomeView = ({
   }, [navigate]);
 
   // Sample brief data
-  const recentBriefs = [{
-    id: 1,
-    name: "Morning Brief",
-    timeCreated: "Today, 8:00 AM",
-    timeRange: "5:00 AM - 8:00 AM",
-    slackMessages: {
-      total: 12,
-      fromPriorityPeople: 3
-    },
-    emails: {
-      total: 5,
-      fromPriorityPeople: 2
-    },
-    actionItems: 4,
-    hasTranscript: true
-  }, {
-    id: 2,
-    name: "Midday Brief",
-    timeCreated: "Today, 12:30 PM",
-    timeRange: "8:00 AM - 12:30 PM",
-    slackMessages: {
-      total: 18,
-      fromPriorityPeople: 5
-    },
-    emails: {
-      total: 8,
-      fromPriorityPeople: 3
-    },
-    actionItems: 6,
-    hasTranscript: true
-  }, {
-    id: 3,
-    name: "Evening Brief",
-    timeCreated: "Yesterday, 6:00 PM",
-    timeRange: "12:30 PM - 6:00 PM",
-    slackMessages: {
-      total: 14,
-      fromPriorityPeople: 2
-    },
-    emails: {
-      total: 6,
-      fromPriorityPeople: 1
-    },
-    actionItems: 3,
-    hasTranscript: false
-  }];
+  const recentBriefs = [
+    // ... keep existing code (brief data array)
+  ];
 
   // Sample upcoming brief data
   const upcomingBrief = {
     name: "Midday Brief",
     scheduledTime: "Today at 12:30 PM"
+  };
+
+  // Latest brief (most recent)
+  const latestBrief = {
+    id: 1,
+    name: "Morning Brief",
+    timeCreated: "Today, 8:00 AM",
+    timeRange: "5:00 AM - 8:00 AM",
+    slackMessages: { total: 12, fromPriorityPeople: 3 },
+    emails: { total: 5, fromPriorityPeople: 2 },
+    actionItems: 4
   };
 
   // Total briefs ever created (this would come from your backend/state in a real app)
@@ -340,24 +307,54 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Upcoming Brief Section */}
+        {/* Upcoming Brief Section - More faded */}
         <div className="mb-3 flex-shrink-0">
-          <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
+          <div className="bg-deep-blue/30 border border-light-gray-text/10 rounded-xl p-3 opacity-60">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-white-text">Upcoming Brief</h3>
-              <Clock className="w-4 h-4 text-primary-teal" />
+              <h3 className="text-sm font-medium text-white-text/70">Upcoming Brief</h3>
+              <Clock className="w-4 h-4 text-primary-teal/70" />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-light-gray-text">{upcomingBrief.name}</p>
-                <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
+                <p className="text-xs text-light-gray-text/70">{upcomingBrief.name}</p>
+                <p className="text-xs text-light-gray-text/70">{upcomingBrief.scheduledTime}</p>
               </div>
               <Button 
                 onClick={handleGetBriefedNow}
                 size="sm"
-                className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto"
+                variant="outline"
+                className="border-primary-teal/60 text-primary-teal/80 hover:border-primary-teal hover:text-primary-teal rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
               >
-                Brief Me Now
+                <Zap className="w-3 h-3 mr-1" />
+                Get Briefed Now
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Latest Brief Section */}
+        <div className="mb-3 flex-shrink-0">
+          <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium text-white-text">Latest Brief</h3>
+              <FileText className="w-4 h-4 text-primary-teal" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-light-gray-text">{latestBrief.name}</p>
+                <p className="text-xs text-light-gray-text">{latestBrief.timeCreated}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-xs text-light-gray-text">{latestBrief.slackMessages.total} Slack</span>
+                  <span className="text-xs text-light-gray-text">{latestBrief.emails.total} Emails</span>
+                  <span className="text-xs text-light-gray-text">{latestBrief.actionItems} Actions</span>
+                </div>
+              </div>
+              <Button 
+                onClick={() => onOpenBrief(latestBrief.id)}
+                size="sm"
+                className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto ml-2"
+              >
+                View
               </Button>
             </div>
           </div>
@@ -402,57 +399,16 @@ const HomeView = ({
           </DropdownMenu>
         </div>
 
-        {/* Mobile Recent Briefs - Below action buttons - Very compact */}
+        {/* View All Briefs Button */}
         <div className="mb-2 flex-shrink-0">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-white-text">Recent Briefs</h2>
-            <Button onClick={handleViewAllBriefs} variant="ghost" size="sm" className="text-light-gray-text text-xs">
-              View All
-            </Button>
-          </div>
-          <ScrollArea className="w-full">
-            <div className="flex gap-2 pb-2">
-              {recentBriefs.map(brief => <div key={brief.id} className="flex-none w-48 border border-light-gray-text/20 rounded-xl p-2 bg-deep-blue/30">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-4 h-4 rounded-full bg-surface-raised/50 flex items-center justify-center">
-                      <FileText className="h-2 w-2 text-primary-teal" />
-                    </div>
-                    <button onClick={() => handlePlayBrief(brief.id)} className="w-4 h-4 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
-                      {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
-                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '0ms'
-                    }} />
-                          <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '150ms'
-                    }} />
-                          <div className="w-0.5 h-1.5 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '300ms'
-                    }} />
-                        </div> : <Play className="h-1.5 w-1.5 text-primary-teal" />}
-                    </button>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-xs font-semibold text-white-text truncate">
-                        {brief.name}
-                      </h3>
-                      <p className="text-xs text-light-gray-text truncate">
-                        {brief.timeCreated}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-1 mb-1">
-                    <div className="flex items-center justify-between text-xs text-light-gray-text">
-                      <span>{brief.slackMessages.total} Slack</span>
-                      <span>{brief.emails.total} Emails</span>
-                      <span>{brief.actionItems} Actions</span>
-                    </div>
-                  </div>
-                  <Button onClick={() => onOpenBrief(brief.id)} size="sm" className="w-full bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs py-0.5 h-6">
-                    View Brief
-                  </Button>
-                </div>)}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+          <Button 
+            onClick={handleViewAllBriefs} 
+            variant="outline"
+            className="w-full bg-deep-blue/30 border border-light-gray-text/20 text-light-gray-text rounded-xl px-4 py-3 hover:border-light-gray-text/40 hover:text-white-text"
+          >
+            <Archive className="w-4 h-4 mr-2" />
+            View All Briefs ({totalBriefs})
+          </Button>
         </div>
 
         <style>{`
