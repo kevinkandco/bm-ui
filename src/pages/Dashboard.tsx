@@ -124,7 +124,7 @@ const Dashboard = () => {
       const token = await requestNotificationPermission();
 
       if (token) {
-        await call("get", `/api/store-token`, {
+        await call("post", `/api/store-token`, {
           body: { token },
         });
       }
