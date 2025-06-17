@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,8 @@ const HomeView = ({
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [showSchedulingModal, setShowSchedulingModal] = useState(false);
   const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState<'active' | 'focus' | 'offline'>('active');
 
   // Sample connected integrations
   const connectedIntegrations = [
@@ -109,6 +112,34 @@ const HomeView = ({
   const handleTeamInterest = useCallback(() => {
     setWaitlistStatus('added');
   }, []);
+
+  // Status management handlers
+  const handleStatusChange = useCallback((status: 'focus' | 'offline') => {
+    setCurrentStatus(status);
+    setShowStatusModal(false);
+    
+    if (status === 'focus') {
+      onStartFocusMode();
+      toast({
+        title: "Focus Mode Activated",
+        description: "You won't receive notifications unless they're marked as urgent"
+      });
+    } else if (status === 'offline') {
+      onSignOffForDay();
+      toast({
+        title: "Offline Mode Activated", 
+        description: "Brief-me will monitor but won't send notifications"
+      });
+    }
+  }, [onStartFocusMode, onSignOffForDay, toast]);
+
+  const handleExitStatus = useCallback(() => {
+    setCurrentStatus('active');
+    toast({
+      title: "Status Reset",
+      description: "You're back to active monitoring"
+    });
+  }, [toast]);
 
   // Profile dropdown handlers
   const handleProfileClick = useCallback(() => {
@@ -248,7 +279,7 @@ const HomeView = ({
           <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Central Audio Wave - Full Width with reduced padding */}
+        {/* Central Audio Wave with Status - Full Width with reduced padding */}
         <div className="flex-1 flex flex-col items-center justify-center mx-0 px-0 py-2">
           <div className="w-full px-8">
             <div className="w-full h-12 flex items-center justify-center gap-1">
@@ -267,6 +298,32 @@ const HomeView = ({
               ))}
             </div>
             <div className="text-center mt-3">
+              {/* Status indicator */}
+              {currentStatus !== 'active' && (
+                <div className="mb-2 flex items-center justify-center gap-2">
+                  <div className="flex items-center gap-1 px-3 py-1 bg-deep-blue border border-light-gray-text/40 rounded-full">
+                    {currentStatus === 'focus' ? (
+                      <>
+                        <Focus className="w-3 h-3 text-primary-teal" />
+                        <span className="text-xs text-white-text">Focus Mode</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clock className="w-3 h-3 text-orange-400" />
+                        <span className="text-xs text-white-text">Offline</span>
+                      </>
+                    )}
+                  </div>
+                  <Button 
+                    onClick={handleExitStatus}
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2 text-xs text-light-gray-text hover:text-white-text"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              )}
               <p className="text-white text-sm mb-2">brief-me is monitoring</p>
               <div className="flex flex-wrap justify-center gap-2 text-xs text-light-gray-text">
                 {connectedIntegrations.map((integration, index) => (
@@ -283,35 +340,66 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Action Buttons - Updated to separate status buttons */}
+        {/* Upcoming Brief Section */}
+        <div className="mb-3 flex-shrink-0">
+          <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium text-white-text">Upcoming Brief</h3>
+              <Clock className="w-4 h-4 text-primary-teal" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-light-gray-text">{upcomingBrief.name}</p>
+                <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
+              </div>
+              <Button 
+                onClick={handleGetBriefedNow}
+                size="sm"
+                className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto"
+              >
+                Brief Me Now
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons - Updated with new structure */}
         <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0 my-[6px] py-[3px]">
-          <button onClick={onOpenBriefModal} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
-                       flex items-center justify-center transition-all duration-200
-                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95">
-            <FileText className="w-4 h-4 text-light-gray-text" />
-          </button>
+          <Button 
+            onClick={onToggleCatchMeUp}
+            className="flex-1 bg-primary-teal text-white-text rounded-xl px-6 py-3 hover:bg-accent-green"
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            Brief Me
+          </Button>
 
-          <button onClick={onStartFocusMode} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
-                       flex items-center justify-center transition-all duration-200
-                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95">
-            <Focus className="w-4 h-4 text-light-gray-text" />
-          </button>
-
-          <button onClick={onSignOffForDay} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
-                       flex items-center justify-center transition-all duration-200
-                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95">
-            <Clock className="w-4 h-4 text-light-gray-text" />
-          </button>
-
-          <button onClick={onToggleCatchMeUp} className="w-12 h-12 rounded-full bg-deep-blue border border-light-gray-text/40 
-                       flex items-center justify-center transition-all duration-200
-                       hover:border-light-gray-text/60 hover:bg-deep-blue/90
-                       active:scale-95">
-            <Zap className="w-4 h-4 text-light-gray-text" />
-          </button>
+          <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline"
+                className="flex-1 bg-deep-blue border border-light-gray-text/40 text-light-gray-text rounded-xl px-6 py-3 hover:border-light-gray-text/60"
+              >
+                Set Status
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-dark-navy border-light-gray-text/20 w-48">
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('focus')}
+                className="text-white-text hover:bg-deep-blue/50"
+              >
+                <Focus className="mr-2 h-4 w-4" />
+                Focus Mode
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('offline')}
+                className="text-white-text hover:bg-deep-blue/50"
+              >
+                <Clock className="mr-2 h-4 w-4" />
+                Offline Mode
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Mobile Recent Briefs - Below action buttons - Very compact */}
@@ -377,6 +465,15 @@ const HomeView = ({
             }
           }
         `}</style>
+
+        {/* Enhanced Catch Me Up Modal with Scheduling Options */}
+        <CatchMeUpWithScheduling
+          open={showSchedulingModal}
+          onClose={handleCloseSchedulingModal}
+          onGenerateSummary={handleGenerateSummaryWithScheduling}
+          upcomingBriefName={upcomingBrief.name}
+          upcomingBriefTime={upcomingBrief.scheduledTime}
+        />
       </div>;
   }
 
