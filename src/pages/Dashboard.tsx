@@ -17,6 +17,7 @@ import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import { enrichBriefsWithStats } from "@/lib/utils";
 import FocusMode from "@/components/dashboard/FocusMode";
+import { requestNotificationPermission } from "@/firebase/fcmService";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -119,6 +120,16 @@ const Dashboard = () => {
       [call]
     );
 
+    const handleLoginSuccess = async () => {
+      // After login logic
+      const token = await requestNotificationPermission();
+
+      if (token) {
+        // Send this token to your backend if needed
+        console.log("User FCM token saved:", token);
+      }
+    };
+
     useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
 
@@ -127,6 +138,7 @@ const Dashboard = () => {
       const url = new URL(window.location.href);
       url.searchParams.delete("token");
       url.searchParams.delete("provider");
+      handleLoginSuccess();
       window.history.replaceState(
         {},
         document.title,
