@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Clock, Headphones, Zap, Plane, X, Sun } from "lucide-react";
+import { Clock, Headphones, Zap, Plane, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   onToggleCatchMeUp?: () => void;
@@ -110,12 +111,9 @@ const StatusTimer = React.memo(({
               </div>
               
               <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-surface-raised/50 border border-border-subtle text-text-primary hover:bg-surface-raised">
-                  <Sun className="h-5 w-5" />
-                </Button>
                 <Button onClick={onExitFocusMode} variant="outline" size="default" className="bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised rounded-full px-6">
                   <X className="h-4 w-4 mr-2" /> 
-                  Exit
+                  End focus mode
                 </Button>
               </div>
             </div>
