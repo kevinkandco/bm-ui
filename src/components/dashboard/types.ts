@@ -10,6 +10,19 @@ export interface BriefSchedules {
   days?: string[];
 }
 
+export interface WeekendBrief{
+    enabled: boolean;
+    deliveryMethod: "email" | "audio" | "both";
+    deliveryTime: string;
+    weekendDays: string[];
+    coveragePeriod: {
+      startDay: string;
+      startTime: string;
+      endDay: string;
+      endTime: string;
+    };
+  };
+
 export interface UserSchedule {
   workday_start: string;
   workday_end: string;

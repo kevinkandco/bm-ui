@@ -1,3 +1,4 @@
+import { WeekendBrief } from './../components/dashboard/types';
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
 import { PriorityPerson } from "@/components/onboarding/priority-people/types";
 import { useState, useCallback, useEffect } from "react";
@@ -21,6 +22,9 @@ export interface UserData {
   // Brief preferences
   briefSchedules: BriefSchedules[];
 
+  // Weekend brief preferences
+  weekendBrief: WeekendBrief;
+  
   // Daily schedule
   dailySchedule: DailySchedule;
 
@@ -63,7 +67,21 @@ export const defaultUserData: UserData = {
       days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     },
   ],
-
+  
+  // Weekend brief preferences
+  weekendBrief: {
+    enabled: false,
+    deliveryMethod: "email",
+    deliveryTime: "09:00",
+    weekendDays: ["Monday"],
+    coveragePeriod: {
+      startDay: "Friday",
+      startTime: "17:00",
+      endDay: "Monday",
+      endTime: "09:00"
+    }
+  },
+  
   // Daily schedule
   dailySchedule: {
     workdayStart: "09:00",

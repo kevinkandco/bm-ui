@@ -16,6 +16,13 @@ import { useApi } from "@/hooks/useApi";
 import { getTimePeriod } from "@/lib/utils";
 import moment from "moment";
 import FancyLoader from "./modal/FancyLoader";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CustomBrief {
   id: string;
@@ -23,6 +30,19 @@ interface CustomBrief {
   time: string;
   days: string[];
   enabled: boolean;
+}
+
+interface WeekendBrief {
+  enabled: boolean;
+  deliveryMethod: "email" | "audio" | "both";
+  deliveryTime: string;
+  weekendDays: string[];
+  coveragePeriod: {
+    startDay: string;
+    startTime: string;
+    endDay: string;
+    endTime: string;
+  };
 }
 
 const BriefConfigurationSection = () => {
@@ -100,8 +120,23 @@ const BriefConfigurationSection = () => {
     days: [] as string[]
   });
 
+  // Weekend brief state
+  const [weekendBrief, setWeekendBrief] = useState<WeekendBrief>({
+    enabled: false,
+    deliveryMethod: "email",
+    deliveryTime: "09:00",
+    weekendDays: ["Monday"],
+    coveragePeriod: {
+      startDay: "Friday",
+      startTime: "17:00",
+      endDay: "Monday",
+      endTime: "09:00"
+    }
+  });
+
   const weekDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
   const weekDayLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   const handleSaveSettings = () => {
     toast({
@@ -222,6 +257,20 @@ const BriefConfigurationSection = () => {
   };
 
   // const hasMultipleTags = tags.length > 1;
+  // Weekend brief functions
+  const updateWeekendBrief = (updates: Partial<WeekendBrief>) => {
+    setWeekendBrief(prev => ({ ...prev, ...updates }));
+  };
+
+  const toggleWeekendDay = (day: string) => {
+    const updatedDays = weekendBrief.weekendDays.includes(day)
+      ? weekendBrief.weekendDays.filter(d => d !== day)
+      : [...weekendBrief.weekendDays, day];
+    
+    updateWeekendBrief({ weekendDays: updatedDays });
+  };
+
+  const hasMultipleTags = tags.length > 1;
 
   return (
     <div className="space-y-8">
@@ -277,6 +326,7 @@ const BriefConfigurationSection = () => {
 
           {scheduleType === "custom" && (
             <div className="mt-6 space-y-6">
+              {/* ... keep existing code (Days and Default Brief Times sections) */}
               <div className="bg-white/5 rounded-lg border border-white/10 p-4">
                 <h4 className="text-sm font-medium text-text-primary mb-4 flex items-center">
                   <Calendar className="h-4 w-4 mr-2" />
@@ -381,8 +431,144 @@ const BriefConfigurationSection = () => {
                 </div>
               </div>
 
+              {/* Weekend Brief Configuration */}
+              <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-medium text-text-primary flex items-center">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Weekend Brief
+                  </h4>
+                  <Switch 
+                    checked={weekendBrief.enabled}
+                    onCheckedChange={(checked) => updateWeekendBrief({ enabled: checked })}
+                  />
+                </div>
+                <p className="text-xs text-text-secondary mb-4">
+                  Get a summary covering your weekend period
+                </p>
+
+                {weekendBrief.enabled && (
+                  <div className="space-y-4 pt-4 border-t border-white/10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-xs text-text-secondary">Delivery Method</Label>
+                        <Select value={weekendBrief.deliveryMethod} onValueChange={(value: "email" | "audio" | "both") => 
+                          updateWeekendBrief({ deliveryMethod: value })
+                        }>
+                          <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-8">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="email">Email</SelectItem>
+                            <SelectItem value="audio">Audio</SelectItem>
+                            <SelectItem value="both">Both</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-text-secondary">Delivery Time</Label>
+                        <Input
+                          type="time"
+                          value={weekendBrief.deliveryTime}
+                          onChange={(e) => updateWeekendBrief({ deliveryTime: e.target.value })}
+                          className="bg-white/5 border-white/20 text-text-primary h-8"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-xs text-text-secondary">Delivery Days</Label>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {["Monday", "Saturday", "Sunday"].map((day) => (
+                          <Button
+                            key={day}
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className={`h-6 px-2 text-xs ${
+                              weekendBrief.weekendDays.includes(day)
+                                ? 'bg-primary/20 text-primary border-primary/40'
+                                : 'bg-white/5 text-text-secondary border-white/20'
+                            }`}
+                            onClick={() => toggleWeekendDay(day)}
+                          >
+                            {day.slice(0, 3)}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-xs text-text-secondary">Coverage Period</Label>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-1">
+                        <div>
+                          <Label className="text-xs text-text-secondary">From Day</Label>
+                          <Select value={weekendBrief.coveragePeriod.startDay} onValueChange={(value) => 
+                            updateWeekendBrief({ 
+                              coveragePeriod: { ...weekendBrief.coveragePeriod, startDay: value }
+                            })
+                          }>
+                            <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-7 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ALL_DAYS.map(day => (
+                                <SelectItem key={day} value={day}>{day}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-text-secondary">From Time</Label>
+                          <Input
+                            type="time"
+                            value={weekendBrief.coveragePeriod.startTime}
+                            onChange={(e) => updateWeekendBrief({ 
+                              coveragePeriod: { ...weekendBrief.coveragePeriod, startTime: e.target.value }
+                            })}
+                            className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-text-secondary">To Day</Label>
+                          <Select value={weekendBrief.coveragePeriod.endDay} onValueChange={(value) => 
+                            updateWeekendBrief({ 
+                              coveragePeriod: { ...weekendBrief.coveragePeriod, endDay: value }
+                            })
+                          }>
+                            <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-7 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ALL_DAYS.map(day => (
+                                <SelectItem key={day} value={day}>{day}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-text-secondary">To Time</Label>
+                          <Input
+                            type="time"
+                            value={weekendBrief.coveragePeriod.endTime}
+                            onChange={(e) => updateWeekendBrief({ 
+                              coveragePeriod: { ...weekendBrief.coveragePeriod, endTime: e.target.value }
+                            })}
+                            className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+                          />
+                        </div>
+                      </div>
+                      <p className="text-xs text-text-secondary mt-1">
+                        Default: Friday 5:00 PM to Monday 9:00 AM
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Custom Brief Schedules */}
               <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                {/* ... keep existing code (custom brief schedules) */}
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-sm font-medium text-text-primary flex items-center">
                     <Plus className="h-4 w-4 mr-2" />
@@ -399,7 +585,6 @@ const BriefConfigurationSection = () => {
                   </Button>
                 </div>
 
-                {/* Add new custom brief form */}
                 {isAddingCustom && (
                   <div className="mb-4 p-3 bg-white/5 rounded border border-white/20">
                     <div className="space-y-3">
@@ -459,7 +644,6 @@ const BriefConfigurationSection = () => {
                   </div>
                 )}
 
-                {/* Custom briefs list */}
                 <div className="space-y-3">
                   {customBriefs.map((brief) => (
                     <div key={brief.id} className="flex items-center justify-between p-3 bg-white/5 rounded border border-white/20">
