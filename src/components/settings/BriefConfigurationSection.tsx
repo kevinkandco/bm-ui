@@ -361,17 +361,17 @@ const BriefConfigurationSection = () => {
                   <Clock className="h-4 w-4 mr-2" />
                   Default Brief Times
                 </h4>
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       <div>
-                        <Label htmlFor="time-morning" className="text-text-primary">Morning Brief</Label>
-                        <div className="flex items-center gap-2 mt-1">
+                        <Label htmlFor="time-morning" className="text-sm text-white/90">Morning Brief</Label>
+                        <div className="mt-1">
                           <Input
                             type="time"
                             value={times.morning.time}
                             onChange={(e) => updateTimeValue("morning", e.target.value)}
-                            className="w-24 h-7 text-xs bg-white/5 border-white/20"
+                            className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
                           />
                         </div>
                       </div>
@@ -379,22 +379,22 @@ const BriefConfigurationSection = () => {
                     <Switch
                       id="time-morning"
                       checked={times.morning.enabled}
-                      onCheckedChange={() => toggleTime(times.morning.time ,"morning")}
+                      onCheckedChange={() => toggleTime(times.morning.time, "morning")}
                     />
                   </div>
 
                   <Separator className="bg-white/10" />
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       <div>
-                        <Label htmlFor="time-midday" className="text-text-primary">Midday Brief</Label>
-                        <div className="flex items-center gap-2 mt-1">
+                        <Label htmlFor="time-midday" className="text-sm text-white/90">Midday Brief</Label>
+                        <div className="mt-1">
                           <Input
                             type="time"
                             value={times.midday.time}
                             onChange={(e) => updateTimeValue("midday", e.target.value)}
-                            className="w-24 h-7 text-xs bg-white/5 border-white/20"
+                            className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
                           />
                         </div>
                       </div>
@@ -409,15 +409,15 @@ const BriefConfigurationSection = () => {
                   <Separator className="bg-white/10" />
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       <div>
-                        <Label htmlFor="time-evening" className="text-text-primary">Evening Brief</Label>
-                        <div className="flex items-center gap-2 mt-1">
+                        <Label htmlFor="time-evening" className="text-sm text-white/90">Evening Brief</Label>
+                        <div className="mt-1">
                           <Input
                             type="time"
                             value={times.evening.time}
                             onChange={(e) => updateTimeValue("evening", e.target.value)}
-                            className="w-24 h-7 text-xs bg-white/5 border-white/20"
+                            className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
                           />
                         </div>
                       </div>
@@ -429,6 +429,7 @@ const BriefConfigurationSection = () => {
                     />
                   </div>
                 </div>
+
               </div>
 
               {/* Weekend Brief Configuration */}
