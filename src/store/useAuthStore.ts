@@ -46,6 +46,13 @@ const useAuthStore = create(
 
 			logout: () => {
 				localStorage.clear();
+				if ("caches" in window) {
+					caches.keys().then((names) => {
+						for (const name of names) {
+						caches.delete(name);
+						}
+					});
+				}
 				set({ user: null, token: null, isAuthenticated: false });
 			},
 
