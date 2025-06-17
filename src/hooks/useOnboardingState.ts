@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useMemo } from 'react';
 
 export interface UserData {
@@ -14,6 +15,13 @@ export interface UserData {
   ignoreChannels: string[];
   ignoreKeywords: string[];
   includeIgnoredInSummary: boolean;
+  
+  // Interrupt rules
+  interruptRules: {
+    contacts: any[];
+    keywords: string[];
+    systemAlerts: string[];
+  };
   
   // Brief preferences
   briefSchedules: {
@@ -67,6 +75,13 @@ export const defaultUserData: UserData = {
   ignoreKeywords: [],
   includeIgnoredInSummary: false,
   
+  // Interrupt rules
+  interruptRules: {
+    contacts: [],
+    keywords: [],
+    systemAlerts: []
+  },
+  
   // Brief preferences
   briefSchedules: [
     {
@@ -110,8 +125,8 @@ export function useOnboardingState() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState<UserData>(defaultUserData);
   
-  // The sign-in step is no longer counted in the total steps
-  const totalSteps = 8;
+  // Updated to include interrupt rules step
+  const totalSteps = 9;
   
   // This function maps the UI step (1-based) to the actual progress step (0-based)
   // where step 1 is the FeaturesWalkthroughStep (after sign in)
