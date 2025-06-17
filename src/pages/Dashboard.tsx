@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -78,10 +77,10 @@ const Dashboard = () => {
   }, [toast]);
   
   const handleSignOffForDay = useCallback(() => {
-    setUserStatus("vacation");
+    setUserStatus("away");
     toast({
       title: "Signing Off",
-      description: "Signing off for the day"
+      description: "You've signed off for today"
     });
   }, [toast]);
 
@@ -105,6 +104,14 @@ const Dashboard = () => {
         <StatusTimer 
           status={userStatus}
           onExitFocusMode={handleExitFocusMode}
+        />
+      )}
+
+      {/* Away/Offline Timer Header */}
+      {userStatus === "away" && (
+        <StatusTimer 
+          status={userStatus}
+          onSignBackOn={handleSignBackOn}
         />
       )}
 
