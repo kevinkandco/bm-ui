@@ -81,7 +81,13 @@ const App = () => {
       .catch((err) => {
         console.error("Service Worker registration failed:", err);
       });
-      onMessageListener((payload) => console.log(payload));
+      onMessageListener(({title, body}: {title: string, body: string}) => {
+        new Notification(title, {
+          body,
+          // icon: payload.data.icon,
+          tag: `${Date.now()}`,
+      });
+      });
   }, []);
 
   return (
