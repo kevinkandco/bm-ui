@@ -1,7 +1,7 @@
 // fcmService.ts
 import { messaging, getToken } from "./firebase";
 
-const VAPID_KEY = "BA9PZyUMnPjjqDbrOdvffSk6HAvjrquHoUzgwGYHOf9XLSq27ztB87iHcuTZshKyY6WojX6T_3SYtvMSS52ikVA"; // From Firebase Console > Project Settings > Cloud Messaging
+const VAPID_KEY = "BEmDayDnKupI3kBmH9D-IrKBcCk0EOLezcAxUY1MmpMBsSnPNWt2K4sy1Sbu05Ghx1x87ZztiEXy5UtRo6qFr1M"; // From Firebase Console > Project Settings > Cloud Messaging
 
 export async function requestNotificationPermission(): Promise<string | null> {
   try {
