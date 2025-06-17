@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
-
 interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
   onToggleCatchMeUp?: () => void;
@@ -12,23 +11,30 @@ interface StatusTimerProps {
   onExitFocusMode?: () => void;
   onSignBackOn?: () => void;
 }
-
-const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, onExitFocusMode, onSignBackOn }: StatusTimerProps) => {
-  const { toast } = useToast();
+const StatusTimer = React.memo(({
+  status,
+  onToggleCatchMeUp,
+  onToggleFocusMode,
+  onExitFocusMode,
+  onSignBackOn
+}: StatusTimerProps) => {
+  const {
+    toast
+  } = useToast();
   const isMobile = useIsMobile();
   const [timeElapsed, setTimeElapsed] = useState<string>("00:00:00");
   const [timeUntilNextBrief, setTimeUntilNextBrief] = useState<string>("00:00:00");
   const [startTime] = useState<number>(Date.now());
   const [focusTimeRemaining, setFocusTimeRemaining] = useState<string>("00:29:56");
-  
+
   // For focus mode - default 30 minutes
   const focusDuration = 30 * 60; // 30 minutes in seconds
-  
+
   // Calculate time until next brief (9AM tomorrow if after 8AM, otherwise 8AM today)
   const calculateTimeUntilNextBrief = useCallback(() => {
     const now = new Date();
     const nextBrief = new Date();
-    
+
     // If it's after 8 AM, set next brief to 9 AM tomorrow
     if (now.getHours() >= 8) {
       nextBrief.setDate(nextBrief.getDate() + 1);
@@ -37,14 +43,11 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
       // Otherwise set it to 8 AM today
       nextBrief.setHours(8, 0, 0, 0);
     }
-    
     const diffMs = nextBrief.getTime() - now.getTime();
     const diffSec = Math.floor(diffMs / 1000);
-    
     const hours = Math.floor(diffSec / 3600).toString().padStart(2, '0');
-    const minutes = Math.floor((diffSec % 3600) / 60).toString().padStart(2, '0');
+    const minutes = Math.floor(diffSec % 3600 / 60).toString().padStart(2, '0');
     const seconds = Math.floor(diffSec % 60).toString().padStart(2, '0');
-    
     return `${hours}:${minutes}:${seconds}`;
   }, []);
 
@@ -53,14 +56,11 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
     const now = Date.now();
     const elapsedSeconds = Math.floor((now - startTime) / 1000);
     const remainingSeconds = Math.max(0, focusDuration - elapsedSeconds);
-    
     const hours = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
-    const minutes = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
+    const minutes = Math.floor(remainingSeconds % 3600 / 60).toString().padStart(2, '0');
     const seconds = Math.floor(remainingSeconds % 60).toString().padStart(2, '0');
-    
     return `${hours}:${minutes}:${seconds}`;
   }, [startTime]);
-
   useEffect(() => {
     // Update countdown timer
     const countdownTimer = setInterval(() => {
@@ -71,28 +71,25 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
         setTimeElapsed(`${focusTimeRemaining} remaining`);
       }
     }, 1000);
-    
+
     // Only update the elapsed timer if the user is not active
     if (status !== "active") {
       const elapsedTimer = setInterval(() => {
         const now = Date.now();
         const diff = Math.floor((now - startTime) / 1000); // seconds
-        
+
         const hours = Math.floor(diff / 3600).toString().padStart(2, '0');
-        const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+        const minutes = Math.floor(diff % 3600 / 60).toString().padStart(2, '0');
         const seconds = Math.floor(diff % 60).toString().padStart(2, '0');
-        
         if (status !== "focus") {
           setTimeElapsed(`${hours}:${minutes}:${seconds}`);
         }
       }, 1000);
-      
       return () => {
         clearInterval(elapsedTimer);
         clearInterval(countdownTimer);
       };
     }
-    
     return () => clearInterval(countdownTimer);
   }, [startTime, status, calculateTimeUntilNextBrief, calculateFocusTimeRemaining, focusTimeRemaining]);
 
@@ -100,8 +97,7 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
   const renderContent = () => {
     switch (status) {
       case "focus":
-        return (
-          <div className="w-full bg-transparent py-4 px-6">
+        return <div className="w-full bg-transparent py-4 px-6">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div className="flex items-center gap-3">
                 <div className="bg-accent-primary/20 text-accent-primary p-2 rounded-full">
@@ -114,30 +110,18 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
               </div>
               
               <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-full bg-surface-raised/50 border border-border-subtle text-text-primary hover:bg-surface-raised"
-                >
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full bg-surface-raised/50 border border-border-subtle text-text-primary hover:bg-surface-raised">
                   <Sun className="h-5 w-5" />
                 </Button>
-                <Button 
-                  onClick={onExitFocusMode}
-                  variant="outline"
-                  size="default"
-                  className="bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised rounded-full px-6"
-                >
+                <Button onClick={onExitFocusMode} variant="outline" size="default" className="bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised rounded-full px-6">
                   <X className="h-4 w-4 mr-2" /> 
                   Exit
                 </Button>
               </div>
             </div>
-          </div>
-        );
-      
+          </div>;
       case "away":
-        return (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+        return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
               <div className="bg-yellow-500 text-white p-2 rounded-full mr-2">
                 <Clock className="h-4 w-4" />
@@ -149,24 +133,14 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              {onSignBackOn && (
-                <Button 
-                  onClick={onSignBackOn}
-                  variant="black"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full"
-                >
+              {onSignBackOn && <Button onClick={onSignBackOn} variant="black" size={isMobile ? "sm" : "default"} className="rounded-full">
                   <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Exit</span>
-                </Button>
-              )}
+                  <span className="text-xs sm:text-sm">Sign back on</span>
+                </Button>}
             </div>
-          </div>
-        );
-      
+          </div>;
       case "vacation":
-        return (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+        return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
               <div className="bg-blue-500 text-white p-2 rounded-full mr-2">
                 <Plane className="h-4 w-4" />
@@ -178,24 +152,15 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
             </div>
             
             <div className="flex items-center space-x-2 mt-2 sm:mt-0">
-              {onSignBackOn && (
-                <Button 
-                  onClick={onSignBackOn}
-                  variant="black"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full"
-                >
+              {onSignBackOn && <Button onClick={onSignBackOn} variant="black" size={isMobile ? "sm" : "default"} className="rounded-full">
                   <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Exit</span>
-                </Button>
-              )}
+                </Button>}
             </div>
-          </div>
-        );
-      
-      default: // Active status - improved mobile layout
-        return (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+          </div>;
+      default:
+        // Active status - improved mobile layout
+        return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
               <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
                 <Zap className="h-4 w-4" />
@@ -210,31 +175,17 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
               {/* Theme toggle removed on mobile */}
               {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
               
-              {onToggleFocusMode && (
-                <Button 
-                  onClick={onToggleFocusMode}
-                  variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
-                >
+              {onToggleFocusMode && <Button onClick={onToggleFocusMode} variant="outline" size={isMobile ? "sm" : "default"} className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle">
                   <Headphones className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Focus</span>
-                </Button>
-              )}
+                </Button>}
               
-              {onToggleCatchMeUp && (
-                <Button 
-                  onClick={onToggleCatchMeUp}
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
-                >
+              {onToggleCatchMeUp && <Button onClick={onToggleCatchMeUp} size={isMobile ? "sm" : "default"} className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white">
                   <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
-                </Button>
-              )}
+                </Button>}
             </div>
-          </div>
-        );
+          </div>;
     }
   };
 
@@ -242,13 +193,9 @@ const StatusTimer = React.memo(({ status, onToggleCatchMeUp, onToggleFocusMode, 
   if (status === "focus") {
     return renderContent();
   }
-
-  return (
-    <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
+  return <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
       {renderContent()}
-    </div>
-  );
+    </div>;
 });
-
 StatusTimer.displayName = 'StatusTimer';
 export default StatusTimer;
