@@ -104,13 +104,13 @@ const ProviderSettingsModal = ({
 
   const syncData = useCallback(async (): Promise<void> => {
     setSyncLoading(true);
-    const response = await call("get", `/api/${Provider[provider?.name]}/fetch`);
+    const response = await call("get", `/api/${Provider[provider?.name]}/fetch/${provider?.id}`);
 
     if (response) {
       getSlackData();
     }
     setSyncLoading(false);
-  }, [call, getSlackData, provider?.name]);
+  }, [call, getSlackData, provider]);
 
     useEffect(() => {
     if (firstTimeSlackConnected) {

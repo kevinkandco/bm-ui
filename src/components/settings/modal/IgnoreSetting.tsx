@@ -43,7 +43,7 @@ const IgnoreSetting = ({
 
   const getAllChannel = useCallback(async (): Promise<void> => {
     setLoadingIgnore(true);
-    const response = await call("get", "/api/slack/channels");
+    const response = await call("get", `/api/slack/channels/${provider?.id}`);
 
     if (!response) {
       console.error("Failed to fetch Slack channels");
@@ -66,7 +66,7 @@ const IgnoreSetting = ({
 
     setSlackChannels(combinedChannels);
     setLoadingIgnore(false);
-  }, [call, slackData]);
+  }, [call, slackData, provider]);
 
   useEffect(() => {
     if (channelActive.includes(provider?.name?.toLowerCase() || '')) {

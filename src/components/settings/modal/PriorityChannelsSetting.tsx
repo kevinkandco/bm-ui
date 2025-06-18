@@ -26,13 +26,13 @@ const PriorityChannelsSetting = ({
 
   const getAllChannel = useCallback(async (): Promise<void> => {
     setLoadingChannels(true);
-    const response = await call("get", "/api/slack/channels");
+    const response = await call("get", `/api/slack/channels/${provider?.id}`);
 
     if (response) {
       setAllSlackChannels(response);
     }
     setLoadingChannels(false);
-  }, [call]);
+  }, [call, provider?.id]);
 
   useEffect(() => {
     getAllChannel();
