@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -77,7 +77,7 @@ const SettingsPage = () => {
     });
   };
 
-  const settingCategories = [
+  const settingCategories = useMemo(() => [
     {
       id: "profile",
       icon: User,
@@ -137,12 +137,13 @@ const SettingsPage = () => {
       icon: LogOut,
       name: "Logout",
     }
-  ];
+  ], [activeSection]);
 
-  const handleCategoryClick = useCallback(
-    async (categoryId: string) => {
-      if (categoryId === "logout") {
-        const response = await call("get", "/api/logout", {
+    const handleClick = useCallback(async (id: string) => {
+    if (activeSection === id) return;
+
+    if (id === 'logout') {
+       const response = await call("get", "/api/logout", {
           toastTitle: "Error",
           toastDescription: "Failed to log out. Please try again.",
           toastVariant: "destructive",
@@ -154,38 +155,40 @@ const SettingsPage = () => {
           });
           logout();
           gotoLogin();
-          // }
           return;
         }
-      }
-      setActiveCategory(categoryId);
-    },
-    [call, toast, gotoLogin, logout]
-  );
+    }
+    setActiveSection(id)
+  }, [activeSection, call, gotoLogin, logout, toast]);
 
   useEffect(() => {
-    const tab = searchParams.get("tab");
-
+    // Initialize settings from user data
     if (user) {
       setSettings({
         name: user.name ?? "",
         job_title: user.job_title ?? "",
         department: user.department ?? "",
-        profileImage: user?.profile_path ? user.profile_path : null,
-      })
+        profileImage: user?.profile_path || null, // Simplified null check
+      });
     }
 
+    // Handle tab query parameter
+    const tab = searchParams.get("tab");
     if (tab) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("tab");
-      window.history.replaceState(
-        {},
-        document.title,
-        url.pathname + url.search
-      );
-      handleCategoryClick(tab);
+      // Clean up URL without causing navigation
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete("tab");
+      window.history.replaceState({}, document.title, cleanUrl.toString());
+
+      // Validate tab before setting
+      const validTabs = settingCategories.map(cat => cat.id);
+      if (validTabs.includes(tab)) {
+        setActiveSection(tab);
+      } else {
+        console.warn(`Invalid tab parameter: ${tab}`);
+      }
     }
-  }, [searchParams, handleCategoryClick, user]);
+  }, [searchParams, user]);
 
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e)
@@ -371,31 +374,6 @@ const SettingsPage = () => {
         );
     }
   };
-
-  const handleClick = useCallback(async (id: string) => {
-    if (activeSection === id) return;
-
-    if (id === 'logout') {
-       const response = await call("get", "/api/logout", {
-          toastTitle: "Error",
-          toastDescription: "Failed to log out. Please try again.",
-          toastVariant: "destructive",
-        });
-        if (response) {
-          toast({
-            title: "Logged out",
-            description: "You have been successfully logged out.",
-          });
-          logout();
-          gotoLogin();
-          // }
-          return;
-        }
-    }
-
-    setActiveSection(id)
-  }, [activeSection, call, gotoLogin, logout, toast]);
-
 
   return (
     <DashboardLayout 

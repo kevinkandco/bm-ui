@@ -41,6 +41,7 @@ const IntegrationsSection = () => {
 
   useEffect(() => {
       const selected = searchParams.get("selected");
+      const id = searchParams.get("id");
   
       const url = new URL(window.location.href);
       url.searchParams.delete("selected");
@@ -52,7 +53,7 @@ const IntegrationsSection = () => {
         );  
         setProviderModal({
           open: true,
-          id: 0,
+          id: Number(id),
           name: selected,
         });
         setFirstTimeSlackConnected(true);
