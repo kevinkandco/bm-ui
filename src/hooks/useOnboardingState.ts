@@ -176,8 +176,8 @@ export function useOnboardingState() {
   }, [call, gotoLogin]);
   
   useEffect(() => {
-    getIntegrations();
-  }, [getIntegrations]);
+    if(userData?.isSignedIn) getIntegrations();
+  }, [getIntegrations, userData?.isSignedIn]);
 
   return {
     currentStep,
