@@ -125,12 +125,14 @@ const ProviderSettingsModal = ({
     }
   }, [firstTimeSlackConnected, syncData]);
 
-  const handleNext = useCallback(() => {
-    const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
-    const nextIndex = tabs[currentIndex + 1];
-    if (nextIndex) setActiveTab(nextIndex.id);
-  }, [activeTab, tabs]);
+  const activeTabs = useMemo(() => tabs.filter((tab) => tab.active), [tabs]);
 
+  const handleNext = useCallback(() => {
+    const currentIndex = activeTabs.findIndex((tab) => tab.id === activeTab);
+    const nextTab = activeTabs[currentIndex + 1];
+    if (nextTab) setActiveTab(nextTab.id);
+  }, [activeTab, activeTabs]);
+  
   const handleSave = useCallback(async (): Promise<void> => {
     setIsSaving(true);
     const response = await call("post", `/api/settings/system-integrations/${provider.id}/update`, {
