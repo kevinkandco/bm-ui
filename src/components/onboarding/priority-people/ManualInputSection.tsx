@@ -123,8 +123,8 @@ export const ManualInputSection = ({
                       <User size={12} className="text-white" />
                     </div>
                     <div>
-                      <p className="text-foreground dark:text-white text-xs">{contact.name}</p>
-                      <p className="text-foreground/60 dark:text-white/50 text-xs">{contact.email}</p>
+                      <p className="text-foreground dark:text-white text-xs break-all">{contact.name}</p>
+                      <p className="text-foreground/60 dark:text-white/50 text-xs break-all">{contact.email}</p>
                     </div>
                   </div>
                 ))

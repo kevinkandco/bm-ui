@@ -68,11 +68,11 @@ export const PriorityPersonCard = ({
           )}
           
           {/* Display person name only once */}
-          <p className="text-white text-sm font-medium">{displayName}</p>
+          <p className="text-white text-sm font-medium break-all">{displayName}</p>
           
           {/* Display email if available */}
           {person.email && (
-            <div className="text-xs text-white/50 flex items-center gap-1">
+            <div className="text-xs text-white/50 flex items-center gap-1 break-all">
               <Mail size={10} /> {person.email}
             </div>
           )}
