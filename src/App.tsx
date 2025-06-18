@@ -19,6 +19,12 @@ const lazyImport = (importFn) => {
   );
 };
 
+interface NotificationPayload {
+  title: string;
+  body: string;
+}
+
+
 // Lazy load pages with optimized chunks
 const Index = lazyImport(() => import("./pages/Index"));
 const Login = lazyImport(() => import("./pages/Login"));
@@ -81,12 +87,13 @@ const App = () => {
       .catch((err) => {
         console.error("Service Worker registration failed:", err);
       });
-      onMessageListener(({title, body}: {title: string, body: string}) => {
+      onMessageListener((payload: { notification: NotificationPayload }) => {
+        const { title, body } = payload.notification;
         new Notification(title, {
           body,
           // icon: payload.data.icon,
           tag: `${Date.now()}`,
-      });
+        });
       });
   }, []);
 
