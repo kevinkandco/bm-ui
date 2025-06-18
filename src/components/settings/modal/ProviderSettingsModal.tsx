@@ -15,6 +15,7 @@ import { useApi } from "@/hooks/useApi";
 import { SettingsTabProps, SlackData } from "./types";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Provider } from "../types";
+import useAuthStore from "@/store/useAuthStore";
 
 interface ProviderSettingsModalProps {
   open: boolean;
@@ -52,6 +53,7 @@ const ProviderSettingsModal = ({
   const [slackData, setSlackData] = useState<SlackData>();
   const [SyncLoading, setSyncLoading] = useState(false);
   const { call } = useApi();
+  const { clearCache } = useAuthStore();
 
   
   const priorityPeopleActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
@@ -110,10 +112,11 @@ const ProviderSettingsModal = ({
     const response = await call("get", `/api/${Provider[provider?.name]}/fetch/${provider?.id}`);
 
     if (response) {
+      clearCache();
       getSlackData();
     }
     setSyncLoading(false);
-  }, [call, getSlackData, provider]);
+  }, [call, getSlackData, provider, clearCache]);
 
     useEffect(() => {
     if (firstTimeSlackConnected) {

@@ -28,6 +28,7 @@ interface AuthStoreType {
 	logout: () => void;
 	setUser: (user: Partial<AuthUser>) => void;
 	gotoLogin: () => void;
+	clearCache: () => void;
 }
 
 const useAuthStore = create(
@@ -44,8 +45,25 @@ const useAuthStore = create(
 
 			verify: (user, status) => set({ user, isAuthenticated: status }),
 
+			clearCache: () => {
+				if ("caches" in window) {
+					caches.keys().then((names) => {
+						for (const name of names) {
+						caches.delete(name);
+						}
+					});
+				}
+			},
+
 			logout: () => {
 				localStorage.clear();
+				if ("caches" in window) {
+					caches.keys().then((names) => {
+						for (const name of names) {
+						caches.delete(name);
+						}
+					});
+				}
 				set({ user: null, token: null, isAuthenticated: false });
 			},
 
