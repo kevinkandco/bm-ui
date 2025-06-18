@@ -45,7 +45,6 @@ const IntegrationsSection = () => {
   
       const url = new URL(window.location.href);
       url.searchParams.delete("selected");
-      if (selected === "slack") {
         window.history.replaceState(
           {},
           document.title,
@@ -57,7 +56,6 @@ const IntegrationsSection = () => {
           name: selected,
         });
         setFirstTimeSlackConnected(true);
-      }
     }, [searchParams]);
 
   const handleAddAccount = (provider: string, type: 'input' | 'output') => {
