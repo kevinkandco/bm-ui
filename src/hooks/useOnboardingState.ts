@@ -1,6 +1,8 @@
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
 import { PriorityPerson } from "@/components/onboarding/priority-people/types";
+import { ConnectedAccount } from "@/components/settings/types";
 import { useState, useCallback, useEffect } from "react";
+import { useApi } from "./useApi";
 
 export interface UserData {
   // Auth data
@@ -80,11 +82,13 @@ export const defaultUserData: UserData = {
 
 export function useOnboardingState() {
   const [currentStep, setCurrentStep] = useState(() => {
-  const token = localStorage.getItem("token");
-  const storedStep = localStorage.getItem("onboardingCurrentStep");
-  return storedStep && token ? parseInt(storedStep, 10) : 1;
-});
+    const token = localStorage.getItem("token");
+    const storedStep = localStorage.getItem("onboardingCurrentStep");
+    return storedStep && token ? parseInt(storedStep, 10) : 1;
+  });
+  const { call } = useApi();
   const [showSuccess, setShowSuccess] = useState(false);
+  const [connectedAccount, setConnectedAccount] = useState<ConnectedAccount[]>([]);
   const [userData, setUserData] = useState<UserData>(() => {
   const token = localStorage.getItem("token");
     const storedData = localStorage.getItem("onboardingUserData");
@@ -148,6 +152,33 @@ export function useOnboardingState() {
     setCurrentStep(1);
   }, []);
 
+  const getIntegrations = useCallback(async (): Promise<void> => {
+    const response = await call("get", "/api/settings/system-integrations", {
+      returnOnFailure: false,
+    });
+  
+    if (!response) {
+      console.error("Failed to fetch user data");
+      // Handle unauthenticated case
+      localStorage.removeItem("token");
+      gotoLogin();
+      return;
+    }
+  
+    if (response?.data) {
+      setConnectedAccount(response.data);
+      const data = response.data.map((i) => i.provider_name?.toLowerCase());
+      setUserData((prev) => ({
+        ...prev,
+        integrations: data,
+      }));
+    }
+  }, [call, gotoLogin]);
+  
+  useEffect(() => {
+    getIntegrations();
+  }, [getIntegrations]);
+
   return {
     currentStep,
     setCurrentStep,
@@ -161,5 +192,6 @@ export function useOnboardingState() {
     handleBack,
     handleSkip,
     gotoLogin,
+    connectedAccount,
   };
 }

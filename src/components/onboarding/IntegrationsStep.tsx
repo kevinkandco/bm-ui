@@ -14,6 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { IntegrationOption } from "@/components/type";
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
+import { ConnectedAccount, Provider } from "../settings/types";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -27,6 +28,7 @@ interface IntegrationsStepProps {
     integrations: string[];
     [key: string]: any;
   };
+  connectedAccount: ConnectedAccount[];
 }
 
 interface UserData {
@@ -38,7 +40,8 @@ const IntegrationsStep = ({
   onSkip,
   updateUserData,
   userData,
-  gotoLogin
+  gotoLogin,
+  connectedAccount,
 }: IntegrationsStepProps) => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
@@ -164,15 +167,20 @@ const IntegrationsStep = ({
 
   const fetchChannels = useCallback(async (): Promise<void> => {
     setLoader(true);
+    const slackId = connectedAccount.find((account) => account.provider_name?.toLowerCase() === "slack")?.id;
+    if (slackId) {
+      onNext()
+      return;
+    }
 
-    const response = await call("get", "/api/slack/fetch", {
+    const response = await call("get", `/api/slack/fetch/${slackId}`, {
       showToast: true,
       toastTitle: "Failed to fetch Slack data",
       toastVariant: "destructive",
       toastDescription: "Something went wrong. Failed to fetch Slack data.",
       returnOnFailure: false,
     });
-
+    
     if (response) {
       onNext();
     } else {
@@ -180,17 +188,57 @@ const IntegrationsStep = ({
     }
 
     setLoader(false);
-  }, [call, onNext]);
+  }, [call, onNext, connectedAccount]);
 
-  const [connected, setConnected] = useState<Record<string, boolean>>(userData.integrations.reduce((acc: Record<string, boolean>, id: string) => ({
+  // const fetchChannels = useCallback(async (): Promise<void> => {
+  //   setLoader(true);
+
+  //   try {
+  //     if (!connectedAccount || connectedAccount.length === 0) {
+  //       console.warn("No connected accounts found.");
+  //       setLoader(false);
+  //       return;
+  //     }
+
+  //     const requests = connectedAccount.map((account) =>{
+  //       const providerName = Provider[account.provider_name?.toLowerCase() || ''];
+  //       const id = account.id || '';
+  //       return call("get", `/api/${providerName}/fetch/${id}`, {
+  //         showToast: true,
+  //         toastTitle: `Failed to fetch ${account.provider_name} data`,
+  //         toastVariant: "destructive",
+  //         toastDescription: `Something went wrong. Failed to fetch ${account.provider_name} data.`,
+  //         returnOnFailure: false,
+  //       })}
+  //     );
+
+  //     const results = await Promise.all(requests);
+
+  //     const anySuccess = results.some((res) => res); // check if any API call succeeded
+
+  //     if (anySuccess) {
+  //       onNext();
+  //     } else {
+  //       console.error("All fetch attempts failed.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during fetchChannels:", error);
+  //   } finally {
+  //     setLoader(false);
+  //   }
+  // }, [call, onNext, connectedAccount]);
+
+
+  const [connected, setConnected] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setConnected(userData.integrations.reduce((acc: Record<string, boolean>, id: string) => ({
         ...acc,
         [id]: true,
       }),
       {}
-    )
-  );
-
-const [data, setData] = useState<UserData>({});
+    ))
+  }, [userData])
 
   const toggleConnection = (id: string) => {
   const lowerId = id.toLowerCase();
@@ -205,7 +253,7 @@ const [data, setData] = useState<UserData>({});
     window.open(urls[provider], "_self");
   };
 
-  const isIntegrated = data?.system_integrations?.some(
+  const isIntegrated = connectedAccount?.some(
     (i) => i.provider_name.toLowerCase() === lowerId
   );
 
@@ -243,42 +291,6 @@ const [data, setData] = useState<UserData>({});
   }
 };
 
-const getUser = useCallback(async (): Promise<void> => {
-  const response = await call("get", "/api/settings/system-integrations", {
-    returnOnFailure: false,
-  });
-
-  if (!response) {
-    console.error("Failed to fetch user data");
-    // Handle unauthenticated case
-    localStorage.removeItem("token");
-    gotoLogin();
-    return;
-  }
-
-  if (response?.data) {
-    setData(response.data);
-    const data = response.data.reduce(
-      (
-        acc: Record<string, boolean>,
-        integration: { provider_name: string }
-      ) => {
-        const key = integration.provider_name.toLowerCase();
-        acc[key] = true;
-        return acc;
-      },
-      {}
-    );
-    setConnected((prev) => ({
-      ...prev,
-      ...data,
-    }));
-  }
-}, [call, gotoLogin]);
-
-useEffect(() => {
-  getUser();
-}, [getUser]);
   const handleContinue = async() => {
     
     const selectedIntegrations = Object.entries(connected).filter(([_, isConnected]) => isConnected).map(([id]) => id);
@@ -413,7 +425,7 @@ useEffect(() => {
         <Button onClick={onBack} variant="back" size="none">
           Back
         </Button>
-        <Button onClick={() => handleContinue(id)} disabled={!hasAnyConnection || loader} variant="primary" size="pill" className="disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-3 sm:px-4 text-sm">
+        <Button onClick={() => handleContinue()} disabled={!hasAnyConnection || loader} variant="primary" size="pill" className="disabled:opacity-50 disabled:pointer-events-none py-2 sm:py-3 px-3 sm:px-4 text-sm">
             {loader && (
              <svg aria-hidden="true" className="w-8 h-8 text-white animate-spin dark:text-white fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>

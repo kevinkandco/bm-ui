@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import suggestedTopicsData from '@/data/suggestedTopics.json';
 import { PriorityChannels } from "./priority-channels/types";
 import { useApi } from "@/hooks/useApi";
+import { ConnectedAccount } from "../settings/types";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
 
@@ -23,6 +24,7 @@ interface IgnoreConfigStepProps {
     integrations: any[];
     [key: string]: any;
   };
+  connectedAccount: ConnectedAccount[];
 }
 
 const IgnoreConfigStep = ({
@@ -30,6 +32,7 @@ const IgnoreConfigStep = ({
   onBack,
   updateUserData,
   userData,
+  connectedAccount
 }: IgnoreConfigStepProps) => {
   const [selectedTab, setSelectedTab] = useState<"channel" | "keyword">(
     "channel"
@@ -53,9 +56,10 @@ const IgnoreConfigStep = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const { call } = useApi();
+  const slackId = connectedAccount?.find(c => c?.provider_name?.toLowerCase() === "slack")?.id;
 
   const getAllChannel = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/slack/channels");
+    const response = await call("get", `/api/slack/channels/${slackId}`);
 
     if (!response) {
       console.error("Failed to fetch Slack channels");
@@ -75,12 +79,12 @@ const IgnoreConfigStep = ({
     const combinedChannels = [...allChannels, ...extraChannels];
 
     setSlackChannels(combinedChannels);
-  }, [call, userData]);
+  }, [call, userData, slackId]);
 
 
   useEffect(() => {
-    getAllChannel();
-  }, [getAllChannel]);
+    if(slackId) getAllChannel();
+  }, [slackId, getAllChannel]);
 
   const hasSlackIntegration = userData.integrations?.some(
     (integration: any) =>

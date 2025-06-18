@@ -2,23 +2,23 @@ import { useState, useEffect, useCallback } from "react";
 import { PriorityChannels } from "./types";
 import { useApi } from "@/hooks/useApi";
 
-export function usePriorityChannelsState(initialChannels: string[] = []) {
+export function usePriorityChannelsState(id: number, initialChannels: string[] = []) {
   const [priorityChannels, setPriorityChannels] = useState<string[]>(initialChannels);
   const [allSlackChannels, setAllSlackChannels] = useState<PriorityChannels[] | null>(null);
   const { call } = useApi();
 
   const getAllChannel = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/slack/channels");
+    const response = await call("get", `/api/slack/channels/${id}`);
 
     if (response) {
       setAllSlackChannels(response);
     }
-  }, [call]);
+  }, [id, call]);
 
 
   useEffect(() => {
-    getAllChannel();
-  }, [getAllChannel]);
+    if(id) getAllChannel();
+  }, [id, getAllChannel]);
 
   // Filtered list of slack channels (excluding selected ones)
   const [slackChannels, setSlackChannels] = useState<PriorityChannels[]>([]);

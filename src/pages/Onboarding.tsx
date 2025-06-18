@@ -14,6 +14,7 @@ import GetStartedStep from "@/components/onboarding/GetStartedStep";
 import SuccessModal from "@/components/onboarding/SuccessModal";
 import { memo, useEffect, useCallback } from "react";
 import useAuthStore from '@/store/useAuthStore.ts';
+import { ConnectedAccount } from "@/components/settings/types";
 
 // Each step component is memoized to prevent unnecessary re-renders
 const OnboardingContent = memo(({ 
@@ -27,7 +28,8 @@ const OnboardingContent = memo(({
   handleComplete,
   totalSteps,
   getProgressStep,
-  gotoLogin
+  gotoLogin,
+  connectedAccount,
 }: {
   currentStep: number;
   showSuccess: boolean;
@@ -40,6 +42,7 @@ const OnboardingContent = memo(({
   totalSteps: number;
   getProgressStep: (step: number) => number;
   gotoLogin: () => void;
+  connectedAccount: ConnectedAccount[];
 }) => {
   // Scroll to top when step changes for better mobile experience
   useEffect(() => {
@@ -77,6 +80,7 @@ const OnboardingContent = memo(({
           userData={userData}
           onSkip={handleSkip}
           gotoLogin={gotoLogin}
+          connectedAccount={connectedAccount}
         />
       );
     case 4:
@@ -86,6 +90,7 @@ const OnboardingContent = memo(({
           onBack={handleBack}
           updateUserData={updateUserData}
           userData={userData}
+          connectedAccount={connectedAccount}
         />
       );
     case 5:
@@ -95,6 +100,7 @@ const OnboardingContent = memo(({
           onBack={handleBack}
           updateUserData={updateUserData}
           userData={userData}
+          connectedAccount={connectedAccount}
         />
       );
     case 6:
@@ -113,6 +119,7 @@ const OnboardingContent = memo(({
           onBack={handleBack}
           updateUserData={updateUserData}
           userData={userData}
+          connectedAccount={connectedAccount}
         />
       );
     case 8:
@@ -151,7 +158,8 @@ const Onboarding = () => {
     setShowSuccess,
     totalSteps,
     getProgressStep,
-    gotoLogin
+    gotoLogin,
+    connectedAccount
   } = useOnboardingState();
   
   const handleComplete = useCallback(() => {
@@ -192,6 +200,7 @@ const Onboarding = () => {
         totalSteps={totalSteps}
         getProgressStep={getProgressStep}
         gotoLogin={gotoLogin}
+        connectedAccount={connectedAccount}
       />
     </OnboardingLayout>
   );

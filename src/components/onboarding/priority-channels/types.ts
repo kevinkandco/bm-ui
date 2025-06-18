@@ -1,3 +1,5 @@
+import { ConnectedAccount } from "@/components/settings/types";
+
 export interface PriorityChannelsStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -7,6 +9,7 @@ export interface PriorityChannelsStepProps {
     integrations: any[];
     [key: string]: any;
   };
+  connectedAccount: ConnectedAccount[];
 }
 
 export interface PriorityChannels {
