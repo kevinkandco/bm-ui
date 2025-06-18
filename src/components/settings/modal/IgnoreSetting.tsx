@@ -352,7 +352,7 @@ const selectKeyword = (topic: string) => {
           )}
         </button>}
       </div>
-      {loadingIgnore || loadingProviderData ? (
+      {loadingIgnore || loadingProviderData || SyncLoading ? (
         <FancyLoader />
       ) : (
         <div className="space-y-6">

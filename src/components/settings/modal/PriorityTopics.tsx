@@ -93,7 +93,7 @@ const PriorityTopics = ({
         Add keywords or topics that are important across your communications.
         We'll flag any messages containing these keywords.
       </p>
-      {loadingProviderData ? (
+      {loadingProviderData || SyncLoading? (
         <FancyLoader />
       ) : (
         <div className="space-y-4 sm:space-y-6">
