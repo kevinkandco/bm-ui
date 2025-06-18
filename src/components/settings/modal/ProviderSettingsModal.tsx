@@ -103,6 +103,9 @@ const ProviderSettingsModal = ({
   }, [getSlackData]);
 
   const syncData = useCallback(async (): Promise<void> => {
+
+    if (provider.name === 'google') return;
+
     setSyncLoading(true);
     const response = await call("get", `/api/${Provider[provider?.name]}/fetch/${provider?.id}`);
 
