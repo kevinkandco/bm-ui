@@ -16,7 +16,9 @@ const IgnoreSetting = ({
   setSlackData,
   SyncLoading,
   syncData,
-  provider
+  provider,
+  shouldRefreshContacts,
+  setShouldRefreshContacts
 }: SettingsTabProps) => {
   const channelActive = useMemo(() => ['slack'], []);
   const keywordActive = useMemo(() => ['slack', 'google'], []);
@@ -72,7 +74,20 @@ const IgnoreSetting = ({
     if (channelActive.includes(provider?.name?.toLowerCase() || '')) {
       getAllChannel();
     }
-  }, [getAllChannel, channelActive, provider?.name]);
+  }, [channelActive, provider?.name]);
+
+    useEffect(() => {
+        if (shouldRefreshContacts) {
+          getAllChannel().then(() => {
+            setShouldRefreshContacts?.(false);
+          });
+        }
+    }, [shouldRefreshContacts, getAllChannel, setShouldRefreshContacts]);
+
+  const handleSync = async () => {
+    await syncData?.(); // Wait for sync to finish
+    await getAllChannel(); // Refresh contacts
+  };
 
   // Filter channels based on input
   useEffect(() => {
@@ -285,7 +300,7 @@ const selectKeyword = (topic: string) => {
         {syncData && <Button
           variant="outline"
           size="none"
-          onClick={syncData}
+          onClick={handleSync}
           disabled={SyncLoading}
           className="text-white/80 border-white/20 hover:bg-white/10 hover:text-white px-2 py-1"
         >

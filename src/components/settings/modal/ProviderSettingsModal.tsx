@@ -52,6 +52,7 @@ const ProviderSettingsModal = ({
   const [isSaving, setIsSaving] = useState(false);
   const [slackData, setSlackData] = useState<SlackData>();
   const [SyncLoading, setSyncLoading] = useState(false);
+  const [shouldRefreshContacts, setShouldRefreshContacts] = useState(false);
   const { call } = useApi();
   const { clearCache } = useAuthStore();
 
@@ -118,10 +119,12 @@ const ProviderSettingsModal = ({
     setSyncLoading(false);
   }, [call, getSlackData, provider, clearCache]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (firstTimeSlackConnected) {
       setActiveTab("priorityPeople");
-      syncData();
+      syncData().then(() => {
+        setShouldRefreshContacts(true); // signal refresh
+      });
     }
   }, [firstTimeSlackConnected, syncData]);
 
@@ -201,6 +204,9 @@ const ProviderSettingsModal = ({
                   syncData={provider.name === 'slack' ? syncData : undefined}
                   SyncLoading={SyncLoading}
                   provider={provider}
+                  shouldRefreshContacts={shouldRefreshContacts}
+                  setShouldRefreshContacts={setShouldRefreshContacts}
+
                 />
               )}
             </div>

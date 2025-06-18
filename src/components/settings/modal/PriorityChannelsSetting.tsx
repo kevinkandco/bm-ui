@@ -15,7 +15,9 @@ const PriorityChannelsSetting = ({
   setSlackData,
   SyncLoading,
   syncData,
-  provider
+  provider,
+  setShouldRefreshContacts,
+  shouldRefreshContacts
 }: SettingsTabProps) => {
   const [allSlackChannels, setAllSlackChannels] = useState<
     PriorityChannels[] | null
@@ -37,6 +39,14 @@ const PriorityChannelsSetting = ({
   useEffect(() => {
     getAllChannel();
   }, [getAllChannel]);
+
+  useEffect(() => {
+      if (shouldRefreshContacts) {
+        getAllChannel().then(() => {
+          setShouldRefreshContacts?.(false);
+        });
+      }
+    }, [shouldRefreshContacts, getAllChannel, setShouldRefreshContacts]);
 
   // Filtered list of slack channels (excluding selected ones)
   const [slackChannels, setSlackChannels] = useState<PriorityChannels[]>([]);
@@ -93,6 +103,11 @@ const PriorityChannelsSetting = ({
     );
   }, [searchQuery, slackChannels]);
 
+  const handleSync = async () => {
+    await syncData?.(); // Wait for sync to finish
+    await getAllChannel(); // Refresh contacts
+  };
+
   return (
     <>
       <div className="flex justify-between items-start">
@@ -102,7 +117,7 @@ const PriorityChannelsSetting = ({
         {syncData && <Button
           variant="outline"
           size="none"
-          onClick={syncData}
+          onClick={handleSync}
           disabled={SyncLoading}
           className="text-white/80 border-white/20 hover:bg-white/10 hover:text-white px-2 py-1"
         >

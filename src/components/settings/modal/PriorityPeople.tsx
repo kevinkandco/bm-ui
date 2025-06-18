@@ -21,7 +21,9 @@ const PriorityPeople = ({
   setSlackData,
   SyncLoading,
   syncData,
-  provider
+  provider,
+  shouldRefreshContacts,
+  setShouldRefreshContacts
 }: SettingsTabProps) => {
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,6 +92,15 @@ const PriorityPeople = ({
   useEffect(() => {
     getContact();
   }, [getContact]);
+
+  useEffect(() => {
+    if (shouldRefreshContacts) {
+      getContact().then(() => {
+        setShouldRefreshContacts?.(false);
+      });
+    }
+  }, [shouldRefreshContacts, getContact, setShouldRefreshContacts]);
+
 
   const filteredManualContacts = useMemo(
     () =>
@@ -224,6 +235,11 @@ const PriorityPeople = ({
     handleCancel();
   };
 
+  const handleSync = async () => {
+    await syncData?.(); // Wait for sync to finish
+    await getContact(); // Refresh contacts
+  };
+
   return (
     <>
       <div className="flex justify-between items-start">
@@ -233,7 +249,7 @@ const PriorityPeople = ({
         {syncData && <Button
           variant="outline"
           size="none"
-          onClick={syncData}
+          onClick={handleSync}
           disabled={SyncLoading}
           className="text-white/80 border-white/20 hover:bg-white/10 hover:text-white px-2 py-1"
         >
