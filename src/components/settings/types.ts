@@ -41,3 +41,8 @@ export interface ValidationError {
   index: number;
   message: string;
 }
+
+export const Provider = {
+  slack: "slack",
+  google: "email",
+}

@@ -14,12 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettingsTabProps } from "./types";
 import FancyLoader from "./FancyLoader";
 import AddEmailModal from "./AddEmailModal";
-import { Person, ValidationError } from "../types";
-
-const Provider = {
-  slack: "slack",
-  google: "email",
-}
+import { Person, Provider, ValidationError } from "../types";
 
 const PriorityPeople = ({
   slackData,
@@ -40,17 +35,6 @@ const PriorityPeople = ({
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const [hasTriedToSave, setHasTriedToSave] = useState(false);
   const { call } = useApi();
-
-  // const getContact = useCallback(async (): Promise<void> => {
-  //   setLoadingContacts(true);
-  //   const response = await call("get", `/api/${Provider[provider?.name]}/contacts?id=${provider?.id}`);
-
-  //   if (response) {
-  //     setPlatformContacts(response?.contacts);
-  //     setSuggestedContacts(response?.contacts);
-  //   }
-  //   setLoadingContacts(false);
-  // }, [call, provider]);
 
   const getContact = useCallback(async (): Promise<void> => {
     setLoadingContacts(true);

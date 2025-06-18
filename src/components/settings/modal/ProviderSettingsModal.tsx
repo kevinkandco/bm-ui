@@ -14,6 +14,7 @@ import PriorityTopics from "./PriorityTopics";
 import { useApi } from "@/hooks/useApi";
 import { SettingsTabProps, SlackData } from "./types";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { Provider } from "../types";
 
 interface ProviderSettingsModalProps {
   open: boolean;
@@ -103,13 +104,13 @@ const ProviderSettingsModal = ({
 
   const syncData = useCallback(async (): Promise<void> => {
     setSyncLoading(true);
-    const response = await call("get", "/api/slack/fetch");
+    const response = await call("get", `/api/${Provider[provider?.name]}/fetch`);
 
     if (response) {
       getSlackData();
     }
     setSyncLoading(false);
-  }, [call, getSlackData]);
+  }, [call, getSlackData, provider?.name]);
 
     useEffect(() => {
     if (firstTimeSlackConnected) {
