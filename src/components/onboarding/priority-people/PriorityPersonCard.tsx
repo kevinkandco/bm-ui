@@ -55,7 +55,7 @@ export const PriorityPersonCard = ({
       <div className="flex items-center">
         <div className="w-8 h-8 flex items-center justify-center bg-deep-plum rounded-full mr-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={BaseURL + person?.avatar} alt={person?.name} />
+              <AvatarImage src={person?.avatar ? BaseURL + person?.avatar : null} alt={person?.name} />
               <AvatarFallback className="bg-accent-primary/20 text-accent-primary">
                 {person?.name.charAt(0)}
               </AvatarFallback>
