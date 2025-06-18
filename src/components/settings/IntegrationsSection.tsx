@@ -41,7 +41,7 @@ const IntegrationsSection = () => {
 
   useEffect(() => {
       const selected = searchParams.get("selected");
-      const id = searchParams.get("id");
+      const id = searchParams.get("integration_id");
   
       const url = new URL(window.location.href);
       url.searchParams.delete("selected");
