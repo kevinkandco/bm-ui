@@ -8,6 +8,7 @@ import IntegrationsStep from "@/components/onboarding/IntegrationsStep";
 import PriorityPeopleStep from "@/components/onboarding/PriorityPeopleStep";
 import PriorityChannelsStep from "@/components/onboarding/PriorityChannelsStep";
 import PriorityTopicsStep from "@/components/onboarding/PriorityTopicsStep";
+import InterruptRulesStep from "@/components/onboarding/InterruptRulesStep";
 import IgnoreConfigStep from "@/components/onboarding/IgnoreConfigStep";
 import BriefPreferencesStep from "@/components/onboarding/BriefPreferencesStep";
 import GetStartedStep from "@/components/onboarding/GetStartedStep";
@@ -108,7 +109,7 @@ const OnboardingContent = memo(({
       );
     case 7:
       return (
-        <IgnoreConfigStep 
+        <InterruptRulesStep 
           onNext={handleNext} 
           onBack={handleBack}
           updateUserData={updateUserData}
@@ -117,7 +118,7 @@ const OnboardingContent = memo(({
       );
     case 8:
       return (
-        <BriefPreferencesStep
+        <IgnoreConfigStep
           onNext={handleNext} 
           onBack={handleBack}
           updateUserData={updateUserData}
@@ -125,6 +126,15 @@ const OnboardingContent = memo(({
         />
       );
     case 9:
+      return (
+        <BriefPreferencesStep
+          onNext={handleNext} 
+          onBack={handleBack}
+          updateUserData={updateUserData}
+          userData={userData}
+        />
+      );
+    case 10:
       return (
         <GetStartedStep 
           onNext={handleNext} 

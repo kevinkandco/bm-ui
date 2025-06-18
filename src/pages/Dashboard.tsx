@@ -313,14 +313,22 @@ const Dashboard = () => {
     
     toast({
       title: "Signing Off",
-      description: "Signing off for the day"
+      description: "You've signed off for today"
     });
   }, [toast, call]);
+
+  const handleSignBackOn = useCallback(() => {
+    setUserStatus("active");
+    toast({
+      title: "Welcome Back",
+      description: "You're now back online and monitoring"
+    });
+  }, [toast]);
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Focus Mode Timer Header */}
-      {(userStatus === "focus" || userStatus === "away") && (
+      {/* {(userStatus === "focus" || userStatus === "away") && (
         <StatusTimer 
           status={userStatus}
           focusTime={focusTime}
@@ -328,6 +336,35 @@ const Dashboard = () => {
           userSchedule={userSchedule}
           focusModeExitLoading={focusModeExitLoading}
           onExitFocusMode={handleExitFocusMode}
+        />
+      )} */}
+
+      {/* Focus Mode Timer Header */}
+      {userStatus === "focus" && (
+        <StatusTimer 
+          status={userStatus}
+          onExitFocusMode={handleExitFocusMode}
+          focusTime={focusTime}
+          briefSchedules={briefSchedules}
+          userSchedule={userSchedule}
+          focusModeExitLoading={focusModeExitLoading}
+        />
+      )}
+
+      {/* Away/Offline Timer Header */}
+      {userStatus === "away" && (
+        <StatusTimer 
+          status={userStatus}
+          onSignBackOn={handleSignBackOn}
+        />
+      )}
+
+      {/* Vacation/Out of Office Timer Header */}
+      {userStatus === "vacation" && (
+        <StatusTimer 
+          status={userStatus}
+          onToggleCatchMeUp={handleToggleCatchMeUp}
+          onSignBackOn={handleSignBackOn}
         />
       )}
 

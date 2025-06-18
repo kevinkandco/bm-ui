@@ -1,7 +1,7 @@
 import { WeekendBrief } from './../components/dashboard/types';
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
 import { PriorityPerson } from "@/components/onboarding/priority-people/types";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 
 export interface UserData {
   // Auth data
@@ -18,7 +18,14 @@ export interface UserData {
   ignoreChannels: string[];
   ignoreKeywords: string[];
   includeIgnoredInSummary: boolean;
-
+  
+  // Interrupt rules
+  interruptRules: {
+    contacts: any[];
+    keywords: string[];
+    systemAlerts: string[];
+  };
+  
   // Brief preferences
   briefSchedules: BriefSchedules[];
 
@@ -54,7 +61,14 @@ export const defaultUserData: UserData = {
   ignoreChannels: [],
   ignoreKeywords: [],
   includeIgnoredInSummary: false,
-
+  
+  // Interrupt rules
+  interruptRules: {
+    contacts: [],
+    keywords: [],
+    systemAlerts: []
+  },
+  
   // Brief preferences
   briefSchedules: [
     {
@@ -111,7 +125,7 @@ export function useOnboardingState() {
       : defaultUserData;
   });
   // The sign-in step is no longer counted in the total steps
-  const totalSteps = 8;
+  const totalSteps = 9;
 
   // This function maps the UI step (1-based) to the actual progress step (0-based)
   // where step 1 is the FeaturesWalkthroughStep (after sign in)

@@ -8,15 +8,16 @@ import { BriefSchedules, UserSchedule } from "./types";
 
 export interface StatusTimerProps {
   status: "active" | "away" | "focus" | "vacation";
-  focusTime: number; //in seconds
-  focusModeExitLoading: boolean;
-  briefSchedules: BriefSchedules[];
-  userSchedule: UserSchedule;
+  focusTime?: number; //in seconds
+  focusModeExitLoading?: boolean;
+  briefSchedules?: BriefSchedules[];
+  userSchedule?: UserSchedule;
   onExitFocusMode?: () => void;
+  onSignBackOn?: () => void;
+  onToggleCatchMeUp?: () => void;
   // isSignoff: boolean;
   // fetchDashboardData: () => void;
-  // onToggleCatchMeUp?: () => void;
-  // onToggleFocusMode?: () => void;
+  onToggleFocusMode?: () => void;
   // onToggleSignOff?: () => void;
 }
 
@@ -28,10 +29,11 @@ const StatusTimer = React.memo(
     briefSchedules,
     onExitFocusMode,
     focusModeExitLoading,
+    onSignBackOn,
+    onToggleCatchMeUp,
     // isSignoff,
     // fetchDashboardData,
-    // onToggleCatchMeUp,
-    // onToggleFocusMode,
+    onToggleFocusMode,
     // onToggleSignOff,
   }: StatusTimerProps) => {
     const { toast } = useToast();
@@ -224,8 +226,7 @@ const StatusTimer = React.memo(
   const renderContent = () => {
     switch (status) {
       case "focus":
-        return (
-          <div className="w-full bg-transparent py-4 px-6">
+        return <div className="w-full bg-transparent py-4 px-6">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div className="flex items-center gap-3">
                 <div className="bg-accent-primary/20 text-accent-primary p-2 rounded-full">
@@ -238,13 +239,6 @@ const StatusTimer = React.memo(
               </div>
               
               <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-full bg-surface-raised/50 border border-border-subtle text-text-primary hover:bg-surface-raised"
-                >
-                  <Sun className="h-5 w-5" />
-                </Button>
                 {onExitFocusMode && (
                   <Button 
                   onClick={onExitFocusMode}
@@ -264,168 +258,78 @@ const StatusTimer = React.memo(
               )}
               </div>
             </div>
-          </div>
-          );
-
-        case "away":
-          return (
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
-              <div className="flex items-center gap-5">
-                <div className="flex items-center">
-                  <div className="bg-yellow-500 text-white p-2 rounded-full mr-2">
-                    <Clock className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm sm:text-base font-medium text-text-primary">
-                      Away
-                    </h3>
-                    <p className="text-xs sm:text-sm text-text-secondary">
-                      {timeUntilNextBrief}
-                    </p>
-                  </div>
-                </div>
-                <div style={{ color: "#aaa" }} className="text-sm">
-                  You’ve signed off for today.
-                </div>
+          </div>;
+      case "away":
+        return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+            <div className="flex items-center">
+              <div className="bg-yellow-500 text-white p-2 rounded-full mr-2">
+                <Clock className="h-4 w-4" />
               </div>
-
-              {/* <div className="flex items-center space-x-2 mt-2 sm:mt-0"> */}
-              {/* Theme toggle removed on mobile */}
-              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
-
-              {/* <Button 
-                  variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
-                  disabled
-                >
-                  <Power className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Signed Off Today</span>
-                </Button>
-              
-              {onToggleCatchMeUp && (
-                <Button 
-                  onClick={onToggleCatchMeUp}
-                  variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
-                >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Catch Up</span>
-                </Button>
-              )} */}
-              {/* </div> */}
-            </div>
-          );
-
-        case "vacation":
-          return (
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
-              <div className="flex items-center">
-                <div className="bg-blue-500 text-white p-2 rounded-full mr-2">
-                  <Plane className="h-4 w-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-medium text-text-primary">
-                    Out of Office
-                  </h3>
-                  <p className="text-xs sm:text-sm text-text-secondary">
-                    {timeElapsed}
-                  </p>
-                </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Away</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">You've signed off for today.</p>
               </div>
-
-              {/* <div className="flex items-center space-x-2 mt-2 sm:mt-0"> */}
-              {/* Theme toggle removed on mobile */}
-              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
-
-              {/* {onToggleCatchMeUp && (
-                <Button 
-                  onClick={onToggleCatchMeUp}
-                  variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
-                >
-                  <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Catch Up</span>
-                </Button>
-              )} */}
-              {/* </div> */}
             </div>
-          );
-
-        default: // Active status - improved mobile layout
-          return (
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
-              <div className="flex items-center">
-                <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
-                  <Zap className="h-4 w-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-medium text-text-primary">
-                    Next Brief
-                  </h3>
-                  <p className="text-xs sm:text-sm text-text-secondary">
-                    {timeUntilNextBrief}
-                  </p>
-                </div>
+            
+            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+              {onSignBackOn && <Button onClick={onSignBackOn} variant="black" size={isMobile ? "sm" : "default"} className="rounded-full">
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Sign back on</span>
+                </Button>}
+            </div>
+          </div>;
+      case "vacation":
+        return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+            <div className="flex items-center">
+              <div className="bg-blue-500 text-white p-2 rounded-full mr-2">
+                <Plane className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-medium text-text-primary">Out of Office</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">{timeElapsed}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+              {onSignBackOn && <Button onClick={onSignBackOn} variant="black" size={isMobile ? "sm" : "default"} className="rounded-full">
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                  <span className="text-xs sm:text-sm">Exit</span>
+                </Button>}
+            </div>
+          </div>;
+      default:
+        // Active status - improved mobile layout
+        return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+            <div className="flex items-center">
+              <div className="bg-accent-primary text-white p-2 rounded-full mr-2">
+                <Zap className="h-4 w-4" />
               </div>
 
               {/* <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0"> */}
               {/* Theme toggle removed on mobile */}
-              {/* {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />} */}
-
-              {/* {onToggleSignOff && (
-                <Button 
-                  onClick={onToggleSignOff}
-                  variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
-                >
-                  <Power className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
-                  <span className="text-xs sm:text-sm">Sign Off Today</span>
-                </Button>
-              )} */}
-              {/*               
-              {onToggleFocusMode && (
-                <Button 
-                  onClick={onToggleFocusMode}
-                  variant="outline"
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle"
-                >
+              {!isMobile && <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9" />}
+              
+              {onToggleFocusMode && <Button onClick={onToggleFocusMode} variant="outline" size={isMobile ? "sm" : "default"} className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle">
                   <Headphones className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Focus</span>
-                </Button>
-              )}
-               */}
-              {/* {onToggleCatchMeUp && (
-                <Button 
-                  onClick={onToggleCatchMeUp}
-                  size={isMobile ? "sm" : "default"}
-                  className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white"
-                >
+                </Button>}
+              
+              {onToggleCatchMeUp && <Button onClick={onToggleCatchMeUp} size={isMobile ? "sm" : "default"} className="rounded-full shadow-subtle hover:shadow-glow transition-all bg-accent-primary text-white">
                   <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
                   <span className="text-xs sm:text-sm">Catch Up</span>
-                </Button>
-              )} */}
-              {/* </div> */}
+                </Button>}
             </div>
-          );
-      }
-    };
+          </div>;
+    }
+  };
 
   // Only show status timer for non-focus states, or show focus mode header for focus state
   if (status === "focus") {
     return renderContent();
   }
-
-  return (
-    <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
+  return <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
       {renderContent()}
-    </div>
-  );
+    </div>;
 });
-
 StatusTimer.displayName = 'StatusTimer';
 export default StatusTimer;

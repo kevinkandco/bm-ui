@@ -13,6 +13,7 @@ import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSecti
 import Integrations from "@/components/settings/Integrations";
 import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
 import ReferralProgramSection from "@/components/settings/ReferralProgramSection";
+import InterruptRulesSection from "@/components/settings/InterruptRulesSection";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -127,6 +128,12 @@ const SettingsPage = () => {
       active: activeSection === "voices"
     },
     {
+      id: "interrupt-rules",
+      icon: Shield,
+      name: "Interrupt Rules",
+      active: activeSection === "interrupt-rules"
+    },
+    {
       id: "privacy",
       icon: Shield,
       name: "Privacy & Security",
@@ -231,6 +238,8 @@ const SettingsPage = () => {
         return <FeedbackTrainingSection />;
       case "referral":
         return <ReferralProgramSection />;
+      case "interrupt-rules":
+        return <InterruptRulesSection />;
       case "profile":
         return (
           <>
