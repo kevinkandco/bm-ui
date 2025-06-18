@@ -280,7 +280,7 @@ const PriorityPeople = ({
           Brief-Me barriers.
         </p>
       </div>
-      {loadingContacts ? (
+      {loadingContacts || SyncLoading ? (
         <FancyLoader />
       ) : (
         <div className="space-y-4">

@@ -146,7 +146,7 @@ const PriorityChannelsSetting = ({
         Mark your most important channels. We'll highlight updates from these
         channels in your brief.
       </p>
-      {loadingChannels ? (
+      {loadingChannels || SyncLoading ? (
           <FancyLoader />
         ) : (
         <div className="space-y-5">
