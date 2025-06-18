@@ -45,6 +45,7 @@ const IntegrationsSection = () => {
   
       const url = new URL(window.location.href);
       url.searchParams.delete("selected");
+      url.searchParams.delete("integration_id");
       if (selected && id) {
         window.history.replaceState(
           {},
