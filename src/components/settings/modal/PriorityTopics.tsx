@@ -59,7 +59,7 @@ const PriorityTopics = ({
         <h2 className="text-xl font-semibold text-white mb-4">
           What topics matter most?
         </h2>
-        <Button
+        {syncData && <Button
           variant="outline"
           size="none"
           onClick={syncData}
@@ -85,7 +85,7 @@ const PriorityTopics = ({
             </svg>
           )}
           {SyncLoading ? "Syncing" : "Sync"}
-        </Button>
+        </Button>}
       </div>
       <p className="text-white/60 text-sm">
         Add keywords or topics that are important across your communications.

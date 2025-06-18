@@ -99,7 +99,7 @@ const PriorityChannelsSetting = ({
         <h2 className="text-xl font-semibold text-white mb-4">
           Which channels are critical?
         </h2>
-        <Button
+        {syncData && <Button
           variant="outline"
           size="none"
           onClick={syncData}
@@ -125,7 +125,7 @@ const PriorityChannelsSetting = ({
             </svg>
           )}
           {SyncLoading ? "Syncing" : "Sync"}
-        </Button>
+        </Button>}
       </div>
       <p className="text-text-secondary">
         Mark your most important channels. We'll highlight updates from these

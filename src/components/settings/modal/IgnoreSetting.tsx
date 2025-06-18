@@ -282,7 +282,7 @@ const selectKeyword = (topic: string) => {
         <h2 className="text-xl font-semibold text-white mb-4">
           Configure what to ignore
         </h2>
-        <Button
+        {syncData && <Button
           variant="outline"
           size="none"
           onClick={syncData}
@@ -308,7 +308,7 @@ const selectKeyword = (topic: string) => {
             </svg>
           )}
           {SyncLoading ? "Syncing" : "Sync"}
-        </Button>
+        </Button>}
       </div>
       <p className="text-white/60 text-sm">
         Tell us what to filter out from your briefs to keep them focused on what

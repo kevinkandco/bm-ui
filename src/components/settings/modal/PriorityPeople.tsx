@@ -230,7 +230,7 @@ const PriorityPeople = ({
         <h2 className="text-xl font-semibold text-white mb-4">
           Who are your priority people?
         </h2>
-        <Button
+        {syncData && <Button
           variant="outline"
           size="none"
           onClick={syncData}
@@ -256,7 +256,7 @@ const PriorityPeople = ({
             </svg>
           )}
           {SyncLoading ? "Syncing" : "Sync"}
-        </Button>
+        </Button>}
       </div>
       <div className="space-y-3 mb-2">
         <p className="text-foreground/70 dark:text-white/70">

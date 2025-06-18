@@ -190,7 +190,7 @@ const ProviderSettingsModal = ({
                 <ActiveComponent
                   slackData={slackData}
                   setSlackData={setSlackData}
-                  syncData={syncData}
+                  syncData={provider.name === 'slack' ? syncData : undefined}
                   SyncLoading={SyncLoading}
                   provider={provider}
                 />
