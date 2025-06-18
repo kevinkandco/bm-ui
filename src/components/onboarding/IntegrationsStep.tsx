@@ -182,7 +182,6 @@ const IntegrationsStep = ({
     const slackId = connectedAccount.find(
       (account) => account.provider_name?.toLowerCase() === "slack"
     )?.id;
-    console.log(slackId);
     if (!slackId) {
       onNext();
       return;
