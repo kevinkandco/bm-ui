@@ -15,7 +15,7 @@ import Pagination from "@/components/dashboard/Pagination";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
-import { enrichBriefsWithStats } from "@/lib/utils";
+import { enrichBriefsWithStats, transformToStats } from "@/lib/utils";
 import FocusMode from "@/components/dashboard/FocusMode";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
@@ -162,13 +162,15 @@ const Dashboard = () => {
               const data = await getBrief(item.id);
       
               if (data) {
+                const stats = transformToStats(data);
+                const dataWithStats = { ...data, stats };
                 setPendingData(
                   (prev) => prev?.filter((data) => data.id !== item.id) ?? []
                 );
       
                 setRecentBriefs((prev) => {
                   if (!prev) return null;
-                  return prev?.map((brief) => brief.id === item.id ? data : brief) || null;
+                  return prev?.map((brief) => brief.id === item.id ? dataWithStats : brief) || null;
                 });
       
                 clearInterval(intervalId);
