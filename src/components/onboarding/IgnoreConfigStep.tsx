@@ -34,8 +34,13 @@ const IgnoreConfigStep = ({
   userData,
   connectedAccount
 }: IgnoreConfigStepProps) => {
+  const hasSlackIntegration = userData.integrations?.some(
+    (integration: any) =>
+      integration.type === "slack" || integration === "slack"
+  );
+  
   const [selectedTab, setSelectedTab] = useState<"channel" | "keyword">(
-    "channel"
+    hasSlackIntegration ? "channel" : "keyword"
   );
   const [inputValue, setInputValue] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -83,17 +88,13 @@ const IgnoreConfigStep = ({
 
 
   useEffect(() => {
-    if(slackId) getAllChannel();
-  }, [slackId, getAllChannel]);
+    if(hasSlackIntegration && slackId) getAllChannel();
+  }, [slackId, getAllChannel, hasSlackIntegration]);
 
-  const hasSlackIntegration = userData.integrations?.some(
-    (integration: any) =>
-      integration.type === "slack" || integration === "slack"
-  );
 
   // Filter channels based on input
   useEffect(() => {
-    if (selectedTab === "channel" && isInputFocused) {
+    if (hasSlackIntegration && selectedTab === "channel" && isInputFocused) {
       const filtered = slackChannels?.filter((channel) =>
         channel?.name?.toLowerCase()?.includes(inputValue.toLowerCase())
       )?.filter((channel) =>
@@ -123,12 +124,12 @@ const IgnoreConfigStep = ({
     } else {
       setSearchResults([]);
     }
-  }, [inputValue, isInputFocused, selectedTab, slackChannels, userData, suggestedTopics, ignoreKeywords, ignoreChannels]);
+  }, [inputValue, isInputFocused, selectedTab, slackChannels, userData, suggestedTopics, ignoreKeywords, ignoreChannels, hasSlackIntegration]);
 
   const addItem = () => {
     if (!inputValue?.trim()) return;
 
-    if (selectedTab === "channel") {
+    if (hasSlackIntegration && selectedTab === "channel") {
       // Check if channel already exists
       if (ignoreChannels?.includes(inputValue.trim())) {
         return;
@@ -166,7 +167,7 @@ const IgnoreConfigStep = ({
   };
 
   const removeItem = (type: "channel" | "keyword", value: string) => {
-    if (type === "channel") {
+    if (hasSlackIntegration && type === "channel") {
       setIgnoreChannels((prev) => prev?.filter((item) => item !== value));
     } else if (type === "keyword") {
       setIgnoreKeywords((prev) => prev?.filter((item) => item !== value));
@@ -202,7 +203,7 @@ const IgnoreConfigStep = ({
   // Render selected items based on current tab
   const renderSelectedItems = () => {
     
-    if (selectedTab === "channel" && ignoreChannels?.length > 0) {
+    if (hasSlackIntegration && selectedTab === "channel" && ignoreChannels?.length > 0) {
       const channels: PriorityChannels[] = slackChannels?.filter(channel => ignoreChannels?.includes(channel?.name));
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
@@ -263,7 +264,7 @@ const IgnoreConfigStep = ({
       </div>
 
       <div className="flex border-b border-white/20">
-        <button
+        {hasSlackIntegration && <button
           className={cn(
             "py-3 px-4 focus:outline-none relative",
             selectedTab === "channel"
@@ -279,7 +280,7 @@ const IgnoreConfigStep = ({
           {selectedTab === "channel" && (
             <div className="absolute bottom-0 left-0 w-full h-0.5 bg-glass-blue" />
           )}
-        </button>
+        </button>}
 
         <button
           className={cn(
@@ -301,7 +302,7 @@ const IgnoreConfigStep = ({
       </div>
 
       <div className="space-y-6">
-        {selectedTab === "channel" && (
+        {hasSlackIntegration && selectedTab === "channel" && (
           <div className="space-y-3">
             <Label htmlFor="ignore-channel" className="text-off-white">
               Ignore channels

@@ -116,7 +116,12 @@ export function useOnboardingState() {
 
   const handleNext = useCallback(() => {
 		setCurrentStep((prev) => {
-			const nextStep = prev + 1;
+			let nextStep = prev + 1;
+
+      if (nextStep === 5 && !userData?.integrations?.includes("slack")) {
+        nextStep++;
+      }
+
 			if (nextStep <= totalSteps + 1) {
 				// +1 because we have an extra step
 				window.scrollTo(0, 0);
@@ -128,18 +133,24 @@ export function useOnboardingState() {
 				return prev;
 			}
 		});
-	}, []);
+	}, [userData?.integrations, totalSteps]);
 
   const handleBack = useCallback(() => {
     setCurrentStep((prev) => {
-      if (prev > 1) {
+      let nextStep = prev - 1;
+
+      if (nextStep === 5 && !userData?.integrations?.includes("slack")) {
+        nextStep--;
+      }
+
+      if (nextStep >= 1) {
         window.scrollTo(0, 0);
-        localStorage.setItem("onboardingCurrentStep", (prev - 1).toString());
-        return prev - 1;
+        localStorage.setItem("onboardingCurrentStep", nextStep.toString());
+        return nextStep;
       }
       return prev;
     });
-  }, []);
+  }, [userData?.integrations]);
 
   const handleSkip = useCallback(() => {
     // Skip to final step
