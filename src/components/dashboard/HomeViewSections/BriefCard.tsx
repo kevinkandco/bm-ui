@@ -72,6 +72,10 @@ const BriefCard = ({
     total: 33
   };
 
+  useEffect(() => {
+    setFeedbackState(brief?.vote ? brief?.vote === "like" ? "up" : "down" : "none");
+  }, [brief?.vote]);
+
   const statsConfig = [
     {
       icon: BarChart3,

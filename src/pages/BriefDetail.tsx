@@ -710,6 +710,8 @@ const BriefDetail = () => {
                 briefId={briefData?.id || 1} 
                 onFeedback={handleFeedback}
                 showTooltip={true}
+                selectedFeedback={selectedFeedback}
+                setSelectedFeedback={setSelectedFeedback}
               />
             </div>
           </div>
