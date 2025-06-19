@@ -228,7 +228,7 @@ const ConnectedAccountsList = ({
                 {/* Disconnect Button */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" disabled={!!account?.is_parent}>
                       <Trash2 className="h-4 w-4 text-text-secondary" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -236,6 +236,7 @@ const ConnectedAccountsList = ({
                     <DropdownMenuItem
                       onClick={() => onDisconnect(account.id)}
                       className="text-red-400 focus:text-red-400"
+                      disabled={!!account?.is_parent}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Disconnect Account

@@ -9,6 +9,7 @@ export interface ConnectedAccount {
   is_combined?: boolean;
   connectedAt?: Date;
   type?: 'input' | 'output';
+  is_parent: number;
   workspace?: string;
 }
 
