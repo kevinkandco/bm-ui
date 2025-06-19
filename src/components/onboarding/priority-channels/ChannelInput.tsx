@@ -42,6 +42,7 @@ export const ChannelInput = ({
     if (!inputValue.trim()) return;
     onAddChannel(inputValue);
     setInputValue("");
+    setSearchQuery("");
     setSearchResults([]);
   };
 
@@ -50,6 +51,7 @@ export const ChannelInput = ({
     onSelectChannel(channel);
     setInputValue("");
     setSearchResults([]);
+    setSearchQuery("");
     setIsInputFocused(false);
   };
 
