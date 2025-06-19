@@ -1,9 +1,10 @@
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useApi } from "@/hooks/useApi";
 
 interface SummaryFeedbackProps {
   briefId: number;
@@ -17,6 +18,29 @@ const SummaryFeedback = ({ briefId, onFeedback, showTooltip = false, selectedFee
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {call} = useApi();
+
+    const feedback = useCallback(
+      async (type: "up" | "down", comment?: string) => {
+        const response = await call("post", `/api/summary/${briefId}/vote`, {
+          showToast: true,
+          toastTitle: `Failed to ${type === "up" ? "like" : "dislike"} summary`,
+          toastDescription: `There was an error ${
+            type === "down" ? "liking" : "disliking"
+          } this summary. Please try again later.`,
+          toastVariant: "destructive",
+          returnOnFailure: false,
+          body: {
+            vote: type === "up" ? "like" : "dislike",
+            ...(comment?.trim() ? { feedback: comment } : {}),
+          },
+        });
+
+        if (!response) return;
+        onFeedback(type)
+      },
+      [call, briefId, onFeedback]
+    );
 
   const handleFeedback = async (type: 'up' | 'down') => {
     setSelectedFeedback(type);
@@ -25,7 +49,8 @@ const SummaryFeedback = ({ briefId, onFeedback, showTooltip = false, selectedFee
       setShowCommentInput(true);
     } else {
       setIsSubmitting(true);
-      await onFeedback(type);
+      setShowCommentInput(false);
+      await feedback(type);
       setIsSubmitting(false);
     }
   };
@@ -34,7 +59,7 @@ const SummaryFeedback = ({ briefId, onFeedback, showTooltip = false, selectedFee
     if (!comment.trim()) return;
     
     setIsSubmitting(true);
-    await onFeedback('down', comment.trim());
+    await feedback('down', comment.trim());
     setShowCommentInput(false);
     setComment("");
     setIsSubmitting(false);

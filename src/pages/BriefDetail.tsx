@@ -182,6 +182,7 @@ const BriefDetail = () => {
   };
 
   const handleFeedback = (type: 'up' | 'down', comment?: string) => {
+
     toast({
       title: "Feedback Received",
       description: `Thank you for your ${type === 'up' ? 'positive' : 'constructive'} feedback!`
