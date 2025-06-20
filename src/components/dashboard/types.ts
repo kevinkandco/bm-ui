@@ -23,53 +23,58 @@ export interface DailySchedule {
 
 export interface SummaryMassage {
   id: number;
-	platform?: string;
-	message?: string;
-	sender?: string;
-	time?: string;
-	priority?: string;
+  platform?: string;
+  message?: string;
+  sender?: string;
+  time?: string;
+  priority?: string;
   title?: string;
   redirectLink?: string;
   channel?: string;
 }
 
 export interface Stats {
-    totalMessagesAnalyzed: {
-        total: number;
-        breakdown: {
-            slack: number;
-            gmail: number;
-        };
+  totalMessagesAnalyzed: {
+    total: number;
+    breakdown: {
+      slack: number;
+      gmail: number;
     };
-    lowPriority: {
-        total: number;
-        breakdown: {
-            slack: number;
-            gmail: number;
-        };
+  };
+  lowPriority: {
+    total: number;
+    breakdown: {
+      slack: number;
+      gmail: number;
     };
-    mediumPriority: {
-        total: number;
-        breakdown: {
-            slack: number;
-            gmail: number;
-        };
+  };
+  mediumPriority: {
+    total: number;
+    breakdown: {
+      slack: number;
+      gmail: number;
     };
-    highPriority: {
-        total: number;
-        breakdown: {
-            slack: number;
-            gmail: number;
-        };
+  };
+  highPriority: {
+    total: number;
+    breakdown: {
+      slack: number;
+      gmail: number;
     };
-    actionItems: {
-        total: number;
-        breakdown: {
-            slack: number;
-            gmail: number;
-        };
+  };
+  actionItems: {
+    total: number;
+    breakdown: {
+      slack: number;
+      gmail: number;
     };
+  };
 }
+
+export interface PriorityItems{
+    slack?: { low: number; medium: number; high: number };
+    gmail?: { low: number; medium: number; high: number };
+  }
 
 export interface Summary {
   id: number;
@@ -96,15 +101,15 @@ export interface Summary {
   emailCount: number;
   meetingCount: number;
   actionCount: number;
-  delivery_at: string,
-  vote: null | 'like' | 'dislike';
+  delivery_at: string;
+  vote: null | "like" | "dislike";
   stats: Stats;
-  sections:
-    {
-      title: string;
-      timestamp: number;
-      content: string;
-    }[];  // Array of objects, optional
+  priorityItems: PriorityItems;
+  sections: {
+    title: string;
+    timestamp: number;
+    content: string;
+  }[]; // Array of objects, optional
 }
 
 export interface PriorityPeople {
@@ -120,7 +125,7 @@ export interface PriorityPeople {
 
 export interface Priorities {
   priorityPeople: PriorityPeople[];
-  priorityChannels: {name: string, active: boolean}[];
+  priorityChannels: { name: string; active: boolean }[];
   triggers: string[];
   integrations: {
     name: string;
