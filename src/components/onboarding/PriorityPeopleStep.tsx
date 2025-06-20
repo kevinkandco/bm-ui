@@ -161,34 +161,34 @@ const PriorityPeopleStep = memo(
 
           {/* Added people list */}
           <PriorityPeopleList
-            priorityPeople={platformState.priorityPeople}
-            removePerson={platformState.removePerson}
-            designateContact={platformState.designateContact}
-            addLabel={platformState.addLabel}
-            contacts={platformState.platformContacts}
+            priorityPeople={platformState?.priorityPeople}
+            removePerson={platformState?.removePerson}
+            designateContact={platformState?.designateContact}
+            addLabel={platformState?.addLabel}
+            contacts={platformState?.platformContacts}
           />
 
           {/* Manual input with dropdown */}
           <ManualInputSection
-            inputValue={platformState.inputValue}
-            setInputValue={platformState.setInputValue}
-            selectedLabel={platformState.selectedLabel}
-            setSelectedLabel={platformState.setSelectedLabel}
-            addPerson={platformState.addPerson}
-            filteredManualContacts={platformState.filteredManualContacts}
+            inputValue={platformState?.inputValue}
+            setInputValue={platformState?.setInputValue}
+            selectedLabel={platformState?.selectedLabel}
+            setSelectedLabel={platformState?.setSelectedLabel}
+            addPerson={platformState?.addPerson}
+            filteredManualContacts={platformState?.filteredManualContacts}
             openPriorityPeopleModal={currentPlatform === "google" ? () => setAddEmailModalOpen(true) : null}
           />
 
           {/* Suggested contacts */}
           <SuggestedContacts
-            suggestedContacts={platformState.suggestedContacts}
-            priorityPeople={platformState.priorityPeople}
-            platformContacts={platformState.platformContacts}
-            addPerson={platformState.addPerson}
-            removePerson={platformState.removePerson}
-            designateContact={platformState.designateContact}
-            addLabel={platformState.addLabel}
-            searchQuery={platformState.searchQuery}
+            suggestedContacts={platformState?.suggestedContacts}
+            priorityPeople={platformState?.priorityPeople}
+            platformContacts={platformState?.platformContacts}
+            addPerson={platformState?.addPerson}
+            removePerson={platformState?.removePerson}
+            designateContact={platformState?.designateContact}
+            addLabel={platformState?.addLabel}
+            searchQuery={platformState?.searchQuery}
           />
         </div>}
 

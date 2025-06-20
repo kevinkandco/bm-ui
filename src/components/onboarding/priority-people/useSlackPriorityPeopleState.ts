@@ -29,8 +29,8 @@ export function useSlackPriorityPeopleState(id: number, initialPeople: PriorityP
 
   const filteredManualContacts = useMemo(() =>
     platformContacts?.filter(contact =>
-      contact.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-      contact.email.toLowerCase().includes(inputValue.toLowerCase())
+      contact?.name?.toLowerCase()?.includes(inputValue.toLowerCase()) ||
+      contact?.email?.toLowerCase()?.includes(inputValue.toLowerCase())
     ),
     [platformContacts, inputValue]
   );
@@ -39,7 +39,7 @@ export function useSlackPriorityPeopleState(id: number, initialPeople: PriorityP
     if (!name.trim()) return;
 
     setPriorityPeople(prev => {
-      if (prev.some(p => p.name === name)) return prev;
+      if (prev.some(p => p?.name === name)) return prev;
 
       return [...prev, {
         id,
@@ -55,7 +55,7 @@ export function useSlackPriorityPeopleState(id: number, initialPeople: PriorityP
   }, [selectedLabel]);
 
   const removePerson = useCallback((personId: number | string) => {
-    setPriorityPeople((prev) => prev.filter((person) => person.id !== personId));
+    setPriorityPeople((prev) => prev.filter((person) => person?.id !== personId));
   }, []);
 
   const designateContact = useCallback((personId: number | string, contact: Contact) => {
@@ -64,8 +64,8 @@ export function useSlackPriorityPeopleState(id: number, initialPeople: PriorityP
         person.id === personId
           ? {
               ...person,
-              contactName: contact.name || undefined,
-              email: contact.email || undefined,
+              contactName: contact?.name || undefined,
+              email: contact?.email || undefined,
             }
           : person
       )
