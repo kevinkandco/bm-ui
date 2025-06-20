@@ -25,7 +25,7 @@ export const PriorityPeopleList = ({
     <div className="space-y-1.5">
       {priorityPeople?.map((person) => (
         <PriorityPersonCard
-          key={person.id}
+          key={person?.id}
           person={person}
           removePerson={removePerson}
           designateContact={designateContact}
