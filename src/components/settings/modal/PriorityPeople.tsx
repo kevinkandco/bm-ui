@@ -71,12 +71,12 @@ const PriorityPeople = ({
     if (response) {
       const now = Date.now();
 
-      setPlatformContacts(response.contacts);
-      setSuggestedContacts(response.contacts);
+      setPlatformContacts(response?.contacts);
+      setSuggestedContacts(response?.contacts);
 
       const wrappedResponse = {
         cachedAt: now,
-        contacts: response.contacts,
+        contacts: response?.contacts,
       };
 
       const cacheResponse = new Response(JSON.stringify(wrappedResponse), {
@@ -106,8 +106,8 @@ const PriorityPeople = ({
     () =>
       platformContacts?.filter(
         (contact) =>
-          contact?.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-          contact?.email.toLowerCase().includes(inputValue.toLowerCase())
+          contact?.name?.toLowerCase()?.includes(inputValue?.toLowerCase()) ||
+          contact?.email?.toLowerCase()?.includes(inputValue?.toLowerCase())
       ),
     [platformContacts, inputValue]
   );
@@ -118,7 +118,7 @@ const PriorityPeople = ({
 
       setSlackData((prev) => {
         // Check if person already exists
-        if (prev.priorityPeople.some((p) => p.id === id)) return prev;
+        if (prev?.priorityPeople?.some((p) => p?.id === id)) return prev;
 
         return {
           ...prev,
@@ -145,8 +145,8 @@ const PriorityPeople = ({
     (personId: string | number, ) => {
       setSlackData((prev) => ({
         ...prev,
-        priorityPeople: prev.priorityPeople.filter(
-          (p) => p.id !== personId
+        priorityPeople: prev?.priorityPeople?.filter(
+          (p) => p?.id !== personId
         ),
       }));
     },
@@ -157,12 +157,12 @@ const PriorityPeople = ({
     (personId: string | number, contact: Contact) => {
       setSlackData((prev) => ({
         ...prev,
-        priorityPeople: prev.priorityPeople.map((person) =>
+        priorityPeople: prev.priorityPeople?.map((person) =>
           person.id === personId
             ? {
                 ...person,
-                contactName: contact.name || undefined,
-                email: contact.email || undefined,
+                contactName: contact?.name || undefined,
+                email: contact?.email || undefined,
               }
             : person
         ),
@@ -175,8 +175,8 @@ const PriorityPeople = ({
     (personId: string | number, label: string) => {
       setSlackData((prev) => ({
         ...prev,
-        priorityPeople: prev.priorityPeople.map((person) =>
-          person.id === personId ? { ...person, label } : person
+        priorityPeople: prev?.priorityPeople?.map((person) =>
+          person?.id === personId ? { ...person, label } : person
         ),
       }));
     },
@@ -192,15 +192,15 @@ const PriorityPeople = ({
   const handleSave = async () => {
     setHasTriedToSave(true);
 
-    const filtered = people.filter((p) => p.name || p.email);
+    const filtered = people.filter((p) => p?.name || p?.email);
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const errors: ValidationError[] = [];
     const seenEmails = new Set<string>();
 
     filtered.forEach((p, i) => {
-      const name = p.name.trim();
-      const email = p.email.trim();
+      const name = p?.name.trim();
+      const email = p?.email.trim();
 
       if ((name && !email) || (!name && email)) {
         errors.push({
@@ -212,18 +212,18 @@ const PriorityPeople = ({
           index: i,
           message: "Email cannot contain uppercase letters.",
         });
-      } else if (email && !emailRegex.test(email)) {
+      } else if (email && !emailRegex?.test(email)) {
         errors.push({
           index: i,
           message: "Email is not valid.",
         });
-      } else if (email && seenEmails.has(email.toLowerCase())) {
+      } else if (email && seenEmails.has(email?.toLowerCase())) {
         errors.push({
           index: i,
           message: "Duplicate email not allowed.",
         });
       } else if (email) {
-        seenEmails.add(email.toLowerCase());
+        seenEmails.add(email?.toLowerCase());
       }
     });
 
@@ -231,7 +231,7 @@ const PriorityPeople = ({
 
     if (errors.length > 0) return;
 
-    filtered.forEach((p) => addPerson(Math.random(), p.name, p.email?.toLowerCase(), undefined, p.label));
+    filtered.forEach((p) => addPerson(Math.random(), p?.name, p?.email?.toLowerCase(), undefined, p?.label));
     handleCancel();
   };
 
@@ -312,7 +312,7 @@ const PriorityPeople = ({
             setSelectedLabel={setSelectedLabel}
             addPerson={addPerson}
             filteredManualContacts={filteredManualContacts}
-            openPriorityPeopleModal={provider.name?.toLowerCase() === 'google' ? () => setAddEmailModalOpen(true) : null}
+            openPriorityPeopleModal={provider?.name?.toLowerCase() === 'google' ? () => setAddEmailModalOpen(true) : null}
           />
 
           {/* Suggested contacts */}
