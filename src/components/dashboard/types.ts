@@ -72,8 +72,8 @@ export interface Stats {
 }
 
 export interface PriorityItems{
-    slack?: { low: number; medium: number; high: number };
-    gmail?: { low: number; medium: number; high: number };
+    slack?: { low: number; medium: number; high: number, actionable: number, total_messages: number };
+    gmail?: { low: number; medium: number; high: number, actionable: number, total_messages: number };
   }
 
 export interface Summary {
