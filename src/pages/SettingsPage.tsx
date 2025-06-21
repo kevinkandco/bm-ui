@@ -62,7 +62,7 @@ const SettingsPage = () => {
     }
 
 
-    const response = await call("post", "/api/settings/profile-update", {
+    const response = await call("post", "/settings/profile-update", {
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -143,7 +143,7 @@ const SettingsPage = () => {
     if (activeSection === id) return;
 
     if (id === 'logout') {
-       const response = await call("get", "/api/logout", {
+       const response = await call("get", "/logout", {
           toastTitle: "Error",
           toastDescription: "Failed to log out. Please try again.",
           toastVariant: "destructive",

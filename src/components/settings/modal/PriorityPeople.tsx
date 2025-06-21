@@ -41,7 +41,7 @@ const PriorityPeople = ({
   const getContact = useCallback(async (): Promise<void> => {
     setLoadingContacts(true);
 
-    const cacheKey = `/api/${Provider[provider?.name]}/contacts/${provider?.id}`;
+    const cacheKey = `/${Provider[provider?.name]}/contacts/${provider?.id}`;
     const CACHE_EXPIRY_HOURS = 24;
 
     const cache = await caches.open("contacts-cache");

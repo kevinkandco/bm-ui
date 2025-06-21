@@ -22,7 +22,7 @@ const SummaryFeedback = ({ briefId, onFeedback, showTooltip = false, selectedFee
 
     const feedback = useCallback(
       async (type: "up" | "down", comment?: string) => {
-        const response = await call("post", `/api/summary/${briefId}/vote`, {
+        const response = await call("post", `/summary/${briefId}/vote`, {
           showToast: true,
           toastTitle: `Failed to ${type === "up" ? "like" : "dislike"} summary`,
           toastDescription: `There was an error ${

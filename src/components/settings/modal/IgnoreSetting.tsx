@@ -47,7 +47,7 @@ const IgnoreSetting = ({
 
   const getAllChannel = useCallback(async (): Promise<void> => {
     setLoadingIgnore(true);
-    const response = await call("get", `/api/slack/channels/${provider?.id}`);
+    const response = await call("get", `/slack/channels/${provider?.id}`);
 
     if (!response) {
       console.error("Failed to fetch Slack channels");

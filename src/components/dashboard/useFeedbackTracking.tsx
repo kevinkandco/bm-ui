@@ -24,7 +24,7 @@ export const useFeedbackTracking = (callback: () => void = () => {}) => {
     // Store locally for immediate personalization
     
 
-    const response = await call("post", `/api/summary/${feedbackEvent?.briefId}/vote`, {
+    const response = await call("post", `/summary/${feedbackEvent?.briefId}/vote`, {
           showToast: true,
           toastTitle: `Failed to ${feedbackEvent?.type === "summary_up" ? "like" : "dislike"} summary`,
           toastDescription: `There was an error ${feedbackEvent?.type === "summary_up" ? "liking" : "disliking"} this summary. Please try again later.`,

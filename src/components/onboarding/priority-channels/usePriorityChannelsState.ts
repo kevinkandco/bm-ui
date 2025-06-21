@@ -8,7 +8,7 @@ export function usePriorityChannelsState(id: number, initialChannels: string[] =
   const { call } = useApi();
 
   const getAllChannel = useCallback(async (): Promise<void> => {
-    const response = await call("get", `/api/slack/channels/${id}`);
+    const response = await call("get", `/slack/channels/${id}`);
 
     if (response) {
       setAllSlackChannels(response);

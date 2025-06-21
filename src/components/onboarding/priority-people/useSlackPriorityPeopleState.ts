@@ -14,7 +14,7 @@ export function useSlackPriorityPeopleState(id: number, initialPeople: PriorityP
 
   const fetchContacts = useCallback(async () => {
     setLoading(true);
-    const response = await call("get", `/api/slack/contacts/${id}`);
+    const response = await call("get", `/slack/contacts/${id}`);
 
     if (response) {
       setPlatformContacts(response?.contacts);

@@ -52,7 +52,7 @@ const BriefConfigurationSection = () => {
   // });
 
   const getData = useCallback(async () => {
-    const response = await call('get', "/api/settings/brief-configuration/days", {
+    const response = await call('get', "/settings/brief-configuration/days", {
       showToast: true,
       toastTitle: "Failed to get data",
       toastDescription: "Failed to get data",
@@ -112,7 +112,7 @@ const BriefConfigurationSection = () => {
 
   const toggleDay = async (day: keyof typeof days) => {
     const updatedDays = { ...days, [day]: !days[day] };
-    const response = await call('post' ,"/api/settings/brief-configuration/days", {
+    const response = await call('post' ,"/settings/brief-configuration/days", {
       body: updatedDays,
       showToast: true,
       toastTitle: "Failed to update data",
@@ -126,7 +126,7 @@ const BriefConfigurationSection = () => {
   const toggleTime = async (time: string, briefTimeKey: keyof typeof times) => {
     const formattedTime = moment(time, "h:mm A").format("HH:mm");
 
-    const response = await call('post', "/api/settings/brief-configuration/days", {
+    const response = await call('post', "/settings/brief-configuration/days", {
       body: { ...days, briefTime: formattedTime },
       showToast: true,
       toastTitle: "Failed to update data",

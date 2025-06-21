@@ -65,7 +65,7 @@ const CatchMeUp = ({ open, onClose, onGenerateSummary }: CatchMeUpProps) => {
     }
     
     
-    const response = await call("post", "/api/catch-me", {
+    const response = await call("post", "/catch-me", {
       body: {
         time_period: timePeriod === "auto" ? parseInt(detectedTime) : customHours,
       },

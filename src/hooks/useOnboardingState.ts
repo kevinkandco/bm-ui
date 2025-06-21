@@ -164,7 +164,7 @@ export function useOnboardingState() {
   }, []);
 
   const getIntegrations = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/settings/system-integrations", {
+    const response = await call("get", "/settings/system-integrations", {
       returnOnFailure: false,
     });
   

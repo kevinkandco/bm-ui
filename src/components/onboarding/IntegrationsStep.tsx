@@ -187,7 +187,7 @@ const IntegrationsStep = ({
       return;
     }
 
-    const response = await call("get", `/api/slack/fetch/${slackId}`, {
+    const response = await call("get", `/slack/fetch/${slackId}`, {
       showToast: true,
       toastTitle: "Failed to fetch Slack data",
       toastVariant: "destructive",
@@ -217,7 +217,7 @@ const IntegrationsStep = ({
   //     const requests = connectedAccount.map((account) =>{
   //       const providerName = Provider[account.provider_name?.toLowerCase() || ''];
   //       const id = account.id || '';
-  //       return call("get", `/api/${providerName}/fetch/${id}`, {
+  //       return call("get", `/${providerName}/fetch/${id}`, {
   //         showToast: true,
   //         toastTitle: `Failed to fetch ${account.provider_name} data`,
   //         toastVariant: "destructive",
@@ -261,10 +261,10 @@ const IntegrationsStep = ({
 
     const openAuthUrl = (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL}/auth/redirect/slack?redirectURL=onboarding`,
-        google: `${BaseURL}/google/auth?redirectURL=onboarding`,
-        calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${BaseURL}/outlook/auth`,
+        slack: `${BaseURL?.replace("/api", "")}/auth/redirect/slack?redirectURL=onboarding`,
+        google: `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=onboarding`,
+        calendar: `${BaseURL?.replace("/api", "")}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${BaseURL?.replace("/api", "")}/outlook/auth`,
       };
       window.open(urls[provider], "_self");
     };

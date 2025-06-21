@@ -94,7 +94,7 @@ const ProviderSettingsModal = ({
   ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, ignoreActive, provider?.name]);
 
   const getSlackData = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/settings/system-integrations/" + provider.id);
+    const response = await call("get", "/settings/system-integrations/" + provider.id);
 
     if (response) {
       setSlackData(response);
@@ -110,7 +110,7 @@ const ProviderSettingsModal = ({
     if (provider.name === 'google') return;
 
     setSyncLoading(true);
-    const response = await call("get", `/api/${Provider[provider?.name]}/fetch/${provider?.id}`);
+    const response = await call("get", `/${Provider[provider?.name]}/fetch/${provider?.id}`);
 
     if (response) {
       clearCache();
@@ -138,7 +138,7 @@ const ProviderSettingsModal = ({
   
   const handleSave = useCallback(async (): Promise<void> => {
     setIsSaving(true);
-    const response = await call("post", `/api/settings/system-integrations/${provider.id}/update`, {
+    const response = await call("post", `/settings/system-integrations/${provider.id}/update`, {
       body: slackData,
     });
 

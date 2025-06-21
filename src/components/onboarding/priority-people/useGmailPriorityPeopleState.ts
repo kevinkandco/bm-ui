@@ -14,7 +14,7 @@ export function useGmailPriorityPeopleState(id: number, initialPeople: PriorityP
 
   const fetchContacts = useCallback(async () => {
     setLoading(true);
-    const response = await call("get", `/api/email/contacts/${id}`);
+    const response = await call("get", `/email/contacts/${id}`);
     if (response) {
       setPlatformContacts(response?.contacts || []);
       setSuggestedContacts(response?.contacts || []);

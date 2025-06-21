@@ -64,7 +64,7 @@ const IgnoreConfigStep = ({
   const slackId = connectedAccount?.find(c => c?.provider_name?.toLowerCase() === "slack")?.id;
 
   const getAllChannel = useCallback(async (): Promise<void> => {
-    const response = await call("get", `/api/slack/channels/${slackId}`);
+    const response = await call("get", `/slack/channels/${slackId}`);
 
     if (!response) {
       console.error("Failed to fetch Slack channels");

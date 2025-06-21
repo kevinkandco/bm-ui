@@ -48,7 +48,7 @@ const Voices = () => {
   } = useAudioPlayer(currentAudioUrl, true);
 
   const getVoices = useCallback(async () => {
-    const response = await call("get", `/api/settings/voice-tones`, {
+    const response = await call("get", `/settings/voice-tones`, {
       showToast: true,
       toastTitle: "Error",
       toastDescription: "Failed to fetch voices",
@@ -84,7 +84,7 @@ const Voices = () => {
 );
 
  const setVoiceActive = useCallback(async (voice_id: number, status: boolean) => {
-  const response = await call("post", `/api/settings/voice-tones/status-update`, {
+  const response = await call("post", `/settings/voice-tones/status-update`, {
       showToast: true,
       toastTitle: "Error",
       toastDescription: "Failed to fetch voices",

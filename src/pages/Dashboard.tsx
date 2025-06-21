@@ -64,7 +64,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
-    const response = await call("get", "/api/dashboard", {
+    const response = await call("get", "/dashboard", {
       showToast: true,
       toastTitle: "Failed to fetch user data",
       toastDescription: "Something went wrong. Failed to fetch user data.",
@@ -94,7 +94,7 @@ const Dashboard = () => {
 
   const getRecentBriefs = useCallback(async () => {
     setBriefsLoading(true);
-    const response = await call("get", `/api/summaries?per_page=3`, {
+    const response = await call("get", `/summaries?per_page=3`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
@@ -107,7 +107,7 @@ const Dashboard = () => {
 
   const getBrief = useCallback(
       async (briefId: number): Promise<false | Summary> => {
-        const response = await call("get", `/api/summary/${briefId}/status`, {
+        const response = await call("get", `/summary/${briefId}/status`, {
           showToast: true,
           toastTitle: "Failed to fetch brief",
           toastDescription: "Something went wrong while fetching the brief.",
@@ -217,7 +217,7 @@ const Dashboard = () => {
   const handleExitFocusMode = useCallback(async () => {
     setFocusModeExitLoading(true);
 
-    const response = await call("get", "/api/exit-focus-mode", {
+    const response = await call("get", "/exit-focus-mode", {
       showToast: true,
       toastTitle: "Focus Mode Exit failed",
       toastDescription: "Something went wrong. Please try again later.",
@@ -274,7 +274,7 @@ const Dashboard = () => {
     ) => {
       setFocusModeActivationLoading(true);
 
-      const response = await call("post", "/api/focus-mode", {
+      const response = await call("post", "/focus-mode", {
         body: { ...options, focusDuration: focusTime },
         showToast: true,
         toastTitle: "Focus Mode Activation Failed",
@@ -300,7 +300,7 @@ const Dashboard = () => {
   );
 
   const handleSignOffForDay = useCallback(() => {
-    const response = call("post", "/api/sign-off", {
+    const response = call("post", "/sign-off", {
       showToast: true,
       toastTitle: "Sign Off Failed",
       toastDescription:
