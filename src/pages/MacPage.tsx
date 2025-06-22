@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import MenuBarIcon from "@/components/dashboard/MenuBarIcon";
 import MenuBarCompanion from "@/components/dashboard/MenuBarCompanion";
 import { useToast } from "@/hooks/use-toast";
+import { AlertTriangle, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type StatusType = "active" | "offline" | "dnd";
 
@@ -10,6 +12,7 @@ const MacPage = () => {
   const { toast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [status, setStatus] = useState<StatusType>("active");
+  const [showInterruptNotification, setShowInterruptNotification] = useState(true);
 
   // Example dynamic integrations data
   const integrations = [
@@ -59,6 +62,10 @@ const MacPage = () => {
     handleCloseMenu();
   };
 
+  const handleDismissNotification = () => {
+    setShowInterruptNotification(false);
+  };
+
   return (
     <div 
       className="min-h-screen w-full relative"
@@ -89,12 +96,71 @@ const MacPage = () => {
         onUpdateSchedule={handleUpdateSchedule}
         onOpenDashboard={handleOpenDashboard}
       />
+
+      {/* Interrupt Notification Example */}
+      {showInterruptNotification && (
+        <div className="fixed top-16 right-4 z-50 max-w-sm">
+          <div className="bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl shadow-2xl p-4 animate-in slide-in-from-top-2 fade-in-0 duration-300">
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Brief Me Interrupt</span>
+              </div>
+              <Button
+                onClick={handleDismissNotification}
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2 mb-1">
+                  <p className="text-sm font-semibold text-gray-900">Sarah Chen</p>
+                  <span className="text-xs text-gray-500">Slack • #incidents</span>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  "<span className="font-medium text-red-600">URGENT</span>: Payment service is down affecting checkout. Need immediate attention."
+                </p>
+                <div className="mt-2 flex space-x-2">
+                  <Button size="sm" className="h-7 text-xs px-3">
+                    Reply
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-7 text-xs px-3">
+                    View Thread
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-3 pt-3 border-t border-gray-100">
+              <p className="text-xs text-gray-500">
+                <span className="font-medium">Why you saw this:</span> Sarah is in your priority contacts and message contains "URGENT" keyword
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Desktop Content Area */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-8">
         <div className="text-center text-white/80">
           <h1 className="text-6xl font-thin mb-4">macOS Desktop</h1>
-          <p className="text-xl">Click the menu bar to access Brief Me or cycle through status by clicking the button</p>
+          <p className="text-xl mb-8">Click the menu bar to access Brief Me or cycle through status by clicking the button</p>
+          
+          {/* Interrupt Notification Info */}
+          <div className="max-w-2xl mx-auto mt-12 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+            <h2 className="text-2xl font-light mb-4">Smart Interrupt System</h2>
+            <p className="text-white/70 leading-relaxed">
+              Brief Me monitors all your communications silently in the background. Only the most critical messages—from priority contacts or containing emergency keywords—break through as interrupt notifications. Everything else waits for your next brief, keeping you focused while ensuring you never miss what truly matters.
+            </p>
+          </div>
         </div>
       </div>
     </div>
