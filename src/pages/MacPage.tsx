@@ -115,7 +115,7 @@ const MacPage = () => {
 
       {/* Interrupt Notification Example - positioned to expand from Brief Me button */}
       {showInterruptNotification && (
-        <div className="fixed top-14 right-4 z-50 max-w-md w-full mx-4">
+        <div className="fixed top-20 right-4 z-40 max-w-md w-full">
           <div className="glass-panel p-4 animate-in slide-in-from-top-4 fade-in-0 duration-500">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
