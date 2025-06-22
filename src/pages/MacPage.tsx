@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MenuBarIcon from "@/components/dashboard/MenuBarIcon";
 import MenuBarCompanion from "@/components/dashboard/MenuBarCompanion";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, X, Zap, RefreshCw } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type StatusType = "active" | "offline" | "dnd";
@@ -116,29 +116,6 @@ const MacPage = () => {
     >
       {/* macOS Desktop Overlay */}
       <div className="absolute inset-0 bg-black/10" />
-      
-      {/* Control Buttons - Top Left */}
-      <div className="fixed top-4 left-4 z-50 flex space-x-3">
-        <Button
-          onClick={handleToggleExampleNotification}
-          className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
-          variant="ghost"
-        >
-          <Zap className="h-4 w-4 mr-2" />
-          {showInterruptNotification ? "Hide example notification" : "Show example notification"}
-        </Button>
-        
-        {showInterruptNotification && (
-          <Button
-            onClick={handleRefreshNotification}
-            className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
-            variant="ghost"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh notification
-          </Button>
-        )}
-      </div>
       
       {/* Menu Bar Icon - Only shown on Mac page */}
       <MenuBarIcon 
