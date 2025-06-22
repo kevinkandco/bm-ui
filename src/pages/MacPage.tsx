@@ -97,39 +97,39 @@ const MacPage = () => {
         onOpenDashboard={handleOpenDashboard}
       />
 
-      {/* Interrupt Notification Example */}
+      {/* Interrupt Notification Example - positioned to expand from menu bar */}
       {showInterruptNotification && (
-        <div className="fixed top-16 right-4 z-50 max-w-sm">
-          <div className="bg-white/95 backdrop-blur-md border border-gray-200 rounded-xl shadow-2xl p-4 animate-in slide-in-from-top-2 fade-in-0 duration-300">
-            <div className="flex items-start justify-between mb-2">
+        <div className="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
+          <div className="glass-panel p-4 animate-in slide-in-from-top-4 fade-in-0 duration-500">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Brief Me Interrupt</span>
+                <span className="text-xs font-medium text-text-secondary uppercase tracking-wide">Brief Me Interrupt</span>
               </div>
               <Button
                 onClick={handleDismissNotification}
                 variant="ghost"
                 size="sm"
-                className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
             
             <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0 w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <div className="flex-shrink-0 w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-amber-400" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-1">
-                  <p className="text-sm font-semibold text-gray-900">Sarah Chen</p>
-                  <span className="text-xs text-gray-500">Slack • #incidents</span>
+                  <p className="text-sm font-semibold text-text-primary">Sarah Chen</p>
+                  <span className="text-xs text-text-secondary">Slack • #incidents</span>
                 </div>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  "<span className="font-medium text-red-600">URGENT</span>: Payment service is down affecting checkout. Need immediate attention."
+                <p className="text-sm text-text-primary leading-relaxed mb-3">
+                  "<span className="font-medium text-red-400">URGENT</span>: Payment service is down affecting checkout. Need immediate attention."
                 </p>
-                <div className="mt-2 flex space-x-2">
-                  <Button size="sm" className="h-7 text-xs px-3">
+                <div className="flex space-x-2">
+                  <Button size="sm" variant="primary" className="h-7 text-xs px-3">
                     Reply
                   </Button>
                   <Button variant="outline" size="sm" className="h-7 text-xs px-3">
@@ -139,8 +139,8 @@ const MacPage = () => {
               </div>
             </div>
             
-            <div className="mt-3 pt-3 border-t border-gray-100">
-              <p className="text-xs text-gray-500">
+            <div className="mt-3 pt-3 border-t border-border-subtle">
+              <p className="text-xs text-text-secondary">
                 <span className="font-medium">Why you saw this:</span> Sarah is in your priority contacts and message contains "URGENT" keyword
               </p>
             </div>
