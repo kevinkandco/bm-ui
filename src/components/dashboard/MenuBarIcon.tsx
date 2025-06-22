@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Zap, ChevronDown, Calendar, ExternalLink, Settings, X, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -193,29 +194,6 @@ const MenuBarIcon = ({
                       )}
                     </div>
                   ))}
-                </div>
-              </div>
-
-              {/* Footer - Updated to match the design */}
-              <div className="px-4 py-3 border-t border-gray-200/30 bg-gray-50/30">
-                <div className="flex justify-center gap-3">
-                  {/* Brief Me Button */}
-                  <button 
-                    onClick={handleGetBriefedNow}
-                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
-                    title="Brief Me"
-                  >
-                    <Zap className="w-5 h-5" />
-                  </button>
-                  
-                  {/* Status Button */}
-                  <button 
-                    onClick={handleStatusClick}
-                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
-                    title="Toggle Status"
-                  >
-                    <div className={`w-3 h-3 rounded-full ${getStatusColor(currentStatus)}`} />
-                  </button>
                 </div>
               </div>
             </DropdownMenuContent>
