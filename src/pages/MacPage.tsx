@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MenuBarIcon from "@/components/dashboard/MenuBarIcon";
 import MenuBarCompanion from "@/components/dashboard/MenuBarCompanion";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type StatusType = "active" | "offline" | "dnd";
@@ -12,7 +12,7 @@ const MacPage = () => {
   const { toast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [status, setStatus] = useState<StatusType>("active");
-  const [showInterruptNotification, setShowInterruptNotification] = useState(true);
+  const [showInterruptNotification, setShowInterruptNotification] = useState(false);
 
   // Example dynamic integrations data
   const integrations = [
@@ -66,6 +66,10 @@ const MacPage = () => {
     setShowInterruptNotification(false);
   };
 
+  const handleShowExampleNotification = () => {
+    setShowInterruptNotification(true);
+  };
+
   return (
     <div 
       className="min-h-screen w-full relative"
@@ -78,6 +82,18 @@ const MacPage = () => {
     >
       {/* macOS Desktop Overlay */}
       <div className="absolute inset-0 bg-black/10" />
+      
+      {/* Show Example Notification Button - Top Left */}
+      <div className="fixed top-4 left-4 z-50">
+        <Button
+          onClick={handleShowExampleNotification}
+          className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200"
+          variant="ghost"
+        >
+          <Zap className="h-4 w-4 mr-2" />
+          Show example notification
+        </Button>
+      </div>
       
       {/* Menu Bar Icon - Only shown on Mac page */}
       <MenuBarIcon 
@@ -97,9 +113,9 @@ const MacPage = () => {
         onOpenDashboard={handleOpenDashboard}
       />
 
-      {/* Interrupt Notification Example - positioned to expand from menu bar */}
+      {/* Interrupt Notification Example - positioned to expand from Brief Me button */}
       {showInterruptNotification && (
-        <div className="fixed top-12 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
+        <div className="fixed top-14 right-4 z-50 max-w-md w-full mx-4">
           <div className="glass-panel p-4 animate-in slide-in-from-top-4 fade-in-0 duration-500">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
