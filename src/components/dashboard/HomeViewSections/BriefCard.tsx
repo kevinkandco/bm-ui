@@ -82,7 +82,6 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                   <p className="text-sm text-text-secondary">
                     Delivered at {brief.timestamp} (Summarizing: 11:07 PM - 9:00 AM)
                   </p>
-                  <p className="text-sm text-text-secondary mt-1">{brief.summary}</p>
                 </div>
               </div>
 
@@ -128,7 +127,6 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                     <p className="text-sm text-text-secondary mb-2">
                       Delivered at {brief.timestamp} (Summarizing: 11:07 PM - 9:00 AM)
                     </p>
-                    <p className="text-sm text-text-secondary">{brief.summary}</p>
                     <div className="flex items-center space-x-4 text-xs text-text-secondary mt-2">
                       <div className="flex items-center space-x-1">
                         <User className="h-3 w-3" />
