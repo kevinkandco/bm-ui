@@ -318,12 +318,23 @@ const Dashboard = () => {
   }, [toast, call]);
 
   const handleSignBackOn = useCallback(() => {
+    const response = call("post", "/api/sign-back-on", {
+      showToast: true,
+      toastTitle: "Sign Back On Failed",
+      toastDescription:
+        "Sign Back On failed. please try again sometime later.",
+      toastVariant: "destructive"
+    })
+
+    if (!response) {
+      return;
+    }
     setUserStatus("active");
     toast({
       title: "Welcome Back",
       description: "You're now back online and monitoring"
     });
-  }, [toast]);
+  }, [toast, call]);
 
   return (
     <div className="min-h-screen flex flex-col">
