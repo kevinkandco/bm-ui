@@ -73,12 +73,6 @@ const SettingsPage = () => {
       active: activeSection === "referral"
     },
     {
-      id: "notifications",
-      icon: Bell,
-      name: "Notifications",
-      active: activeSection === "notifications"
-    },
-    {
       id: "interrupt-rules",
       icon: Shield,
       name: "Interrupt Rules",
