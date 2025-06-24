@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Mail, Archive, Tag, AlertCircle } from "lucide-react";
+import { Brain, Mail, Archive, Tag, AlertCircle, Users, Ban, Plus, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface EmailAISettingsProps {
@@ -24,6 +25,9 @@ interface EmailAISettingsProps {
     autoSort: boolean;
     autoArchive: boolean;
     priorityOnly: boolean;
+    priorityPeople: string[];
+    ignoreKeywords: string[];
+    priorityTopics: string[];
   };
   onSave: (settings: any) => void;
 }
@@ -37,12 +41,18 @@ const EmailAISettings = ({
     autoLabel: false,
     autoSort: false,
     autoArchive: false,
-    priorityOnly: false
+    priorityOnly: false,
+    priorityPeople: [],
+    ignoreKeywords: [],
+    priorityTopics: []
   },
   onSave
 }: EmailAISettingsProps) => {
   const { toast } = useToast();
   const [settings, setSettings] = useState(currentSettings);
+  const [newPriorityPerson, setNewPriorityPerson] = useState("");
+  const [newIgnoreKeyword, setNewIgnoreKeyword] = useState("");
+  const [newPriorityTopic, setNewPriorityTopic] = useState("");
 
   const handleSave = () => {
     onSave(settings);
@@ -57,9 +67,60 @@ const EmailAISettings = ({
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  const addPriorityPerson = () => {
+    if (newPriorityPerson.trim()) {
+      setSettings(prev => ({
+        ...prev,
+        priorityPeople: [...prev.priorityPeople, newPriorityPerson.trim()]
+      }));
+      setNewPriorityPerson("");
+    }
+  };
+
+  const removePriorityPerson = (person: string) => {
+    setSettings(prev => ({
+      ...prev,
+      priorityPeople: prev.priorityPeople.filter(p => p !== person)
+    }));
+  };
+
+  const addIgnoreKeyword = () => {
+    if (newIgnoreKeyword.trim()) {
+      setSettings(prev => ({
+        ...prev,
+        ignoreKeywords: [...prev.ignoreKeywords, newIgnoreKeyword.trim()]
+      }));
+      setNewIgnoreKeyword("");
+    }
+  };
+
+  const removeIgnoreKeyword = (keyword: string) => {
+    setSettings(prev => ({
+      ...prev,
+      ignoreKeywords: prev.ignoreKeywords.filter(k => k !== keyword)
+    }));
+  };
+
+  const addPriorityTopic = () => {
+    if (newPriorityTopic.trim()) {
+      setSettings(prev => ({
+        ...prev,
+        priorityTopics: [...prev.priorityTopics, newPriorityTopic.trim()]
+      }));
+      setNewPriorityTopic("");
+    }
+  };
+
+  const removePriorityTopic = (topic: string) => {
+    setSettings(prev => ({
+      ...prev,
+      priorityTopics: prev.priorityTopics.filter(t => t !== topic)
+    }));
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-blue-400" />
@@ -81,90 +142,212 @@ const EmailAISettings = ({
             </div>
           </div>
 
-          {/* Auto-labeling */}
+          {/* AI Features */}
           <div className="space-y-4">
+            <h3 className="text-lg font-medium text-text-primary">AI Features</h3>
+            
+            {/* Auto-labeling */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-4 w-4 text-text-secondary" />
+                    <Label className="text-base font-medium">Auto-Label Emails</Label>
+                  </div>
+                  <p className="text-sm text-text-secondary">
+                    Automatically add labels like "Priority", "Meeting", "Invoice", etc.
+                  </p>
+                </div>
+                <Switch
+                  checked={settings.autoLabel}
+                  onCheckedChange={(checked) => handleSettingChange('autoLabel', checked)}
+                />
+              </div>
+
+              {settings.autoLabel && (
+                <div className="ml-6 space-y-2">
+                  <p className="text-xs text-text-secondary">Common labels that will be applied:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Priority', 'Meeting', 'Action Required', 'Invoice', 'Newsletter', 'Spam'].map(label => (
+                      <Badge key={label} variant="secondary" className="text-xs">
+                        {label}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Separator />
+
+            {/* Smart Sorting */}
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Tag className="h-4 w-4 text-text-secondary" />
-                  <Label className="text-base font-medium">Auto-Label Emails</Label>
+                  <Mail className="h-4 w-4 text-text-secondary" />
+                  <Label className="text-base font-medium">Smart Sorting</Label>
                 </div>
                 <p className="text-sm text-text-secondary">
-                  Automatically add labels like "Priority", "Meeting", "Invoice", etc.
+                  Organize emails by importance, moving non-priorities to separate folders
                 </p>
               </div>
               <Switch
-                checked={settings.autoLabel}
-                onCheckedChange={(checked) => handleSettingChange('autoLabel', checked)}
+                checked={settings.autoSort}
+                onCheckedChange={(checked) => handleSettingChange('autoSort', checked)}
               />
             </div>
 
-            {settings.autoLabel && (
-              <div className="ml-6 space-y-2">
-                <p className="text-xs text-text-secondary">Common labels that will be applied:</p>
-                <div className="flex flex-wrap gap-2">
-                  {['Priority', 'Meeting', 'Action Required', 'Invoice', 'Newsletter', 'Spam'].map(label => (
-                    <Badge key={label} variant="secondary" className="text-xs">
-                      {label}
-                    </Badge>
-                  ))}
+            <Separator />
+
+            {/* Auto-archiving */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Archive className="h-4 w-4 text-text-secondary" />
+                  <Label className="text-base font-medium">Auto-Archive Non-Priorities</Label>
                 </div>
+                <p className="text-sm text-text-secondary">
+                  Automatically archive low-priority emails after 7 days (never deleted)
+                </p>
+              </div>
+              <Switch
+                checked={settings.autoArchive}
+                onCheckedChange={(checked) => handleSettingChange('autoArchive', checked)}
+              />
+            </div>
+
+            <Separator />
+
+            {/* Priority-only mode */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label className="text-base font-medium">Priority-Only Inbox</Label>
+                <p className="text-sm text-text-secondary">
+                  Only show high-priority emails in your main inbox view
+                </p>
+              </div>
+              <Switch
+                checked={settings.priorityOnly}
+                onCheckedChange={(checked) => handleSettingChange('priorityOnly', checked)}
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Priority People */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-text-secondary" />
+              <h3 className="text-lg font-medium text-text-primary">Priority People</h3>
+            </div>
+            <p className="text-sm text-text-secondary">
+              Emails from these people will always be marked as high priority
+            </p>
+            
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter email or name..."
+                value={newPriorityPerson}
+                onChange={(e) => setNewPriorityPerson(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addPriorityPerson()}
+                className="flex-1"
+              />
+              <Button onClick={addPriorityPerson} size="sm">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {settings.priorityPeople.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {settings.priorityPeople.map(person => (
+                  <Badge key={person} variant="secondary" className="flex items-center gap-1">
+                    {person}
+                    <button onClick={() => removePriorityPerson(person)}>
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
               </div>
             )}
           </div>
 
           <Separator />
 
-          {/* Auto-sorting */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-text-secondary" />
-                <Label className="text-base font-medium">Smart Sorting</Label>
-              </div>
-              <p className="text-sm text-text-secondary">
-                Organize emails by importance, moving non-priorities to separate folders
-              </p>
+          {/* Priority Topics */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Tag className="h-4 w-4 text-text-secondary" />
+              <h3 className="text-lg font-medium text-text-primary">Priority Topics</h3>
             </div>
-            <Switch
-              checked={settings.autoSort}
-              onCheckedChange={(checked) => handleSettingChange('autoSort', checked)}
-            />
+            <p className="text-sm text-text-secondary">
+              Emails containing these keywords will be marked as high priority
+            </p>
+            
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter keyword or topic..."
+                value={newPriorityTopic}
+                onChange={(e) => setNewPriorityTopic(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addPriorityTopic()}
+                className="flex-1"
+              />
+              <Button onClick={addPriorityTopic} size="sm">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {settings.priorityTopics.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {settings.priorityTopics.map(topic => (
+                  <Badge key={topic} variant="secondary" className="flex items-center gap-1">
+                    {topic}
+                    <button onClick={() => removePriorityTopic(topic)}>
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
 
           <Separator />
 
-          {/* Auto-archiving */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Archive className="h-4 w-4 text-text-secondary" />
-                <Label className="text-base font-medium">Auto-Archive Non-Priorities</Label>
+          {/* Ignore Keywords */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Ban className="h-4 w-4 text-text-secondary" />
+              <h3 className="text-lg font-medium text-text-primary">Ignore Keywords</h3>
+            </div>
+            <p className="text-sm text-text-secondary">
+              Emails containing these keywords will be automatically marked as low priority
+            </p>
+            
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter keyword to ignore..."
+                value={newIgnoreKeyword}
+                onChange={(e) => setNewIgnoreKeyword(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addIgnoreKeyword()}
+                className="flex-1"
+              />
+              <Button onClick={addIgnoreKeyword} size="sm">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {settings.ignoreKeywords.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {settings.ignoreKeywords.map(keyword => (
+                  <Badge key={keyword} variant="outline" className="flex items-center gap-1 text-red-400 border-red-400/20">
+                    {keyword}
+                    <button onClick={() => removeIgnoreKeyword(keyword)}>
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
               </div>
-              <p className="text-sm text-text-secondary">
-                Automatically archive low-priority emails after 7 days (never deleted)
-              </p>
-            </div>
-            <Switch
-              checked={settings.autoArchive}
-              onCheckedChange={(checked) => handleSettingChange('autoArchive', checked)}
-            />
-          </div>
-
-          <Separator />
-
-          {/* Priority-only mode */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <Label className="text-base font-medium">Priority-Only Inbox</Label>
-              <p className="text-sm text-text-secondary">
-                Only show high-priority emails in your main inbox view
-              </p>
-            </div>
-            <Switch
-              checked={settings.priorityOnly}
-              onCheckedChange={(checked) => handleSettingChange('priorityOnly', checked)}
-            />
+            )}
           </div>
         </div>
 
