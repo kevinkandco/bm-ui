@@ -4,7 +4,7 @@ import { MessageSquare, Mail, Calendar } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 interface BriefsFeedProps {
-  onOpenBrief: (briefId: number) => void;
+  onOpenBrief: (briefId: string) => void;
   onCatchMeUp: () => void;
   onFocusMode: () => void;
 }
@@ -13,7 +13,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
   // Sample briefs data with time ranges - in a real app this would come from a data source
   const briefs = useMemo(() => [
     {
-      id: 1,
+      id: "1",
       title: "Morning Brief",
       description: "Quick summary of your morning updates",
       timestamp: "Today, 8:00 AM",
@@ -25,7 +25,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       }
     },
     {
-      id: 2,
+      id: "2",
       title: "Slack Channel Updates",
       description: "New messages in #team-updates channel",
       timestamp: "Today, 10:30 AM",
@@ -37,7 +37,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       }
     },
     {
-      id: 3,
+      id: "3",
       title: "Weekly Summary",
       description: "Your week at a glance",
       timestamp: "Yesterday, 5:00 PM",
@@ -49,7 +49,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
       }
     },
     {
-      id: 4,
+      id: "4",
       title: "Project Deadline Reminders",
       description: "Upcoming project milestones this week",
       timestamp: "2 days ago",
@@ -62,7 +62,7 @@ const BriefsFeed = React.memo(({ onOpenBrief }: BriefsFeedProps) => {
     }
   ], []);
 
-  const handleOpenBrief = (briefId: number) => {
+  const handleOpenBrief = (briefId: string) => {
     onOpenBrief(briefId);
   };
 
