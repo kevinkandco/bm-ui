@@ -66,34 +66,37 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
   const totalActionItems = brief.actionItems.length;
 
   return (
-    <div className="bg-[#1a1f2e] border-b border-gray-700/50 hover:bg-[#1e2332] transition-all duration-200 cursor-pointer">
+    <div className="bg-[#2a3441] rounded-2xl border border-[#374151] mb-4 overflow-hidden">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <div className="p-6">
-          {/* Closed State - matches image design */}
+          {/* Closed State */}
           {!isOpen && (
             <div className="flex items-center justify-between" onClick={handleCardClick}>
               {/* Left side with play icon and content */}
               <div className="flex items-center space-x-4 flex-1">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#10b981] to-[#059669] flex items-center justify-center flex-shrink-0">
                   <Play className="h-5 w-5 text-white ml-0.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-white mb-1">{brief.title}</h3>
-                  <p className="text-sm text-gray-400">
+                  <h3 className="text-lg font-medium text-white mb-1">Daily Combined Brief</h3>
+                  <p className="text-sm text-gray-300 mb-1">
                     Delivered at {brief.timestamp} (Summarizing: 11:07 PM - 9:00 AM)
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">Automatically generated daily brief</p>
+                  <p className="text-sm text-gray-400">Automatically generated daily brief</p>
                 </div>
               </div>
 
               {/* Right side with stats and chevron */}
               <div className="flex items-center space-x-6 flex-shrink-0">
-                <div className="flex items-center space-x-4 text-sm text-gray-400">
+                <div className="flex items-center space-x-4 text-sm text-gray-300">
                   <span>{slackMessages} Slack</span>
                   <span>{emails} Emails</span>
                   <span>{totalActionItems} Actions</span>
                 </div>
-                <div className="text-green-400 text-sm font-medium">~33min saved</div>
+                <div className="flex items-center text-green-400 text-sm font-medium">
+                  <Clock className="w-4 h-4 mr-1" />
+                  ~33min saved
+                </div>
                 <CollapsibleTrigger asChild>
                   <Button 
                     variant="ghost" 
@@ -115,17 +118,17 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
               {/* Header Section when open */}
               <div className="flex items-start justify-between mb-4" onClick={handleCardClick}>
                 <div className="flex items-start space-x-3 flex-1">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] flex items-center justify-center mt-1 flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#10b981] to-[#059669] flex items-center justify-center mt-1 flex-shrink-0">
                     <Play className="h-5 w-5 text-white ml-0.5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-1">
-                      <h3 className="text-lg font-semibold text-white truncate">{brief.title}</h3>
+                      <h3 className="text-lg font-medium text-white truncate">Daily Combined Brief</h3>
                     </div>
-                    <p className="text-sm text-gray-400 mb-2">
+                    <p className="text-sm text-gray-300 mb-2">
                       Delivered at {brief.timestamp} (Summarizing: 11:07 PM - 9:00 AM)
                     </p>
-                    <p className="text-sm text-gray-500 mb-2">Automatically generated daily brief</p>
+                    <p className="text-sm text-gray-400 mb-2">Automatically generated daily brief</p>
                     <div className="flex items-center space-x-4 text-xs text-gray-500 mt-2">
                       <div className="flex items-center space-x-1">
                         <User className="h-3 w-3" />
@@ -207,7 +210,10 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                   <span>{emails} Emails</span>
                   <span>{totalActionItems} Actions</span>
                 </div>
-                <div className="text-green-400">~33min saved</div>
+                <div className="flex items-center text-green-400">
+                  <Clock className="w-4 h-4 mr-1" />
+                  ~33min saved
+                </div>
               </div>
 
               {/* Action Items when open */}
