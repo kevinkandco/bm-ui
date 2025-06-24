@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Clock, ChevronRight, User, Calendar, MapPin, MessageSquare, CheckSquare, ExternalLink, MoreVertical, Zap, ChevronDown, BarChart3, Target, AlertCircle, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,28 +66,29 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
   const totalActionItems = brief.actionItems.length;
 
   return (
-    <Card className="glass-card hover:bg-white/10 transition-all duration-300 group cursor-pointer border-border-subtle">
+    <div className="bg-[#1a1f2e] border-b border-gray-700/50 hover:bg-[#1e2332] transition-all duration-200 cursor-pointer">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CardContent className="p-6">
+        <div className="p-6">
           {/* Closed State - matches image design */}
           {!isOpen && (
             <div className="flex items-center justify-between" onClick={handleCardClick}>
               {/* Left side with play icon and content */}
               <div className="flex items-center space-x-4 flex-1">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] flex items-center justify-center flex-shrink-0">
                   <Play className="h-5 w-5 text-white ml-0.5" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-text-primary mb-1">{brief.title}</h3>
-                  <p className="text-sm text-text-secondary">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-white mb-1">{brief.title}</h3>
+                  <p className="text-sm text-gray-400">
                     Delivered at {brief.timestamp} (Summarizing: 11:07 PM - 9:00 AM)
                   </p>
+                  <p className="text-sm text-gray-500 mt-1">Automatically generated daily brief</p>
                 </div>
               </div>
 
               {/* Right side with stats and chevron */}
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center space-x-4 text-sm text-text-secondary">
+              <div className="flex items-center space-x-6 flex-shrink-0">
+                <div className="flex items-center space-x-4 text-sm text-gray-400">
                   <span>{slackMessages} Slack</span>
                   <span>{emails} Emails</span>
                   <span>{totalActionItems} Actions</span>
@@ -96,11 +98,11 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="p-1 h-auto"
+                    className="p-1 h-auto text-gray-400 hover:text-white"
                     data-collapsible-trigger
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <ChevronDown className="h-5 w-5 text-text-secondary" />
+                    <ChevronDown className="h-5 w-5" />
                   </Button>
                 </CollapsibleTrigger>
               </div>
@@ -113,17 +115,18 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
               {/* Header Section when open */}
               <div className="flex items-start justify-between mb-4" onClick={handleCardClick}>
                 <div className="flex items-start space-x-3 flex-1">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] flex items-center justify-center mt-1">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] flex items-center justify-center mt-1 flex-shrink-0">
                     <Play className="h-5 w-5 text-white ml-0.5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-1">
-                      <h3 className="text-lg font-semibold text-text-primary truncate">{brief.title}</h3>
+                      <h3 className="text-lg font-semibold text-white truncate">{brief.title}</h3>
                     </div>
-                    <p className="text-sm text-text-secondary mb-2">
+                    <p className="text-sm text-gray-400 mb-2">
                       Delivered at {brief.timestamp} (Summarizing: 11:07 PM - 9:00 AM)
                     </p>
-                    <div className="flex items-center space-x-4 text-xs text-text-secondary mt-2">
+                    <p className="text-sm text-gray-500 mb-2">Automatically generated daily brief</p>
+                    <div className="flex items-center space-x-4 text-xs text-gray-500 mt-2">
                       <div className="flex items-center space-x-1">
                         <User className="h-3 w-3" />
                         <span>{brief.peopleCount} people</span>
@@ -141,11 +144,11 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="p-1 h-auto"
+                    className="p-1 h-auto text-gray-400 hover:text-white"
                     data-collapsible-trigger
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <ChevronDown className="h-5 w-5 text-text-secondary transition-transform duration-200 transform rotate-180" />
+                    <ChevronDown className="h-5 w-5 transition-transform duration-200 transform rotate-180" />
                   </Button>
                 </CollapsibleTrigger>
               </div>
@@ -164,41 +167,41 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                   <div className="flex items-center justify-center mb-1">
                     <BarChart3 className="h-4 w-4 text-accent-primary" />
                   </div>
-                  <div className="text-lg font-semibold text-text-primary">{totalMessages}</div>
-                  <div className="text-xs text-text-secondary">Total Messages<br />Analyzed</div>
+                  <div className="text-lg font-semibold text-white">{totalMessages}</div>
+                  <div className="text-xs text-gray-400">Total Messages<br />Analyzed</div>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-1">
                     <CheckSquare className="h-4 w-4 text-blue-400" />
                   </div>
-                  <div className="text-lg font-semibold text-text-primary">{lowPriorityActions}</div>
-                  <div className="text-xs text-text-secondary">Low Priority</div>
+                  <div className="text-lg font-semibold text-white">{lowPriorityActions}</div>
+                  <div className="text-xs text-gray-400">Low Priority</div>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-1">
                     <AlertCircle className="h-4 w-4 text-yellow-400" />
                   </div>
-                  <div className="text-lg font-semibold text-text-primary">{mediumPriorityActions}</div>
-                  <div className="text-xs text-text-secondary">Medium Priority</div>
+                  <div className="text-lg font-semibold text-white">{mediumPriorityActions}</div>
+                  <div className="text-xs text-gray-400">Medium Priority</div>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-1">
                     <AlertCircle className="h-4 w-4 text-red-400" />
                   </div>
-                  <div className="text-lg font-semibold text-text-primary">{highPriorityActions}</div>
-                  <div className="text-xs text-text-secondary">High Priority</div>
+                  <div className="text-lg font-semibold text-white">{highPriorityActions}</div>
+                  <div className="text-xs text-gray-400">High Priority</div>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-1">
                     <Target className="h-4 w-4 text-green-400" />
                   </div>
-                  <div className="text-lg font-semibold text-text-primary">{totalActionItems}</div>
-                  <div className="text-xs text-text-secondary">Action Items</div>
+                  <div className="text-lg font-semibold text-white">{totalActionItems}</div>
+                  <div className="text-xs text-gray-400">Action Items</div>
                 </div>
               </div>
 
               {/* Top stats when open */}
-              <div className="flex items-center justify-between mb-4 text-sm text-text-secondary">
+              <div className="flex items-center justify-between mb-4 text-sm text-gray-400">
                 <div className="flex items-center space-x-4">
                   <span>{slackMessages} Slack</span>
                   <span>{emails} Emails</span>
@@ -210,14 +213,14 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
               {/* Action Items when open */}
               {brief.actionItems.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-text-primary">Action Items:</h4>
+                  <h4 className="text-sm font-medium text-white">Action Items:</h4>
                   <div className="space-y-2">
                     {brief.actionItems.map((item) => (
-                      <div key={item.id} className="flex items-start justify-between p-3 bg-white/5 rounded-lg group/item">
+                      <div key={item.id} className="flex items-start justify-between p-3 bg-gray-800/50 rounded-lg group/item">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-1">
                             <CheckSquare className="h-4 w-4 text-accent-primary" />
-                            <span className="text-sm text-text-primary">{item.text}</span>
+                            <span className="text-sm text-white">{item.text}</span>
                             {item.autoAddedToTaskManager && (
                               <div className="flex items-center space-x-1 ml-2">
                                 <Zap className="h-3 w-3 text-yellow-400" />
@@ -227,7 +230,7 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                               </div>
                             )}
                           </div>
-                          <div className="flex items-center space-x-2 text-xs text-text-secondary">
+                          <div className="flex items-center space-x-2 text-xs text-gray-400">
                             <span>From: {item.source}</span>
                             <Badge variant="secondary" className={`${getPriorityColor(item.priority)} text-xs`}>
                               {item.priority}
@@ -246,17 +249,17 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
 
               {/* Channels when open */}
               {brief.channels.length > 0 && (
-                <div className="pt-4 border-t border-border-subtle">
+                <div className="pt-4 border-t border-gray-700/50">
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs text-text-secondary">Channels:</span>
+                    <span className="text-xs text-gray-400">Channels:</span>
                     <div className="flex flex-wrap gap-1">
                       {brief.channels.slice(0, 3).map((channel, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge key={index} variant="outline" className="text-xs border-gray-600 text-gray-300">
                           {channel}
                         </Badge>
                       ))}
                       {brief.channels.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
                           +{brief.channels.length - 3} more
                         </Badge>
                       )}
@@ -266,9 +269,9 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
               )}
             </>
           )}
-        </CardContent>
+        </div>
       </Collapsible>
-    </Card>
+    </div>
   );
 };
 
