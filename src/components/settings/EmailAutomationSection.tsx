@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Mail, Tag, Archive, Robot } from "lucide-react";
+import { Mail, Tag, Archive, Bot } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +35,7 @@ const EmailAutomationSection = () => {
     <div className="space-y-6">
       <div className="flex items-center space-x-3">
         <div className="p-2 bg-green-500/10 rounded-lg">
-          <Robot className="h-5 w-5 text-green-500" />
+          <Bot className="h-5 w-5 text-green-500" />
         </div>
         <div>
           <h3 className="text-lg font-medium text-text-primary">Email Automation</h3>
@@ -85,7 +85,7 @@ const EmailAutomationSection = () => {
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Robot className="h-4 w-4 text-purple-400" />
+                      <Bot className="h-4 w-4 text-purple-400" />
                       <Label className="text-sm text-text-secondary">
                         Auto-categorize by importance
                       </Label>

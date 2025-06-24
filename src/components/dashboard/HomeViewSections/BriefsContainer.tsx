@@ -9,29 +9,31 @@ import UpcomingBriefCard from "./UpcomingBriefCard";
 import { Button } from "@/components/ui/button";
 
 interface Brief {
-  id: number;
-  name: string;
-  timeCreated: string;
-  timeRange: string;
-  slackMessages: {
-    total: number;
-    fromPriorityPeople: number;
-  };
-  emails: {
-    total: number;
-    fromPriorityPeople: number;
-  };
-  actionItems: number;
-  hasTranscript: boolean;
+  id: string;
+  title: string;
+  summary: string;
+  timestamp: string;
+  priority: "high" | "medium" | "low";
+  actionItems: Array<{
+    id: string;
+    text: string;
+    source: string;
+    priority: "high" | "medium" | "low";
+    autoAddedToTaskManager?: string;
+  }>;
+  channels: string[];
+  peopleCount: number;
+  location?: string;
+  type: "meeting" | "email" | "document" | "general";
 }
 
 interface BriefsContainerProps {
   briefs: Brief[];
   totalBriefs: number;
-  onViewBrief: (briefId: number) => void;
-  onViewTranscript: (briefId: number) => void;
-  onPlayBrief: (briefId: number) => void;
-  playingBrief: number | null;
+  onViewBrief: (briefId: string) => void;
+  onViewTranscript: (briefId: string) => void;
+  onPlayBrief: (briefId: string) => void;
+  playingBrief: string | null;
   onViewAllBriefs: () => void;
   onGetBriefedNow?: () => void;
   onUpdateSchedule?: () => void;
@@ -121,15 +123,10 @@ const BriefsContainer = ({
             ) : briefs.length > 0 ? (
               // Normal view when briefs are available
               <div className="space-y-2">
-                {briefs.map((brief, index) => (
+                {briefs.map((brief) => (
                   <BriefCard 
                     key={brief.id} 
-                    brief={brief} 
-                    onViewBrief={onViewBrief} 
-                    onViewTranscript={onViewTranscript} 
-                    onPlayBrief={onPlayBrief} 
-                    playingBrief={playingBrief} 
-                    isLast={index === briefs.length - 1} 
+                    brief={brief}
                   />
                 ))}
               </div>
