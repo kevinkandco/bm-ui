@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward, BarChart3, AlertCircle, CheckCircle, Check } from "lucide-react";
+import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward, BarChart3, AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -143,29 +143,6 @@ const BriefCard = ({
 
   const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
 
-  // Mock action items for the new section
-  const mockActionItems = [
-    { 
-      id: '1', 
-      title: 'Review budget proposal from Kelly', 
-      source: 'Slack #finance', 
-      priority: 'high',
-      autoAdded: 'Auto-added to Asana',
-      completed: false
-    },
-    { 
-      id: '2', 
-      title: 'Respond to client email about project timeline', 
-      source: 'Gmail', 
-      priority: 'medium',
-      autoAdded: null,
-      completed: false
-    }
-  ];
-
-  // Mock channels for the new section
-  const mockChannels = ['#finance', '#marketing', 'Gmail'];
-
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
   };
@@ -243,10 +220,12 @@ const BriefCard = ({
     await handleActionRelevance(brief.id.toString(), itemId, relevant, feedback);
   };
 
-  const handleActionItemToggle = (itemId: string) => {
-    // Handle action item completion toggle
-    console.log(`Toggling action item ${itemId}`);
-  };
+  // Mock action items for demonstration
+  const mockActionItems = [
+    { id: '1', title: 'Review Q3 budget proposal', source: 'gmail', priority: 'high' },
+    { id: '2', title: 'Respond to Sarah about timeline', source: 'slack', priority: 'medium' },
+    { id: '3', title: 'Schedule team standup', source: 'slack', priority: 'low' }
+  ];
 
   // Extract date and time from the timeCreated string
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
@@ -279,7 +258,9 @@ const BriefCard = ({
 
   return (
     <TooltipProvider>
-      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group bg-white/5 border border-white/10" onClick={handleCardClick}>
+      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
+        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+      }} onClick={handleCardClick}>
         {/* Collapsed Header */}
         <div className="p-6">
           <div className="flex items-center justify-between">
@@ -390,10 +371,10 @@ const BriefCard = ({
         {/* Expanded Content */}
         {isExpanded && (
           <div className="px-6 pb-6">
-            <div className="border-t border-white/20 pt-6 space-y-6">
+            <div className="border-t border-white/20 pt-3">
               {/* Audio Player Section - Only show when playing */}
               {playingBrief === brief.id && (
-                <div className="p-4 rounded-lg bg-surface-raised/20 border border-white/10">
+                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <button 
@@ -461,68 +442,8 @@ const BriefCard = ({
                 </div>
               )}
 
-              {/* Action Items Section */}
-              <div>
-                <h4 className="text-lg font-semibold text-white mb-4">Action Items:</h4>
-                <div className="space-y-3">
-                  {mockActionItems.map((item) => (
-                    <div key={item.id} className="flex items-start gap-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleActionItemToggle(item.id);
-                        }}
-                        className="w-5 h-5 mt-0.5 rounded border-2 border-primary-teal flex items-center justify-center hover:bg-primary-teal/20 transition-colors flex-shrink-0"
-                      >
-                        <Check className="h-3 w-3 text-primary-teal" />
-                      </button>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-white text-base">{item.title}</span>
-                          {item.autoAdded && (
-                            <>
-                              <span className="text-yellow-400">⚡</span>
-                              <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/40 text-xs px-2 py-0.5">
-                                {item.autoAdded}
-                              </Badge>
-                            </>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-light-gray-text text-sm">From: {item.source}</span>
-                          <Badge className={`text-xs px-2 py-0.5 ${
-                            item.priority === 'high' ? 'bg-red-500/20 text-red-400 border-red-500/40' :
-                            item.priority === 'medium' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
-                            'bg-gray-500/20 text-gray-400'
-                          }`}>
-                            {item.priority}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Channels Section */}
-              <div>
-                <h4 className="text-lg font-semibold text-light-gray-text mb-3">Channels:</h4>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {mockChannels.map((channel) => (
-                    <Badge 
-                      key={channel}
-                      variant="outline" 
-                      className="bg-white/5 border-white/20 text-light-gray-text hover:bg-white/10 transition-colors px-3 py-1"
-                    >
-                      {channel}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
               {/* Time Saved Breakdown - Expanded State */}
-              <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20">
+              <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
                 <Clock className="h-4 w-4 text-green-400" />
                 <span>
                   <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
@@ -530,7 +451,7 @@ const BriefCard = ({
               </div>
 
               {/* New Stats Grid with Tooltips */}
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-5 gap-2 mb-3">
                 {statsConfig.map((stat, index) => {
                   const IconComponent = stat.icon;
                   return (
@@ -564,9 +485,41 @@ const BriefCard = ({
                 })}
               </div>
 
+              {/* Action Items with Feedback */}
+              <div className="mb-3">
+                <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
+                <div className="space-y-2">
+                  {mockActionItems.map((item) => (
+                    <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          {item.source === 'gmail' ? (
+                            <Mail className="h-3 w-3 text-red-400" />
+                          ) : (
+                            <MessageSquare className="h-3 w-3 text-purple-400" />
+                          )}
+                          <Badge className={`text-xs px-1 py-0 ${
+                            item.priority === 'high' ? 'bg-red-500/20 text-red-400' :
+                            item.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
+                            'bg-gray-500/20 text-gray-400'
+                          }`}>
+                            {item.priority}
+                          </Badge>
+                        </div>
+                        <span className="text-sm text-text-primary">{item.title}</span>
+                      </div>
+                      <ActionItemFeedback 
+                        itemId={item.id} 
+                        onRelevanceFeedback={handleActionItemFeedback}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* Add Missing Content */}
               {!showAddMissing ? (
-                <div>
+                <div className="mb-3">
                   <Button variant="ghost" size="sm" onClick={e => {
                     e.stopPropagation();
                     setShowAddMissing(true);
@@ -575,7 +528,7 @@ const BriefCard = ({
                   </Button>
                 </div>
               ) : (
-                <div className="animate-fade-in" onClick={e => e.stopPropagation()}>
+                <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
                   <Input 
                     placeholder="What important information did we miss?" 
                     value={missingContent} 
