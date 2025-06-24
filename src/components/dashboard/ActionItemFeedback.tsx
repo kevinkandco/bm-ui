@@ -28,22 +28,13 @@ const ActionItemFeedback = ({ itemId, onRelevanceFeedback }: ActionItemFeedbackP
           <Button 
             variant="ghost" 
             size="sm"
-            className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+            className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 text-text-secondary hover:text-red-400"
           >
-            <MoreVertical className="h-3 w-3" />
+            <X className="h-3 w-3" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-40 p-2 bg-white/10 border border-white/20 backdrop-blur-md">
+        <PopoverContent className="w-48 p-2 bg-surface-raised/95 border border-white/20 backdrop-blur-md">
           <div className="space-y-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleRelevanceFeedback(true)}
-              className="w-full justify-start text-green-400 hover:bg-green-500/20"
-            >
-              <Check className="mr-2 h-3 w-3" />
-              Still relevant
-            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -51,8 +42,13 @@ const ActionItemFeedback = ({ itemId, onRelevanceFeedback }: ActionItemFeedbackP
               className="w-full justify-start text-red-400 hover:bg-red-500/20"
             >
               <X className="mr-2 h-3 w-3" />
-              Not relevant
+              Not relevant to me
             </Button>
+            <div className="px-2 py-1">
+              <p className="text-xs text-text-secondary">
+                This will help Brief.me learn your preferences
+              </p>
+            </div>
           </div>
         </PopoverContent>
       </Popover>

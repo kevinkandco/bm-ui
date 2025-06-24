@@ -41,6 +41,8 @@ import { useToast } from "@/hooks/use-toast";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SummaryFeedback from "@/components/dashboard/SummaryFeedback";
 import PriorityReasoningModal from "@/components/dashboard/PriorityReasoningModal";
+import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
+import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
 
 const BriefDetail = () => {
   const { briefId } = useParams();
@@ -53,6 +55,8 @@ const BriefDetail = () => {
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
+
+  const { handleActionRelevance } = useFeedbackTracking();
 
   // Mock data - in a real app this would be fetched based on briefId
   const briefData = {
@@ -288,6 +292,16 @@ const BriefDetail = () => {
     setPlaybackSpeed(speed);
   };
 
+  const handleActionItemFeedback = async (itemId: string, relevant: boolean) => {
+    await handleActionRelevance(briefData.id || "1", itemId, relevant);
+    toast({
+      title: relevant ? "Feedback Received" : "Training AI",
+      description: relevant 
+        ? "Thank you for confirming this action item is relevant" 
+        : "AI will learn from this feedback to improve future briefs"
+    });
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "High": return "bg-red-500/20 text-red-400 border-red-500/30";
@@ -496,7 +510,7 @@ const BriefDetail = () => {
               </div>
             </div>
 
-            {/* Action Items Section */}
+            {/* Action Items Section with Feedback */}
             <div className="glass-card rounded-2xl p-4 md:p-6">
               <h2 className="text-lg font-semibold text-text-primary mb-4">Action Items</h2>
               
@@ -514,7 +528,7 @@ const BriefDetail = () => {
                   {actionItems.map((item) => (
                     <React.Fragment key={item.id}>
                       <TableRow 
-                        className="border-white/10 hover:bg-white/5 cursor-pointer"
+                        className="border-white/10 hover:bg-white/5 cursor-pointer group"
                         onClick={() => toggleActionItem(item.id)}
                       >
                         <TableCell className="px-1">
@@ -539,14 +553,24 @@ const BriefDetail = () => {
                           </Badge>
                         </TableCell>
                         <TableCell className="px-1">
-                          <div className="text-sm text-text-primary font-medium">
-                            {item.title}
-                          </div>
-                          {item.subtitle && (
-                            <div className="text-xs text-text-secondary">
-                              {item.subtitle}
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="text-sm text-text-primary font-medium">
+                                {item.title}
+                              </div>
+                              {item.subtitle && (
+                                <div className="text-xs text-text-secondary">
+                                  {item.subtitle}
+                                </div>
+                              )}
                             </div>
-                          )}
+                            <div className="ml-2">
+                              <ActionItemFeedback 
+                                itemId={item.messageId} 
+                                onRelevanceFeedback={handleActionItemFeedback}
+                              />
+                            </div>
+                          </div>
                         </TableCell>
                         <TableCell className="px-1">
                           <span className="text-sm text-text-secondary">{item.time}</span>
