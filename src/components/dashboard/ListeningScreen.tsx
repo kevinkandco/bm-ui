@@ -1,4 +1,3 @@
-
 import React from "react";
 interface ListeningScreenProps {
   isListening?: boolean;
@@ -59,9 +58,7 @@ const ListeningScreen = ({
 
       {/* Text content */}
       <div className="text-center space-y-1 sm:space-y-2">
-        <h2 className="text-white text-sm sm:text-base font-normal tracking-wide">
-          {title}
-        </h2>
+        
         <p className="text-white/70 text-xs sm:text-sm">
           {subtitle}
         </p>
