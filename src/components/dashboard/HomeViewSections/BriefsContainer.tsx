@@ -138,7 +138,7 @@ const BriefsContainer = ({
                     No briefs ready right now
                   </p>
                 </div>
-              ) : [...Array(3)].map(() => <BriefCardSkeleton />)}
+              ) : [...Array(3)].map((_, idx) => <BriefCardSkeleton key={idx} />)}
             </div>
             
             {/* Bottom section with brief count and view all link */}
