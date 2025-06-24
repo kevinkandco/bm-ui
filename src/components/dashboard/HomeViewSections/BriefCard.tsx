@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Clock, ChevronRight, User, Calendar, MapPin, MessageSquare, CheckSquare, ExternalLink, MoreVertical, Zap, ChevronDown, BarChart3, Target, AlertCircle, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -120,9 +119,6 @@ const BriefCard = ({ brief, viewMode = "summary" }: BriefCardProps) => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-1">
                       <h3 className="text-lg font-semibold text-text-primary truncate">{brief.title}</h3>
-                      <Badge variant="secondary" className={`${getPriorityColor(brief.priority)} text-xs px-2 py-1`}>
-                        {brief.priority}
-                      </Badge>
                     </div>
                     <p className="text-sm text-text-secondary mb-2">
                       Delivered at {brief.timestamp} (Summarizing: 11:07 PM - 9:00 AM)
