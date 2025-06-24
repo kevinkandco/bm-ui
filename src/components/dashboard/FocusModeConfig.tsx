@@ -11,9 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Headphones, Monitor, Slack, Mail, Calendar, X } from "lucide-react";
+import { Headphones, Slack, Mail, Calendar } from "lucide-react";
 
 interface FocusModeConfigProps {
   isOpen: boolean;
@@ -61,34 +60,34 @@ const FocusModeConfig = ({ isOpen, onClose, onStartFocus }: FocusModeConfigProps
   };
 
   const slackStatusOptions = [
-    { value: "focused", label: "🎯 Focused", description: "Deep work mode" },
-    { value: "heads-down", label: "🤫 Heads Down", description: "Do not disturb" },
-    { value: "in-the-zone", label: "⚡ In the Zone", description: "High concentration" },
-    { value: "deep-work", label: "🧠 Deep Work", description: "Focused on important tasks" },
+    { value: "focused", label: "🎯 Focused" },
+    { value: "heads-down", label: "🤫 Heads Down" },
+    { value: "in-the-zone", label: "⚡ In the Zone" },
+    { value: "deep-work", label: "🧠 Deep Work" },
   ];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-lg">
             <Headphones className="h-5 w-5 text-accent-primary" />
-            Configure Focus Mode
+            Focus Mode
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Duration Selection */}
-          <div className="space-y-3">
-            <Label className="text-base font-medium">Focus Duration</Label>
+        <div className="space-y-4">
+          {/* Duration */}
+          <div>
+            <Label className="text-sm font-medium mb-2 block">Duration</Label>
             <Select value={duration.toString()} onValueChange={(value) => setDuration(parseInt(value))}>
-              <SelectTrigger>
+              <SelectTrigger className="h-9">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="15">15 minutes</SelectItem>
-                <SelectItem value="30">30 minutes</SelectItem>
-                <SelectItem value="45">45 minutes</SelectItem>
+                <SelectItem value="15">15 min</SelectItem>
+                <SelectItem value="30">30 min</SelectItem>
+                <SelectItem value="45">45 min</SelectItem>
                 <SelectItem value="60">1 hour</SelectItem>
                 <SelectItem value="90">1.5 hours</SelectItem>
                 <SelectItem value="120">2 hours</SelectItem>
@@ -96,54 +95,31 @@ const FocusModeConfig = ({ isOpen, onClose, onStartFocus }: FocusModeConfigProps
             </Select>
           </div>
 
-          <Separator />
-
-          {/* Close Apps Section */}
-          <div className="space-y-4">
-            <div>
-              <Label className="text-base font-medium">Close Integrated Apps</Label>
-              <p className="text-sm text-text-secondary mt-1">
-                Automatically close or minimize these apps to reduce distractions
-              </p>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <Slack className="h-5 w-5 text-purple-400" />
-                  <div>
-                    <Label className="font-medium">Slack</Label>
-                    <p className="text-xs text-text-secondary">Close Slack desktop app</p>
-                  </div>
-                </div>
+          {/* Close Apps */}
+          <div>
+            <Label className="text-sm font-medium mb-3 block">Close Apps</Label>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col items-center gap-2 p-3 rounded-lg bg-white/5 border border-white/10">
+                <Slack className="h-5 w-5 text-purple-400" />
+                <span className="text-xs">Slack</span>
                 <Switch
                   checked={closeApps.slack}
                   onCheckedChange={() => handleAppToggle('slack')}
                 />
               </div>
-
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <Mail className="h-5 w-5 text-blue-400" />
-                  <div>
-                    <Label className="font-medium">Gmail</Label>
-                    <p className="text-xs text-text-secondary">Close Gmail tabs and desktop app</p>
-                  </div>
-                </div>
+              
+              <div className="flex flex-col items-center gap-2 p-3 rounded-lg bg-white/5 border border-white/10">
+                <Mail className="h-5 w-5 text-blue-400" />
+                <span className="text-xs">Gmail</span>
                 <Switch
                   checked={closeApps.gmail}
                   onCheckedChange={() => handleAppToggle('gmail')}
                 />
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-5 w-5 text-green-400" />
-                  <div>
-                    <Label className="font-medium">Google Calendar</Label>
-                    <p className="text-xs text-text-secondary">Close calendar tabs</p>
-                  </div>
-                </div>
+              <div className="flex flex-col items-center gap-2 p-3 rounded-lg bg-white/5 border border-white/10">
+                <Calendar className="h-5 w-5 text-green-400" />
+                <span className="text-xs">Calendar</span>
                 <Switch
                   checked={closeApps.calendar}
                   onCheckedChange={() => handleAppToggle('calendar')}
@@ -152,63 +128,31 @@ const FocusModeConfig = ({ isOpen, onClose, onStartFocus }: FocusModeConfigProps
             </div>
           </div>
 
-          <Separator />
-
-          {/* Status Updates Section */}
-          <div className="space-y-4">
-            <div>
-              <Label className="text-base font-medium">Update Status in Integrations</Label>
-              <p className="text-sm text-text-secondary mt-1">
-                Automatically update your status to let others know you're focused
-              </p>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                <div className="flex items-center gap-3 mb-3">
-                  <Slack className="h-5 w-5 text-purple-400" />
-                  <Label className="font-medium">Slack Status</Label>
-                </div>
-                
-                <Select value={statusUpdates.slack} onValueChange={(value) => setStatusUpdates(prev => ({ ...prev, slack: value }))}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {slackStatusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex flex-col">
-                          <span>{option.label}</span>
-                          <span className="text-xs text-text-secondary">{option.description}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          {/* Preview */}
-          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-            <h4 className="font-medium text-text-primary mb-2">Preview</h4>
-            <div className="text-sm text-text-secondary space-y-1">
-              <p>• Focus mode will run for {duration} minutes</p>
-              {Object.entries(closeApps).some(([_, enabled]) => enabled) && (
-                <p>• Will close: {Object.entries(closeApps).filter(([_, enabled]) => enabled).map(([app]) => app).join(', ')}</p>
-              )}
-              <p>• Slack status will be set to: {slackStatusOptions.find(opt => opt.value === statusUpdates.slack)?.label}</p>
-            </div>
+          {/* Status Updates */}
+          <div>
+            <Label className="text-sm font-medium mb-2 block">Slack Status</Label>
+            <Select value={statusUpdates.slack} onValueChange={(value) => setStatusUpdates(prev => ({ ...prev, slack: value }))}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {slackStatusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        <DialogFooter className="gap-3">
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="gap-2 mt-6">
+          <Button variant="outline" onClick={onClose} size="sm">
             Cancel
           </Button>
-          <Button onClick={handleStartFocus} className="bg-accent-primary hover:bg-accent-primary/90">
+          <Button onClick={handleStartFocus} className="bg-accent-primary hover:bg-accent-primary/90" size="sm">
             <Headphones className="mr-2 h-4 w-4" />
-            Start Focus Mode
+            Start Focus
           </Button>
         </DialogFooter>
       </DialogContent>
