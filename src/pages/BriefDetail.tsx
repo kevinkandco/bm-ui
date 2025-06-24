@@ -292,13 +292,15 @@ const BriefDetail = () => {
     setPlaybackSpeed(speed);
   };
 
-  const handleActionItemFeedback = async (itemId: string, relevant: boolean) => {
-    await handleActionRelevance(briefData.id || "1", itemId, relevant);
+  const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
+    await handleActionRelevance(briefData.id || "1", itemId, relevant, feedback);
     toast({
-      title: relevant ? "Feedback Received" : "Training AI",
-      description: relevant 
-        ? "Thank you for confirming this action item is relevant" 
-        : "AI will learn from this feedback to improve future briefs"
+      title: relevant ? "Preference Saved" : "Training AI",
+      description: feedback 
+        ? `AI will learn: "${feedback.slice(0, 50)}${feedback.length > 50 ? '...' : ''}"` 
+        : relevant 
+          ? "Thank you for confirming this action item is relevant" 
+          : "AI will learn from this feedback to improve future briefs"
     });
   };
 

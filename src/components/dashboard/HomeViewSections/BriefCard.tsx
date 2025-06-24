@@ -216,8 +216,8 @@ const BriefCard = ({
     }
   };
 
-  const handleActionItemFeedback = async (itemId: string, relevant: boolean) => {
-    await handleActionRelevance(brief.id.toString(), itemId, relevant);
+  const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
+    await handleActionRelevance(brief.id.toString(), itemId, relevant, feedback);
   };
 
   // Mock action items for demonstration
