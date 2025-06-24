@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -17,15 +18,15 @@ const Dashboard = () => {
   const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
-  const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
+  const [selectedBriefId, setSelectedBriefId] = useState<string | null>(null);
   const [showEndFocusModal, setShowEndFocusModal] = useState(false);
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
 
-  const openBriefDetails = useCallback((briefId: number) => {
+  const openBriefDetails = useCallback((briefId: string) => {
     navigate(`/dashboard/briefs/${briefId}`);
   }, [navigate]);
 
-  const openTranscript = useCallback((briefId: number) => {
+  const openTranscript = useCallback((briefId: string) => {
     setSelectedBriefId(briefId);
     setIsTranscriptOpen(true);
   }, [setSelectedBriefId, setIsTranscriptOpen]);
