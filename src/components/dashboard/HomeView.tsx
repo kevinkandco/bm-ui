@@ -20,8 +20,8 @@ import ListeningScreen from "./ListeningScreen";
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 
 interface HomeViewProps {
-  onOpenBrief: (briefId: string) => void;
-  onViewTranscript: (briefId: string) => void;
+  onOpenBrief: (briefId: number) => void;
+  onViewTranscript: (briefId: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
   onOpenBriefModal: () => void;
@@ -44,7 +44,7 @@ const HomeView = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [playingBrief, setPlayingBrief] = useState<string | null>(null);
+  const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [showSchedulingModal, setShowSchedulingModal] = useState(false);
   const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -58,7 +58,7 @@ const HomeView = ({
   ];
 
   const showBriefDetails = useCallback(() => {
-    onOpenBrief("1");
+    onOpenBrief(1);
   }, [onOpenBrief]);
   const handleUpdateSchedule = useCallback(() => {
     navigate("/dashboard/settings");
@@ -66,10 +66,10 @@ const HomeView = ({
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
-  const handleViewTranscript = useCallback((briefId: string) => {
+  const handleViewTranscript = useCallback((briefId: number) => {
     onViewTranscript(briefId);
   }, [onViewTranscript]);
-  const handlePlayBrief = useCallback((briefId: string) => {
+  const handlePlayBrief = useCallback((briefId: number) => {
     if (playingBrief === briefId) {
       setPlayingBrief(null);
       toast({
@@ -158,70 +158,37 @@ const HomeView = ({
     navigate("/dashboard/settings");
   }, [navigate]);
 
-  // Sample brief data - Updated to match new Brief interface
+  // Sample brief data
   const recentBriefs = [
     {
-      id: "1",
-      title: "Morning Brief",
-      summary: "Key updates from your priority channels including budget discussions from Kelly and new project announcements",
-      timestamp: "Today, 8:00 AM",
-      priority: "high" as const,
-      actionItems: [
-        {
-          id: "action-1",
-          text: "Review budget proposal from Kelly",
-          source: "Slack #finance",
-          priority: "high" as const,
-          autoAddedToTaskManager: "Asana"
-        },
-        {
-          id: "action-2",
-          text: "Respond to client email about project timeline",
-          source: "Gmail",
-          priority: "medium" as const
-        }
-      ],
-      channels: ["#finance", "#marketing", "Gmail"],
-      peopleCount: 8,
-      location: "Remote",
-      type: "general" as const
+      id: 1,
+      name: "Morning Brief",
+      timeCreated: "Today, 8:00 AM",
+      timeRange: "5:00 AM - 8:00 AM",
+      slackMessages: { total: 12, fromPriorityPeople: 3 },
+      emails: { total: 5, fromPriorityPeople: 2 },
+      actionItems: 4,
+      hasTranscript: true
     },
     {
-      id: "2", 
-      title: "Evening Brief",
-      summary: "End of day wrap-up with action items and tomorrow's priorities",
-      timestamp: "Yesterday, 8:00 PM",
-      priority: "medium" as const,
-      actionItems: [
-        {
-          id: "action-3",
-          text: "Prepare presentation for tomorrow's meeting",
-          source: "Calendar",
-          priority: "high" as const,
-          autoAddedToTaskManager: "Todoist"
-        }
-      ],
-      channels: ["#general", "Gmail"],
-      peopleCount: 4,
-      type: "general" as const
+      id: 2,
+      name: "Evening Brief",
+      timeCreated: "Yesterday, 8:00 PM",
+      timeRange: "5:00 PM - 8:00 PM",
+      slackMessages: { total: 8, fromPriorityPeople: 1 },
+      emails: { total: 3, fromPriorityPeople: 0 },
+      actionItems: 2,
+      hasTranscript: true
     },
     {
-      id: "3",
-      title: "Afternoon Brief", 
-      summary: "Midday updates with priority messages and urgent items requiring attention",
-      timestamp: "Yesterday, 4:00 PM",
-      priority: "low" as const,
-      actionItems: [
-        {
-          id: "action-4",
-          text: "Schedule follow-up meeting with design team",
-          source: "Slack #design",
-          priority: "medium" as const
-        }
-      ],
-      channels: ["#design", "#development", "Gmail"],
-      peopleCount: 12,
-      type: "general" as const
+      id: 3,
+      name: "Afternoon Brief",
+      timeCreated: "Yesterday, 4:00 PM",
+      timeRange: "1:00 PM - 4:00 PM",
+      slackMessages: { total: 15, fromPriorityPeople: 4 },
+      emails: { total: 7, fromPriorityPeople: 3 },
+      actionItems: 5,
+      hasTranscript: true
     }
   ];
 
@@ -231,12 +198,14 @@ const HomeView = ({
     scheduledTime: "Today at 12:30 PM"
   };
 
-  // Latest brief (most recent) - Updated to match new format
+  // Latest brief (most recent)
   const latestBrief = {
-    id: "1",
-    title: "Morning Brief",
-    summary: "Key updates from your priority channels including budget discussions from Kelly and new project announcements",
-    timestamp: "Today, 8:00 AM",
+    id: 1,
+    name: "Morning Brief",
+    timeCreated: "Today, 8:00 AM",
+    timeRange: "5:00 AM - 8:00 AM",
+    slackMessages: { total: 12, fromPriorityPeople: 3 },
+    emails: { total: 5, fromPriorityPeople: 2 },
     actionItems: 4
   };
 
@@ -402,9 +371,11 @@ const HomeView = ({
             </div>
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-light-gray-text">{latestBrief.title}</p>
-                <p className="text-xs text-light-gray-text">{latestBrief.timestamp}</p>
+                <p className="text-xs text-light-gray-text">{latestBrief.name}</p>
+                <p className="text-xs text-light-gray-text">{latestBrief.timeCreated}</p>
                 <div className="flex items-center gap-3 mt-1">
+                  <span className="text-xs text-light-gray-text">{latestBrief.slackMessages.total} Slack</span>
+                  <span className="text-xs text-light-gray-text">{latestBrief.emails.total} Emails</span>
                   <span className="text-xs text-light-gray-text">{latestBrief.actionItems} Actions</span>
                 </div>
               </div>

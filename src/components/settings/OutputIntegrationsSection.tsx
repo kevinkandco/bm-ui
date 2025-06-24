@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Upload, CheckSquare, Trello, Calendar, MessageSquare, Mail, Zap } from "lucide-react";
+import { Upload, CheckSquare, Trello, Calendar, MessageSquare, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -19,18 +19,16 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
       icon: CheckSquare,
       description: "Automatically create tasks from action items in your briefs",
       outputs: ["Action items", "Follow-ups", "Deadlines"],
-      connected: true,
-      autoTaskCreation: true
+      connected: false
     },
     { 
       name: "Asana", 
       provider: "asana", 
-      available: true, 
+      available: false, 
       icon: CheckSquare,
       description: "Push tasks and project updates to your Asana workspace",
       outputs: ["Tasks", "Project updates", "Team assignments"],
-      connected: true,
-      autoTaskCreation: true
+      connected: false
     },
     { 
       name: "Trello", 
@@ -39,8 +37,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
       icon: Trello,
       description: "Create cards from action items and meeting notes",
       outputs: ["Cards", "Checklists", "Due dates"],
-      connected: false,
-      autoTaskCreation: false
+      connected: false
     },
     { 
       name: "Google Calendar", 
@@ -49,8 +46,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
       icon: Calendar,
       description: "Create calendar events from meeting requests and deadlines",
       outputs: ["Calendar events", "Meeting reminders", "Deadline alerts"],
-      connected: false,
-      autoTaskCreation: false
+      connected: false
     },
     { 
       name: "Slack", 
@@ -59,8 +55,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
       icon: MessageSquare,
       description: "Send important updates and summaries to team channels",
       outputs: ["Channel updates", "Direct messages", "Status updates"],
-      connected: false,
-      autoTaskCreation: false
+      connected: false
     },
     { 
       name: "Email", 
@@ -69,8 +64,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
       icon: Mail,
       description: "Send digest emails and follow-up reminders",
       outputs: ["Daily digests", "Weekly summaries", "Follow-up emails"],
-      connected: false,
-      autoTaskCreation: false
+      connected: false
     }
   ];
 
@@ -91,8 +85,6 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {outputIntegrations.map((integration) => {
           const IconComponent = integration.icon;
-          const isTaskManager = ['todoist', 'asana', 'trello'].includes(integration.provider);
-          
           return (
             <div
               key={integration.provider}
@@ -148,21 +140,11 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
               </div>
 
               {integration.connected && (
-                <div className="pt-2 border-t border-border-subtle space-y-3">
+                <div className="pt-2 border-t border-border-subtle">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-text-secondary">Auto-push enabled</span>
                     <Switch defaultChecked />
                   </div>
-                  
-                  {isTaskManager && (
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center space-x-2">
-                        <Zap className="h-3 w-3 text-yellow-400" />
-                        <span className="text-text-secondary">Auto-create tasks from action items</span>
-                      </div>
-                      <Switch defaultChecked={integration.autoTaskCreation} />
-                    </div>
-                  )}
                 </div>
               )}
             </div>

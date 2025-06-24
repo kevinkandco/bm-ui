@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -18,23 +17,23 @@ const Dashboard = () => {
   const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
-  const [selectedBriefId, setSelectedBriefId] = useState<string | null>(null);
+  const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
   const [showEndFocusModal, setShowEndFocusModal] = useState(false);
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
 
-  const openBriefDetails = useCallback((briefId: string) => {
+  const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
   }, [navigate]);
 
-  const openTranscript = useCallback((briefId: string) => {
+  const openTranscript = useCallback((briefId: number) => {
     setSelectedBriefId(briefId);
     setIsTranscriptOpen(true);
-  }, []);
+  }, [setSelectedBriefId, setIsTranscriptOpen]);
   
   const closeTranscript = useCallback(() => {
     setIsTranscriptOpen(false);
     setSelectedBriefId(null);
-  }, []);
+  }, [setIsTranscriptOpen, setSelectedBriefId]);
 
   const handleToggleFocusMode = useCallback(() => {
     setUserStatus(prevStatus => prevStatus === "focus" ? "active" : "focus");
@@ -63,11 +62,11 @@ const Dashboard = () => {
   
   const openBriefModal = useCallback(() => {
     setIsBriefModalOpen(true);
-  }, []);
+  }, [setIsBriefModalOpen]);
   
   const closeBriefModal = useCallback(() => {
     setIsBriefModalOpen(false);
-  }, []);
+  }, [setIsBriefModalOpen]);
   
   const handleStartFocusMode = useCallback(() => {
     setUserStatus("focus");

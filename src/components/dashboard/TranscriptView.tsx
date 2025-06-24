@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 interface TranscriptViewProps {
   open: boolean;
   onClose: () => void;
-  briefId: string | null;
+  briefId: number | null;
 }
 
 const TranscriptView = ({ open, onClose, briefId }: TranscriptViewProps) => {
