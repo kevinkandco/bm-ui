@@ -29,12 +29,12 @@ const Dashboard = () => {
   const openTranscript = useCallback((briefId: string) => {
     setSelectedBriefId(briefId);
     setIsTranscriptOpen(true);
-  }, [setSelectedBriefId, setIsTranscriptOpen]);
+  }, []);
   
   const closeTranscript = useCallback(() => {
     setIsTranscriptOpen(false);
     setSelectedBriefId(null);
-  }, [setIsTranscriptOpen, setSelectedBriefId]);
+  }, []);
 
   const handleToggleFocusMode = useCallback(() => {
     setUserStatus(prevStatus => prevStatus === "focus" ? "active" : "focus");
@@ -63,11 +63,11 @@ const Dashboard = () => {
   
   const openBriefModal = useCallback(() => {
     setIsBriefModalOpen(true);
-  }, [setIsBriefModalOpen]);
+  }, []);
   
   const closeBriefModal = useCallback(() => {
     setIsBriefModalOpen(false);
-  }, [setIsBriefModalOpen]);
+  }, []);
   
   const handleStartFocusMode = useCallback(() => {
     setUserStatus("focus");
