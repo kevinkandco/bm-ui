@@ -306,11 +306,23 @@ const Dashboard = () => {
     [toast, call]
   );
 
-  const handleStartFocusModeWithConfig = useCallback((config: FocusConfig) => {
+  const handleStartFocusModeWithConfig = useCallback(async (config: FocusConfig) => {
+
+    const response = await call("post", "/api/focus-mode", {
+        body: config,
+        showToast: true,
+        toastTitle: "Focus Mode Activation Failed",
+        toastDescription:
+          "Focus mode activation failed. please try again sometime later.",
+        toastVariant: "destructive",
+        returnOnFailure: false,
+      });
+
+      if (!response) return;
+
     setFocusConfig(config);
     setUserStatus("focus");
     setFocusTime(config?.duration * 60);
-
     
     // Simulate closing apps and updating status
     const actionsText = [];
@@ -322,11 +334,7 @@ const Dashboard = () => {
       title: "Focus Mode Started",
       description: `${config.duration} minute focus session started. ${actionsText.length > 0 ? actionsText.join(', ') + '. ' : ''}Slack status updated.`
     });
-  }, [toast]);
-  
-  // const handleStartFocusMode = useCallback(() => {
-  //   setShowFocusConfig(true);
-  // }, []);
+  }, [toast, call]);
   
   const handleSignOffForDay = useCallback(() => {
     const response = call("post", "/api/sign-off", {
