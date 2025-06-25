@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Mail, Slack, Calendar, ChevronDown, Trash2, Settings, Edit3, Check, X } from "lucide-react";
+import { Mail, Slack, Calendar, ChevronDown, Trash2, Settings, Edit3, Check, X, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ConnectedAccount, Tag } from "./types";
 import TagSelector from "./TagSelector";
+import EmailAISettings from "./EmailAISettings";
+import SlackAISettings from "./SlackAISettings";
 
 interface ConnectedAccountsListProps {
   accounts: ConnectedAccount[];
@@ -43,6 +45,7 @@ const ConnectedAccountsList = ({
   const [editingTag, setEditingTag] = useState<number | string | null>(null);
   const [editingName, setEditingName] = useState<number | null>(null);
   const [tempName, setTempName] = useState<string>("");
+  const [aiSettingsOpen, setAiSettingsOpen] = useState<number | null>(null);
 
   const getProviderIcon = (provider: string) => {
     switch (provider?.toLowerCase()) {
@@ -97,6 +100,15 @@ const ConnectedAccountsList = ({
   const handleCancelEdit = () => {
     setEditingName(null);
     setTempName("");
+  };
+
+  const handleAISettingsSave = (accountId: number, settings: any) => {
+    console.log(`Saving AI settings for account ${accountId}:`, settings);
+    // This would typically save to your backend/state management
+  };
+
+  const supportsAISettings = (provider: string) => {
+    return ['gmail', 'outlook', 'slack'].includes(provider);
   };
 
   return (
@@ -211,6 +223,19 @@ const ConnectedAccountsList = ({
             {/* Controls */}
             {editingName !== account.id && (
               <div className="flex items-center space-x-4">
+                {/* AI Settings Button */}
+                {supportsAISettings(account?.provider_name?.toLowerCase()) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setAiSettingsOpen(account.id)}
+                    className="text-text-secondary hover:text-text-primary"
+                  >
+                    <SettingsIcon className="h-4 w-4 mr-2" />
+                    AI Settings
+                  </Button>
+                )}
+
                 {/* Include in Combined Brief Switch */}
                 <div className="flex items-center space-x-2">
                   {setProviderModal && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2 cursor-pointer" onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name?.toLowerCase() })}>
@@ -254,6 +279,38 @@ const ConnectedAccountsList = ({
           <p className="text-sm mt-1">Click "Add Account" to get started.</p>
         </div>
       )}
+
+      {/* AI Settings Modals */}
+      {accounts.map((account) => {
+        if (aiSettingsOpen !== account.id) return null;
+
+        if (account?.provider_name?.toLowerCase() === 'slack') {
+          return (
+            <SlackAISettings
+              key={`slack-${account.id}`}
+              isOpen={true}
+              onClose={() => setAiSettingsOpen(null)}
+              accountName={getDisplayName(account)}
+              onSave={(settings) => handleAISettingsSave(account.id, settings)}
+            />
+          );
+        }
+
+        if (account?.provider_name?.toLowerCase() === 'gmail' || account?.provider_name?.toLowerCase() === 'outlook') {
+          return (
+            <EmailAISettings
+              key={`email-${account.id}`}
+              isOpen={true}
+              onClose={() => setAiSettingsOpen(null)}
+              accountName={getDisplayName(account)}
+              provider={account?.provider_name?.toLowerCase()}
+              onSave={(settings) => handleAISettingsSave(account.id, settings)}
+            />
+          );
+        }
+
+        return null;
+      })}
     </div>
   );
 };

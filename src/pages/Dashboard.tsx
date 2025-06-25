@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import { useState, useCallback, useEffect, useRef } from "react";
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
 import NewBriefModal from "@/components/dashboard/NewBriefModal";
@@ -7,16 +6,13 @@ import TranscriptView from "@/components/dashboard/TranscriptView";
 import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities } from "@/components/dashboard/types";
-import { useIsMobile } from "@/hooks/use-mobile";
-import Pagination from "@/components/dashboard/Pagination";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import { enrichBriefsWithStats } from "@/lib/utils";
-import FocusMode from "@/components/dashboard/FocusMode";
+import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -29,6 +25,17 @@ interface Transcript {
   id: number;
   title: string;
   transcript: string;
+}
+interface FocusConfig {
+  duration: number;
+  closeApps: {
+    slack: boolean;
+    gmail: boolean;
+    calendar: boolean;
+  };
+  statusUpdates: {
+    slack: string;
+  };
 }
 
 const Dashboard = () => {
@@ -51,8 +58,9 @@ const Dashboard = () => {
   const [briefsLoading, setBriefsLoading] = useState(false);
   const [pendingData, setPendingData] = useState<PendingData[]>([]);
   const [focusModeExitLoading, setFocusModeExitLoading] = useState(false);
-  const [focusModalOpen, setFocusModalOpen] = useState(false);
   const [focusModeActivationLoading, setFocusModeActivationLoading] = useState(false);
+  const [showFocusConfig, setShowFocusConfig] = useState(false);
+  const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
   const [priorities, setPriorities] = useState<Priorities>({
     priorityPeople: [],
     priorityChannels: [],
@@ -209,8 +217,8 @@ const Dashboard = () => {
   }, [setIsTranscriptOpen]);
 
   const handleToggleFocusMode = useCallback(() => {
-    setFocusModalOpen(true);
-  }, []);
+    setShowFocusConfig(true);
+    }, []);
 
   const handleExitFocusMode = useCallback(async () => {
     setFocusModeExitLoading(true);
@@ -238,6 +246,7 @@ const Dashboard = () => {
   const handleConfirmExitFocus = useCallback(() => {
     setUserStatus("active");
     setShowEndFocusModal(false);
+    setFocusConfig(null);
     toast({
       title: "Focus Mode",
       description: "Exiting focus mode"
@@ -257,7 +266,7 @@ const Dashboard = () => {
   }, [setIsBriefModalOpen]);
 
   const handleFocusModalClose = useCallback(() => {
-    setFocusModalOpen(false);
+    setShowFocusConfig(false);
   }, []);
   
   const handleStartFocusMode = useCallback(
@@ -285,7 +294,7 @@ const Dashboard = () => {
         setUserStatus("focus");
         setFocusTime(focusTime * 60);
         setFocusModeActivationLoading(false);
-        setFocusModalOpen(false);
+        setShowFocusConfig(false);
 
         toast({
           title: "Focus Mode Started",
@@ -297,6 +306,28 @@ const Dashboard = () => {
     [toast, call]
   );
 
+  const handleStartFocusModeWithConfig = useCallback((config: FocusConfig) => {
+    setFocusConfig(config);
+    setUserStatus("focus");
+    setFocusTime(config?.duration * 60);
+
+    
+    // Simulate closing apps and updating status
+    const actionsText = [];
+    if (config.closeApps.slack) actionsText.push("Slack closed");
+    if (config.closeApps.gmail) actionsText.push("Gmail closed");
+    if (config.closeApps.calendar) actionsText.push("Calendar closed");
+    
+    toast({
+      title: "Focus Mode Started",
+      description: `${config.duration} minute focus session started. ${actionsText.length > 0 ? actionsText.join(', ') + '. ' : ''}Slack status updated.`
+    });
+  }, [toast]);
+  
+  // const handleStartFocusMode = useCallback(() => {
+  //   setShowFocusConfig(true);
+  // }, []);
+  
   const handleSignOffForDay = useCallback(() => {
     const response = call("post", "/api/sign-off", {
       showToast: true,
@@ -338,17 +369,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Focus Mode Timer Header */}
-      {/* {(userStatus === "focus" || userStatus === "away") && (
-        <StatusTimer 
-          status={userStatus}
-          focusTime={focusTime}
-          briefSchedules={briefSchedules}
-          userSchedule={userSchedule}
-          focusModeExitLoading={focusModeExitLoading}
-          onExitFocusMode={handleExitFocusMode}
-        />
-      )} */}
 
       {/* Focus Mode Timer Header */}
       {userStatus === "focus" && (
@@ -412,16 +432,21 @@ const Dashboard = () => {
         title="Creating Your Brief"
         description="We're preparing a summary of all updates during your focus session"
       />
-      <FocusMode
+      {/* <FocusMode 
         open={focusModalOpen}
         loading={focusModeActivationLoading}
         SaveChangesAndClose={handleStartFocusMode}
         onClose={handleFocusModalClose}
-      />
+      /> */}
       <BriefMeModal
         open={showBriefMeModal}
         onClose={() => setShowBriefMeModal(false)}
         getRecentBriefs={getRecentBriefs}
+      />
+      <FocusModeConfig
+        isOpen={showFocusConfig}
+        onClose={handleFocusModalClose}
+        onStartFocus={handleStartFocusModeWithConfig}
       />
     </div>
   );

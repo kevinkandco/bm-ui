@@ -50,6 +50,9 @@ import TranscriptView from "@/components/dashboard/TranscriptView";
 import { transformToStats } from "@/lib/utils";
 
 const BaseURL = import.meta.env.VITE_API_HOST;
+import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
+import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
+
 
 const BriefDetail = () => {
   const { briefId } = useParams();
@@ -66,6 +69,7 @@ const BriefDetail = () => {
   const [selectedFeedback, setSelectedFeedback] = useState<'up' | 'down' | null>(null);
   const [actionItems, setActionItems] = useState<SummaryMassage[]>([]);
   const [transcriptOpen, setTranscriptOpen] = useState(false);
+  const { handleActionRelevance } = useFeedbackTracking();
   const {
     audioRef,
     isPlaying,
@@ -250,6 +254,18 @@ const BriefDetail = () => {
   
   const handleSpeedChange = (speed: number) => {
     updatePlaybackRate(speed);
+  };
+
+  const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
+    await handleActionRelevance(briefData.id, itemId, relevant, feedback);
+    toast({
+      title: relevant ? "Preference Saved" : "Training AI",
+      description: feedback 
+        ? `AI will learn: "${feedback.slice(0, 50)}${feedback.length > 50 ? '...' : ''}"` 
+        : relevant 
+          ? "Thank you for confirming this action item is relevant" 
+          : "AI will learn from this feedback to improve future briefs"
+    });
   };
 
   const getPriorityColor = (priority: string) => {
@@ -503,7 +519,7 @@ const BriefDetail = () => {
               </div>
             </div>
 
-            {/* Action Items Section */}
+            {/* Action Items Section with Feedback */}
             <div className="glass-card rounded-2xl p-4 md:p-6">
               <h2 className="text-lg font-semibold text-text-primary mb-4">Action Items</h2>
               
@@ -521,7 +537,7 @@ const BriefDetail = () => {
                   {actionItems.map((item) => (
                     <React.Fragment key={item.id}>
                       <TableRow 
-                        className="border-white/10 hover:bg-white/5 cursor-pointer"
+                        className="border-white/10 hover:bg-white/5 cursor-pointer group"
                         onClick={() => toggleActionItem(item.id)}
                       >
                         <TableCell className="px-1">
@@ -546,14 +562,24 @@ const BriefDetail = () => {
                           </Badge>
                         </TableCell>
                         <TableCell className="px-1">
-                          <div className="text-sm text-text-primary font-medium">
-                            {item.title}
-                          </div>
-                          {/* {item?.subtitle && (
-                            <div className="text-xs text-text-secondary">
-                              {item?.subtitle}
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="text-sm text-text-primary font-medium">
+                                {item.title}
+                              </div>
+                              {/* {item.subtitle && (
+                                <div className="text-xs text-text-secondary">
+                                  {item.subtitle}
+                                </div>
+                              )} */}
                             </div>
-                          )} */}
+                            <div className="ml-2">
+                              {/* <ActionItemFeedback 
+                                itemId={item.messageId} 
+                                onRelevanceFeedback={handleActionItemFeedback}
+                              /> */}
+                            </div>
+                          </div>
                         </TableCell>
                         <TableCell className="px-1">
                           <span className="text-sm text-text-secondary">{item.time}</span>

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useFeedbackTracking } from "../useFeedbackTracking";
 import { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
+import ActionItemFeedback from "../ActionItemFeedback";
 
 interface BriefCardProps {
   brief: Summary;
@@ -62,7 +63,8 @@ const BriefCard = ({
   
   const {
     handleSummaryFeedback,
-    handleAddMissingContent
+    handleAddMissingContent,
+    handleActionRelevance
   } = useFeedbackTracking();
 
   // Sample time saved data - in a real app this would come from the brief data
@@ -177,6 +179,17 @@ const BriefCard = ({
       }
     }
   };
+
+  const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
+    await handleActionRelevance(brief?.id, itemId, relevant, feedback);
+  };
+
+  // Mock action items for demonstration
+  const mockActionItems = [
+    { id: '1', title: 'Review Q3 budget proposal', source: 'gmail', priority: 'high' },
+    { id: '2', title: 'Respond to Sarah about timeline', source: 'slack', priority: 'medium' },
+    { id: '3', title: 'Schedule team standup', source: 'slack', priority: 'low' }
+  ];
 
   // Extract date and time from the timeCreated string
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
@@ -455,6 +468,38 @@ const BriefCard = ({
                     </Tooltip>
                   );
                 })}
+              </div>
+
+              {/* Action Items with Feedback */}
+              <div className="mb-3">
+                <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
+                <div className="space-y-2">
+                  {mockActionItems.map((item) => (
+                    <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          {item.source === 'gmail' ? (
+                            <Mail className="h-3 w-3 text-red-400" />
+                          ) : (
+                            <MessageSquare className="h-3 w-3 text-purple-400" />
+                          )}
+                          <Badge className={`text-xs px-1 py-0 ${
+                            item.priority === 'high' ? 'bg-red-500/20 text-red-400' :
+                            item.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
+                            'bg-gray-500/20 text-gray-400'
+                          }`}>
+                            {item.priority}
+                          </Badge>
+                        </div>
+                        <span className="text-sm text-text-primary">{item.title}</span>
+                      </div>
+                      <ActionItemFeedback 
+                        itemId={item.id} 
+                        onRelevanceFeedback={handleActionItemFeedback}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Add Missing Content */}

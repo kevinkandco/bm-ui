@@ -569,13 +569,13 @@ const HomeView = ({
                   disabled={status === "focus" || status === "away"}
                   className="text-text-primary hover:bg-white/5 p-0"
                 >
-                  <div className="flex items-center pl-2 py-1.5" onClick={() => onStartFocusMode(30)}>
+                  <div className="flex items-center pl-2 py-1.5" onClick={onToggleFocusMode}>
                     <Headphones className="mr-2 h-4 w-4" />
                     Start Focus Mode
                   </div>
-                  <div className="flex items-center rounded-full p-1 text-sm cursor-pointer" onClick={onToggleFocusMode}>
+                  {/* <div className="flex items-center rounded-full p-1 text-sm cursor-pointer" onClick={onToggleFocusMode}>
                      <Settings size={16}>Configure Slack</Settings>
-                  </div>
+                  </div> */}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={onSignOffForDay}

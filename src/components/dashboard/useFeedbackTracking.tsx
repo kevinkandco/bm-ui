@@ -3,10 +3,11 @@ import { useApi } from "@/hooks/useApi";
 import { useCallback } from "react";
 
 interface FeedbackEvent {
-  type: 'summary_up' | 'summary_down' | 'summary_comment' | 'action_relevant' | 'action_irrelevant' | 'manual_add' | 'personalization_reset';
+  type: 'summary_up' | 'summary_down' | 'summary_comment' | 'action_relevant' | 'action_irrelevant' | 'manual_add' | 'personalization_reset' | 'action_positive_training' | 'action_negative_training';
   briefId?: number;
   itemId?: string;
   comment?: string;
+  feedback?: string;
   timestamp: Date;
 }
 
@@ -62,12 +63,23 @@ export const useFeedbackTracking = (callback: () => void = () => {}) => {
     }
   }, [trackFeedback]);
 
-  const handleActionRelevance = useCallback((briefId: number, itemId: string, relevant: boolean) => {
-    trackFeedback({
-      type: relevant ? 'action_relevant' : 'action_irrelevant',
-      briefId,
-      itemId
-    });
+  const handleActionRelevance = useCallback((briefId: number, itemId: string, relevant: boolean, feedback?: string) => {
+    if (feedback) {
+      // If there's detailed feedback, track it as training data
+      trackFeedback({
+        type: relevant ? 'action_positive_training' : 'action_negative_training',
+        briefId,
+        itemId,
+        feedback
+      });
+    } else {
+      // Simple relevance feedback
+      trackFeedback({
+        type: relevant ? 'action_relevant' : 'action_irrelevant',
+        briefId,
+        itemId
+      });
+    }
   }, [trackFeedback]);
 
   const handleAddMissingContent = useCallback((briefId: number, content: string) => {
