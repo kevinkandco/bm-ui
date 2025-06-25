@@ -471,7 +471,7 @@ const BriefCard = ({
               </div>
 
               {/* Action Items with Feedback */}
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
                 <div className="space-y-2">
                   {mockActionItems.map((item) => (
@@ -500,10 +500,10 @@ const BriefCard = ({
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               {/* Add Missing Content */}
-              {!showAddMissing ? (
+              {/* {!showAddMissing ? (
                 <div className="mb-3">
                   <Button variant="ghost" size="sm" onClick={e => {
                     e.stopPropagation();
@@ -524,7 +524,7 @@ const BriefCard = ({
                     autoFocus 
                   />
                 </div>
-              )}
+              )} */}
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-2 pt-1">
