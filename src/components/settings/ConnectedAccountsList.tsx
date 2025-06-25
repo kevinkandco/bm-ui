@@ -108,7 +108,7 @@ const ConnectedAccountsList = ({
   };
 
   const supportsAISettings = (provider: string) => {
-    return ['gmail', 'outlook', 'slack'].includes(provider);
+    return ['google', 'outlook', 'slack'].includes(provider);
   };
 
   return (
@@ -228,19 +228,18 @@ const ConnectedAccountsList = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setAiSettingsOpen(account.id)}
+                    onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name?.toLowerCase() })}
                     className="text-text-secondary hover:text-text-primary"
                   >
-                    <SettingsIcon className="h-4 w-4 mr-2" />
-                    AI Settings
+                    <SettingsIcon className="h-4 w-4 mr-2" /> Settings
                   </Button>
                 )}
 
                 {/* Include in Combined Brief Switch */}
                 <div className="flex items-center space-x-2">
-                  {setProviderModal && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2 cursor-pointer" onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name?.toLowerCase() })}>
+                  {/* {setProviderModal && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2 cursor-pointer" onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name?.toLowerCase() })}>
                     <Settings size={20}>Configure Slack</Settings>
-                  </div>}
+                  </div>} */}
                   <span className="text-sm text-text-secondary whitespace-nowrap">
                     Include in Combined
                   </span>
