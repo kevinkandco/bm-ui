@@ -338,8 +338,8 @@ const Dashboard = () => {
     });
   }, [toast, call]);
   
-  const handleSignOffForDay = useCallback(() => {
-    const response = call("post", "/sign-off", {
+  const handleSignOffForDay = useCallback(async() => {
+    const response = await call("post", "/sign-off", {
       showToast: true,
       toastTitle: "Sign Off Failed",
       toastDescription:
@@ -358,13 +358,13 @@ const Dashboard = () => {
     });
   }, [toast, call]);
 
-  const handleSignBackOn = useCallback(() => {
-    const response = call("post", "/api/sign-back-on", {
+  const handleSignBackOn = useCallback(async() => {
+    const response = await call("post", "/api/sign-back-on", {
       showToast: true,
       toastTitle: "Sign Back On Failed",
       toastDescription:
         "Sign Back On failed. please try again sometime later.",
-      toastVariant: "destructive"
+      toastVariant: "destructive",
     })
 
     if (!response) {
