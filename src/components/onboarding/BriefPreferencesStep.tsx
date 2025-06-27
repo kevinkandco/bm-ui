@@ -463,14 +463,14 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
           </Collapsible>
         ))}
         
-        <Button 
+        {/* <Button 
           onClick={addNewBrief}
           variant="outline" 
           className="w-full border-dashed border-cool-slate/40 bg-deep-plum/10 hover:bg-deep-plum/30 text-ice-grey mt-2"
           disabled={true} 
         >
           <Plus size={16} className="mr-2" /> Add another brief schedule
-        </Button>
+        </Button> */}
         
         <div className="bg-deep-plum/20 p-4 rounded-lg border border-electric-teal/20 flex gap-3 items-start mt-4">
           <InfoIcon size={20} className="text-electric-teal shrink-0 mt-0.5" />

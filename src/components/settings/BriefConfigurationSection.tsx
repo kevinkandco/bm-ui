@@ -407,7 +407,7 @@ const updateTimeValue = useCallback(
                 </div>
               </div>
 
-              <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+              {/* <div className="bg-white/5 rounded-lg border border-white/10 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-sm font-medium text-text-primary flex items-center">
                     <Plus className="h-4 w-4 mr-2" /> Custom Brief Schedules
@@ -541,7 +541,7 @@ const updateTimeValue = useCallback(
                     </p>
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
           )}
         </div>
