@@ -57,9 +57,9 @@ interface WeekendBrief {
 const BriefConfigurationSection = () => {
   
   const { toast } = useToast();
-  const { tags, updateSplitBriefSettings, loading } = useIntegrationsState();
+  const { tags, updateSplitBriefSettings, loading: splitBriefLoading } = useIntegrationsState();
   const { call } = useApi();
-
+  const [loading, setLoading] = useState(false);
   const [scheduleType, setScheduleType] = useState<"auto" | "custom">("custom");
   const [days, setDays] = useState({
     Monday: false,
@@ -120,6 +120,7 @@ const BriefConfigurationSection = () => {
   ];
 
   const getData = useCallback(async () => {
+    setLoading(true);
     const response = await call("get", "/settings/brief-configuration/days", {
       showToast: true,
       toastTitle: "Failed to get data",
@@ -151,6 +152,8 @@ const BriefConfigurationSection = () => {
 
       return updated;
     });
+
+    setLoading(false);
   }, [call]);
 
   useEffect(() => {
@@ -332,7 +335,9 @@ const updateTimeValue = useCallback(
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-text-primary">Brief Configuration</h2>
+        <h2 className="text-xl font-semibold text-text-primary">
+          Brief Configuration
+        </h2>
         <Button
           onClick={handleSaveSettings}
           className="shadow-subtle hover:shadow-glow transition-all"
@@ -351,274 +356,360 @@ const updateTimeValue = useCallback(
           </p>
         </div>
 
-        <div className="glass-card rounded-2xl p-6">
-          <RadioGroup
-            value={scheduleType}
-            onValueChange={(v) => setScheduleType(v as "auto" | "custom")}
-            className="space-y-4"
-          >
-            <div className="space-y-2">
+        {loading ? (
+          <FancyLoader />
+        ) : (
+          <div className="glass-card rounded-2xl p-6">
+            <RadioGroup
+              value={scheduleType}
+              onValueChange={(v) => setScheduleType(v as "auto" | "custom")}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="auto" id="auto" />
+                  <Label htmlFor="auto" className="text-text-primary">
+                    Use AI‑recommended schedule
+                  </Label>
+                </div>
+                <p className="text-sm text-text-secondary ml-7">
+                  AI Recommended quietly notices when you're tied
+                  up—back‑to‑back meetings, offline stretches, deep‑work
+                  blocks—and automatically serves a concise, privacy‑safe
+                  catch‑up on what you missed, so you can jump back in without
+                  the scroll.
+                </p>
+              </div>
               <div className="flex items-center space-x-3">
-                <RadioGroupItem value="auto" id="auto" />
-                <Label htmlFor="auto" className="text-text-primary">
-                  Use AI‑recommended schedule
+                <RadioGroupItem value="custom" id="custom" />
+                <Label htmlFor="custom" className="text-text-primary">
+                  Set custom schedule
                 </Label>
               </div>
-              <p className="text-sm text-text-secondary ml-7">
-                AI Recommended quietly notices when you're tied up—back‑to‑back meetings, offline stretches, deep‑work blocks—and automatically serves a concise, privacy‑safe catch‑up on what you missed, so you can jump back in without the scroll.
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <RadioGroupItem value="custom" id="custom" />
-              <Label htmlFor="custom" className="text-text-primary">
-                Set custom schedule
-              </Label>
-            </div>
-          </RadioGroup>
+            </RadioGroup>
 
-          {scheduleType === "custom" && (
-            <div className="mt-6 space-y-6">
-              {/* ... keep existing code (Days and Default Brief Times sections) */}
-              <div className="bg-white/5 rounded-lg border border-white/10 p-4">
-                <h4 className="text-sm font-medium text-text-primary mb-4 flex items-center">
-                  <Calendar className="h-4 w-4 mr-2" /> Days
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  {Object.entries(days).map(([day, isActive]) => (
-                    <div key={day} className="flex items-center justify-between">
-                      <Label htmlFor={`day-${day}`} className="text-text-primary capitalize">
-                        {day}
-                      </Label>
-                      <Switch
-                        id={`day-${day}`}
-                        checked={isActive}
-                        onCheckedChange={() => toggleDay(day as keyof typeof days)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-white/5 rounded-lg border border-white/10 p-4">
-                <h4 className="text-sm font-medium text-text-primary mb-4 flex items-center">
-                  <Clock className="h-4 w-4 mr-2" /> Default Brief Times
-                </h4>
-                <div className="space-y-5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <Label htmlFor="time-morning" className="text-text-primary">
-                          Morning Brief
-                        </Label>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Input
-                            type="time"
-                            value={times.morning.time}
-                            disabled={!times.morning.enabled}
-                            onChange={(e) => updateTimeValue("morning", e.target.value)}
-                            className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <Switch
-                      id="time-morning"
-                      checked={times.morning.enabled}
-                      onCheckedChange={(checked) => toggleTime("morning", checked)}
-                    />
-                  </div>
-
-                  <Separator className="bg-white/10" />
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <Label htmlFor="time-midday" className="text-text-primary">
-                          Midday Brief
-                        </Label>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Input
-                            type="time"
-                            value={times.midday.time}
-                            disabled={!times.midday.enabled}
-                            onChange={(e) => updateTimeValue("midday", e.target.value)}
-                            className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <Switch
-                      id="time-midday"
-                      checked={times.midday.enabled}
-                      onCheckedChange={(checked) => toggleTime("midday", checked)}
-                    />
-                  </div>
-
-                  <Separator className="bg-white/10" />
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <Label htmlFor="time-evening" className="text-text-primary">
-                          Evening Brief
-                        </Label>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Input
-                            type="time"
-                            value={times.evening.time}
-                            disabled={!times.evening.enabled}
-                            onChange={(e) => updateTimeValue("evening", e.target.value)}
-                            className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <Switch
-                      id="time-evening"
-                      checked={times.evening.enabled}
-                      onCheckedChange={(checked) => toggleTime("evening", checked)}
-                    />
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Weekend Brief Configuration */}
-              <div className="bg-white/5 rounded-lg border border-white/10 p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-medium text-text-primary flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Weekend Brief
+            {scheduleType === "custom" && (
+              <div className="mt-6 space-y-6">
+                {/* ... keep existing code (Days and Default Brief Times sections) */}
+                <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                  <h4 className="text-sm font-medium text-text-primary mb-4 flex items-center">
+                    <Calendar className="h-4 w-4 mr-2" /> Days
                   </h4>
-                  <Switch 
-                    checked={weekendBrief.enabled}
-                    onCheckedChange={(checked) => updateWeekendBrief({ enabled: checked })}
-                  />
-                </div>
-                <p className="text-xs text-text-secondary mb-4">
-                  Get a summary covering your weekend period
-                </p>
-
-                {weekendBrief.enabled && (
-                  <div className="space-y-4 pt-4 border-t border-white/10">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-xs text-text-secondary">Delivery Method</Label>
-                        <Select value={weekendBrief.deliveryMethod} onValueChange={(value: "email" | "audio" | "both") => 
-                          updateWeekendBrief({ deliveryMethod: value })
-                        }>
-                          <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="email">Email</SelectItem>
-                            <SelectItem value="audio">Audio</SelectItem>
-                            <SelectItem value="both">Both</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-xs text-text-secondary">Delivery Time</Label>
-                        <Input
-                          type="time"
-                          value={weekendBrief.deliveryTime}
-                          onChange={(e) => updateWeekendBrief({ deliveryTime: e.target.value })}
-                          className="bg-white/5 border-white/20 text-text-primary h-8"
+                  <div className="grid grid-cols-2 gap-4">
+                    {Object.entries(days).map(([day, isActive]) => (
+                      <div
+                        key={day}
+                        className="flex items-center justify-between"
+                      >
+                        <Label
+                          htmlFor={`day-${day}`}
+                          className="text-text-primary capitalize"
+                        >
+                          {day}
+                        </Label>
+                        <Switch
+                          id={`day-${day}`}
+                          checked={isActive}
+                          onCheckedChange={() =>
+                            toggleDay(day as keyof typeof days)
+                          }
                         />
                       </div>
-                    </div>
+                    ))}
+                  </div>
+                </div>
 
-                    <div>
-                      <Label className="text-xs text-text-secondary">Delivery Days</Label>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {["Monday", "Saturday", "Sunday"].map((day) => (
-                          <Button
-                            key={day}
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className={`h-6 px-2 text-xs ${
-                              weekendBrief.weekendDays.includes(day)
-                                ? 'bg-primary/20 text-primary border-primary/40'
-                                : 'bg-white/5 text-text-secondary border-white/20'
-                            }`}
-                            onClick={() => toggleWeekendDay(day)}
+                <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                  <h4 className="text-sm font-medium text-text-primary mb-4 flex items-center">
+                    <Clock className="h-4 w-4 mr-2" /> Default Brief Times
+                  </h4>
+                  <div className="space-y-5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div>
+                          <Label
+                            htmlFor="time-morning"
+                            className="text-text-primary"
                           >
-                            {day.slice(0, 3)}
-                          </Button>
-                        ))}
+                            Morning Brief
+                          </Label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Input
+                              type="time"
+                              value={times.morning.time}
+                              disabled={!times.morning.enabled}
+                              onChange={(e) =>
+                                updateTimeValue("morning", e.target.value)
+                              }
+                              className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
+                            />
+                          </div>
+                        </div>
                       </div>
+                      <Switch
+                        id="time-morning"
+                        checked={times.morning.enabled}
+                        onCheckedChange={(checked) =>
+                          toggleTime("morning", checked)
+                        }
+                      />
                     </div>
 
-                    <div>
-                      <Label className="text-xs text-text-secondary">Coverage Period</Label>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-1">
+                    <Separator className="bg-white/10" />
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
                         <div>
-                          <Label className="text-xs text-text-secondary">From Day</Label>
-                          <Select value={weekendBrief.coveragePeriod.startDay} onValueChange={(value) => 
-                            updateWeekendBrief({ 
-                              coveragePeriod: { ...weekendBrief.coveragePeriod, startDay: value }
-                            })
-                          }>
-                            <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-7 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {ALL_DAYS.map(day => (
-                                <SelectItem key={day} value={day}>{day}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label className="text-xs text-text-secondary">From Time</Label>
-                          <Input
-                            type="time"
-                            value={weekendBrief.coveragePeriod.startTime}
-                            onChange={(e) => updateWeekendBrief({ 
-                              coveragePeriod: { ...weekendBrief.coveragePeriod, startTime: e.target.value }
-                            })}
-                            className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-xs text-text-secondary">To Day</Label>
-                          <Select value={weekendBrief.coveragePeriod.endDay} onValueChange={(value) => 
-                            updateWeekendBrief({ 
-                              coveragePeriod: { ...weekendBrief.coveragePeriod, endDay: value }
-                            })
-                          }>
-                            <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-7 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {ALL_DAYS.map(day => (
-                                <SelectItem key={day} value={day}>{day}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label className="text-xs text-text-secondary">To Time</Label>
-                          <Input
-                            type="time"
-                            value={weekendBrief.coveragePeriod.endTime}
-                            onChange={(e) => updateWeekendBrief({ 
-                              coveragePeriod: { ...weekendBrief.coveragePeriod, endTime: e.target.value }
-                            })}
-                            className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
-                          />
+                          <Label
+                            htmlFor="time-midday"
+                            className="text-text-primary"
+                          >
+                            Midday Brief
+                          </Label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Input
+                              type="time"
+                              value={times.midday.time}
+                              disabled={!times.midday.enabled}
+                              onChange={(e) =>
+                                updateTimeValue("midday", e.target.value)
+                              }
+                              className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
+                            />
+                          </div>
                         </div>
                       </div>
-                      <p className="text-xs text-text-secondary mt-1">
-                        Default: Friday 5:00 PM to Monday 9:00 AM
-                      </p>
+                      <Switch
+                        id="time-midday"
+                        checked={times.midday.enabled}
+                        onCheckedChange={(checked) =>
+                          toggleTime("midday", checked)
+                        }
+                      />
+                    </div>
+
+                    <Separator className="bg-white/10" />
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div>
+                          <Label
+                            htmlFor="time-evening"
+                            className="text-text-primary"
+                          >
+                            Evening Brief
+                          </Label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Input
+                              type="time"
+                              value={times.evening.time}
+                              disabled={!times.evening.enabled}
+                              onChange={(e) =>
+                                updateTimeValue("evening", e.target.value)
+                              }
+                              className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <Switch
+                        id="time-evening"
+                        checked={times.evening.enabled}
+                        onCheckedChange={(checked) =>
+                          toggleTime("evening", checked)
+                        }
+                      />
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
 
-              {/* <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                {/* Weekend Brief Configuration */}
+                <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-medium text-text-primary flex items-center">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Weekend Brief
+                    </h4>
+                    <Switch
+                      checked={weekendBrief.enabled}
+                      onCheckedChange={(checked) =>
+                        updateWeekendBrief({ enabled: checked })
+                      }
+                    />
+                  </div>
+                  <p className="text-xs text-text-secondary mb-4">
+                    Get a summary covering your weekend period
+                  </p>
+
+                  {weekendBrief.enabled && (
+                    <div className="space-y-4 pt-4 border-t border-white/10">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-xs text-text-secondary">
+                            Delivery Method
+                          </Label>
+                          <Select
+                            value={weekendBrief.deliveryMethod}
+                            onValueChange={(
+                              value: "email" | "audio" | "both"
+                            ) => updateWeekendBrief({ deliveryMethod: value })}
+                          >
+                            <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="email">Email</SelectItem>
+                              <SelectItem value="audio">Audio</SelectItem>
+                              <SelectItem value="both">Both</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-text-secondary">
+                            Delivery Time
+                          </Label>
+                          <Input
+                            type="time"
+                            value={weekendBrief.deliveryTime}
+                            onChange={(e) =>
+                              updateWeekendBrief({
+                                deliveryTime: e.target.value,
+                              })
+                            }
+                            className="bg-white/5 border-white/20 text-text-primary h-8"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label className="text-xs text-text-secondary">
+                          Delivery Days
+                        </Label>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {["Monday", "Saturday", "Sunday"].map((day) => (
+                            <Button
+                              key={day}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className={`h-6 px-2 text-xs ${
+                                weekendBrief.weekendDays.includes(day)
+                                  ? "bg-primary/20 text-primary border-primary/40"
+                                  : "bg-white/5 text-text-secondary border-white/20"
+                              }`}
+                              onClick={() => toggleWeekendDay(day)}
+                            >
+                              {day.slice(0, 3)}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label className="text-xs text-text-secondary">
+                          Coverage Period
+                        </Label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-1">
+                          <div>
+                            <Label className="text-xs text-text-secondary">
+                              From Day
+                            </Label>
+                            <Select
+                              value={weekendBrief.coveragePeriod.startDay}
+                              onValueChange={(value) =>
+                                updateWeekendBrief({
+                                  coveragePeriod: {
+                                    ...weekendBrief.coveragePeriod,
+                                    startDay: value,
+                                  },
+                                })
+                              }
+                            >
+                              <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-7 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {ALL_DAYS.map((day) => (
+                                  <SelectItem key={day} value={day}>
+                                    {day}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-text-secondary">
+                              From Time
+                            </Label>
+                            <Input
+                              type="time"
+                              value={weekendBrief.coveragePeriod.startTime}
+                              onChange={(e) =>
+                                updateWeekendBrief({
+                                  coveragePeriod: {
+                                    ...weekendBrief.coveragePeriod,
+                                    startTime: e.target.value,
+                                  },
+                                })
+                              }
+                              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs text-text-secondary">
+                              To Day
+                            </Label>
+                            <Select
+                              value={weekendBrief.coveragePeriod.endDay}
+                              onValueChange={(value) =>
+                                updateWeekendBrief({
+                                  coveragePeriod: {
+                                    ...weekendBrief.coveragePeriod,
+                                    endDay: value,
+                                  },
+                                })
+                              }
+                            >
+                              <SelectTrigger className="bg-white/5 border-white/20 text-text-primary h-7 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {ALL_DAYS.map((day) => (
+                                  <SelectItem key={day} value={day}>
+                                    {day}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-text-secondary">
+                              To Time
+                            </Label>
+                            <Input
+                              type="time"
+                              value={weekendBrief.coveragePeriod.endTime}
+                              onChange={(e) =>
+                                updateWeekendBrief({
+                                  coveragePeriod: {
+                                    ...weekendBrief.coveragePeriod,
+                                    endTime: e.target.value,
+                                  },
+                                })
+                              }
+                              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+                            />
+                          </div>
+                        </div>
+                        <p className="text-xs text-text-secondary mt-1">
+                          Default: Friday 5:00 PM to Monday 9:00 AM
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* <div className="bg-white/5 rounded-lg border border-white/10 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-sm font-medium text-text-primary flex items-center">
                     <Plus className="h-4 w-4 mr-2" /> Custom Brief Schedules
@@ -753,22 +844,30 @@ const updateTimeValue = useCallback(
                   )}
                 </div>
               </div> */}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <Separator className="bg-border-subtle" />
 
-      {loading ? (
+      {splitBriefLoading ? (
         <FancyLoader />
       ) : tags.length > 0 ? (
-        <SplitBriefControls tags={tags} onUpdateSettings={updateSplitBriefSettings} />
+        <SplitBriefControls
+          tags={tags}
+          onUpdateSettings={updateSplitBriefSettings}
+        />
       ) : (
         <div className="text-center py-8 text-text-secondary">
           <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <h3 className="text-lg font-medium text-text-primary mb-2">Split Briefs</h3>
-          <p className="text-sm">Connect multiple accounts to enable split brief configuration</p>
+          <h3 className="text-lg font-medium text-text-primary mb-2">
+            Split Briefs
+          </h3>
+          <p className="text-sm">
+            Connect multiple accounts to enable split brief configuration
+          </p>
         </div>
       )}
     </div>
