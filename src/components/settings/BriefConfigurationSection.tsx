@@ -202,8 +202,34 @@ const BriefConfigurationSection = () => {
     }));
   }, [call, days, times]);
 
+const isValidTimeForPeriod = (key: keyof typeof times, time: string): boolean => {
+  const [hours, minutes] = time.split(":").map(Number);
+  const totalMinutes = hours * 60 + minutes;
+
+  switch (key) {
+    case "morning":
+      return totalMinutes >= 360 && totalMinutes < 720; // 06:00–11:59
+    case "midday":
+      return totalMinutes >= 720 && totalMinutes < 1020; // 12:00–16:59
+    case "evening":
+      return totalMinutes >= 1020 && totalMinutes < 1440; // 17:00–23:59
+    default:
+      return false;
+  }
+};
+
 const updateTimeValue = useCallback(
   async (key: keyof typeof times, newTime: string) => {
+
+    if (!isValidTimeForPeriod(key, newTime)) {
+      toast({
+        title: "Invalid time",
+        description: `Selected time is not valid for the ${key} period.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setTimes((prev) => ({
       ...prev,
       [key]: { ...prev[key], time: newTime },
