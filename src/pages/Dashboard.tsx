@@ -310,7 +310,7 @@ const Dashboard = () => {
 
   const handleStartFocusModeWithConfig = useCallback(async (config: FocusConfig) => {
 
-    const response = await call("post", "/api/focus-mode", {
+    const response = await call("post", "/focus-mode", {
         body: config,
         showToast: true,
         toastTitle: "Focus Mode Activation Failed",
@@ -359,7 +359,7 @@ const Dashboard = () => {
   }, [toast, call]);
 
   const handleSignBackOn = useCallback(async() => {
-    const response = await call("post", "/api/sign-back-on", {
+    const response = await call("post", "/sign-back-on", {
       showToast: true,
       toastTitle: "Sign Back On Failed",
       toastDescription:
