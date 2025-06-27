@@ -41,10 +41,12 @@ const IntegrationsSection = () => {
 
   useEffect(() => {
       const selected = searchParams.get("selected");
+      const id = searchParams.get("integration_id");
   
       const url = new URL(window.location.href);
       url.searchParams.delete("selected");
-      if (selected === "slack") {
+      url.searchParams.delete("integration_id");
+      if (selected && id) {
         window.history.replaceState(
           {},
           document.title,
@@ -52,7 +54,7 @@ const IntegrationsSection = () => {
         );  
         setProviderModal({
           open: true,
-          id: 0,
+          id: Number(id),
           name: selected,
         });
         setFirstTimeProviderConnected(true);

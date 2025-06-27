@@ -17,4 +17,6 @@ export interface SettingsTabProps {
   syncData: () => Promise<void>;
   loadingProviderData: boolean;
   provider: { id: number; name: string };
+  shouldRefreshContacts?: boolean;
+  setShouldRefreshContacts?: React.Dispatch<React.SetStateAction<boolean>>;
 }

@@ -10,7 +10,8 @@ import { ChannelInput } from "./priority-channels/ChannelInput";
 import { SelectedChannels } from "./priority-channels/SelectedChannels";
 import { usePriorityChannelsState } from "./priority-channels/usePriorityChannelsState";
 
-const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: PriorityChannelsStepProps) => {
+const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData, connectedAccount }: PriorityChannelsStepProps) => {
+  const slackId = connectedAccount?.find(c => c?.provider_name?.toLowerCase() === "slack")?.id;
   const {
     priorityChannels,
     slackChannels,
@@ -18,7 +19,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
     addChannel,
     selectChannel,
     removeChannel
-  } = usePriorityChannelsState(userData.priorityChannels || []);
+  } = usePriorityChannelsState(slackId, userData.priorityChannels || []);
   
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -31,9 +32,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
     [searchQuery, slackChannels]
   );
   
-  const hasSlackIntegration = userData.integrations?.some(
-    (integration: any) => integration.type === "slack" || integration === "slack"
-  );
+  const hasSlackIntegration = userData.integrations?.includes("slack");
   
   const handleContinue = useCallback(() => {
     updateUserData({ priorityChannels });
@@ -70,7 +69,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
         </div>
         
         {/* Slack channels section */}
-        {(hasSlackIntegration || true) && (
+        {(hasSlackIntegration) && (
           <div className="space-y-2">
             <h3 className="text-lg font-medium text-text-primary">
               <span className="flex items-center gap-2">

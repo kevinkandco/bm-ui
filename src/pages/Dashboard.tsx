@@ -11,7 +11,7 @@ import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities } fro
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
-import { enrichBriefsWithStats } from "@/lib/utils";
+import { enrichBriefsWithStats, transformToStats } from "@/lib/utils";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
@@ -72,7 +72,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
-    const response = await call("get", "/api/dashboard", {
+    const response = await call("get", "/dashboard", {
       showToast: true,
       toastTitle: "Failed to fetch user data",
       toastDescription: "Something went wrong. Failed to fetch user data.",
@@ -102,7 +102,7 @@ const Dashboard = () => {
 
   const getRecentBriefs = useCallback(async () => {
     setBriefsLoading(true);
-    const response = await call("get", `/api/summaries?per_page=3`, {
+    const response = await call("get", `/summaries?per_page=3`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
@@ -115,7 +115,7 @@ const Dashboard = () => {
 
   const getBrief = useCallback(
       async (briefId: number): Promise<false | Summary> => {
-        const response = await call("get", `/api/summary/${briefId}/status`, {
+        const response = await call("get", `/summary/${briefId}/status`, {
           showToast: true,
           toastTitle: "Failed to fetch brief",
           toastDescription: "Something went wrong while fetching the brief.",
@@ -170,13 +170,15 @@ const Dashboard = () => {
               const data = await getBrief(item.id);
       
               if (data) {
+                const stats = transformToStats(data);
+                const dataWithStats = { ...data, stats };
                 setPendingData(
                   (prev) => prev?.filter((data) => data.id !== item.id) ?? []
                 );
       
                 setRecentBriefs((prev) => {
                   if (!prev) return null;
-                  return prev?.map((brief) => brief.id === item.id ? data : brief) || null;
+                  return prev?.map((brief) => brief.id === item.id ? dataWithStats : brief) || null;
                 });
       
                 clearInterval(intervalId);
@@ -223,7 +225,7 @@ const Dashboard = () => {
   const handleExitFocusMode = useCallback(async () => {
     setFocusModeExitLoading(true);
 
-    const response = await call("get", "/api/exit-focus-mode", {
+    const response = await call("get", "/exit-focus-mode", {
       showToast: true,
       toastTitle: "Focus Mode Exit failed",
       toastDescription: "Something went wrong. Please try again later.",
@@ -281,7 +283,7 @@ const Dashboard = () => {
     ) => {
       setFocusModeActivationLoading(true);
 
-      const response = await call("post", "/api/focus-mode", {
+      const response = await call("post", "/focus-mode", {
         body: { ...options, focusDuration: focusTime },
         showToast: true,
         toastTitle: "Focus Mode Activation Failed",
@@ -337,7 +339,7 @@ const Dashboard = () => {
   }, [toast, call]);
   
   const handleSignOffForDay = useCallback(() => {
-    const response = call("post", "/api/sign-off", {
+    const response = call("post", "/sign-off", {
       showToast: true,
       toastTitle: "Sign Off Failed",
       toastDescription:

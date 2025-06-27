@@ -17,7 +17,7 @@ const Login = () => {
 
   const handleSignIn = (provider: 'google' | 'slack') => {
     try {
-      const url = provider === "google" ? `${BaseURL}/google/auth?redirectURL=dashboard` : `${BaseURL}/auth/redirect/${provider}?redirectURL=dashboard`;
+      const url = provider === "google" ? `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=dashboard` : `${BaseURL?.replace("/api", "")}/auth/redirect/${provider}?redirectURL=dashboard`;
       window.open(url, "_self");
     } catch (error) {
       console.log(error);

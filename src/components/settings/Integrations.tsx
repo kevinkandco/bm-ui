@@ -188,7 +188,7 @@ const Integrations = () => {
   const handleDisconnect = async (provider: { id: number; name: string }) => {
     const response = await call(
       "get",
-      `/api/settings/system-integrations/${provider.id}/disconnect`,
+      `/settings/system-integrations/${provider.id}/disconnect`,
       {
         showToast: true,
         toastTitle: "Failed to Disconnect",
@@ -212,10 +212,10 @@ const Integrations = () => {
 
     const openAuthUrl = async (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
-        google: `${BaseURL}/google/auth?redirectURL=dashboard/settings`,
-        calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${BaseURL}/outlook/auth`,
+        slack: `${BaseURL?.replace("/api", "")}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=dashboard/settings`,
+        calendar: `${BaseURL?.replace("/api", "")}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${BaseURL?.replace("/api", "")}/outlook/auth`,
       };
       window.open(urls[provider], "_self");
     };
@@ -257,7 +257,7 @@ const Integrations = () => {
   };
 
   const getProvider = useCallback(async (): Promise<void> => {
-    const response = await call("get", "/api/settings/system-integrations", {
+    const response = await call("get", "/settings/system-integrations", {
       showToast: false,
       returnOnFailure: false,
     });

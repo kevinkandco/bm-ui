@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
 import { useApi } from "@/hooks/useApi";
 
-export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []) {
+export function useSlackPriorityPeopleState(id: number, initialPeople: PriorityPerson[] = []) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,23 +14,23 @@ export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []
 
   const fetchContacts = useCallback(async () => {
     setLoading(true);
-    const response = await call("get", "/api/slack/contacts");
+    const response = await call("get", `/slack/contacts/${id}`);
 
     if (response) {
       setPlatformContacts(response?.contacts);
       setSuggestedContacts(response?.contacts);
     }
     setLoading(false);
-  }, [call]);
+  }, [call, id]);
 
   useEffect(() => {
-    fetchContacts();
-  }, [fetchContacts]);
+    if (id) fetchContacts();
+  }, [id, fetchContacts]);
 
   const filteredManualContacts = useMemo(() =>
     platformContacts?.filter(contact =>
-      contact.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-      contact.email.toLowerCase().includes(inputValue.toLowerCase())
+      contact?.name?.toLowerCase()?.includes(inputValue.toLowerCase()) ||
+      contact?.email?.toLowerCase()?.includes(inputValue.toLowerCase())
     ),
     [platformContacts, inputValue]
   );
@@ -39,7 +39,7 @@ export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []
     if (!name.trim()) return;
 
     setPriorityPeople(prev => {
-      if (prev.some(p => p.name === name)) return prev;
+      if (prev.some(p => p?.name === name)) return prev;
 
       return [...prev, {
         id,
@@ -55,7 +55,7 @@ export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []
   }, [selectedLabel]);
 
   const removePerson = useCallback((personId: number | string) => {
-    setPriorityPeople((prev) => prev.filter((person) => person.id !== personId));
+    setPriorityPeople((prev) => prev.filter((person) => person?.id !== personId));
   }, []);
 
   const designateContact = useCallback((personId: number | string, contact: Contact) => {
@@ -64,8 +64,8 @@ export function useSlackPriorityPeopleState(initialPeople: PriorityPerson[] = []
         person.id === personId
           ? {
               ...person,
-              contactName: contact.name || undefined,
-              email: contact.email || undefined,
+              contactName: contact?.name || undefined,
+              email: contact?.email || undefined,
             }
           : person
       )

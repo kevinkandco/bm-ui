@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
 import { useApi } from "@/hooks/useApi";
 
-export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []) {
+export function useGmailPriorityPeopleState(id: number, initialPeople: PriorityPerson[] = []) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,22 +14,22 @@ export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []
 
   const fetchContacts = useCallback(async () => {
     setLoading(true);
-    const response = await call("get", '/api/email/contacts');
+    const response = await call("get", `/email/contacts/${id}`);
     if (response) {
-      setPlatformContacts(response.contacts || []);
-      setSuggestedContacts(response.contacts || []);
+      setPlatformContacts(response?.contacts || []);
+      setSuggestedContacts(response?.contacts || []);
     }
     setLoading(false);
-  }, [call]);
+  }, [call, id]);
 
   useEffect(() => {
-    fetchContacts();
-  }, [fetchContacts]);
+    if (id) fetchContacts();
+  }, [id, fetchContacts]);
 
   const filteredManualContacts = useMemo(() =>
     platformContacts?.filter(contact =>
-      contact.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-      contact.email.toLowerCase().includes(inputValue.toLowerCase())
+      contact?.name?.toLowerCase()?.includes(inputValue.toLowerCase()) ||
+      contact?.email?.toLowerCase()?.includes(inputValue.toLowerCase())
     ),
     [platformContacts, inputValue]
   );
@@ -63,11 +63,11 @@ export function useGmailPriorityPeopleState(initialPeople: PriorityPerson[] = []
   const designateContact = useCallback((personId: number | string, contact: Contact) => {
     setPriorityPeople((prev) =>
       prev.map((person) =>
-        person.id === personId
+        person?.id === personId
           ? {
               ...person,
-              contactName: contact.name || undefined,
-              email: contact.email || undefined,
+              contactName: contact?.name || undefined,
+              email: contact?.email || undefined,
             }
           : person
       )

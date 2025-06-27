@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import { Contact, PriorityPerson, Label } from "./types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+const BaseURL = import.meta.env.VITE_API_HOST;
+
 interface PriorityPersonCardProps {
   person: PriorityPerson;
   removePerson: (personId: string | number) => void;
@@ -41,19 +43,19 @@ export const PriorityPersonCard = ({
   
   // Filter platform contacts based on contact search query
   const filteredContacts = contacts?.filter(contact =>
-    contact.name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
-    contact.email.toLowerCase().includes(contactSearchQuery.toLowerCase())
+    contact?.name?.toLowerCase()?.includes(contactSearchQuery.toLowerCase()) ||
+    contact?.email?.toLowerCase()?.includes(contactSearchQuery.toLowerCase())
   );
   
   // Format display name - use contactName if available, otherwise use person.name
-  const displayName = person.contactName || person.name;
+  const displayName = person?.contactName || person?.name;
 
   return (
     <div className="flex items-center justify-between py-2 px-3 border border-white/30 backdrop-blur-md bg-white/15 rounded-lg transition-all">
       <div className="flex items-center">
         <div className="w-8 h-8 flex items-center justify-center bg-deep-plum rounded-full mr-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={person?.avatar} alt={person?.name} />
+              <AvatarImage src={person?.avatar ? BaseURL + person?.avatar : null} alt={person?.name} />
               <AvatarFallback className="bg-accent-primary/20 text-accent-primary">
                 {person?.name.charAt(0)}
               </AvatarFallback>
@@ -66,12 +68,12 @@ export const PriorityPersonCard = ({
           )}
           
           {/* Display person name only once */}
-          <p className="text-white text-sm font-medium">{displayName}</p>
+          <p className="text-white text-sm font-medium break-all">{displayName}</p>
           
           {/* Display email if available */}
-          {person.email && (
-            <div className="text-xs text-white/50 flex items-center gap-1">
-              <Mail size={10} /> {person.email}
+          {person?.email && (
+            <div className="text-xs text-white/50 flex items-center gap-1 break-all">
+              <Mail size={10} /> {person?.email}
             </div>
           )}
         </div>
@@ -86,7 +88,7 @@ export const PriorityPersonCard = ({
               variant="outline"
               className="text-xs h-6 py-0 px-2 bg-white/10 border-white/20 text-white/70"
             >
-              {person.label ? "Update Label" : "Add Label"}
+              {person?.label ? "Update Label" : "Add Label"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-48 p-0 bg-deep-plum border-white/20">
@@ -100,7 +102,7 @@ export const PriorityPersonCard = ({
                       if (label === "Other") {
                         setShowLabelInput(true);
                       } else {
-                        addLabel(person.id, label);
+                        addLabel(person?.id, label);
                       }
                     }}
                   >
@@ -147,10 +149,10 @@ export const PriorityPersonCard = ({
                 )}
                 
                 {/* Option to remove label if one exists */}
-                {person.label && (
+                {person?.label && (
                   <div 
                     className="flex items-center p-2 hover:bg-white/10 rounded cursor-pointer"
-                    onClick={() => addLabel(person.id, "")}
+                    onClick={() => addLabel(person?.id, "")}
                   >
                     <span className="text-white/70 text-xs">Remove Label</span>
                   </div>
@@ -165,7 +167,7 @@ export const PriorityPersonCard = ({
           size="sm" 
           variant="ghost" 
           className="h-6 w-6 p-0 text-white/50 hover:text-hot-coral"
-          onClick={() => removePerson(person.id)}
+          onClick={() => removePerson(person?.id)}
         >
           <X size={14} />
         </Button>

@@ -1,7 +1,9 @@
 import { WeekendBrief } from './../components/dashboard/types';
 import { BriefSchedules, DailySchedule } from "@/components/dashboard/types";
 import { PriorityPerson } from "@/components/onboarding/priority-people/types";
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { ConnectedAccount } from "@/components/settings/types";
+import { useState, useCallback, useEffect } from "react";
+import { useApi } from "./useApi";
 
 export interface UserData {
   // Auth data
@@ -112,11 +114,13 @@ export const defaultUserData: UserData = {
 
 export function useOnboardingState() {
   const [currentStep, setCurrentStep] = useState(() => {
-  const token = localStorage.getItem("token");
-  const storedStep = localStorage.getItem("onboardingCurrentStep");
-  return storedStep && token ? parseInt(storedStep, 10) : 1;
-});
+    const token = localStorage.getItem("token");
+    const storedStep = localStorage.getItem("onboardingCurrentStep");
+    return storedStep && token ? parseInt(storedStep, 10) : 1;
+  });
+  const { call } = useApi();
   const [showSuccess, setShowSuccess] = useState(false);
+  const [connectedAccount, setConnectedAccount] = useState<ConnectedAccount[]>([]);
   const [userData, setUserData] = useState<UserData>(() => {
   const token = localStorage.getItem("token");
     const storedData = localStorage.getItem("onboardingUserData");
@@ -144,7 +148,12 @@ export function useOnboardingState() {
 
   const handleNext = useCallback(() => {
 		setCurrentStep((prev) => {
-			const nextStep = prev + 1;
+			let nextStep = prev + 1;
+
+      if (nextStep === 5 && !userData?.integrations?.includes("slack")) {
+        nextStep++;
+      }
+
 			if (nextStep <= totalSteps + 1) {
 				// +1 because we have an extra step
 				window.scrollTo(0, 0);
@@ -156,18 +165,24 @@ export function useOnboardingState() {
 				return prev;
 			}
 		});
-	}, []);
+	}, [userData?.integrations, totalSteps]);
 
   const handleBack = useCallback(() => {
     setCurrentStep((prev) => {
-      if (prev > 1) {
+      let nextStep = prev - 1;
+
+      if (nextStep === 5 && !userData?.integrations?.includes("slack")) {
+        nextStep--;
+      }
+
+      if (nextStep >= 1) {
         window.scrollTo(0, 0);
-        localStorage.setItem("onboardingCurrentStep", (prev - 1).toString());
-        return prev - 1;
+        localStorage.setItem("onboardingCurrentStep", nextStep.toString());
+        return nextStep;
       }
       return prev;
     });
-  }, []);
+  }, [userData?.integrations]);
 
   const handleSkip = useCallback(() => {
     // Skip to final step
@@ -179,6 +194,33 @@ export function useOnboardingState() {
     localStorage.setItem("onboardingCurrentStep", "1");
     setCurrentStep(1);
   }, []);
+
+  const getIntegrations = useCallback(async (): Promise<void> => {
+    const response = await call("get", "/settings/system-integrations", {
+      returnOnFailure: false,
+    });
+  
+    if (!response) {
+      console.error("Failed to fetch user data");
+      // Handle unauthenticated case
+      localStorage.removeItem("token");
+      gotoLogin();
+      return;
+    }
+  
+    if (response?.data) {
+      setConnectedAccount(response.data);
+      const data = response.data.map((i) => i.provider_name?.toLowerCase());
+      setUserData((prev) => ({
+        ...prev,
+        integrations: data,
+      }));
+    }
+  }, [call, gotoLogin]);
+  
+  useEffect(() => {
+    if(userData?.isSignedIn) getIntegrations();
+  }, [getIntegrations, userData?.isSignedIn]);
 
   return {
     currentStep,
@@ -193,5 +235,6 @@ export function useOnboardingState() {
     handleBack,
     handleSkip,
     gotoLogin,
+    connectedAccount,
   };
 }

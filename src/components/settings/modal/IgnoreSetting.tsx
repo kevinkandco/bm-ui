@@ -17,10 +17,14 @@ const IgnoreSetting = ({
   SyncLoading,
   syncData,
   loadingProviderData,
-  provider
+  provider,
+  shouldRefreshContacts,
+  setShouldRefreshContacts
 }: SettingsTabProps) => {
   const channelActive = useMemo(() => ['slack'], []);
   const keywordActive = useMemo(() => ['slack', 'google'], []);
+  const hasChannelActive = channelActive.includes(provider?.name?.toLowerCase() || '');
+  const hasKeywordActive = keywordActive.includes(provider?.name?.toLowerCase() || '');
 
   const [selectedTab, setSelectedTab] = useState<"channel" | "keyword">(
     provider.name === "slack" ? "channel" : "keyword"
@@ -44,7 +48,7 @@ const IgnoreSetting = ({
 
   const getAllChannel = useCallback(async (): Promise<void> => {
     setLoadingIgnore(true);
-    const response = await call("get", "/api/slack/channels");
+    const response = await call("get", `/slack/channels/${provider?.id}`);
 
     if (!response) {
       console.error("Failed to fetch Slack channels");
@@ -67,17 +71,30 @@ const IgnoreSetting = ({
 
     setSlackChannels(combinedChannels);
     setLoadingIgnore(false);
-  }, [call, providerData]);
+  }, [call, providerData, provider]);
 
   useEffect(() => {
-    if (channelActive.includes(provider?.name?.toLowerCase() || '')) {
+    if (hasChannelActive) {
       getAllChannel();
     }
-  }, [getAllChannel, channelActive, provider?.name]);
+  }, [hasChannelActive, provider?.name]);
+
+    useEffect(() => {
+        if (shouldRefreshContacts) {
+          getAllChannel().then(() => {
+            setShouldRefreshContacts?.(false);
+          });
+        }
+    }, [shouldRefreshContacts, getAllChannel, setShouldRefreshContacts]);
+
+  const handleSync = async () => {
+    await syncData?.(); // Wait for sync to finish
+    await getAllChannel(); // Refresh contacts
+  };
 
   // Filter channels based on input
   useEffect(() => {
-    if (selectedTab === "channel" && isInputFocused && channelActive.includes(provider?.name?.toLowerCase() || '')) {
+    if (hasChannelActive &&selectedTab === "channel" && isInputFocused) {
       const filtered = slackChannels
         ?.filter((channel) =>
           channel?.name?.toLowerCase()?.includes(inputValue.toLowerCase())
@@ -97,7 +114,7 @@ const IgnoreSetting = ({
             )
         );
       setSearchResults(filtered);
-    } else if (selectedTab === "keyword" && isInputFocused && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
+    } else if (hasKeywordActive && selectedTab === "keyword" && isInputFocused) {
       const filtered = suggestedTopics
         ?.filter((topic) =>
           topic?.toLowerCase()?.includes(inputValue.toLowerCase())
@@ -129,15 +146,15 @@ const IgnoreSetting = ({
     providerData?.ignoreKeywords,
     providerData?.ignoreChannels,
     provider?.name,
-    channelActive,
-    keywordActive
+    hasChannelActive,
+    hasKeywordActive,
   ]);
 
   const addItem = () => {
     const trimmedInput = inputValue.trim();
     if (!trimmedInput) return;
 
-    if (selectedTab === "channel" && channelActive.includes(provider?.name?.toLowerCase() || '')) {
+    if (hasChannelActive && selectedTab === "channel") {
       if (providerData?.ignoreChannels?.includes(trimmedInput)) {
         return;
       }
@@ -150,7 +167,7 @@ const IgnoreSetting = ({
         ...(prev || []),
         { id: trimmedInput, name: trimmedInput },
       ]);
-    } else if (selectedTab === "keyword" && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
+    } else if (hasKeywordActive && selectedTab === "keyword") {
       if (providerData?.ignoreKeywords?.includes(trimmedInput)) {
         return;
       }
@@ -165,7 +182,7 @@ const IgnoreSetting = ({
   };
 
  const selectChannel = (channel: string) => {
-  if (!providerData?.ignoreChannels?.includes(channel) && channelActive.includes(provider?.name?.toLowerCase() || '')) {
+  if (hasChannelActive && !providerData?.ignoreChannels?.includes(channel)) {
     setProviderData((prev) => ({
       ...prev,
       ignoreChannels: [...(prev.ignoreChannels || []), channel],
@@ -177,7 +194,7 @@ const IgnoreSetting = ({
 };
 
 const selectKeyword = (topic: string) => {
-  if (!providerData?.ignoreKeywords?.includes(topic) && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
+  if (hasKeywordActive && !providerData?.ignoreKeywords?.includes(topic)) {
     setProviderData((prev) => ({
       ...prev,
       ignoreKeywords: [...(prev.ignoreKeywords || []), topic],
@@ -190,12 +207,12 @@ const selectKeyword = (topic: string) => {
 
 
   const removeItem = (type: "channel" | "keyword", value: string) => {
-    if (type === "channel" && channelActive.includes(provider?.name?.toLowerCase() || '')) {
+    if (hasChannelActive && type === "channel") {
       setProviderData((prev) => ({
         ...prev,
         ignoreChannels: prev.ignoreChannels?.filter((item) => item !== value),
       }));
-    } else if (type === "keyword" && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
+    } else if (hasKeywordActive && type === "keyword") {
       setProviderData((prev) => ({
         ...prev,
         ignoreKeywords: prev.ignoreKeywords?.filter((item) => item !== value),
@@ -225,7 +242,7 @@ const selectKeyword = (topic: string) => {
   };
 
   const renderSelectedItems = () => {
-    if (selectedTab === "channel" && providerData?.ignoreChannels?.length > 0 && channelActive.includes(provider?.name?.toLowerCase() || '')) {
+    if (hasChannelActive && selectedTab === "channel" && providerData?.ignoreChannels?.length > 0) {
       const channels: PriorityChannels[] = slackChannels?.filter((channel) =>
         providerData?.ignoreChannels?.includes(channel?.name)
       );
@@ -252,7 +269,7 @@ const selectKeyword = (topic: string) => {
           ))}
         </div>
       );
-    } else if (selectedTab === "keyword" && providerData?.ignoreKeywords?.length > 0 && keywordActive.includes(provider?.name?.toLowerCase() || '')) {
+    } else if (hasKeywordActive && selectedTab === "keyword" && providerData?.ignoreKeywords?.length > 0) {
       return (
         <div className="flex flex-wrap gap-2 pt-3 mt-2">
           {providerData?.ignoreKeywords?.map((keyword) => (
@@ -283,10 +300,10 @@ const selectKeyword = (topic: string) => {
         <h2 className="text-xl font-semibold text-white mb-4">
           Configure what to ignore
         </h2>
-        <Button
+        {syncData && <Button
           variant="outline"
           size="none"
-          onClick={syncData}
+          onClick={handleSync}
           disabled={SyncLoading}
           className="text-white/80 border-white/20 hover:bg-white/10 hover:text-white px-2 py-1"
         >
@@ -309,14 +326,14 @@ const selectKeyword = (topic: string) => {
             </svg>
           )}
           {SyncLoading ? "Syncing" : "Sync"}
-        </Button>
+        </Button>}
       </div>
       <p className="text-white/60 text-sm">
         Tell us what to filter out from your briefs to keep them focused on what
         matters.
       </p>
       <div className="flex border-b border-white/20">
-        {channelActive.includes(provider?.name?.toLowerCase() || '') && <button
+        {hasChannelActive && <button
           className={cn(
             "py-3 px-4 focus:outline-none relative",
             selectedTab === "channel"
@@ -334,7 +351,7 @@ const selectKeyword = (topic: string) => {
           )}
         </button>}
 
-        {keywordActive.includes(provider?.name?.toLowerCase() || '') && <button
+        {hasKeywordActive && <button
           className={cn(
             "py-3 px-4 focus:outline-none relative",
             selectedTab === "keyword"
@@ -356,7 +373,7 @@ const selectKeyword = (topic: string) => {
         <FancyLoader />
       ) : (
         <div className="space-y-6">
-          {(selectedTab === "channel" && channelActive.includes(provider?.name?.toLowerCase() || '')) && (
+          {(hasChannelActive && selectedTab === "channel") && (
             <div className="space-y-3 mt-4">
               <Label htmlFor="ignore-channel" className="text-off-white">
                 Ignore channels
@@ -411,7 +428,7 @@ const selectKeyword = (topic: string) => {
             </div>
           )}
 
-          {(selectedTab === "keyword" && keywordActive.includes(provider?.name?.toLowerCase() || '')) && (
+          {(hasKeywordActive && selectedTab === "keyword") && (
             <div className="space-y-3 mt-4">
               <Label htmlFor="ignore-keyword" className="text-off-white">
                 Ignore keywords

@@ -14,7 +14,8 @@ import PriorityTopics from "./PriorityTopics";
 import { useApi } from "@/hooks/useApi";
 import { SettingsTabProps, ProviderData } from "./types";
 import { capitalizeFirstLetter } from "@/lib/utils";
-import { Provider } from "@radix-ui/react-toast";
+import { Provider } from "../types";
+import useAuthStore from "@/store/useAuthStore";
 
 interface ProviderSettingsModalProps {
   open: boolean;
@@ -52,7 +53,9 @@ const ProviderSettingsModal = ({
   const [providerData, setProviderData] = useState<ProviderData>();
   const [loadingProviderData, setLoadingProviderData] = useState(false);
   const [SyncLoading, setSyncLoading] = useState(false);
+  const [shouldRefreshContacts, setShouldRefreshContacts] = useState(false);
   const { call } = useApi();
+  const { clearCache } = useAuthStore();
 
   
   const priorityPeopleActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
@@ -93,7 +96,7 @@ const ProviderSettingsModal = ({
 
   const getProviderData = useCallback(async (): Promise<void> => {
     setLoadingProviderData(true);
-    const response = await call("get", "/api/settings/system-integrations/" + provider.id);
+    const response = await call("get", "/settings/system-integrations/" + provider.id);
 
     if (response) {
       setProviderData(response);
@@ -106,31 +109,39 @@ const ProviderSettingsModal = ({
   }, [getProviderData]);
 
   const syncData = useCallback(async (): Promise<void> => {
+
+    if (provider.name === 'google') return;
+
     setSyncLoading(true);
-    const response = await call("get", `/api/${Provider[provider?.name]}/fetch?id=${provider?.id}`);
+    const response = await call("get", `/${Provider[provider?.name]}/fetch/${provider?.id}`);
 
     if (response) {
+      clearCache();
       getProviderData();
     }
     setSyncLoading(false);
-  }, [call, getProviderData, provider]);
+  }, [call, getProviderData, provider, clearCache]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (firstTimeProviderConnected) {
       setActiveTab("priorityPeople");
-      syncData();
+      syncData().then(() => {
+        setShouldRefreshContacts(true); // signal refresh
+      });
     }
   }, [firstTimeProviderConnected, syncData]);
 
-  const handleNext = useCallback(() => {
-    const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
-    const nextIndex = tabs[currentIndex + 1];
-    if (nextIndex) setActiveTab(nextIndex.id);
-  }, [activeTab, tabs]);
+  const activeTabs = useMemo(() => tabs.filter((tab) => tab.active), [tabs]);
 
+  const handleNext = useCallback(() => {
+    const currentIndex = activeTabs.findIndex((tab) => tab.id === activeTab);
+    const nextTab = activeTabs[currentIndex + 1];
+    if (nextTab) setActiveTab(nextTab.id);
+  }, [activeTab, activeTabs]);
+  
   const handleSave = useCallback(async (): Promise<void> => {
     setIsSaving(true);
-    const response = await call("post", `/api/settings/system-integrations/${provider.id}/update`, {
+    const response = await call("post", `/settings/system-integrations/${provider.id}/update`, {
       body: providerData,
     });
 
@@ -193,10 +204,13 @@ const ProviderSettingsModal = ({
                 <ActiveComponent
                   providerData={providerData}
                   setProviderData={setProviderData}
-                  syncData={syncData}
+                  syncData={provider.name === 'slack' ? syncData : undefined}
                   SyncLoading={SyncLoading}
                   loadingProviderData={loadingProviderData}
                   provider={provider}
+                  shouldRefreshContacts={shouldRefreshContacts}
+                  setShouldRefreshContacts={setShouldRefreshContacts}
+
                 />
               )}
             </div>

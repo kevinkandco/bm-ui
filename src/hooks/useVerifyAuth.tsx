@@ -38,7 +38,7 @@ function useVerifyAuth() {
         return;
       }
 
-      const response = await call("get", "/api/me", {
+      const response = await call("get", "/me", {
         showToast: false,
         returnOnFailure: false,
       });

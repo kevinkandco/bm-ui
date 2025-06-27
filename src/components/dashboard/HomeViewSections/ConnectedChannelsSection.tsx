@@ -59,7 +59,7 @@ const ConnectedChannelsSection = ({
   const [connectedPlatforms, setConnectedPlatforms] = React.useState<Integration[]>([]);
 
     const getProvider = useCallback(async (): Promise<void> => {
-      const response = await call("get", "/api/settings/system-integrations", {
+      const response = await call("get", "/settings/system-integrations", {
         showToast: false,
         returnOnFailure: false,
       });

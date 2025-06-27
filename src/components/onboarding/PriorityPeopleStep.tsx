@@ -11,7 +11,7 @@ import { memo, useMemo, useState } from "react";
 import { useGmailPriorityPeopleState } from "./priority-people/useGmailPriorityPeopleState";
 import { UserData } from "@/hooks/useOnboardingState";
 import FancyLoader from "../settings/modal/FancyLoader";
-import { Person, ValidationError } from "../settings/types";
+import { ConnectedAccount, Person, ValidationError } from "../settings/types";
 import AddEmailModal from "../settings/modal/AddEmailModal";
 
 interface PriorityPeopleStepProps {
@@ -19,13 +19,16 @@ interface PriorityPeopleStepProps {
   onBack: () => void;
   updateUserData: (data: any) => void;
   userData: UserData;
+  connectedAccount: ConnectedAccount[];
 }
 
 const PriorityPeopleStep = memo(
-  ({ onNext, onBack, updateUserData, userData }: PriorityPeopleStepProps) => {
+  ({ onNext, onBack, updateUserData, userData, connectedAccount }: PriorityPeopleStepProps) => {
     // Get the state and functions from the custom hook
-    const slackState = useSlackPriorityPeopleState(userData.slackPriorityPeople || []);
-    const gmailState = useGmailPriorityPeopleState(userData.googlePriorityPeople || []);
+    const googleId = connectedAccount?.find(c => c?.provider_name?.toLowerCase() === "google")?.id;
+    const slackId = connectedAccount?.find(c => c?.provider_name?.toLowerCase() === "slack")?.id;
+    const slackState = useSlackPriorityPeopleState(slackId, userData.slackPriorityPeople || []);
+    const gmailState = useGmailPriorityPeopleState(googleId, userData.googlePriorityPeople || []);
     const [people, setPeople] = useState<Person[]>([{ name: "", email: "", label: "" }]);
     const [addEmailModalOpen, setAddEmailModalOpen] = useState(false);
     const [saveLoading, setSaveLoading] = useState(false);
@@ -158,34 +161,34 @@ const PriorityPeopleStep = memo(
 
           {/* Added people list */}
           <PriorityPeopleList
-            priorityPeople={platformState.priorityPeople}
-            removePerson={platformState.removePerson}
-            designateContact={platformState.designateContact}
-            addLabel={platformState.addLabel}
-            contacts={platformState.platformContacts}
+            priorityPeople={platformState?.priorityPeople}
+            removePerson={platformState?.removePerson}
+            designateContact={platformState?.designateContact}
+            addLabel={platformState?.addLabel}
+            contacts={platformState?.platformContacts}
           />
 
           {/* Manual input with dropdown */}
           <ManualInputSection
-            inputValue={platformState.inputValue}
-            setInputValue={platformState.setInputValue}
-            selectedLabel={platformState.selectedLabel}
-            setSelectedLabel={platformState.setSelectedLabel}
-            addPerson={platformState.addPerson}
-            filteredManualContacts={platformState.filteredManualContacts}
+            inputValue={platformState?.inputValue}
+            setInputValue={platformState?.setInputValue}
+            selectedLabel={platformState?.selectedLabel}
+            setSelectedLabel={platformState?.setSelectedLabel}
+            addPerson={platformState?.addPerson}
+            filteredManualContacts={platformState?.filteredManualContacts}
             openPriorityPeopleModal={currentPlatform === "google" ? () => setAddEmailModalOpen(true) : null}
           />
 
           {/* Suggested contacts */}
           <SuggestedContacts
-            suggestedContacts={platformState.suggestedContacts}
-            priorityPeople={platformState.priorityPeople}
-            platformContacts={platformState.platformContacts}
-            addPerson={platformState.addPerson}
-            removePerson={platformState.removePerson}
-            designateContact={platformState.designateContact}
-            addLabel={platformState.addLabel}
-            searchQuery={platformState.searchQuery}
+            suggestedContacts={platformState?.suggestedContacts}
+            priorityPeople={platformState?.priorityPeople}
+            platformContacts={platformState?.platformContacts}
+            addPerson={platformState?.addPerson}
+            removePerson={platformState?.removePerson}
+            designateContact={platformState?.designateContact}
+            addLabel={platformState?.addLabel}
+            searchQuery={platformState?.searchQuery}
           />
         </div>}
 

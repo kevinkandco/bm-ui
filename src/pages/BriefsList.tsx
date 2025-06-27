@@ -69,7 +69,7 @@ const BriefsList = () => {
     async (page = 1): Promise<void> => {
       window.scrollTo({ top: 0, behavior: "smooth" });
 
-      const response = await call("get", `/api/summaries?page=${page}`, {
+      const response = await call("get", `/summaries?page=${page}`, {
         showToast: true,
         toastTitle: "Failed to fetch summaries",
         toastDescription: "Unable to load briefs. Please try again.",
@@ -91,7 +91,7 @@ const BriefsList = () => {
 
   const getBrief = useCallback(
     async (briefId: number): Promise<false | Summary> => {
-      const response = await call("get", `/api/summary/${briefId}/status`, {
+      const response = await call("get", `/summary/${briefId}/status`, {
         showToast: true,
         toastTitle: "Failed to fetch brief",
         toastDescription: "Something went wrong while fetching the brief.",

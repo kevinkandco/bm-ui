@@ -16,7 +16,9 @@ const PriorityChannelsSetting = ({
   SyncLoading,
   syncData,
   loadingProviderData,
-  provider
+  provider,
+  setShouldRefreshContacts,
+  shouldRefreshContacts
 }: SettingsTabProps) => {
   const [allSlackChannels, setAllSlackChannels] = useState<
     PriorityChannels[] | null
@@ -27,17 +29,25 @@ const PriorityChannelsSetting = ({
 
   const getAllChannel = useCallback(async (): Promise<void> => {
     setLoadingChannels(true);
-    const response = await call("get", "/api/slack/channels");
+    const response = await call("get", `/slack/channels/${provider?.id}`);
 
     if (response) {
       setAllSlackChannels(response);
     }
     setLoadingChannels(false);
-  }, [call]);
+  }, [call, provider?.id]);
 
   useEffect(() => {
     getAllChannel();
   }, [getAllChannel]);
+
+  useEffect(() => {
+      if (shouldRefreshContacts) {
+        getAllChannel().then(() => {
+          setShouldRefreshContacts?.(false);
+        });
+      }
+    }, [shouldRefreshContacts, getAllChannel, setShouldRefreshContacts]);
 
   // Filtered list of slack channels (excluding selected ones)
   const [slackChannels, setSlackChannels] = useState<PriorityChannels[]>([]);
@@ -94,16 +104,21 @@ const PriorityChannelsSetting = ({
     );
   }, [searchQuery, slackChannels]);
 
+  const handleSync = async () => {
+    await syncData?.(); // Wait for sync to finish
+    await getAllChannel(); // Refresh contacts
+  };
+
   return (
     <>
       <div className="flex justify-between items-start">
         <h2 className="text-xl font-semibold text-white mb-4">
           Which channels are critical?
         </h2>
-        <Button
+        {syncData && <Button
           variant="outline"
           size="none"
-          onClick={syncData}
+          onClick={handleSync}
           disabled={SyncLoading}
           className="text-white/80 border-white/20 hover:bg-white/10 hover:text-white px-2 py-1"
         >
@@ -126,7 +141,7 @@ const PriorityChannelsSetting = ({
             </svg>
           )}
           {SyncLoading ? "Syncing" : "Sync"}
-        </Button>
+        </Button>}
       </div>
       <p className="text-text-secondary">
         Mark your most important channels. We'll highlight updates from these

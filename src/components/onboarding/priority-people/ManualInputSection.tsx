@@ -49,15 +49,15 @@ export const ManualInputSection = ({
   // Filter contacts based on search query
   const displayedContacts = searchQuery.trim() 
     ? filteredManualContacts?.filter(contact => 
-        contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        contact.email.toLowerCase().includes(searchQuery.toLowerCase())
+        contact?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+        contact?.email?.toLowerCase()?.includes(searchQuery?.toLowerCase())
       )
     : filteredManualContacts;
     
   // Handle contact selection and then show label selection
   const handleContactSelect = (contact: Contact) => {
     setSelectedContact(contact);
-    setInputValue(contact.name);
+    setInputValue(contact?.name);
     setShowLabelInput(true);
   };
   
@@ -115,7 +115,7 @@ export const ManualInputSection = ({
               {displayedContacts?.length > 0 ? (
                 displayedContacts.map((contact) => (
                   <div 
-                    key={contact.id}
+                    key={contact?.id}
                     className="flex items-center gap-2 p-2 hover:bg-accent/15 dark:hover:bg-white/10 rounded cursor-pointer"
                     onClick={() => handleContactSelect(contact)}
                   >
@@ -123,8 +123,8 @@ export const ManualInputSection = ({
                       <User size={12} className="text-white" />
                     </div>
                     <div>
-                      <p className="text-foreground dark:text-white text-xs">{contact.name}</p>
-                      <p className="text-foreground/60 dark:text-white/50 text-xs">{contact.email}</p>
+                      <p className="text-foreground dark:text-white text-xs break-all">{contact?.name}</p>
+                      <p className="text-foreground/60 dark:text-white/50 text-xs break-all">{contact?.email}</p>
                     </div>
                   </div>
                 ))

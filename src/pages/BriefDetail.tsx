@@ -92,7 +92,7 @@ const BriefDetail = () => {
     const getBriefData = useCallback(async (): Promise<void> => {
     setLoading(true);
 
-    const response = await call("get", `/api/summary/${briefId}/show`, {
+    const response = await call("get", `/summary/${briefId}/show`, {
       showToast: true,
       toastTitle: "Failed to fetch brief",
       toastDescription: "Could not retrieve brief data.",
@@ -186,6 +186,7 @@ const BriefDetail = () => {
   };
 
   const handleFeedback = (type: 'up' | 'down', comment?: string) => {
+
     toast({
       title: "Feedback Received",
       description: `Thank you for your ${type === 'up' ? 'positive' : 'constructive'} feedback!`
@@ -202,7 +203,7 @@ const BriefDetail = () => {
   };
 
   const handleDownload = async () => {
-    const downloadUrl = `${BaseURL}/api/summary/${briefData.id}/download-audio`;
+    const downloadUrl = `${BaseURL}/summary/${briefData.id}/download-audio`;
 
     try {
       const response = await fetch(downloadUrl, {

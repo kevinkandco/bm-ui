@@ -61,11 +61,11 @@ export const useIntegrationsState = () => {
 
   const getProvider = useCallback(async (): Promise<void> => {
     setLoading(true);
-    const DaysResponse = await call("get", "/api/settings/system-integrations", {
+    const DaysResponse = await call("get", "/settings/system-integrations", {
       showToast: false,
       returnOnFailure: false,
     });
-    const TagsResponse = await call("get", "/api/settings/integrations/tags", {
+    const TagsResponse = await call("get", "/settings/integrations/tags", {
       showToast: false,
       returnOnFailure: false,
     });
@@ -101,10 +101,10 @@ export const useIntegrationsState = () => {
 
     const openAuthUrl = async (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL}/auth/redirect/slack?redirectURL=dashboard/settings`,
-        google: `${BaseURL}/google/auth?redirectURL=dashboard/settings`,
-        calendar: `${BaseURL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${BaseURL}/outlook/auth`,
+        slack: `${BaseURL?.replace("/api", "")}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=dashboard/settings`,
+        calendar: `${BaseURL?.replace("/api", "")}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${BaseURL?.replace("/api", "")}/outlook/auth`,
       };
       window.open(urls[provider], "_self");
     };
@@ -131,7 +131,7 @@ export const useIntegrationsState = () => {
   }, []);
 
   const updateAccountTag = useCallback(async (accountId: number, tagId: number) => {
-    const response = await call("post", `/api/settings/system-integrations/${accountId}/select-tag `, {
+    const response = await call("post", `/settings/system-integrations/${accountId}/select-tag `, {
       body: {
         tag_id: tagId
       },
@@ -157,7 +157,7 @@ export const useIntegrationsState = () => {
 
   const toggleAccountInCombined = useCallback(async (accountId: number) => {
     const is_combined = connectedAccounts.find(acc => acc.id === accountId).is_combined;
-    const response = await call("post", `/api/settings/system-integrations/${accountId}/combine`, {
+    const response = await call("post", `/settings/system-integrations/${accountId}/combine`, {
       body: {
         is_combined: !is_combined
       }
@@ -175,7 +175,7 @@ export const useIntegrationsState = () => {
   const disconnectAccount = useCallback(async (accountId: number) => {
     const response = await call(
       "get",
-      `/api/settings/system-integrations/${accountId}/disconnect`,
+      `/settings/system-integrations/${accountId}/disconnect`,
       {
         showToast: true,
         toastTitle: "Failed to Disconnect",
@@ -193,7 +193,7 @@ export const useIntegrationsState = () => {
   }, [toast, call]);
 
   const updateAccountName = useCallback(async (accountId: string | number, customName: string) => {
-    const response = await call("post", `/api/settings/system-integrations/${accountId}/update-name`, {
+    const response = await call("post", `/settings/system-integrations/${accountId}/update-name`, {
       body: {name: customName},
       showToast: true,
       toastTitle: "Name Update Failed",
@@ -227,7 +227,7 @@ export const useIntegrationsState = () => {
       splitBriefAudio: false
     };
 
-    const response = await call("post", `/api/settings/integrations/${accountId}/tag`, {
+    const response = await call("post", `/settings/integrations/${accountId}/tag`, {
       body: {
         name,
         color,
@@ -260,7 +260,7 @@ export const useIntegrationsState = () => {
   }, [toast, call]);
 
   const updateTag = useCallback(async (tagId: number, updates: Partial<Tag>) => {
-    const response = await call("post", `/api/settings/integrations/${tagId}/update-tag`, {
+    const response = await call("post", `/settings/integrations/${tagId}/update-tag`, {
       body: updates,
       showToast: true,
       toastTitle: "Tag Update Failed",
@@ -284,7 +284,7 @@ export const useIntegrationsState = () => {
   }, [toast, call]);
 
   const deleteTag = useCallback(async (tagId: number) => {
-    const response = await call("delete", `/api/settings/integrations/${tagId}/delete-tag`, {
+    const response = await call("delete", `/settings/integrations/${tagId}/delete-tag`, {
       showToast: true,
       toastTitle: "Tag Deletion Failed",
       toastDescription: "Tag Deletion failed. Please try again later.",
@@ -347,7 +347,7 @@ export const useIntegrationsState = () => {
 
     console.log(body, ": body");
 
-    const response = await call("post", `/api/settings/integrations/${tagId}/update-tag`, {
+    const response = await call("post", `/settings/integrations/${tagId}/update-tag`, {
       body,
       showToast: true,
       toastTitle: "Tag Update Failed",

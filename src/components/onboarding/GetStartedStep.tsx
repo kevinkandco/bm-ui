@@ -110,7 +110,7 @@ const GetStartedStep = ({
   const dividerClass = 'divide-white/10';
 
   const handleContinue = async () => {
-    const response = await call("post", "/api/slack/on-boarding", {
+    const response = await call("post", "/slack/on-boarding", {
       body: { userData },
       showToast: true,
       toastTitle: "Error",
