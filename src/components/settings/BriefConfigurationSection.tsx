@@ -122,7 +122,7 @@ const BriefConfigurationSection = () => {
     getData();
   }, [getData]);
 
-  const toggleDay = async (day: keyof typeof days) => {
+  const toggleDay = useCallback(async (day: keyof typeof days) => {
     const updatedDays = { ...days, [day]: !days[day] };
 
     const response = await call("post", "/settings/brief-configuration/days", {
@@ -135,9 +135,9 @@ const BriefConfigurationSection = () => {
     });
 
     if (response) setDays(updatedDays);
-  };
+  }, [call, days]);
 
-  const toggleTime = async (
+  const toggleTime = useCallback(async (
     key: keyof typeof times,
     enabled: boolean
   ) => {
@@ -165,14 +165,41 @@ const BriefConfigurationSection = () => {
       midday: { ...prev.midday, enabled: flags.midday },
       evening: { ...prev.evening, enabled: flags.evening },
     }));
-  };
+  }, [call, days, times]);
 
-  const updateTimeValue = (key: keyof typeof times, newTime: string) => {
+const updateTimeValue = useCallback(
+  async (key: keyof typeof times, newTime: string) => {
     setTimes((prev) => ({
       ...prev,
       [key]: { ...prev[key], time: newTime },
     }));
-  };
+
+    if (times[key].enabled) {
+      const formattedTime = moment(newTime, "HH:mm").format("HH:mm");
+
+      const response = await call("post", "/settings/brief-configuration/days", {
+        body: { ...days, briefTime: formattedTime },
+        showToast: true,
+        toastTitle: "Failed to update data",
+        toastDescription: "Failed to update data",
+        returnOnFailure: false,
+        toastVariant: "destructive",
+      });
+
+      if (!response) return;
+
+      const backendTime = response.data?.brief_time;
+      const flags = getTimePeriod(backendTime);
+
+      setTimes((prev) => ({
+        morning: { ...prev.morning, enabled: flags.morning },
+        midday: { ...prev.midday, enabled: flags.midday },
+        evening: { ...prev.evening, enabled: flags.evening },
+      }));
+    }
+  },
+  [call, days, times] // include required deps
+);
 
   const addCustomBrief = () => {
     if (!newCustomBrief.name.trim()) return;
@@ -312,6 +339,7 @@ const BriefConfigurationSection = () => {
                           <Input
                             type="time"
                             value={times.morning.time}
+                            disabled={!times.morning.enabled}
                             onChange={(e) => updateTimeValue("morning", e.target.value)}
                             className="w-24 h-7 text-xs bg-white/5 border-white/20"
                           />
@@ -337,6 +365,7 @@ const BriefConfigurationSection = () => {
                           <Input
                             type="time"
                             value={times.midday.time}
+                            disabled={!times.midday.enabled}
                             onChange={(e) => updateTimeValue("midday", e.target.value)}
                             className="w-24 h-7 text-xs bg-white/5 border-white/20"
                           />
@@ -362,6 +391,7 @@ const BriefConfigurationSection = () => {
                           <Input
                             type="time"
                             value={times.evening.time}
+                            disabled={!times.evening.enabled}
                             onChange={(e) => updateTimeValue("evening", e.target.value)}
                             className="w-24 h-7 text-xs bg-white/5 border-white/20"
                           />
