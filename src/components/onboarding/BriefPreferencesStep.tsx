@@ -467,6 +467,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
           onClick={addNewBrief}
           variant="outline" 
           className="w-full border-dashed border-cool-slate/40 bg-deep-plum/10 hover:bg-deep-plum/30 text-ice-grey mt-2"
+          disabled={true} 
         >
           <Plus size={16} className="mr-2" /> Add another brief schedule
         </Button>

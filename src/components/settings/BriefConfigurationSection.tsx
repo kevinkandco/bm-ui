@@ -417,6 +417,7 @@ const updateTimeValue = useCallback(
                     size="sm"
                     variant="outline"
                     className="h-7 px-3 text-xs"
+                    disabled={true}
                   >
                     <Plus className="h-3 w-3 mr-1" /> Add Custom
                   </Button>
