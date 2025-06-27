@@ -23,8 +23,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
-
 const SettingsPage = () => {
   const { toast } = useToast();
   const { user } = useAuthStore();

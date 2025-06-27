@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSearchParams } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { REDIRECT_URL } from "@/config";
 
 interface SignInStepProps {
   onNext: () => void;
@@ -24,7 +23,7 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
 
   const handleSignIn = (provider: "google" | "slack") => {
     try {
-      const url = provider === "google" ? `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=onboarding` : `${BaseURL?.replace("/api", "")}/auth/redirect/${provider}?redirectURL=onboarding`;
+      const url = provider === "google" ? `${REDIRECT_URL}/google/auth?redirectURL=onboarding` : `${REDIRECT_URL}/auth/redirect/${provider}?redirectURL=onboarding`;
       window.open(url, "_self");
     } catch (error) {
       console.log(error);

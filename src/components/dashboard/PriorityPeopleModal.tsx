@@ -25,7 +25,6 @@ interface PriorityPeopleModalProps {
   setPriorityPeople: React.Dispatch<React.SetStateAction<PriorityPeople[]>>
 }
 
-const BaseURL = import.meta.env.VITE_API_HOST;
 const PriorityPeopleModal = ({ open, onClose, priorityPeople, setPriorityPeople }: PriorityPeopleModalProps) => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");

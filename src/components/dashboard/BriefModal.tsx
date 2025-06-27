@@ -14,7 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Mail, MessageSquare, Plus, Check } from "lucide-react";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;

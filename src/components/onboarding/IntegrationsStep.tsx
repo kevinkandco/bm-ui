@@ -15,8 +15,7 @@ import { IntegrationOption } from "@/components/type";
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import { ConnectedAccount, Provider } from "../settings/types";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { REDIRECT_URL } from "@/config";
 
 interface IntegrationsStepProps {
   onNext: () => void;
@@ -261,10 +260,10 @@ const IntegrationsStep = ({
 
     const openAuthUrl = (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL?.replace("/api", "")}/auth/redirect/slack?redirectURL=onboarding`,
-        google: `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=onboarding`,
-        calendar: `${BaseURL?.replace("/api", "")}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${BaseURL?.replace("/api", "")}/outlook/auth`,
+        slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=onboarding`,
+        google: `${REDIRECT_URL}/google/auth?redirectURL=onboarding`,
+        calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${REDIRECT_URL}/outlook/auth`,
       };
       window.open(urls[provider], "_self");
     };

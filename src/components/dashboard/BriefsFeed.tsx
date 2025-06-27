@@ -9,8 +9,6 @@ interface BriefsFeedProps {
   onOpenBrief: (briefId: number, briefData: Summary) => void;
 }
 
-const BaseURL = import.meta.env.VITE_API_HOST;
-
 const BriefsFeed = React.memo(({ briefs, onOpenBrief }: BriefsFeedProps) => {
 
   const handleOpenBrief = (briefId: number, briefData: Summary) => {

@@ -11,8 +11,6 @@ import { PriorityChannels } from "./priority-channels/types";
 import { useApi } from "@/hooks/useApi";
 import { ConnectedAccount } from "../settings/types";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
-
 interface IgnoreConfigStepProps {
   onNext: () => void;
   onBack: () => void;

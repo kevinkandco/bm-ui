@@ -27,9 +27,8 @@ import ListeningScreen from "./ListeningScreen";
 import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
 import Audio from "./Audio";
 import ViewTranscript from "./ViewTranscript";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
+import { BaseURL } from "@/config";
 
 interface HomeViewProps {
   status: "active" | "away" | "focus" | "vacation";

@@ -4,13 +4,11 @@ import { IntegrationOption } from "@/components/type";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import useAuthStore from "@/store/useAuthStore";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DisconnectModal from "./DisconnectModal";
 import { useApi } from "@/hooks/useApi";
+import { REDIRECT_URL } from "@/config";
 // import SlackSettingsModal from "./modal/SlackSettingsModal";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
 
 interface UserData {
   [key: string]: any;
@@ -212,10 +210,10 @@ const Integrations = () => {
 
     const openAuthUrl = async (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL?.replace("/api", "")}/auth/redirect/slack?redirectURL=dashboard/settings`,
-        google: `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=dashboard/settings`,
-        calendar: `${BaseURL?.replace("/api", "")}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${BaseURL?.replace("/api", "")}/outlook/auth`,
+        slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings`,
+        calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${REDIRECT_URL}/outlook/auth`,
       };
       window.open(urls[provider], "_self");
     };

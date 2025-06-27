@@ -5,7 +5,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { PriorityPeople } from "./types";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
 interface PriorityPeopleWidgetProps {
   priorityPeople:PriorityPeople[]
 }

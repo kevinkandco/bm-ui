@@ -48,10 +48,9 @@ import Audio from "@/components/dashboard/Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import TranscriptView from "@/components/dashboard/TranscriptView";
 import { transformToStats } from "@/lib/utils";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
+import { BaseURL } from "@/config";
 
 
 const BriefDetail = () => {

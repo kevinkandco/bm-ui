@@ -6,8 +6,6 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { useApi } from "@/hooks/useApi";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
-
 interface GetStartedStepProps {
   onNext: () => void;
   onBack: () => void;

@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import { Summary } from "./types";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;

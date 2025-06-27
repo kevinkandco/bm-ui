@@ -6,8 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { REDIRECT_URL } from "@/config";
 
 const Login = () => {
   // const [signingIn, setSigningIn] = useState(false);
@@ -17,7 +16,7 @@ const Login = () => {
 
   const handleSignIn = (provider: 'google' | 'slack') => {
     try {
-      const url = provider === "google" ? `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=dashboard` : `${BaseURL?.replace("/api", "")}/auth/redirect/${provider}?redirectURL=dashboard`;
+      const url = provider === "google" ? `${REDIRECT_URL}/google/auth?redirectURL=dashboard` : `${REDIRECT_URL}/auth/redirect/${provider}?redirectURL=dashboard`;
       window.open(url, "_self");
     } catch (error) {
       console.log(error);

@@ -5,7 +5,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const BaseURL = import.meta.env.VITE_API_HOST;
 interface BriefModalProps {
   open: boolean;
   onClose: () => void;

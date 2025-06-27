@@ -2,8 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { ConnectedAccount, Tag, SplitBriefSettings } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { REDIRECT_URL } from "@/config";
 
 export const useIntegrationsState = () => {
   const { toast } = useToast();
@@ -101,10 +100,10 @@ export const useIntegrationsState = () => {
 
     const openAuthUrl = async (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${BaseURL?.replace("/api", "")}/auth/redirect/slack?redirectURL=dashboard/settings`,
-        google: `${BaseURL?.replace("/api", "")}/google/auth?redirectURL=dashboard/settings`,
-        calendar: `${BaseURL?.replace("/api", "")}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${BaseURL?.replace("/api", "")}/outlook/auth`,
+        slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=dashboard/settings`,
+        google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings`,
+        calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
+        outlook: `${REDIRECT_URL}/outlook/auth`,
       };
       window.open(urls[provider], "_self");
     };

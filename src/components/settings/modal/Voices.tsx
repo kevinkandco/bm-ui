@@ -8,8 +8,7 @@ import Audio from "@/components/dashboard/Audio";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { BaseURL } from "@/config";
 
 interface Voice {
   id: number;

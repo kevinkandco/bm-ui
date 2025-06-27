@@ -8,8 +8,7 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import { Contact, PriorityPerson, Label } from "./types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
+import { BaseURL } from "@/config";
 
 interface SuggestedContactsProps {
   suggestedContacts: Contact[];

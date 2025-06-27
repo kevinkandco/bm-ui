@@ -1,6 +1,5 @@
+import { BaseURL } from '@/config';
 import Http from "@/Http";
-
-const BaseURL = import.meta.env.VITE_API_HOST;
 
 export const getUnreadCount = async (): Promise<number> => {
   try {
