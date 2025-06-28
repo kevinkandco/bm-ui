@@ -120,41 +120,53 @@ const BriefConfigurationSection = () => {
   ];
 
   const getData = useCallback(async () => {
-    setLoading(true);
-    const response = await call("get", "/settings/brief-configuration/days", {
-      showToast: true,
-      toastTitle: "Failed to get data",
-      toastDescription: "Failed to get data",
-      returnOnFailure: false,
-      toastVariant: "destructive",
-    });
+    try {
+      setLoading(true);
+      const response = await call("get", "/settings/brief-configuration/days", {
+        showToast: true,
+        toastTitle: "Failed to get data",
+        toastDescription: "Failed to get data",
+        returnOnFailure: false,
+        toastVariant: "destructive",
+      });
 
-    if (!response) return;
-
-    setDays(response.data?.brief_days);
-
-    const briefTime = response.data?.brief_time; 
-    const timeFlags = getTimePeriod(briefTime); 
-
-    setTimes((prev) => {
-      const updated = {
-        morning: { ...prev.morning, enabled: timeFlags.morning },
-        midday: { ...prev.midday, enabled: timeFlags.midday },
-        evening: { ...prev.evening, enabled: timeFlags.evening },
-      } as typeof prev;
-
-      const activeKey = (Object.keys(timeFlags) as Array<keyof typeof timeFlags>).find(
-        (k) => timeFlags[k]
-      );
-      if (activeKey) {
-        updated[activeKey].time = briefTime;
+      if (!response) {
+        setLoading(false);
+        return;
       }
 
-      return updated;
-    });
+      setDays(response.data?.brief_days);
 
-    setLoading(false);
-  }, [call]);
+      const briefTime = response.data?.brief_time;
+      const timeFlags = getTimePeriod(null);
+
+      setTimes((prev) => {
+        const updated = {
+          morning: { ...prev.morning, enabled: timeFlags.morning },
+          midday: { ...prev.midday, enabled: timeFlags.midday },
+          evening: { ...prev.evening, enabled: timeFlags.evening },
+        } as typeof prev;
+
+        const activeKey = (
+          Object.keys(timeFlags) as Array<keyof typeof timeFlags>
+        ).find((k) => timeFlags[k]);
+        if (activeKey) {
+          updated[activeKey].time = briefTime;
+        }
+
+        return updated;
+      });
+    } catch (error) {
+      console.error("Error fetching brief configuration data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load brief configuration data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [call, toast]);
 
   useEffect(() => {
     getData();

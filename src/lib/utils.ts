@@ -13,17 +13,35 @@ export function capitalizeFirstLetter(str: string) {
   return str?.charAt(0)?.toUpperCase() + str?.slice(1);
 }
 
-export function getTimePeriod(time: string) {
-  const [hours, minutes] = time.split(":").map(Number);
-  const totalMinutes = hours * 60 + minutes;
-
+export function getTimePeriod(time: string | undefined | null) {
   const periods = {
-    morning: totalMinutes >= 360 && totalMinutes < 720,
-    midday: totalMinutes >= 720 && totalMinutes < 1020,
-    evening: totalMinutes >= 1020 && totalMinutes < 1440
+    morning: false,
+    midday: false,
+    evening: false,
   };
 
-  return periods;
+  if (!time || typeof time !== "string") return periods;
+
+  const [hoursStr, minutesStr] = time.split(":");
+  const hours = Number(hoursStr);
+  const minutes = Number(minutesStr);
+
+  // Validate hours and minutes
+  if (
+    isNaN(hours) || isNaN(minutes) ||
+    hours < 0 || hours > 23 ||
+    minutes < 0 || minutes > 59
+  ) {
+    return periods;
+  }
+
+  const totalMinutes = hours * 60 + minutes;
+
+  return {
+    morning: totalMinutes >= 360 && totalMinutes < 720,   // 06:00 - 11:59
+    midday: totalMinutes >= 720 && totalMinutes < 1020,   // 12:00 - 16:59
+    evening: totalMinutes >= 1020 && totalMinutes < 1440, // 17:00 - 23:59
+  };
 }
 
 
