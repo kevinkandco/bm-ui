@@ -43,7 +43,7 @@ const Dashboard = () => {
   const { call } = useApi();
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<"home" | "listening">("home");
-  const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
+  const [userStatus, setUserStatus] = useState<UserStatus>("active");
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [transcript, setTranscript] = useState<Transcript | null>(null);

@@ -6,8 +6,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Textarea } from "@/components/ui/textarea";
 
 interface ActionItemFeedbackProps {
-  itemId: string;
-  onRelevanceFeedback: (itemId: string, relevant: boolean, feedback?: string) => void;
+  itemId: number | string;
+  onRelevanceFeedback: (itemId: string | number, relevant: boolean, feedback?: string) => void;
 }
 
 const ActionItemFeedback = ({ itemId, onRelevanceFeedback }: ActionItemFeedbackProps) => {
@@ -57,7 +57,7 @@ const ActionItemFeedback = ({ itemId, onRelevanceFeedback }: ActionItemFeedbackP
   };
 
   return (
-    <div className={`transition-all duration-300 ${isMarkedIrrelevant ? 'opacity-30' : ''}`}>
+    <div className={`transition-all duration-300 ${isMarkedIrrelevant ? 'opacity-30' : ''}`} onClick={(e) => e.stopPropagation()}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button 

@@ -188,13 +188,6 @@ const BriefCard = ({
     await handleActionRelevance(brief?.id, itemId, relevant, feedback);
   };
 
-  // Mock action items for demonstration
-  const mockActionItems = [
-    { id: '1', title: 'Review Q3 budget proposal', source: 'gmail', priority: 'high' },
-    { id: '2', title: 'Respond to Sarah about timeline', source: 'slack', priority: 'medium' },
-    { id: '3', title: 'Schedule team standup', source: 'slack', priority: 'low' }
-  ];
-
   // Extract date and time from the timeCreated string
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
     // Parse the timeCreated string (e.g., "Today, 8:00 AM" or "December 8, 2024, 8:00 AM")
@@ -475,36 +468,36 @@ const BriefCard = ({
               </div>
 
               {/* Action Items with Feedback */}
-              {/* <div className="mb-3">
+              <div className="mb-3">
                 <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
                 <div className="space-y-2">
-                  {mockActionItems.map((item) => (
-                    <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
+                  {brief?.messages?.slice(0, 5)?.map((item, i) => (
+                    <div key={item?.id ?? i} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
-                          {item.source === 'gmail' ? (
+                          {item?.platform === 'G' ? (
                             <Mail className="h-3 w-3 text-red-400" />
                           ) : (
                             <MessageSquare className="h-3 w-3 text-purple-400" />
                           )}
                           <Badge className={`text-xs px-1 py-0 ${
-                            item.priority === 'high' ? 'bg-red-500/20 text-red-400' :
-                            item.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
+                            item?.priority === 'high' ? 'bg-red-500/20 text-red-400' :
+                            item?.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
                             'bg-gray-500/20 text-gray-400'
                           }`}>
-                            {item.priority}
+                            {item?.priority}
                           </Badge>
                         </div>
-                        <span className="text-sm text-text-primary">{item.title}</span>
+                        <span className="text-sm text-text-primary">{item?.title}</span>
                       </div>
-                      <ActionItemFeedback 
-                        itemId={item.id} 
+                      {/* <ActionItemFeedback 
+                        itemId={item?.id} 
                         onRelevanceFeedback={handleActionItemFeedback}
-                      />
+                      /> */}
                     </div>
                   ))}
                 </div>
-              </div> */}
+              </div>
 
               {/* Add Missing Content */}
               {/* {!showAddMissing ? (
