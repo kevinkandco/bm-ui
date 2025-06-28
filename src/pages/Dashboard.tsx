@@ -354,7 +354,7 @@ const Dashboard = () => {
     
     toast({
       title: "Signing Off",
-      description: "You've signed off for today"
+      description: "Brief-me will monitor but won't send notifications"
     });
   }, [toast, call]);
 

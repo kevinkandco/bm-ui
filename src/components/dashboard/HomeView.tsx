@@ -395,12 +395,12 @@ const HomeView = ({
               )}
               <p className="text-white text-sm mb-2">brief-me is monitoring</p>
               <div className="flex flex-wrap justify-center gap-2 text-xs text-light-gray-text">
-                {connectedIntegrations.map((integration, index) => (
-                  <span key={integration.name} className="flex items-center">
-                    <span>{integration.name}</span>
-                    {integration.channels && <span className="ml-1">({integration.channels} channels)</span>}
-                    {integration.emails && <span className="ml-1">({integration.emails} emails)</span>}
-                    {integration.events && <span className="ml-1">({integration.events} events)</span>}
+                {connectedIntegrations?.map((integration, index) => (
+                  <span key={integration?.name} className="flex items-center">
+                    <span>{integration?.name}</span>
+                    {integration?.channels && <span className="ml-1">({integration?.channels} channels)</span>}
+                    {integration?.emails && <span className="ml-1">({integration?.emails} emails)</span>}
+                    {integration?.events && <span className="ml-1">({integration?.events} events)</span>}
                     {index < connectedIntegrations.length - 1 && <span className="mx-1">•</span>}
                   </span>
                 ))}
@@ -418,8 +418,8 @@ const HomeView = ({
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-light-gray-text/70">{upcomingBrief.title}</p>
-                <p className="text-xs text-light-gray-text/70">{upcomingBrief.time}</p>
+                <p className="text-xs text-light-gray-text/70">{upcomingBrief?.title}</p>
+                <p className="text-xs text-light-gray-text/70">{upcomingBrief?.time}</p>
               </div>
               <Button 
                 onClick={handleGetBriefedNow}
@@ -484,7 +484,8 @@ const HomeView = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-dark-navy border-light-gray-text/20 w-48">
               <DropdownMenuItem 
-                onClick={() => handleStatusChange('focus')}
+                onClick={onToggleFocusMode}
+                disabled={status === "focus" || status === "away"}
                 className="text-white-text hover:bg-deep-blue/50"
               >
                 <Focus className="mr-2 h-4 w-4" />
@@ -492,6 +493,7 @@ const HomeView = ({
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => handleStatusChange('offline')}
+                disabled={status === "focus" || status === "away"}
                 className="text-white-text hover:bg-deep-blue/50"
               >
                 <Clock className="mr-2 h-4 w-4" />
@@ -529,8 +531,8 @@ const HomeView = ({
           open={showSchedulingModal}
           onClose={handleCloseSchedulingModal}
           onGenerateSummary={handleGenerateSummaryWithScheduling}
-          upcomingBriefName={upcomingBrief.title}
-          upcomingBriefTime={upcomingBrief.time}
+          upcomingBriefName={upcomingBrief?.title}
+          upcomingBriefTime={upcomingBrief?.time}
         />
       </div>
     );
@@ -566,12 +568,13 @@ const HomeView = ({
               <DropdownMenuContent className="bg-surface border-border-subtle">
                 <DropdownMenuItem
                   disabled={status === "focus" || status === "away"}
-                  className="text-text-primary hover:bg-white/5 p-0"
+                  className="text-text-primary hover:bg-white/5"
+                  onClick={onToggleFocusMode}
                 >
-                  <div className="flex items-center pl-2 py-1.5" onClick={onToggleFocusMode}>
+                  {/* <div className="flex items-center pl-2 py-1.5" > */}
                     <Headphones className="mr-2 h-4 w-4" />
                     Start Focus Mode
-                  </div>
+                  {/* </div> */}
                   {/* <div className="flex items-center rounded-full p-1 text-sm cursor-pointer" onClick={onToggleFocusMode}>
                      <Settings size={16}>Configure Slack</Settings>
                   </div> */}
