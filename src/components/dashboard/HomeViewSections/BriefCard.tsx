@@ -472,7 +472,7 @@ const BriefCard = ({
                 <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
                 <div className="space-y-2">
                   {brief?.messages?.slice(0, 5)?.map((item, i) => (
-                    <div key={item?.id ?? i} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
+                    <div key={item?.id ? (item?.platform + item?.id) : i} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
                           {item?.platform === 'G' ? (
