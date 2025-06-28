@@ -350,11 +350,11 @@ const BriefCard = ({
 
         {/* Expanded Content */}
         {isExpanded && (
-          <div className="px-6 pb-6">
+          <div className="px-6 pb-6" onClick={e => e.stopPropagation()}>
             <div className="border-t border-white/20 pt-3">
               {/* Audio Player Section - Only show when playing */}
               {playingBrief === brief.id && (
-                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10" onClick={e => e.stopPropagation()}>
+                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <button 
