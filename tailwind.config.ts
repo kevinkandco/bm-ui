@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -118,27 +117,16 @@ export default {
 				'inter': ['Inter', 'system-ui', 'sans-serif'],
 			},
 			fontSize: {
-				// Updated Typography Scale
-				'display': ['32px', { lineHeight: '40px', fontWeight: '600' }],
-				'section-heading': ['20px', { lineHeight: '28px', fontWeight: '600' }],
-				'body': ['14px', { lineHeight: '20px', fontWeight: '400' }],
-				'caption': ['12px', { lineHeight: '16px', fontWeight: '400' }],
-				
-				// Legacy sizes
+				// Podia Typography Scale
 				'heading': ['32px', { lineHeight: '1.2', fontWeight: '600' }],
 				'subheading': ['20px', { lineHeight: '1.3', fontWeight: '400' }],
+				'body': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
 				'secondary': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
 				'button': ['16px', { lineHeight: '1', fontWeight: '500' }],
 				'chip': ['14px', { lineHeight: '1', fontWeight: '400' }],
 			},
 			spacing: {
-				// 8-point spacing system
-				'sp1': 'var(--sp1)',
-				'sp2': 'var(--sp2)',
-				'sp3': 'var(--sp3)',
-				'sp4': 'var(--sp4)',
-				
-				// Legacy spacing
+				// Podia Spacing Scale
 				'podia-padding': '20px',
 				'podia-section': '24px',
 				'podia-button': '12px',
@@ -165,7 +153,6 @@ export default {
 			transitionDuration: {
 				'400': '400ms',
 				'160': '160ms',
-				'120': '120ms',
 			},
 			keyframes: {
 				'accordion-down': {

@@ -3,27 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* Design Tokens - 8-point spacing system */
-    --sp1: 8px;
-    --sp2: 16px;
-    --sp3: 24px;
-    --sp4: 32px;
-    
-    /* Focus ring */
-    --ring-primary: 2px solid rgba(33, 197, 141, 0.45);
-    
-    /* Row states */
-    --row-hover: rgba(255, 255, 255, 0.03);
-    --row-border: 1px solid rgba(255, 255, 255, 0.06);
-    
-    /* Pill badge */
-    --pill-bg: rgba(33, 197, 141, 0.10);
-    --pill-text: #21C58D;
-    
     /* New Podia Color System */
     --surface: #0A0F19;  /* Dark Navy */
     --surface-raised: #131B2B;  /* Deep Blue */
@@ -121,71 +104,21 @@
 }
 
 @layer utilities {
-  /* Typography Scale */
-  .text-display {
-    font-size: 32px;
-    line-height: 40px;
-    font-weight: 600;
-  }
-  
-  .text-section-heading {
-    font-size: 20px;
-    line-height: 28px;
-    font-weight: 600;
-  }
-  
-  .text-body {
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 400;
-  }
-  
-  .text-caption {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 400;
-  }
-  
-  /* Design token utilities */
-  .spacing-1 { padding: var(--sp1); }
-  .spacing-2 { padding: var(--sp2); }
-  .spacing-3 { padding: var(--sp3); }
-  .spacing-4 { padding: var(--sp4); }
-  
-  .row-hover:hover { background: var(--row-hover); }
-  .row-border { border: var(--row-border); }
-  .focus-ring:focus { outline: var(--ring-primary); outline-offset: 2px; }
-  
-  .pill-badge {
-    background: var(--pill-bg);
-    color: var(--pill-text);
-    border-radius: 9999px;
-  }
-  
-  /* Motion respect */
-  @media (prefers-reduced-motion: reduce) {
-    .no-motion * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-
   /* Podia specific utilities */
   .podia-heading {
-    @apply text-display text-white-text;
+    @apply text-heading text-white-text font-semibold;
   }
   
   .podia-subheading {
-    @apply text-section-heading text-white-text;
+    @apply text-subheading text-white-text font-normal;
   }
   
   .podia-body {
-    @apply text-body text-white-text;
+    @apply text-body text-white-text font-normal;
   }
   
-  .podia-caption {
-    @apply text-caption text-light-gray-text;
+  .podia-secondary {
+    @apply text-secondary text-light-gray-text font-normal;
   }
   
   /* Glass effect utilities - updated for new palette */
@@ -243,59 +176,22 @@
 }
 
 @layer components {
-  /* Row component styles */
-  .brief-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--sp3);
-    padding: var(--sp2) var(--sp3);
-    border: var(--row-border);
-    border-radius: 12px;
-    background: transparent;
-    transition: background 120ms ease;
-  }
-  
-  .brief-row:hover {
-    background: var(--row-hover);
-  }
-  
-  .brief-row:focus {
-    outline: var(--ring-primary);
-    outline-offset: 2px;
-  }
-  
-  /* Sidebar item styles */
-  .sidebar-item {
-    padding: var(--sp2) 0;
-    transition: background 120ms ease;
-  }
-  
-  .sidebar-item:hover {
-    background: var(--row-hover);
-  }
-  
-  .sidebar-item:focus {
-    outline: var(--ring-primary);
-    outline-offset: 2px;
-  }
-
   /* Podia Button Components */
   .podia-button-primary {
-    @apply bg-primary-teal text-white-text font-medium text-body
+    @apply bg-primary-teal text-white-text font-medium text-button
            rounded-podia-button px-4 py-2.5 transition-all duration-200
            hover:bg-accent-green focus:outline-none focus:ring-2 focus:ring-primary-teal/50
            active:scale-95 shadow-podia-button;
   }
   
   .podia-chip-secondary {
-    @apply bg-deep-blue text-white-text font-normal text-caption
+    @apply bg-deep-blue text-white-text font-normal text-chip
            rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
            hover:bg-opacity-90 border border-transparent;
   }
   
   .podia-chip-outline {
-    @apply bg-transparent text-light-gray-text font-normal text-caption
+    @apply bg-transparent text-light-gray-text font-normal text-chip
            rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
            border border-light-gray-text/40 hover:border-light-gray-text/60;
   }
@@ -308,7 +204,7 @@
   /* Podia Input/Message Bar */
   .podia-input {
     @apply bg-deep-blue border border-border-subtle rounded-xl px-4 py-3
-           text-white-text placeholder:text-light-gray-text placeholder:text-caption
+           text-white-text placeholder:text-light-gray-text placeholder:text-secondary
            focus:outline-none focus:ring-1 focus:ring-primary-teal focus:border-primary-teal
            transition-all duration-200;
   }

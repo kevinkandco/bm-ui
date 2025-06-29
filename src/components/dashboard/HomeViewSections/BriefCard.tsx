@@ -227,346 +227,342 @@ const BriefCard = ({
     { id: '3', title: 'Schedule team standup', source: 'slack', priority: 'low' }
   ];
 
-  // Format delivery text with new micro-copy format
+  // Extract date and time from the timeCreated string
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
+    // Parse the timeCreated string (e.g., "Today, 8:00 AM" or "December 8, 2024, 8:00 AM")
     const [datePart, timePart] = timeCreated.split(', ');
     const time = timePart?.replace(':00 ', '').replace(':00', '') || '8am';
     const formattedTimeRange = timeRange.replace(':00 ', '').replace(':00', '');
     
+    // Handle different date formats
     let dateText = datePart;
     if (datePart === 'Today') {
       const today = new Date();
       dateText = today.toLocaleDateString('en-US', { 
-        day: 'numeric',
-        month: 'short',
+        month: 'long', 
+        day: 'numeric', 
         year: 'numeric' 
       });
     } else if (datePart === 'Yesterday') {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       dateText = yesterday.toLocaleDateString('en-US', { 
-        day: 'numeric',
-        month: 'short',
+        month: 'long', 
+        day: 'numeric', 
         year: 'numeric' 
       });
     }
     
-    return {
-      line1: `Delivered • ${time} ${dateText}`,
-      line2: `Window • ${formattedTimeRange}`
-    };
+    return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
   };
-
-  const deliveryText = formatDeliveryText(brief.timeCreated, brief.timeRange);
 
   return (
     <TooltipProvider>
-      <div className="brief-row row-hover focus-ring cursor-pointer rounded-xl transition-all duration-120 group no-motion" onClick={handleCardClick}>
-        {/* Left block */}
-        <div className="flex items-center gap-sp3 flex-1 min-w-0">
-          {/* Play button with proper sizing */}
-          <button 
-            onClick={handlePlayClick} 
-            className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0 focus-ring"
-          >
-            {playingBrief === brief.id ? (
-              <div className="flex items-center gap-0.5">
-                <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '0ms'
-                }} />
-                <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '150ms'
-                }} />
-                <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '300ms'
-                }} />
-                <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '450ms'
-                }} />
-              </div>
-            ) : (
-              <Play className="h-4 w-4 text-primary-teal" strokeWidth={1.75} />
-            )}
-          </button>
-          
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-body font-semibold text-white-text leading-tight truncate">
-                {brief.name}
-              </h3>
+      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
+        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+      }} onClick={handleCardClick}>
+        {/* Collapsed Header */}
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+              {/* Play button moved to the left, doc icon removed */}
+              <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
+                {playingBrief === brief.id ? (
+                  <div className="flex items-center gap-0.5">
+                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                      animationDelay: '0ms'
+                    }} />
+                    <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
+                      animationDelay: '150ms'
+                    }} />
+                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                      animationDelay: '300ms'
+                    }} />
+                    <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
+                      animationDelay: '450ms'
+                    }} />
+                  </div>
+                ) : (
+                  <Play className="h-5 w-5 text-primary-teal" />
+                )}
+              </button>
               
-              {/* Feedback Controls */}
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
-                <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
-                  <ThumbsUp className="h-3 w-3" strokeWidth={1.75} />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
-                  <ThumbsDown className="h-3 w-3" strokeWidth={1.75} />
-                </Button>
-              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-white-text truncate">
+                    {brief.name}
+                  </h3>
+                  
+                  {/* Feedback Controls - Show on hover, next to brief name */}
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
+                    <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
+                      <ThumbsUp className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
+                      <ThumbsDown className="h-3 w-3" />
+                    </Button>
+                  </div>
 
-              {/* Feedback Badge */}
-              {feedbackState === 'up' && (
-                <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
-                  👍
-                </Badge>
-              )}
-              {feedbackState === 'down' && !showCommentInput && (
-                <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
-                  👎
-                </Badge>
-              )}
+                  {/* Feedback Badge - Always visible when rated */}
+                  {feedbackState === 'up' && (
+                    <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
+                      👍
+                    </Badge>
+                  )}
+                  {feedbackState === 'down' && !showCommentInput && (
+                    <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
+                      👎
+                    </Badge>
+                  )}
+                </div>
+                
+                {/* Updated timestamp and range format with date */}
+                <p className="text-xs text-light-gray-text">
+                  {formatDeliveryText(brief.timeCreated, brief.timeRange)}
+                </p>
+              </div>
             </div>
             
-            {/* Updated micro-copy format */}
-            <div className="text-caption text-white/60 space-y-0.5">
-              <p>{deliveryText.line1}</p>
-              <p>{deliveryText.line2}</p>
-            </div>
-          </div>
-        </div>
-        
-        {/* Right block */}
-        <div className="flex items-center gap-sp3 flex-shrink-0">
-          {/* Stats with pill badges */}
-          <div className="flex items-center gap-2">
-            <div className="pill-badge px-2 py-1 text-caption">
-              {brief.slackMessages.total} Slack
-            </div>
-            <div className="pill-badge px-2 py-1 text-caption">
-              {brief.emails.total} Emails
-            </div>
-            <div className="pill-badge px-2 py-1 text-caption">
-              {brief.actionItems} Actions
+            {/* Right side items with new layout */}
+            <div className="flex items-center gap-6 flex-shrink-0">
+              {/* Stats and time saved section */}
+              <div className="flex flex-col items-end gap-2">
+                {/* Horizontally aligned stats */}
+                <div className="flex items-center gap-3 text-xs text-light-gray-text">
+                  <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
+                  <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
+                  <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
+                </div>
+                
+                {/* Time Saved below the stats */}
+                <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
+                  <Clock className="h-2.5 w-2.5 text-green-400" />
+                  <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+                </div>
+              </div>
+              
+              {/* Chevron */}
+              <div className="ml-2">
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4 text-light-gray-text" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-light-gray-text" />
+                )}
+              </div>
             </div>
           </div>
           
-          {/* Time Saved */}
-          <div className="flex items-center gap-1 text-caption text-green-400 bg-green-400/10 rounded-full py-1 px-2">
-            <Clock className="h-3 w-3" strokeWidth={1.75} />
-            <span className="font-medium">~{timeSaved.total}min saved</span>
-          </div>
-          
-          {/* Chevron */}
-          <div className="ml-2">
-            {isExpanded ? (
-              <ChevronUp className="h-4 w-4 text-white/70" strokeWidth={1.75} />
-            ) : (
-              <ChevronDown className="h-4 w-4 text-white/70" strokeWidth={1.75} />
-            )}
-          </div>
+          {/* Comment Input for downvote */}
+          {showCommentInput && (
+            <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+              <Input 
+                placeholder="What did we miss?" 
+                value={comment} 
+                onChange={e => setComment(e.target.value)} 
+                onKeyPress={e => handleKeyPress(e, 'comment')} 
+                onBlur={handleCommentSubmit} 
+                className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
+                autoFocus 
+              />
+            </div>
+          )}
         </div>
-        
-        {/* Comment Input for downvote */}
-        {showCommentInput && (
-          <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-            <Input 
-              placeholder="What did we miss?" 
-              value={comment} 
-              onChange={e => setComment(e.target.value)} 
-              onKeyPress={e => handleKeyPress(e, 'comment')} 
-              onBlur={handleCommentSubmit} 
-              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs focus-ring" 
-              autoFocus 
-            />
-          </div>
-        )}
-      </div>
 
-      {/* Expanded Content */}
-      {isExpanded && (
-        <div className="px-sp3 pb-sp3">
-          <div className="row-border border-t pt-sp2">
-            {/* Audio Player Section - Only show when playing */}
-            {playingBrief === brief.id && (
-              <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <button 
-                      onClick={handleAudioToggle}
-                      className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
-                    >
-                      {isAudioPlaying ? (
-                        <Pause className="h-4 w-4 text-primary-teal" />
-                      ) : (
-                        <Play className="h-4 w-4 text-primary-teal" />
-                      )}
-                    </button>
-                    
-                    <div className="text-sm">
-                      <div className="text-white-text font-medium">Playing: {brief.name}</div>
-                      <div className="text-light-gray-text text-xs">
-                        {formatTime(currentTime)} / {formatTime(duration)}
+        {/* Expanded Content */}
+        {isExpanded && (
+          <div className="px-6 pb-6">
+            <div className="border-t border-white/20 pt-3">
+              {/* Audio Player Section - Only show when playing */}
+              {playingBrief === brief.id && (
+                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <button 
+                        onClick={handleAudioToggle}
+                        className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+                      >
+                        {isAudioPlaying ? (
+                          <Pause className="h-4 w-4 text-primary-teal" />
+                        ) : (
+                          <Play className="h-4 w-4 text-primary-teal" />
+                        )}
+                      </button>
+                      
+                      <div className="text-sm">
+                        <div className="text-white-text font-medium">Playing: {brief.name}</div>
+                        <div className="text-light-gray-text text-xs">
+                          {formatTime(currentTime)} / {formatTime(duration)}
+                        </div>
                       </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors">
+                            {playbackSpeed}x
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
+                          {playbackSpeeds.map((speed) => (
+                            <DropdownMenuItem
+                              key={speed}
+                              onClick={() => handleSpeedChange(speed)}
+                              className="text-white-text hover:bg-white/10 cursor-pointer"
+                            >
+                              {speed}x
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      
+                      <button 
+                        onClick={handleMuteToggle}
+                        className="w-6 h-6 flex items-center justify-center text-light-gray-text hover:text-white-text transition-colors"
+                      >
+                        {isMuted ? (
+                          <VolumeX className="h-4 w-4" />
+                        ) : (
+                          <Volume2 className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className="px-2 py-1 text-xs rounded bg-white/10 text-white-text hover:bg-white/20 transition-colors">
-                          {playbackSpeed}x
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
-                        {playbackSpeeds.map((speed) => (
-                          <DropdownMenuItem
-                            key={speed}
-                            onClick={() => handleSpeedChange(speed)}
-                            className="text-white-text hover:bg-white/10 cursor-pointer"
-                          >
-                            {speed}x
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    
-                    <button 
-                      onClick={handleMuteToggle}
-                      className="w-6 h-6 flex items-center justify-center text-light-gray-text hover:text-white-text transition-colors"
-                    >
-                      {isMuted ? (
-                        <VolumeX className="h-4 w-4" />
-                      ) : (
-                        <Volume2 className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Progress Bar */}
-                <div className="mb-2">
-                  <Slider
-                    value={[currentTime]}
-                    max={duration}
-                    step={1}
-                    onValueChange={handleTimeChange}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Time Saved Breakdown - Expanded State */}
-            <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
-              <Clock className="h-4 w-4 text-green-400" />
-              <span>
-                <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
-              </span>
-            </div>
-
-            {/* New Stats Grid with Tooltips */}
-            <div className="grid grid-cols-5 gap-2 mb-3">
-              {statsConfig.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
-                  <Tooltip key={index}>
-                    <TooltipTrigger asChild>
-                      <div className="flex flex-col items-center p-2 rounded-lg bg-surface-raised/30 cursor-pointer hover:bg-surface-raised/50 transition-colors">
-                        <IconComponent className={`h-4 w-4 ${stat.color} mb-1`} />
-                        <div className="text-lg font-semibold text-text-primary">
-                          {stat.value}
-                        </div>
-                        <div className="text-xs text-text-secondary text-center leading-tight">
-                          {stat.label}
-                        </div>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-surface-raised border border-white/20">
-                      <div className="space-y-1">
-                        <div className="text-sm font-medium text-text-primary">{stat.label}</div>
-                        <div className="space-y-1">
-                          {Object.entries(stat.breakdown).map(([platform, count]) => (
-                            <div key={platform} className="flex justify-between text-xs">
-                              <span className="text-text-secondary capitalize">{platform}:</span>
-                              <span className="text-text-primary font-medium">{count}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
-            </div>
-
-            {/* Action Items with Feedback */}
-            <div className="mb-3">
-              <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
-              <div className="space-y-2">
-                {mockActionItems.map((item) => (
-                  <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        {item.source === 'gmail' ? (
-                          <Mail className="h-3 w-3 text-red-400" />
-                        ) : (
-                          <MessageSquare className="h-3 w-3 text-purple-400" />
-                        )}
-                        <Badge className={`text-xs px-1 py-0 ${
-                          item.priority === 'high' ? 'bg-red-500/20 text-red-400' :
-                          item.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
-                          'bg-gray-500/20 text-gray-400'
-                        }`}>
-                          {item.priority}
-                        </Badge>
-                      </div>
-                      <span className="text-sm text-text-primary">{item.title}</span>
-                    </div>
-                    <ActionItemFeedback 
-                      itemId={item.id} 
-                      onRelevanceFeedback={handleActionItemFeedback}
+                  {/* Progress Bar */}
+                  <div className="mb-2">
+                    <Slider
+                      value={[currentTime]}
+                      max={duration}
+                      step={1}
+                      onValueChange={handleTimeChange}
+                      className="w-full"
                     />
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Add Missing Content */}
-            {!showAddMissing ? (
-              <div className="mb-3">
-                <Button variant="ghost" size="sm" onClick={e => {
-                  e.stopPropagation();
-                  setShowAddMissing(true);
-                }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
-                  Add what's missing
-                </Button>
-              </div>
-            ) : (
-              <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-                <Input 
-                  placeholder="What important information did we miss?" 
-                  value={missingContent} 
-                  onChange={e => setMissingContent(e.target.value)} 
-                  onKeyPress={e => handleKeyPress(e, 'missing')} 
-                  onBlur={handleAddMissingSubmit} 
-                  className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
-                  autoFocus 
-                />
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-2 pt-1">
-              {brief.hasTranscript && (
-                <Button variant="outline" size="sm" className="h-7 px-3 text-caption rounded-lg row-border hover:row-hover bg-transparent focus-ring" onClick={e => {
-                  e.stopPropagation();
-                  onViewTranscript(brief.id);
-                }}>
-                  <ExternalLink className="h-3 w-3 mr-1" strokeWidth={1.75} />
-                  Transcript
-                </Button>
+                </div>
               )}
-              <Button size="sm" className="h-7 px-4 text-caption rounded-lg bg-primary-teal hover:bg-accent-green focus-ring" onClick={e => {
-                e.stopPropagation();
-                onViewBrief(brief.id);
-              }}>
-                View Brief
-              </Button>
+
+              {/* Time Saved Breakdown - Expanded State */}
+              <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
+                <Clock className="h-4 w-4 text-green-400" />
+                <span>
+                  <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
+                </span>
+              </div>
+
+              {/* New Stats Grid with Tooltips */}
+              <div className="grid grid-cols-5 gap-2 mb-3">
+                {statsConfig.map((stat, index) => {
+                  const IconComponent = stat.icon;
+                  return (
+                    <Tooltip key={index}>
+                      <TooltipTrigger asChild>
+                        <div className="flex flex-col items-center p-2 rounded-lg bg-surface-raised/30 cursor-pointer hover:bg-surface-raised/50 transition-colors">
+                          <IconComponent className={`h-4 w-4 ${stat.color} mb-1`} />
+                          <div className="text-lg font-semibold text-text-primary">
+                            {stat.value}
+                          </div>
+                          <div className="text-xs text-text-secondary text-center leading-tight">
+                            {stat.label}
+                          </div>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-surface-raised border border-white/20">
+                        <div className="space-y-1">
+                          <div className="text-sm font-medium text-text-primary">{stat.label}</div>
+                          <div className="space-y-1">
+                            {Object.entries(stat.breakdown).map(([platform, count]) => (
+                              <div key={platform} className="flex justify-between text-xs">
+                                <span className="text-text-secondary capitalize">{platform}:</span>
+                                <span className="text-text-primary font-medium">{count}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+
+              {/* Action Items with Feedback */}
+              <div className="mb-3">
+                <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
+                <div className="space-y-2">
+                  {mockActionItems.map((item) => (
+                    <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          {item.source === 'gmail' ? (
+                            <Mail className="h-3 w-3 text-red-400" />
+                          ) : (
+                            <MessageSquare className="h-3 w-3 text-purple-400" />
+                          )}
+                          <Badge className={`text-xs px-1 py-0 ${
+                            item.priority === 'high' ? 'bg-red-500/20 text-red-400' :
+                            item.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
+                            'bg-gray-500/20 text-gray-400'
+                          }`}>
+                            {item.priority}
+                          </Badge>
+                        </div>
+                        <span className="text-sm text-text-primary">{item.title}</span>
+                      </div>
+                      <ActionItemFeedback 
+                        itemId={item.id} 
+                        onRelevanceFeedback={handleActionItemFeedback}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Add Missing Content */}
+              {!showAddMissing ? (
+                <div className="mb-3">
+                  <Button variant="ghost" size="sm" onClick={e => {
+                    e.stopPropagation();
+                    setShowAddMissing(true);
+                  }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
+                    Add what's missing
+                  </Button>
+                </div>
+              ) : (
+                <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+                  <Input 
+                    placeholder="What important information did we miss?" 
+                    value={missingContent} 
+                    onChange={e => setMissingContent(e.target.value)} 
+                    onKeyPress={e => handleKeyPress(e, 'missing')} 
+                    onBlur={handleAddMissingSubmit} 
+                    className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
+                    autoFocus 
+                  />
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-2 pt-1">
+                {brief.hasTranscript && (
+                  <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent" onClick={e => {
+                    e.stopPropagation();
+                    onViewTranscript(brief.id);
+                  }}>
+                    <ExternalLink className="h-3 w-3 mr-1" />
+                    Transcript
+                  </Button>
+                )}
+                <Button size="sm" className="h-7 px-4 text-xs rounded-lg bg-primary-teal hover:bg-accent-green" onClick={e => {
+                  e.stopPropagation();
+                  onViewBrief(brief.id);
+                }}>
+                  View Brief
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </TooltipProvider>
   );
 };
