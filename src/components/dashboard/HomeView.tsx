@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -214,7 +213,7 @@ const HomeView = ({
 
   // Mobile View
   if (isMobile) {
-    return <div className="h-screen flex flex-col px-4 py-4 overflow-hidden">
+    return <div className="h-screen flex flex-col px-4 py-4 overflow-hidden no-motion">
         {/* Mobile Menu Button - Top Right */}
         <div className="fixed top-4 right-4 z-50">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -268,12 +267,12 @@ const HomeView = ({
           </Sheet>
         </div>
 
-        {/* Mobile Welcome Section - Compact with reduced spacing */}
+        {/* Mobile Welcome Section - Updated typography */}
         <div className="text-center flex-shrink-0 mt-4 mb-1">
-          <h1 className="text-xl font-semibold text-white-text mb-0">
+          <h1 className="text-display text-white-text mb-0">
             Good morning, Alex
           </h1>
-          <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
+          <p className="text-body text-light-gray-text">Ready to catch up or focus?</p>
         </div>
 
         {/* Central Audio Wave with Status - Full Width with reduced padding */}
@@ -337,52 +336,52 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Upcoming Brief Section - More faded */}
+        {/* Upcoming Brief Section - Updated typography */}
         <div className="mb-3 flex-shrink-0">
-          <div className="bg-deep-blue/20 border border-light-gray-text/10 rounded-xl p-3 opacity-40">
+          <div className="bg-deep-blue/20 row-border rounded-xl p-3 opacity-40">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-white-text/70">Upcoming Brief</h3>
-              <Clock className="w-4 h-4 text-primary-teal/70" />
+              <h3 className="text-body font-medium text-white-text/70">Upcoming Brief</h3>
+              <Clock className="w-4 h-4 text-primary-teal/70" strokeWidth={1.75} />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-light-gray-text/70">{upcomingBrief.name}</p>
-                <p className="text-xs text-light-gray-text/70">{upcomingBrief.scheduledTime}</p>
+                <p className="text-caption text-light-gray-text/70">{upcomingBrief.name}</p>
+                <p className="text-caption text-light-gray-text/70">{upcomingBrief.scheduledTime}</p>
               </div>
               <Button 
                 onClick={handleGetBriefedNow}
                 size="sm"
                 variant="outline"
-                className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
+                className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-caption px-3 py-1 h-auto bg-transparent focus-ring"
               >
-                <Zap className="w-3 h-3 mr-1" />
+                <Play className="w-3 h-3 mr-1" strokeWidth={1.75} />
                 Get Briefed Now
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Latest Brief Section */}
+        {/* Latest Brief Section - Updated typography */}
         <div className="mb-3 flex-shrink-0">
-          <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
+          <div className="bg-deep-blue/50 row-border rounded-xl p-3">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-white-text">Latest Brief</h3>
-              <FileText className="w-4 h-4 text-primary-teal" />
+              <h3 className="text-body font-medium text-white-text">Latest Brief</h3>
+              <FileText className="w-4 h-4 text-primary-teal" strokeWidth={1.75} />
             </div>
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-light-gray-text">{latestBrief.name}</p>
-                <p className="text-xs text-light-gray-text">{latestBrief.timeCreated}</p>
+                <p className="text-caption text-light-gray-text">{latestBrief.name}</p>
+                <p className="text-caption text-light-gray-text">{latestBrief.timeCreated}</p>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-xs text-light-gray-text">{latestBrief.slackMessages.total} Slack</span>
-                  <span className="text-xs text-light-gray-text">{latestBrief.emails.total} Emails</span>
-                  <span className="text-xs text-light-gray-text">{latestBrief.actionItems} Actions</span>
+                  <span className="text-caption text-light-gray-text">{latestBrief.slackMessages.total} Slack</span>
+                  <span className="text-caption text-light-gray-text">{latestBrief.emails.total} Emails</span>
+                  <span className="text-caption text-light-gray-text">{latestBrief.actionItems} Actions</span>
                 </div>
               </div>
               <Button 
                 onClick={() => onOpenBrief(latestBrief.id)}
                 size="sm"
-                className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto ml-2"
+                className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-caption px-3 py-1 h-auto ml-2 focus-ring"
               >
                 View
               </Button>
@@ -390,13 +389,13 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Action Buttons - Updated with new structure */}
+        {/* Action Buttons - Updated with proper focus rings */}
         <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0 my-[6px] py-[3px]">
           <Button 
             onClick={onToggleCatchMeUp}
-            className="flex-1 bg-primary-teal text-white-text rounded-xl px-6 py-3 hover:bg-accent-green"
+            className="flex-1 bg-primary-teal text-white-text rounded-xl px-6 py-3 hover:bg-accent-green focus-ring"
           >
-            <Zap className="w-4 h-4 mr-2" />
+            <Play className="w-4 h-4 mr-2" strokeWidth={1.75} />
             Brief Me
           </Button>
 
@@ -404,25 +403,25 @@ const HomeView = ({
             <DropdownMenuTrigger asChild>
               <Button 
                 variant="outline"
-                className="flex-1 bg-deep-blue border border-light-gray-text/40 text-light-gray-text rounded-xl px-6 py-3 hover:border-light-gray-text/60"
+                className="flex-1 bg-deep-blue row-border text-light-gray-text rounded-xl px-6 py-3 hover:row-hover focus-ring"
               >
                 Set Status
-                <ChevronDown className="w-4 h-4 ml-2" />
+                <ChevronDown className="w-4 h-4 ml-2" strokeWidth={1.75} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-dark-navy border-light-gray-text/20 w-48">
               <DropdownMenuItem 
                 onClick={() => handleStatusChange('focus')}
-                className="text-white-text hover:bg-deep-blue/50"
+                className="text-white-text hover:bg-deep-blue/50 focus-ring"
               >
-                <Focus className="mr-2 h-4 w-4" />
+                <Play className="mr-2 h-4 w-4" strokeWidth={1.75} />
                 Focus Mode
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => handleStatusChange('offline')}
-                className="text-white-text hover:bg-deep-blue/50"
+                className="text-white-text hover:bg-deep-blue/50 focus-ring"
               >
-                <Clock className="mr-2 h-4 w-4" />
+                <Clock className="mr-2 h-4 w-4" strokeWidth={1.75} />
                 Offline Mode
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -434,9 +433,9 @@ const HomeView = ({
           <Button 
             onClick={handleViewAllBriefs} 
             variant="outline"
-            className="w-full bg-deep-blue/30 border border-light-gray-text/20 text-light-gray-text rounded-xl px-4 py-3 hover:border-light-gray-text/40 hover:text-white-text"
+            className="w-full bg-deep-blue/30 row-border text-light-gray-text rounded-xl px-4 py-3 hover:row-hover hover:text-white-text focus-ring"
           >
-            <Archive className="w-4 h-4 mr-2" />
+            <FileText className="w-4 h-4 mr-2" strokeWidth={1.75} />
             View All Briefs ({totalBriefs})
           </Button>
         </div>
@@ -464,47 +463,47 @@ const HomeView = ({
   }
 
   // Desktop View
-  return <div className="min-h-screen px-4 py-6">
+  return <div className="min-h-screen px-4 py-6 no-motion">
       <div className="max-w-7xl mx-auto">
-        {/* Desktop Header - Horizontal Layout */}
+        {/* Desktop Header - Updated typography */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary mb-2">
+            <h1 className="text-display text-text-primary mb-2">
               Good morning, Alex
             </h1>
-            <p className="text-text-secondary font-light text-gray-50">Let's get you caught up.</p>
+            <p className="text-body text-text-secondary font-light text-gray-50">Let's get you caught up.</p>
           </div>
           
-          {/* Updated CTAs on the right with Profile Dropdown */}
+          {/* Updated CTAs with proper focus rings and icon sizing */}
           <div className="flex gap-3 items-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
+                <Button variant="outline" className="rounded-xl px-6 py-3 row-border text-text-primary shadow-sm hover:shadow-md transition-all focus-ring">
                   Update Status
-                  <ChevronDown className="ml-2 h-4 w-4" />
+                  <ChevronDown className="ml-2 h-4 w-4" strokeWidth={1.75} />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle">
-                <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-white/5">
-                  <Headphones className="mr-2 h-4 w-4" />
+              <DropdownMenuContent className="bg-surface row-border">
+                <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-white/5 focus-ring">
+                  <Play className="mr-2 h-4 w-4" strokeWidth={1.75} />
                   Start Focus Mode
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-white/5">
-                  <Clock className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-white/5 focus-ring">
+                  <Clock className="mr-2 h-4 w-4" strokeWidth={1.75} />
                   Sign Off for the Day
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
-              <Zap className="mr-2 h-4 w-4" />
+            <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all focus-ring">
+              <Play className="mr-2 h-4 w-4" strokeWidth={1.75} />
               Brief Me
             </Button>
 
             {/* Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 h-auto">
+                <Button variant="ghost" className="p-0 h-auto focus-ring">
                   <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
                     <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
                     <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
@@ -513,21 +512,21 @@ const HomeView = ({
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
-                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
-                  <User className="mr-2 h-4 w-4" />
+              <DropdownMenuContent className="bg-surface row-border w-56" align="end">
+                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5 focus-ring">
+                  <Play className="mr-2 h-4 w-4" strokeWidth={1.75} />
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
-                  <Zap className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5 focus-ring">
+                  <Play className="mr-2 h-4 w-4" strokeWidth={1.75} />
                   Integrations
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
-                  <FileText className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5 focus-ring">
+                  <FileText className="mr-2 h-4 w-4" strokeWidth={1.75} />
                   Brief Configuration
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
-                  <Settings className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5 focus-ring">
+                  <Play className="mr-2 h-4 w-4" strokeWidth={1.75} />
                   All Settings
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -544,10 +543,10 @@ const HomeView = ({
         <div className="grid grid-cols-12 gap-6">
           {/* Main content - 8 columns */}
           <div className="col-span-8 space-y-6">
-            {/* Briefs Section */}
+            {/* Briefs Section - Updated typography */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Briefs</h2>
+                <h2 className="text-section-heading text-text-primary">Briefs</h2>
               </div>
               
               {/* Unified Brief Container with upcoming brief */}
@@ -568,19 +567,19 @@ const HomeView = ({
           
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
-            {/* Priorities Section with title outside */}
+            {/* Priorities Section with title outside - Updated typography */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Priorities</h2>
+                <h2 className="text-section-heading text-text-primary">Priorities</h2>
                 <Button 
                   variant="ghost" 
                   onClick={() => navigate("/dashboard/settings")}
-                  className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
+                  className="h-auto p-0 text-body text-text-secondary hover:text-accent-primary focus-ring"
                 >
                   Edit
                 </Button>
               </div>
-              <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
+              <div className="row-border bg-surface-overlay/30 shadow-sm rounded-2xl">
                 <PrioritiesSection />
               </div>
             </div>
@@ -706,4 +705,4 @@ const HomeView = ({
     </div>;
 };
 
-export default React.memo(HomeView);
+export default HomeView;
