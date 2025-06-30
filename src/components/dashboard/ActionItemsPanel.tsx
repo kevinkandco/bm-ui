@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -250,15 +251,15 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
 
         {/* Action Items List */}
         <div className="p-4">
-          <ScrollArea className="max-h-[200px] -mx-1 px-1">
-            <div className="space-y-3">
-              {openItems.slice(0, 5).map((item) => (
+          <ScrollArea className="max-h-[280px] -mx-1 px-1">
+            <div className="space-y-2">
+              {openItems.slice(0, 6).map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleItemClick(item)}
                   className="group cursor-pointer"
                 >
-                  <div className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors">
+                  <div className="flex items-start gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors">
                     {/* Source Icon */}
                     <div className="flex-shrink-0 mt-0.5">
                       {getSourceIcon(item.source)}
@@ -274,9 +275,19 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      {/* Tags and Title */}
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        {/* VIP Star - First Priority */}
+                      {/* Title */}
+                      <p className="text-sm text-text-primary font-medium leading-tight mb-1">
+                        {item.title}
+                      </p>
+                      
+                      {/* Tags Row */}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {/* Sender */}
+                        <span className="text-xs text-text-secondary">
+                          from {item.sender}
+                        </span>
+                        
+                        {/* VIP Star */}
                         {item.isVip && (
                           <button
                             onClick={(e) => handleTagClick('vip', e)}
@@ -286,7 +297,7 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
                           </button>
                         )}
                         
-                        {/* Person Tag - Second Priority */}
+                        {/* Person Tag */}
                         {item.priorityPerson && (
                           <Badge 
                             variant="secondary" 
@@ -297,7 +308,7 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
                           </Badge>
                         )}
                         
-                        {/* Trigger Tag - Third Priority */}
+                        {/* Trigger Tag */}
                         {item.triggerKeyword && (
                           <Badge 
                             variant="secondary" 
@@ -308,19 +319,9 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
                           </Badge>
                         )}
                         
-                        {/* Urgency Tag - Fourth Priority */}
+                        {/* Urgency Tag */}
                         {getUrgencyBadge(item.urgency)}
-                        
-                        {/* Title */}
-                        <p className="text-sm text-text-primary truncate font-medium flex-1 min-w-0">
-                          {item.title}
-                        </p>
                       </div>
-                      
-                      {/* Metadata */}
-                      <p className="text-xs text-text-secondary truncate">
-                        from {item.sender}
-                      </p>
                     </div>
 
                     {/* External link icon */}
