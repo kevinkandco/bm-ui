@@ -226,8 +226,8 @@ const BriefCard = ({
     // Add your thumbs up logic here
   };
 
-  const handleActionItemSnooze = (itemId: string) => {
-    console.log(`Snoozed action item: ${itemId}`);
+  const handleActionItemSnooze = (itemId: string, reason: any, feedback?: string) => {
+    console.log(`Snoozed action item: ${itemId}`, { reason, feedback });
     // Add your snooze logic here  
   };
 
@@ -523,6 +523,8 @@ const BriefCard = ({
                       <div className="flex items-center gap-2">
                         <ActionItemControls
                           itemId={item.id}
+                          itemTitle={item.title}
+                          sender={item.source === 'gmail' ? 'example@company.com' : 'Sarah'}
                           onThumbsUp={handleActionItemThumbsUp}
                           onSnooze={handleActionItemSnooze}
                           size="sm"

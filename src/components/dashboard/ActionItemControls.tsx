@@ -8,17 +8,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import SnoozeReasonModal, { SnoozeReason } from "./SnoozeReasonModal";
 
 interface ActionItemControlsProps {
   itemId: string;
+  itemTitle: string;
+  sender?: string;
   onThumbsUp?: (itemId: string) => void;
-  onSnooze?: (itemId: string) => void;
+  onSnooze?: (itemId: string, reason: SnoozeReason, feedback?: string) => void;
   className?: string;
   size?: "sm" | "default";
 }
 
 const ActionItemControls = ({ 
   itemId, 
+  itemTitle,
+  sender,
   onThumbsUp, 
   onSnooze, 
   className = "", 
@@ -26,6 +31,7 @@ const ActionItemControls = ({
 }: ActionItemControlsProps) => {
   const [thumbsUpActive, setThumbsUpActive] = useState(false);
   const [snoozed, setSnoozed] = useState(false);
+  const [showSnoozeModal, setShowSnoozeModal] = useState(false);
 
   const handleThumbsUp = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -33,10 +39,14 @@ const ActionItemControls = ({
     onThumbsUp?.(itemId);
   };
 
-  const handleSnooze = (e: React.MouseEvent) => {
+  const handleSnoozeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setShowSnoozeModal(true);
+  };
+
+  const handleSnoozeConfirm = (reason: SnoozeReason, feedback?: string) => {
     setSnoozed(true);
-    onSnooze?.(itemId);
+    onSnooze?.(itemId, reason, feedback);
   };
 
   const buttonSize = size === "sm" ? "h-6 w-6" : "h-8 w-8";
@@ -80,7 +90,7 @@ const ActionItemControls = ({
               variant="ghost"
               size="icon"
               className={`${buttonSize} p-0 text-text-secondary hover:text-orange-400 hover:bg-orange-500/10 transition-all`}
-              onClick={handleSnooze}
+              onClick={handleSnoozeClick}
             >
               <Clock className={iconSize} />
             </Button>
@@ -90,6 +100,14 @@ const ActionItemControls = ({
           </TooltipContent>
         </Tooltip>
       </div>
+
+      <SnoozeReasonModal
+        isOpen={showSnoozeModal}
+        onClose={() => setShowSnoozeModal(false)}
+        onSnooze={handleSnoozeConfirm}
+        itemTitle={itemTitle}
+        sender={sender}
+      />
     </TooltipProvider>
   );
 };
