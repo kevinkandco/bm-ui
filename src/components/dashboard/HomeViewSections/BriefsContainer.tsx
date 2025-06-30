@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
-import { ChevronDown, Clock, Zap } from "lucide-react";
+import { ChevronDown, Clock, Zap, ArrowRight } from "lucide-react";
 import BriefCard from "./BriefCard";
 import UpcomingBriefCard from "./UpcomingBriefCard";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,6 @@ const BriefsContainer = ({
   upcomingBrief
 }: BriefsContainerProps) => {
   const [upcomingOpen, setUpcomingOpen] = useState(true);
-  const [pastBriefsOpen, setPastBriefsOpen] = useState(false); // Collapsed by default
 
   // Check if user is new (no briefs and has upcoming brief)
   const isFirstTimeUser = briefs.length === 0 && totalBriefs === 0 && upcomingBrief;
@@ -117,65 +116,70 @@ const BriefsContainer = ({
             </div>
           )}
 
-          {/* Past Briefs Section - Collapsed by default */}
+          {/* Past Briefs Section - Now with View all button */}
           <div className="space-y-2">
-            <Collapsible open={pastBriefsOpen} onOpenChange={setPastBriefsOpen}>
-              <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
-                <h3 className="text-sm font-medium text-white-text/80 px-1">Past briefs</h3>
-                <ChevronDown className={`h-4 w-4 text-white-text/60 transition-transform duration-200 ${pastBriefsOpen ? 'transform rotate-180' : ''}`} />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="space-y-2 pt-2">
-                {isFirstTimeUser ? (
-                  // Empty state for first-time users
-                  <div className="text-center py-8 px-4">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-overlay/50 flex items-center justify-center">
-                      <Clock className="w-8 h-8 text-text-secondary" />
-                    </div>
-                    <h4 className="text-sm font-medium text-text-primary mb-2">
-                      Your first brief is on the way!
-                    </h4>
-                    <p className="text-xs text-text-secondary mb-4 max-w-xs mx-auto">
-                      We're monitoring your connected accounts. Your first brief will appear here once it's ready based on your schedule.
-                    </p>
-                    {onGetBriefedNow && (
-                      <Button
-                        onClick={onGetBriefedNow}
-                        size="sm"
-                        className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2"
-                      >
-                        <Zap className="w-3 h-3 mr-1" />
-                        Get briefed now
-                      </Button>
-                    )}
-                  </div>
-                ) : pastBriefs.length > 0 ? (
-                  // Show past briefs
-                  <div className="space-y-2">
-                    {pastBriefs.map((brief, index) => (
-                      <BriefCard
-                        key={brief.id}
-                        brief={brief}
-                        onViewBrief={onViewBrief}
-                        onViewTranscript={onViewTranscript}
-                        onPlayBrief={onPlayBrief}
-                        playingBrief={playingBrief}
-                        isLast={index === pastBriefs.length - 1}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  // Empty state for returning users with no past briefs
-                  <div className="text-center py-6 px-4">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-surface-overlay/30 flex items-center justify-center">
-                      <Clock className="w-6 h-6 text-text-secondary" />
-                    </div>
-                    <p className="text-xs text-text-secondary">
-                      No past briefs yet
-                    </p>
-                  </div>
+            <div className="flex items-center justify-between w-full">
+              <h3 className="text-sm font-medium text-white-text/80 px-1">Past briefs</h3>
+              <Button
+                onClick={onViewAllBriefs}
+                variant="ghost"
+                size="sm"
+                className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
+              >
+                View all
+                <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </div>
+            
+            {isFirstTimeUser ? (
+              // Empty state for first-time users
+              <div className="text-center py-8 px-4">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-overlay/50 flex items-center justify-center">
+                  <Clock className="w-8 h-8 text-text-secondary" />
+                </div>
+                <h4 className="text-sm font-medium text-text-primary mb-2">
+                  Your first brief is on the way!
+                </h4>
+                <p className="text-xs text-text-secondary mb-4 max-w-xs mx-auto">
+                  We're monitoring your connected accounts. Your first brief will appear here once it's ready based on your schedule.
+                </p>
+                {onGetBriefedNow && (
+                  <Button
+                    onClick={onGetBriefedNow}
+                    size="sm"
+                    className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2"
+                  >
+                    <Zap className="w-3 h-3 mr-1" />
+                    Get briefed now
+                  </Button>
                 )}
-              </CollapsibleContent>
-            </Collapsible>
+              </div>
+            ) : pastBriefs.length > 0 ? (
+              // Show past briefs (limited to 3 most recent)
+              <div className="space-y-2 pt-2">
+                {pastBriefs.slice(0, 3).map((brief, index) => (
+                  <BriefCard
+                    key={brief.id}
+                    brief={brief}
+                    onViewBrief={onViewBrief}
+                    onViewTranscript={onViewTranscript}
+                    onPlayBrief={onPlayBrief}
+                    playingBrief={playingBrief}
+                    isLast={index === pastBriefs.slice(0, 3).length - 1}
+                  />
+                ))}
+              </div>
+            ) : (
+              // Empty state for returning users with no past briefs
+              <div className="text-center py-6 px-4">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-surface-overlay/30 flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-text-secondary" />
+                </div>
+                <p className="text-xs text-text-secondary">
+                  No past briefs yet
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
