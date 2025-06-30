@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-import StatusUpdateDropdown from "../StatusUpdateDropdown";
+import StatusUpdateDropdown from "./StatusUpdateDropdown";
 import TeamsInviteModal from "./TeamsInviteModal";
 import ReferralSection from "./ReferralSection";
 

@@ -41,6 +41,25 @@ const HomeView = ({
     setPlayingBrief(playingBrief === briefId ? null : briefId);
   };
 
+  // Mock data for briefs
+  const mockBriefs = [
+    {
+      id: 1,
+      name: "Morning Brief",
+      timeCreated: "Today, 8:00 AM",
+      timeRange: "5:00 AM - 8:00 AM",
+      slackMessages: { total: 12, fromPriorityPeople: 3 },
+      emails: { total: 5, fromPriorityPeople: 2 },
+      actionItems: 3,
+      hasTranscript: true
+    }
+  ];
+
+  const upcomingBrief = {
+    name: "Afternoon Brief",
+    scheduledTime: "2:00 PM"
+  };
+
   return (
     <div className="h-full flex flex-col">
       {/* Header with Monitoring */}
@@ -70,18 +89,20 @@ const HomeView = ({
           {/* Left Column - Briefs */}
           <div className="col-span-8 flex flex-col space-y-6">
             <LatestBriefSection
-              onViewBrief={onOpenBrief}
-              onViewTranscript={onViewTranscript}
-              onPlayBrief={handlePlayBrief}
-              playingBrief={playingBrief}
+              onClick={() => onOpenBrief(1)}
             />
             
             <BriefsContainer
+              briefs={mockBriefs}
+              totalBriefs={mockBriefs.length}
               onViewBrief={onOpenBrief}
               onViewTranscript={onViewTranscript}
               onPlayBrief={handlePlayBrief}
               playingBrief={playingBrief}
-              onOpenBriefModal={onOpenBriefModal}
+              onViewAllBriefs={() => navigate('/dashboard/briefs')}
+              onGetBriefedNow={onOpenBriefModal}
+              onUpdateSchedule={() => console.log('Update schedule')}
+              upcomingBrief={upcomingBrief}
             />
           </div>
 
