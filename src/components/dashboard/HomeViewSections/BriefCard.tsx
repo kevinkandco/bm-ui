@@ -287,7 +287,7 @@ const BriefCard = ({
               
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base text-white-text truncate font-medium">
+                  <h3 className="text-white-text truncate font-normal text-sm">
                     {brief.name}
                   </h3>
                   
