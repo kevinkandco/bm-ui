@@ -88,6 +88,39 @@ const CalendarSection = () => {
       summaryReady: false,
       isRecording: false,
       minutesUntil: 135
+    },
+    {
+      id: "4",
+      title: "team standup",
+      time: "4:00 PM", 
+      duration: "30 min",
+      attendees: [
+        { name: "Development Team", email: "dev-team@company.com" }
+      ],
+      briefing: "Daily team standup meeting",
+      aiSummary: "Quick sync on current tasks and blockers with the development team.",
+      hasProxy: false,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: 165
+    },
+    {
+      id: "5",
+      title: "client feedback session",
+      time: "5:00 PM", 
+      duration: "45 min",
+      attendees: [
+        { name: "Sarah Johnson", email: "sarah@client.com" },
+        { name: "Mike Chen", email: "mike@client.com" }
+      ],
+      briefing: "Client feedback session on recent deliverables",
+      aiSummary: "Gathering client feedback on recent project milestones and discussing next phases.",
+      hasProxy: true,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: 225
     }
   ]);
 
@@ -167,17 +200,12 @@ const CalendarSection = () => {
 
   if (!hasUpcomingMeetings) {
     return (
-      <Card className="w-full rounded-xl shadow-none border-0" style={{
-        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-        boxShadow: 'none'
-      }}>
-        <CardContent className="p-4">
-          <div className="text-center py-6">
-            <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
-            <p className="text-sm text-text-secondary">No meetings soon</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="w-full">
+        <div className="text-center py-6">
+          <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+          <p className="text-sm text-text-secondary">No meetings soon</p>
+        </div>
+      </div>
     );
   }
 
