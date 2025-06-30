@@ -11,6 +11,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
+import DashboardSidebar from "@/components/dashboard/Sidebar/DashboardSidebar";
 
 interface FocusConfig {
   duration: number;
@@ -131,46 +132,59 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Focus Mode Timer Header */}
-      {userStatus === "focus" && (
-        <StatusTimer 
-          status={userStatus}
-          onExitFocusMode={handleExitFocusMode}
-        />
-      )}
-
-      {/* Away/Offline Timer Header */}
-      {userStatus === "away" && (
-        <StatusTimer 
-          status={userStatus}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
-
-      {/* Vacation/Out of Office Timer Header */}
-      {userStatus === "vacation" && (
-        <StatusTimer 
-          status={userStatus}
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <DashboardSidebar
+        userStatus={userStatus}
+        onStatusChange={setUserStatus}
+        onToggleFocusMode={handleToggleFocusMode}
+        onSignOffForDay={handleSignOffForDay}
+      />
 
       {/* Main Content */}
-      <div className="flex-1">
-        {currentView === "home" && (
-          <HomeView
-            onOpenBrief={openBriefDetails}
-            onViewTranscript={openTranscript}
-            onToggleFocusMode={handleToggleFocusMode}
-            onToggleCatchMeUp={handleToggleCatchMeUp}
-            onOpenBriefModal={openBriefModal}
-            onStartFocusMode={handleStartFocusMode}
-            onSignOffForDay={handleSignOffForDay}
+      <div className="flex-1 flex flex-col">
+        {/* Focus Mode Timer Header */}
+        {userStatus === "focus" && (
+          <StatusTimer 
+            status={userStatus}
+            onExitFocusMode={handleExitFocusMode}
           />
         )}
-        {currentView === "listening" && <ListeningScreen />}
+
+        {/* Away/Offline Timer Header */}
+        {userStatus === "away" && (
+          <StatusTimer 
+            status={userStatus}
+            onSignBackOn={handleSignBackOn}
+          />
+        )}
+
+        {/* Vacation/Out of Office Timer Header */}
+        {userStatus === "vacation" && (
+          <StatusTimer 
+            status={userStatus}
+            onToggleCatchMeUp={handleToggleCatchMeUp}
+            onSignBackOn={handleSignBackOn}
+          />
+        )}
+
+        {/* Dashboard Content with border and shadow */}
+        <div className="flex-1 m-4">
+          <div className="h-full bg-surface rounded-xl border border-border-subtle shadow-lg overflow-hidden">
+            {currentView === "home" && (
+              <HomeView
+                onOpenBrief={openBriefDetails}
+                onViewTranscript={openTranscript}
+                onToggleFocusMode={handleToggleFocusMode}
+                onToggleCatchMeUp={handleToggleCatchMeUp}
+                onOpenBriefModal={openBriefModal}
+                onStartFocusMode={handleStartFocusMode}
+                onSignOffForDay={handleSignOffForDay}
+              />
+            )}
+            {currentView === "listening" && <ListeningScreen />}
+          </div>
+        </div>
       </div>
 
       {/* Modals */}
