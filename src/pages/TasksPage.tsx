@@ -15,7 +15,9 @@ interface ActionItem {
   source: 'slack' | 'gmail';
   sender: string;
   isVip: boolean;
-  urgency?: 'overdue' | 'today' | 'tomorrow' | 'soon';
+  priorityPerson?: string; // Name or initials of flagged person
+  triggerKeyword?: string; // Matched trigger keyword
+  urgency?: 'critical' | 'high' | 'medium' | 'low';
   isNew: boolean;
   createdAt: string;
   threadUrl: string;
@@ -31,7 +33,7 @@ const TasksPage = () => {
   const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  // Sample action items data - in a real app this would come from your state/API
+  // Sample action items data with new tagging structure
   const [actionItems, setActionItems] = useState<ActionItem[]>([
     {
       id: '1',
@@ -39,7 +41,9 @@ const TasksPage = () => {
       source: 'slack',
       sender: 'Sarah Chen',
       isVip: true,
-      urgency: 'today',
+      priorityPerson: 'Sarah Chen',
+      triggerKeyword: 'budget',
+      urgency: 'critical',
       isNew: false,
       createdAt: '2024-06-30T08:00:00Z',
       threadUrl: 'https://app.slack.com/client/T123/C456/p789',
@@ -52,7 +56,7 @@ const TasksPage = () => {
       source: 'gmail',
       sender: 'legal@company.com',
       isVip: false,
-      urgency: 'tomorrow',
+      urgency: 'high',
       isNew: true,
       createdAt: '2024-06-30T09:30:00Z',
       threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
@@ -65,7 +69,9 @@ const TasksPage = () => {
       source: 'slack',
       sender: 'Mike Johnson',
       isVip: true,
-      urgency: 'overdue',
+      priorityPerson: 'Mike J',
+      triggerKeyword: 'urgent',
+      urgency: 'critical',
       isNew: false,
       createdAt: '2024-06-29T14:20:00Z',
       threadUrl: 'https://app.slack.com/client/T123/C456/p790',
@@ -78,7 +84,7 @@ const TasksPage = () => {
       source: 'gmail',
       sender: 'design@company.com',
       isVip: false,
-      urgency: 'soon',
+      urgency: 'medium',
       isNew: true,
       createdAt: '2024-06-29T11:15:00Z',
       threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
@@ -91,7 +97,7 @@ const TasksPage = () => {
       source: 'slack',
       sender: 'Research Team',
       isVip: false,
-      urgency: 'today',
+      urgency: 'high',
       isNew: true,
       createdAt: '2024-06-30T10:00:00Z',
       threadUrl: 'https://app.slack.com/client/T123/C456/p791',
@@ -106,8 +112,10 @@ const TasksPage = () => {
     .filter(item => {
       if (!filter) return true;
       if (filter === 'vip') return item.isVip;
-      if (filter === 'new') return item.isNew;
+      if (filter === 'person') return item.priorityPerson;
+      if (filter === 'trigger') return item.triggerKeyword;
       if (filter === 'urgency') return item.urgency;
+      if (filter === 'new') return item.isNew;
       return true;
     })
     .filter(item => {
@@ -121,7 +129,7 @@ const TasksPage = () => {
       if (!a.isVip && b.isVip) return 1;
       
       // Highest urgency next
-      const urgencyOrder = { 'overdue': 0, 'today': 1, 'tomorrow': 2, 'soon': 3 };
+      const urgencyOrder = { 'critical': 0, 'high': 1, 'medium': 2, 'low': 3 };
       const aUrgency = a.urgency ? urgencyOrder[a.urgency] : 4;
       const bUrgency = b.urgency ? urgencyOrder[b.urgency] : 4;
       if (aUrgency !== bUrgency) return aUrgency - bUrgency;
@@ -177,10 +185,10 @@ const TasksPage = () => {
     if (!urgency) return null;
     
     const urgencyConfig = {
-      'overdue': { label: 'Overdue', className: 'bg-red-500/20 text-red-400' },
-      'today': { label: 'Today', className: 'bg-orange-500/20 text-orange-400' },
-      'tomorrow': { label: 'Tomorrow', className: 'bg-yellow-500/20 text-yellow-400' },
-      'soon': { label: 'Soon', className: 'bg-gray-500/20 text-gray-400' }
+      'critical': { label: 'Critical', className: 'bg-red-500/20 text-red-400' },
+      'high': { label: 'High', className: 'bg-orange-500/20 text-orange-400' },
+      'medium': { label: 'Medium', className: 'bg-yellow-500/20 text-yellow-400' },
+      'low': { label: 'Low', className: 'bg-gray-500/20 text-gray-400' }
     };
     
     const config = urgencyConfig[urgency as keyof typeof urgencyConfig];
@@ -271,22 +279,29 @@ const TasksPage = () => {
                 <div className="flex-1 min-w-0">
                   {/* Tags and Title */}
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    {/* VIP Star */}
+                    {/* VIP Star - First Priority */}
                     {item.isVip && (
                       <div className="text-green-400">
                         <Star className="w-3 h-3" fill="currentColor" />
                       </div>
                     )}
                     
-                    {/* Urgency Badge */}
-                    {getUrgencyBadge(item.urgency)}
-                    
-                    {/* New Badge */}
-                    {item.isNew && (
+                    {/* Person Tag - Second Priority */}
+                    {item.priorityPerson && (
                       <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0">
-                        new
+                        {item.priorityPerson}
                       </Badge>
                     )}
+                    
+                    {/* Trigger Tag - Third Priority */}
+                    {item.triggerKeyword && (
+                      <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 text-xs px-1.5 py-0">
+                        {item.triggerKeyword}
+                      </Badge>
+                    )}
+                    
+                    {/* Urgency Tag - Fourth Priority */}
+                    {getUrgencyBadge(item.urgency)}
                     
                     {/* Title */}
                     <p className="text-sm text-text-primary font-medium flex-1 min-w-0">
