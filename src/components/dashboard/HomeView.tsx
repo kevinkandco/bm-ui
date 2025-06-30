@@ -688,7 +688,7 @@ const HomeView = ({
                   <Button 
                     variant="ghost" 
                     onClick={handleViewAllBriefs}
-                    className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary flex items-center gap-1"
+                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200"
                   >
                     View all
                     <ArrowRight className="w-3 h-3" />
@@ -726,7 +726,7 @@ const HomeView = ({
                   <Button 
                     variant="ghost" 
                     onClick={handleViewAllTasks}
-                    className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary flex items-center gap-1"
+                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200"
                   >
                     View all
                     <ArrowRight className="w-3 h-3" />
@@ -748,7 +748,7 @@ const HomeView = ({
                   <Button 
                     variant="ghost" 
                     onClick={() => navigate("/dashboard/settings")}
-                    className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
+                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200"
                   >
                     Edit
                   </Button>
