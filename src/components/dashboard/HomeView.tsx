@@ -19,6 +19,7 @@ import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/Si
 import ListeningScreen from "./ListeningScreen";
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 import ActionItemsPanel from "./ActionItemsPanel";
+import CalendarSection from "./HomeViewSections/CalendarSection";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -647,6 +648,14 @@ const HomeView = ({
               
               {/* Unified Brief Container with upcoming brief */}
               <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
+            </div>
+
+            {/* Calendar Section - New */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
+              </div>
+              <CalendarSection />
             </div>
           </div>
           
