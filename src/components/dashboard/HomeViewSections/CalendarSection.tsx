@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Calendar, Clock, Mic, Users, ChevronDown, Pencil, BookOpen, Info, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -196,147 +195,140 @@ const CalendarSection = () => {
             onClick={() => openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
-              <div className="relative">
-                <div className="bg-surface-overlay/50 rounded-xl p-4 border border-border-subtle">
-                  {/* Header with time and chips */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="text-sm font-medium text-text-primary mb-1">
-                        {nextMeeting.title}
-                      </h4>
-                      <div className="flex items-center gap-2 text-xs text-text-secondary">
-                        <Clock className="w-3 h-3" />
-                        {nextMeeting.time} • {nextMeeting.duration}
+              <div className="bg-surface-overlay/50 rounded-xl p-4 border border-border-subtle">
+                {/* Header with time and chips */}
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="text-sm font-medium text-text-primary mb-1">
+                      {nextMeeting.title}
+                    </h4>
+                    <div className="flex items-center gap-2 text-xs text-text-secondary">
+                      <Clock className="w-3 h-3" />
+                      {nextMeeting.time} • {nextMeeting.duration}
+                    </div>
+                  </div>
+                  
+                  {/* Top-right chips */}
+                  <div className="flex items-center gap-2">
+                    {nextMeeting.isRecording && (
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                        <span className="text-xs text-red-400">REC</span>
                       </div>
-                    </div>
+                    )}
                     
-                    {/* Top-right chips */}
-                    <div className="flex items-center gap-2">
-                      {nextMeeting.isRecording && (
-                        <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                          <span className="text-xs text-red-400">REC</span>
-                        </div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleProxy(nextMeeting.id);
+                          }}
+                          variant={nextMeeting.hasProxy ? "default" : "outline"}
+                          size="sm"
+                          className={`h-6 px-2 text-xs rounded-full ${
+                            nextMeeting.hasProxy 
+                              ? "bg-green-600 text-white hover:bg-green-700" 
+                              : "border-text-secondary text-text-secondary hover:border-green-600 hover:text-green-600"
+                          }`}
+                        >
+                          {nextMeeting.hasProxy ? "Proxy On" : "Send Proxy"}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs max-w-xs">
+                          Proxy will record, transcribe, and send a brief to you only.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </div>
+
+                {/* AI Summary */}
+                <div className="mb-3">
+                  <div className="flex items-start gap-2">
+                    <p className="text-xs text-text-secondary flex-1">
+                      {nextMeeting.aiSummary}
+                    </p>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openInstructionsDrawer(nextMeeting);
+                      }}
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 w-5 p-0 text-text-secondary hover:text-text-primary"
+                    >
+                      {nextMeeting.hasNotes ? (
+                        <BookOpen className="w-3 h-3" />
+                      ) : (
+                        <Pencil className="w-3 h-3" />
                       )}
-                      
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleProxy(nextMeeting.id);
-                            }}
-                            variant={nextMeeting.hasProxy ? "default" : "outline"}
-                            size="sm"
-                            className={`h-6 px-2 text-xs rounded-full ${
-                              nextMeeting.hasProxy 
-                                ? "bg-green-600 text-white hover:bg-green-700" 
-                                : "border-text-secondary text-text-secondary hover:border-green-600 hover:text-green-600"
-                            }`}
-                          >
-                            {nextMeeting.hasProxy ? "Proxy On" : "Send Proxy"}
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-xs max-w-xs">
-                            Proxy will record, transcribe, and send a brief to you only.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
+                    </Button>
                   </div>
+                </div>
 
-                  {/* AI Summary */}
+                {/* Deliverables preview */}
+                {nextMeeting.hasProxy && (
                   <div className="mb-3">
-                    <div className="flex items-start gap-2">
-                      <p className="text-xs text-text-secondary flex-1">
-                        {nextMeeting.aiSummary}
-                      </p>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openInstructionsDrawer(nextMeeting);
-                        }}
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0 text-text-secondary hover:text-text-primary"
-                      >
-                        {nextMeeting.hasNotes ? (
-                          <BookOpen className="w-3 h-3" />
-                        ) : (
-                          <Pencil className="w-3 h-3" />
-                        )}
-                      </Button>
-                    </div>
+                    <p className="text-xs text-text-secondary">
+                      {nextMeeting.summaryReady ? (
+                        <span className="text-accent-primary cursor-pointer hover:underline">
+                          Summary & action items ready
+                        </span>
+                      ) : (
+                        "Summary & action items will appear here ≈ 10 min after the call"
+                      )}
+                    </p>
+                  </div>
+                )}
+
+                {/* Bottom section with attendance and CTA */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-3 h-3 text-text-secondary" />
+                    <span className="text-xs text-text-secondary">
+                      {getAttendanceText(nextMeeting)}
+                    </span>
                   </div>
 
-                  {/* Deliverables preview */}
-                  {nextMeeting.hasProxy && (
-                    <div className="mb-3">
-                      <p className="text-xs text-text-secondary">
-                        {nextMeeting.summaryReady ? (
-                          <span className="text-accent-primary cursor-pointer hover:underline">
-                            Summary & action items ready
-                          </span>
-                        ) : (
-                          "Summary & action items will appear here ≈ 10 min after the call"
-                        )}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Bottom section with attendance and CTA */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-3 h-3 text-text-secondary" />
-                      <span className="text-xs text-text-secondary">
-                        {getAttendanceText(nextMeeting)}
-                      </span>
-                    </div>
-
-                    {/* Split button CTA */}
-                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        size="sm"
-                        className={`h-7 px-3 text-xs rounded-l-lg rounded-r-none ${
-                          nextMeeting.hasProxy 
-                            ? "bg-surface text-text-secondary hover:bg-surface" 
-                            : "bg-accent-primary text-white hover:bg-accent-primary/90"
-                        }`}
-                        disabled={nextMeeting.hasProxy}
-                      >
-                        Join Live
-                      </Button>
-                      
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            size="sm"
-                            className={`h-7 w-6 px-0 rounded-r-lg rounded-l-none border-l border-l-white/20 ${
-                              nextMeeting.hasProxy 
-                                ? "bg-surface text-text-secondary hover:bg-surface" 
-                                : "bg-accent-primary text-white hover:bg-accent-primary/90"
-                            }`}
-                          >
-                            <ChevronDown className="w-3 h-3" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-surface border-border-subtle">
-                          <DropdownMenuItem 
-                            onClick={() => toggleProxy(nextMeeting.id)}
-                            className="text-text-primary hover:bg-white/5"
-                          >
-                            Send Proxy Instead
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+                  {/* Split button CTA */}
+                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                    <Button
+                      size="sm"
+                      className={`h-7 px-3 text-xs rounded-l-lg rounded-r-none ${
+                        nextMeeting.hasProxy 
+                          ? "bg-surface text-text-secondary hover:bg-surface" 
+                          : "bg-accent-primary text-white hover:bg-accent-primary/90"
+                      }`}
+                      disabled={nextMeeting.hasProxy}
+                    >
+                      Join Live
+                    </Button>
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          size="sm"
+                          className={`h-7 w-6 px-0 rounded-r-lg rounded-l-none border-l border-l-white/20 ${
+                            nextMeeting.hasProxy 
+                              ? "bg-surface text-text-secondary hover:bg-surface" 
+                              : "bg-accent-primary text-white hover:bg-accent-primary/90"
+                          }`}
+                        >
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-surface border-border-subtle">
+                        <DropdownMenuItem 
+                          onClick={() => toggleProxy(nextMeeting.id)}
+                          className="text-text-primary hover:bg-white/5"
+                        >
+                          Send Proxy Instead
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-
-                  {/* Timeline accent line */}
-                  {nextMeeting.hasProxy && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 rounded-l-xl" />
-                  )}
                 </div>
               </div>
             </CardContent>
