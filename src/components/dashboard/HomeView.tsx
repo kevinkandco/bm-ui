@@ -341,63 +341,41 @@ const HomeView = ({
           <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Central Audio Wave with Status - Full Width with reduced padding */}
-        <div className="flex-1 flex flex-col items-center justify-center mx-0 px-0 py-2">
-          <div className="w-full px-8">
-            <div className="w-full h-12 flex items-center justify-center gap-1">
-              {/* Audio Wave Bars */}
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-primary-teal rounded-full transition-all duration-300"
-                  style={{
-                    width: '3px',
-                    height: `${15 + Math.sin((Date.now() / 500) + i * 0.5) * 10}px`,
-                    animation: `audioWave 1.5s ease-in-out infinite`,
-                    animationDelay: `${i * 0.1}s`
-                  }}
-                />
-              ))}
-            </div>
-            <div className="text-center mt-3">
-              {/* Status indicator */}
-              {currentStatus !== 'active' && (
-                <div className="mb-2 flex items-center justify-center gap-2">
-                  <div className="flex items-center gap-1 px-3 py-1 bg-deep-blue border border-light-gray-text/40 rounded-full">
-                    {currentStatus === 'focus' ? (
-                      <>
-                        <Focus className="w-3 h-3 text-primary-teal" />
-                        <span className="text-xs text-white-text">Focus Mode</span>
-                      </>
-                    ) : (
-                      <>
-                        <Clock className="w-3 h-3 text-orange-400" />
-                        <span className="text-xs text-white-text">Offline</span>
-                      </>
-                    )}
-                  </div>
-                  <Button 
-                    onClick={handleExitStatus}
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 px-2 text-xs text-light-gray-text hover:text-white-text"
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
+        {/* Condensed Monitoring Section - Replacing Audio Wave */}
+        <div className="flex-shrink-0 mb-3">
+          <div className="text-center">
+            <p className="text-white text-sm mb-3">brief-me is monitoring</p>
+            
+            {/* Status indicator */}
+            {currentStatus !== 'active' && (
+              <div className="mb-3 flex items-center justify-center gap-2">
+                <div className="flex items-center gap-1 px-3 py-1 bg-deep-blue border border-light-gray-text/40 rounded-full">
+                  {currentStatus === 'focus' ? (
+                    <>
+                      <Focus className="w-3 h-3 text-primary-teal" />
+                      <span className="text-xs text-white-text">Focus Mode</span>
+                    </>
+                  ) : (
+                    <>
+                      <Clock className="w-3 h-3 text-orange-400" />
+                      <span className="text-xs text-white-text">Offline</span>
+                    </>
+                  )}
                 </div>
-              )}
-              <p className="text-white text-sm mb-2">brief-me is monitoring</p>
-              <div className="flex flex-wrap justify-center gap-2 text-xs text-light-gray-text">
-                {connectedIntegrations.map((integration, index) => (
-                  <span key={integration.name} className="flex items-center">
-                    <span>{integration.name}</span>
-                    {integration.channels && <span className="ml-1">({integration.channels} channels)</span>}
-                    {integration.emails && <span className="ml-1">({integration.emails} emails)</span>}
-                    {integration.events && <span className="ml-1">({integration.events} events)</span>}
-                    {index < connectedIntegrations.length - 1 && <span className="mx-1">•</span>}
-                  </span>
-                ))}
+                <Button 
+                  onClick={handleExitStatus}
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 px-2 text-xs text-light-gray-text hover:text-white-text"
+                >
+                  <X className="w-3 h-3" />
+                </Button>
               </div>
+            )}
+
+            {/* Condensed Monitoring Badges */}
+            <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
+              <ConnectedChannelsSection showAsHorizontal={false} />
             </div>
           </div>
         </div>
