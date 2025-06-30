@@ -1,6 +1,5 @@
-
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -59,8 +58,22 @@ const HomeView = ({
     { name: "Google Calendar", events: 3 }
   ];
 
-  // Sample action items for mobile
-  const [actionItems] = useState([
+  // Sample action items for mobile with proper typing
+  const [actionItems] = useState<Array<{
+    id: string;
+    title: string;
+    source: 'slack' | 'gmail';
+    sender: string;
+    isVip: boolean;
+    priorityPerson?: string;
+    triggerKeyword?: string;
+    urgency?: 'critical' | 'high' | 'medium' | 'low';
+    isNew: boolean;
+    createdAt: string;
+    threadUrl: string;
+    completed: boolean;
+    lastActivity: string;
+  }>>([
     {
       id: '1',
       title: 'Approve Q3 budget proposal',
