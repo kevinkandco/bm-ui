@@ -568,8 +568,13 @@ const HomeView = ({
           
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
-            {/* Action Items Panel */}
-            <ActionItemsPanel />
+            {/* Action Items Panel with header outside */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-text-primary">Action Items</h2>
+              </div>
+              <ActionItemsPanel />
+            </div>
             
             {/* Priorities Section with title outside */}
             <div className="space-y-3">

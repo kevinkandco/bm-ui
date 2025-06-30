@@ -151,21 +151,17 @@ const ActionItemsPanel = ({ className }: ActionItemsPanelProps) => {
 
   return (
     <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}>
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 pb-3">
-        <div className="flex items-center gap-2">
-          <CheckSquare className="w-5 h-5 text-accent-primary" />
-          <h3 className="font-semibold text-text-primary">Action Items</h3>
-          {openCount > 0 && (
-            <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary text-xs px-2 py-0.5">
-              {openCount}
-            </Badge>
-          )}
+      {/* Count badge in top corner */}
+      {openCount > 0 && (
+        <div className="absolute top-3 right-3 z-10">
+          <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary text-xs px-2 py-0.5">
+            {openCount}
+          </Badge>
         </div>
-      </div>
+      )}
 
       {/* Action Items List */}
-      <div className="px-4 pb-4">
+      <div className="p-4">
         {openCount === 0 ? (
           <div className="text-center py-6 text-text-secondary">
             <CheckSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
