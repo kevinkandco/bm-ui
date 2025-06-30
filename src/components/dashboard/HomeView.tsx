@@ -1,5 +1,6 @@
+
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -9,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
@@ -56,6 +58,53 @@ const HomeView = ({
     { name: "Gmail", emails: 5 },
     { name: "Google Calendar", events: 3 }
   ];
+
+  // Sample action items for mobile
+  const [actionItems] = useState([
+    {
+      id: '1',
+      title: 'Approve Q3 budget proposal',
+      source: 'slack' as const,
+      sender: 'Sarah Chen',
+      isVip: true,
+      priorityPerson: 'Sarah Chen',
+      triggerKeyword: 'budget',
+      urgency: 'critical' as const,
+      isNew: false,
+      createdAt: '2024-06-30T08:00:00Z',
+      threadUrl: 'https://app.slack.com/client/T123/C456/p789',
+      completed: false,
+      lastActivity: '2024-06-30T08:00:00Z'
+    },
+    {
+      id: '2', 
+      title: 'Review contract amendments',
+      source: 'gmail' as const,
+      sender: 'legal@company.com',
+      isVip: false,
+      urgency: 'high' as const,
+      isNew: true,
+      createdAt: '2024-06-30T09:30:00Z',
+      threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
+      completed: false,
+      lastActivity: '2024-06-30T09:30:00Z'
+    },
+    {
+      id: '3',
+      title: 'Sign off on marketing campaign',
+      source: 'slack' as const,
+      sender: 'Mike Johnson',
+      isVip: true,
+      priorityPerson: 'Mike J',
+      triggerKeyword: 'urgent',
+      urgency: 'critical' as const,
+      isNew: false,
+      createdAt: '2024-06-29T14:20:00Z',
+      threadUrl: 'https://app.slack.com/client/T123/C456/p790',
+      completed: false,
+      lastActivity: '2024-06-29T14:20:00Z'
+    }
+  ]);
 
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
@@ -340,6 +389,59 @@ const HomeView = ({
           </div>
         </div>
 
+        {/* Action Items Section - New */}
+        <div className="mb-3 flex-shrink-0">
+          <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium text-white-text">Action Items ({actionItems.length})</h3>
+              <CheckSquare className="w-4 h-4 text-primary-teal" />
+            </div>
+            <div className="space-y-2 mb-2">
+              {actionItems.slice(0, 2).map((item) => (
+                <div key={item.id} className="bg-deep-blue/30 border border-light-gray-text/10 rounded-lg p-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    {item.isVip && (
+                      <div className="text-green-400">
+                        <Star className="w-3 h-3" fill="currentColor" />
+                      </div>
+                    )}
+                    {item.priorityPerson && (
+                      <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-xs px-1 py-0">
+                        {item.priorityPerson}
+                      </Badge>
+                    )}
+                    {item.triggerKeyword && (
+                      <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 text-xs px-1 py-0">
+                        {item.triggerKeyword}
+                      </Badge>
+                    )}
+                    {item.urgency && (
+                      <Badge variant="secondary" className={`text-xs px-1 py-0 ${
+                        item.urgency === 'critical' ? 'bg-red-500/20 text-red-400' :
+                        item.urgency === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                        item.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-gray-500/20 text-gray-400'
+                      }`}>
+                        {item.urgency}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-white-text font-medium truncate">{item.title}</p>
+                  <p className="text-xs text-light-gray-text">from {item.sender}</p>
+                </div>
+              ))}
+            </div>
+            <Button 
+              onClick={handleViewAllTasks}
+              size="sm"
+              variant="outline"
+              className="w-full border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
+            >
+              View All Tasks
+            </Button>
+          </div>
+        </div>
+
         {/* Upcoming Brief Section - More faded */}
         <div className="mb-3 flex-shrink-0">
           <div className="bg-deep-blue/20 border border-light-gray-text/10 rounded-xl p-3 opacity-40">
@@ -543,10 +645,10 @@ const HomeView = ({
           <ConnectedChannelsSection showAsHorizontal={true} />
         </div>
 
-        {/* Desktop Grid Layout */}
+        {/* Desktop Grid Layout - Adjusted column widths */}
         <div className="grid grid-cols-12 gap-6">
-          {/* Main content - 8 columns */}
-          <div className="col-span-8 space-y-6">
+          {/* Main content - 7 columns (reduced from 8) */}
+          <div className="col-span-7 space-y-6">
             {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -569,8 +671,8 @@ const HomeView = ({
             </div>
           </div>
           
-          {/* Sidebar - 4 columns */}
-          <div className="col-span-4 space-y-4">
+          {/* Sidebar - 5 columns (increased from 4) */}
+          <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
