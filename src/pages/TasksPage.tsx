@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { ArrowLeft, CheckSquare, Slack, Mail, ExternalLink, Check, Star, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -173,6 +172,19 @@ const TasksPage = () => {
     });
   }, [toast]);
 
+  const handleUpdatePriority = useCallback((itemId: string, newUrgency: 'critical' | 'high' | 'medium' | 'low') => {
+    setActionItems(prev => 
+      prev.map(item => 
+        item.id === itemId ? { ...item, urgency: newUrgency } : item
+      )
+    );
+    
+    toast({
+      title: "Priority Updated",
+      description: `Priority set to ${newUrgency}`
+    });
+  }, [toast]);
+
   const getSourceIcon = (source: 'slack' | 'gmail') => {
     return source === 'slack' ? (
       <Slack className="w-4 h-4 text-purple-500" />
@@ -181,23 +193,48 @@ const TasksPage = () => {
     );
   };
 
-  const getUrgencyBadge = (urgency?: string) => {
+  const getUrgencyBadge = (urgency?: string, itemId?: string) => {
     if (!urgency) return null;
     
     const urgencyConfig = {
-      'critical': { label: 'Critical', className: 'bg-red-500/20 text-red-400' },
-      'high': { label: 'High', className: 'bg-orange-500/20 text-orange-400' },
-      'medium': { label: 'Medium', className: 'bg-yellow-500/20 text-yellow-400' },
-      'low': { label: 'Low', className: 'bg-gray-500/20 text-gray-400' }
+      'critical': { label: 'Critical', className: 'bg-red-500/20 text-red-400 hover:bg-red-500/30' },
+      'high': { label: 'High', className: 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30' },
+      'medium': { label: 'Medium', className: 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' },
+      'low': { label: 'Low', className: 'bg-gray-500/20 text-gray-400 hover:bg-gray-500/30' }
     };
     
     const config = urgencyConfig[urgency as keyof typeof urgencyConfig];
     if (!config) return null;
     
+    const urgencyOptions = ['critical', 'high', 'medium', 'low'] as const;
+    
     return (
-      <Badge variant="secondary" className={`text-xs px-1.5 py-0 ${config.className}`}>
-        {config.label}
-      </Badge>
+      <div className="relative group">
+        <Badge 
+          variant="secondary" 
+          className={`text-xs px-1.5 py-0 cursor-pointer transition-colors ${config.className}`}
+        >
+          {config.label}
+        </Badge>
+        
+        {/* Dropdown menu on hover */}
+        <div className="absolute top-full left-0 mt-1 bg-surface-overlay border border-border-subtle rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 min-w-[100px]">
+          {urgencyOptions.map((option) => (
+            <button
+              key={option}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (itemId) handleUpdatePriority(itemId, option);
+              }}
+              className={`block w-full text-left px-3 py-2 text-xs capitalize hover:bg-white/10 first:rounded-t-lg last:rounded-b-lg ${
+                option === urgency ? 'bg-white/5 text-accent-primary' : 'text-text-secondary'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
     );
   };
 
@@ -228,7 +265,7 @@ const TasksPage = () => {
               placeholder="Search action items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 bg-transparent border-border-subtle"
             />
           </div>
           {filter && (
@@ -243,8 +280,9 @@ const TasksPage = () => {
           )}
           <Button
             onClick={handleMarkAllDone}
-            variant="outline"
+            variant="ghost"
             disabled={filteredItems.length === 0}
+            className="border border-border-subtle hover:bg-white/5"
           >
             Mark All Done
           </Button>
@@ -276,47 +314,49 @@ const TasksPage = () => {
                 </button>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
-                  {/* Tags and Title */}
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    {/* VIP Star - First Priority */}
+                <div className="flex-1 min-w-0 flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    {/* Title */}
+                    <p className="text-sm text-text-primary font-medium mb-1">
+                      {item.title}
+                    </p>
+                    
+                    {/* Metadata */}
+                    <p className="text-xs text-text-secondary">
+                      from {item.sender} • {new Date(item.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  {/* Tags - Right Side */}
+                  <div className="flex items-center gap-2 ml-4 flex-shrink-0">
+                    {/* VIP Star */}
                     {item.isVip && (
                       <div className="text-green-400">
                         <Star className="w-3 h-3" fill="currentColor" />
                       </div>
                     )}
                     
-                    {/* Person Tag - Second Priority */}
+                    {/* Person Tag */}
                     {item.priorityPerson && (
                       <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0">
                         {item.priorityPerson}
                       </Badge>
                     )}
                     
-                    {/* Trigger Tag - Third Priority */}
+                    {/* Trigger Tag */}
                     {item.triggerKeyword && (
                       <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 text-xs px-1.5 py-0">
                         {item.triggerKeyword}
                       </Badge>
                     )}
                     
-                    {/* Urgency Tag - Fourth Priority */}
-                    {getUrgencyBadge(item.urgency)}
+                    {/* Urgency Tag - Clickable */}
+                    {getUrgencyBadge(item.urgency, item.id)}
                     
-                    {/* Title */}
-                    <p className="text-sm text-text-primary font-medium flex-1 min-w-0">
-                      {item.title}
-                    </p>
+                    {/* External link icon */}
+                    <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  
-                  {/* Metadata */}
-                  <p className="text-xs text-text-secondary">
-                    from {item.sender} • {new Date(item.createdAt).toLocaleDateString()}
-                  </p>
                 </div>
-
-                {/* External link icon */}
-                <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
               </div>
             </div>
           ))}
