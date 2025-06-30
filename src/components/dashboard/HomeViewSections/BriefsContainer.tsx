@@ -52,7 +52,7 @@ const BriefsContainer = ({
   onUpdateSchedule,
   upcomingBrief
 }: BriefsContainerProps) => {
-  const [upcomingOpen, setUpcomingOpen] = useState(true);
+  const [upcomingOpen, setUpcomingOpen] = useState(false);
 
   // Check if user is new (no briefs and has upcoming brief)
   const isFirstTimeUser = briefs.length === 0 && totalBriefs === 0 && upcomingBrief;
