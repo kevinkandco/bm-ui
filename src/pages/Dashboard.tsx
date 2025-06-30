@@ -371,11 +371,12 @@ const Dashboard = () => {
       return;
     }
     setUserStatus("active");
+    getRecentBriefs();
     toast({
       title: "Welcome Back",
       description: "You're now back online and monitoring"
     });
-  }, [toast, call]);
+  }, [toast, call, getRecentBriefs]);
 
   return (
     <div className="min-h-screen flex flex-col">
