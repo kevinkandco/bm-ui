@@ -183,7 +183,7 @@ const CalendarSection = () => {
 
   return (
     <TooltipProvider>
-      <div className="space-y-4">
+      <div className="w-full space-y-4">
         {/* Next Meeting Card - Full Detail */}
         {nextMeeting && (
           <Card 
@@ -345,14 +345,11 @@ const CalendarSection = () => {
               <div className="space-y-3">
                 <h3 className="text-sm font-medium text-text-primary mb-3">Schedule</h3>
                 <div className="relative">
-                  {/* Timeline line */}
-                  <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-red-500"></div>
-                  
-                  <div className="space-y-3 pl-6">
+                  <div className="space-y-3">
                     {otherMeetings.map((meeting) => (
                       <div 
                         key={meeting.id} 
-                        className="flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2 -ml-2"
+                        className="flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2"
                         onClick={() => openMeetingDetails(meeting)}
                       >
                         <div className="flex items-center gap-4">
