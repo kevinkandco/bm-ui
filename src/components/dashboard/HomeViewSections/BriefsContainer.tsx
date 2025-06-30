@@ -116,7 +116,7 @@ const BriefsContainer = ({
             </div>
           )}
 
-          {/* Past Briefs Section - Now with View all button */}
+          {/* Past Briefs Section - Just header with View all button */}
           <div className="space-y-2">
             <div className="flex items-center justify-between w-full">
               <h3 className="text-sm font-medium text-white-text/80 px-1">Past briefs</h3>
@@ -131,7 +131,7 @@ const BriefsContainer = ({
               </Button>
             </div>
             
-            {isFirstTimeUser ? (
+            {isFirstTimeUser && (
               // Empty state for first-time users
               <div className="text-center py-8 px-4">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-overlay/50 flex items-center justify-center">
@@ -153,31 +153,6 @@ const BriefsContainer = ({
                     Get briefed now
                   </Button>
                 )}
-              </div>
-            ) : pastBriefs.length > 0 ? (
-              // Show past briefs (limited to 3 most recent)
-              <div className="space-y-2 pt-2">
-                {pastBriefs.slice(0, 3).map((brief, index) => (
-                  <BriefCard
-                    key={brief.id}
-                    brief={brief}
-                    onViewBrief={onViewBrief}
-                    onViewTranscript={onViewTranscript}
-                    onPlayBrief={onPlayBrief}
-                    playingBrief={playingBrief}
-                    isLast={index === pastBriefs.slice(0, 3).length - 1}
-                  />
-                ))}
-              </div>
-            ) : (
-              // Empty state for returning users with no past briefs
-              <div className="text-center py-6 px-4">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-surface-overlay/30 flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-text-secondary" />
-                </div>
-                <p className="text-xs text-text-secondary">
-                  No past briefs yet
-                </p>
               </div>
             )}
           </div>
