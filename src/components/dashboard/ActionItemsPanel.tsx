@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import ActionItemModal from './ActionItemModal';
 
 interface ActionItem {
   id: string;
@@ -23,11 +23,14 @@ interface ActionItem {
 
 interface ActionItemsPanelProps {
   className?: string;
+  onViewAll: () => void;
 }
 
-const ActionItemsPanel = ({ className }: ActionItemsPanelProps) => {
+const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
   const { toast } = useToast();
   const [filter, setFilter] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Sample action items data - in a real app this would come from your state/API
   const [actionItems, setActionItems] = useState<ActionItem[]>([
@@ -117,17 +120,14 @@ const ActionItemsPanel = ({ className }: ActionItemsPanelProps) => {
   const openCount = openItems.length;
 
   const handleItemClick = useCallback((item: ActionItem) => {
-    // Open in new tab
-    window.open(item.threadUrl, '_blank');
-    
-    toast({
-      title: "Opening Thread",
-      description: `Opening ${item.source === 'slack' ? 'Slack' : 'Gmail'} thread in new tab`
-    });
-  }, [toast]);
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  }, []);
 
-  const handleMarkDone = useCallback((itemId: string, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent row click
+  const handleMarkDone = useCallback((itemId: string, event?: React.MouseEvent) => {
+    if (event) {
+      event.stopPropagation(); // Prevent row click
+    }
     
     const item = actionItems.find(i => i.id === itemId);
     
@@ -158,14 +158,6 @@ const ActionItemsPanel = ({ className }: ActionItemsPanelProps) => {
       ),
     });
   }, [actionItems, toast]);
-
-  const handleViewAll = useCallback(() => {
-    // In a real app, this would navigate to the full action items view
-    toast({
-      title: "Action Inbox",
-      description: "Opening full action items view..."
-    });
-  }, [toast]);
 
   const handleMarkAllDone = useCallback(() => {
     setActionItems(prev => 
@@ -231,121 +223,134 @@ const ActionItemsPanel = ({ className }: ActionItemsPanelProps) => {
   }
 
   return (
-    <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}>
-      {/* Count badge in top corner */}
-      {openCount > 0 && (
-        <div className="absolute top-3 right-3 z-10">
-          <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary text-xs px-2 py-0.5">
-            {openCount}
-          </Badge>
-        </div>
-      )}
+    <>
+      <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}>
+        {/* Count badge in top corner */}
+        {openCount > 0 && (
+          <div className="absolute top-3 right-3 z-10">
+            <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary text-xs px-2 py-0.5">
+              {openCount}
+            </Badge>
+          </div>
+        )}
 
-      {/* Filter indicator */}
-      {filter && (
-        <div className="p-3 pb-0">
-          <div className="flex items-center gap-2 text-xs text-text-secondary">
-            <span>Filtered by: {filter}</span>
-            <button 
-              onClick={handleClearFilter}
-              className="text-accent-primary hover:text-accent-primary/80"
+        {/* Filter indicator */}
+        {filter && (
+          <div className="p-3 pb-0">
+            <div className="flex items-center gap-2 text-xs text-text-secondary">
+              <span>Filtered by: {filter}</span>
+              <button 
+                onClick={handleClearFilter}
+                className="text-accent-primary hover:text-accent-primary/80"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Action Items List */}
+        <div className="p-4">
+          <ScrollArea className="max-h-[200px] -mx-1 px-1">
+            <div className="space-y-3">
+              {openItems.slice(0, 5).map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => handleItemClick(item)}
+                  className="group cursor-pointer"
+                >
+                  <div className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors">
+                    {/* Source Icon */}
+                    <div className="flex-shrink-0 mt-0.5">
+                      {getSourceIcon(item.source)}
+                    </div>
+
+                    {/* Checkbox */}
+                    <button
+                      onClick={(e) => handleMarkDone(item.id, e)}
+                      className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors"
+                    >
+                      <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      {/* Tags and Title */}
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        {/* VIP Star */}
+                        {item.isVip && (
+                          <button
+                            onClick={(e) => handleTagClick('vip', e)}
+                            className={`text-green-400 hover:text-green-300 transition-colors ${filter === 'vip' ? 'bg-green-500/20 rounded px-1' : ''}`}
+                          >
+                            <Star className="w-3 h-3" fill="currentColor" />
+                          </button>
+                        )}
+                        
+                        {/* Urgency Badge */}
+                        {getUrgencyBadge(item.urgency)}
+                        
+                        {/* New Badge */}
+                        {item.isNew && (
+                          <Badge 
+                            variant="secondary" 
+                            className={`bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'new' ? 'bg-blue-500/30' : ''}`}
+                            onClick={(e) => handleTagClick('new', e)}
+                          >
+                            new
+                          </Badge>
+                        )}
+                        
+                        {/* Title */}
+                        <p className="text-sm text-text-primary truncate font-medium flex-1 min-w-0">
+                          {item.title}
+                        </p>
+                      </div>
+                      
+                      {/* Metadata */}
+                      <p className="text-xs text-text-secondary truncate">
+                        from {item.sender}
+                      </p>
+                    </div>
+
+                    {/* External link icon */}
+                    <ExternalLink className="w-3 h-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-border-subtle">
+            <button
+              onClick={onViewAll}
+              className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
             >
-              <X className="w-3 h-3" />
+              View all
+            </button>
+            <span className="text-text-secondary text-sm">·</span>
+            <button
+              onClick={handleMarkAllDone}
+              className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
+            >
+              Mark all done
             </button>
           </div>
         </div>
-      )}
-
-      {/* Action Items List */}
-      <div className="p-4">
-        <ScrollArea className="max-h-[200px] -mx-1 px-1">
-          <div className="space-y-3">
-            {openItems.slice(0, 5).map((item) => (
-              <div
-                key={item.id}
-                onClick={() => handleItemClick(item)}
-                className="group cursor-pointer"
-              >
-                <div className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors">
-                  {/* Source Icon */}
-                  <div className="flex-shrink-0 mt-0.5">
-                    {getSourceIcon(item.source)}
-                  </div>
-
-                  {/* Checkbox */}
-                  <button
-                    onClick={(e) => handleMarkDone(item.id, e)}
-                    className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors"
-                  >
-                    <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    {/* Tags and Title */}
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      {/* VIP Star */}
-                      {item.isVip && (
-                        <button
-                          onClick={(e) => handleTagClick('vip', e)}
-                          className={`text-green-400 hover:text-green-300 transition-colors ${filter === 'vip' ? 'bg-green-500/20 rounded px-1' : ''}`}
-                        >
-                          <Star className="w-3 h-3" fill="currentColor" />
-                        </button>
-                      )}
-                      
-                      {/* Urgency Badge */}
-                      {getUrgencyBadge(item.urgency)}
-                      
-                      {/* New Badge */}
-                      {item.isNew && (
-                        <Badge 
-                          variant="secondary" 
-                          className={`bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'new' ? 'bg-blue-500/30' : ''}`}
-                          onClick={(e) => handleTagClick('new', e)}
-                        >
-                          new
-                        </Badge>
-                      )}
-                      
-                      {/* Title */}
-                      <p className="text-sm text-text-primary truncate font-medium flex-1 min-w-0">
-                        {item.title}
-                      </p>
-                    </div>
-                    
-                    {/* Metadata */}
-                    <p className="text-xs text-text-secondary truncate">
-                      from {item.sender}
-                    </p>
-                  </div>
-
-                  {/* External link icon */}
-                  <ExternalLink className="w-3 h-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border-subtle">
-          <button
-            onClick={handleViewAll}
-            className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
-          >
-            View all
-          </button>
-          <span className="text-text-secondary text-sm">·</span>
-          <button
-            onClick={handleMarkAllDone}
-            className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
-          >
-            Mark all done
-          </button>
-        </div>
       </div>
-    </div>
+
+      {/* Action Item Modal */}
+      <ActionItemModal
+        actionItem={selectedItem}
+        open={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedItem(null);
+        }}
+        onMarkDone={handleMarkDone}
+      />
+    </>
   );
 };
 
