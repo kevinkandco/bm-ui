@@ -564,7 +564,7 @@ const HomeView = ({
         {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary mb-2">
+            <h1 className="font-bold text-text-primary mb-2 text-2xl">
               Good morning, Alex
             </h1>
             
