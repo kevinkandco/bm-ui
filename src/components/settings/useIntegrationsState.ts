@@ -4,6 +4,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import { REDIRECT_URL } from "@/config";
 
+const AllowedProviders = [
+  "slack",
+  "google",
+  'asana'
+]
+
 export const useIntegrationsState = () => {
   const { toast } = useToast();
   const { call } = useApi();
@@ -104,16 +110,13 @@ export const useIntegrationsState = () => {
         google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings`,
         calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
         outlook: `${REDIRECT_URL}/outlook/auth`,
+        asana: `${REDIRECT_URL}/asana/auth?redirectURL=dashboard/settings`,
       };
       window.open(urls[provider], "_self");
     };
 
-    if (provider === "slack") {
-      if (provider === "slack") {
-        openAuthUrl("slack");
-      }
-    } else if (provider === "google") {
-        openAuthUrl("google");
+    if (AllowedProviders.includes(provider)) {
+        openAuthUrl(provider);
     } else {
       const newAccount: ConnectedAccount = {
       id: Math.floor(Math.random() * 1000),

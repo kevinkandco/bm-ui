@@ -24,7 +24,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
     { 
       name: "Asana", 
       provider: "asana", 
-      available: false, 
+      available: true, 
       icon: CheckSquare,
       description: "Push tasks and project updates to your Asana workspace",
       outputs: ["Tasks", "Project updates", "Team assignments"],
