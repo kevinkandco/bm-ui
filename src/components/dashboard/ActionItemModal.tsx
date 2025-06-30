@@ -12,7 +12,9 @@ interface ActionItem {
   source: 'slack' | 'gmail';
   sender: string;
   isVip: boolean;
-  urgency?: 'overdue' | 'today' | 'tomorrow' | 'soon';
+  priorityPerson?: string; // Name or initials of flagged person
+  triggerKeyword?: string; // Matched trigger keyword
+  urgency?: 'critical' | 'high' | 'medium' | 'low';
   isNew: boolean;
   createdAt: string;
   threadUrl: string;
@@ -57,10 +59,10 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
     if (!urgency) return null;
     
     const urgencyConfig = {
-      'overdue': { label: 'Overdue', className: 'bg-red-500/20 text-red-400' },
-      'today': { label: 'Today', className: 'bg-orange-500/20 text-orange-400' },
-      'tomorrow': { label: 'Tomorrow', className: 'bg-yellow-500/20 text-yellow-400' },
-      'soon': { label: 'Soon', className: 'bg-gray-500/20 text-gray-400' }
+      'critical': { label: 'Critical', className: 'bg-red-500/20 text-red-400' },
+      'high': { label: 'High', className: 'bg-orange-500/20 text-orange-400' },
+      'medium': { label: 'Medium', className: 'bg-yellow-500/20 text-yellow-400' },
+      'low': { label: 'Low', className: 'bg-gray-500/20 text-gray-400' }
     };
     
     const config = urgencyConfig[urgency as keyof typeof urgencyConfig];
@@ -90,6 +92,18 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
               <div className="text-green-400">
                 <Star className="w-4 h-4" fill="currentColor" />
               </div>
+            )}
+            
+            {actionItem.priorityPerson && (
+              <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-sm px-2 py-1">
+                {actionItem.priorityPerson}
+              </Badge>
+            )}
+            
+            {actionItem.triggerKeyword && (
+              <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 text-sm px-2 py-1">
+                {actionItem.triggerKeyword}
+              </Badge>
             )}
             
             {getUrgencyBadge(actionItem.urgency)}
