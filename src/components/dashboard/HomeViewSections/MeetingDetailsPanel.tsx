@@ -17,7 +17,7 @@ interface MeetingDetailsPanelProps {
       avatar?: string;
     }>;
     briefing: string;
-    context: {
+    context?: {
       relevantEmails?: string[];
       weeklyCheckIns?: string[];
       interests?: string[];
@@ -99,87 +99,93 @@ const MeetingDetailsPanel = ({ meeting, onClose }: MeetingDetailsPanelProps) => 
         </div>
 
         {/* Relevant Context */}
-        <div>
-          <h3 className="text-sm font-medium text-text-primary mb-3">Relevant Context:</h3>
-          <div className="space-y-3">
-            {meeting.context.relevantEmails && (
-              <div>
-                <p className="text-sm font-medium text-text-primary mb-1">Parenting Schedule Emails:</p>
-                <p className="text-xs text-text-secondary">
-                  Kevin Kirkpatrick has been actively using an AI assistant for daily parenting and nanny scheduling. 
-                  This suggests familiarity with AI-driven tools and a focus on practical, user-friendly solutions.
-                </p>
-              </div>
-            )}
-            
-            {meeting.context.interests && (
-              <div>
-                <p className="text-sm font-medium text-text-primary mb-1">Tennis Newsletters:</p>
-                <p className="text-xs text-text-secondary">
-                  Kevin also receives curated tennis updates, indicating an interest in personalized, 
-                  well-structured content delivery. This could be relevant if the demo involves content curation or user engagement.
-                </p>
-              </div>
-            )}
+        {meeting.context && (
+          <div>
+            <h3 className="text-sm font-medium text-text-primary mb-3">Relevant Context:</h3>
+            <div className="space-y-3">
+              {meeting.context.relevantEmails && (
+                <div>
+                  <p className="text-sm font-medium text-text-primary mb-1">Parenting Schedule Emails:</p>
+                  <p className="text-xs text-text-secondary">
+                    Kevin Kirkpatrick has been actively using an AI assistant for daily parenting and nanny scheduling. 
+                    This suggests familiarity with AI-driven tools and a focus on practical, user-friendly solutions.
+                  </p>
+                </div>
+              )}
+              
+              {meeting.context.interests && (
+                <div>
+                  <p className="text-sm font-medium text-text-primary mb-1">Tennis Newsletters:</p>
+                  <p className="text-xs text-text-secondary">
+                    Kevin also receives curated tennis updates, indicating an interest in personalized, 
+                    well-structured content delivery. This could be relevant if the demo involves content curation or user engagement.
+                  </p>
+                </div>
+              )}
 
-            {meeting.context.weeklyCheckIns && (
-              <div>
-                <p className="text-sm font-medium text-text-primary mb-1">Weekly Check-Ins:</p>
-                <p className="text-xs text-text-secondary">
-                  Kevin has participated in numerous recurring "Weekly Check-In" meetings with sb.suico@gmail.com. 
-                  This demonstrates a routine of structured updates and collaboration.
-                </p>
-              </div>
-            )}
+              {meeting.context.weeklyCheckIns && (
+                <div>
+                  <p className="text-sm font-medium text-text-primary mb-1">Weekly Check-Ins:</p>
+                  <p className="text-xs text-text-secondary">
+                    Kevin has participated in numerous recurring "Weekly Check-In" meetings with sb.suico@gmail.com. 
+                    This demonstrates a routine of structured updates and collaboration.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Preparation Points */}
-        <div>
-          <h3 className="text-sm font-medium text-text-primary mb-3">Preparation Points:</h3>
-          <div className="space-y-2">
-            <div className="flex items-start gap-2">
-              <span className="text-sm font-medium text-accent-primary">1.</span>
-              <p className="text-sm text-text-secondary">
-                <span className="font-medium">Focus on Practicality:</span> Highlight how the demoed tool or feature can simplify 
-                tasks or improve efficiency, similar to the AI assistant's scheduling capabilities.
-              </p>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-sm font-medium text-accent-primary">2.</span>
-              <p className="text-sm text-text-secondary">
-                <span className="font-medium">Personalization:</span> If applicable, emphasize customization options or how the tool 
-                adapts to user preferences, drawing parallels to the curated tennis newsletters.
-              </p>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-sm font-medium text-accent-primary">3.</span>
-              <p className="text-sm text-text-secondary">
-                <span className="font-medium">Clarity and Structure:</span> Ensure the demo is well-organized, reflecting the 
-                structured approach Kevin is accustomed to in his weekly check-ins.
-              </p>
+        {meeting.preparationPoints && (
+          <div>
+            <h3 className="text-sm font-medium text-text-primary mb-3">Preparation Points:</h3>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="text-sm font-medium text-accent-primary">1.</span>
+                <p className="text-sm text-text-secondary">
+                  <span className="font-medium">Focus on Practicality:</span> Highlight how the demoed tool or feature can simplify 
+                  tasks or improve efficiency, similar to the AI assistant's scheduling capabilities.
+                </p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-sm font-medium text-accent-primary">2.</span>
+                <p className="text-sm text-text-secondary">
+                  <span className="font-medium">Personalization:</span> If applicable, emphasize customization options or how the tool 
+                  adapts to user preferences, drawing parallels to the curated tennis newsletters.
+                </p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-sm font-medium text-accent-primary">3.</span>
+                <p className="text-sm text-text-secondary">
+                  <span className="font-medium">Clarity and Structure:</span> Ensure the demo is well-organized, reflecting the 
+                  structured approach Kevin is accustomed to in his weekly check-ins.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Suggested Agenda */}
-        <div>
-          <h3 className="text-sm font-medium text-text-primary mb-3">Suggested Agenda:</h3>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-1 bg-accent-primary rounded-full"></div>
-              <p className="text-sm text-text-secondary">
-                <span className="font-medium">Introduction:</span> Brief overview of the tool or feature being demonstrated.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-1 bg-accent-primary rounded-full"></div>
-              <p className="text-sm text-text-secondary">
-                <span className="font-medium">Key Features:</span> Highlight functionalities that align with Kevin's known interests.
-              </p>
+        {meeting.suggestedAgenda && (
+          <div>
+            <h3 className="text-sm font-medium text-text-primary mb-3">Suggested Agenda:</h3>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-1 bg-accent-primary rounded-full"></div>
+                <p className="text-sm text-text-secondary">
+                  <span className="font-medium">Introduction:</span> Brief overview of the tool or feature being demonstrated.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-1 bg-accent-primary rounded-full"></div>
+                <p className="text-sm text-text-secondary">
+                  <span className="font-medium">Key Features:</span> Highlight functionalities that align with Kevin's known interests.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
