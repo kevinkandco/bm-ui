@@ -27,9 +27,8 @@ interface ActionItemsPanelProps {
   onViewAll: () => void;
 }
 const ActionItemsPanel = ({
-  className,
-  onViewAll
-}: ActionItemsPanelProps) => {
+  className
+}: Omit<ActionItemsPanelProps, 'onViewAll'>) => {
   const {
     toast
   } = useToast();
@@ -217,7 +216,7 @@ const ActionItemsPanel = ({
         onMouseEnter={() => setIsSectionHovered(true)}
         onMouseLeave={() => setIsSectionHovered(false)}
       >
-        {/* Top section with filter indicator and action buttons */}
+        {/* Top section with filter indicator and mark all done button */}
         <div className="p-4 pb-0">
           <div className="flex items-center justify-between">
             {/* Filter indicator */}
@@ -232,9 +231,9 @@ const ActionItemsPanel = ({
               )}
             </div>
             
-            {/* Action buttons - top right */}
+            {/* Mark all done button - top right, shows on hover */}
             <div 
-              className="flex items-center gap-3"
+              className="flex items-center"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
@@ -244,15 +243,6 @@ const ActionItemsPanel = ({
                   className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
                 >
                   Mark all done
-                </button>
-              )}
-              {isSectionHovered && (
-                <button 
-                  onClick={onViewAll} 
-                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors flex items-center gap-1"
-                >
-                  View all
-                  <span className="text-xs">›</span>
                 </button>
               )}
             </div>

@@ -701,8 +701,15 @@ const HomeView = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-text-primary">Action Items (4)</h2>
+                <Button 
+                  variant="ghost" 
+                  onClick={handleViewAllTasks}
+                  className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
+                >
+                  View all
+                </Button>
               </div>
-              <ActionItemsPanel onViewAll={handleViewAllTasks} />
+              <ActionItemsPanel />
             </div>
             
             {/* Priorities Section with title outside */}
