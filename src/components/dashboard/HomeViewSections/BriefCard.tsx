@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useFeedbackTracking } from "../useFeedbackTracking";
 import ActionItemFeedback from "../ActionItemFeedback";
+import ActionItemControls from "../ActionItemControls";
 
 interface BriefCardProps {
   brief: {
@@ -218,6 +219,16 @@ const BriefCard = ({
 
   const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
     await handleActionRelevance(brief.id.toString(), itemId, relevant, feedback);
+  };
+
+  const handleActionItemThumbsUp = (itemId: string) => {
+    console.log(`Thumbs up for action item: ${itemId}`);
+    // Add your thumbs up logic here
+  };
+
+  const handleActionItemSnooze = (itemId: string) => {
+    console.log(`Snoozed action item: ${itemId}`);
+    // Add your snooze logic here  
   };
 
   // Mock action items for demonstration
@@ -491,7 +502,7 @@ const BriefCard = ({
                 <div className="space-y-2">
                   {mockActionItems.map((item) => (
                     <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-1">
                         <div className="flex items-center gap-2">
                           {item.source === 'gmail' ? (
                             <Mail className="h-3 w-3 text-red-400" />
@@ -508,10 +519,19 @@ const BriefCard = ({
                         </div>
                         <span className="text-sm text-text-primary">{item.title}</span>
                       </div>
-                      <ActionItemFeedback 
-                        itemId={item.id} 
-                        onRelevanceFeedback={handleActionItemFeedback}
-                      />
+                      
+                      <div className="flex items-center gap-2">
+                        <ActionItemControls
+                          itemId={item.id}
+                          onThumbsUp={handleActionItemThumbsUp}
+                          onSnooze={handleActionItemSnooze}
+                          size="sm"
+                        />
+                        <ActionItemFeedback 
+                          itemId={item.id} 
+                          onRelevanceFeedback={handleActionItemFeedback}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -42,6 +42,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SummaryFeedback from "@/components/dashboard/SummaryFeedback";
 import PriorityReasoningModal from "@/components/dashboard/PriorityReasoningModal";
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
+import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
 
 const BriefDetail = () => {
@@ -301,6 +302,20 @@ const BriefDetail = () => {
         : relevant 
           ? "Thank you for confirming this action item is relevant" 
           : "AI will learn from this feedback to improve future briefs"
+    });
+  };
+
+  const handleActionItemThumbsUp = (itemId: string) => {
+    toast({
+      title: "Action Item Marked Helpful",
+      description: "Thank you for the feedback!"
+    });
+  };
+
+  const handleActionItemSnooze = (itemId: string) => {
+    toast({
+      title: "Action Item Snoozed",
+      description: "This item has been snoozed forever"
     });
   };
 
@@ -566,7 +581,13 @@ const BriefDetail = () => {
                                 </div>
                               )}
                             </div>
-                            <div className="ml-2">
+                            <div className="flex items-center gap-2">
+                              <ActionItemControls
+                                itemId={item.messageId}
+                                onThumbsUp={handleActionItemThumbsUp}
+                                onSnooze={handleActionItemSnooze}
+                                size="sm"
+                              />
                               <ActionItemFeedback 
                                 itemId={item.messageId} 
                                 onRelevanceFeedback={handleActionItemFeedback}
