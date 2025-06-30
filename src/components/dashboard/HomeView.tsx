@@ -567,7 +567,7 @@ const HomeView = ({
             <h1 className="text-3xl font-bold text-text-primary mb-2">
               Good morning, Alex
             </h1>
-            <p className="text-text-secondary font-light text-gray-50">Let's get you caught up.</p>
+            
           </div>
           
           {/* Updated CTAs on the right with Profile Dropdown */}
