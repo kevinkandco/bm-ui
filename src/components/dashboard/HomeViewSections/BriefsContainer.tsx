@@ -1,9 +1,8 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
-import { ChevronDown, Clock, Zap, ArrowRight } from "lucide-react";
+import { ChevronDown, Clock, Zap } from "lucide-react";
 import BriefCard from "./BriefCard";
 import UpcomingBriefCard from "./UpcomingBriefCard";
 import { Button } from "@/components/ui/button";
@@ -116,19 +115,10 @@ const BriefsContainer = ({
             </div>
           )}
 
-          {/* Past Briefs Section - Just header with View all button */}
+          {/* Past Briefs Section - Just header text */}
           <div className="space-y-2">
             <div className="flex items-center justify-between w-full">
               <h3 className="text-sm font-medium text-white-text/80 px-1">Past briefs</h3>
-              <Button
-                onClick={onViewAllBriefs}
-                variant="ghost"
-                size="sm"
-                className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
-              >
-                View all
-                <ArrowRight className="w-3 h-3 ml-1" />
-              </Button>
             </div>
             
             {isFirstTimeUser && (
