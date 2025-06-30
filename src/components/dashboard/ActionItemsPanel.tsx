@@ -35,6 +35,7 @@ const ActionItemsPanel = ({
   const [filter, setFilter] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Sample action items data with new tagging structure
   const [actionItems, setActionItems] = useState<ActionItem[]>([{
@@ -276,15 +277,29 @@ const ActionItemsPanel = ({
             </div>
           </ScrollArea>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-border-subtle">
-            <button onClick={onViewAll} className="text-sm text-text-secondary hover:text-accent-primary transition-colors">
-              View all
-            </button>
-            <span className="text-text-secondary text-sm">·</span>
-            <button onClick={handleMarkAllDone} className="text-sm text-text-secondary hover:text-accent-primary transition-colors">
-              Mark all done
-            </button>
+          {/* Updated Footer - View all on right with hover for Mark all done */}
+          <div 
+            className="flex items-center justify-end mt-3 pt-3 border-t border-border-subtle"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <div className="flex items-center gap-3">
+              {isHovered && (
+                <button 
+                  onClick={handleMarkAllDone} 
+                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
+                >
+                  Mark all done
+                </button>
+              )}
+              <button 
+                onClick={onViewAll} 
+                className="text-sm text-text-secondary hover:text-accent-primary transition-colors flex items-center gap-1"
+              >
+                View all
+                <span className="text-xs">›</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
