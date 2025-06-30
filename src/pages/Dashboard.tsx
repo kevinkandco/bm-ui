@@ -11,6 +11,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
+import AppSidebar from "@/components/dashboard/AppSidebar";
 
 interface FocusConfig {
   duration: number;
@@ -36,6 +37,7 @@ const Dashboard = () => {
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
+  const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
 
   const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -130,68 +132,100 @@ const Dashboard = () => {
     console.log("Generating new brief...");
   }, []);
 
+  const handleExitStatus = useCallback(() => {
+    setUserStatus("active");
+    toast({
+      title: "Status Reset",
+      description: "You're back to active monitoring"
+    });
+  }, [toast]);
+
+  const handleTeamInterest = useCallback(() => {
+    setWaitlistStatus('added');
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Focus Mode Timer Header */}
-      {userStatus === "focus" && (
-        <StatusTimer 
-          status={userStatus}
-          onExitFocusMode={handleExitFocusMode}
-        />
-      )}
-
-      {/* Away/Offline Timer Header */}
-      {userStatus === "away" && (
-        <StatusTimer 
-          status={userStatus}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
-
-      {/* Vacation/Out of Office Timer Header */}
-      {userStatus === "vacation" && (
-        <StatusTimer 
-          status={userStatus}
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <AppSidebar
+        currentStatus={userStatus}
+        onStatusChange={(status) => {
+          if (status === 'focus') {
+            handleStartFocusMode();
+          } else if (status === 'offline') {
+            handleSignOffForDay();
+          }
+        }}
+        onExitStatus={handleExitStatus}
+        onStartFocusMode={handleStartFocusMode}
+        onSignOffForDay={handleSignOffForDay}
+        onTeamInterest={handleTeamInterest}
+        waitlistStatus={waitlistStatus}
+      />
 
       {/* Main Content */}
-      <div className="flex-1">
-        {currentView === "home" && (
-          <HomeView
-            onOpenBrief={openBriefDetails}
-            onViewTranscript={openTranscript}
-            onToggleFocusMode={handleToggleFocusMode}
-            onToggleCatchMeUp={handleToggleCatchMeUp}
-            onOpenBriefModal={openBriefModal}
-            onStartFocusMode={handleStartFocusMode}
-            onSignOffForDay={handleSignOffForDay}
+      <div className="flex-1 ml-60 min-h-screen flex flex-col border border-border-subtle/20 shadow-sm bg-background/50">
+        {/* Focus Mode Timer Header */}
+        {userStatus === "focus" && (
+          <StatusTimer 
+            status={userStatus}
+            onExitFocusMode={handleExitFocusMode}
           />
         )}
-        {currentView === "listening" && <ListeningScreen />}
-      </div>
 
-      {/* Modals */}
-      <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
-      <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} />
-      <EndFocusModal 
-        open={showEndFocusModal} 
-        onClose={handleConfirmExitFocus}
-        title="Creating Your Brief"
-        description="We're preparing a summary of all updates during your focus session"
-      />
-      <BriefMeModal
-        open={showBriefMeModal}
-        onClose={() => setShowBriefMeModal(false)}
-        onGenerateBrief={handleGenerateBrief}
-      />
-      <FocusModeConfig
-        isOpen={showFocusConfig}
-        onClose={() => setShowFocusConfig(false)}
-        onStartFocus={handleStartFocusModeWithConfig}
-      />
+        {/* Away/Offline Timer Header */}
+        {userStatus === "away" && (
+          <StatusTimer 
+            status={userStatus}
+            onSignBackOn={handleSignBackOn}
+          />
+        )}
+
+        {/* Vacation/Out of Office Timer Header */}
+        {userStatus === "vacation" && (
+          <StatusTimer 
+            status={userStatus}
+            onToggleCatchMeUp={handleToggleCatchMeUp}
+            onSignBackOn={handleSignBackOn}
+          />
+        )}
+
+        {/* Main Content */}
+        <div className="flex-1">
+          {currentView === "home" && (
+            <HomeView
+              onOpenBrief={openBriefDetails}
+              onViewTranscript={openTranscript}
+              onToggleFocusMode={handleToggleFocusMode}
+              onToggleCatchMeUp={handleToggleCatchMeUp}
+              onOpenBriefModal={openBriefModal}
+              onStartFocusMode={handleStartFocusMode}
+              onSignOffForDay={handleSignOffForDay}
+            />
+          )}
+          {currentView === "listening" && <ListeningScreen />}
+        </div>
+
+        {/* Modals */}
+        <NewBriefModal open={isBriefModalOpen} onClose={closeBriefModal} />
+        <TranscriptView briefId={selectedBriefId} open={isTranscriptOpen} onClose={closeTranscript} />
+        <EndFocusModal 
+          open={showEndFocusModal} 
+          onClose={handleConfirmExitFocus}
+          title="Creating Your Brief"
+          description="We're preparing a summary of all updates during your focus session"
+        />
+        <BriefMeModal
+          open={showBriefMeModal}
+          onClose={() => setShowBriefMeModal(false)}
+          onGenerateBrief={handleGenerateBrief}
+        />
+        <FocusModeConfig
+          isOpen={showFocusConfig}
+          onClose={() => setShowFocusConfig(false)}
+          onStartFocus={handleStartFocusModeWithConfig}
+        />
+      </div>
     </div>
   );
 };

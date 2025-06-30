@@ -13,30 +13,18 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
   className?: string;
   currentPage?: string;
-  sidebarOpen: boolean;
-  onToggleSidebar: () => void;
 }
 
 const DashboardLayout = ({
   children,
   className,
-  currentPage = "home",
-  sidebarOpen,
-  onToggleSidebar
+  currentPage = "home"
 }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { theme } = useTheme();
   const isMobile = useIsMobile();
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   
-  // Close mobile nav when changing routes
-  useEffect(() => {
-    if (isMobile) {
-      setMobileNavOpen(false);
-    }
-  }, [currentPage, isMobile]);
-
   // Memoize main content classes
   const mainContentClasses = useMemo(() => cn(
     "flex-1 overflow-auto",
