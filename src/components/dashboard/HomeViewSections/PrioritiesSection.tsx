@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Hash, AlertTriangle, ChevronDown, Slack, Mail, GripVertical, User, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -253,8 +254,10 @@ const PrioritiesSection = () => {
           >
             <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
               <div className="flex items-center gap-2">
-                <GripVertical className="h-3 w-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
-                {getSectionIcon(sectionId)}
+                <div className="flex items-center gap-2">
+                  {getSectionIcon(sectionId)}
+                  <GripVertical className="h-3 w-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
                 <span className="text-xs text-text-secondary font-medium">{title}</span>
                 <span className="text-xs text-text-secondary bg-surface-raised/30 px-1.5 py-0.5 rounded">{count}</span>
               </div>
