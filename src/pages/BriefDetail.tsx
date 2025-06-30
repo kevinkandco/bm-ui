@@ -312,7 +312,7 @@ const BriefDetail = () => {
     });
   };
 
-  const handleActionItemSnooze = (itemId: string) => {
+  const handleActionItemSnooze = (itemId: string, reason: any, feedback?: string) => {
     toast({
       title: "Action Item Snoozed",
       description: "This item has been snoozed forever"
@@ -584,6 +584,8 @@ const BriefDetail = () => {
                             <div className="flex items-center gap-2">
                               <ActionItemControls
                                 itemId={item.messageId}
+                                itemTitle={item.title}
+                                sender={item.sender}
                                 onThumbsUp={handleActionItemThumbsUp}
                                 onSnooze={handleActionItemSnooze}
                                 size="sm"
