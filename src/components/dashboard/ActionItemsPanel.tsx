@@ -222,20 +222,18 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
   // Empty state - collapsed single line
   if (openCount === 0) {
     return (
-      <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4", className)}>
-        <div className="flex items-center justify-center text-text-secondary">
-          <span className="text-sm">All clear ✅</span>
-        </div>
+      <div className={cn("text-center text-text-secondary", className)}>
+        <span className="text-sm">All clear ✅</span>
       </div>
     );
   }
 
   return (
     <>
-      <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}>
+      <div className={cn("", className)}>
         {/* Filter indicator */}
         {filter && (
-          <div className="p-3 pb-0">
+          <div className="mb-3">
             <div className="flex items-center gap-2 text-xs text-text-secondary">
               <span>Filtered by: {filter}</span>
               <button 
@@ -248,105 +246,101 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
           </div>
         )}
 
-        {/* Action Items List */}
-        <div className="p-4">
-          <ScrollArea className="max-h-[200px] -mx-1 px-1">
-            <div className="space-y-3">
-              {openItems.slice(0, 5).map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleItemClick(item)}
-                  className="group cursor-pointer"
+        {/* Action Items List - Minimal Style */}
+        <div className="space-y-3">
+          {openItems.slice(0, 5).map((item) => (
+            <div
+              key={item.id}
+              onClick={() => handleItemClick(item)}
+              className="group cursor-pointer py-2 border-b border-border-subtle/20 last:border-b-0 hover:bg-white/5 transition-colors"
+            >
+              <div className="flex items-start gap-3">
+                {/* Source Icon */}
+                <div className="flex-shrink-0 mt-0.5">
+                  {getSourceIcon(item.source)}
+                </div>
+
+                {/* Checkbox */}
+                <button
+                  onClick={(e) => handleMarkDone(item.id, e)}
+                  className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors"
                 >
-                  <div className="flex items-start gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors">
-                    {/* Source Icon */}
-                    <div className="flex-shrink-0 mt-0.5">
-                      {getSourceIcon(item.source)}
-                    </div>
+                  <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
 
-                    {/* Checkbox */}
-                    <button
-                      onClick={(e) => handleMarkDone(item.id, e)}
-                      className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors"
-                    >
-                      <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </button>
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  {/* Title */}
+                  <p className="text-sm text-text-primary font-medium mb-1">
+                    {item.title}
+                  </p>
+                  
+                  {/* Metadata */}
+                  <p className="text-xs text-text-secondary mb-2">
+                    from {item.sender}
+                  </p>
 
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      {/* Tags and Title */}
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        {/* VIP Star - First Priority */}
-                        {item.isVip && (
-                          <button
-                            onClick={(e) => handleTagClick('vip', e)}
-                            className={`text-green-400 hover:text-green-300 transition-colors ${filter === 'vip' ? 'bg-green-500/20 rounded px-1' : ''}`}
-                          >
-                            <Star className="w-3 h-3" fill="currentColor" />
-                          </button>
-                        )}
-                        
-                        {/* Person Tag - Second Priority */}
-                        {item.priorityPerson && (
-                          <Badge 
-                            variant="secondary" 
-                            className={`bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'person' ? 'bg-blue-500/30' : ''}`}
-                            onClick={(e) => handleTagClick('person', e)}
-                          >
-                            {item.priorityPerson}
-                          </Badge>
-                        )}
-                        
-                        {/* Trigger Tag - Third Priority */}
-                        {item.triggerKeyword && (
-                          <Badge 
-                            variant="secondary" 
-                            className={`bg-orange-500/20 text-orange-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'trigger' ? 'bg-orange-500/30' : ''}`}
-                            onClick={(e) => handleTagClick('trigger', e)}
-                          >
-                            {item.triggerKeyword}
-                          </Badge>
-                        )}
-                        
-                        {/* Urgency Tag - Fourth Priority */}
-                        {getUrgencyBadge(item.urgency)}
-                        
-                        {/* Title */}
-                        <p className="text-sm text-text-primary truncate font-medium flex-1 min-w-0">
-                          {item.title}
-                        </p>
-                      </div>
-                      
-                      {/* Metadata */}
-                      <p className="text-xs text-text-secondary truncate">
-                        from {item.sender}
-                      </p>
-                    </div>
-
-                    {/* External link icon */}
-                    <ExternalLink className="w-3 h-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
+                  {/* Tags below text */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* VIP Star */}
+                    {item.isVip && (
+                      <button
+                        onClick={(e) => handleTagClick('vip', e)}
+                        className={`text-green-400 hover:text-green-300 transition-colors ${filter === 'vip' ? 'bg-green-500/20 rounded px-1' : ''}`}
+                      >
+                        <Star className="w-3 h-3" fill="currentColor" />
+                      </button>
+                    )}
+                    
+                    {/* Person Tag */}
+                    {item.priorityPerson && (
+                      <Badge 
+                        variant="secondary" 
+                        className={`bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'person' ? 'bg-blue-500/30' : ''}`}
+                        onClick={(e) => handleTagClick('person', e)}
+                      >
+                        {item.priorityPerson}
+                      </Badge>
+                    )}
+                    
+                    {/* Trigger Tag */}
+                    {item.triggerKeyword && (
+                      <Badge 
+                        variant="secondary" 
+                        className={`bg-orange-500/20 text-orange-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'trigger' ? 'bg-orange-500/30' : ''}`}
+                        onClick={(e) => handleTagClick('trigger', e)}
+                      >
+                        {item.triggerKeyword}
+                      </Badge>
+                    )}
+                    
+                    {/* Urgency Tag */}
+                    {getUrgencyBadge(item.urgency)}
                   </div>
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-border-subtle">
-            <button
-              onClick={onViewAll}
-              className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
-            >
-              View all
-            </button>
-            <span className="text-text-secondary text-sm">·</span>
-            <button
-              onClick={handleMarkAllDone}
-              className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
-            >
-              Mark all done
-            </button>
-          </div>
+                {/* External link icon */}
+                <ExternalLink className="w-3 h-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border-subtle">
+          <button
+            onClick={onViewAll}
+            className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
+          >
+            View all
+          </button>
+          <span className="text-text-secondary text-sm">·</span>
+          <button
+            onClick={handleMarkAllDone}
+            className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
+          >
+            Mark all done
+          </button>
         </div>
       </div>
 
