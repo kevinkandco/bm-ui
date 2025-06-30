@@ -13,13 +13,13 @@ import { Badge } from "@/components/ui/badge";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
+import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import ListeningScreen from "./ListeningScreen";
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 import ActionItemsPanel from "./ActionItemsPanel";
 import CalendarSection from "./HomeViewSections/CalendarSection";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -29,7 +29,6 @@ interface HomeViewProps {
   onStartFocusMode: () => void;
   onSignOffForDay: () => void;
 }
-
 const HomeView = ({
   onOpenBrief,
   onViewTranscript,
@@ -39,7 +38,9 @@ const HomeView = ({
   onStartFocusMode,
   onSignOffForDay
 }: HomeViewProps) => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -53,11 +54,16 @@ const HomeView = ({
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
 
   // Sample connected integrations
-  const connectedIntegrations = [
-    { name: "Slack", channels: 12 },
-    { name: "Gmail", emails: 5 },
-    { name: "Google Calendar", events: 3 }
-  ];
+  const connectedIntegrations = [{
+    name: "Slack",
+    channels: 12
+  }, {
+    name: "Gmail",
+    emails: 5
+  }, {
+    name: "Google Calendar",
+    events: 3
+  }];
 
   // Sample action items for mobile with proper typing
   const [actionItems] = useState<Array<{
@@ -139,27 +145,21 @@ const HomeView = ({
     completed: false,
     lastActivity: '2024-06-28T16:30:00Z'
   }]);
-
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
-
   const handleUpdateSchedule = useCallback(() => {
     navigate("/dashboard/settings");
   }, [navigate]);
-
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
-
   const handleViewAllTasks = useCallback(() => {
     navigate("/dashboard/tasks");
   }, [navigate]);
-
   const handleViewTranscript = useCallback((briefId: number) => {
     onViewTranscript(briefId);
   }, [onViewTranscript]);
-
   const handlePlayBrief = useCallback((briefId: number) => {
     if (playingBrief === briefId) {
       setPlayingBrief(null);
@@ -175,15 +175,12 @@ const HomeView = ({
       });
     }
   }, [playingBrief, toast]);
-
   const handleGetBriefedNow = useCallback(() => {
     setShowSchedulingModal(true);
   }, []);
-
   const handleCloseSchedulingModal = useCallback(() => {
     setShowSchedulingModal(false);
   }, []);
-
   const handleGenerateSummaryWithScheduling = useCallback((timeDescription: string, skipScheduled?: boolean) => {
     setShowSchedulingModal(false);
     if (skipScheduled) {
@@ -198,11 +195,11 @@ const HomeView = ({
       });
     }
   }, [toast]);
-
   const handleTeamInterest = useCallback(() => {
     setWaitlistStatus('added');
   }, []);
 
+  // Status management handlers
   const handleStatusChange = useCallback((status: 'focus' | 'offline') => {
     setCurrentStatus(status);
     setShowStatusModal(false);
@@ -220,7 +217,6 @@ const HomeView = ({
       });
     }
   }, [onStartFocusMode, onSignOffForDay, toast]);
-
   const handleExitStatus = useCallback(() => {
     setCurrentStatus('active');
     toast({
@@ -229,6 +225,7 @@ const HomeView = ({
     });
   }, [toast]);
 
+  // Profile dropdown handlers
   const handleProfileClick = useCallback(() => {
     navigate("/dashboard/settings", {
       state: {
@@ -236,7 +233,6 @@ const HomeView = ({
       }
     });
   }, [navigate]);
-
   const handleIntegrationsClick = useCallback(() => {
     navigate("/dashboard/settings", {
       state: {
@@ -244,7 +240,6 @@ const HomeView = ({
       }
     });
   }, [navigate]);
-
   const handleBriefConfigClick = useCallback(() => {
     navigate("/dashboard/settings", {
       state: {
@@ -252,7 +247,6 @@ const HomeView = ({
       }
     });
   }, [navigate]);
-
   const handleAllSettingsClick = useCallback(() => {
     navigate("/dashboard/settings");
   }, [navigate]);
@@ -565,49 +559,87 @@ const HomeView = ({
       </div>;
   }
 
-  // Desktop View - Updated
-  return (
-    <div className="min-h-screen px-4 py-6">
+  // Desktop View
+  return <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
-        {/* Desktop Header - Updated with monitoring pills */}
+        {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-bold text-text-primary mb-2 text-2xl">
               Good morning, Alex
             </h1>
+            
           </div>
           
-          {/* Monitoring Pills Row */}
+          {/* Updated CTAs on the right with Profile Dropdown */}
           <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-text-secondary">Monitoring:</span>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle bg-surface-overlay/50">
-                  <div className="w-4 h-4 bg-purple-500 rounded-sm flex items-center justify-center text-xs font-bold text-white">S</div>
-                  <span className="text-sm text-text-primary">12</span>
-                </div>
-                <div className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle bg-surface-overlay/50">
-                  <div className="w-4 h-4 bg-blue-500 rounded-sm flex items-center justify-center text-xs font-bold text-white">G</div>
-                  <span className="text-sm text-text-primary">5</span>
-                </div>
-                <div className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle bg-surface-overlay/50">
-                  <div className="w-4 h-4 bg-green-500 rounded-sm flex items-center justify-center text-xs font-bold text-white">C</div>
-                  <span className="text-sm text-text-primary">3</span>
-                </div>
-              </div>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
+                  Update Status
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-surface border-border-subtle">
+                <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-white/5">
+                  <Headphones className="mr-2 h-4 w-4" />
+                  Start Focus Mode
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-white/5">
+                  <Clock className="mr-2 h-4 w-4" />
+                  Sign Off for the Day
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
               <Zap className="mr-2 h-4 w-4" />
               Brief Me
             </Button>
+
+            {/* Profile Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-0 h-auto">
+                  <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
+                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
+                    <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
+                      AJ
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
+                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
+                  <Zap className="mr-2 h-4 w-4" />
+                  Integrations
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Brief Configuration
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
+                  <Settings className="mr-2 h-4 w-4" />
+                  All Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
-        {/* Desktop Grid Layout - Adjusted for sidebar */}
+        {/* Connected Channels Section - Desktop Only */}
+        <div className="mb-6">
+          <ConnectedChannelsSection showAsHorizontal={true} />
+        </div>
+
+        {/* Desktop Grid Layout - Adjusted column widths */}
         <div className="grid grid-cols-12 gap-6">
-          {/* Main content - 8 columns */}
-          <div className="col-span-8 space-y-6">
+          {/* Main content - 7 columns (reduced from 8) */}
+          <div className="col-span-7 space-y-6">
             {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -615,21 +647,10 @@ const HomeView = ({
               </div>
               
               {/* Unified Brief Container with upcoming brief */}
-              <BriefsContainer 
-                briefs={recentBriefs} 
-                totalBriefs={totalBriefs} 
-                onViewBrief={onOpenBrief} 
-                onViewTranscript={handleViewTranscript} 
-                onPlayBrief={handlePlayBrief} 
-                playingBrief={playingBrief} 
-                onViewAllBriefs={handleViewAllBriefs} 
-                onGetBriefedNow={handleGetBriefedNow} 
-                onUpdateSchedule={handleUpdateSchedule} 
-                upcomingBrief={upcomingBrief} 
-              />
+              <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
             </div>
 
-            {/* Calendar Section */}
+            {/* Calendar Section - New */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
@@ -638,39 +659,136 @@ const HomeView = ({
             </div>
           </div>
           
-          {/* Sidebar - 4 columns */}
-          <div className="col-span-4 space-y-4">
+          {/* Sidebar - 5 columns (increased from 4) */}
+          <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
             <div className="space-y-3" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Action Items (4)</h2>
-                {isActionItemsHovered && (
-                  <Button 
-                    variant="ghost" 
-                    onClick={handleViewAllTasks} 
-                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200"
-                  >
+                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
                     View all
                     <ArrowRight className="w-3 h-3" />
-                  </Button>
-                )}
+                  </Button>}
               </div>
               <ActionItemsPanel />
+            </div>
+            
+            {/* Priorities Section with title outside */}
+            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
+                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
+                    Edit
+                  </Button>}
+              </div>
+              <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
+                <PrioritiesSection />
+              </div>
+            </div>
+            
+            {/* Brief Me Teams - With enhanced blurred background mockups */}
+            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+              {/* Enhanced blurred background mockups */}
+              <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
+                <div className="grid grid-cols-2 gap-4 h-full p-4">
+                  {/* Team card mockup */}
+                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-xl p-4 shadow-lg">
+                    {/* Team header with profile pics */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex -space-x-2">
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
+                          <span className="text-xs text-white/90 font-medium">+5</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Team stats bars */}
+                    <div className="space-y-3 mb-4">
+                      <div className="bg-white/40 rounded-full h-3 w-full"></div>
+                      <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
+                      <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
+                    </div>
+                    
+                    {/* Team name */}
+                    <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
+                  </div>
+                  
+                  {/* Analytics card mockup */}
+                  <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
+                    {/* Chart header */}
+                    <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
+                    
+                    {/* Mock chart bars - more detailed */}
+                    <div className="flex items-end gap-2 h-16 mb-3">
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-12"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-6"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-14"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-10"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
+                    </div>
+                    
+                    {/* Analytics labels */}
+                    <div className="space-y-2">
+                      <div className="bg-white/35 rounded h-2 w-full"></div>
+                      <div className="bg-white/30 rounded h-2 w-3/4"></div>
+                      <div className="bg-white/25 rounded h-2 w-5/6"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Clear content with better contrast */}
+              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
+                <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Brief Me Teams
+                </h2>
+                
+                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
+                
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">AI meeting proxy</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Team analytics</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">and more...</p>
+                  </div>
+                </div>
+                
+                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
+                  {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
-        <CatchMeUpWithScheduling 
-          open={showSchedulingModal} 
-          onClose={handleCloseSchedulingModal} 
-          onGenerateSummary={handleGenerateSummaryWithScheduling} 
-          upcomingBriefName={upcomingBrief.name} 
-          upcomingBriefTime={upcomingBrief.scheduledTime} 
-        />
+        <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default React.memo(HomeView);
