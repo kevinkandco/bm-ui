@@ -640,13 +640,9 @@ const HomeView = ({
           {/* Main content - 7 columns (reduced from 8) */}
           <div className="col-span-7 space-y-6">
             {/* Briefs Section */}
-            <div className="space-y-4" onMouseEnter={() => setIsBriefsHovered(true)} onMouseLeave={() => setIsBriefsHovered(false)}>
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
-                {isBriefsHovered && <Button variant="ghost" onClick={handleViewAllBriefs} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
-                    View all
-                    <ArrowRight className="w-3 h-3" />
-                  </Button>}
               </div>
               
               {/* Unified Brief Container with upcoming brief */}
