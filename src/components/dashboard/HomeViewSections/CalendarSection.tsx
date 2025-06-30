@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Calendar, Clock, Mic, Users, ChevronDown, Pencil, BookOpen, Info, Record } from "lucide-react";
+import { Calendar, Clock, Mic, Users, ChevronDown, Pencil, BookOpen, Info, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,13 @@ interface Meeting {
   summaryReady: boolean;
   isRecording: boolean;
   minutesUntil: number;
+  context?: {
+    relevantEmails?: string[];
+    weeklyCheckIns?: string[];
+    interests?: string[];
+  };
+  preparationPoints?: string[];
+  suggestedAgenda?: string[];
 }
 
 const CalendarSection = () => {
@@ -128,7 +135,7 @@ const CalendarSection = () => {
   };
 
   const openMeetingDetails = (meeting: Meeting) => {
-    setSelectedMeetingForDetails({
+    const meetingWithDetails = {
       ...meeting,
       context: {
         relevantEmails: ["Parenting Schedule Emails"],
@@ -144,7 +151,8 @@ const CalendarSection = () => {
         "Introduction",
         "Key Features"
       ]
-    });
+    };
+    setSelectedMeetingForDetails(meetingWithDetails);
     setShowMeetingDetails(true);
   };
 
@@ -363,7 +371,7 @@ const CalendarSection = () => {
                             {meeting.title}
                           </span>
                         </div>
-                        <Record className="w-4 h-4 text-green-500" />
+                        <Circle className="w-4 h-4 text-green-500" />
                       </div>
                     ))}
                   </div>
