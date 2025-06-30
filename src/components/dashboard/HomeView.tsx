@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/SidebarSections";
 import ListeningScreen from "./ListeningScreen";
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
+import ActionItemsPanel from "./ActionItemsPanel";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -568,6 +568,9 @@ const HomeView = ({
           
           {/* Sidebar - 4 columns */}
           <div className="col-span-4 space-y-4">
+            {/* Action Items Panel */}
+            <ActionItemsPanel />
+            
             {/* Priorities Section with title outside */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
