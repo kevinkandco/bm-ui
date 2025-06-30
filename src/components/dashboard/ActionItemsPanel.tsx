@@ -36,6 +36,7 @@ const ActionItemsPanel = ({
   const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isSectionHovered, setIsSectionHovered] = useState(false);
 
   // Sample action items data with new tagging structure
   const [actionItems, setActionItems] = useState<ActionItem[]>([{
@@ -209,7 +210,11 @@ const ActionItemsPanel = ({
       </div>;
   }
   return <>
-      <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}>
+      <div 
+        className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
+        onMouseEnter={() => setIsSectionHovered(true)}
+        onMouseLeave={() => setIsSectionHovered(false)}
+      >
         {/* Filter indicator */}
         {filter && <div className="p-3 pb-0">
             <div className="flex items-center gap-2 text-xs text-text-secondary">
@@ -277,7 +282,7 @@ const ActionItemsPanel = ({
             </div>
           </ScrollArea>
 
-          {/* Updated Footer - View all on right with hover for Mark all done */}
+          {/* Updated Footer - View all shows only on section hover */}
           <div 
             className="flex items-center justify-end mt-3 pt-3 border-t border-border-subtle"
             onMouseEnter={() => setIsHovered(true)}
@@ -292,13 +297,15 @@ const ActionItemsPanel = ({
                   Mark all done
                 </button>
               )}
-              <button 
-                onClick={onViewAll} 
-                className="text-sm text-text-secondary hover:text-accent-primary transition-colors flex items-center gap-1"
-              >
-                View all
-                <span className="text-xs">›</span>
-              </button>
+              {isSectionHovered && (
+                <button 
+                  onClick={onViewAll} 
+                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors flex items-center gap-1"
+                >
+                  View all
+                  <span className="text-xs">›</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
