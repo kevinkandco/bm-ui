@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -234,15 +233,6 @@ const ActionItemsPanel = ({ className, onViewAll }: ActionItemsPanelProps) => {
   return (
     <>
       <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}>
-        {/* Count badge in top corner */}
-        {openCount > 0 && (
-          <div className="absolute top-3 right-3 z-10">
-            <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary text-xs px-2 py-0.5">
-              {openCount}
-            </Badge>
-          </div>
-        )}
-
         {/* Filter indicator */}
         {filter && (
           <div className="p-3 pb-0">
