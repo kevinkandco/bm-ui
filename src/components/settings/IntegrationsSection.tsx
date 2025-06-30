@@ -12,6 +12,11 @@ import FancyLoader from "./modal/FancyLoader";
 import { useSearchParams } from "react-router-dom";
 import ProviderSettingsModal from "./modal/ProviderSettingsModal";
 
+const AllowedProvidersForModal = [
+  "slack",
+  "google",
+]
+
 const IntegrationsSection = () => {
   const { toast } = useToast();
   const {
@@ -46,7 +51,7 @@ const IntegrationsSection = () => {
       const url = new URL(window.location.href);
       url.searchParams.delete("selected");
       url.searchParams.delete("integration_id");
-      if (selected && id) {
+      if (selected && id && AllowedProvidersForModal.includes(selected)) {
         window.history.replaceState(
           {},
           document.title,
