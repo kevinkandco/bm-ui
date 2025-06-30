@@ -4,22 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useFeedbackTracking } from "../useFeedbackTracking";
 import ActionItemFeedback from "../ActionItemFeedback";
 import ActionItemControls from "../ActionItemControls";
-
 interface BriefCardProps {
   brief: {
     id: number;
@@ -43,7 +32,6 @@ interface BriefCardProps {
   playingBrief: number | null;
   isLast?: boolean;
 }
-
 const BriefCard = ({
   brief,
   onViewBrief,
@@ -58,14 +46,13 @@ const BriefCard = ({
   const [showAddMissing, setShowAddMissing] = useState(false);
   const [comment, setComment] = useState("");
   const [missingContent, setMissingContent] = useState("");
-  
+
   // Audio player state
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(300); // 5 minutes mock duration
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  
   const {
     handleSummaryFeedback,
     handleAddMissingContent,
@@ -84,99 +71,98 @@ const BriefCard = ({
   const mockStats = {
     totalMessagesAnalyzed: {
       total: totalMessages,
-      breakdown: { slack: brief.slackMessages.total, gmail: brief.emails.total }
+      breakdown: {
+        slack: brief.slackMessages.total,
+        gmail: brief.emails.total
+      }
     },
     lowPriority: {
       total: Math.floor(totalMessages * 0.4),
-      breakdown: { slack: Math.floor(brief.slackMessages.total * 0.4), gmail: Math.floor(brief.emails.total * 0.4) }
+      breakdown: {
+        slack: Math.floor(brief.slackMessages.total * 0.4),
+        gmail: Math.floor(brief.emails.total * 0.4)
+      }
     },
     mediumPriority: {
       total: Math.floor(totalMessages * 0.35),
-      breakdown: { slack: Math.floor(brief.slackMessages.total * 0.35), gmail: Math.floor(brief.emails.total * 0.35) }
+      breakdown: {
+        slack: Math.floor(brief.slackMessages.total * 0.35),
+        gmail: Math.floor(brief.emails.total * 0.35)
+      }
     },
     highPriority: {
       total: Math.floor(totalMessages * 0.25),
-      breakdown: { slack: Math.floor(brief.slackMessages.total * 0.25), gmail: Math.floor(brief.emails.total * 0.25) }
+      breakdown: {
+        slack: Math.floor(brief.slackMessages.total * 0.25),
+        gmail: Math.floor(brief.emails.total * 0.25)
+      }
     },
     actionItems: {
       total: brief.actionItems,
-      breakdown: { slack: Math.floor(brief.actionItems * 0.5), gmail: Math.ceil(brief.actionItems * 0.5) }
+      breakdown: {
+        slack: Math.floor(brief.actionItems * 0.5),
+        gmail: Math.ceil(brief.actionItems * 0.5)
+      }
     }
   };
-
-  const statsConfig = [
-    {
-      icon: BarChart3,
-      label: "Total Messages Analyzed",
-      value: mockStats.totalMessagesAnalyzed.total,
-      breakdown: mockStats.totalMessagesAnalyzed.breakdown,
-      color: "text-blue-400"
-    },
-    {
-      icon: CheckCircle,
-      label: "Low Priority",
-      value: mockStats.lowPriority.total,
-      breakdown: mockStats.lowPriority.breakdown,
-      color: "text-gray-400"
-    },
-    {
-      icon: AlertCircle,
-      label: "Medium Priority",
-      value: mockStats.mediumPriority.total,
-      breakdown: mockStats.mediumPriority.breakdown,
-      color: "text-orange-400"
-    },
-    {
-      icon: AlertCircle,
-      label: "High Priority",
-      value: mockStats.highPriority.total,
-      breakdown: mockStats.highPriority.breakdown,
-      color: "text-red-400"
-    },
-    {
-      icon: CheckSquare,
-      label: "Action Items",
-      value: mockStats.actionItems.total,
-      breakdown: mockStats.actionItems.breakdown,
-      color: "text-accent-primary"
-    }
-  ];
-
+  const statsConfig = [{
+    icon: BarChart3,
+    label: "Total Messages Analyzed",
+    value: mockStats.totalMessagesAnalyzed.total,
+    breakdown: mockStats.totalMessagesAnalyzed.breakdown,
+    color: "text-blue-400"
+  }, {
+    icon: CheckCircle,
+    label: "Low Priority",
+    value: mockStats.lowPriority.total,
+    breakdown: mockStats.lowPriority.breakdown,
+    color: "text-gray-400"
+  }, {
+    icon: AlertCircle,
+    label: "Medium Priority",
+    value: mockStats.mediumPriority.total,
+    breakdown: mockStats.mediumPriority.breakdown,
+    color: "text-orange-400"
+  }, {
+    icon: AlertCircle,
+    label: "High Priority",
+    value: mockStats.highPriority.total,
+    breakdown: mockStats.highPriority.breakdown,
+    color: "text-red-400"
+  }, {
+    icon: CheckSquare,
+    label: "Action Items",
+    value: mockStats.actionItems.total,
+    breakdown: mockStats.actionItems.breakdown,
+    color: "text-accent-primary"
+  }];
   const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
-
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
   };
-
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsExpanded(true); // Open the dropdown
     onPlayBrief(brief.id);
     setIsAudioPlaying(!isAudioPlaying);
   };
-
   const handleAudioToggle = () => {
     setIsAudioPlaying(!isAudioPlaying);
   };
-
   const handleMuteToggle = () => {
     setIsMuted(!isMuted);
   };
-
   const handleTimeChange = (value: number[]) => {
     setCurrentTime(value[0]);
   };
-
   const handleSpeedChange = (speed: number) => {
     setPlaybackSpeed(speed);
   };
-
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
-
   const handleFeedback = async (type: 'up' | 'down', e: React.MouseEvent) => {
     e.stopPropagation();
     if (feedbackState === type) return; // Already rated
@@ -188,7 +174,6 @@ const BriefCard = ({
       setShowCommentInput(true);
     }
   };
-
   const handleCommentSubmit = async () => {
     if (comment.trim()) {
       await handleSummaryFeedback(brief.id.toString(), 'down', comment.trim());
@@ -198,7 +183,6 @@ const BriefCard = ({
     }
     setShowCommentInput(false);
   };
-
   const handleAddMissingSubmit = async () => {
     if (missingContent.trim()) {
       await handleAddMissingContent(brief.id.toString(), missingContent.trim());
@@ -206,7 +190,6 @@ const BriefCard = ({
     }
     setShowAddMissing(false);
   };
-
   const handleKeyPress = (e: React.KeyboardEvent, type: 'comment' | 'missing') => {
     if (e.key === 'Enter') {
       if (type === 'comment') {
@@ -216,27 +199,38 @@ const BriefCard = ({
       }
     }
   };
-
   const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
     await handleActionRelevance(brief.id.toString(), itemId, relevant, feedback);
   };
-
   const handleActionItemThumbsUp = (itemId: string) => {
     console.log(`Thumbs up for action item: ${itemId}`);
     // Add your thumbs up logic here
   };
-
   const handleActionItemSnooze = (itemId: string, reason: any, feedback?: string) => {
-    console.log(`Snoozed action item: ${itemId}`, { reason, feedback });
+    console.log(`Snoozed action item: ${itemId}`, {
+      reason,
+      feedback
+    });
     // Add your snooze logic here  
   };
 
   // Mock action items for demonstration
-  const mockActionItems = [
-    { id: '1', title: 'Review Q3 budget proposal', source: 'gmail', priority: 'high' },
-    { id: '2', title: 'Respond to Sarah about timeline', source: 'slack', priority: 'medium' },
-    { id: '3', title: 'Schedule team standup', source: 'slack', priority: 'low' }
-  ];
+  const mockActionItems = [{
+    id: '1',
+    title: 'Review Q3 budget proposal',
+    source: 'gmail',
+    priority: 'high'
+  }, {
+    id: '2',
+    title: 'Respond to Sarah about timeline',
+    source: 'slack',
+    priority: 'medium'
+  }, {
+    id: '3',
+    title: 'Schedule team standup',
+    source: 'slack',
+    priority: 'low'
+  }];
 
   // Extract date and time from the timeCreated string
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
@@ -244,63 +238,56 @@ const BriefCard = ({
     const [datePart, timePart] = timeCreated.split(', ');
     const time = timePart?.replace(':00 ', '').replace(':00', '') || '8am';
     const formattedTimeRange = timeRange.replace(':00 ', '').replace(':00', '');
-    
+
     // Handle different date formats
     let dateText = datePart;
     if (datePart === 'Today') {
       const today = new Date();
-      dateText = today.toLocaleDateString('en-US', { 
-        month: 'long', 
-        day: 'numeric', 
-        year: 'numeric' 
+      dateText = today.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
       });
     } else if (datePart === 'Yesterday') {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      dateText = yesterday.toLocaleDateString('en-US', { 
-        month: 'long', 
-        day: 'numeric', 
-        year: 'numeric' 
+      dateText = yesterday.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
       });
     }
-    
     return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
   };
-
-  return (
-    <TooltipProvider>
+  return <TooltipProvider>
       <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
-        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
-      }} onClick={handleCardClick}>
+      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+    }} onClick={handleCardClick}>
         {/* Collapsed Header */}
         <div className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1 min-w-0">
               {/* Play button moved to the left, doc icon removed */}
               <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
-                {playingBrief === brief.id ? (
-                  <div className="flex items-center gap-0.5">
+                {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
                     <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '0ms'
-                    }} />
+                  animationDelay: '0ms'
+                }} />
                     <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '150ms'
-                    }} />
+                  animationDelay: '150ms'
+                }} />
                     <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '300ms'
-                    }} />
+                  animationDelay: '300ms'
+                }} />
                     <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '450ms'
-                    }} />
-                  </div>
-                ) : (
-                  <Play className="h-5 w-5 text-primary-teal" />
-                )}
+                  animationDelay: '450ms'
+                }} />
+                  </div> : <Play className="h-5 w-5 text-primary-teal" />}
               </button>
               
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold text-white-text truncate">
+                  <h3 className="text-base text-white-text truncate font-medium">
                     {brief.name}
                   </h3>
                   
@@ -315,20 +302,16 @@ const BriefCard = ({
                   </div>
 
                   {/* Feedback Badge - Always visible when rated */}
-                  {feedbackState === 'up' && (
-                    <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
+                  {feedbackState === 'up' && <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
                       👍
-                    </Badge>
-                  )}
-                  {feedbackState === 'down' && !showCommentInput && (
-                    <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
+                    </Badge>}
+                  {feedbackState === 'down' && !showCommentInput && <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
                       👎
-                    </Badge>
-                  )}
+                    </Badge>}
                 </div>
                 
                 {/* Updated timestamp and range format with date */}
-                <p className="text-xs text-light-gray-text">
+                <p className="text-xs text-light-gray-text font-extralight">
                   {formatDeliveryText(brief.timeCreated, brief.timeRange)}
                 </p>
               </div>
@@ -354,49 +337,26 @@ const BriefCard = ({
               
               {/* Chevron */}
               <div className="ml-2">
-                {isExpanded ? (
-                  <ChevronUp className="h-4 w-4 text-light-gray-text" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 text-light-gray-text" />
-                )}
+                {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
               </div>
             </div>
           </div>
           
           {/* Comment Input for downvote */}
-          {showCommentInput && (
-            <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-              <Input 
-                placeholder="What did we miss?" 
-                value={comment} 
-                onChange={e => setComment(e.target.value)} 
-                onKeyPress={e => handleKeyPress(e, 'comment')} 
-                onBlur={handleCommentSubmit} 
-                className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
-                autoFocus 
-              />
-            </div>
-          )}
+          {showCommentInput && <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+              <Input placeholder="What did we miss?" value={comment} onChange={e => setComment(e.target.value)} onKeyPress={e => handleKeyPress(e, 'comment')} onBlur={handleCommentSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />
+            </div>}
         </div>
 
         {/* Expanded Content */}
-        {isExpanded && (
-          <div className="px-6 pb-6">
+        {isExpanded && <div className="px-6 pb-6">
             <div className="border-t border-white/20 pt-3">
               {/* Audio Player Section - Only show when playing */}
-              {playingBrief === brief.id && (
-                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
+              {playingBrief === brief.id && <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <button 
-                        onClick={handleAudioToggle}
-                        className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
-                      >
-                        {isAudioPlaying ? (
-                          <Pause className="h-4 w-4 text-primary-teal" />
-                        ) : (
-                          <Play className="h-4 w-4 text-primary-teal" />
-                        )}
+                      <button onClick={handleAudioToggle} className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
+                        {isAudioPlaying ? <Pause className="h-4 w-4 text-primary-teal" /> : <Play className="h-4 w-4 text-primary-teal" />}
                       </button>
                       
                       <div className="text-sm">
@@ -415,43 +375,23 @@ const BriefCard = ({
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
-                          {playbackSpeeds.map((speed) => (
-                            <DropdownMenuItem
-                              key={speed}
-                              onClick={() => handleSpeedChange(speed)}
-                              className="text-white-text hover:bg-white/10 cursor-pointer"
-                            >
+                          {playbackSpeeds.map(speed => <DropdownMenuItem key={speed} onClick={() => handleSpeedChange(speed)} className="text-white-text hover:bg-white/10 cursor-pointer">
                               {speed}x
-                            </DropdownMenuItem>
-                          ))}
+                            </DropdownMenuItem>)}
                         </DropdownMenuContent>
                       </DropdownMenu>
                       
-                      <button 
-                        onClick={handleMuteToggle}
-                        className="w-6 h-6 flex items-center justify-center text-light-gray-text hover:text-white-text transition-colors"
-                      >
-                        {isMuted ? (
-                          <VolumeX className="h-4 w-4" />
-                        ) : (
-                          <Volume2 className="h-4 w-4" />
-                        )}
+                      <button onClick={handleMuteToggle} className="w-6 h-6 flex items-center justify-center text-light-gray-text hover:text-white-text transition-colors">
+                        {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                       </button>
                     </div>
                   </div>
                   
                   {/* Progress Bar */}
                   <div className="mb-2">
-                    <Slider
-                      value={[currentTime]}
-                      max={duration}
-                      step={1}
-                      onValueChange={handleTimeChange}
-                      className="w-full"
-                    />
+                    <Slider value={[currentTime]} max={duration} step={1} onValueChange={handleTimeChange} className="w-full" />
                   </div>
-                </div>
-              )}
+                </div>}
 
               {/* Time Saved Breakdown - Expanded State */}
               <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
@@ -464,9 +404,8 @@ const BriefCard = ({
               {/* New Stats Grid with Tooltips */}
               <div className="grid grid-cols-5 gap-2 mb-3">
                 {statsConfig.map((stat, index) => {
-                  const IconComponent = stat.icon;
-                  return (
-                    <Tooltip key={index}>
+              const IconComponent = stat.icon;
+              return <Tooltip key={index}>
                       <TooltipTrigger asChild>
                         <div className="flex flex-col items-center p-2 rounded-lg bg-surface-raised/30 cursor-pointer hover:bg-surface-raised/50 transition-colors">
                           <IconComponent className={`h-4 w-4 ${stat.color} mb-1`} />
@@ -482,38 +421,26 @@ const BriefCard = ({
                         <div className="space-y-1">
                           <div className="text-sm font-medium text-text-primary">{stat.label}</div>
                           <div className="space-y-1">
-                            {Object.entries(stat.breakdown).map(([platform, count]) => (
-                              <div key={platform} className="flex justify-between text-xs">
+                            {Object.entries(stat.breakdown).map(([platform, count]) => <div key={platform} className="flex justify-between text-xs">
                                 <span className="text-text-secondary capitalize">{platform}:</span>
                                 <span className="text-text-primary font-medium">{count}</span>
-                              </div>
-                            ))}
+                              </div>)}
                           </div>
                         </div>
                       </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
+                    </Tooltip>;
+            })}
               </div>
 
               {/* Action Items with Feedback */}
               <div className="mb-3">
                 <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
                 <div className="space-y-2">
-                  {mockActionItems.map((item) => (
-                    <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
+                  {mockActionItems.map(item => <div key={item.id} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
                       <div className="flex items-center gap-3 flex-1">
                         <div className="flex items-center gap-2">
-                          {item.source === 'gmail' ? (
-                            <Mail className="h-3 w-3 text-red-400" />
-                          ) : (
-                            <MessageSquare className="h-3 w-3 text-purple-400" />
-                          )}
-                          <Badge className={`text-xs px-1 py-0 ${
-                            item.priority === 'high' ? 'bg-red-500/20 text-red-400' :
-                            item.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
-                            'bg-gray-500/20 text-gray-400'
-                          }`}>
+                          {item.source === 'gmail' ? <Mail className="h-3 w-3 text-red-400" /> : <MessageSquare className="h-3 w-3 text-purple-400" />}
+                          <Badge className={`text-xs px-1 py-0 ${item.priority === 'high' ? 'bg-red-500/20 text-red-400' : item.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' : 'bg-gray-500/20 text-gray-400'}`}>
                             {item.priority}
                           </Badge>
                         </div>
@@ -521,72 +448,44 @@ const BriefCard = ({
                       </div>
                       
                       <div className="flex items-center gap-2">
-                        <ActionItemControls
-                          itemId={item.id}
-                          itemTitle={item.title}
-                          sender={item.source === 'gmail' ? 'example@company.com' : 'Sarah'}
-                          onThumbsUp={handleActionItemThumbsUp}
-                          onSnooze={handleActionItemSnooze}
-                          size="sm"
-                        />
-                        <ActionItemFeedback 
-                          itemId={item.id} 
-                          onRelevanceFeedback={handleActionItemFeedback}
-                        />
+                        <ActionItemControls itemId={item.id} itemTitle={item.title} sender={item.source === 'gmail' ? 'example@company.com' : 'Sarah'} onThumbsUp={handleActionItemThumbsUp} onSnooze={handleActionItemSnooze} size="sm" />
+                        <ActionItemFeedback itemId={item.id} onRelevanceFeedback={handleActionItemFeedback} />
                       </div>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
               </div>
 
               {/* Add Missing Content */}
-              {!showAddMissing ? (
-                <div className="mb-3">
+              {!showAddMissing ? <div className="mb-3">
                   <Button variant="ghost" size="sm" onClick={e => {
-                    e.stopPropagation();
-                    setShowAddMissing(true);
-                  }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
+              e.stopPropagation();
+              setShowAddMissing(true);
+            }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
                     Add what's missing
                   </Button>
-                </div>
-              ) : (
-                <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-                  <Input 
-                    placeholder="What important information did we miss?" 
-                    value={missingContent} 
-                    onChange={e => setMissingContent(e.target.value)} 
-                    onKeyPress={e => handleKeyPress(e, 'missing')} 
-                    onBlur={handleAddMissingSubmit} 
-                    className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
-                    autoFocus 
-                  />
-                </div>
-              )}
+                </div> : <div className="mb-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+                  <Input placeholder="What important information did we miss?" value={missingContent} onChange={e => setMissingContent(e.target.value)} onKeyPress={e => handleKeyPress(e, 'missing')} onBlur={handleAddMissingSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />
+                </div>}
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-2 pt-1">
-                {brief.hasTranscript && (
-                  <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent" onClick={e => {
-                    e.stopPropagation();
-                    onViewTranscript(brief.id);
-                  }}>
+                {brief.hasTranscript && <Button variant="outline" size="sm" className="h-7 px-3 text-xs rounded-lg border-border-subtle/20 hover:border-border-subtle/40 bg-transparent" onClick={e => {
+              e.stopPropagation();
+              onViewTranscript(brief.id);
+            }}>
                     <ExternalLink className="h-3 w-3 mr-1" />
                     Transcript
-                  </Button>
-                )}
+                  </Button>}
                 <Button size="sm" className="h-7 px-4 text-xs rounded-lg bg-primary-teal hover:bg-accent-green" onClick={e => {
-                  e.stopPropagation();
-                  onViewBrief(brief.id);
-                }}>
+              e.stopPropagation();
+              onViewBrief(brief.id);
+            }}>
                   View Brief
                 </Button>
               </div>
             </div>
-          </div>
-        )}
+          </div>}
       </div>
-    </TooltipProvider>
-  );
+    </TooltipProvider>;
 };
-
 export default React.memo(BriefCard);
