@@ -66,6 +66,9 @@ const HomeView = ({
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
   }, [navigate]);
+  const handleViewAllTasks = useCallback(() => {
+    navigate("/dashboard/tasks");
+  }, [navigate]);
   const handleViewTranscript = useCallback((briefId: number) => {
     onViewTranscript(briefId);
   }, [onViewTranscript]);
