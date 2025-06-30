@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -50,6 +50,7 @@ const HomeView = ({
   const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<'active' | 'focus' | 'offline'>('active');
+  const [isActionItemsHovered, setIsActionItemsHovered] = useState(false);
 
   // Sample connected integrations
   const connectedIntegrations = [
@@ -698,16 +699,23 @@ const HomeView = ({
           {/* Sidebar - 5 columns (increased from 4) */}
           <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
-            <div className="space-y-3">
+            <div 
+              className="space-y-3"
+              onMouseEnter={() => setIsActionItemsHovered(true)}
+              onMouseLeave={() => setIsActionItemsHovered(false)}
+            >
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-text-primary">Action Items (4)</h2>
-                <Button 
-                  variant="ghost" 
-                  onClick={handleViewAllTasks}
-                  className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
-                >
-                  View all
-                </Button>
+                {isActionItemsHovered && (
+                  <Button 
+                    variant="ghost" 
+                    onClick={handleViewAllTasks}
+                    className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary flex items-center gap-1"
+                  >
+                    View all
+                    <ArrowRight className="w-3 h-3" />
+                  </Button>
+                )}
               </div>
               <ActionItemsPanel />
             </div>
