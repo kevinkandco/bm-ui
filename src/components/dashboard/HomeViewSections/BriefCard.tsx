@@ -260,7 +260,7 @@ const BriefCard = ({
     return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
   };
   return <TooltipProvider>
-      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
+      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden group" style={{
       background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
     }} onClick={handleCardClick}>
         {/* Collapsed Header */}
