@@ -51,6 +51,7 @@ const HomeView = ({
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<'active' | 'focus' | 'offline'>('active');
   const [isActionItemsHovered, setIsActionItemsHovered] = useState(false);
+  const [isPrioritiesHovered, setIsPrioritiesHovered] = useState(false);
 
   // Sample connected integrations
   const connectedIntegrations = [
@@ -721,16 +722,22 @@ const HomeView = ({
             </div>
             
             {/* Priorities Section with title outside */}
-            <div className="space-y-3">
+            <div 
+              className="space-y-3"
+              onMouseEnter={() => setIsPrioritiesHovered(true)}
+              onMouseLeave={() => setIsPrioritiesHovered(false)}
+            >
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-text-primary">Priorities</h2>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate("/dashboard/settings")}
-                  className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
-                >
-                  Edit
-                </Button>
+                {isPrioritiesHovered && (
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => navigate("/dashboard/settings")}
+                    className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
+                  >
+                    Edit
+                  </Button>
+                )}
               </div>
               <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
                 <PrioritiesSection />
