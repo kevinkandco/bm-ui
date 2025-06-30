@@ -19,7 +19,6 @@ import { NextBriefSection, UpcomingMeetingsSection } from "./HomeViewSections/Si
 import ListeningScreen from "./ListeningScreen";
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 import ActionItemsPanel from "./ActionItemsPanel";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -29,7 +28,6 @@ interface HomeViewProps {
   onStartFocusMode: () => void;
   onSignOffForDay: () => void;
 }
-
 const HomeView = ({
   onOpenBrief,
   onViewTranscript,
@@ -55,11 +53,16 @@ const HomeView = ({
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
 
   // Sample connected integrations
-  const connectedIntegrations = [
-    { name: "Slack", channels: 12 },
-    { name: "Gmail", emails: 5 },
-    { name: "Google Calendar", events: 3 }
-  ];
+  const connectedIntegrations = [{
+    name: "Slack",
+    channels: 12
+  }, {
+    name: "Gmail",
+    emails: 5
+  }, {
+    name: "Google Calendar",
+    events: 3
+  }];
 
   // Sample action items for mobile with proper typing
   const [actionItems] = useState<Array<{
@@ -76,78 +79,71 @@ const HomeView = ({
     threadUrl: string;
     completed: boolean;
     lastActivity: string;
-  }>>([
-    {
-      id: '1',
-      title: 'Approve Q3 budget proposal',
-      source: 'slack' as const,
-      sender: 'Sarah Chen',
-      isVip: true,
-      priorityPerson: 'Sarah Chen',
-      triggerKeyword: 'budget',
-      urgency: 'critical' as const,
-      isNew: false,
-      createdAt: '2024-06-30T08:00:00Z',
-      threadUrl: 'https://app.slack.com/client/T123/C456/p789',
-      completed: false,
-      lastActivity: '2024-06-30T08:00:00Z'
-    },
-    {
-      id: '2', 
-      title: 'Review contract amendments',
-      source: 'gmail' as const,
-      sender: 'legal@company.com',
-      isVip: false,
-      urgency: 'high' as const,
-      isNew: true,
-      createdAt: '2024-06-30T09:30:00Z',
-      threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
-      completed: false,
-      lastActivity: '2024-06-30T09:30:00Z'
-    },
-    {
-      id: '3',
-      title: 'Sign off on marketing campaign',
-      source: 'slack' as const,
-      sender: 'Mike Johnson',
-      isVip: true,
-      priorityPerson: 'Mike J',
-      triggerKeyword: 'urgent',
-      urgency: 'critical' as const,
-      isNew: false,
-      createdAt: '2024-06-29T14:20:00Z',
-      threadUrl: 'https://app.slack.com/client/T123/C456/p790',
-      completed: false,
-      lastActivity: '2024-06-29T14:20:00Z'
-    },
-    {
-      id: '4',
-      title: 'Provide feedback on design mockups',
-      source: 'gmail' as const,
-      sender: 'design@company.com',
-      isVip: false,
-      urgency: 'medium' as const,
-      isNew: true,
-      createdAt: '2024-06-29T11:15:00Z',
-      threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
-      completed: false,
-      lastActivity: '2024-06-29T11:15:00Z'
-    },
-    {
-      id: '5',
-      title: 'Update quarterly presentation slides',
-      source: 'slack' as const,
-      sender: 'team@company.com',
-      isVip: false,
-      urgency: 'low' as const,
-      isNew: false,
-      createdAt: '2024-06-28T16:30:00Z',
-      threadUrl: 'https://app.slack.com/client/T123/C456/p791',
-      completed: false,
-      lastActivity: '2024-06-28T16:30:00Z'
-    }
-  ]);
-
+  }>>([{
+    id: '1',
+    title: 'Approve Q3 budget proposal',
+    source: 'slack' as const,
+    sender: 'Sarah Chen',
+    isVip: true,
+    priorityPerson: 'Sarah Chen',
+    triggerKeyword: 'budget',
+    urgency: 'critical' as const,
+    isNew: false,
+    createdAt: '2024-06-30T08:00:00Z',
+    threadUrl: 'https://app.slack.com/client/T123/C456/p789',
+    completed: false,
+    lastActivity: '2024-06-30T08:00:00Z'
+  }, {
+    id: '2',
+    title: 'Review contract amendments',
+    source: 'gmail' as const,
+    sender: 'legal@company.com',
+    isVip: false,
+    urgency: 'high' as const,
+    isNew: true,
+    createdAt: '2024-06-30T09:30:00Z',
+    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
+    completed: false,
+    lastActivity: '2024-06-30T09:30:00Z'
+  }, {
+    id: '3',
+    title: 'Sign off on marketing campaign',
+    source: 'slack' as const,
+    sender: 'Mike Johnson',
+    isVip: true,
+    priorityPerson: 'Mike J',
+    triggerKeyword: 'urgent',
+    urgency: 'critical' as const,
+    isNew: false,
+    createdAt: '2024-06-29T14:20:00Z',
+    threadUrl: 'https://app.slack.com/client/T123/C456/p790',
+    completed: false,
+    lastActivity: '2024-06-29T14:20:00Z'
+  }, {
+    id: '4',
+    title: 'Provide feedback on design mockups',
+    source: 'gmail' as const,
+    sender: 'design@company.com',
+    isVip: false,
+    urgency: 'medium' as const,
+    isNew: true,
+    createdAt: '2024-06-29T11:15:00Z',
+    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
+    completed: false,
+    lastActivity: '2024-06-29T11:15:00Z'
+  }, {
+    id: '5',
+    title: 'Update quarterly presentation slides',
+    source: 'slack' as const,
+    sender: 'team@company.com',
+    isVip: false,
+    urgency: 'low' as const,
+    isNew: false,
+    createdAt: '2024-06-28T16:30:00Z',
+    threadUrl: 'https://app.slack.com/client/T123/C456/p791',
+    completed: false,
+    lastActivity: '2024-06-28T16:30:00Z'
+  }]);
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
@@ -178,18 +174,14 @@ const HomeView = ({
       });
     }
   }, [playingBrief, toast]);
-
   const handleGetBriefedNow = useCallback(() => {
     setShowSchedulingModal(true);
   }, []);
-
   const handleCloseSchedulingModal = useCallback(() => {
     setShowSchedulingModal(false);
   }, []);
-
   const handleGenerateSummaryWithScheduling = useCallback((timeDescription: string, skipScheduled?: boolean) => {
     setShowSchedulingModal(false);
-    
     if (skipScheduled) {
       toast({
         title: "Brief Generated",
@@ -197,12 +189,11 @@ const HomeView = ({
       });
     } else {
       toast({
-        title: "Brief Generated", 
+        title: "Brief Generated",
         description: "Your catch-up summary is ready. Your scheduled brief will still arrive on time."
       });
     }
   }, [toast]);
-
   const handleTeamInterest = useCallback(() => {
     setWaitlistStatus('added');
   }, []);
@@ -211,7 +202,6 @@ const HomeView = ({
   const handleStatusChange = useCallback((status: 'focus' | 'offline') => {
     setCurrentStatus(status);
     setShowStatusModal(false);
-    
     if (status === 'focus') {
       onStartFocusMode();
       toast({
@@ -221,12 +211,11 @@ const HomeView = ({
     } else if (status === 'offline') {
       onSignOffForDay();
       toast({
-        title: "Offline Mode Activated", 
+        title: "Offline Mode Activated",
         description: "Brief-me will monitor but won't send notifications"
       });
     }
   }, [onStartFocusMode, onSignOffForDay, toast]);
-
   const handleExitStatus = useCallback(() => {
     setCurrentStatus('active');
     toast({
@@ -237,54 +226,77 @@ const HomeView = ({
 
   // Profile dropdown handlers
   const handleProfileClick = useCallback(() => {
-    navigate("/dashboard/settings", { state: { activeSection: "profile" } });
+    navigate("/dashboard/settings", {
+      state: {
+        activeSection: "profile"
+      }
+    });
   }, [navigate]);
-
   const handleIntegrationsClick = useCallback(() => {
-    navigate("/dashboard/settings", { state: { activeSection: "integrations" } });
+    navigate("/dashboard/settings", {
+      state: {
+        activeSection: "integrations"
+      }
+    });
   }, [navigate]);
-
   const handleBriefConfigClick = useCallback(() => {
-    navigate("/dashboard/settings", { state: { activeSection: "brief-config" } });
+    navigate("/dashboard/settings", {
+      state: {
+        activeSection: "brief-config"
+      }
+    });
   }, [navigate]);
-
   const handleAllSettingsClick = useCallback(() => {
     navigate("/dashboard/settings");
   }, [navigate]);
 
   // Sample brief data
-  const recentBriefs = [
-    {
-      id: 1,
-      name: "Morning Brief",
-      timeCreated: "Today, 8:00 AM",
-      timeRange: "5:00 AM - 8:00 AM",
-      slackMessages: { total: 12, fromPriorityPeople: 3 },
-      emails: { total: 5, fromPriorityPeople: 2 },
-      actionItems: 4,
-      hasTranscript: true
+  const recentBriefs = [{
+    id: 1,
+    name: "Morning Brief",
+    timeCreated: "Today, 8:00 AM",
+    timeRange: "5:00 AM - 8:00 AM",
+    slackMessages: {
+      total: 12,
+      fromPriorityPeople: 3
     },
-    {
-      id: 2,
-      name: "Evening Brief",
-      timeCreated: "Yesterday, 8:00 PM",
-      timeRange: "5:00 PM - 8:00 PM",
-      slackMessages: { total: 8, fromPriorityPeople: 1 },
-      emails: { total: 3, fromPriorityPeople: 0 },
-      actionItems: 2,
-      hasTranscript: true
+    emails: {
+      total: 5,
+      fromPriorityPeople: 2
     },
-    {
-      id: 3,
-      name: "Afternoon Brief",
-      timeCreated: "Yesterday, 4:00 PM",
-      timeRange: "1:00 PM - 4:00 PM",
-      slackMessages: { total: 15, fromPriorityPeople: 4 },
-      emails: { total: 7, fromPriorityPeople: 3 },
-      actionItems: 5,
-      hasTranscript: true
-    }
-  ];
+    actionItems: 4,
+    hasTranscript: true
+  }, {
+    id: 2,
+    name: "Evening Brief",
+    timeCreated: "Yesterday, 8:00 PM",
+    timeRange: "5:00 PM - 8:00 PM",
+    slackMessages: {
+      total: 8,
+      fromPriorityPeople: 1
+    },
+    emails: {
+      total: 3,
+      fromPriorityPeople: 0
+    },
+    actionItems: 2,
+    hasTranscript: true
+  }, {
+    id: 3,
+    name: "Afternoon Brief",
+    timeCreated: "Yesterday, 4:00 PM",
+    timeRange: "1:00 PM - 4:00 PM",
+    slackMessages: {
+      total: 15,
+      fromPriorityPeople: 4
+    },
+    emails: {
+      total: 7,
+      fromPriorityPeople: 3
+    },
+    actionItems: 5,
+    hasTranscript: true
+  }];
 
   // Sample upcoming brief data
   const upcomingBrief = {
@@ -298,8 +310,14 @@ const HomeView = ({
     name: "Morning Brief",
     timeCreated: "Today, 8:00 AM",
     timeRange: "5:00 AM - 8:00 AM",
-    slackMessages: { total: 12, fromPriorityPeople: 3 },
-    emails: { total: 5, fromPriorityPeople: 2 },
+    slackMessages: {
+      total: 12,
+      fromPriorityPeople: 3
+    },
+    emails: {
+      total: 5,
+      fromPriorityPeople: 2
+    },
     actionItems: 4
   };
 
@@ -390,39 +408,27 @@ const HomeView = ({
             </div>
             
             {/* Status indicator */}
-            {currentStatus !== 'active' && (
-              <div className="mb-3 flex items-center justify-center gap-2">
+            {currentStatus !== 'active' && <div className="mb-3 flex items-center justify-center gap-2">
                 <div className="flex items-center gap-1 px-3 py-1 bg-deep-blue border border-light-gray-text/40 rounded-full">
-                  {currentStatus === 'focus' ? (
-                    <>
+                  {currentStatus === 'focus' ? <>
                       <Focus className="w-3 h-3 text-primary-teal" />
                       <span className="text-xs text-white-text">Focus Mode</span>
-                    </>
-                  ) : (
-                    <>
+                    </> : <>
                       <Clock className="w-3 h-3 text-orange-400" />
                       <span className="text-xs text-white-text">Offline</span>
-                    </>
-                  )}
+                    </>}
                 </div>
-                <Button 
-                  onClick={handleExitStatus}
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 px-2 text-xs text-light-gray-text hover:text-white-text"
-                >
+                <Button onClick={handleExitStatus} size="sm" variant="ghost" className="h-6 px-2 text-xs text-light-gray-text hover:text-white-text">
                   <X className="w-3 h-3" />
                 </Button>
-              </div>
-            )}
+              </div>}
           </div>
         </div>
 
         {/* Action Items Section - Minimal design, no background, 5 items */}
         <div className="mb-3 flex-shrink-0">
           <div className="space-y-2">
-            {actionItems.slice(0, 5).map((item) => (
-              <div key={item.id} className="py-2 border-b border-light-gray-text/10 last:border-b-0">
+            {actionItems.slice(0, 5).map(item => <div key={item.id} className="py-2 border-b border-light-gray-text/10 last:border-b-0">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-4 h-4 rounded border border-light-gray-text/30"></div>
                   <p className="text-sm text-white-text font-medium flex-1">{item.title}</p>
@@ -431,39 +437,27 @@ const HomeView = ({
                   <p className="text-xs text-light-gray-text">from {item.sender}</p>
                   <span className="text-light-gray-text/50">•</span>
                   <span className="text-xs text-red-400">Jun 28</span>
-                  {item.isVip && (
-                    <>
+                  {item.isVip && <>
                       <span className="text-light-gray-text/50">•</span>
                       <div className="text-green-400">
                         <Star className="w-3 h-3" fill="currentColor" />
                       </div>
-                    </>
-                  )}
-                  {item.priorityPerson && (
-                    <>
+                    </>}
+                  {item.priorityPerson && <>
                       <span className="text-light-gray-text/50">•</span>
                       <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-xs px-1 py-0">
                         {item.priorityPerson}
                       </Badge>
-                    </>
-                  )}
-                  {item.triggerKeyword && (
-                    <>
+                    </>}
+                  {item.triggerKeyword && <>
                       <span className="text-light-gray-text/50">•</span>
                       <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 text-xs px-1 py-0">
                         {item.triggerKeyword}
                       </Badge>
-                    </>
-                  )}
+                    </>}
                 </div>
-              </div>
-            ))}
-            <Button 
-              onClick={handleViewAllTasks}
-              size="sm"
-              variant="ghost"
-              className="w-full text-light-gray-text hover:text-white-text text-xs mt-2"
-            >
+              </div>)}
+            <Button onClick={handleViewAllTasks} size="sm" variant="ghost" className="w-full text-light-gray-text hover:text-white-text text-xs mt-2">
               View All Tasks
             </Button>
           </div>
@@ -481,12 +475,7 @@ const HomeView = ({
                 <p className="text-xs text-light-gray-text/70">{upcomingBrief.name}</p>
                 <p className="text-xs text-light-gray-text/70">{upcomingBrief.scheduledTime}</p>
               </div>
-              <Button 
-                onClick={handleGetBriefedNow}
-                size="sm"
-                variant="outline"
-                className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
-              >
+              <Button onClick={handleGetBriefedNow} size="sm" variant="outline" className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent">
                 <Zap className="w-3 h-3 mr-1" />
                 Get Briefed Now
               </Button>
@@ -511,11 +500,7 @@ const HomeView = ({
                   <span className="text-xs text-light-gray-text">{latestBrief.actionItems} Actions</span>
                 </div>
               </div>
-              <Button 
-                onClick={() => onOpenBrief(latestBrief.id)}
-                size="sm"
-                className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto ml-2"
-              >
+              <Button onClick={() => onOpenBrief(latestBrief.id)} size="sm" className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto ml-2">
                 View
               </Button>
             </div>
@@ -524,36 +509,24 @@ const HomeView = ({
 
         {/* Action Buttons - Updated with new structure */}
         <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0 my-[6px] py-[3px]">
-          <Button 
-            onClick={onToggleCatchMeUp}
-            className="flex-1 bg-primary-teal text-white-text rounded-xl px-6 py-3 hover:bg-accent-green"
-          >
+          <Button onClick={onToggleCatchMeUp} className="flex-1 bg-primary-teal text-white-text rounded-xl px-6 py-3 hover:bg-accent-green">
             <Zap className="w-4 h-4 mr-2" />
             Brief Me
           </Button>
 
           <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline"
-                className="flex-1 bg-deep-blue border border-light-gray-text/40 text-light-gray-text rounded-xl px-6 py-3 hover:border-light-gray-text/60"
-              >
+              <Button variant="outline" className="flex-1 bg-deep-blue border border-light-gray-text/40 text-light-gray-text rounded-xl px-6 py-3 hover:border-light-gray-text/60">
                 Set Status
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-dark-navy border-light-gray-text/20 w-48">
-              <DropdownMenuItem 
-                onClick={() => handleStatusChange('focus')}
-                className="text-white-text hover:bg-deep-blue/50"
-              >
+              <DropdownMenuItem onClick={() => handleStatusChange('focus')} className="text-white-text hover:bg-deep-blue/50">
                 <Focus className="mr-2 h-4 w-4" />
                 Focus Mode
               </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => handleStatusChange('offline')}
-                className="text-white-text hover:bg-deep-blue/50"
-              >
+              <DropdownMenuItem onClick={() => handleStatusChange('offline')} className="text-white-text hover:bg-deep-blue/50">
                 <Clock className="mr-2 h-4 w-4" />
                 Offline Mode
               </DropdownMenuItem>
@@ -563,11 +536,7 @@ const HomeView = ({
 
         {/* View All Briefs Button */}
         <div className="mb-2 flex-shrink-0">
-          <Button 
-            onClick={handleViewAllBriefs} 
-            variant="outline"
-            className="w-full bg-deep-blue/30 border border-light-gray-text/20 text-light-gray-text rounded-xl px-4 py-3 hover:border-light-gray-text/40 hover:text-white-text"
-          >
+          <Button onClick={handleViewAllBriefs} variant="outline" className="w-full bg-deep-blue/30 border border-light-gray-text/20 text-light-gray-text rounded-xl px-4 py-3 hover:border-light-gray-text/40 hover:text-white-text">
             <Archive className="w-4 h-4 mr-2" />
             View All Briefs ({totalBriefs})
           </Button>
@@ -585,13 +554,7 @@ const HomeView = ({
         `}</style>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
-        <CatchMeUpWithScheduling
-          open={showSchedulingModal}
-          onClose={handleCloseSchedulingModal}
-          onGenerateSummary={handleGenerateSummaryWithScheduling}
-          upcomingBriefName={upcomingBrief.name}
-          upcomingBriefTime={upcomingBrief.scheduledTime}
-        />
+        <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
       </div>;
   }
 
@@ -677,82 +640,41 @@ const HomeView = ({
           {/* Main content - 7 columns (reduced from 8) */}
           <div className="col-span-7 space-y-6">
             {/* Briefs Section */}
-            <div 
-              className="space-y-4"
-              onMouseEnter={() => setIsBriefsHovered(true)}
-              onMouseLeave={() => setIsBriefsHovered(false)}
-            >
+            <div className="space-y-4" onMouseEnter={() => setIsBriefsHovered(true)} onMouseLeave={() => setIsBriefsHovered(false)}>
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Briefs</h2>
-                {isBriefsHovered && (
-                  <Button 
-                    variant="ghost" 
-                    onClick={handleViewAllBriefs}
-                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200"
-                  >
+                <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
+                {isBriefsHovered && <Button variant="ghost" onClick={handleViewAllBriefs} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
                     View all
                     <ArrowRight className="w-3 h-3" />
-                  </Button>
-                )}
+                  </Button>}
               </div>
               
               {/* Unified Brief Container with upcoming brief */}
-              <BriefsContainer 
-                briefs={recentBriefs} 
-                totalBriefs={totalBriefs}
-                onViewBrief={onOpenBrief} 
-                onViewTranscript={handleViewTranscript} 
-                onPlayBrief={handlePlayBrief} 
-                playingBrief={playingBrief} 
-                onViewAllBriefs={handleViewAllBriefs}
-                onGetBriefedNow={handleGetBriefedNow}
-                onUpdateSchedule={handleUpdateSchedule}
-                upcomingBrief={upcomingBrief}
-              />
+              <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
             </div>
           </div>
           
           {/* Sidebar - 5 columns (increased from 4) */}
           <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
-            <div 
-              className="space-y-3"
-              onMouseEnter={() => setIsActionItemsHovered(true)}
-              onMouseLeave={() => setIsActionItemsHovered(false)}
-            >
+            <div className="space-y-3" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Action Items (4)</h2>
-                {isActionItemsHovered && (
-                  <Button 
-                    variant="ghost" 
-                    onClick={handleViewAllTasks}
-                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200"
-                  >
+                <h2 className="font-semibold text-text-primary text-lg">Action Items (4)</h2>
+                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
                     View all
                     <ArrowRight className="w-3 h-3" />
-                  </Button>
-                )}
+                  </Button>}
               </div>
               <ActionItemsPanel />
             </div>
             
             {/* Priorities Section with title outside */}
-            <div 
-              className="space-y-3"
-              onMouseEnter={() => setIsPrioritiesHovered(true)}
-              onMouseLeave={() => setIsPrioritiesHovered(false)}
-            >
+            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Priorities</h2>
-                {isPrioritiesHovered && (
-                  <Button 
-                    variant="ghost" 
-                    onClick={() => navigate("/dashboard/settings")}
-                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200"
-                  >
+                <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
+                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
                     Edit
-                  </Button>
-                )}
+                  </Button>}
               </div>
               <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
                 <PrioritiesSection />
@@ -851,16 +773,7 @@ const HomeView = ({
                   </div>
                 </div>
                 
-                <Button 
-                  onClick={handleTeamInterest}
-                  size="sm" 
-                  className={`rounded-lg px-4 py-2 text-sm w-full ${
-                    waitlistStatus === 'added' 
-                      ? 'bg-green-600 text-white hover:bg-green-600' 
-                      : 'bg-accent-primary text-white hover:bg-accent-primary/90'
-                  }`}
-                  disabled={waitlistStatus === 'added'}
-                >
+                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
                   {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
                 </Button>
               </div>
@@ -869,15 +782,8 @@ const HomeView = ({
         </div>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
-        <CatchMeUpWithScheduling
-          open={showSchedulingModal}
-          onClose={handleCloseSchedulingModal}
-          onGenerateSummary={handleGenerateSummaryWithScheduling}
-          upcomingBriefName={upcomingBrief.name}
-          upcomingBriefTime={upcomingBrief.scheduledTime}
-        />
+        <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
       </div>
     </div>;
 };
-
 export default React.memo(HomeView);
