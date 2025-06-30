@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -145,21 +144,6 @@ const BriefsContainer = ({
               </div>
             )}
           </div>
-          
-          {/* Bottom section with brief count and view all link - only show when user has briefs */}
-          {!isFirstTimeUser && (
-            <div className="flex justify-between items-center pt-1">
-              <span className="text-sm text-text-secondary">
-                {totalBriefs} brief{totalBriefs !== 1 ? 's' : ''}
-              </span>
-              <button 
-                onClick={onViewAllBriefs} 
-                className="text-sm text-text-secondary hover:text-text-primary transition-colors underline"
-              >
-                View all briefs
-              </button>
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
