@@ -116,6 +116,32 @@ const HomeView = ({
       threadUrl: 'https://app.slack.com/client/T123/C456/p790',
       completed: false,
       lastActivity: '2024-06-29T14:20:00Z'
+    },
+    {
+      id: '4',
+      title: 'Provide feedback on design mockups',
+      source: 'gmail' as const,
+      sender: 'design@company.com',
+      isVip: false,
+      urgency: 'medium' as const,
+      isNew: true,
+      createdAt: '2024-06-29T11:15:00Z',
+      threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
+      completed: false,
+      lastActivity: '2024-06-29T11:15:00Z'
+    },
+    {
+      id: '5',
+      title: 'Update quarterly presentation slides',
+      source: 'slack' as const,
+      sender: 'team@company.com',
+      isVip: false,
+      urgency: 'low' as const,
+      isNew: false,
+      createdAt: '2024-06-28T16:30:00Z',
+      threadUrl: 'https://app.slack.com/client/T123/C456/p791',
+      completed: false,
+      lastActivity: '2024-06-28T16:30:00Z'
     }
   ]);
 
@@ -341,10 +367,24 @@ const HomeView = ({
           <p className="text-light-gray-text text-sm">Ready to catch up or focus?</p>
         </div>
 
-        {/* Condensed Monitoring Section - Replacing Audio Wave */}
+        {/* Condensed Monitoring Section - No background, smaller icons */}
         <div className="flex-shrink-0 mb-3">
           <div className="text-center">
-            <p className="text-white text-sm mb-3">brief-me is monitoring</p>
+            <div className="flex items-center justify-center gap-1 mb-3">
+              <p className="text-white text-sm mr-2">Monitoring:</p>
+              
+              {/* Minimal channel badges - smaller icons, no background */}
+              <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full border border-light-gray-text/20">
+                  <div className="w-3 h-3 bg-purple-500 rounded-sm flex items-center justify-center text-[8px] font-bold text-white">S</div>
+                  <span className="text-xs text-light-gray-text">4</span>
+                </div>
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full border border-light-gray-text/20">
+                  <div className="w-3 h-3 bg-blue-500 rounded-sm flex items-center justify-center text-[8px] font-bold text-white">G</div>
+                  <span className="text-xs text-light-gray-text">3</span>
+                </div>
+              </div>
+            </div>
             
             {/* Status indicator */}
             {currentStatus !== 'active' && (
@@ -372,61 +412,54 @@ const HomeView = ({
                 </Button>
               </div>
             )}
-
-            {/* Condensed Monitoring Badges */}
-            <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
-              <ConnectedChannelsSection showAsHorizontal={false} />
-            </div>
           </div>
         </div>
 
-        {/* Action Items Section - New */}
+        {/* Action Items Section - Minimal design, no background, 5 items */}
         <div className="mb-3 flex-shrink-0">
-          <div className="bg-deep-blue/50 border border-light-gray-text/20 rounded-xl p-3">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-white-text">Action Items ({actionItems.length})</h3>
-              <CheckSquare className="w-4 h-4 text-primary-teal" />
-            </div>
-            <div className="space-y-2 mb-2">
-              {actionItems.slice(0, 2).map((item) => (
-                <div key={item.id} className="bg-deep-blue/30 border border-light-gray-text/10 rounded-lg p-2">
-                  <div className="flex items-center gap-2 mb-1">
-                    {item.isVip && (
+          <div className="space-y-2">
+            {actionItems.slice(0, 5).map((item) => (
+              <div key={item.id} className="py-2 border-b border-light-gray-text/10 last:border-b-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-4 h-4 rounded border border-light-gray-text/30"></div>
+                  <p className="text-sm text-white-text font-medium flex-1">{item.title}</p>
+                </div>
+                <div className="ml-6 flex items-center gap-2 flex-wrap">
+                  <p className="text-xs text-light-gray-text">from {item.sender}</p>
+                  <span className="text-light-gray-text/50">•</span>
+                  <span className="text-xs text-red-400">Jun 28</span>
+                  {item.isVip && (
+                    <>
+                      <span className="text-light-gray-text/50">•</span>
                       <div className="text-green-400">
                         <Star className="w-3 h-3" fill="currentColor" />
                       </div>
-                    )}
-                    {item.priorityPerson && (
+                    </>
+                  )}
+                  {item.priorityPerson && (
+                    <>
+                      <span className="text-light-gray-text/50">•</span>
                       <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-xs px-1 py-0">
                         {item.priorityPerson}
                       </Badge>
-                    )}
-                    {item.triggerKeyword && (
+                    </>
+                  )}
+                  {item.triggerKeyword && (
+                    <>
+                      <span className="text-light-gray-text/50">•</span>
                       <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 text-xs px-1 py-0">
                         {item.triggerKeyword}
                       </Badge>
-                    )}
-                    {item.urgency && (
-                      <Badge variant="secondary" className={`text-xs px-1 py-0 ${
-                        item.urgency === 'critical' ? 'bg-red-500/20 text-red-400' :
-                        item.urgency === 'high' ? 'bg-orange-500/20 text-orange-400' :
-                        item.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-gray-500/20 text-gray-400'
-                      }`}>
-                        {item.urgency}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-xs text-white-text font-medium truncate">{item.title}</p>
-                  <p className="text-xs text-light-gray-text">from {item.sender}</p>
+                    </>
+                  )}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
             <Button 
               onClick={handleViewAllTasks}
               size="sm"
-              variant="outline"
-              className="w-full border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
+              variant="ghost"
+              className="w-full text-light-gray-text hover:text-white-text text-xs mt-2"
             >
               View All Tasks
             </Button>
