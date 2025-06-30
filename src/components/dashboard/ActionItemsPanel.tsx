@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import ActionItemModal from './ActionItemModal';
+
 interface ActionItem {
   id: string;
   title: string;
@@ -209,24 +210,57 @@ const ActionItemsPanel = ({
         </div>
       </div>;
   }
+
   return <>
       <div 
         className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
         onMouseEnter={() => setIsSectionHovered(true)}
         onMouseLeave={() => setIsSectionHovered(false)}
       >
-        {/* Filter indicator */}
-        {filter && <div className="p-3 pb-0">
-            <div className="flex items-center gap-2 text-xs text-text-secondary">
-              <span>Filtered by: {filter}</span>
-              <button onClick={handleClearFilter} className="text-accent-primary hover:text-accent-primary/80">
-                <X className="w-3 h-3" />
-              </button>
+        {/* Top section with filter indicator and action buttons */}
+        <div className="p-4 pb-0">
+          <div className="flex items-center justify-between">
+            {/* Filter indicator */}
+            <div className="flex-1">
+              {filter && (
+                <div className="flex items-center gap-2 text-xs text-text-secondary">
+                  <span>Filtered by: {filter}</span>
+                  <button onClick={handleClearFilter} className="text-accent-primary hover:text-accent-primary/80">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
             </div>
-          </div>}
+            
+            {/* Action buttons - top right */}
+            <div 
+              className="flex items-center gap-3"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {isHovered && (
+                <button 
+                  onClick={handleMarkAllDone} 
+                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
+                >
+                  Mark all done
+                </button>
+              )}
+              {isSectionHovered && (
+                <button 
+                  onClick={onViewAll} 
+                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors flex items-center gap-1"
+                >
+                  View all
+                  <span className="text-xs">›</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Action Items List */}
-        <div className="p-4">
+        <div className="p-4 pt-2">
           <ScrollArea className="max-h-[280px] -mx-1 px-1">
             <div className="space-y-2">
               {openItems.slice(0, 6).map(item => <div key={item.id} onClick={() => handleItemClick(item)} className="group cursor-pointer">
@@ -281,33 +315,6 @@ const ActionItemsPanel = ({
                 </div>)}
             </div>
           </ScrollArea>
-
-          {/* Updated Footer - View all shows only on section hover */}
-          <div 
-            className="flex items-center justify-end mt-3 pt-3 border-t border-border-subtle"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <div className="flex items-center gap-3">
-              {isHovered && (
-                <button 
-                  onClick={handleMarkAllDone} 
-                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
-                >
-                  Mark all done
-                </button>
-              )}
-              {isSectionHovered && (
-                <button 
-                  onClick={onViewAll} 
-                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors flex items-center gap-1"
-                >
-                  View all
-                  <span className="text-xs">›</span>
-                </button>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -318,4 +325,5 @@ const ActionItemsPanel = ({
     }} onMarkDone={handleMarkDone} />
     </>;
 };
+
 export default ActionItemsPanel;
