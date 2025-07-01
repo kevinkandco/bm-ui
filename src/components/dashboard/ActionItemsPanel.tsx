@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -6,11 +6,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import ActionItemModal from './ActionItemModal';
+import { useApi } from '@/hooks/useApi';
 
 interface ActionItem {
   id: string;
   title: string;
-  source: 'slack' | 'gmail';
+  platform: 'slack' | 'gmail';
   sender: string;
   isVip: boolean;
   priorityPerson?: string; // Name or initials of flagged person
@@ -37,61 +38,27 @@ const ActionItemsPanel = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isSectionHovered, setIsSectionHovered] = useState(false);
+  const { call } = useApi();
 
   // Sample action items data with new tagging structure
-  const [actionItems, setActionItems] = useState<ActionItem[]>([{
-    id: '1',
-    title: 'Approve Q3 budget proposal and financial projections',
-    source: 'slack',
-    sender: 'Sarah Chen',
-    isVip: true,
-    priorityPerson: 'Sarah Chen',
-    triggerKeyword: 'budget',
-    urgency: 'critical',
-    isNew: false,
-    createdAt: '2024-06-30T08:00:00Z',
-    threadUrl: 'https://app.slack.com/client/T123/C456/p789',
-    completed: false,
-    lastActivity: '2024-06-30T08:00:00Z'
-  }, {
-    id: '2',
-    title: 'Review contract amendments',
-    source: 'gmail',
-    sender: 'legal@company.com',
-    isVip: false,
-    urgency: 'high',
-    isNew: true,
-    createdAt: '2024-06-30T09:30:00Z',
-    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
-    completed: false,
-    lastActivity: '2024-06-30T09:30:00Z'
-  }, {
-    id: '3',
-    title: 'Sign off on marketing campaign launch plan',
-    source: 'slack',
-    sender: 'Mike Johnson',
-    isVip: true,
-    priorityPerson: 'Mike J',
-    triggerKeyword: 'urgent',
-    urgency: 'critical',
-    isNew: false,
-    createdAt: '2024-06-29T14:20:00Z',
-    threadUrl: 'https://app.slack.com/client/T123/C456/p790',
-    completed: false,
-    lastActivity: '2024-06-29T14:20:00Z'
-  }, {
-    id: '4',
-    title: 'Provide feedback on design mockups',
-    source: 'gmail',
-    sender: 'design@company.com',
-    isVip: false,
-    urgency: 'medium',
-    isNew: true,
-    createdAt: '2024-06-29T11:15:00Z',
-    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
-    completed: false,
-    lastActivity: '2024-06-29T11:15:00Z'
-  }]);
+  const [actionItems, setActionItems] = useState<ActionItem[]>([]);
+
+  const getActionItems = useCallback(async () => {
+      const response = await call("get", `/action-items?limit=4`, {
+        showToast: true,
+        toastTitle: "Failed to Action Items",
+        toastDescription: "Something went wrong getting action items.",
+        returnOnFailure: false,
+      });
+
+      if (!response && !response.data) return;
+      const data = response?.data?.map((item: ActionItem) => ({...item, id: `${item?.platform}-${item.id}`}))
+      setActionItems(data);
+    }, [call]);
+
+    useEffect(() => {
+      getActionItems();
+      }, [getActionItems]);
 
   // Filter and sort action items
   const openItems = actionItems.filter(item => !item.completed).filter(item => {
@@ -257,7 +224,7 @@ const ActionItemsPanel = ({
                   <div className="flex items-start gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors">
                     {/* Source Icon */}
                     <div className="flex-shrink-0 mt-0.5">
-                      {getSourceIcon(item.source)}
+                      {getSourceIcon(item.platform)}
                     </div>
 
                     {/* Checkbox */}
