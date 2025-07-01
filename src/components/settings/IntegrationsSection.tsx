@@ -130,7 +130,6 @@ const IntegrationsSection = () => {
           onToggleCombined={toggleAccountInCombined}
           onDisconnect={disconnectAccount}
           onCreateTag={createTag}
-          onOpenAISettings={handleOpenAISettings}
         />
       </div>
 
