@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Calendar, Clock, Mic, Users, ChevronDown, Pencil, BookOpen, Info, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,6 +39,38 @@ interface Meeting {
 
 const CalendarSection = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([
+    {
+      id: "0",
+      title: "internal project meeting",
+      time: "9:00 AM",
+      duration: "2 hours",
+      attendees: [
+        { name: "Project Team", email: "team@company.com" }
+      ],
+      briefing: "Internal project meeting with the team",
+      aiSummary: "Regular project sync to discuss progress and next steps.",
+      hasProxy: false,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: -180 // Past event
+    },
+    {
+      id: "1.5",
+      title: "demo with steve",
+      time: "1:00 PM",
+      duration: "1 hour",
+      attendees: [
+        { name: "Steve Wilson", email: "steve@company.com" }
+      ],
+      briefing: "Product demo with Steve Wilson",
+      aiSummary: "Demo session to showcase new features and gather feedback.",
+      hasProxy: true,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: -60 // Past event
+    },
     {
       id: "1",
       title: "Test demo",
@@ -169,6 +200,19 @@ const CalendarSection = () => {
   const nextMeeting = meetings.find(m => m.minutesUntil < 120);
   const otherMeetings = meetings.filter(m => m.minutesUntil < 120 && m.id !== nextMeeting?.id);
 
+  // Get all meetings for schedule (sorted by time)
+  const allMeetings = [...meetings].sort((a, b) => {
+    // Convert time to minutes for sorting
+    const timeToMinutes = (timeStr: string) => {
+      const [time, period] = timeStr.split(' ');
+      const [hours, minutes] = time.split(':').map(Number);
+      const hours24 = period === 'PM' && hours !== 12 ? hours + 12 : (period === 'AM' && hours === 12 ? 0 : hours);
+      return hours24 * 60 + (minutes || 0);
+    };
+    
+    return timeToMinutes(a.time) - timeToMinutes(b.time);
+  });
+
   const toggleProxy = (meetingId: string) => {
     setMeetings(prev => prev.map(meeting => 
       meeting.id === meetingId 
@@ -246,7 +290,10 @@ const CalendarSection = () => {
   return (
     <TooltipProvider>
       <div className="w-full space-y-4">
-        {/* Next Meeting Card - Full Detail */}
+        {/* Upcoming header */}
+        <h3 className="text-sm font-medium text-text-primary">Upcoming</h3>
+        
+        {/* Next Meeting Card - Full Detail - No outline */}
         {nextMeeting && (
           <Card 
             className="w-full rounded-xl shadow-none border-0 cursor-pointer hover:shadow-md transition-shadow" 
@@ -257,7 +304,7 @@ const CalendarSection = () => {
             onClick={() => openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
-              <div className="bg-surface-overlay/50 rounded-xl p-4 border border-border-subtle">
+              <div className="bg-surface-overlay/50 rounded-xl p-4">
                 {/* Header with time and chips */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -397,40 +444,70 @@ const CalendarSection = () => {
           </Card>
         )}
 
-        {/* Schedule/Timeline View - Compact with header outside */}
-        {otherMeetings.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
-            <Card className="w-full rounded-xl shadow-none border-0" style={{
-              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-              boxShadow: 'none'
-            }}>
-              <CardContent className="p-4">
-                <div className="relative">
-                  <div className="space-y-3">
-                    {otherMeetings.map((meeting) => (
+        {/* Schedule/Timeline View - Updated layout with timeline */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
+          <Card className="w-full rounded-xl shadow-none border-0" style={{
+            background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
+            boxShadow: 'none'
+          }}>
+            <CardContent className="p-4">
+              <div className="space-y-0">
+                {allMeetings.map((meeting, index) => {
+                  const isPast = meeting.minutesUntil < 0;
+                  const isNext = meeting.id === nextMeeting?.id;
+                  
+                  return (
+                    <div key={meeting.id} className="relative">
+                      {/* Timeline connector */}
+                      {index > 0 && (
+                        <div className={`absolute left-16 top-0 w-0.5 h-4 ${
+                          allMeetings[index - 1].minutesUntil < 0 ? 'bg-red-500' : 'bg-border-subtle'
+                        }`} />
+                      )}
+                      
                       <div 
-                        key={meeting.id} 
-                        className="flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2"
+                        className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
+                          isNext ? 'opacity-100' : 'opacity-80'
+                        }`}
                         onClick={() => openMeetingDetails(meeting)}
                       >
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm text-text-secondary min-w-[80px]">
-                            {meeting.time}
-                          </span>
-                          <span className="text-sm text-text-primary">
+                        {/* Time */}
+                        <div className="text-sm text-text-secondary min-w-[100px] font-mono">
+                          {meeting.time}
+                        </div>
+                        
+                        {/* Title */}
+                        <div className="flex-1">
+                          <span className={`text-sm ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
                             {meeting.title}
                           </span>
                         </div>
-                        <Circle className="w-4 h-4 text-green-500" />
+                        
+                        {/* Status indicator */}
+                        <div className="flex items-center gap-2">
+                          {meeting.hasProxy && (
+                            <div className="w-2 h-2 bg-green-500 rounded-full" />
+                          )}
+                          {meeting.isRecording && (
+                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                          )}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                      
+                      {/* Timeline indicator line - red line shows current time */}
+                      {meeting.minutesUntil < 0 && allMeetings[index + 1]?.minutesUntil >= 0 && (
+                        <div className="absolute left-0 right-0 top-full">
+                          <div className="h-0.5 bg-red-500 w-full" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Instructions Drawer */}
