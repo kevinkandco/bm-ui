@@ -1,121 +1,207 @@
-
 import React, { useState } from "react";
-import { Plus, Settings as SettingsIcon, AlertCircle, X, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import ConnectedAccountsList from "./ConnectedAccountsList";
-import TagManager from "./TagManager";
-import InputIntegrationsSection from "./InputIntegrationsSection";
-import OutputIntegrationsSection from "./OutputIntegrationsSection";
-import { useIntegrationsState } from "./useIntegrationsState";
+import { Zap, Mail, Slack, Google, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import AISettingsModal from "./AISettingsModal";
+
+interface Integration {
+  id: string;
+  type: "email" | "slack" | "google";
+  name: string;
+  description: string;
+  isConnected: boolean;
+}
 
 const IntegrationsSection = () => {
   const { toast } = useToast();
-  const {
-    connectedAccounts,
-    tags,
-    showFirstTimeHelper,
-    addAccount,
-    updateAccountTag,
-    updateAccountName,
-    toggleAccountInCombined,
-    disconnectAccount,
-    createTag,
-    updateTag,
-    deleteTag,
-    mergeTag,
-    dismissFirstTimeHelper
-  } = useIntegrationsState();
+  const [integrations, setIntegrations] = useState<Integration[]>([
+    {
+      id: "gmail",
+      type: "email",
+      name: "Gmail",
+      description: "Connect your Gmail account for email summaries",
+      isConnected: true,
+    },
+    {
+      id: "slack",
+      type: "slack",
+      name: "Slack",
+      description: "Connect your Slack workspace for team updates",
+      isConnected: false,
+    },
+    {
+      id: "google-calendar",
+      type: "google",
+      name: "Google Calendar",
+      description: "Sync your Google Calendar for schedule insights",
+      isConnected: false,
+    },
+  ]);
+  const [isDisconnectModalOpen, setIsDisconnectModalOpen] = useState(false);
+  const [integrationToDisconnect, setIntegrationToDisconnect] = useState<Integration | null>(null);
+  const [aiSettingsOpen, setAiSettingsOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<{ name: string; provider: "email" | "slack" } | null>(null);
 
-  const [showTagManager, setShowTagManager] = useState(false);
-
-  const handleAddAccount = (provider: string, type: 'input' | 'output') => {
-    // Simulate OAuth flow
-    addAccount(provider, type);
+  const handleConnect = (id: string) => {
+    setIntegrations((prevIntegrations) =>
+      prevIntegrations.map((integration) =>
+        integration.id === id ? { ...integration, isConnected: true } : integration
+      )
+    );
     toast({
       title: "Integration Connected",
-      description: `Your ${provider} integration has been connected successfully.`,
+      description: `Successfully connected to ${integrations.find((i) => i.id === id)?.name}.`,
     });
   };
 
-  const hasMultipleTags = tags.length > 1;
+  const handleDisconnect = (id: string) => {
+    const integration = integrations.find((i) => i.id === id);
+    if (integration) {
+      setIntegrationToDisconnect(integration);
+      setIsDisconnectModalOpen(true);
+    }
+  };
+
+  const confirmDisconnect = () => {
+    if (integrationToDisconnect) {
+      setIntegrations((prevIntegrations) =>
+        prevIntegrations.map((integration) =>
+          integration.id === integrationToDisconnect.id ? { ...integration, isConnected: false } : integration
+        )
+      );
+      toast({
+        title: "Integration Disconnected",
+        description: `Successfully disconnected from ${integrationToDisconnect.name}.`,
+      });
+      setIsDisconnectModalOpen(false);
+      setIntegrationToDisconnect(null);
+    }
+  };
+
+  const cancelDisconnect = () => {
+    setIsDisconnectModalOpen(false);
+    setIntegrationToDisconnect(null);
+  };
+
+  const handleOpenAISettings = (accountName: string, provider: "email" | "slack") => {
+    setSelectedAccount({ name: accountName, provider });
+    setAiSettingsOpen(true);
+  };
+
+  const handleSaveAISettings = (emailSettings?: any, slackSettings?: any) => {
+    console.log("Saving AI settings:", { emailSettings, slackSettings });
+    // Here you would typically save to your backend
+  };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-text-primary">Integrations</h2>
-      </div>
-
-      <p className="text-text-secondary">
-        Connect your accounts to automatically pull in data (inputs) or push out tasks and updates (outputs). Organize them with tags and configure what gets processed.
+    <>
+      <h2 className="text-xl font-semibold text-text-primary mb-6">Integrations</h2>
+      <p className="text-text-secondary mb-8">
+        Connect your favorite tools to streamline your workflow and get the most out of Brief Me.
       </p>
 
-      {/* First-Time Helper Banner */}
-      {showFirstTimeHelper && hasMultipleTags && (
-        <div className="relative bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-          <button
-            onClick={dismissFirstTimeHelper}
-            className="absolute top-2 right-2 text-text-secondary hover:text-text-primary"
-          >
-            <X className="h-4 w-4" />
-          </button>
-          <div className="flex items-start space-x-3">
-            <AlertCircle className="h-5 w-5 text-blue-400 mt-0.5" />
-            <div>
-              <h3 className="font-medium text-text-primary">Multiple accounts detected</h3>
-              <p className="text-sm text-text-secondary mt-1">
-                Great! You can organize these accounts with tags and configure what data gets processed.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Connected Accounts List */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-text-primary">Connected Accounts</h3>
-          {tags.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowTagManager(!showTagManager)}
-              className="text-text-secondary hover:text-text-primary"
-            >
-              <SettingsIcon className="mr-2 h-4 w-4" />
-              Manage Tags
-            </Button>
-          )}
-        </div>
-
-        <ConnectedAccountsList
-          accounts={connectedAccounts}
-          tags={tags}
-          onUpdateTag={updateAccountTag}
-          onUpdateAccountName={updateAccountName}
-          onToggleCombined={toggleAccountInCombined}
-          onDisconnect={disconnectAccount}
-          onCreateTag={createTag}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {integrations.map((integration) => (
+          <Card key={integration.id} className="glass-card">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-semibold flex items-center">
+                  {integration.type === "email" && <Mail className="mr-2 h-4 w-4 text-blue-500" />}
+                  {integration.type === "slack" && <Slack className="mr-2 h-4 w-4 text-purple-500" />}
+                  {integration.type === "google" && <Google className="mr-2 h-4 w-4 text-red-500" />}
+                  {integration.name}
+                </CardTitle>
+                <Switch
+                  id={integration.id}
+                  checked={integration.isConnected}
+                  onCheckedChange={(checked) =>
+                    checked ? handleConnect(integration.id) : handleDisconnect(integration.id)
+                  }
+                />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-sm text-text-secondary">
+                {integration.description}
+              </CardDescription>
+              {integration.isConnected && (
+                <div className="mt-4">
+                  {integration.type === "email" && (
+                    <Button
+                      variant="secondary"
+                      className="w-full"
+                      onClick={() => handleOpenAISettings(integration.name, "email")}
+                    >
+                      Configure AI Email Management
+                    </Button>
+                  )}
+                  {integration.type === "slack" && (
+                    <Button
+                      variant="secondary"
+                      className="w-full"
+                      onClick={() => handleOpenAISettings(integration.name, "slack")}
+                    >
+                      Configure AI Message Management
+                    </Button>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Tag Manager */}
-      {showTagManager && (
-        <TagManager
-          tags={tags}
-          onUpdateTag={updateTag}
-          onDeleteTag={deleteTag}
-          onMergeTag={mergeTag}
-          onClose={() => setShowTagManager(false)}
+      <Dialog open={isDisconnectModalOpen} onOpenChange={setIsDisconnectModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Disconnect Integration</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to disconnect from {integrationToDisconnect?.name}?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-start">
+            <Button type="button" variant="secondary" onClick={cancelDisconnect}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={confirmDisconnect}>
+              Disconnect
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {selectedAccount && (
+        <AISettingsModal
+          isOpen={aiSettingsOpen}
+          onClose={() => {
+            setAiSettingsOpen(false);
+            setSelectedAccount(null);
+          }}
+          accountName={selectedAccount.name}
+          provider={selectedAccount.provider}
+          onSave={handleSaveAISettings}
         />
       )}
-
-      {/* Input Integrations */}
-      <InputIntegrationsSection onConnect={handleAddAccount} />
-
-      {/* Output Integrations */}
-      <OutputIntegrationsSection onConnect={handleAddAccount} />
-    </div>
+    </>
   );
 };
 
