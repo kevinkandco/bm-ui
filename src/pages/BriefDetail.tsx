@@ -51,6 +51,7 @@ import { transformToStats } from "@/lib/utils";
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
 import { BaseURL } from "@/config";
+import { title } from "process";
 
 
 const BriefDetail = () => {
@@ -61,7 +62,7 @@ const BriefDetail = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedActionItem, setExpandedActionItem] = useState<number | null>(null);
   // const [allMessagesOpen, setAllMessagesOpen] = useState(false);
-  const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
+  const [selectedActionItem, setSelectedActionItem] = useState<SummaryMassage | null>(null);
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
   const [briefData, setBriefData] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(false);
@@ -177,7 +178,23 @@ const BriefDetail = () => {
       [toast, handlePlayPause, briefData?.audioPath]
     );
 
-  const handleActionClick = (action: string, item: any) => {
+  const handleActionClick = async (action: string, item: SummaryMassage) => {
+
+    const response = await call("post", `/tasks/asana`, {
+      body: {
+        title: item?.title,
+        notes: item?.message,
+      },
+      showToast: true,
+      toastTitle: "Action Failed",
+      toastDescription: `Failed to apply action "${action}" to: ${item.title}`,
+      returnOnFailure: false,
+
+    });
+
+    if (!response) return;
+
+
     toast({
       title: `${action}`,
       description: `Action "${action}" applied to: ${item.title}`
@@ -196,7 +213,7 @@ const BriefDetail = () => {
     setExpandedActionItem(expandedActionItem === itemId ? null : itemId);
   };
 
-  const handleInfoClick = (item: any) => {
+  const handleInfoClick = (item: SummaryMassage) => {
     setSelectedActionItem(item);
     setPriorityModalOpen(true);
   };
@@ -751,22 +768,22 @@ const BriefDetail = () => {
                 setSelectedActionItem(null);
               }}
               actionItem={{
-                id: selectedActionItem.messageId,
-                text: selectedActionItem.title,
-                source: selectedActionItem.source,
-                priority: selectedActionItem.priority,
-                messageId: selectedActionItem.messageId,
-                reasoning: selectedActionItem.justification,
-                fullMessage: selectedActionItem.originalMessage,
-                time: selectedActionItem.time,
-                sender: selectedActionItem.sender,
-                subject: selectedActionItem.subject,
-                channel: selectedActionItem.channel,
-                relevancy: selectedActionItem.relevancy,
-                triggerPhrase: selectedActionItem.triggerPhrase,
-                ruleHit: selectedActionItem.ruleHit,
-                priorityLogic: selectedActionItem.priorityLogic,
-                confidence: selectedActionItem.confidence
+                id: selectedActionItem?.id,
+                text: selectedActionItem?.title,
+                source: selectedActionItem?.message,
+                priority: selectedActionItem?.priority,
+                messageId: selectedActionItem?.messageId,
+                reasoning: selectedActionItem?.justification,
+                fullMessage: selectedActionItem?.originalMessage,
+                time: selectedActionItem?.time,
+                sender: selectedActionItem?.sender,
+                subject: selectedActionItem?.subject,
+                channel: selectedActionItem?.channel,
+                relevancy: selectedActionItem?.relevancy,
+                triggerPhrase: selectedActionItem?.triggerPhrase,
+                ruleHit: selectedActionItem?.ruleHit,
+                priorityLogic: selectedActionItem?.priorityLogic,
+                confidence: selectedActionItem?.confidence
               }}
             />
           )}
