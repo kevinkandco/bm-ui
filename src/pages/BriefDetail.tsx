@@ -51,7 +51,7 @@ import { transformToStats } from "@/lib/utils";
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
 import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
-import { BaseURL } from "@/config";
+import { AUDIO_URL } from "@/config";
 
 
 const BriefDetail = () => {
@@ -85,7 +85,7 @@ const BriefDetail = () => {
     playbackRate,
     updatePlaybackRate
   } = useAudioPlayer(
-    briefData?.audioPath ? BaseURL + briefData?.audioPath : null,
+    briefData?.audioPath ? AUDIO_URL + briefData?.audioPath : null,
     false
   );
 
@@ -203,7 +203,7 @@ const BriefDetail = () => {
   };
 
   const handleDownload = async () => {
-    const downloadUrl = `${BaseURL}/summary/${briefData.id}/download-audio`;
+    const downloadUrl = `${AUDIO_URL}/summary/${briefData.id}/download-audio`;
 
     try {
       const response = await fetch(downloadUrl, {
@@ -465,7 +465,7 @@ const BriefDetail = () => {
                 />
                 <Audio
                   audioSrc={
-                    briefData?.audioPath ? BaseURL + briefData?.audioPath : null
+                    briefData?.audioPath ? AUDIO_URL + briefData?.audioPath : null
                   }
                   audioRef={audioRef}
                 />

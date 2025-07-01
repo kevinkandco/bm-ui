@@ -8,7 +8,7 @@ import Audio from "@/components/dashboard/Audio";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-import { BaseURL } from "@/config";
+import { AUDIO_URL } from "@/config";
 
 interface Voice {
   id: number;
@@ -30,7 +30,7 @@ const Voices = () => {
   const currentAudioUrl = useMemo(() => {
     const audioPath = voices.find((v) => v.id === playingId)?.audio_path;
     if (!audioPath) return null;
-    return audioPath.includes("storage") ? BaseURL + audioPath : audioPath;
+    return audioPath.includes("storage") ? AUDIO_URL + audioPath : audioPath;
   }, [voices, playingId]);
 
   const {
