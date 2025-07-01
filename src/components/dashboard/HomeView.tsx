@@ -662,10 +662,10 @@ const HomeView = ({
           {/* Sidebar - 5 columns (increased from 4) */}
           <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
-            <div className="space-y-3" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
+            <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Action Items (4)</h2>
-                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
+                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
                     View all
                     <ArrowRight className="w-3 h-3" />
                   </Button>}
