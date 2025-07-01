@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Zap, Mail, Slack, Google, X } from "lucide-react";
+import { Zap, Mail, Slack, Calendar, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -127,7 +127,7 @@ const IntegrationsSection = () => {
                 <CardTitle className="text-base font-semibold flex items-center">
                   {integration.type === "email" && <Mail className="mr-2 h-4 w-4 text-blue-500" />}
                   {integration.type === "slack" && <Slack className="mr-2 h-4 w-4 text-purple-500" />}
-                  {integration.type === "google" && <Google className="mr-2 h-4 w-4 text-red-500" />}
+                  {integration.type === "google" && <Calendar className="mr-2 h-4 w-4 text-red-500" />}
                   {integration.name}
                 </CardTitle>
                 <Switch
