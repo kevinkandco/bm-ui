@@ -204,7 +204,7 @@ const ActionItemsPanel = ({
   // Empty state - collapsed single line
   if (openCount === 0) {
     return <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4", className)}>
-        <div className="flex items-center justify-center text-text-secondary">
+        <div className="flex items-center justify-center" style={{ color: '#FF8D1F' }}>
           <span className="text-sm">All clear ✅</span>
         </div>
       </div>;
@@ -222,7 +222,7 @@ const ActionItemsPanel = ({
             {/* Filter indicator */}
             <div className="flex-1">
               {filter && (
-                <div className="flex items-center gap-2 text-xs text-text-secondary">
+                <div className="flex items-center gap-2 text-xs" style={{ color: '#FF8D1F' }}>
                   <span>Filtered by: {filter}</span>
                   <button onClick={handleClearFilter} className="text-accent-primary hover:text-accent-primary/80">
                     <X className="w-3 h-3" />
@@ -240,7 +240,8 @@ const ActionItemsPanel = ({
               {isHovered && (
                 <button 
                   onClick={handleMarkAllDone} 
-                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
+                  className="text-sm hover:text-accent-primary transition-colors"
+                  style={{ color: '#FF8D1F' }}
                 >
                   Mark all done
                 </button>
@@ -268,14 +269,14 @@ const ActionItemsPanel = ({
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       {/* Title */}
-                      <p className="text-text-primary leading-tight mb-1 font-light text-xs">
+                      <p className="leading-tight mb-1 font-light text-xs" style={{ color: '#FF8D1F' }}>
                         {item.title}
                       </p>
                       
                       {/* Tags Row */}
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {/* Sender */}
-                        <span className="text-xs text-text-secondary">
+                        <span className="text-xs" style={{ color: '#FF8D1F' }}>
                           from {item.sender}
                         </span>
                         
@@ -300,7 +301,7 @@ const ActionItemsPanel = ({
                     </div>
 
                     {/* External link icon */}
-                    <ExternalLink className="w-3 h-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" style={{ color: '#FF8D1F' }} />
                   </div>
                 </div>)}
             </div>
