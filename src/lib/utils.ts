@@ -48,14 +48,14 @@ export function getTimePeriod(time: string | undefined | null) {
 export const transformToStats: (data: Summary) => Stats = (data: Summary) => {
   const priorityItems = data.priorityItems || {} as PriorityItems;
 
-  const slack = priorityItems.slack || { low: 0, medium: 0, high: 0, actionable: 0, total_messages: 0 };
-  const gmail = priorityItems.gmail || { low: 0, medium: 0, high: 0, actionable: 0, total_messages: 0 };
+  const slack = priorityItems.slack || { low: 0, medium: 0, high: 0, action: 0, total_messages: 0 };
+  const gmail = priorityItems.gmail || { low: 0, medium: 0, high: 0, action: 0, total_messages: 0 };
 
   const slackCount = slack.total_messages || 0;
   const gmailCount = gmail.total_messages || 0;
 
-  const slackAction = slack.actionable || 0;
-  const gmailAction = gmail.actionable || 0;
+  const slackAction = slack.action || 0;
+  const gmailAction = gmail.action || 0;
 
   const stats: Stats = {
     totalMessagesAnalyzed: {
@@ -103,14 +103,14 @@ export const enrichBriefsWithStats = (briefs: Summary[]) => {
   return briefs.map((brief) => {
     const priorityItems = brief.priorityItems || {} as PriorityItems;
 
-    const slack = priorityItems.slack || { low: 0, medium: 0, high: 0, actionable: 0, total_messages: 0 };
-    const gmail = priorityItems.gmail || { low: 0, medium: 0, high: 0, actionable: 0, total_messages: 0 };
+    const slack = priorityItems.slack || { low: 0, medium: 0, high: 0, action: 0, total_messages: 0 };
+    const gmail = priorityItems.gmail || { low: 0, medium: 0, high: 0, action: 0, total_messages: 0 };
 
     const slackCount = slack.total_messages || 0;
     const gmailCount = gmail.total_messages || 0;
 
-    const slackAction = slack.actionable || 0;
-    const gmailAction = gmail.actionable || 0;
+    const slackAction = slack.action || 0;
+    const gmailAction = gmail.action || 0;
 
     const stats = {
       totalMessagesAnalyzed: {
