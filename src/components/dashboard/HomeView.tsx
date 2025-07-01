@@ -28,7 +28,7 @@ import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
 import Audio from "./Audio";
 import ViewTranscript from "./ViewTranscript";
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
-import { BaseURL } from "@/config";
+import { AUDIO_URL } from "@/config";
 
 interface HomeViewProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -90,7 +90,7 @@ const HomeView = ({
       (v) => v.id === playingBrief
     )?.audioPath;
     if (!audioPath) return null;
-    return audioPath?.includes("storage") ? BaseURL + audioPath : audioPath;
+    return audioPath?.includes("storage") ? AUDIO_URL + audioPath : audioPath;
   }, [recentBriefs, playingBrief]);
 
   const handleAudioEnded = useCallback(() => {
