@@ -67,11 +67,11 @@ const BriefsContainer = ({
       <CardContent className="p-3">
         <div className="space-y-4">
           {/* Today's Briefs Section - Show if there are any briefs from today */}
-          {todaysBriefs.length > 0 && (
+          {briefs?.length > 0 && (
             <div className="pt-2">
               <h3 className="text-sm font-medium text-white-text/80 px-1 mb-2">Today's Briefs</h3>
               <div className="space-y-2">
-                {todaysBriefs.map((brief, index) => (
+                {briefs?.map((brief, index) => (
                   <BriefCard
                     key={brief.id}
                     brief={brief}
