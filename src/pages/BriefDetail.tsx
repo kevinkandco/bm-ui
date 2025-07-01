@@ -49,6 +49,7 @@ import useAudioPlayer from "@/hooks/useAudioPlayer";
 import TranscriptView from "@/components/dashboard/TranscriptView";
 import { transformToStats } from "@/lib/utils";
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
+import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
 import { BaseURL } from "@/config";
 
@@ -265,6 +266,20 @@ const BriefDetail = () => {
         : relevant 
           ? "Thank you for confirming this action item is relevant" 
           : "AI will learn from this feedback to improve future briefs"
+    });
+  };
+
+  const handleActionItemThumbsUp = (itemId: string) => {
+    toast({
+      title: "Action Item Marked Helpful",
+      description: "Thank you for the feedback!"
+    });
+  };
+
+  const handleActionItemSnooze = (itemId: string, reason: any, feedback?: string) => {
+    toast({
+      title: "Action Item Snoozed",
+      description: "This item has been snoozed forever"
     });
   };
 
@@ -573,12 +588,21 @@ const BriefDetail = () => {
                                 </div>
                               )} */}
                             </div>
-                            <div className="ml-2">
-                              {/* <ActionItemFeedback 
-                                itemId={item.messageId} 
-                                onRelevanceFeedback={handleActionItemFeedback}
-                              /> */}
-                            </div>
+
+                              {/* <div className="flex items-center gap-2">
+                              <ActionItemControls
+                                itemId={item?.messageId}
+                                itemTitle={item.title}
+                                sender={item.sender}
+                                onThumbsUp={handleActionItemThumbsUp}
+                                onSnooze={handleActionItemSnooze}
+                                size="sm"
+                              />
+                              <ActionItemFeedback 
+                              itemId={item.messageId} 
+                              onRelevanceFeedback={handleActionItemFeedback}
+                              /> 
+                            </div> */}
                           </div>
                         </TableCell>
                         <TableCell className="px-1">

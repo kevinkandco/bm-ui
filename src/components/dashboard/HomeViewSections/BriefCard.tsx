@@ -5,22 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Summary } from "../types";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useFeedbackTracking } from "../useFeedbackTracking";
 import { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
 import ActionItemFeedback from "../ActionItemFeedback";
-
+import ActionItemControls from "../ActionItemControls";
 interface BriefCardProps {
   brief: Summary;
   onViewBrief: (briefId: number) => void;
@@ -31,7 +21,6 @@ interface BriefCardProps {
   onPlayBrief: (briefId: number) => void;
   audioPlayer: UseAudioPlayerType;
 }
-
 const BriefCard = ({
   brief,
   onViewBrief,
@@ -117,33 +106,29 @@ const BriefCard = ({
   ];
 
   const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
-
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
   };
 
   const timeRange = brief?.start_at && brief?.ended_at ? `${brief?.start_at} - ${brief?.ended_at}` : "";
+
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     updatePlaybackRate(1.0);
     setIsExpanded(true);
     onPlayBrief(brief.id);
   };
-
   const handleAudioToggle = () => {
     handlePlayPause();
   };
-
   const handleSpeedChange = (speed: number) => {
     updatePlaybackRate(speed);
   };
-
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
-
   const handleFeedback = async (type: 'up' | 'down', e: React.MouseEvent) => {
     e.stopPropagation();
     if (feedbackState === type) return; // Already rated
@@ -155,7 +140,6 @@ const BriefCard = ({
       setShowCommentInput(true);
     }
   };
-
   const handleCommentSubmit = async () => {
     if (comment.trim()) {
       await handleSummaryFeedback(brief?.id, 'down', comment.trim());
@@ -165,7 +149,6 @@ const BriefCard = ({
     }
     setShowCommentInput(false);
   };
-
   const handleAddMissingSubmit = async () => {
     if (missingContent.trim()) {
       await handleAddMissingContent(brief?.id, missingContent.trim());
@@ -173,7 +156,6 @@ const BriefCard = ({
     }
     setShowAddMissing(false);
   };
-
   const handleKeyPress = (e: React.KeyboardEvent, type: 'comment' | 'missing') => {
     if (e.key === 'Enter') {
       if (type === 'comment') {
@@ -183,9 +165,19 @@ const BriefCard = ({
       }
     }
   };
-
   const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
     await handleActionRelevance(brief?.id, itemId, relevant, feedback);
+  };
+  const handleActionItemThumbsUp = (itemId: string) => {
+    console.log(`Thumbs up for action item: ${itemId}`);
+    // Add your thumbs up logic here
+  };
+  const handleActionItemSnooze = (itemId: string, reason: any, feedback?: string) => {
+    console.log(`Snoozed action item: ${itemId}`, {
+      reason,
+      feedback
+    });
+    // Add your snooze logic here  
   };
 
   // Extract date and time from the timeCreated string
@@ -194,64 +186,57 @@ const BriefCard = ({
     const [datePart, timePart] = timeCreated.split(', ');
     const time = timePart?.replace(':00 ', '').replace(':00', '') || '8am';
     const formattedTimeRange = timeRange.replace(':00 ', '').replace(':00', '');
-    
+
     // Handle different date formats
     let dateText = datePart;
     if (datePart === 'Today') {
       const today = new Date();
-      dateText = today.toLocaleDateString('en-US', { 
-        month: 'long', 
-        day: 'numeric', 
-        year: 'numeric' 
+      dateText = today.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
       });
     } else if (datePart === 'Yesterday') {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      dateText = yesterday.toLocaleDateString('en-US', { 
-        month: 'long', 
-        day: 'numeric', 
-        year: 'numeric' 
+      dateText = yesterday.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
       });
     }
-    
     return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
   };
-
-  return (
-    <TooltipProvider>
-      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden hover:scale-[1.02] group" style={{
-        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
-      }} onClick={handleCardClick}>
+  return <TooltipProvider>
+      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden group" style={{
+      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
+    }} onClick={handleCardClick}>
         {/* Collapsed Header */}
         <div className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1 min-w-0">
               {/* Play button moved to the left, doc icon removed */}
               <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
-                {playingBrief === brief.id ? (
-                  <div className="flex items-center gap-0.5">
+                {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
                     <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '0ms'
-                    }} />
+                  animationDelay: '0ms'
+                }} />
                     <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '150ms'
-                    }} />
+                  animationDelay: '150ms'
+                }} />
                     <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '300ms'
-                    }} />
+                  animationDelay: '300ms'
+                }} />
                     <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
-                      animationDelay: '450ms'
-                    }} />
-                  </div>
-                ) : (
-                  <Play className="h-5 w-5 text-primary-teal" />
-                )}
+                  animationDelay: '450ms'
+                }} />
+                  </div> : <Play className="h-5 w-5 text-primary-teal" />}
               </button>
               
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold text-white-text truncate">
-                    {brief.title}
+                  <h3 className="text-white-text truncate font-normal text-sm">
+                    {brief?.title}
                   </h3>
                   
                   {/* Feedback Controls - Show on hover, next to brief name */}
@@ -265,20 +250,16 @@ const BriefCard = ({
                   </div>
 
                   {/* Feedback Badge - Always visible when rated */}
-                  {feedbackState === 'up' && (
-                    <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
+                  {feedbackState === 'up' && <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
                       👍
-                    </Badge>
-                  )}
-                  {feedbackState === 'down' && !showCommentInput && (
-                    <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
+                    </Badge>}
+                  {feedbackState === 'down' && !showCommentInput && <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
                       👎
-                    </Badge>
-                  )}
+                    </Badge>}
                 </div>
                 
                 {/* Updated timestamp and range format with date */}
-                <p className="text-xs text-light-gray-text">
+                <p className="text-xs text-light-gray-text font-extralight">
                   Delivered at {brief?.delivery_at} (Summarizing: {timeRange})
                   {/* {formatDeliveryText(brief?.timeCreated, brief?.timeRange)} */}
                 </p>
@@ -305,11 +286,7 @@ const BriefCard = ({
               
               {/* Chevron */}
               <div className="ml-2">
-                {isExpanded ? (
-                  <ChevronUp className="h-4 w-4 text-light-gray-text" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 text-light-gray-text" />
-                )}
+                {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
               </div>
             </div>
           </div>
@@ -333,19 +310,9 @@ const BriefCard = ({
 				</div>
 
           {/* Comment Input for downvote */}
-          {showCommentInput && (
-            <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
-              <Input 
-                placeholder="What did we miss?" 
-                value={comment} 
-                onChange={e => setComment(e.target.value)} 
-                onKeyPress={e => handleKeyPress(e, 'comment')} 
-                onBlur={handleCommentSubmit} 
-                className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" 
-                autoFocus 
-              />
-            </div>
-          )}
+          {showCommentInput && <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
+              <Input placeholder="What did we miss?" value={comment} onChange={e => setComment(e.target.value)} onKeyPress={e => handleKeyPress(e, 'comment')} onBlur={handleCommentSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />
+            </div>}
         </div>
 
         {/* Expanded Content */}
@@ -353,8 +320,7 @@ const BriefCard = ({
           <div className="px-6 pb-6" onClick={e => e.stopPropagation()}>
             <div className="border-t border-white/20 pt-3">
               {/* Audio Player Section - Only show when playing */}
-              {playingBrief === brief.id && (
-                <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
+              {playingBrief === brief.id && <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <button 
@@ -384,27 +350,14 @@ const BriefCard = ({
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-surface-raised border border-white/20">
-                          {playbackSpeeds.map((speed) => (
-                            <DropdownMenuItem
-                              key={speed}
-                              onClick={() => handleSpeedChange(speed)}
-                              className="text-white-text hover:bg-white/10 cursor-pointer"
-                            >
+                          {playbackSpeeds.map(speed => <DropdownMenuItem key={speed} onClick={() => handleSpeedChange(speed)} className="text-white-text hover:bg-white/10 cursor-pointer">
                               {speed}x
-                            </DropdownMenuItem>
-                          ))}
+                            </DropdownMenuItem>)}
                         </DropdownMenuContent>
                       </DropdownMenu>
                       
-                      <button 
-                        onClick={handleMuteToggle}
-                        className="w-6 h-6 flex items-center justify-center text-light-gray-text hover:text-white-text transition-colors"
-                      >
-                        {isMuted ? (
-                          <VolumeX className="h-4 w-4" />
-                        ) : (
-                          <Volume2 className="h-4 w-4" />
-                        )}
+                      <button onClick={handleMuteToggle} className="w-6 h-6 flex items-center justify-center text-light-gray-text hover:text-white-text transition-colors">
+                        {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                       </button>
                     </div>
                   </div>
@@ -421,8 +374,7 @@ const BriefCard = ({
                       className="w-full"
                     />
                   </div>
-                </div>
-              )}
+                </div>}
 
               {/* Time Saved Breakdown - Expanded State */}
               <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
@@ -435,9 +387,8 @@ const BriefCard = ({
               {/* New Stats Grid with Tooltips */}
               <div className="grid grid-cols-5 gap-2 mb-3">
                 {statsConfig.map((stat, index) => {
-                  const IconComponent = stat.icon;
-                  return (
-                    <Tooltip key={index}>
+              const IconComponent = stat.icon;
+              return <Tooltip key={index}>
                       <TooltipTrigger asChild>
                         <div className="flex flex-col items-center p-2 rounded-lg bg-surface-raised/30 cursor-pointer hover:bg-surface-raised/50 transition-colors">
                           <IconComponent className={`h-4 w-4 ${stat.color} mb-1`} />
@@ -457,14 +408,12 @@ const BriefCard = ({
                               <div key={platform} className="flex justify-between text-xs">
                                 <span className="text-text-secondary capitalize">{platform}:</span>
                                 <span className="text-text-primary font-medium">{count}</span>
-                              </div>
-                            ))}
+                              </div>))}
                           </div>
                         </div>
                       </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
+                    </Tooltip>;
+            })}
               </div>
 
               {/* Action Items with Feedback */}
@@ -473,7 +422,7 @@ const BriefCard = ({
                 <div className="space-y-2">
                   {brief?.messages?.slice(0, 5)?.map((item, i) => (
                     <div key={item?.id ? (item?.platform + item?.id) : i} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-1">
                         <div className="flex items-center gap-2">
                           {item?.platform === 'G' ? (
                             <Mail className="h-3 w-3 text-red-400" />
@@ -490,12 +439,12 @@ const BriefCard = ({
                         </div>
                         <span className="text-sm text-text-primary">{item?.title}</span>
                       </div>
-                      {/* <ActionItemFeedback 
-                        itemId={item?.id} 
-                        onRelevanceFeedback={handleActionItemFeedback}
-                      /> */}
-                    </div>
-                  ))}
+                      
+                      {/* <div className="flex items-center gap-2">
+                        <ActionItemControls itemId={item.id} itemTitle={item.title} sender={item.source === 'gmail' ? 'example@company.com' : 'Sarah'} onThumbsUp={handleActionItemThumbsUp} onSnooze={handleActionItemSnooze} size="sm" />
+                        <ActionItemFeedback itemId={item.id} onRelevanceFeedback={handleActionItemFeedback} />
+                      </div> */}
+                    </div>))}
                 </div>
               </div>
 
@@ -503,9 +452,9 @@ const BriefCard = ({
               {/* {!showAddMissing ? (
                 <div className="mb-3">
                   <Button variant="ghost" size="sm" onClick={e => {
-                    e.stopPropagation();
-                    setShowAddMissing(true);
-                  }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
+              e.stopPropagation();
+              setShowAddMissing(true);
+            }} className="text-text-secondary hover:text-text-primary text-xs h-7 px-2">
                     Add what's missing
                   </Button>
                 </div>
@@ -532,21 +481,17 @@ const BriefCard = ({
                   }}>
                     <ExternalLink className="h-3 w-3 mr-1" />
                     Transcript
-                  </Button>
-                )}
+                  </Button>)}
                 <Button size="sm" className="h-7 px-4 text-xs rounded-lg bg-primary-teal hover:bg-accent-green" onClick={e => {
-                  e.stopPropagation();
-                  onViewBrief(brief.id);
-                }}>
+              e.stopPropagation();
+              onViewBrief(brief.id);
+            }}>
                   View Brief
                 </Button>
               </div>
             </div>
-          </div>
-        )}
+          </div>)}
       </div>
-    </TooltipProvider>
-  );
+    </TooltipProvider>;
 };
-
 export default React.memo(BriefCard);

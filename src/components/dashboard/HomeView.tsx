@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -12,6 +12,7 @@ import StatusTimer, {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
@@ -29,6 +30,8 @@ import Audio from "./Audio";
 import ViewTranscript from "./ViewTranscript";
 import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 import { BaseURL } from "@/config";
+import ActionItemsPanel from "./ActionItemsPanel";
+import CalendarSection from "./HomeViewSections/CalendarSection";
 
 interface HomeViewProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -47,7 +50,6 @@ interface HomeViewProps {
   onSignOffForDay: () => void;
   fetchDashboardData: () => void;
 }
-
 const HomeView = ({
   status,
   priorities,
@@ -125,14 +127,102 @@ const HomeView = ({
   const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<'active' | 'focus' | 'offline'>('active');
+  const [isActionItemsHovered, setIsActionItemsHovered] = useState(false);
+  const [isPrioritiesHovered, setIsPrioritiesHovered] = useState(false);
+  const [isBriefsHovered, setIsBriefsHovered] = useState(false);
 
   // Sample connected integrations
-  const connectedIntegrations = [
-    { name: "Slack", channels: 12 },
-    { name: "Gmail", emails: 5 },
-    { name: "Google Calendar", events: 3 }
-  ];
+  const connectedIntegrations = [{
+    name: "Slack",
+    channels: 12
+  }, {
+    name: "Gmail",
+    emails: 5
+  }, {
+    name: "Google Calendar",
+    events: 3
+  }];
 
+  // Sample action items for mobile with proper typing
+  const [actionItems] = useState<Array<{
+    id: string;
+    title: string;
+    source: 'slack' | 'gmail';
+    sender: string;
+    isVip: boolean;
+    priorityPerson?: string;
+    triggerKeyword?: string;
+    urgency?: 'critical' | 'high' | 'medium' | 'low';
+    isNew: boolean;
+    createdAt: string;
+    threadUrl: string;
+    completed: boolean;
+    lastActivity: string;
+  }>>([{
+    id: '1',
+    title: 'Approve Q3 budget proposal',
+    source: 'slack' as const,
+    sender: 'Sarah Chen',
+    isVip: true,
+    priorityPerson: 'Sarah Chen',
+    triggerKeyword: 'budget',
+    urgency: 'critical' as const,
+    isNew: false,
+    createdAt: '2024-06-30T08:00:00Z',
+    threadUrl: 'https://app.slack.com/client/T123/C456/p789',
+    completed: false,
+    lastActivity: '2024-06-30T08:00:00Z'
+  }, {
+    id: '2',
+    title: 'Review contract amendments',
+    source: 'gmail' as const,
+    sender: 'legal@company.com',
+    isVip: false,
+    urgency: 'high' as const,
+    isNew: true,
+    createdAt: '2024-06-30T09:30:00Z',
+    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
+    completed: false,
+    lastActivity: '2024-06-30T09:30:00Z'
+  }, {
+    id: '3',
+    title: 'Sign off on marketing campaign',
+    source: 'slack' as const,
+    sender: 'Mike Johnson',
+    isVip: true,
+    priorityPerson: 'Mike J',
+    triggerKeyword: 'urgent',
+    urgency: 'critical' as const,
+    isNew: false,
+    createdAt: '2024-06-29T14:20:00Z',
+    threadUrl: 'https://app.slack.com/client/T123/C456/p790',
+    completed: false,
+    lastActivity: '2024-06-29T14:20:00Z'
+  }, {
+    id: '4',
+    title: 'Provide feedback on design mockups',
+    source: 'gmail' as const,
+    sender: 'design@company.com',
+    isVip: false,
+    urgency: 'medium' as const,
+    isNew: true,
+    createdAt: '2024-06-29T11:15:00Z',
+    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
+    completed: false,
+    lastActivity: '2024-06-29T11:15:00Z'
+  }, {
+    id: '5',
+    title: 'Update quarterly presentation slides',
+    source: 'slack' as const,
+    sender: 'team@company.com',
+    isVip: false,
+    urgency: 'low' as const,
+    isNew: false,
+    createdAt: '2024-06-28T16:30:00Z',
+    threadUrl: 'https://app.slack.com/client/T123/C456/p791',
+    completed: false,
+    lastActivity: '2024-06-28T16:30:00Z'
+  }]);
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
@@ -145,6 +235,10 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
+const handleViewAllTasks = useCallback(() => {
+  navigate("/dashboard/tasks");
+}, [navigate]);
+
   const handleViewTranscript = useCallback((briefId: number, title: string, transcript: string) => {
     onViewTranscript(briefId, title, transcript);
   }, [onViewTranscript]);
@@ -153,14 +247,11 @@ const HomeView = ({
   const handleGetBriefedNow = useCallback(() => {
     setShowSchedulingModal(true);
   }, []);
-
   const handleCloseSchedulingModal = useCallback(() => {
     setShowSchedulingModal(false);
   }, []);
-
   const handleGenerateSummaryWithScheduling = useCallback((timeDescription: string, skipScheduled?: boolean) => {
     setShowSchedulingModal(false);
-    
     if (skipScheduled) {
       toast({
         title: "Brief Generated",
@@ -168,12 +259,11 @@ const HomeView = ({
       });
     } else {
       toast({
-        title: "Brief Generated", 
+        title: "Brief Generated",
         description: "Your catch-up summary is ready. Your scheduled brief will still arrive on time."
       });
     }
   }, [toast]);
-
   const handleTeamInterest = useCallback(() => {
     setWaitlistStatus('added');
   }, []);
@@ -190,7 +280,6 @@ const HomeView = ({
   const handleStatusChange = useCallback((status: 'focus' | 'offline') => {
     setCurrentStatus(status);
     setShowStatusModal(false);
-    
     if (status === 'focus') {
       onStartFocusMode(30);
       toast({
@@ -200,12 +289,11 @@ const HomeView = ({
     } else if (status === 'offline') {
       onSignOffForDay();
       toast({
-        title: "Offline Mode Activated", 
+        title: "Offline Mode Activated",
         description: "Brief-me will monitor but won't send notifications"
       });
     }
   }, [onStartFocusMode, onSignOffForDay, toast]);
-
   const handleExitStatus = useCallback(() => {
     setCurrentStatus('active');
     toast({
@@ -216,17 +304,26 @@ const HomeView = ({
 
   // Profile dropdown handlers
   const handleProfileClick = useCallback(() => {
-    navigate("/dashboard/settings", { state: { activeSection: "profile" } });
+    navigate("/dashboard/settings", {
+      state: {
+        activeSection: "profile"
+      }
+    });
   }, [navigate]);
-
   const handleIntegrationsClick = useCallback(() => {
-    navigate("/dashboard/settings", { state: { activeSection: "integrations" } });
+    navigate("/dashboard/settings", {
+      state: {
+        activeSection: "integrations"
+      }
+    });
   }, [navigate]);
-
   const handleBriefConfigClick = useCallback(() => {
-    navigate("/dashboard/settings", { state: { activeSection: "brief-config" } });
+    navigate("/dashboard/settings", {
+      state: {
+        activeSection: "brief-config"
+      }
+    });
   }, [navigate]);
-
   const handleAllSettingsClick = useCallback(() => {
     navigate("/dashboard/settings");
   }, [navigate]);
@@ -348,64 +445,78 @@ const HomeView = ({
           </p>
         </div>
 
-        {/* Central Audio Wave with Status - Full Width with reduced padding */}
-        <div className="flex-1 flex flex-col items-center justify-center mx-0 px-0 py-2">
-          <div className="w-full px-8">
-            <div className="w-full h-12 flex items-center justify-center gap-1">
-              {/* Audio Wave Bars */}
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-primary-teal rounded-full transition-all duration-300"
-                  style={{
-                    width: '3px',
-                    height: `${15 + Math.sin((Date.now() / 500) + i * 0.5) * 10}px`,
-                    animation: `audioWave 1.5s ease-in-out infinite`,
-                    animationDelay: `${i * 0.1}s`
-                  }}
-                />
-              ))}
-            </div>
-            <div className="text-center mt-3">
-              {/* Status indicator */}
-              {currentStatus !== 'active' && (
-                <div className="mb-2 flex items-center justify-center gap-2">
-                  <div className="flex items-center gap-1 px-3 py-1 bg-deep-blue border border-light-gray-text/40 rounded-full">
-                    {currentStatus === 'focus' ? (
-                      <>
-                        <Focus className="w-3 h-3 text-primary-teal" />
-                        <span className="text-xs text-white-text">Focus Mode</span>
-                      </>
-                    ) : (
-                      <>
-                        <Clock className="w-3 h-3 text-orange-400" />
-                        <span className="text-xs text-white-text">Offline</span>
-                      </>
-                    )}
-                  </div>
-                  <Button 
-                    onClick={handleExitStatus}
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 px-2 text-xs text-light-gray-text hover:text-white-text"
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
+        {/* Condensed Monitoring Section - No background, smaller icons */}
+        <div className="flex-shrink-0 mb-3">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-1 mb-3">
+              <p className="text-white text-sm mr-2">Monitoring:</p>
+              
+              {/* Minimal channel badges - smaller icons, no background */}
+              <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full border border-light-gray-text/20">
+                  <div className="w-3 h-3 bg-purple-500 rounded-sm flex items-center justify-center text-[8px] font-bold text-white">S</div>
+                  <span className="text-xs text-light-gray-text">4</span>
                 </div>
-              )}
-              <p className="text-white text-sm mb-2">brief-me is monitoring</p>
-              <div className="flex flex-wrap justify-center gap-2 text-xs text-light-gray-text">
-                {connectedIntegrations?.map((integration, index) => (
-                  <span key={integration?.name} className="flex items-center">
-                    <span>{integration?.name}</span>
-                    {integration?.channels && <span className="ml-1">({integration?.channels} channels)</span>}
-                    {integration?.emails && <span className="ml-1">({integration?.emails} emails)</span>}
-                    {integration?.events && <span className="ml-1">({integration?.events} events)</span>}
-                    {index < connectedIntegrations.length - 1 && <span className="mx-1">•</span>}
-                  </span>
-                ))}
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full border border-light-gray-text/20">
+                  <div className="w-3 h-3 bg-blue-500 rounded-sm flex items-center justify-center text-[8px] font-bold text-white">G</div>
+                  <span className="text-xs text-light-gray-text">3</span>
+                </div>
               </div>
             </div>
+            
+            {/* Status indicator */}
+            {currentStatus !== 'active' && <div className="mb-3 flex items-center justify-center gap-2">
+                <div className="flex items-center gap-1 px-3 py-1 bg-deep-blue border border-light-gray-text/40 rounded-full">
+                  {currentStatus === 'focus' ? <>
+                      <Focus className="w-3 h-3 text-primary-teal" />
+                      <span className="text-xs text-white-text">Focus Mode</span>
+                    </> : <>
+                      <Clock className="w-3 h-3 text-orange-400" />
+                      <span className="text-xs text-white-text">Offline</span>
+                    </>}
+                </div>
+                <Button onClick={handleExitStatus} size="sm" variant="ghost" className="h-6 px-2 text-xs text-light-gray-text hover:text-white-text">
+                  <X className="w-3 h-3" />
+                </Button>
+              </div>}
+          </div>
+        </div>
+
+        {/* Action Items Section - Minimal design, no background, 5 items */}
+        <div className="mb-3 flex-shrink-0">
+          <div className="space-y-2">
+            {actionItems.slice(0, 5).map(item => <div key={item.id} className="py-2 border-b border-light-gray-text/10 last:border-b-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-4 h-4 rounded border border-light-gray-text/30"></div>
+                  <p className="text-sm text-white-text font-medium flex-1">{item.title}</p>
+                </div>
+                <div className="ml-6 flex items-center gap-2 flex-wrap">
+                  <p className="text-xs text-light-gray-text">from {item.sender}</p>
+                  <span className="text-light-gray-text/50">•</span>
+                  <span className="text-xs text-red-400">Jun 28</span>
+                  {item.isVip && <>
+                      <span className="text-light-gray-text/50">•</span>
+                      <div className="text-green-400">
+                        <Star className="w-3 h-3" fill="currentColor" />
+                      </div>
+                    </>}
+                  {item.priorityPerson && <>
+                      <span className="text-light-gray-text/50">•</span>
+                      <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 text-xs px-1 py-0">
+                        {item.priorityPerson}
+                      </Badge>
+                    </>}
+                  {item.triggerKeyword && <>
+                      <span className="text-light-gray-text/50">•</span>
+                      <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 text-xs px-1 py-0">
+                        {item.triggerKeyword}
+                      </Badge>
+                    </>}
+                </div>
+              </div>)}
+            <Button onClick={handleViewAllTasks} size="sm" variant="ghost" className="w-full text-light-gray-text hover:text-white-text text-xs mt-2">
+              View All Tasks
+            </Button>
           </div>
         </div>
 
@@ -421,12 +532,7 @@ const HomeView = ({
                 <p className="text-xs text-light-gray-text/70">{upcomingBrief?.title}</p>
                 <p className="text-xs text-light-gray-text/70">{upcomingBrief?.time}</p>
               </div>
-              <Button 
-                onClick={handleGetBriefedNow}
-                size="sm"
-                variant="outline"
-                className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent"
-              >
+              <Button onClick={handleGetBriefedNow} size="sm" variant="outline" className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg text-xs px-3 py-1 h-auto bg-transparent">
                 <Zap className="w-3 h-3 mr-1" />
                 Get Briefed Now
               </Button>
@@ -451,11 +557,7 @@ const HomeView = ({
                   <span className="text-xs text-light-gray-text">{latestBrief.actionItems} Actions</span>
                 </div>
               </div>
-              <Button 
-                onClick={() => onOpenBrief(latestBrief.id)}
-                size="sm"
-                className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto ml-2"
-              >
+              <Button onClick={() => onOpenBrief(latestBrief.id)} size="sm" className="bg-primary-teal text-white-text rounded-lg hover:bg-accent-green text-xs px-3 py-1 h-auto ml-2">
                 View
               </Button>
             </div>
@@ -464,20 +566,14 @@ const HomeView = ({
 
         {/* Action Buttons - Updated with new structure */}
         <div className="flex justify-center items-center gap-4 mb-3 flex-shrink-0 my-[6px] py-[3px]">
-          <Button 
-            onClick={onToggleCatchMeUp}
-            className="flex-1 bg-primary-teal text-white-text rounded-xl px-6 py-3 hover:bg-accent-green"
-          >
+          <Button onClick={onToggleCatchMeUp} className="flex-1 bg-primary-teal text-white-text rounded-xl px-6 py-3 hover:bg-accent-green">
             <Zap className="w-4 h-4 mr-2" />
             Brief Me
           </Button>
 
           <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline"
-                className="flex-1 bg-deep-blue border border-light-gray-text/40 text-light-gray-text rounded-xl px-6 py-3 hover:border-light-gray-text/60"
-              >
+              <Button variant="outline" className="flex-1 bg-deep-blue border border-light-gray-text/40 text-light-gray-text rounded-xl px-6 py-3 hover:border-light-gray-text/60">
                 Set Status
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Button>
@@ -505,11 +601,7 @@ const HomeView = ({
 
         {/* View All Briefs Button */}
         <div className="mb-2 flex-shrink-0">
-          <Button 
-            onClick={handleViewAllBriefs} 
-            variant="outline"
-            className="w-full bg-deep-blue/30 border border-light-gray-text/20 text-light-gray-text rounded-xl px-4 py-3 hover:border-light-gray-text/40 hover:text-white-text"
-          >
+          <Button onClick={handleViewAllBriefs} variant="outline" className="w-full bg-deep-blue/30 border border-light-gray-text/20 text-light-gray-text rounded-xl px-4 py-3 hover:border-light-gray-text/40 hover:text-white-text">
             <Archive className="w-4 h-4 mr-2" />
             View All Briefs ({totalBriefs})
           </Button>
@@ -545,12 +637,10 @@ const HomeView = ({
         {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary mb-2">
+            <h1 className="font-bold text-text-primary mb-2 text-2xl">
               Good morning, {user.name}
             </h1>
-            <p className="text-text-secondary font-light text-gray-50">
-              Let's get you caught up.
-            </p>
+            
           </div>
           
           {/* Updated CTAs on the right with Profile Dropdown */}
@@ -641,14 +731,14 @@ const HomeView = ({
           <ConnectedChannelsSection showAsHorizontal={true} />
         </div>
 
-        {/* Desktop Grid Layout */}
+        {/* Desktop Grid Layout - Adjusted column widths */}
         <div className="grid grid-cols-12 gap-6">
-          {/* Main content - 8 columns */}
-          <div className="col-span-8 space-y-6">
+          {/* Main content - 7 columns (reduced from 8) */}
+          <div className="col-span-7 space-y-6">
             {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Briefs</h2>
+                <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
               </div>
               
               {/* Unified Brief Container with upcoming brief */}
@@ -668,21 +758,36 @@ const HomeView = ({
               />
               <Audio audioSrc={currentAudioUrl} audioRef={audioRef} />
             </div>
-          </div>
 
-          {/* Sidebar - 4 columns */}
-          <div className="col-span-4 space-y-4">
-            {/* Priorities Section with title outside */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-text-primary">Priorities</h2>
-                <Button 
-                  variant="ghost" 
-                  onClick={handleOpenSettings}
-                  className="h-auto p-0 text-sm text-text-secondary hover:text-accent-primary"
-                >
-                  Edit
-                </Button>
+                <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
+              </div>
+              <CalendarSection />
+            </div>
+          </div>
+          
+          {/* Sidebar - 5 columns (increased from 4) */}
+          <div className="col-span-5 space-y-4">
+            {/* Action Items Panel with header outside */}
+            <div className="space-y-3" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-text-primary text-lg">Action Items (4)</h2>
+                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
+                    View all
+                    <ArrowRight className="w-3 h-3" />
+                  </Button>}
+              </div>
+              <ActionItemsPanel />
+            </div>
+            
+            {/* Priorities Section with title outside */}
+            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
+                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
+                    Edit
+                  </Button>}
               </div>
               <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
                 <PrioritiesSection
@@ -784,16 +889,7 @@ const HomeView = ({
                   </div>
                 </div>
                 
-                <Button 
-                  onClick={handleTeamInterest}
-                  size="sm" 
-                  className={`rounded-lg px-4 py-2 text-sm w-full ${
-                    waitlistStatus === 'added' 
-                      ? 'bg-green-600 text-white hover:bg-green-600' 
-                      : 'bg-accent-primary text-white hover:bg-accent-primary/90'
-                  }`}
-                  disabled={waitlistStatus === 'added'}
-                >
+                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
                   {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
                 </Button>
               </div>

@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense, useState, useEffect, memo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,7 +23,7 @@ const Login = lazyImport(() => import("./pages/Login"));
 const Onboarding = lazyImport(() => import("./pages/Onboarding"));
 const Dashboard = lazyImport(() => import("./pages/Dashboard"));
 const BriefsList = lazyImport(() => import("./pages/BriefsList"));
-const TasksList = lazyImport(() => import("./pages/TasksList"));
+const TasksPage = lazyImport(() => import("./pages/TasksPage"));
 const MeetingsList = lazyImport(() => import("./pages/MeetingsList"));
 const CatchUpPage = lazyImport(() => import("./pages/CatchUpPage"));
 const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
@@ -90,7 +89,7 @@ const App = () => (
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/dashboard/briefs" element={<BriefsList />} />
                       <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
-                      <Route path="/dashboard/tasks" element={<TasksList />} />
+                      <Route path="/dashboard/tasks" element={<TasksPage />} />
                       <Route path="/dashboard/meetings" element={<MeetingsList />} />
                       <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
                       <Route path="/dashboard/settings" element={<SettingsPage />} />

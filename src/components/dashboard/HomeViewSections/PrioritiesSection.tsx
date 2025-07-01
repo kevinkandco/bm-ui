@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { Settings, Hash, AlertTriangle, ChevronDown, Slack, Mail, PlugZap, GripVertical } from "lucide-react";
+import { Settings, Hash, AlertTriangle, ChevronDown, Slack, Mail, PlugZap, GripVertical, User, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
@@ -22,10 +23,11 @@ const integrationIcons: Record<string, React.ElementType> = {
 
 const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionProps) => {
 
-  const [peopleOpen, setPeopleOpen] = useState(true);
-  const [channelsOpen, setChannelsOpen] = useState(true);
-  const [triggersOpen, setTriggersOpen] = useState(true);
-  const [integrationsOpen, setIntegrationsOpen] = useState(true);
+  // State for collapsible sections - all set to false (closed) by default
+  const [peopleOpen, setPeopleOpen] = useState(false);
+  const [channelsOpen, setChannelsOpen] = useState(false);
+  const [triggersOpen, setTriggersOpen] = useState(false);
+  const [integrationsOpen, setIntegrationsOpen] = useState(false);
 
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [sections, setSections] = useState([
@@ -85,6 +87,22 @@ const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionP
       case 'channels': setChannelsOpen(isOpen); break;
       case 'triggers': setTriggersOpen(isOpen); break;
       case 'integrations': setIntegrationsOpen(isOpen); break;
+    }
+  };
+
+  const getSectionIcon = (sectionId: string) => {
+    const iconColor = "#B3B8C1";
+    switch (sectionId) {
+      case 'people':
+        return <User className="h-3 w-3" style={{ color: iconColor }} />;
+      case 'channels':
+        return <Hash className="h-3 w-3" style={{ color: iconColor }} />;
+      case 'triggers':
+        return <AlertTriangle className="h-3 w-3" style={{ color: iconColor }} />;
+      case 'integrations':
+        return <Zap className="h-3 w-3" style={{ color: iconColor }} />;
+      default:
+        return null;
     }
   };
 
@@ -214,7 +232,10 @@ const PrioritiesSection = ({priorities, fetchDashboardData} : PrioritiesSectionP
           >
             <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
               <div className="flex items-center gap-2">
-                <GripVertical className="h-3 w-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="flex items-center gap-2">
+                  {getSectionIcon(sectionId)}
+                  <GripVertical className="h-3 w-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
                 <span className="text-xs text-text-secondary font-medium">{title}</span>
                 <span className="text-xs text-text-secondary bg-surface-raised/30 px-1.5 py-0.5 rounded">{count}</span>
               </div>
