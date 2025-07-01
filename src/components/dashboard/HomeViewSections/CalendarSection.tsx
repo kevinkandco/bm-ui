@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Calendar, Clock, Mic, Users, ChevronDown, Pencil, BookOpen, Info, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -75,8 +76,41 @@ const CalendarSection = () => {
     },
     {
       id: "3",
-      title: "review",
+      title: "design review",
       time: "3:30 PM", 
+      duration: "45 min",
+      attendees: [
+        { name: "Design Team", email: "design@company.com" }
+      ],
+      briefing: "Design review session with the design team",
+      aiSummary: "Review of latest design mockups and user interface updates.",
+      hasProxy: true,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: 135
+    },
+    {
+      id: "4",
+      title: "product planning",
+      time: "4:15 PM", 
+      duration: "1 hour",
+      attendees: [
+        { name: "Product Manager", email: "pm@company.com" },
+        { name: "Engineering Lead", email: "eng@company.com" }
+      ],
+      briefing: "Product planning and roadmap discussion",
+      aiSummary: "Strategic planning session for upcoming product features and timeline.",
+      hasProxy: false,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: 180
+    },
+    {
+      id: "5",
+      title: "review",
+      time: "5:00 PM", 
       duration: "1 hour",
       attendees: [
         { name: "Team Lead", email: "lead@company.com" }
@@ -87,12 +121,12 @@ const CalendarSection = () => {
       hasNotes: false,
       summaryReady: false,
       isRecording: false,
-      minutesUntil: 135
+      minutesUntil: 225
     },
     {
-      id: "4",
+      id: "6",
       title: "team standup",
-      time: "4:00 PM", 
+      time: "5:30 PM", 
       duration: "30 min",
       attendees: [
         { name: "Development Team", email: "dev-team@company.com" }
@@ -103,12 +137,12 @@ const CalendarSection = () => {
       hasNotes: false,
       summaryReady: false,
       isRecording: false,
-      minutesUntil: 165
+      minutesUntil: 255
     },
     {
-      id: "5",
+      id: "7",
       title: "client feedback session",
-      time: "5:00 PM", 
+      time: "6:00 PM", 
       duration: "45 min",
       attendees: [
         { name: "Sarah Johnson", email: "sarah@client.com" },
@@ -120,7 +154,7 @@ const CalendarSection = () => {
       hasNotes: false,
       summaryReady: false,
       isRecording: false,
-      minutesUntil: 225
+      minutesUntil: 285
     }
   ]);
 
@@ -363,15 +397,15 @@ const CalendarSection = () => {
           </Card>
         )}
 
-        {/* Schedule/Timeline View - Compact */}
+        {/* Schedule/Timeline View - Compact with header outside */}
         {otherMeetings.length > 0 && (
-          <Card className="w-full rounded-xl shadow-none border-0" style={{
-            background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-            boxShadow: 'none'
-          }}>
-            <CardContent className="p-4">
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium text-text-primary mb-3">Schedule</h3>
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
+            <Card className="w-full rounded-xl shadow-none border-0" style={{
+              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
+              boxShadow: 'none'
+            }}>
+              <CardContent className="p-4">
                 <div className="relative">
                   <div className="space-y-3">
                     {otherMeetings.map((meeting) => (
@@ -393,9 +427,9 @@ const CalendarSection = () => {
                     ))}
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
 
