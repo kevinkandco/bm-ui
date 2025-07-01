@@ -120,72 +120,6 @@ const CalendarSection = () => {
       summaryReady: false,
       isRecording: false,
       minutesUntil: 135
-    },
-    {
-      id: "4",
-      title: "product planning",
-      time: "4:15 PM", 
-      duration: "1 hour",
-      attendees: [
-        { name: "Product Manager", email: "pm@company.com" },
-        { name: "Engineering Lead", email: "eng@company.com" }
-      ],
-      briefing: "Product planning and roadmap discussion",
-      aiSummary: "Strategic planning session for upcoming product features and timeline.",
-      hasProxy: false,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 180
-    },
-    {
-      id: "5",
-      title: "review",
-      time: "5:00 PM", 
-      duration: "1 hour",
-      attendees: [
-        { name: "Team Lead", email: "lead@company.com" }
-      ],
-      briefing: "Weekly review meeting with team lead",
-      aiSummary: "Regular review session to discuss progress and next steps.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 225
-    },
-    {
-      id: "6",
-      title: "team standup",
-      time: "5:30 PM", 
-      duration: "30 min",
-      attendees: [
-        { name: "Development Team", email: "dev-team@company.com" }
-      ],
-      briefing: "Daily team standup meeting",
-      aiSummary: "Quick sync on current tasks and blockers with the development team.",
-      hasProxy: false,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 255
-    },
-    {
-      id: "7",
-      title: "client feedback session",
-      time: "6:00 PM", 
-      duration: "45 min",
-      attendees: [
-        { name: "Sarah Johnson", email: "sarah@client.com" },
-        { name: "Mike Chen", email: "mike@client.com" }
-      ],
-      briefing: "Client feedback session on recent deliverables",
-      aiSummary: "Gathering client feedback on recent project milestones and discussing next phases.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 285
     }
   ]);
 
@@ -293,13 +227,12 @@ const CalendarSection = () => {
         {/* Upcoming header */}
         <h3 className="text-sm font-medium text-text-primary">Upcoming</h3>
         
-        {/* Next Meeting Card - Full Detail - No outline */}
+        {/* Next Meeting Card - Reverted to original version with outline */}
         {nextMeeting && (
           <Card 
-            className="w-full rounded-xl shadow-none border-0 cursor-pointer hover:shadow-md transition-shadow" 
+            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow" 
             style={{
               background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-              boxShadow: 'none'
             }}
             onClick={() => openMeetingDetails(nextMeeting)}
           >
@@ -444,7 +377,7 @@ const CalendarSection = () => {
           </Card>
         )}
 
-        {/* Schedule/Timeline View - Updated layout with timeline */}
+        {/* Schedule section with header above */}
         <div className="space-y-3">
           <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
           <Card className="w-full rounded-xl shadow-none border-0" style={{
