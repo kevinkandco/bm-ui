@@ -677,8 +677,8 @@ const HomeView = ({
             </div>
             
             {/* Priorities Section with title outside */}
-            <Collapsible open={!isPrioritiesCollapsed} onOpenChange={setIsPrioritiesCollapsed}>
-              <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
+            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
+              <Collapsible open={!isPrioritiesCollapsed} onOpenChange={setIsPrioritiesCollapsed}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
@@ -693,16 +693,16 @@ const HomeView = ({
                     </Button>}
                 </div>
                 <CollapsibleContent>
-                  <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
+                  <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl mt-3">
                     <PrioritiesSection />
                   </div>
                 </CollapsibleContent>
-              </div>
-            </Collapsible>
+              </Collapsible>
+            </div>
             
             {/* Brief Me Teams - With enhanced blurred background mockups */}
-            <Collapsible open={!isTeamsCollapsed} onOpenChange={setIsTeamsCollapsed}>
-              <div className="space-y-3">
+            <div className="space-y-3">
+              <Collapsible open={!isTeamsCollapsed} onOpenChange={setIsTeamsCollapsed}>
                 <div className="flex items-center gap-2">
                   <h2 className="font-semibold text-text-primary text-lg">Brief Me Teams</h2>
                   <CollapsibleTrigger asChild>
@@ -713,7 +713,7 @@ const HomeView = ({
                 </div>
                 
                 <CollapsibleContent>
-                  <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+                  <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden mt-3">
                     {/* Enhanced blurred background mockups */}
                     <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
                       <div className="grid grid-cols-2 gap-4 h-full p-4">
@@ -808,8 +808,8 @@ const HomeView = ({
                     </div>
                   </div>
                 </CollapsibleContent>
-              </div>
-            </Collapsible>
+              </Collapsible>
+            </div>
           </div>
         </div>
 
