@@ -677,45 +677,41 @@ const HomeView = ({
             </div>
             
             {/* Priorities Section with title outside */}
-            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
-                  <Collapsible open={!isPrioritiesCollapsed} onOpenChange={setIsPrioritiesCollapsed}>
+            <Collapsible open={!isPrioritiesCollapsed} onOpenChange={setIsPrioritiesCollapsed}>
+              <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
                         {isPrioritiesCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       </Button>
                     </CollapsibleTrigger>
-                  </Collapsible>
+                  </div>
+                  {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
+                      Edit
+                    </Button>}
                 </div>
-                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
-                    Edit
-                  </Button>}
-              </div>
-              <Collapsible open={!isPrioritiesCollapsed} onOpenChange={setIsPrioritiesCollapsed}>
                 <CollapsibleContent>
                   <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
                     <PrioritiesSection />
                   </div>
                 </CollapsibleContent>
-              </Collapsible>
-            </div>
+              </div>
+            </Collapsible>
             
             {/* Brief Me Teams - With enhanced blurred background mockups */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <h2 className="font-semibold text-text-primary text-lg">Brief Me Teams</h2>
-                <Collapsible open={!isTeamsCollapsed} onOpenChange={setIsTeamsCollapsed}>
+            <Collapsible open={!isTeamsCollapsed} onOpenChange={setIsTeamsCollapsed}>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <h2 className="font-semibold text-text-primary text-lg">Brief Me Teams</h2>
                   <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
                       {isTeamsCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </Button>
                   </CollapsibleTrigger>
-                </Collapsible>
-              </div>
-              
-              <Collapsible open={!isTeamsCollapsed} onOpenChange={setIsTeamsCollapsed}>
+                </div>
+                
                 <CollapsibleContent>
                   <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
                     {/* Enhanced blurred background mockups */}
@@ -812,8 +808,8 @@ const HomeView = ({
                     </div>
                   </div>
                 </CollapsibleContent>
-              </Collapsible>
-            </div>
+              </div>
+            </Collapsible>
           </div>
         </div>
 
