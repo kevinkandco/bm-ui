@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronUp, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +10,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
@@ -53,10 +52,6 @@ const HomeView = ({
   const [isActionItemsHovered, setIsActionItemsHovered] = useState(false);
   const [isPrioritiesHovered, setIsPrioritiesHovered] = useState(false);
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
-  const [isTeamsHovered, setIsTeamsHovered] = useState(false);
-  const [isActionItemsCollapsed, setIsActionItemsCollapsed] = useState(false);
-  const [isPrioritiesCollapsed, setIsPrioritiesCollapsed] = useState(false);
-  const [isTeamsCollapsed, setIsTeamsCollapsed] = useState(false);
 
   // Sample connected integrations
   const connectedIntegrations = [{
@@ -668,174 +663,125 @@ const HomeView = ({
           <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
             <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
-              <Collapsible open={!isActionItemsCollapsed} onOpenChange={setIsActionItemsCollapsed}>
-                <div className="flex items-center justify-between">
-                  <h2 className="font-semibold text-text-primary text-lg">Follow ups (4)</h2>
-                  <div className="flex items-center gap-2">
-                    {isActionItemsHovered && (
-                      <>
-                        <Button variant="ghost" onClick={handleViewAllTasks} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
-                          View all
-                          <ArrowRight className="w-3 h-3" />
-                        </Button>
-                        <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
-                            {isActionItemsCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <CollapsibleContent>
-                  <div className="mt-3">
-                    <ActionItemsPanel />
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-text-primary text-lg">Follow ups (4)</h2>
+                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
+                    View all
+                    <ArrowRight className="w-3 h-3" />
+                  </Button>}
+              </div>
+              <ActionItemsPanel />
             </div>
             
             {/* Priorities Section with title outside */}
             <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
-              <Collapsible open={!isPrioritiesCollapsed} onOpenChange={setIsPrioritiesCollapsed}>
-                <div className="flex items-center justify-between">
-                  <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
-                  <div className="flex items-center gap-2">
-                    {isPrioritiesHovered && (
-                      <>
-                        <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
-                          Edit
-                        </Button>
-                        <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
-                            {isPrioritiesCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <CollapsibleContent>
-                  <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl mt-3">
-                    <PrioritiesSection />
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
+                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
+                    Edit
+                  </Button>}
+              </div>
+              <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
+                <PrioritiesSection />
+              </div>
             </div>
             
             {/* Brief Me Teams - With enhanced blurred background mockups */}
-            <div className="space-y-3" onMouseEnter={() => setIsTeamsHovered(true)} onMouseLeave={() => setIsTeamsHovered(false)}>
-              <Collapsible open={!isTeamsCollapsed} onOpenChange={setIsTeamsCollapsed}>
-                <div className="flex items-center justify-between">
-                  <h2 className="font-semibold text-text-primary text-lg">Brief Me Teams</h2>
-                  <div className="flex items-center gap-2">
-                    {isTeamsHovered && (
-                      <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
-                          {isTeamsCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                        </Button>
-                      </CollapsibleTrigger>
-                    )}
-                  </div>
-                </div>
-                
-                <CollapsibleContent>
-                  <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden mt-3">
-                    {/* Enhanced blurred background mockups */}
-                    <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
-                      <div className="grid grid-cols-2 gap-4 h-full p-4">
-                        {/* Team card mockup */}
-                        <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-xl p-4 shadow-lg">
-                          {/* Team header with profile pics */}
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className="flex -space-x-2">
-                              <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                              <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                              <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                              <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
-                                <span className="text-xs text-white/90 font-medium">+5</span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Team stats bars */}
-                          <div className="space-y-3 mb-4">
-                            <div className="bg-white/40 rounded-full h-3 w-full"></div>
-                            <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
-                            <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
-                          </div>
-                          
-                          {/* Team name */}
-                          <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
-                        </div>
-                        
-                        {/* Analytics card mockup */}
-                        <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
-                          {/* Chart header */}
-                          <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
-                          
-                          {/* Mock chart bars - more detailed */}
-                          <div className="flex items-end gap-2 h-16 mb-3">
-                            <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
-                            <div className="bg-accent-primary/70 rounded-sm w-3 h-12"></div>
-                            <div className="bg-accent-primary/70 rounded-sm w-3 h-6"></div>
-                            <div className="bg-accent-primary/70 rounded-sm w-3 h-14"></div>
-                            <div className="bg-accent-primary/70 rounded-sm w-3 h-10"></div>
-                            <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
-                            <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
-                          </div>
-                          
-                          {/* Analytics labels */}
-                          <div className="space-y-2">
-                            <div className="bg-white/35 rounded h-2 w-full"></div>
-                            <div className="bg-white/30 rounded h-2 w-3/4"></div>
-                            <div className="bg-white/25 rounded h-2 w-5/6"></div>
-                          </div>
+            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+              {/* Enhanced blurred background mockups */}
+              <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
+                <div className="grid grid-cols-2 gap-4 h-full p-4">
+                  {/* Team card mockup */}
+                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-xl p-4 shadow-lg">
+                    {/* Team header with profile pics */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex -space-x-2">
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
+                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
+                          <span className="text-xs text-white/90 font-medium">+5</span>
                         </div>
                       </div>
                     </div>
                     
-                    {/* Clear content with better contrast */}
-                    <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Users className="h-5 w-5" />
-                        <span className="text-text-secondary text-sm">Coming soon...</span>
-                      </div>
-                      
-                      <div className="space-y-2 mb-6">
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                          <p className="text-sm text-text-primary">AI meeting proxy</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                          <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                          <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                          <p className="text-sm text-text-primary">Team analytics</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                          <p className="text-sm text-text-primary">and more...</p>
-                        </div>
-                      </div>
-                      
-                      <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
-                        {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
-                      </Button>
+                    {/* Team stats bars */}
+                    <div className="space-y-3 mb-4">
+                      <div className="bg-white/40 rounded-full h-3 w-full"></div>
+                      <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
+                      <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
+                    </div>
+                    
+                    {/* Team name */}
+                    <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
+                  </div>
+                  
+                  {/* Analytics card mockup */}
+                  <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
+                    {/* Chart header */}
+                    <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
+                    
+                    {/* Mock chart bars - more detailed */}
+                    <div className="flex items-end gap-2 h-16 mb-3">
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-12"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-6"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-14"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-10"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
+                      <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
+                    </div>
+                    
+                    {/* Analytics labels */}
+                    <div className="space-y-2">
+                      <div className="bg-white/35 rounded h-2 w-full"></div>
+                      <div className="bg-white/30 rounded h-2 w-3/4"></div>
+                      <div className="bg-white/25 rounded h-2 w-5/6"></div>
                     </div>
                   </div>
-                </CollapsibleContent>
-              </Collapsible>
+                </div>
+              </div>
+              
+              {/* Clear content with better contrast */}
+              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
+                <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Brief Me Teams
+                </h2>
+                
+                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
+                
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">AI meeting proxy</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">Team analytics</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                    <p className="text-sm text-text-primary">and more...</p>
+                  </div>
+                </div>
+                
+                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
+                  {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
