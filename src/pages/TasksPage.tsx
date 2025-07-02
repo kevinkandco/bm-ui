@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import ActionItemModal from '@/components/dashboard/ActionItemModal';
 import { ActionItem } from '@/components/dashboard/types';
 import { useApi } from '@/hooks/useApi';
+import Pagination from '@/components/dashboard/Pagination';
 
 const TasksPage = () => {
   const { toast } = useToast();
@@ -17,13 +18,19 @@ const TasksPage = () => {
   const [filter, setFilter] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    itemsPerPage: 2,
+  });
+  console.log(pagination);
   const { call } = useApi();
   
   // Sample action items data with new tagging structure
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
 
-  const getActionItems = useCallback(async () => {
-    const response = await call("get", `/action-items?parPage=4`, {
+  const getActionItems = useCallback(async (page = 1) => {
+    const response = await call("get", `/action-items?par_page=10&page=${page}`, {
       showToast: true,
       toastTitle: "Failed to Action Items",
       toastDescription: "Something went wrong getting action items.",
@@ -57,6 +64,11 @@ const TasksPage = () => {
     };
     
     const data = response?.data?.map(transformToActionItem);
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: response?.meta?.current_page || 1,
+      totalPages: response?.meta?.last_page || 1,
+    }));
     setActionItems(data);
   }, [call]);
 
@@ -370,6 +382,13 @@ const TasksPage = () => {
               <h3 className="text-lg font-medium text-text-primary mb-2">All clear!</h3>
               <p className="text-text-secondary">No action items to show</p>
             </div>
+          )}
+          {pagination.totalPages > 1 && (
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              onPageChange={getActionItems}
+            />
           )}
         </div>
       </div>
