@@ -132,7 +132,7 @@ const TasksPage = () => {
 
     if (!response && !response.data) return;
 
-    await getActionItems();
+    await getActionItems(pagination.currentPage);
     
     // Toast with undo option
     toast({
@@ -153,23 +153,51 @@ const TasksPage = () => {
 
           if (!response && !response.data) return;
 
-          await getActionItems();
+          await getActionItems(pagination.currentPage);
       }}>
           Undo
         </Button>
     });
-  }, [call, toast, getActionItems]);
+  }, [call, toast, getActionItems, pagination]);
 
-  const handleMarkAllDone = useCallback(() => {
-    setActionItems(prev => 
-      prev.map(item => ({ ...item, completed: true }))
-    );
+  const groupTaskIdsByPlatform = useCallback((data: ActionItem[]) => {
+    const result = {
+      slack_task: [] as number[],
+      gmail_task: [] as number[],
+    };
+
+    for (const item of data) {
+      const itemId = Number(item?.id?.replace(`${item?.platform}-`, '') || '');
+      if (item.platform === "slack") {
+        result.slack_task.push(itemId);
+      } else if (item.platform === "gmail") {
+        result.gmail_task.push(itemId);
+      }
+    }
+
+    return result;
+  }, [])
+
+  const handleMarkAllDone = useCallback(async () => {
+    const body = groupTaskIdsByPlatform(actionItems);
+
+    const response = await call("post", `/action-item/mark-all`, {
+        body,
+        showToast: true,
+        toastTitle: "Failed to Mark Done",
+        toastDescription: "Something went wrong. Please try again.",
+        returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
+    await getActionItems(pagination.currentPage);
     
     toast({
       title: "All Items Completed",
       description: "All action items marked as done"
     });
-  }, [toast]);
+  }, [toast, actionItems, groupTaskIdsByPlatform, call, pagination, getActionItems]);
 
   const handleUpdatePriority = useCallback(async (selectedItem: ActionItem, newUrgency: 'critical' | 'high' | 'medium' | 'low') => {
     const itemId = selectedItem?.id?.replace(`${selectedItem?.platform}-`, '') || '';
