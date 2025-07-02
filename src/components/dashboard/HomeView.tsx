@@ -53,6 +53,8 @@ const HomeView = ({
   const [isActionItemsHovered, setIsActionItemsHovered] = useState(false);
   const [isPrioritiesHovered, setIsPrioritiesHovered] = useState(false);
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
+  const [isTeamsHovered, setIsTeamsHovered] = useState(false);
+  const [isActionItemsCollapsed, setIsActionItemsCollapsed] = useState(false);
   const [isPrioritiesCollapsed, setIsPrioritiesCollapsed] = useState(false);
   const [isTeamsCollapsed, setIsTeamsCollapsed] = useState(false);
 
@@ -666,31 +668,52 @@ const HomeView = ({
           <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
             <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Follow ups (4)</h2>
-                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
-                    View all
-                    <ArrowRight className="w-3 h-3" />
-                  </Button>}
-              </div>
-              <ActionItemsPanel />
+              <Collapsible open={!isActionItemsCollapsed} onOpenChange={setIsActionItemsCollapsed}>
+                <div className="flex items-center justify-between">
+                  <h2 className="font-semibold text-text-primary text-lg">Follow ups (4)</h2>
+                  <div className="flex items-center gap-2">
+                    {isActionItemsHovered && (
+                      <>
+                        <Button variant="ghost" onClick={handleViewAllTasks} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200">
+                          View all
+                          <ArrowRight className="w-3 h-3" />
+                        </Button>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
+                            {isActionItemsCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <CollapsibleContent>
+                  <div className="mt-3">
+                    <ActionItemsPanel />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
             
             {/* Priorities Section with title outside */}
             <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
               <Collapsible open={!isPrioritiesCollapsed} onOpenChange={setIsPrioritiesCollapsed}>
                 <div className="flex items-center justify-between">
+                  <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
                   <div className="flex items-center gap-2">
-                    <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
-                        {isPrioritiesCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </Button>
-                    </CollapsibleTrigger>
+                    {isPrioritiesHovered && (
+                      <>
+                        <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
+                          Edit
+                        </Button>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
+                            {isPrioritiesCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </>
+                    )}
                   </div>
-                  {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
-                      Edit
-                    </Button>}
                 </div>
                 <CollapsibleContent>
                   <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl mt-3">
@@ -701,15 +724,19 @@ const HomeView = ({
             </div>
             
             {/* Brief Me Teams - With enhanced blurred background mockups */}
-            <div className="space-y-3">
+            <div className="space-y-3" onMouseEnter={() => setIsTeamsHovered(true)} onMouseLeave={() => setIsTeamsHovered(false)}>
               <Collapsible open={!isTeamsCollapsed} onOpenChange={setIsTeamsCollapsed}>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between">
                   <h2 className="font-semibold text-text-primary text-lg">Brief Me Teams</h2>
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
-                      {isTeamsCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                    </Button>
-                  </CollapsibleTrigger>
+                  <div className="flex items-center gap-2">
+                    {isTeamsHovered && (
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
+                          {isTeamsCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </Button>
+                      </CollapsibleTrigger>
+                    )}
+                  </div>
                 </div>
                 
                 <CollapsibleContent>
