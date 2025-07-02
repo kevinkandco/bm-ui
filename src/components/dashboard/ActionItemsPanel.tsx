@@ -30,7 +30,7 @@ const ActionItemsPanel = ({
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
 
   const getActionItems = useCallback(async () => {
-    const response = await call("get", `/action-items?parPage=4`, {
+    const response = await call("get", `/action-items?par_page=4`, {
       showToast: true,
       toastTitle: "Failed to Action Items",
       toastDescription: "Something went wrong getting action items.",

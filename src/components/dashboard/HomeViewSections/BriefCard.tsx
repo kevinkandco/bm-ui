@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward, BarChart3, AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Summary } from "../types";
+import { ActionItem, Summary } from "../types";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -49,6 +49,7 @@ const BriefCard = ({
   const [showAddMissing, setShowAddMissing] = useState(false);
   const [comment, setComment] = useState("");
   const [missingContent, setMissingContent] = useState("");
+  const [actionItems, setActionItems] = useState<ActionItem[]>([]);  
   
   const {
     handleSummaryFeedback,
@@ -65,7 +66,29 @@ const BriefCard = ({
 
   useEffect(() => {
     setFeedbackState(brief?.vote ? brief?.vote === "like" ? "up" : "down" : "none");
-  }, [brief?.vote]);
+
+    const transformToActionItem = (item: any): ActionItem => {
+      return {
+        id: String(`${item?.platform}-${item.id}`),
+        title: item.title,
+        platform: item.platform,
+        message: item?.message,
+        sender: item?.sender || "Unknown",
+        isVip: false, // Placeholder – set via business logic
+        priorityPerson: undefined, // Set if needed by keyword/name detection
+        triggerKeyword: undefined, // Set if keyword-based filtering is applied
+        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        isNew: !item.status,
+        createdAt: item.created_at,
+        threadUrl: item.redirect_link,
+        completed: item.status,
+        vote: item?.vote
+      };
+    };
+
+    const data = brief?.messages?.map(transformToActionItem);
+    setActionItems(data);
+  }, [brief?.vote, brief?.messages]);
 
   const statsConfig = [
     {
@@ -167,10 +190,6 @@ const BriefCard = ({
   };
   const handleActionItemFeedback = async (itemId: string, relevant: boolean, feedback?: string) => {
     await handleActionRelevance(brief?.id, itemId, relevant, feedback);
-  };
-  const handleActionItemThumbsUp = (itemId: string) => {
-    console.log(`Thumbs up for action item: ${itemId}`);
-    // Add your thumbs up logic here
   };
   const handleActionItemSnooze = (itemId: string, reason: any, feedback?: string) => {
     console.log(`Snoozed action item: ${itemId}`, {
@@ -420,30 +439,30 @@ const BriefCard = ({
               <div className="mb-3">
                 <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
                 <div className="space-y-2">
-                  {brief?.messages?.slice(0, 5)?.map((item, i) => (
+                  {actionItems?.slice(0, 5)?.map((item, i) => (
                     <div key={item?.id ? (item?.platform + item?.id) : i} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
                       <div className="flex items-center gap-3 flex-1">
                         <div className="flex items-center gap-2">
-                          {item?.platform === 'G' ? (
+                          {item?.platform === 'gmail' ? (
                             <Mail className="h-3 w-3 text-red-400" />
                           ) : (
                             <MessageSquare className="h-3 w-3 text-purple-400" />
                           )}
                           <Badge className={`text-xs px-1 py-0 ${
-                            item?.priority === 'high' ? 'bg-red-500/20 text-red-400' :
-                            item?.priority === 'medium' ? 'bg-orange-500/20 text-orange-400' :
+                            item?.urgency === 'high' ? 'bg-red-500/20 text-red-400' :
+                            item?.urgency === 'medium' ? 'bg-orange-500/20 text-orange-400' :
                             'bg-gray-500/20 text-gray-400'
                           }`}>
-                            {item?.priority}
+                            {item?.urgency}
                           </Badge>
                         </div>
                         <span className="text-sm text-text-primary">{item?.title}</span>
                       </div>
                       
-                      {/* <div className="flex items-center gap-2">
-                        <ActionItemControls itemId={item.id} itemTitle={item.title} sender={item.source === 'gmail' ? 'example@company.com' : 'Sarah'} onThumbsUp={handleActionItemThumbsUp} onSnooze={handleActionItemSnooze} size="sm" />
+                      <div className="flex items-center gap-2">
+                        <ActionItemControls itemId={item.id} itemTitle={item.title} sender={item?.sender} platform={item?.platform} vote={item?.vote} onSnooze={handleActionItemSnooze} size="sm" />
                         <ActionItemFeedback itemId={item.id} onRelevanceFeedback={handleActionItemFeedback} />
-                      </div> */}
+                      </div>
                     </div>))}
                 </div>
               </div>

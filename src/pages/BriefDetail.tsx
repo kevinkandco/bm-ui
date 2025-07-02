@@ -296,9 +296,10 @@ const BriefDetail = () => {
   };
 
   const getSourceIcon = (source: string) => {
+    console.log(source);
     switch (source) {
-      case "G": return <Mail className="h-4 w-4 text-red-400" />;
-      case "S": return <MessageSquare className="h-4 w-4 text-purple-400" />;
+      case "gmail": return <Mail className="h-4 w-4 text-red-400" />;
+      case "slack": return <MessageSquare className="h-4 w-4 text-purple-400" />;
       default: return <MessageSquare className="h-4 w-4" />;
     }
   };

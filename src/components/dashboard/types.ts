@@ -147,18 +147,19 @@ export interface Priorities {
 }
 
 export interface ActionItem {
-  id: string;
-  title: string;
-  platform: 'slack' | 'gmail';
-  message: string;
-  sender: string;
-  isVip: boolean;
+  id?: string;
+  title?: string;
+  platform?: 'slack' | 'gmail';
+  message?: string;
+  sender?: string;
+  isVip?: boolean;
   priorityPerson?: string; // Name or initials of flagged person
   triggerKeyword?: string; // Matched trigger keyword
   urgency?: 'critical' | 'high' | 'medium' | 'low';
-  isNew: boolean;
-  createdAt: string;
-  threadUrl: string;
-  completed: boolean;
-  lastActivity: string;
+  isNew?: boolean;
+  createdAt?: string;
+  threadUrl?: string;
+  completed?: boolean;
+  lastActivity?: string;
+  vote?: boolean;
 }

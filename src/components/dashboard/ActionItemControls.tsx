@@ -9,12 +9,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import SnoozeReasonModal, { SnoozeReason } from "./SnoozeReasonModal";
+import { useApi } from "@/hooks/useApi";
 
 interface ActionItemControlsProps {
-  itemId: number | string;
+  itemId: string;
   itemTitle: string;
   sender?: string;
-  onThumbsUp?: (itemId: string) => void;
+  platform: "slack" | "gmail";
+  vote: boolean;
   onSnooze?: (itemId: string, reason: SnoozeReason, feedback?: string) => void;
   className?: string;
   size?: "sm" | "default";
@@ -24,19 +26,36 @@ const ActionItemControls = ({
   itemId, 
   itemTitle,
   sender,
-  onThumbsUp, 
+  platform,
+  vote,
   onSnooze, 
   className = "", 
   size = "default" 
 }: ActionItemControlsProps) => {
-  const [thumbsUpActive, setThumbsUpActive] = useState(false);
+  const [thumbsUpActive, setThumbsUpActive] = useState(vote);
   const [snoozed, setSnoozed] = useState(false);
   const [showSnoozeModal, setShowSnoozeModal] = useState(false);
+  const { call } = useApi();
+  
 
-  const handleThumbsUp = (e: React.MouseEvent) => {
+  const handleThumbsUp = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    const response = await call("post", `/action-item/update`, {
+      body: {
+        id: itemId?.replace(`${platform}-`, ''),
+        platform: platform,
+        vote: true
+      },
+        showToast: true,
+        toastTitle: "Failed to Mark Done",
+        toastDescription: "Something went wrong. Please try again.",
+        returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
     setThumbsUpActive(true);
-    onThumbsUp?.(itemId);
   };
 
   const handleSnoozeClick = (e: React.MouseEvent) => {
