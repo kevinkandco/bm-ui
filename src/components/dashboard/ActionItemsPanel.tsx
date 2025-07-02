@@ -7,22 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import ActionItemModal from './ActionItemModal';
 import { useApi } from '@/hooks/useApi';
+import { ActionItem } from './types';
 
-interface ActionItem {
-  id: string;
-  title: string;
-  platform: 'slack' | 'gmail';
-  sender: string;
-  isVip: boolean;
-  priorityPerson?: string; // Name or initials of flagged person
-  triggerKeyword?: string; // Matched trigger keyword
-  urgency?: 'critical' | 'high' | 'medium' | 'low';
-  isNew: boolean;
-  createdAt: string;
-  threadUrl: string;
-  completed: boolean;
-  lastActivity: string;
-}
 interface ActionItemsPanelProps {
   className?: string;
   onViewAll: () => void;
@@ -44,7 +30,7 @@ const ActionItemsPanel = ({
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
 
   const getActionItems = useCallback(async () => {
-      const response = await call("get", `/action-items?limit=4`, {
+      const response = await call("get", `/action-items?parPage=4`, {
         showToast: true,
         toastTitle: "Failed to Action Items",
         toastDescription: "Something went wrong getting action items.",
@@ -52,13 +38,38 @@ const ActionItemsPanel = ({
       });
 
       if (!response && !response.data) return;
-      const data = response?.data?.map((item: ActionItem) => ({...item, id: `${item?.platform}-${item.id}`}))
+
+      const transformToActionItem = (item: any): ActionItem => {
+        const isGmail = item.platform === "gmail";
+        const platformData = isGmail ? item.gmail_data : item.slack_data;
+
+        return {
+          id: String(`${item?.platform}-${item.id}`),
+          title: item.title,
+          platform: item.platform,
+          message: item?.message,
+          sender: isGmail
+            ? platformData?.from?.split("<")[0]?.trim() || "Unknown"
+            : platformData?.sender || "Unknown",
+          isVip: false, // Placeholder – set via business logic
+          priorityPerson: undefined, // Set if needed by keyword/name detection
+          triggerKeyword: undefined, // Set if keyword-based filtering is applied
+          urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+          isNew: !item.status,
+          createdAt: item.created_at,
+          threadUrl: item.redirect_link,
+          completed: item.status,
+          lastActivity: platformData?.received_at || platformData?.sent_at || item.created_at,
+        };
+      };
+      
+      const data = response?.data?.map(transformToActionItem);
       setActionItems(data);
     }, [call]);
 
     useEffect(() => {
       getActionItems();
-      }, [getActionItems]);
+    }, [getActionItems]);
 
   // Filter and sort action items
   const openItems = actionItems.filter(item => !item.completed).filter(item => {
@@ -92,55 +103,86 @@ const ActionItemsPanel = ({
     // Most recent activity
     return new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime();
   });
+
   const openCount = openItems.length;
+
   const handleItemClick = useCallback((item: ActionItem) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   }, []);
-  const handleMarkDone = useCallback((itemId: string, event?: React.MouseEvent) => {
+
+  const handleMarkDone = useCallback(async (selectedItem: ActionItem, event?: React.MouseEvent) => {
     if (event) {
       event.stopPropagation(); // Prevent row click
     }
-    const item = actionItems.find(i => i.id === itemId);
-    setActionItems(prev => prev.map(item => item.id === itemId ? {
-      ...item,
-      completed: true
-    } : item));
+
+    const response = await call("post", `/action-item/update`, {
+      body: {
+        id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
+        platform: selectedItem?.platform,
+        status: true
+      },
+        showToast: true,
+        toastTitle: "Failed to Mark Done",
+        toastDescription: "Something went wrong. Please try again.",
+        returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
+    await getActionItems();
 
     // Toast with undo option
     toast({
       title: "Action Item Completed",
-      description: `"${item?.title}" marked as done`,
-      action: <Button size="sm" variant="outline" onClick={() => {
-        setActionItems(prev => prev.map(item => item.id === itemId ? {
-          ...item,
-          completed: false
-        } : item));
+      description: `"${selectedItem?.title}" marked as done`,
+      action: <Button size="sm" variant="outline" onClick={async () => {
+            const response = await call("post", `/action-item/update`, {
+            body: {
+              id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
+              platform: selectedItem?.platform,
+              status: false
+            },
+              showToast: true,
+              toastTitle: "Failed to Mark Done",
+              toastDescription: "Something went wrong. Please try again.",
+              returnOnFailure: false,
+          });
+
+          if (!response && !response.data) return;
+
+          await getActionItems();
       }}>
           Undo
         </Button>
     });
-  }, [actionItems, toast]);
+  }, [toast, call, getActionItems]);
+
   const handleMarkAllDone = useCallback(() => {
     setActionItems(prev => prev.map(item => ({
       ...item,
       completed: true
     })));
+
     toast({
       title: "All Items Completed",
       description: "All action items marked as done"
     });
   }, [toast]);
+
   const handleTagClick = useCallback((tagType: string, event: React.MouseEvent) => {
     event.stopPropagation();
     setFilter(filter === tagType ? null : tagType);
   }, [filter]);
+
   const handleClearFilter = useCallback(() => {
     setFilter(null);
   }, []);
+
   const getSourceIcon = (source: 'slack' | 'gmail') => {
     return source === 'slack' ? <Slack className="w-4 h-4 text-purple-500" /> : <Mail className="w-4 h-4 text-blue-500" />;
   };
+
   const getUrgencyBadge = (urgency?: string) => {
     if (!urgency) return null;
     const urgencyConfig = {
@@ -161,8 +203,11 @@ const ActionItemsPanel = ({
         className: 'bg-gray-500/20 text-gray-400'
       }
     };
+
     const config = urgencyConfig[urgency as keyof typeof urgencyConfig];
+
     if (!config) return null;
+
     return <Badge variant="secondary" className={`text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${config.className}`} onClick={e => handleTagClick('urgency', e)}>
         {config.label}
       </Badge>;
@@ -220,7 +265,7 @@ const ActionItemsPanel = ({
         <div className="p-4 pt-2">
           <ScrollArea className="max-h-[280px] -mx-1 px-1">
             <div className="space-y-2">
-              {openItems.slice(0, 6).map(item => <div key={item.id} onClick={() => handleItemClick(item)} className="group cursor-pointer">
+              {openItems.slice(0, 4).map(item => <div key={item.id} onClick={() => handleItemClick(item)} className="group cursor-pointer">
                   <div className="flex items-start gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors">
                     {/* Source Icon */}
                     <div className="flex-shrink-0 mt-0.5">
@@ -228,7 +273,7 @@ const ActionItemsPanel = ({
                     </div>
 
                     {/* Checkbox */}
-                    <button onClick={e => handleMarkDone(item.id, e)} className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors">
+                    <button onClick={e => handleMarkDone(item, e)} className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors">
                       <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
 

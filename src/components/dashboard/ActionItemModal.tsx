@@ -5,37 +5,19 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Slack, Mail, ExternalLink, Star, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-interface ActionItem {
-  id: string;
-  title: string;
-  source: 'slack' | 'gmail';
-  sender: string;
-  isVip: boolean;
-  priorityPerson?: string; // Name or initials of flagged person
-  triggerKeyword?: string; // Matched trigger keyword
-  urgency?: 'critical' | 'high' | 'medium' | 'low';
-  isNew: boolean;
-  createdAt: string;
-  threadUrl: string;
-  completed: boolean;
-  lastActivity: string;
-}
+import { ActionItem } from './types';
 
 interface ActionItemModalProps {
   actionItem: ActionItem | null;
   open: boolean;
   onClose: () => void;
-  onMarkDone: (itemId: string) => void;
+  onMarkDone: (selectedItem: ActionItem) => void;
 }
 
 const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemModalProps) => {
   const { toast } = useToast();
 
   if (!actionItem) return null;
-
-  // Mock detailed content - in a real app this would come from the action item data
-  const mockFullMessage = `Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials we discussed yesterday. The marketing team needs your review and approval by 2 PM today to stay on track with our product launch timeline. The materials include the press release, social media assets, and the updated landing page copy. Please let me know if you have any questions or need any changes. Thanks!`;
   
   const mockRelevancyReason = "Critical - blocking marketing team progress";
   const mockActionReason = "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.";
@@ -44,17 +26,17 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
     window.open(actionItem.threadUrl, '_blank');
     toast({
       title: "Opening Thread",
-      description: `Opening ${actionItem.source === 'slack' ? 'Slack' : 'Gmail'} thread in new tab`
+      description: `Opening ${actionItem.platform === 'slack' ? 'Slack' : 'Gmail'} thread in new tab`
     });
   };
 
   const handleMarkDone = () => {
-    onMarkDone(actionItem.id);
+    onMarkDone(actionItem);
     onClose();
   };
 
-  const getSourceIcon = (source: 'slack' | 'gmail') => {
-    return source === 'slack' ? (
+  const getSourceIcon = (platform: 'slack' | 'gmail') => {
+    return platform === 'slack' ? (
       <Slack className="w-5 h-5 text-purple-500" />
     ) : (
       <Mail className="w-5 h-5 text-blue-500" />
@@ -86,7 +68,7 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            {getSourceIcon(actionItem.source)}
+            {getSourceIcon(actionItem.platform)}
             <span>{actionItem.title}</span>
             <div className="text-sm text-text-secondary font-normal">
               7:45 AM
@@ -101,7 +83,7 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
               <div>
                 <div className="text-sm text-text-secondary">From: {actionItem.sender}</div>
                 <div className="text-sm text-text-secondary">
-                  Subject: {actionItem.source === 'gmail' ? 'Urgent: Launch Materials Review Needed' : actionItem.title}
+                  Subject: {actionItem.platform === 'gmail' ? 'Urgent: Launch Materials Review Needed' : actionItem.title}
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -110,7 +92,7 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
                   Add to Asana
                 </Button>
                 <Button size="sm" variant="outline" className="text-xs" onClick={handleOpenThread}>
-                  Open in {actionItem.source === 'slack' ? 'Slack' : 'Gmail'}
+                  Open in {actionItem.platform === 'slack' ? 'Slack' : 'Gmail'}
                 </Button>
               </div>
             </div>
@@ -149,7 +131,7 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-text-primary">Full Message:</h4>
             <div className="bg-surface-raised/30 rounded-lg p-4 text-sm text-text-primary leading-relaxed border border-border-subtle">
-              {mockFullMessage}
+              {actionItem?.message}
             </div>
           </div>
 
@@ -188,7 +170,7 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-text-secondary">Source:</span>
-              <span className="text-text-primary capitalize">{actionItem.source}</span>
+              <span className="text-text-primary capitalize">{actionItem.platform}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-text-secondary">Due:</span>
@@ -200,7 +182,7 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
           <div className="flex gap-3">
             <Button onClick={handleOpenThread} className="flex-1">
               <ExternalLink className="w-4 h-4 mr-2" />
-              Open in {actionItem.source === 'slack' ? 'Slack' : 'Gmail'}
+              Open in {actionItem.platform === 'slack' ? 'Slack' : 'Gmail'}
             </Button>
             <Button onClick={handleMarkDone} variant="outline" className="flex items-center gap-2">
               <Check className="w-4 h-4" />
