@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X } from 'lucide-react';
+import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import ActionItemModal from './ActionItemModal';
 
 interface ActionItem {
@@ -37,6 +39,8 @@ const ActionItemsPanel = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isSectionHovered, setIsSectionHovered] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [priorityFilters, setPriorityFilters] = useState<string[]>(['critical', 'high']);
 
   // Sample action items data with new tagging structure
   const [actionItems, setActionItems] = useState<ActionItem[]>([{
@@ -95,6 +99,10 @@ const ActionItemsPanel = ({
 
   // Filter and sort action items
   const openItems = actionItems.filter(item => !item.completed).filter(item => {
+    // First filter by priority
+    if (item.urgency && !priorityFilters.includes(item.urgency)) return false;
+    
+    // Then apply other filters
     if (!filter) return true;
     if (filter === 'vip') return item.isVip;
     if (filter === 'person') return item.priorityPerson;
@@ -171,6 +179,14 @@ const ActionItemsPanel = ({
   const handleClearFilter = useCallback(() => {
     setFilter(null);
   }, []);
+  
+  const handlePriorityToggle = useCallback((priority: string) => {
+    setPriorityFilters(prev => 
+      prev.includes(priority) 
+        ? prev.filter(p => p !== priority)
+        : [...prev, priority]
+    );
+  }, []);
   const getSourceIcon = (source: 'slack' | 'gmail') => {
     return source === 'slack' ? <Slack className="w-4 h-4 text-purple-500" /> : <Mail className="w-4 h-4 text-blue-500" />;
   };
@@ -211,102 +227,149 @@ const ActionItemsPanel = ({
   }
 
   return <>
-      <div 
-        className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
-        onMouseEnter={() => setIsSectionHovered(true)}
-        onMouseLeave={() => setIsSectionHovered(false)}
-      >
-        {/* Top section with filter indicator and mark all done button */}
-        <div className="p-4 pb-0">
-          <div className="flex items-center justify-between">
-            {/* Filter indicator */}
-            <div className="flex-1">
-              {filter && (
-                <div className="flex items-center gap-2 text-xs text-text-secondary">
-                  <span>Filtered by: {filter}</span>
-                  <button onClick={handleClearFilter} className="text-accent-primary hover:text-accent-primary/80">
-                    <X className="w-3 h-3" />
+      <Collapsible open={!isCollapsed} onOpenChange={setIsCollapsed}>
+        <div 
+          className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
+          onMouseEnter={() => setIsSectionHovered(true)}
+          onMouseLeave={() => setIsSectionHovered(false)}
+        >
+          {/* Header with collapse trigger and priority filter */}
+          <div className="p-4 pb-2">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="sm" className="p-0 h-auto text-text-secondary hover:text-text-primary">
+                    {isCollapsed ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </Button>
+                </CollapsibleTrigger>
+                
+                {/* Priority filter dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-xs text-text-secondary hover:text-text-primary">
+                      Priority ({priorityFilters.length})
+                      <ChevronDown className="w-3 h-3 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-surface border-border-subtle">
+                    <DropdownMenuCheckboxItem
+                      checked={priorityFilters.includes('critical')}
+                      onCheckedChange={() => handlePriorityToggle('critical')}
+                      className="text-text-primary hover:bg-white/5"
+                    >
+                      Critical
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={priorityFilters.includes('high')}
+                      onCheckedChange={() => handlePriorityToggle('high')}
+                      className="text-text-primary hover:bg-white/5"
+                    >
+                      High
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={priorityFilters.includes('medium')}
+                      onCheckedChange={() => handlePriorityToggle('medium')}
+                      className="text-text-primary hover:bg-white/5"
+                    >
+                      Medium
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={priorityFilters.includes('low')}
+                      onCheckedChange={() => handlePriorityToggle('low')}
+                      className="text-text-primary hover:bg-white/5"
+                    >
+                      Low
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              
+              {/* Mark all done button - top right, shows on hover */}
+              <div 
+                className="flex items-center"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                {isHovered && (
+                  <button 
+                    onClick={handleMarkAllDone} 
+                    className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
+                  >
+                    Mark all done
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
             
-            {/* Mark all done button - top right, shows on hover */}
-            <div 
-              className="flex items-center"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              {isHovered && (
-                <button 
-                  onClick={handleMarkAllDone} 
-                  className="text-sm text-text-secondary hover:text-accent-primary transition-colors"
-                >
-                  Mark all done
+            {/* Filter indicator */}
+            {filter && (
+              <div className="flex items-center gap-2 text-xs text-text-secondary">
+                <span>Filtered by: {filter}</span>
+                <button onClick={handleClearFilter} className="text-accent-primary hover:text-accent-primary/80">
+                  <X className="w-3 h-3" />
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        </div>
 
-        {/* Action Items List */}
-        <div className="p-4 pt-2">
-          <ScrollArea className="max-h-[280px] -mx-1 px-1">
-            <div className="space-y-2">
-              {openItems.slice(0, 6).map(item => <div key={item.id} onClick={() => handleItemClick(item)} className="group cursor-pointer">
-                  <div className="flex items-start gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors">
-                    {/* Source Icon */}
-                    <div className="flex-shrink-0 mt-0.5">
-                      {getSourceIcon(item.source)}
-                    </div>
-
-                    {/* Checkbox */}
-                    <button onClick={e => handleMarkDone(item.id, e)} className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors">
-                      <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </button>
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      {/* Title */}
-                      <p className="text-text-primary leading-tight mb-1 font-light text-xs">
-                        {item.title}
-                      </p>
-                      
-                      {/* Tags Row */}
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        {/* Sender */}
-                        <span className="text-xs text-text-secondary">
-                          from {item.sender}
-                        </span>
-                        
-                        {/* VIP Star */}
-                        {item.isVip && <button onClick={e => handleTagClick('vip', e)} className={`text-green-400 hover:text-green-300 transition-colors ${filter === 'vip' ? 'bg-green-500/20 rounded px-1' : ''}`}>
-                            <Star className="w-3 h-3" fill="currentColor" />
-                          </button>}
-                        
-                        {/* Person Tag */}
-                        {item.priorityPerson && <Badge variant="secondary" className={`bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'person' ? 'bg-blue-500/30' : ''}`} onClick={e => handleTagClick('person', e)}>
-                            {item.priorityPerson}
-                          </Badge>}
-                        
-                        {/* Trigger Tag */}
-                        {item.triggerKeyword && <Badge variant="secondary" className={`bg-orange-500/20 text-orange-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'trigger' ? 'bg-orange-500/30' : ''}`} onClick={e => handleTagClick('trigger', e)}>
-                            {item.triggerKeyword}
-                          </Badge>}
-                        
-                        {/* Urgency Tag */}
-                        {getUrgencyBadge(item.urgency)}
+          <CollapsibleContent className="px-4 pb-4">
+            <ScrollArea className="max-h-[280px] -mx-1 px-1">
+              <div className="space-y-2">
+                {openItems.slice(0, 6).map(item => <div key={item.id} onClick={() => handleItemClick(item)} className="group cursor-pointer">
+                    <div className="flex items-start gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors">
+                      {/* Source Icon */}
+                      <div className="flex-shrink-0 mt-0.5">
+                        {getSourceIcon(item.source)}
                       </div>
-                    </div>
 
-                    {/* External link icon */}
-                    <ExternalLink className="w-3 h-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
-                  </div>
-                </div>)}
-            </div>
-          </ScrollArea>
+                      {/* Checkbox */}
+                      <button onClick={e => handleMarkDone(item.id, e)} className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors">
+                        <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        {/* Title */}
+                        <p className="text-text-primary leading-tight mb-1 font-light text-xs">
+                          {item.title}
+                        </p>
+                        
+                        {/* Tags Row */}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {/* Sender */}
+                          <span className="text-xs text-text-secondary">
+                            from {item.sender}
+                          </span>
+                          
+                          {/* VIP Star */}
+                          {item.isVip && <button onClick={e => handleTagClick('vip', e)} className={`text-green-400 hover:text-green-300 transition-colors ${filter === 'vip' ? 'bg-green-500/20 rounded px-1' : ''}`}>
+                              <Star className="w-3 h-3" fill="currentColor" />
+                            </button>}
+                          
+                          {/* Person Tag */}
+                          {item.priorityPerson && <Badge variant="secondary" className={`bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'person' ? 'bg-blue-500/30' : ''}`} onClick={e => handleTagClick('person', e)}>
+                              {item.priorityPerson}
+                            </Badge>}
+                          
+                          {/* Trigger Tag */}
+                          {item.triggerKeyword && <Badge variant="secondary" className={`bg-orange-500/20 text-orange-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'trigger' ? 'bg-orange-500/30' : ''}`} onClick={e => handleTagClick('trigger', e)}>
+                              {item.triggerKeyword}
+                            </Badge>}
+                          
+                          {/* Urgency Tag */}
+                          {getUrgencyBadge(item.urgency)}
+                        </div>
+                      </div>
+
+                      {/* External link icon */}
+                      <ExternalLink className="w-3 h-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
+                    </div>
+                  </div>)}
+              </div>
+            </ScrollArea>
+          </CollapsibleContent>
         </div>
-      </div>
+      </Collapsible>
 
       {/* Action Item Modal */}
       <ActionItemModal actionItem={selectedItem} open={isModalOpen} onClose={() => {
