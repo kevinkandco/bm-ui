@@ -30,46 +30,46 @@ const ActionItemsPanel = ({
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
 
   const getActionItems = useCallback(async () => {
-      const response = await call("get", `/action-items?parPage=4`, {
-        showToast: true,
-        toastTitle: "Failed to Action Items",
-        toastDescription: "Something went wrong getting action items.",
-        returnOnFailure: false,
-      });
+    const response = await call("get", `/action-items?parPage=4`, {
+      showToast: true,
+      toastTitle: "Failed to Action Items",
+      toastDescription: "Something went wrong getting action items.",
+      returnOnFailure: false,
+    });
 
-      if (!response && !response.data) return;
+    if (!response && !response.data) return;
 
-      const transformToActionItem = (item: any): ActionItem => {
-        const isGmail = item.platform === "gmail";
-        const platformData = isGmail ? item.gmail_data : item.slack_data;
+    const transformToActionItem = (item: any): ActionItem => {
+      const isGmail = item.platform === "gmail";
+      const platformData = isGmail ? item.gmail_data : item.slack_data;
 
-        return {
-          id: String(`${item?.platform}-${item.id}`),
-          title: item.title,
-          platform: item.platform,
-          message: item?.message,
-          sender: isGmail
-            ? platformData?.from?.split("<")[0]?.trim() || "Unknown"
-            : platformData?.sender || "Unknown",
-          isVip: false, // Placeholder – set via business logic
-          priorityPerson: undefined, // Set if needed by keyword/name detection
-          triggerKeyword: undefined, // Set if keyword-based filtering is applied
-          urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
-          isNew: !item.status,
-          createdAt: item.created_at,
-          threadUrl: item.redirect_link,
-          completed: item.status,
-          lastActivity: platformData?.received_at || platformData?.sent_at || item.created_at,
-        };
+      return {
+        id: String(`${item?.platform}-${item.id}`),
+        title: item.title,
+        platform: item.platform,
+        message: item?.message,
+        sender: isGmail
+          ? platformData?.from?.split("<")[0]?.trim() || "Unknown"
+          : platformData?.sender || "Unknown",
+        isVip: false, // Placeholder – set via business logic
+        priorityPerson: undefined, // Set if needed by keyword/name detection
+        triggerKeyword: undefined, // Set if keyword-based filtering is applied
+        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        isNew: !item.status,
+        createdAt: item.created_at,
+        threadUrl: item.redirect_link,
+        completed: item.status,
+        lastActivity: platformData?.received_at || platformData?.sent_at || item.created_at,
       };
-      
-      const data = response?.data?.map(transformToActionItem);
-      setActionItems(data);
-    }, [call]);
+    };
+    
+    const data = response?.data?.map(transformToActionItem);
+    setActionItems(data);
+  }, [call]);
 
-    useEffect(() => {
-      getActionItems();
-    }, [getActionItems]);
+  useEffect(() => {
+    getActionItems();
+  }, [getActionItems]);
 
   // Filter and sort action items
   const openItems = actionItems.filter(item => !item.completed).filter(item => {

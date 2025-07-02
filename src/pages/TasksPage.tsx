@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { ArrowLeft, CheckSquare, Slack, Mail, ExternalLink, Check, Star, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,22 +7,8 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import ActionItemModal from '@/components/dashboard/ActionItemModal';
-
-interface ActionItem {
-  id: string;
-  title: string;
-  source: 'slack' | 'gmail';
-  sender: string;
-  isVip: boolean;
-  priorityPerson?: string; // Name or initials of flagged person
-  triggerKeyword?: string; // Matched trigger keyword
-  urgency?: 'critical' | 'high' | 'medium' | 'low';
-  isNew: boolean;
-  createdAt: string;
-  threadUrl: string;
-  completed: boolean;
-  lastActivity: string;
-}
+import { ActionItem } from '@/components/dashboard/types';
+import { useApi } from '@/hooks/useApi';
 
 const TasksPage = () => {
   const { toast } = useToast();
@@ -31,79 +17,52 @@ const TasksPage = () => {
   const [filter, setFilter] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { call } = useApi();
   
   // Sample action items data with new tagging structure
-  const [actionItems, setActionItems] = useState<ActionItem[]>([
-    {
-      id: '1',
-      title: 'Approve Q3 budget proposal and financial projections',
-      source: 'slack',
-      sender: 'Sarah Chen',
-      isVip: true,
-      priorityPerson: 'Sarah Chen',
-      triggerKeyword: 'budget',
-      urgency: 'critical',
-      isNew: false,
-      createdAt: '2024-06-30T08:00:00Z',
-      threadUrl: 'https://app.slack.com/client/T123/C456/p789',
-      completed: false,
-      lastActivity: '2024-06-30T08:00:00Z'
-    },
-    {
-      id: '2', 
-      title: 'Review contract amendments',
-      source: 'gmail',
-      sender: 'legal@company.com',
-      isVip: false,
-      urgency: 'high',
-      isNew: true,
-      createdAt: '2024-06-30T09:30:00Z',
-      threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
-      completed: false,
-      lastActivity: '2024-06-30T09:30:00Z'
-    },
-    {
-      id: '3',
-      title: 'Sign off on marketing campaign launch plan',
-      source: 'slack',
-      sender: 'Mike Johnson',
-      isVip: true,
-      priorityPerson: 'Mike J',
-      triggerKeyword: 'urgent',
-      urgency: 'critical',
-      isNew: false,
-      createdAt: '2024-06-29T14:20:00Z',
-      threadUrl: 'https://app.slack.com/client/T123/C456/p790',
-      completed: false,
-      lastActivity: '2024-06-29T14:20:00Z'
-    },
-    {
-      id: '4',
-      title: 'Provide feedback on design mockups',
-      source: 'gmail',
-      sender: 'design@company.com',
-      isVip: false,
-      urgency: 'medium',
-      isNew: true,
-      createdAt: '2024-06-29T11:15:00Z',
-      threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
-      completed: false,
-      lastActivity: '2024-06-29T11:15:00Z'
-    },
-    {
-      id: '5',
-      title: 'Complete user research analysis',
-      source: 'slack',
-      sender: 'Research Team',
-      isVip: false,
-      urgency: 'high',
-      isNew: true,
-      createdAt: '2024-06-30T10:00:00Z',
-      threadUrl: 'https://app.slack.com/client/T123/C456/p791',
-      completed: false,
-      lastActivity: '2024-06-30T10:00:00Z'
-    }
-  ]);
+  const [actionItems, setActionItems] = useState<ActionItem[]>([]);
+
+  const getActionItems = useCallback(async () => {
+    const response = await call("get", `/action-items?parPage=4`, {
+      showToast: true,
+      toastTitle: "Failed to Action Items",
+      toastDescription: "Something went wrong getting action items.",
+      returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
+    const transformToActionItem = (item: any): ActionItem => {
+      const isGmail = item.platform === "gmail";
+      const platformData = isGmail ? item.gmail_data : item.slack_data;
+
+      return {
+        id: String(`${item?.platform}-${item.id}`),
+        title: item.title,
+        platform: item.platform,
+        message: item?.message,
+        sender: isGmail
+          ? platformData?.from?.split("<")[0]?.trim() || "Unknown"
+          : platformData?.sender || "Unknown",
+        isVip: false, // Placeholder – set via business logic
+        priorityPerson: undefined, // Set if needed by keyword/name detection
+        triggerKeyword: undefined, // Set if keyword-based filtering is applied
+        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        isNew: !item.status,
+        createdAt: item.created_at,
+        threadUrl: item.redirect_link,
+        completed: item.status,
+        lastActivity: platformData?.received_at || platformData?.sent_at || item.created_at,
+      };
+    };
+    
+    const data = response?.data?.map(transformToActionItem);
+    setActionItems(data);
+  }, [call]);
+
+  useEffect(() => {
+    getActionItems();
+  }, [getActionItems]);
 
   // Filter and sort action items
   const filteredItems = actionItems
@@ -146,20 +105,48 @@ const TasksPage = () => {
     setIsModalOpen(true);
   }, []);
 
-  const handleMarkDone = useCallback((itemId: string) => {
-    const item = actionItems.find(i => i.id === itemId);
+  const handleMarkDone = useCallback(async (selectedItem: ActionItem) => {
+    const response = await call("post", `/action-item/update`, {
+      body: {
+        id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
+        platform: selectedItem?.platform,
+        status: true
+      },
+        showToast: true,
+        toastTitle: "Failed to Mark Done",
+        toastDescription: "Something went wrong. Please try again.",
+        returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
+    await getActionItems();
     
-    setActionItems(prev => 
-      prev.map(item => 
-        item.id === itemId ? { ...item, completed: true } : item
-      )
-    );
-    
+    // Toast with undo option
     toast({
       title: "Action Item Completed",
-      description: `"${item?.title}" marked as done`
+      description: `"${selectedItem?.title}" marked as done`,
+      action: <Button size="sm" variant="outline" onClick={async () => {
+            const response = await call("post", `/action-item/update`, {
+            body: {
+              id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
+              platform: selectedItem?.platform,
+              status: false
+            },
+              showToast: true,
+              toastTitle: "Failed to Mark Done",
+              toastDescription: "Something went wrong. Please try again.",
+              returnOnFailure: false,
+          });
+
+          if (!response && !response.data) return;
+
+          await getActionItems();
+      }}>
+          Undo
+        </Button>
     });
-  }, [actionItems, toast]);
+  }, [call, toast, getActionItems]);
 
   const handleMarkAllDone = useCallback(() => {
     setActionItems(prev => 
@@ -172,10 +159,26 @@ const TasksPage = () => {
     });
   }, [toast]);
 
-  const handleUpdatePriority = useCallback((itemId: string, newUrgency: 'critical' | 'high' | 'medium' | 'low') => {
+  const handleUpdatePriority = useCallback(async (selectedItem: ActionItem, newUrgency: 'critical' | 'high' | 'medium' | 'low') => {
+    const itemId = selectedItem?.id?.replace(`${selectedItem?.platform}-`, '') || '';
+
+    const response = await call("post", `/action-item/update`, {
+      body: {
+        id: itemId,
+        platform: selectedItem?.platform,
+        priority: newUrgency
+      },
+        showToast: true,
+        toastTitle: "Failed to Mark Done",
+        toastDescription: "Something went wrong. Please try again.",
+        returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
     setActionItems(prev => 
       prev.map(item => 
-        item.id === itemId ? { ...item, urgency: newUrgency } : item
+        item.id === selectedItem?.id ? { ...item, urgency: newUrgency } : item
       )
     );
     
@@ -183,7 +186,7 @@ const TasksPage = () => {
       title: "Priority Updated",
       description: `Priority set to ${newUrgency}`
     });
-  }, [toast]);
+  }, [toast, call]);
 
   const getSourceIcon = (source: 'slack' | 'gmail') => {
     return source === 'slack' ? (
@@ -193,7 +196,7 @@ const TasksPage = () => {
     );
   };
 
-  const getUrgencyBadge = (urgency?: string, itemId?: string) => {
+  const getUrgencyBadge = (urgency?: string, selectedItem?: ActionItem) => {
     if (!urgency) return null;
     
     const urgencyConfig = {
@@ -224,7 +227,7 @@ const TasksPage = () => {
               key={option}
               onClick={(e) => {
                 e.stopPropagation();
-                if (itemId) handleUpdatePriority(itemId, option);
+                if (selectedItem) handleUpdatePriority(selectedItem, option);
               }}
               className={`block w-full text-left px-3 py-2 text-xs capitalize hover:bg-white/10 first:rounded-t-lg last:rounded-b-lg ${
                 option === urgency ? 'bg-white/5 text-accent-primary' : 'text-text-secondary'
@@ -299,14 +302,14 @@ const TasksPage = () => {
               <div className="flex items-start gap-3">
                 {/* Source Icon */}
                 <div className="flex-shrink-0 mt-0.5">
-                  {getSourceIcon(item.source)}
+                  {getSourceIcon(item.platform)}
                 </div>
 
                 {/* Checkbox */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleMarkDone(item.id);
+                    handleMarkDone(item);
                   }}
                   className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors"
                 >
@@ -351,7 +354,7 @@ const TasksPage = () => {
                     )}
                     
                     {/* Urgency Tag - Clickable */}
-                    {getUrgencyBadge(item.urgency, item.id)}
+                    {getUrgencyBadge(item.urgency, item)}
                     
                     {/* External link icon */}
                     <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
