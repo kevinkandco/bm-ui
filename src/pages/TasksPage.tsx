@@ -23,7 +23,6 @@ const TasksPage = () => {
     totalPages: 1,
     itemsPerPage: 2,
   });
-  console.log(pagination);
   const { call } = useApi();
   
   // Sample action items data with new tagging structure
