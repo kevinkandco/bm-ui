@@ -10,12 +10,14 @@ import ActionItemModal from '@/components/dashboard/ActionItemModal';
 import { ActionItem } from '@/components/dashboard/types';
 import { useApi } from '@/hooks/useApi';
 import Pagination from '@/components/dashboard/Pagination';
+import { cn } from '@/lib/utils';
 
 const TasksPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<string | null>(null);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pagination, setPagination] = useState({
@@ -29,7 +31,7 @@ const TasksPage = () => {
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
 
   const getActionItems = useCallback(async (page = 1) => {
-    const response = await call("get", `/action-items?par_page=10&page=${page}`, {
+    const response = await call("get", `/action-items?par_page=10&page=${page}&status=${showCompleted}`, {
       showToast: true,
       toastTitle: "Failed to Action Items",
       toastDescription: "Something went wrong getting action items.",
@@ -69,7 +71,7 @@ const TasksPage = () => {
       totalPages: response?.meta?.last_page || 1,
     }));
     setActionItems(data);
-  }, [call]);
+  }, [call, showCompleted]);
 
   useEffect(() => {
     getActionItems();
@@ -77,7 +79,6 @@ const TasksPage = () => {
 
   // Filter and sort action items
   const filteredItems = actionItems
-    .filter(item => !item.completed)
     .filter(item => {
       if (!filter) return true;
       if (filter === 'vip') return item.isVip;
@@ -158,6 +159,10 @@ const TasksPage = () => {
         </Button>
     });
   }, [call, toast, getActionItems, pagination]);
+
+  const handleToggleCompleted = () => {
+    setShowCompleted(!showCompleted);
+  }
 
   const groupTaskIdsByPlatform = useCallback((data: ActionItem[]) => {
     const result = {
@@ -300,7 +305,7 @@ const TasksPage = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-4 mb-6 items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
             <Input
@@ -320,6 +325,14 @@ const TasksPage = () => {
               <X className="h-4 w-4" />
             </Button>
           )}
+          <Button
+            onClick={handleToggleCompleted}
+            variant="ghost"
+            disabled={filteredItems.length === 0}
+            className="border border-border-subtle hover:bg-white/5"
+          >
+            {showCompleted ? "show Uncompleted" : "show Completed"}
+          </Button>
           <Button
             onClick={handleMarkAllDone}
             variant="ghost"
@@ -350,9 +363,13 @@ const TasksPage = () => {
                     e.stopPropagation();
                     handleMarkDone(item);
                   }}
+                  disabled={item.completed}
                   className="flex-shrink-0 w-4 h-4 mt-0.5 border border-border-subtle rounded hover:border-accent-primary transition-colors"
                 >
-                  <Check className="w-3 h-3 text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Check className={cn(
+                    "w-3 h-3 text-accent-primary transition-opacity",
+                    showCompleted ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  )} />
                 </button>
 
                 {/* Content */}
