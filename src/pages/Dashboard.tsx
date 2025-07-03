@@ -102,7 +102,7 @@ const Dashboard = () => {
 
   const getRecentBriefs = useCallback(async () => {
     setBriefsLoading(true);
-    const response = await call("get", `/summaries?per_page=3&today=true`, {
+    const response = await call("get", `/summaries?today=true`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
