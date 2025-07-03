@@ -7,7 +7,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
@@ -61,6 +61,7 @@ const Dashboard = () => {
   const [focusModeActivationLoading, setFocusModeActivationLoading] = useState(false);
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
+  const [calendarData, setCalendarData] = useState<CalendarEvent[]>([]);
   const [priorities, setPriorities] = useState<Priorities>({
     priorityPeople: [],
     priorityChannels: [],
@@ -84,6 +85,7 @@ const Dashboard = () => {
       SetBriefSchedules(response.briefSchedules);
       setUpcomingBrief(response.upComingBrief);
       setFocusTime(response.focusRemainingTime);
+      setCalendarData(response?.todaysCalendarData || []);
       const priorityPeople = [
         ...(Array.isArray(response?.slackPriorityPeople) ? response.slackPriorityPeople : []),
         ...(Array.isArray(response?.googlePriorityPeople) ? response.googlePriorityPeople : []),
@@ -420,6 +422,7 @@ const Dashboard = () => {
             totalBriefs={totalBriefs}
             briefsLoading={briefsLoading}
             upcomingBrief={upcomingBrief}
+            calendarData={calendarData}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onStartFocusMode={handleStartFocusMode}

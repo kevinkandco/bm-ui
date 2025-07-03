@@ -22,7 +22,7 @@ import {
   NextBriefSection,
   UpcomingMeetingsSection,
 } from "./HomeViewSections/SidebarSections";
-import { Priorities, PriorityPeople, Summary } from "./types";
+import { CalendarEvent, Priorities, PriorityPeople, Summary } from "./types";
 import useAuthStore from "@/store/useAuthStore";
 import ListeningScreen from "./ListeningScreen";
 import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
@@ -40,6 +40,7 @@ interface HomeViewProps {
   totalBriefs: number;
   briefsLoading: boolean;
   upcomingBrief: Summary | null;
+  calendarData: CalendarEvent[];
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number, title: string, transcript: string) => void;
   onStartFocusMode: (focusTime: number) => void;
@@ -57,6 +58,7 @@ const HomeView = ({
   totalBriefs,
   briefsLoading,
   upcomingBrief,
+  calendarData,
   onOpenBrief,
   onViewTranscript,
   onStartFocusMode,
@@ -764,7 +766,7 @@ const handleViewAllTasks = useCallback(() => {
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
               </div>
-              <CalendarSection />
+              <CalendarSection calendarData={calendarData} />
             </div>
           </div>
           

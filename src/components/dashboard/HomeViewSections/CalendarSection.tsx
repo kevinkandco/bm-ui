@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Calendar, Clock, Mic, Users, ChevronDown, Pencil, BookOpen, Info, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,6 +10,8 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
 import MeetingDetailsPanel from "./MeetingDetailsPanel";
+import { CalendarEvent } from "../types";
+import { useApi } from "@/hooks/useApi";
 
 interface Meeting {
   id: string;
@@ -37,102 +39,140 @@ interface Meeting {
   suggestedAgenda?: string[];
 }
 
-const CalendarSection = () => {
+interface CalenderSectionProps {
+  calendarData: CalendarEvent[];
+}
+
+const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
   const [meetings, setMeetings] = useState<Meeting[]>([
-    {
-      id: "0",
-      title: "internal project meeting",
-      time: "9:00 AM",
-      duration: "2 hours",
-      attendees: [
-        { name: "Project Team", email: "team@company.com" }
-      ],
-      briefing: "Internal project meeting with the team",
-      aiSummary: "Regular project sync to discuss progress and next steps.",
-      hasProxy: false,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: -180 // Past event
-    },
-    {
-      id: "1.5",
-      title: "demo with steve",
-      time: "1:00 PM",
-      duration: "1 hour",
-      attendees: [
-        { name: "Steve Wilson", email: "steve@company.com" }
-      ],
-      briefing: "Product demo with Steve Wilson",
-      aiSummary: "Demo session to showcase new features and gather feedback.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: -60 // Past event
-    },
-    {
-      id: "1",
-      title: "Test demo",
-      time: "2:00 PM",
-      duration: "1 hour",
-      attendees: [
-        { name: "Kevin Kirkpatrick", email: "kirkpatrick.kevin.j@gmail.com" },
-        { name: "Kevin Kirkpatrick", email: "kevin@uprise.is" }
-      ],
-      briefing: "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
-      aiSummary: "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
-      hasProxy: true,
-      hasNotes: true,
-      proxyNotes: "Focus on practicality and personalization features",
-      summaryReady: false,
-      isRecording: true,
-      minutesUntil: 45
-    },
-    {
-      id: "2", 
-      title: "external demo",
-      time: "3:00 PM",
-      duration: "30 min",
-      attendees: [
-        { name: "External Client", email: "client@company.com" }
-      ],
-      briefing: "External client demonstration meeting",
-      aiSummary: "Client demonstration focusing on key product features and capabilities.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 105
-    },
-    {
-      id: "3",
-      title: "design review",
-      time: "3:30 PM", 
-      duration: "45 min",
-      attendees: [
-        { name: "Design Team", email: "design@company.com" }
-      ],
-      briefing: "Design review session with the design team",
-      aiSummary: "Review of latest design mockups and user interface updates.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 135
-    }
+    // {
+    //   id: "0",
+    //   title: "internal project meeting",
+    //   time: "9:00 AM",
+    //   duration: "2 hours",
+    //   attendees: [{ name: "Project Team", email: "team@company.com" }],
+    //   briefing: "Internal project meeting with the team",
+    //   aiSummary: "Regular project sync to discuss progress and next steps.",
+    //   hasProxy: false,
+    //   hasNotes: false,
+    //   summaryReady: false,
+    //   isRecording: false,
+    //   minutesUntil: -180, // Past event
+    // },
+    // {
+    //   id: "1.5",
+    //   title: "demo with steve",
+    //   time: "1:00 PM",
+    //   duration: "1 hour",
+    //   attendees: [{ name: "Steve Wilson", email: "steve@company.com" }],
+    //   briefing: "Product demo with Steve Wilson",
+    //   aiSummary: "Demo session to showcase new features and gather feedback.",
+    //   hasProxy: true,
+    //   hasNotes: false,
+    //   summaryReady: false,
+    //   isRecording: false,
+    //   minutesUntil: -60, // Past event
+    // },
+    // {
+    //   id: "1",
+    //   title: "Test demo",
+    //   time: "2:00 PM",
+    //   duration: "1 hour",
+    //   attendees: [
+    //     { name: "Kevin Kirkpatrick", email: "kirkpatrick.kevin.j@gmail.com" },
+    //     { name: "Kevin Kirkpatrick", email: "kevin@uprise.is" },
+    //   ],
+    //   briefing:
+    //     "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
+    //   aiSummary:
+    //     "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
+    //   hasProxy: true,
+    //   hasNotes: true,
+    //   proxyNotes: "Focus on practicality and personalization features",
+    //   summaryReady: false,
+    //   isRecording: true,
+    //   minutesUntil: 45,
+    // },
+    // {
+    //   id: "2",
+    //   title: "external demo",
+    //   time: "3:00 PM",
+    //   duration: "30 min",
+    //   attendees: [{ name: "External Client", email: "client@company.com" }],
+    //   briefing: "External client demonstration meeting",
+    //   aiSummary:
+    //     "Client demonstration focusing on key product features and capabilities.",
+    //   hasProxy: true,
+    //   hasNotes: false,
+    //   summaryReady: false,
+    //   isRecording: false,
+    //   minutesUntil: 105,
+    // },
+    // {
+    //   id: "3",
+    //   title: "design review",
+    //   time: "3:30 PM",
+    //   duration: "45 min",
+    //   attendees: [{ name: "Design Team", email: "design@company.com" }],
+    //   briefing: "Design review session with the design team",
+    //   aiSummary: "Review of latest design mockups and user interface updates.",
+    //   hasProxy: true,
+    //   hasNotes: false,
+    //   summaryReady: false,
+    //   isRecording: false,
+    //   minutesUntil: 135,
+    // },
   ]);
 
   const [showInstructionsDrawer, setShowInstructionsDrawer] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [tempNotes, setTempNotes] = useState("");
   const [showMeetingDetails, setShowMeetingDetails] = useState(false);
-  const [selectedMeetingForDetails, setSelectedMeetingForDetails] = useState<Meeting | null>(null);
+  const [selectedMeetingForDetails, setSelectedMeetingForDetails] =
+    useState<Meeting | null>(null);
+  const { call } = useApi();
+    
 
   // Check if any meetings are within 2 hours
-  const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 120);
-  const nextMeeting = meetings.find(m => m.minutesUntil < 120);
-  const otherMeetings = meetings.filter(m => m.minutesUntil < 120 && m.id !== nextMeeting?.id);
+  // const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 120);
+  const hasUpcomingMeetings = meetings.length > 0;
+  const nextMeeting = meetings.find((m) => m.minutesUntil > 0);
+  const otherMeetings = meetings.filter(
+    (m) => m.minutesUntil < 120 && m.id !== nextMeeting?.id
+  );
+
+  useEffect(() => {
+    if (!calendarData || calendarData.length === 0) return;
+
+    const convertToMeetings = calendarData.map((item: any, index: number) => {
+      const now = new Date();
+      const eventDateTime = new Date(`${item.date} ${item.start_time}`);
+      const minutesUntil = Math.round(
+        (eventDateTime.getTime() - now.getTime()) / 60000
+      );
+
+      return {
+        id: item.id.toString(),
+        title: item.title,
+        time: item.start_time,
+        duration: item.duration,
+        attendees: (item.attendees || []).map((a: any) => ({
+          name: a.name || "Unknown",
+          email: a.email || "",
+        })),
+        briefing: item.description || "No briefing available.",
+        aiSummary: item.description || "No AI summary available.",
+        hasProxy: false,
+        hasNotes: !!item.proxy_note,
+        proxyNotes: item.proxy_note || "",
+        summaryReady: false,
+        isRecording: false,
+        minutesUntil,
+      };
+    });
+
+    setMeetings(convertToMeetings);
+  }, [calendarData]);
 
   // Get all meetings for schedule (sorted by time)
   const allMeetings = [...meetings].sort((a, b) => {
@@ -143,7 +183,7 @@ const CalendarSection = () => {
       const hours24 = period === 'PM' && hours !== 12 ? hours + 12 : (period === 'AM' && hours === 12 ? 0 : hours);
       return hours24 * 60 + (minutes || 0);
     };
-    
+
     return timeToMinutes(a.time) - timeToMinutes(b.time);
   });
 
@@ -161,22 +201,37 @@ const CalendarSection = () => {
     setShowInstructionsDrawer(true);
   };
 
-  const saveNotes = () => {
+  const saveNotes = useCallback(async () => {
+    const response = await call("post", "/calendar/proxy-note", {
+      body: {
+        id: selectedMeeting?.id,
+        proxy_note: tempNotes,
+      },
+      showToast: true,
+      toastTitle: "Failed to save notes",
+      toastDescription: "Something went wrong. Please try again.",
+      returnOnFailure: false,
+    });
+
+    if (!response) return;
+
     if (selectedMeeting) {
-      setMeetings(prev => prev.map(meeting => 
-        meeting.id === selectedMeeting.id 
-          ? { 
-              ...meeting, 
-              proxyNotes: tempNotes,
-              hasNotes: tempNotes.trim().length > 0
-            }
-          : meeting
-      ));
+      setMeetings((prev) =>
+        prev.map((meeting) =>
+          meeting.id === selectedMeeting.id
+            ? {
+                ...meeting,
+                proxyNotes: tempNotes,
+                hasNotes: tempNotes.trim().length > 0,
+              }
+            : meeting
+        )
+      );
     }
     setShowInstructionsDrawer(false);
     setSelectedMeeting(null);
     setTempNotes("");
-  };
+  }, [selectedMeeting, tempNotes, call]);
 
   const openMeetingDetails = (meeting: Meeting) => {
     const meetingWithDetails = {
@@ -184,12 +239,12 @@ const CalendarSection = () => {
       context: {
         relevantEmails: ["Parenting Schedule Emails"],
         interests: ["Tennis Newsletters"],
-        weeklyCheckIns: ["Weekly Check-Ins"]
+        weeklyCheckIns: ["Weekly Check-Ins"],
       },
       preparationPoints: [
         "Focus on Practicality",
         "Personalization",
-        "Clarity and Structure"
+        "Clarity and Structure",
       ],
       suggestedAgenda: [
         "Introduction",
@@ -226,11 +281,11 @@ const CalendarSection = () => {
       <div className="w-full space-y-4">
         {/* Upcoming header */}
         <h3 className="text-sm font-medium text-text-primary">Upcoming</h3>
-        
+
         {/* Next Meeting Card - Reverted to original version with outline */}
-        {nextMeeting && (
-          <Card 
-            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow" 
+        {nextMeeting ? (
+          <Card
+            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow"
             style={{
               background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
             }}
@@ -249,7 +304,7 @@ const CalendarSection = () => {
                       {nextMeeting.time} • {nextMeeting.duration}
                     </div>
                   </div>
-                  
+
                   {/* Top-right chips */}
                   <div className="flex items-center gap-2">
                     {nextMeeting.isRecording && (
@@ -258,7 +313,7 @@ const CalendarSection = () => {
                         <span className="text-xs text-red-400">REC</span>
                       </div>
                     )}
-                    
+
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
@@ -347,7 +402,7 @@ const CalendarSection = () => {
                     >
                       Join Live
                     </Button>
-                    
+
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -375,6 +430,22 @@ const CalendarSection = () => {
               </div>
             </CardContent>
           </Card>
+        ) : (
+          <Card
+            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)",
+            }}
+          >
+            <CardContent className="p-4">
+              <div className="bg-surface-overlay/50 rounded-xl p-4">
+                <h4 className="text-sm font-medium text-text-primary tracking-wide">
+                  No upcoming meetings for today
+                </h4>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Schedule section with header above */}
@@ -389,7 +460,7 @@ const CalendarSection = () => {
                 {allMeetings.map((meeting, index) => {
                   const isPast = meeting.minutesUntil < 0;
                   const isNext = meeting.id === nextMeeting?.id;
-                  
+
                   return (
                     <div key={meeting.id} className="relative">
                       {/* Timeline connector */}
@@ -409,14 +480,14 @@ const CalendarSection = () => {
                         <div className="text-sm text-text-secondary min-w-[100px] font-mono">
                           {meeting.time}
                         </div>
-                        
+
                         {/* Title */}
                         <div className="flex-1">
                           <span className={`text-sm ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
                             {meeting.title}
                           </span>
                         </div>
-                        
+
                         {/* Status indicator */}
                         <div className="flex items-center gap-2">
                           {meeting.hasProxy && (
@@ -427,13 +498,14 @@ const CalendarSection = () => {
                           )}
                         </div>
                       </div>
-                      
+
                       {/* Timeline indicator line - red line shows current time */}
-                      {meeting.minutesUntil < 0 && allMeetings[index + 1]?.minutesUntil >= 0 && (
-                        <div className="absolute left-0 right-0 top-full">
-                          <div className="h-0.5 bg-red-500 w-full" />
-                        </div>
-                      )}
+                      {meeting.minutesUntil < 0 &&
+                        allMeetings[index + 1]?.minutesUntil >= 0 && (
+                          <div className="absolute left-0 right-0 top-full">
+                            <div className="h-0.5 bg-red-500 w-full" />
+                          </div>
+                        )}
                     </div>
                   );
                 })}

@@ -163,3 +163,15 @@ export interface ActionItem {
   lastActivity?: string;
   vote?: boolean;
 }
+
+export interface CalendarEvent {
+  id: number;
+  title: string;
+  description: string | null;
+  location: string | null;
+  start_time: string;
+  end_time: string;
+  duration: string;
+  date: string; // Format: "YYYY-MM-DD"
+  attendee_count: number;
+};
