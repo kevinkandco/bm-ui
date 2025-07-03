@@ -12,9 +12,11 @@ import { ActionItem } from './types';
 interface ActionItemsPanelProps {
   className?: string;
   onViewAll: () => void;
+  setActionItemsCount: (count: number) => void;
 }
 const ActionItemsPanel = ({
-  className
+  className,
+  setActionItemsCount
 }: Omit<ActionItemsPanelProps, 'onViewAll'>) => {
   const {
     toast
@@ -38,6 +40,7 @@ const ActionItemsPanel = ({
     });
 
     if (!response && !response.data) return;
+    setActionItemsCount(response?.meta?.total);
 
     const transformToActionItem = (item: any): ActionItem => {
       const isGmail = item.platform === "gmail";
