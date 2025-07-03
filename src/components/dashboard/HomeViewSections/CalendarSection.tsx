@@ -40,6 +40,38 @@ interface Meeting {
 const CalendarSection = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([
     {
+      id: "0",
+      title: "internal project meeting",
+      time: "9:00 AM",
+      duration: "2 hours",
+      attendees: [
+        { name: "Project Team", email: "team@company.com" }
+      ],
+      briefing: "Internal project meeting with the team",
+      aiSummary: "Regular project sync to discuss progress and next steps.",
+      hasProxy: false,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: -180 // Past event
+    },
+    {
+      id: "1.5",
+      title: "demo with steve",
+      time: "1:00 PM",
+      duration: "1 hour",
+      attendees: [
+        { name: "Steve Wilson", email: "steve@company.com" }
+      ],
+      briefing: "Product demo with Steve Wilson",
+      aiSummary: "Demo session to showcase new features and gather feedback.",
+      hasProxy: true,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: -60 // Past event
+    },
+    {
       id: "1",
       title: "Test demo",
       time: "2:00 PM",
@@ -75,52 +107,19 @@ const CalendarSection = () => {
     },
     {
       id: "3",
-      title: "review",
+      title: "design review",
       time: "3:30 PM", 
-      duration: "1 hour",
+      duration: "45 min",
       attendees: [
-        { name: "Team Lead", email: "lead@company.com" }
+        { name: "Design Team", email: "design@company.com" }
       ],
-      briefing: "Weekly review meeting with team lead",
-      aiSummary: "Regular review session to discuss progress and next steps.",
+      briefing: "Design review session with the design team",
+      aiSummary: "Review of latest design mockups and user interface updates.",
       hasProxy: true,
       hasNotes: false,
       summaryReady: false,
       isRecording: false,
       minutesUntil: 135
-    },
-    {
-      id: "4",
-      title: "team standup",
-      time: "4:00 PM", 
-      duration: "30 min",
-      attendees: [
-        { name: "Development Team", email: "dev-team@company.com" }
-      ],
-      briefing: "Daily team standup meeting",
-      aiSummary: "Quick sync on current tasks and blockers with the development team.",
-      hasProxy: false,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 165
-    },
-    {
-      id: "5",
-      title: "client feedback session",
-      time: "5:00 PM", 
-      duration: "45 min",
-      attendees: [
-        { name: "Sarah Johnson", email: "sarah@client.com" },
-        { name: "Mike Chen", email: "mike@client.com" }
-      ],
-      briefing: "Client feedback session on recent deliverables",
-      aiSummary: "Gathering client feedback on recent project milestones and discussing next phases.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 225
     }
   ]);
 
@@ -134,6 +133,19 @@ const CalendarSection = () => {
   const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 120);
   const nextMeeting = meetings.find(m => m.minutesUntil < 120);
   const otherMeetings = meetings.filter(m => m.minutesUntil < 120 && m.id !== nextMeeting?.id);
+
+  // Get all meetings for schedule (sorted by time)
+  const allMeetings = [...meetings].sort((a, b) => {
+    // Convert time to minutes for sorting
+    const timeToMinutes = (timeStr: string) => {
+      const [time, period] = timeStr.split(' ');
+      const [hours, minutes] = time.split(':').map(Number);
+      const hours24 = period === 'PM' && hours !== 12 ? hours + 12 : (period === 'AM' && hours === 12 ? 0 : hours);
+      return hours24 * 60 + (minutes || 0);
+    };
+    
+    return timeToMinutes(a.time) - timeToMinutes(b.time);
+  });
 
   const toggleProxy = (meetingId: string) => {
     setMeetings(prev => prev.map(meeting => 
@@ -212,18 +224,20 @@ const CalendarSection = () => {
   return (
     <TooltipProvider>
       <div className="w-full space-y-4">
-        {/* Next Meeting Card - Full Detail */}
+        {/* Upcoming header */}
+        <h3 className="text-sm font-medium text-text-primary">Upcoming</h3>
+        
+        {/* Next Meeting Card - Reverted to original version with outline */}
         {nextMeeting && (
           <Card 
-            className="w-full rounded-xl shadow-none border-0 cursor-pointer hover:shadow-md transition-shadow" 
+            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow" 
             style={{
               background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-              boxShadow: 'none'
             }}
             onClick={() => openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
-              <div className="bg-surface-overlay/50 rounded-xl p-4 border border-border-subtle">
+              <div className="bg-surface-overlay/50 rounded-xl p-4">
                 {/* Header with time and chips */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -363,40 +377,70 @@ const CalendarSection = () => {
           </Card>
         )}
 
-        {/* Schedule/Timeline View - Compact */}
-        {otherMeetings.length > 0 && (
+        {/* Schedule section with header above */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
           <Card className="w-full rounded-xl shadow-none border-0" style={{
             background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
             boxShadow: 'none'
           }}>
             <CardContent className="p-4">
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium text-text-primary mb-3">Schedule</h3>
-                <div className="relative">
-                  <div className="space-y-3">
-                    {otherMeetings.map((meeting) => (
+              <div className="space-y-0">
+                {allMeetings.map((meeting, index) => {
+                  const isPast = meeting.minutesUntil < 0;
+                  const isNext = meeting.id === nextMeeting?.id;
+                  
+                  return (
+                    <div key={meeting.id} className="relative">
+                      {/* Timeline connector */}
+                      {index > 0 && (
+                        <div className={`absolute left-16 top-0 w-0.5 h-4 ${
+                          allMeetings[index - 1].minutesUntil < 0 ? 'bg-red-500' : 'bg-border-subtle'
+                        }`} />
+                      )}
+                      
                       <div 
-                        key={meeting.id} 
-                        className="flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2"
+                        className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
+                          isNext ? 'opacity-100' : 'opacity-80'
+                        }`}
                         onClick={() => openMeetingDetails(meeting)}
                       >
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm text-text-secondary min-w-[80px]">
-                            {meeting.time}
-                          </span>
-                          <span className="text-sm text-text-primary">
+                        {/* Time */}
+                        <div className="text-sm text-text-secondary min-w-[100px] font-mono">
+                          {meeting.time}
+                        </div>
+                        
+                        {/* Title */}
+                        <div className="flex-1">
+                          <span className={`text-sm ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
                             {meeting.title}
                           </span>
                         </div>
-                        <Circle className="w-4 h-4 text-green-500" />
+                        
+                        {/* Status indicator */}
+                        <div className="flex items-center gap-2">
+                          {meeting.hasProxy && (
+                            <div className="w-2 h-2 bg-green-500 rounded-full" />
+                          )}
+                          {meeting.isRecording && (
+                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                          )}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                      
+                      {/* Timeline indicator line - red line shows current time */}
+                      {meeting.minutesUntil < 0 && allMeetings[index + 1]?.minutesUntil >= 0 && (
+                        <div className="absolute left-0 right-0 top-full">
+                          <div className="h-0.5 bg-red-500 w-full" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
-        )}
+        </div>
       </div>
 
       {/* Instructions Drawer */}

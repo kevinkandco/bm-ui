@@ -7,6 +7,7 @@ import ConnectedAccountsList from "./ConnectedAccountsList";
 import TagManager from "./TagManager";
 import InputIntegrationsSection from "./InputIntegrationsSection";
 import OutputIntegrationsSection from "./OutputIntegrationsSection";
+import AISettingsModal from "./AISettingsModal";
 import { useIntegrationsState } from "./useIntegrationsState";
 import FancyLoader from "./modal/FancyLoader";
 import { useSearchParams } from "react-router-dom";
@@ -30,6 +31,23 @@ const IntegrationsSection = () => {
     dismissFirstTimeHelper,
     loading
   } = useIntegrationsState();
+
+  const [aiSettingsModal, setAiSettingsModal] = useState<{
+    isOpen: boolean;
+    accountName: string;
+    provider: string;
+    accountType: 'email' | 'slack';
+    currentSettings?: any;
+    onSave: (settings: any) => void;
+  }>({
+    isOpen: false,
+    accountName: "",
+    provider: "",
+    accountType: 'email',
+    currentSettings: {},
+    onSave: () => {}
+  });
+
   const [searchParams] = useSearchParams();
   const [showTagManager, setShowTagManager] = useState(false);
   const [providerModal, setProviderModal] = useState({
@@ -67,6 +85,24 @@ const IntegrationsSection = () => {
     toast({
       title: "Integration Connected",
       description: `Your ${provider} integration has been connected successfully.`,
+    });
+  };
+
+  const handleOpenAISettings = (accountName: string, provider: string, accountType: 'email' | 'slack', currentSettings: any = {}) => {
+    setAiSettingsModal({
+      isOpen: true,
+      accountName,
+      provider,
+      accountType,
+      currentSettings,
+      onSave: (settings) => {
+        // Handle saving settings here
+        console.log('Saving AI settings:', settings);
+        toast({
+          title: "Settings Updated",
+          description: `AI ${accountType === 'email' ? 'email' : 'message'} management settings for ${accountName} have been updated.`,
+        });
+      }
     });
   };
 
@@ -142,6 +178,17 @@ const IntegrationsSection = () => {
           onClose={() => setShowTagManager(false)}
         />
       )}
+
+      {/* AI Settings Modal */}
+      <AISettingsModal
+        isOpen={aiSettingsModal.isOpen}
+        onClose={() => setAiSettingsModal(prev => ({ ...prev, isOpen: false }))}
+        accountName={aiSettingsModal.accountName}
+        provider={aiSettingsModal.provider}
+        accountType={aiSettingsModal.accountType}
+        currentSettings={aiSettingsModal.currentSettings}
+        onSave={aiSettingsModal.onSave}
+      />
 
       {/* Input Integrations */}
       <InputIntegrationsSection onConnect={handleAddAccount} />
