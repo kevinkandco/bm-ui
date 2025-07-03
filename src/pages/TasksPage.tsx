@@ -31,7 +31,7 @@ const TasksPage = () => {
   const [actionItems, setActionItems] = useState<ActionItem[]>([]);
 
   const getActionItems = useCallback(async (page = 1) => {
-    const response = await call("get", `/action-items?par_page=10&page=${page}&status=${showCompleted}`, {
+    const response = await call("get", `/action-items?par_page=10&page=${page}&status=${showCompleted}&search=${searchQuery}`, {
       showToast: true,
       toastTitle: "Failed to Action Items",
       toastDescription: "Something went wrong getting action items.",
@@ -71,7 +71,7 @@ const TasksPage = () => {
       totalPages: response?.meta?.last_page || 1,
     }));
     setActionItems(data);
-  }, [call, showCompleted]);
+  }, [call, showCompleted, searchQuery]);
 
   useEffect(() => {
     getActionItems();
