@@ -331,7 +331,7 @@ const TasksPage = () => {
             disabled={filteredItems.length === 0}
             className="border border-border-subtle hover:bg-white/5"
           >
-            {showCompleted ? "show Uncompleted" : "show Completed"}
+            {showCompleted ? "Show Uncompleted" : "Show Completed"}
           </Button>
           <Button
             onClick={handleMarkAllDone}
