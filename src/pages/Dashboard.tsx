@@ -73,7 +73,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
-    const response = await call("get", "/dashboard", {
+    const response = await call("get", "/dashboard?day=today", {
       showToast: true,
       toastTitle: "Failed to fetch user data",
       toastDescription: "Something went wrong. Failed to fetch user data.",
@@ -85,7 +85,7 @@ const Dashboard = () => {
       SetBriefSchedules(response.briefSchedules);
       setUpcomingBrief(response.upComingBrief);
       setFocusTime(response.focusRemainingTime);
-      setCalendarData(response?.todaysCalendarData || []);
+      setCalendarData(response?.calendarData || []);
       const priorityPeople = [
         ...(Array.isArray(response?.slackPriorityPeople) ? response.slackPriorityPeople : []),
         ...(Array.isArray(response?.googlePriorityPeople) ? response.googlePriorityPeople : []),
