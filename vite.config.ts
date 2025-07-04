@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
    define: {
-    'process.env': {}
+    'process.env': {},
+    'process.env.VITE_DEV_SERVER_URL': JSON.stringify('http://localhost:8080'),
   }
 }));

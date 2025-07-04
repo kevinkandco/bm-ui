@@ -324,6 +324,8 @@ const Dashboard = () => {
 
       if (!response) return;
 
+    window.electronAPI?.enableFocusMode()
+
     setFocusConfig(config);
     setUserStatus("focus");
     setFocusTime(config?.duration * 60);
