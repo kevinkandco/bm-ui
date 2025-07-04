@@ -296,7 +296,7 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                 {/* Header with time and chips */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h4 className="text-sm font-medium text-text-primary mb-1">
+                    <h4 className="text-sm font-medium text-text-primary mb-1 break-all">
                       {nextMeeting.title}
                     </h4>
                     <div className="flex items-center gap-2 text-xs text-text-secondary">
@@ -344,7 +344,7 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                 {/* AI Summary */}
                 <div className="mb-3">
                   <div className="flex items-start gap-2">
-                    <p className="text-xs text-text-secondary flex-1">
+                    <p className="text-xs text-text-secondary flex-1 break-all">
                       {nextMeeting.aiSummary}
                     </p>
                     <Button

@@ -68,7 +68,7 @@ const ActionItemsPanel = ({
     
     const data = response?.data?.map(transformToActionItem);
     setActionItems(data);
-  }, [call]);
+  }, [call, setActionItemsCount]);
 
   useEffect(() => {
     getActionItems();
