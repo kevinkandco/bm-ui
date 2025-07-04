@@ -48,7 +48,11 @@ const FocusModeConfig = ({ isOpen, onClose, onStartFocus }: FocusModeConfigProps
     setCloseApps(prev => ({ ...prev, [app]: !prev[app] }));
   };
 
-  const handleStartFocus = () => {
+  const handleStartFocus = async () => {
+
+    const result = await window?.electronAPI?.closeSlack();
+    alert(result);
+
     const config: FocusConfig = {
       duration,
       closeApps,
