@@ -4,6 +4,18 @@ import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import { REDIRECT_URL } from "@/config";
 
+const AllowedProviders = [
+  "slack",
+  "google",
+  'asana',
+  'calendar'
+]
+const redirectProvider = [
+  "slack",
+  "google",
+  'asana',
+]
+
 export const useIntegrationsState = () => {
   const { toast } = useToast();
   const { call } = useApi();
@@ -57,6 +69,10 @@ export const useIntegrationsState = () => {
 
   const [showFirstTimeHelper, setShowFirstTimeHelper] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [connectModal, setConnectModal] = useState({
+    open: false,
+    providerName: "",
+  });
 
   const getProvider = useCallback(async (): Promise<void> => {
     setLoading(true);
@@ -95,9 +111,7 @@ export const useIntegrationsState = () => {
     getProvider();
   }, [getProvider]);
 
-  const addAccount = useCallback((provider: string, type: 'input' | 'output' = 'input') => {
-    
-
+  const addAccount = useCallback(async (provider: string, type: 'input' | 'output' = 'input') => {
     const openAuthUrl = async (provider: string) => {
       const urls: Record<string, string> = {
         slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=dashboard/settings`,
@@ -108,12 +122,15 @@ export const useIntegrationsState = () => {
       window.open(urls[provider], "_self");
     };
 
-    if (provider === "slack") {
-      if (provider === "slack") {
-        openAuthUrl("slack");
+    if (AllowedProviders.includes(provider)) {
+      if (redirectProvider.includes(provider)){
+        openAuthUrl(provider);
+      } else if (provider === 'calendar') {
+        setConnectModal({
+          open: true,
+          providerName: provider
+        });
       }
-    } else if (provider === "google") {
-        openAuthUrl("google");
     } else {
       const newAccount: ConnectedAccount = {
       id: Math.floor(Math.random() * 1000),
@@ -371,13 +388,14 @@ export const useIntegrationsState = () => {
           : tag
       )
     );
-  }, [tags]);
+  }, [tags, call]);
 
   const dismissFirstTimeHelper = useCallback(() => {
     setShowFirstTimeHelper(false);
   }, []);
 
   return {
+    getProvider,
     connectedAccounts,
     tags,
     showFirstTimeHelper,
@@ -392,6 +410,8 @@ export const useIntegrationsState = () => {
     mergeTag,
     updateSplitBriefSettings,
     dismissFirstTimeHelper,
-    loading
+    loading,
+    connectModal,
+    setConnectModal
   };
 };

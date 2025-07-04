@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Plus, Settings as SettingsIcon, AlertCircle, X, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -12,10 +12,15 @@ import { useIntegrationsState } from "./useIntegrationsState";
 import FancyLoader from "./modal/FancyLoader";
 import { useSearchParams } from "react-router-dom";
 import ProviderSettingsModal from "./modal/ProviderSettingsModal";
+import ConnectModal from "./modal/ConnectModal";
+import { useApi } from "@/hooks/useApi";
+
+const AllowedProvidersForModal = ["slack", "google"];
 
 const IntegrationsSection = () => {
   const { toast } = useToast();
   const {
+    getProvider,
     connectedAccounts,
     tags,
     showFirstTimeHelper,
@@ -29,8 +34,11 @@ const IntegrationsSection = () => {
     deleteTag,
     mergeTag,
     dismissFirstTimeHelper,
-    loading
+    loading,
+    connectModal,
+    setConnectModal
   } = useIntegrationsState();
+  const { call } = useApi();
 
   const [aiSettingsModal, setAiSettingsModal] = useState<{
     isOpen: boolean;
@@ -64,7 +72,7 @@ const IntegrationsSection = () => {
       const url = new URL(window.location.href);
       url.searchParams.delete("selected");
       url.searchParams.delete("integration_id");
-      if (selected && id) {
+      if (selected && id && AllowedProvidersForModal.includes(selected)) {
         window.history.replaceState(
           {},
           document.title,
@@ -80,12 +88,7 @@ const IntegrationsSection = () => {
     }, [searchParams]);
 
   const handleAddAccount = (provider: string, type: 'input' | 'output') => {
-    // Simulate OAuth flow
     addAccount(provider, type);
-    toast({
-      title: "Integration Connected",
-      description: `Your ${provider} integration has been connected successfully.`,
-    });
   };
 
   const handleOpenAISettings = (accountName: string, provider: string, accountType: 'email' | 'slack', currentSettings: any = {}) => {
@@ -105,6 +108,32 @@ const IntegrationsSection = () => {
       }
     });
   };
+
+  const handleConnectToGoogle = useCallback(async () => {
+    const response = await call("post", "/settings/system-integrations/google-calendar",
+      {
+        showToast: true,
+        toastTitle: "Failed to fetch user data",
+        toastDescription: "Something went wrong. Failed to fetch user data.",
+      }
+    );
+
+    if (!response) return;
+    
+    
+    setConnectModal({
+      open: false,
+      providerName: ""
+    });
+    
+    await getProvider();
+
+    toast({
+      title: "Success",
+      description: "Successfully added calendar account.",
+    });
+  }, [getProvider, call, toast, setConnectModal]);
+
 
   const hasMultipleTags = tags.length > 1;
 
@@ -202,6 +231,13 @@ const IntegrationsSection = () => {
         firstTimeProviderConnected={firstTimeProviderConnected}
         setFirstTimeProviderConnected={setFirstTimeProviderConnected}
       />}
+      
+      <ConnectModal
+        open={connectModal?.open}
+        onClose={() => setConnectModal({open: false, providerName: ""})}
+        onConnect={handleConnectToGoogle}
+        providerName={connectModal?.providerName}
+      />
     </div>
   );
 };
