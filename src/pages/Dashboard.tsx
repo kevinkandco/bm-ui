@@ -73,7 +73,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
 
   const fetchDashboardData = useCallback(async () => {
-    const response = await call("get", "/dashboard?day=today", {
+    const response = await call("get", "/dashboard", {
       showToast: true,
       toastTitle: "Failed to fetch user data",
       toastDescription: "Something went wrong. Failed to fetch user data.",
@@ -85,7 +85,6 @@ const Dashboard = () => {
       SetBriefSchedules(response.briefSchedules);
       setUpcomingBrief(response.upComingBrief);
       setFocusTime(response.focusRemainingTime);
-      setCalendarData(response?.calendarData || []);
       const priorityPeople = [
         ...(Array.isArray(response?.slackPriorityPeople) ? response.slackPriorityPeople : []),
         ...(Array.isArray(response?.googlePriorityPeople) ? response.googlePriorityPeople : []),
@@ -102,6 +101,20 @@ const Dashboard = () => {
     }
   }, [call]);
 
+  const getCalendarData = useCallback(async () => {
+    // setBriefsLoading(true);
+    const response = await call("get", `/calendar/data?day=today`, {
+      showToast: true,
+      toastTitle: "Failed to fetch calendar data",
+      toastDescription: "Something went wrong while fetching the calendar.",
+      returnOnFailure: false,
+    });
+  
+    if (!response && !response.data) return;
+    setCalendarData(response?.data);
+    // setBriefsLoading(false);
+  }, [call]);
+
   const getRecentBriefs = useCallback(async () => {
     setBriefsLoading(true);
     const response = await call("get", `/summaries?today=true`, {
@@ -110,6 +123,9 @@ const Dashboard = () => {
       toastDescription: "Something went wrong while fetching the briefs.",
       returnOnFailure: false,
     });
+
+    if (!response) return;
+
     setRecentBriefs(enrichBriefsWithStats(response?.data));
     setTotalBriefs(response?.meta?.total);
     setBriefsLoading(false);
@@ -144,8 +160,9 @@ const Dashboard = () => {
       );
     }
     fetchDashboardData();
+    getCalendarData();
     getRecentBriefs(); 
-  }, [searchParams, getRecentBriefs, fetchDashboardData]);
+  }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData]);
 
   useEffect(() => {
       if (!recentBriefs) return;
