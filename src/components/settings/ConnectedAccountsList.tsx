@@ -1,6 +1,16 @@
-
 import React, { useState } from "react";
-import { Mail, Slack, Calendar, ChevronDown, Trash2, Settings, Edit3, Check, X, Settings as SettingsIcon } from "lucide-react";
+import {
+  Mail,
+  Slack,
+  Calendar,
+  ChevronDown,
+  Trash2,
+  Settings,
+  Edit3,
+  Check,
+  X,
+  Settings as SettingsIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +22,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ConnectedAccount, Tag } from "./types";
 import TagSelector from "./TagSelector";
 import EmailAISettings from "./EmailAISettings";
@@ -23,13 +39,23 @@ interface ConnectedAccountsListProps {
   onUpdateTag: (accountId: number | string, tagId: number) => void;
   onToggleCombined: (accountId: number | string) => void;
   onDisconnect: (accountId: number | string) => void;
-  onCreateTag: (name: string, color: string, emoji: string, accountId: number | string) => void;
-  onUpdateAccountName?: (accountId: string | number, customName: string) => void;
-  setProviderModal?: React.Dispatch<React.SetStateAction<{
-    open: boolean;
-    id: number;
-    name: string;
-}>>
+  onCreateTag: (
+    name: string,
+    color: string,
+    emoji: string,
+    accountId: number | string
+  ) => void;
+  onUpdateAccountName?: (
+    accountId: string | number,
+    customName: string
+  ) => void;
+  setProviderModal?: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean;
+      id: number;
+      name: string;
+    }>
+  >;
 }
 
 const ConnectedAccountsList = ({
@@ -40,7 +66,7 @@ const ConnectedAccountsList = ({
   onDisconnect,
   onCreateTag,
   onUpdateAccountName,
-  setProviderModal
+  setProviderModal,
 }: ConnectedAccountsListProps) => {
   const [editingTag, setEditingTag] = useState<number | string | null>(null);
   const [editingName, setEditingName] = useState<number | null>(null);
@@ -61,7 +87,7 @@ const ConnectedAccountsList = ({
     }
   };
 
-  const getTag = (tagId: number) => tags.find(tag => tag.id === tagId);
+  const getTag = (tagId: number) => tags.find((tag) => tag.id === tagId);
 
   const getDisplayName = (account: ConnectedAccount) => {
     if (account.name) {
@@ -70,7 +96,11 @@ const ConnectedAccountsList = ({
     // Auto-generate names based on provider
     switch (account.provider_name.toLowerCase()) {
       case "slack":
-        return account.name ? `${account.name}` : account.workspace ? `${account.workspace}` : "Slack Workspace";
+        return account.name
+          ? `${account.name}`
+          : account.workspace
+          ? `${account.workspace}`
+          : "Slack Workspace";
       case "gmail":
         return account.email ? `Gmail (${account.email})` : "Gmail";
       case "google":
@@ -80,7 +110,10 @@ const ConnectedAccountsList = ({
       case "calendar":
         return "Google Calendar";
       default:
-        return account.provider_name.charAt(0).toUpperCase() + account.provider_name.slice(1);
+        return (
+          account.provider_name.charAt(0).toUpperCase() +
+          account.provider_name.slice(1)
+        );
     }
   };
 
@@ -108,14 +141,14 @@ const ConnectedAccountsList = ({
   };
 
   const supportsAISettings = (provider: string) => {
-    return ['google', 'outlook', 'slack'].includes(provider);
+    return ["google", "outlook", "slack"].includes(provider);
   };
 
   return (
     <div className="space-y-3">
       {accounts.map((account) => {
         const tag = getTag(account.tagId);
-        
+
         return (
           <div
             key={account.id}
@@ -123,9 +156,16 @@ const ConnectedAccountsList = ({
           >
             <div className="flex items-center space-x-4 flex-1">
               {/* Provider Icon */}
-              <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-                {getProviderIcon(account.provider_name)}
-              </div>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
+                    {getProviderIcon(account.provider_name)}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="left" sideOffset={16}>
+                  <p>{account.provider_name}</p>
+                </TooltipContent>
+              </Tooltip>
 
               {/* Account Info */}
               <div className="flex-1 min-w-0">
@@ -137,8 +177,8 @@ const ConnectedAccountsList = ({
                         onChange={(e) => setTempName(e.target.value)}
                         className="h-8 text-sm flex-1 max-w-xs"
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleSaveName(account.id);
-                          if (e.key === 'Escape') handleCancelEdit();
+                          if (e.key === "Enter") handleSaveName(account.id);
+                          if (e.key === "Escape") handleCancelEdit();
                         }}
                         autoFocus
                       />
@@ -173,13 +213,13 @@ const ConnectedAccountsList = ({
                     </>
                   )}
                 </div>
-                
+
                 {editingName !== account.id && (
                   <span className="text-sm text-text-secondary truncate">
                     {account.email || account.provider}
                   </span>
                 )}
-                
+
                 {/* Tag Display/Selector */}
                 {editingName !== account.id && (
                   <div className="mt-1">
@@ -203,9 +243,12 @@ const ConnectedAccountsList = ({
                         {tag && (
                           <>
                             <span className="text-lg">{tag.emoji}</span>
-                            <Badge 
-                              variant="secondary" 
-                              style={{ backgroundColor: `${tag.color}20`, color: tag.color }}
+                            <Badge
+                              variant="secondary"
+                              style={{
+                                backgroundColor: `${tag.color}20`,
+                                color: tag.color,
+                              }}
                               className="text-xs"
                             >
                               {tag.name}
@@ -228,7 +271,13 @@ const ConnectedAccountsList = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name?.toLowerCase() })}
+                    onClick={() =>
+                      setProviderModal({
+                        open: true,
+                        id: account.id,
+                        name: account.provider_name?.toLowerCase(),
+                      })
+                    }
                     className="text-text-secondary hover:text-text-primary"
                   >
                     <SettingsIcon className="h-4 w-4 mr-2" /> Settings
@@ -252,7 +301,12 @@ const ConnectedAccountsList = ({
                 {/* Disconnect Button */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" disabled={!!account?.is_parent}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      disabled={!!account?.is_parent}
+                    >
                       <Trash2 className="h-4 w-4 text-text-secondary" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -284,7 +338,7 @@ const ConnectedAccountsList = ({
       {accounts.map((account) => {
         if (aiSettingsOpen !== account.id) return null;
 
-        if (account?.provider_name?.toLowerCase() === 'slack') {
+        if (account?.provider_name?.toLowerCase() === "slack") {
           return (
             <SlackAISettings
               key={`slack-${account.id}`}
@@ -296,7 +350,10 @@ const ConnectedAccountsList = ({
           );
         }
 
-        if (account?.provider_name?.toLowerCase() === 'gmail' || account?.provider_name?.toLowerCase() === 'outlook') {
+        if (
+          account?.provider_name?.toLowerCase() === "gmail" ||
+          account?.provider_name?.toLowerCase() === "outlook"
+        ) {
           return (
             <EmailAISettings
               key={`email-${account.id}`}
