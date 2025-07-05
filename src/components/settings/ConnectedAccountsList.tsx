@@ -33,6 +33,8 @@ import TagSelector from "./TagSelector";
 import EmailAISettings from "./EmailAISettings";
 import SlackAISettings from "./SlackAISettings";
 
+const Normal = ['calendar']
+
 interface ConnectedAccountsListProps {
   accounts: ConnectedAccount[];
   tags: Tag[];
@@ -221,7 +223,7 @@ const ConnectedAccountsList = ({
                 )}
 
                 {/* Tag Display/Selector */}
-                {editingName !== account.id && (
+                {(editingName !== account.id && !Normal.includes(account?.provider_name?.toLowerCase())) && (
                   <div className="mt-1">
                     {editingTag === account.id ? (
                       <TagSelector
@@ -285,7 +287,7 @@ const ConnectedAccountsList = ({
                 )}
 
                 {/* Include in Combined Brief Switch */}
-                <div className="flex items-center space-x-2">
+                {!Normal?.includes(account.provider_name?.toLowerCase()) && <div className="flex items-center space-x-2">
                   {/* {setProviderModal && <div className="flex items-center gap-2 border rounded-full p-1 text-sm mr-2 cursor-pointer" onClick={() => setProviderModal({ open: true, id: account.id, name: account.provider_name?.toLowerCase() })}>
                     <Settings size={20}>Configure Slack</Settings>
                   </div>} */}
@@ -296,7 +298,7 @@ const ConnectedAccountsList = ({
                     checked={account.is_combined}
                     onCheckedChange={() => onToggleCombined(account.id)}
                   />
-                </div>
+                </div>}
 
                 {/* Disconnect Button */}
                 <DropdownMenu>
