@@ -137,6 +137,7 @@ const BriefConfigurationSection = () => {
       }
 
       setDays(response.data?.brief_days);
+      setEmailDigest(response?.data?.email_digest);
 
       const briefTime = response.data?.brief_time;
       const timeFlags = getTimePeriod(null);
@@ -346,7 +347,7 @@ const updateTimeValue = useCallback(
   };
 
   const handleUpdateEmailDigest = async (checked: boolean) => {
-      const response = await call("post", "/brief-configuration/email-digest", { 
+      const response = await call("post", "/settings/brief-configuration/email-digest", { 
         body: {email_digest: checked},
         showToast: true,
         toastTitle: "Failed to update email digest",
