@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slack Killer</title>
+
+    <!-- Tailwind (via CDN) -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  </head>
+
+  <body
+    class="h-full flex items-center justify-center text-slate-100 antialiased"
+  >
+    <!-- Card -->
+    <div
+      class="w-80 rounded-2xl bg-slate-800/80 backdrop-blur p-8 shadow-lg shadow-slate-900/50"
+    >
+      <h1 class="text-2xl font-semibold text-center mb-2">Focus Mode</h1>
+      <p class="text-sm text-center text-slate-400 mb-6">
+        Instantly shut down Slack so you can get deep work done.
+      </p>
+
+      <button
+        id="close-slack"
+        class="w-full py-2 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 transition-all font-medium"
+      >
+        🔒  Close Slack
+      </button>
+
+      <p
+        id="status"
+        class="mt-4 text-center text-xs text-slate-400 italic hidden"
+      ></p>
+    </div>
+
+    <script>
+      const btn = document.getElementById("close-slack");
+      const status = document.getElementById("status");
+
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        btn.textContent = "Working…";
+        try {
+          const result = await window.electronAPI.closeSlack();
+          status.textContent = result;
+          status.classList.remove("hidden");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "🔒  Close Slack";
+        }
+      });
+    </script>
+  </body>
+</html>

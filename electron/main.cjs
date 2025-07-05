@@ -1,35 +1,38 @@
-// electron/main.cjs
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { exec } = require('child_process');
+const killSlack = require('./killSlack.cjs');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 400,
-    height: 200,
+    width: 700,
+    height: 400,
     webPreferences: {
-      // ⚠️  MUST point to preload.cjs, not .js
       preload: path.join(__dirname, 'preload.cjs'),
-      contextIsolation: true,   // default is true, keep it
-      nodeIntegration: false,  // keep false for safety
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 
-  // During development load Vite dev‑server, in prod load your index.html
-  win.loadURL('http://localhost:8080');
+  // win.loadURL('http://localhost:8080');
+    const htmlPath = path.join(__dirname, '..', 'main.htm');
+  win.loadFile(htmlPath);
 }
 
 app.whenReady().then(createWindow);
 
-// Handle the “close-slack” IPC
-ipcMain.handle('close-slack', async () => {
-  try {
-    // macOS
-    exec('pkill Slack');
-    // Windows (comment out the line above and uncomment below if you’re on Windows)
-    // exec('taskkill /IM slack.exe /F');
-    return 'Slack closed successfully!';
-  } catch (e) {
-    return 'Could not close Slack (maybe it is not running).';
-  }
+ipcMain.handle('close-slack', async (event) => {
+  // 1 kill Slack
+  const msg = await new Promise((res) => {
+    exec(killSlack(), (err, _out, stderr) => {
+      res(err ? `Failed: ${stderr || err.message}` : 'Slack closed.');
+    });
+  });
+
+  // 2 close the window that made the call
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (win && !win.isDestroyed()) win.close();
+
+  // Returning a value is optional now because the renderer is about to vanish
+  return msg;
 });
