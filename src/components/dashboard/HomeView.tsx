@@ -238,6 +238,10 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
+  const handleViewAllSchedule = useCallback(() => {
+    navigate("/dashboard/meetings");
+  }, [navigate]);
+
 const handleViewAllTasks = useCallback(() => {
   navigate("/dashboard/tasks");
 }, [navigate]);
@@ -766,7 +770,7 @@ const handleViewAllTasks = useCallback(() => {
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
               </div>
-              <CalendarSection calendarData={calendarData} />
+              <CalendarSection calendarData={calendarData} onViewAllSchedule={handleViewAllSchedule} />
             </div>
           </div>
           

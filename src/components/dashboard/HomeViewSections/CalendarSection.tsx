@@ -48,9 +48,10 @@ import { convertToMeetings } from "@/lib/utils";
 
 interface CalenderSectionProps {
   calendarData: CalenderData;
+  onViewAllSchedule: () => void;
 }
 
-const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
+const CalendarSection = ({ calendarData, onViewAllSchedule }: CalenderSectionProps) => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [upcomingMeetings, setUpcomingMeetings] = useState<Meeting[]>([]);
 
@@ -74,7 +75,7 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
   useEffect(() => {
     if (!calendarData || calendarData?.today.length === 0) return;
 
-    const meetingsToday  = convertToMeetings(calendarData?.today);
+    const meetingsToday = convertToMeetings(calendarData?.today);
     const upcomingMeetings = convertToMeetings(calendarData?.upcoming);
 
     setMeetings(meetingsToday);
@@ -518,7 +519,7 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                     Past Schedule
                   </h3>
                   <Button
-                    // onClick={onViewAllBriefs}
+                    onClick={onViewAllSchedule}
                     variant="ghost"
                     size="sm"
                     className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
