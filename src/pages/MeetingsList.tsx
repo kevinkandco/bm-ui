@@ -19,21 +19,29 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Meeting } from "@/components/dashboard/types";
 import { useApi } from "@/hooks/useApi";
 import { cn, convertToMeetings } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import MeetingDetailsPanel from "@/components/dashboard/HomeViewSections/MeetingDetailsPanel";
+import Pagination from "@/components/dashboard/Pagination";
 
 const MeetingsList = () => {
+  const location = useLocation();
+  const initialState = location.state;
+  const [isPast, setIsPast] = useState(initialState?.isPast ?? true);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  const [isPast, setIsPast] = useState(true);
   const [showMeetingDetails, setShowMeetingDetails] = useState(false);
   const [selectedMeetingForDetails, setSelectedMeetingForDetails] =
     useState<Meeting | null>(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    itemsPerPage: 2,
+  });
   const { toast } = useToast();
   const { call } = useApi();
   const navigate = useNavigate();
@@ -49,28 +57,42 @@ const MeetingsList = () => {
     });
   };
 
-  const getCalendarData = useCallback(async () => {
-    setLoading(true);
-    const response = await call(
-      "get",
-      `/calendar/data?status=${isPast ? "past" : "future"}`,
-      {
-        showToast: true,
-        toastTitle: "Failed to fetch calendar data",
-        toastDescription: "Something went wrong while fetching the calendar.",
-        returnOnFailure: false,
+  const getCalendarData = useCallback(
+    async (page = 1) => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setLoading(true);
+      const response = await call(
+        "get",
+        `/calendar/data?page=${page}&status=${isPast ? "past" : "future"}`,
+        {
+          showToast: true,
+          toastTitle: "Failed to fetch calendar data",
+          toastDescription: "Something went wrong while fetching the calendar.",
+          returnOnFailure: false,
+        }
+      );
+      if (!response && !response.data) {
+        setMeetings([]);
+        setLoading(false);
+        return;
       }
-    );
-    if (!response && !response.data) return;
 
-    const meetingsToday = convertToMeetings(response.data);
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: response?.meta?.current_page || 1,
+        totalPages: response?.meta?.last_page || 1,
+      }));
 
-    setMeetings(meetingsToday);
-    setLoading(false);
-  }, [call, isPast]);
+      const meetingsToday = convertToMeetings(response.data);
+
+      setMeetings(meetingsToday);
+      setLoading(false);
+    },
+    [call, isPast]
+  );
 
   useEffect(() => {
-    getCalendarData();
+    getCalendarData(pagination.currentPage);
   }, [getCalendarData]);
 
   const openMeetingDetails = (meeting: Meeting) => {
@@ -200,13 +222,25 @@ const MeetingsList = () => {
                         >
                           Join
                         </Button>
-                        <Button onClick={() => openMeetingDetails(meeting)} size="sm" variant="outline" className="w-full">
+                        <Button
+                          onClick={() => openMeetingDetails(meeting)}
+                          size="sm"
+                          variant="outline"
+                          className="w-full"
+                        >
                           Details
                         </Button>
                       </div>
                     </div>
                   </div>
                 ))
+              )}
+              {pagination.totalPages > 1 && (
+                <Pagination
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                  onPageChange={getCalendarData}
+                />
               )}
             </div>
           </div>
@@ -228,7 +262,7 @@ const MeetingsList = () => {
 const MeetingsSkeleton = () => {
   return (
     <div className="space-y-4">
-      {Array.from({ length: 3 }).map((_, index) => (
+      {Array.from({ length: 5 }).map((_, index) => (
         <div
           key={index}
           className="p-4 h-28 rounded-xl hover:bg-white/10 animate-pulse flex justify-between"

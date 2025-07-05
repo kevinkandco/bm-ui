@@ -48,10 +48,13 @@ import { convertToMeetings } from "@/lib/utils";
 
 interface CalenderSectionProps {
   calendarData: CalenderData;
-  onViewAllSchedule: () => void;
+  onViewAllSchedule: (isPast: boolean) => void;
 }
 
-const CalendarSection = ({ calendarData, onViewAllSchedule }: CalenderSectionProps) => {
+const CalendarSection = ({
+  calendarData,
+  onViewAllSchedule,
+}: CalenderSectionProps) => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [upcomingMeetings, setUpcomingMeetings] = useState<Meeting[]>([]);
 
@@ -506,6 +509,17 @@ const CalendarSection = ({ calendarData, onViewAllSchedule }: CalenderSectionPro
                             </div>
                           );
                         })}
+                        <div className="flex items-center justify-end w-full">
+                          <Button
+                            onClick={() => onViewAllSchedule(false)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
+                          >
+                            View all
+                            <ArrowRight className="w-3 h-3 ml-1" />
+                          </Button>
+                        </div>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
@@ -519,7 +533,7 @@ const CalendarSection = ({ calendarData, onViewAllSchedule }: CalenderSectionPro
                     Past Schedule
                   </h3>
                   <Button
-                    onClick={onViewAllSchedule}
+                    onClick={() => onViewAllSchedule(true)}
                     variant="ghost"
                     size="sm"
                     className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"

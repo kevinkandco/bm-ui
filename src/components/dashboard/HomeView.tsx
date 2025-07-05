@@ -238,8 +238,8 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  const handleViewAllSchedule = useCallback(() => {
-    navigate("/dashboard/meetings");
+  const handleViewAllSchedule = useCallback((isPast: boolean) => {
+    navigate("/dashboard/meetings", { state: { isPast } });
   }, [navigate]);
 
 const handleViewAllTasks = useCallback(() => {
