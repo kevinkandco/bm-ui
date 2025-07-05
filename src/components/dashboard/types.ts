@@ -10,18 +10,18 @@ export interface BriefSchedules {
   days?: string[];
 }
 
-export interface WeekendBrief{
-    enabled: boolean;
-    deliveryMethod: "email" | "audio" | "both";
-    deliveryTime: string;
-    weekendDays: string[];
-    coveragePeriod: {
-      startDay: string;
-      startTime: string;
-      endDay: string;
-      endTime: string;
-    };
+export interface WeekendBrief {
+  enabled: boolean;
+  deliveryMethod: "email" | "audio" | "both";
+  deliveryTime: string;
+  weekendDays: string[];
+  coveragePeriod: {
+    startDay: string;
+    startTime: string;
+    endDay: string;
+    endTime: string;
   };
+}
 
 export interface UserSchedule {
   workday_start: string;
@@ -84,10 +84,22 @@ export interface Stats {
   };
 }
 
-export interface PriorityItems{
-    slack?: { low: number; medium: number; high: number, action: number, total_messages: number };
-    gmail?: { low: number; medium: number; high: number, action: number, total_messages: number };
-  }
+export interface PriorityItems {
+  slack?: {
+    low: number;
+    medium: number;
+    high: number;
+    action: number;
+    total_messages: number;
+  };
+  gmail?: {
+    low: number;
+    medium: number;
+    high: number;
+    action: number;
+    total_messages: number;
+  };
+}
 
 export interface Summary {
   id: number;
@@ -149,13 +161,13 @@ export interface Priorities {
 export interface ActionItem {
   id?: string;
   title?: string;
-  platform?: 'slack' | 'gmail';
+  platform?: "slack" | "gmail";
   message?: string;
   sender?: string;
   isVip?: boolean;
   priorityPerson?: string; // Name or initials of flagged person
   triggerKeyword?: string; // Matched trigger keyword
-  urgency?: 'critical' | 'high' | 'medium' | 'low';
+  urgency?: "critical" | "high" | "medium" | "low";
   isNew?: boolean;
   createdAt?: string;
   threadUrl?: string;
@@ -174,4 +186,38 @@ export interface CalendarEvent {
   duration: string;
   date: string; // Format: "YYYY-MM-DD"
   attendee_count: number;
-};
+  attendees: { name: string; organizer: boolean; email: string, response_status: string, self: boolean }[];
+  proxy_note: string | null;
+}
+
+export interface CalenderData {
+  today: CalendarEvent[];
+  upcoming: CalendarEvent[];
+}
+
+export interface Meeting {
+  id: string;
+  title: string;
+  time: string;
+  date: string;
+  duration: string;
+  attendees: Array<{
+    name: string;
+    email: string;
+  }>;
+  briefing: string;
+  aiSummary: string;
+  hasProxy: boolean;
+  hasNotes: boolean;
+  proxyNotes?: string;
+  summaryReady: boolean;
+  isRecording: boolean;
+  minutesUntil: number;
+  context?: {
+    relevantEmails?: string[];
+    weeklyCheckIns?: string[];
+    interests?: string[];
+  };
+  preparationPoints?: string[];
+  suggestedAgenda?: string[];
+}

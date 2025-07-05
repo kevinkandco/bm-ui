@@ -22,7 +22,7 @@ import {
   NextBriefSection,
   UpcomingMeetingsSection,
 } from "./HomeViewSections/SidebarSections";
-import { CalendarEvent, Priorities, PriorityPeople, Summary } from "./types";
+import { CalendarEvent, CalenderData, Priorities, PriorityPeople, Summary } from "./types";
 import useAuthStore from "@/store/useAuthStore";
 import ListeningScreen from "./ListeningScreen";
 import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
@@ -40,7 +40,7 @@ interface HomeViewProps {
   totalBriefs: number;
   briefsLoading: boolean;
   upcomingBrief: Summary | null;
-  calendarData: CalendarEvent[];
+  calendarData: CalenderData;
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number, title: string, transcript: string) => void;
   onStartFocusMode: (focusTime: number) => void;
