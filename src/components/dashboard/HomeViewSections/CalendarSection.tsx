@@ -183,16 +183,16 @@ const CalendarSection = ({
     }
   };
 
-  if (!hasUpcomingMeetings) {
-    return (
-      <div className="w-full">
-        <div className="text-center py-6">
-          <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
-          <p className="text-sm text-text-secondary">No meetings soon</p>
-        </div>
-      </div>
-    );
-  }
+  // if (!hasUpcomingMeetings) {
+  //   return (
+  //     <div className="w-full">
+  //       <div className="text-center py-6">
+  //         <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+  //         <p className="text-sm text-text-secondary">No meetings soon</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <TooltipProvider>
