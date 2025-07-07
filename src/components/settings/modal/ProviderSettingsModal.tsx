@@ -16,6 +16,7 @@ import { SettingsTabProps, ProviderData } from "./types";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Provider } from "../types";
 import useAuthStore from "@/store/useAuthStore";
+import AiFeatures from "./AiFeatures";
 
 interface ProviderSettingsModalProps {
   open: boolean;
@@ -30,6 +31,7 @@ type SettingsTab =
   | "priorityPeople"
   | "priorityChannels"
   | "priorityTopics"
+  | "aiFeatures"
   | "ignore";
 
 interface TabConfig {
@@ -61,6 +63,7 @@ const ProviderSettingsModal = ({
   const priorityPeopleActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
   const priorityChannelsActive = useMemo(() => ['slack'], []);
   const priorityTopicsActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
+  const aiFeaturesActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
   const ignoreActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
 
   const tabs: TabConfig[] = useMemo(() => [
@@ -86,13 +89,20 @@ const ProviderSettingsModal = ({
       active: priorityTopicsActive.includes(provider?.name?.toLowerCase() || ''),
     },
     {
+      id: "aiFeatures",
+      label: "AI Features",
+      icon: <ChevronRight className="h-4 w-4" />,
+      Component: AiFeatures,
+      active: aiFeaturesActive.includes(provider?.name?.toLowerCase() || ''),
+    },
+    {
       id: "ignore",
       label: "Ignore Configuration",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: IgnoreSetting,
       active: ignoreActive.includes(provider?.name?.toLowerCase() || ''),
     },
-  ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, ignoreActive, provider?.name]);
+  ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, aiFeaturesActive, ignoreActive, provider?.name]);
 
   const getProviderData = useCallback(async (): Promise<void> => {
     setLoadingProviderData(true);
