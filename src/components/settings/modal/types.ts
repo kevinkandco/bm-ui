@@ -12,6 +12,11 @@ export interface ProviderData {
     autoArchive: boolean;
     priorityOnly: boolean;
   };
+  interruptRules: {
+    contacts: { name: string; email: string }[];
+    keywords: string[];
+    systemAlerts: string[];
+  }
   includeIgnoredInSummary: boolean;
 }
 

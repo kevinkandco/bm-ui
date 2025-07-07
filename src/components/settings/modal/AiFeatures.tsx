@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -16,19 +14,6 @@ const EmailAISettings = ({
   loadingProviderData,
   provider,
 }: SettingsTabProps) => {
-  useEffect(() => {
-    setProviderData((prev) => {
-      return {
-        ...prev,
-        aiFeatures: {
-          autoLabel: prev?.aiFeatures?.autoLabel ?? false,
-          autoSort: prev?.aiFeatures?.autoSort ?? false,
-          autoArchive: prev?.aiFeatures?.autoArchive ?? false,
-          priorityOnly: prev?.aiFeatures?.priorityOnly ?? false,
-        },
-      };
-    });
-  }, [setProviderData]);
 
   const handleSettingChange = (key: string, value: boolean) => {
     setProviderData((prev) => ({
