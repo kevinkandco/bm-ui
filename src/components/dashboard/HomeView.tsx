@@ -46,6 +46,7 @@ interface HomeViewProps {
   onStartFocusMode: (focusTime: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
+  onStartApp: () => void;
   onOpenBriefModal: () => void;
   onExitFocusMode: () => void;
   onSignOffForDay: () => void;
@@ -64,6 +65,7 @@ const HomeView = ({
   onStartFocusMode,
   onToggleFocusMode,
   onToggleCatchMeUp,
+  onStartApp,
   onOpenBriefModal,
   onSignOffForDay,
   fetchDashboardData,
@@ -694,6 +696,16 @@ const handleViewAllTasks = useCallback(() => {
             >
               <Zap className="mr-2 h-4 w-4" />
               Brief Me
+            </Button>
+
+            <Button
+            variant="danger"
+              onClick={onStartApp}
+              disabled={status === "focus"}
+              className=" text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all"
+            >
+              <Focus className="mr-2 h-4 w-4" />
+              Start App
             </Button>
 
             {/* Profile Dropdown */}
