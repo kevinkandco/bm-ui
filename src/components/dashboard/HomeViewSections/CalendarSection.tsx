@@ -1,128 +1,62 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Calendar, Clock, Mic, Users, ChevronDown, Pencil, BookOpen, Info, Circle } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Mic,
+  Users,
+  ChevronDown,
+  Pencil,
+  BookOpen,
+  Info,
+  Circle,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerClose,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
 import MeetingDetailsPanel from "./MeetingDetailsPanel";
-import { CalendarEvent } from "../types";
+import { CalendarEvent, CalenderData, Meeting } from "../types";
 import { useApi } from "@/hooks/useApi";
-
-interface Meeting {
-  id: string;
-  title: string;
-  time: string;
-  duration: string;
-  attendees: Array<{
-    name: string;
-    email: string;
-  }>;
-  briefing: string;
-  aiSummary: string;
-  hasProxy: boolean;
-  hasNotes: boolean;
-  proxyNotes?: string;
-  summaryReady: boolean;
-  isRecording: boolean;
-  minutesUntil: number;
-  context?: {
-    relevantEmails?: string[];
-    weeklyCheckIns?: string[];
-    interests?: string[];
-  };
-  preparationPoints?: string[];
-  suggestedAgenda?: string[];
-}
+import { Collapsible } from "@radix-ui/react-collapsible";
+import {
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { convertToMeetings } from "@/lib/utils";
 
 interface CalenderSectionProps {
-  calendarData: CalendarEvent[];
+  calendarData: CalenderData;
+  onViewAllSchedule: (isPast: boolean) => void;
 }
 
-const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
-  const [meetings, setMeetings] = useState<Meeting[]>([
-    // {
-    //   id: "0",
-    //   title: "internal project meeting",
-    //   time: "9:00 AM",
-    //   duration: "2 hours",
-    //   attendees: [{ name: "Project Team", email: "team@company.com" }],
-    //   briefing: "Internal project meeting with the team",
-    //   aiSummary: "Regular project sync to discuss progress and next steps.",
-    //   hasProxy: false,
-    //   hasNotes: false,
-    //   summaryReady: false,
-    //   isRecording: false,
-    //   minutesUntil: -180, // Past event
-    // },
-    // {
-    //   id: "1.5",
-    //   title: "demo with steve",
-    //   time: "1:00 PM",
-    //   duration: "1 hour",
-    //   attendees: [{ name: "Steve Wilson", email: "steve@company.com" }],
-    //   briefing: "Product demo with Steve Wilson",
-    //   aiSummary: "Demo session to showcase new features and gather feedback.",
-    //   hasProxy: true,
-    //   hasNotes: false,
-    //   summaryReady: false,
-    //   isRecording: false,
-    //   minutesUntil: -60, // Past event
-    // },
-    // {
-    //   id: "1",
-    //   title: "Test demo",
-    //   time: "2:00 PM",
-    //   duration: "1 hour",
-    //   attendees: [
-    //     { name: "Kevin Kirkpatrick", email: "kirkpatrick.kevin.j@gmail.com" },
-    //     { name: "Kevin Kirkpatrick", email: "kevin@uprise.is" },
-    //   ],
-    //   briefing:
-    //     "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
-    //   aiSummary:
-    //     "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
-    //   hasProxy: true,
-    //   hasNotes: true,
-    //   proxyNotes: "Focus on practicality and personalization features",
-    //   summaryReady: false,
-    //   isRecording: true,
-    //   minutesUntil: 45,
-    // },
-    // {
-    //   id: "2",
-    //   title: "external demo",
-    //   time: "3:00 PM",
-    //   duration: "30 min",
-    //   attendees: [{ name: "External Client", email: "client@company.com" }],
-    //   briefing: "External client demonstration meeting",
-    //   aiSummary:
-    //     "Client demonstration focusing on key product features and capabilities.",
-    //   hasProxy: true,
-    //   hasNotes: false,
-    //   summaryReady: false,
-    //   isRecording: false,
-    //   minutesUntil: 105,
-    // },
-    // {
-    //   id: "3",
-    //   title: "design review",
-    //   time: "3:30 PM",
-    //   duration: "45 min",
-    //   attendees: [{ name: "Design Team", email: "design@company.com" }],
-    //   briefing: "Design review session with the design team",
-    //   aiSummary: "Review of latest design mockups and user interface updates.",
-    //   hasProxy: true,
-    //   hasNotes: false,
-    //   summaryReady: false,
-    //   isRecording: false,
-    //   minutesUntil: 135,
-    // },
-  ]);
+const CalendarSection = ({
+  calendarData,
+  onViewAllSchedule,
+}: CalenderSectionProps) => {
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [upcomingMeetings, setUpcomingMeetings] = useState<Meeting[]>([]);
 
   const [showInstructionsDrawer, setShowInstructionsDrawer] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
@@ -130,8 +64,8 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
   const [showMeetingDetails, setShowMeetingDetails] = useState(false);
   const [selectedMeetingForDetails, setSelectedMeetingForDetails] =
     useState<Meeting | null>(null);
+  const [upcomingOpen, setUpcomingOpen] = useState(false);
   const { call } = useApi();
-    
 
   // Check if any meetings are within 2 hours
   // const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 120);
@@ -142,45 +76,27 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
   );
 
   useEffect(() => {
-    if (!calendarData || calendarData.length === 0) return;
+    if (!calendarData || calendarData?.today.length === 0) return;
 
-    const convertToMeetings = calendarData.map((item: any, index: number) => {
-      const now = new Date();
-      const eventDateTime = new Date(`${item.date} ${item.start_time}`);
-      const minutesUntil = Math.round(
-        (eventDateTime.getTime() - now.getTime()) / 60000
-      );
+    const meetingsToday = convertToMeetings(calendarData?.today);
+    const upcomingMeetings = convertToMeetings(calendarData?.upcoming);
 
-      return {
-        id: item.id.toString(),
-        title: item.title,
-        time: item.start_time,
-        duration: item.duration,
-        attendees: (item.attendees || []).map((a: any) => ({
-          name: a.name || "Unknown",
-          email: a.email || "",
-        })),
-        briefing: item.description || "No briefing available.",
-        aiSummary: item.description || "No AI summary available.",
-        hasProxy: false,
-        hasNotes: !!item.proxy_note,
-        proxyNotes: item.proxy_note || "",
-        summaryReady: false,
-        isRecording: false,
-        minutesUntil,
-      };
-    });
-
-    setMeetings(convertToMeetings);
+    setMeetings(meetingsToday);
+    setUpcomingMeetings(upcomingMeetings);
   }, [calendarData]);
 
   // Get all meetings for schedule (sorted by time)
   const allMeetings = [...meetings].sort((a, b) => {
     // Convert time to minutes for sorting
     const timeToMinutes = (timeStr: string) => {
-      const [time, period] = timeStr.split(' ');
-      const [hours, minutes] = time.split(':').map(Number);
-      const hours24 = period === 'PM' && hours !== 12 ? hours + 12 : (period === 'AM' && hours === 12 ? 0 : hours);
+      const [time, period] = timeStr.split(" ");
+      const [hours, minutes] = time.split(":").map(Number);
+      const hours24 =
+        period === "PM" && hours !== 12
+          ? hours + 12
+          : period === "AM" && hours === 12
+          ? 0
+          : hours;
       return hours24 * 60 + (minutes || 0);
     };
 
@@ -188,11 +104,13 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
   });
 
   const toggleProxy = (meetingId: string) => {
-    setMeetings(prev => prev.map(meeting => 
-      meeting.id === meetingId 
-        ? { ...meeting, hasProxy: !meeting.hasProxy }
-        : meeting
-    ));
+    setMeetings((prev) =>
+      prev.map((meeting) =>
+        meeting.id === meetingId
+          ? { ...meeting, hasProxy: !meeting.hasProxy }
+          : meeting
+      )
+    );
   };
 
   const openInstructionsDrawer = (meeting: Meeting) => {
@@ -246,16 +164,16 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
         "Personalization",
         "Clarity and Structure",
       ],
-      suggestedAgenda: [
-        "Introduction",
-        "Key Features"
-      ]
+      suggestedAgenda: ["Introduction", "Key Features"],
     };
     setSelectedMeetingForDetails(meetingWithDetails);
     setShowMeetingDetails(true);
   };
 
-  const getAttendanceText = (meeting: Meeting, userJoining: boolean = false) => {
+  const getAttendanceText = (
+    meeting: Meeting,
+    userJoining: boolean = false
+  ) => {
     if (meeting.hasProxy && userJoining) {
       return "1 + Proxy attending";
     } else if (meeting.hasProxy) {
@@ -265,16 +183,16 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
     }
   };
 
-  if (!hasUpcomingMeetings) {
-    return (
-      <div className="w-full">
-        <div className="text-center py-6">
-          <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
-          <p className="text-sm text-text-secondary">No meetings soon</p>
-        </div>
-      </div>
-    );
-  }
+  // if (!hasUpcomingMeetings) {
+  //   return (
+  //     <div className="w-full">
+  //       <div className="text-center py-6">
+  //         <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+  //         <p className="text-sm text-text-secondary">No meetings soon</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <TooltipProvider>
@@ -287,7 +205,8 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
           <Card
             className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow"
             style={{
-              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
+              background:
+                "linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)",
             }}
             onClick={() => openMeetingDetails(nextMeeting)}
           >
@@ -324,8 +243,8 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                           variant={nextMeeting.hasProxy ? "default" : "outline"}
                           size="sm"
                           className={`h-6 px-2 text-xs rounded-full ${
-                            nextMeeting.hasProxy 
-                              ? "bg-green-600 text-white hover:bg-green-700" 
+                            nextMeeting.hasProxy
+                              ? "bg-green-600 text-white hover:bg-green-700"
                               : "border-text-secondary text-text-secondary hover:border-green-600 hover:text-green-600"
                           }`}
                         >
@@ -334,7 +253,8 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                       </TooltipTrigger>
                       <TooltipContent>
                         <p className="text-xs max-w-xs">
-                          Proxy will record, transcribe, and send a brief to you only.
+                          Proxy will record, transcribe, and send a brief to you
+                          only.
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -390,12 +310,15 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                   </div>
 
                   {/* Split button CTA */}
-                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                  <div
+                    className="flex items-center gap-1"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Button
                       size="sm"
                       className={`h-7 px-3 text-xs rounded-l-lg rounded-r-none ${
-                        nextMeeting.hasProxy 
-                          ? "bg-surface text-text-secondary hover:bg-surface" 
+                        nextMeeting.hasProxy
+                          ? "bg-surface text-text-secondary hover:bg-surface"
                           : "bg-accent-primary text-white hover:bg-accent-primary/90"
                       }`}
                       disabled={nextMeeting.hasProxy}
@@ -408,16 +331,19 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                         <Button
                           size="sm"
                           className={`h-7 w-6 px-0 rounded-r-lg rounded-l-none border-l border-l-white/20 ${
-                            nextMeeting.hasProxy 
-                              ? "bg-surface text-text-secondary hover:bg-surface" 
+                            nextMeeting.hasProxy
+                              ? "bg-surface text-text-secondary hover:bg-surface"
                               : "bg-accent-primary text-white hover:bg-accent-primary/90"
                           }`}
                         >
                           <ChevronDown className="w-3 h-3" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-surface border-border-subtle">
-                        <DropdownMenuItem 
+                      <DropdownMenuContent
+                        align="end"
+                        className="bg-surface border-border-subtle"
+                      >
+                        <DropdownMenuItem
                           onClick={() => toggleProxy(nextMeeting.id)}
                           className="text-text-primary hover:bg-white/5"
                         >
@@ -451,11 +377,18 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
         {/* Schedule section with header above */}
         <div className="space-y-3">
           <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
-          <Card className="w-full rounded-xl shadow-none border-0" style={{
-            background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-            boxShadow: 'none'
-          }}>
+          <Card
+            className="w-full rounded-xl shadow-none border-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)",
+              boxShadow: "none",
+            }}
+          >
             <CardContent className="p-4">
+              <h3 className="text-sm font-medium text-white-text/80 px-1 mb-2">
+                Today's Schedule
+              </h3>
               <div className="space-y-0">
                 {allMeetings.map((meeting, index) => {
                   const isPast = meeting.minutesUntil < 0;
@@ -465,14 +398,18 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                     <div key={meeting.id} className="relative">
                       {/* Timeline connector */}
                       {index > 0 && (
-                        <div className={`absolute left-16 top-0 w-0.5 h-4 ${
-                          allMeetings[index - 1].minutesUntil < 0 ? 'bg-red-500' : 'bg-border-subtle'
-                        }`} />
+                        <div
+                          className={`absolute left-16 top-0 w-0.5 h-4 ${
+                            allMeetings[index - 1].minutesUntil < 0
+                              ? "bg-red-500"
+                              : "bg-border-subtle"
+                          }`}
+                        />
                       )}
-                      
-                      <div 
+
+                      <div
                         className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
-                          isNext ? 'opacity-100' : 'opacity-80'
+                          isNext ? "opacity-100" : "opacity-80"
                         }`}
                         onClick={() => openMeetingDetails(meeting)}
                       >
@@ -483,7 +420,13 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
 
                         {/* Title */}
                         <div className="flex-1">
-                          <span className={`text-sm ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
+                          <span
+                            className={`text-sm ${
+                              isPast
+                                ? "text-text-secondary"
+                                : "text-text-primary"
+                            }`}
+                          >
                             {meeting.title}
                           </span>
                         </div>
@@ -510,13 +453,106 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
                   );
                 })}
               </div>
+              <Separator className="my-3 bg-white-text/10" />
+
+              {
+                <div className="pt-2">
+                  <Collapsible
+                    open={upcomingOpen}
+                    onOpenChange={setUpcomingOpen}
+                  >
+                    <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-medium text-white-text/80 px-1">
+                          Upcoming
+                        </h3>
+                      </div>
+                      <ChevronDown
+                        className={`h-4 w-4 text-white-text/60 transition-transform duration-200 ${
+                          upcomingOpen ? "transform rotate-180" : ""
+                        }`}
+                      />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-2 pt-2">
+                      <div className="space-y-0">
+                        {upcomingMeetings.map((meeting, index) => {
+                          return (
+                            <div key={meeting.id} className="relative">
+                              <div
+                                className={
+                                  "flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors opacity-100"
+                                }
+                                onClick={() => openMeetingDetails(meeting)}
+                              >
+                                {/* Time */}
+                                <div className="text-sm text-text-secondary min-w-[100px] font-mono">
+                                  {meeting.date} {meeting.time}
+                                </div>
+
+                                {/* Title */}
+                                <div className="flex-1">
+                                  <span className={"text-sm text-text-primary"}>
+                                    {meeting.title}
+                                  </span>
+                                </div>
+
+                                {/* Status indicator */}
+                                <div className="flex items-center gap-2">
+                                  {meeting.hasProxy && (
+                                    <div className="w-2 h-2 bg-green-500 rounded-full" />
+                                  )}
+                                  {meeting.isRecording && (
+                                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        <div className="flex items-center justify-end w-full">
+                          <Button
+                            onClick={() => onViewAllSchedule(false)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
+                          >
+                            View all
+                            <ArrowRight className="w-3 h-3 ml-1" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  <Separator className="mt-2 my-3 bg-white-text/10" />
+                </div>
+              }
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between w-full">
+                  <h3 className="text-sm font-medium text-white-text/80 px-1">
+                    Past Schedule
+                  </h3>
+                  <Button
+                    onClick={() => onViewAllSchedule(true)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
+                  >
+                    View all
+                    <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
 
       {/* Instructions Drawer */}
-      <Drawer open={showInstructionsDrawer} onOpenChange={setShowInstructionsDrawer}>
+      <Drawer
+        open={showInstructionsDrawer}
+        onOpenChange={setShowInstructionsDrawer}
+      >
         <DrawerContent className="bg-surface border-border-subtle">
           <DrawerHeader className="flex flex-row items-center justify-between">
             <DrawerTitle className="text-text-primary">
@@ -544,8 +580,8 @@ const CalendarSection = ({ calendarData }: CalenderSectionProps) => {
               <Button onClick={saveNotes} className="flex-1">
                 Save Notes
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setShowInstructionsDrawer(false)}
                 className="flex-1"
               >

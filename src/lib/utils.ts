@@ -1,4 +1,4 @@
-import { PriorityItems, Stats, Summary } from "@/components/dashboard/types";
+import { CalendarEvent, Meeting, PriorityItems, Stats, Summary } from "@/components/dashboard/types";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -156,3 +156,32 @@ export const enrichBriefsWithStats = (briefs: Summary[]) => {
     };
   });
 };
+
+export function convertToMeetings(calendarItems: CalendarEvent[] = []): Meeting[] {
+  const now = new Date();
+
+  return calendarItems.map((item) => {
+    const eventDateTime = new Date(`${item.date} ${item.start_time}`);
+    const minutesUntil = Math.round((eventDateTime.getTime() - now.getTime()) / 60000);
+
+    return {
+      id: item.id.toString(),
+      title: item.title,
+      time: item.start_time,
+      date: item.date,
+      duration: item.duration,
+      attendees: (item.attendees || []).map((a) => ({
+        name: a.name || "Unknown",
+        email: a.email || "",
+      })),
+      briefing: item.description || "No briefing available.",
+      aiSummary: item.description || "No AI summary available.",
+      hasProxy: false,
+      hasNotes: !!item.proxy_note,
+      proxyNotes: item.proxy_note || "",
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil,
+    };
+  });
+}

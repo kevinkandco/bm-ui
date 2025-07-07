@@ -22,7 +22,7 @@ import {
   NextBriefSection,
   UpcomingMeetingsSection,
 } from "./HomeViewSections/SidebarSections";
-import { CalendarEvent, Priorities, PriorityPeople, Summary } from "./types";
+import { CalendarEvent, CalenderData, Priorities, PriorityPeople, Summary } from "./types";
 import useAuthStore from "@/store/useAuthStore";
 import ListeningScreen from "./ListeningScreen";
 import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
@@ -40,7 +40,7 @@ interface HomeViewProps {
   totalBriefs: number;
   briefsLoading: boolean;
   upcomingBrief: Summary | null;
-  calendarData: CalendarEvent[];
+  calendarData: CalenderData;
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number, title: string, transcript: string) => void;
   onStartFocusMode: (focusTime: number) => void;
@@ -236,6 +236,10 @@ const HomeView = ({
 
   const handleViewAllBriefs = useCallback(() => {
     navigate("/dashboard/briefs");
+  }, [navigate]);
+
+  const handleViewAllSchedule = useCallback((isPast: boolean) => {
+    navigate("/dashboard/meetings", { state: { isPast } });
   }, [navigate]);
 
 const handleViewAllTasks = useCallback(() => {
@@ -766,7 +770,7 @@ const handleViewAllTasks = useCallback(() => {
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
               </div>
-              <CalendarSection calendarData={calendarData} />
+              <CalendarSection calendarData={calendarData} onViewAllSchedule={handleViewAllSchedule} />
             </div>
           </div>
           

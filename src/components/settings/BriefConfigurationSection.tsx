@@ -83,6 +83,7 @@ const BriefConfigurationSection = () => {
     time: "20:00",
     days: [] as string[],
   });
+  const [emailDigest, setEmailDigest] = useState(false);
 
   // Weekend brief state
   const [weekendBrief, setWeekendBrief] = useState<WeekendBrief>({
@@ -122,7 +123,7 @@ const BriefConfigurationSection = () => {
   const getData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await call("get", "/settings/brief-configuration/days", {
+      const response = await call("get", "/settings/brief-configuration", {
         showToast: true,
         toastTitle: "Failed to get data",
         toastDescription: "Failed to get data",
@@ -136,6 +137,7 @@ const BriefConfigurationSection = () => {
       }
 
       setDays(response.data?.brief_days);
+      setEmailDigest(response?.data?.email_digest);
 
       const briefTime = response.data?.brief_time;
       const timeFlags = getTimePeriod(null);
@@ -343,6 +345,18 @@ const updateTimeValue = useCallback(
     
     updateWeekendBrief({ weekendDays: updatedDays });
   };
+
+  const handleUpdateEmailDigest = async (checked: boolean) => {
+      const response = await call("post", "/settings/brief-configuration/email-digest", { 
+        body: {email_digest: checked},
+        showToast: true,
+        toastTitle: "Failed to update email digest",
+        toastDescription: "Failed to update email digest setting",
+      });
+
+      if (!response) return;
+      setEmailDigest(checked);
+  }
 
   return (
     <div className="space-y-8">
@@ -721,6 +735,22 @@ const updateTimeValue = useCallback(
                   )}
                 </div>
 
+                 <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-medium text-text-primary flex items-center">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Email Digest
+                    </h4>
+                    <Switch
+                      checked={emailDigest}
+                       onCheckedChange={handleUpdateEmailDigest}
+                    />
+                  </div>
+                    <p className="text-xs text-text-secondary mb-4">
+                    Update your email digest.
+                    </p>
+                </div>
+
                 {/* <div className="bg-white/5 rounded-lg border border-white/10 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-sm font-medium text-text-primary flex items-center">
@@ -861,8 +891,6 @@ const updateTimeValue = useCallback(
           </div>
         )}
       </div>
-
-      <Separator className="bg-border-subtle" />
 
       {splitBriefLoading ? (
         <FancyLoader />

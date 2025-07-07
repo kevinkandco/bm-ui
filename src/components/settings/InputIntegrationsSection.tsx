@@ -1,5 +1,3 @@
-
-import React from "react";
 import { Download, Mail, MessageSquare, Calendar, FileText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +35,7 @@ const InputIntegrationsSection = ({ onConnect }: InputIntegrationsSectionProps) 
     { 
       name: "Google Calendar", 
       provider: "calendar", 
-      available: false, 
+      available: true, 
       icon: Calendar,
       description: "Track meetings, deadlines, and schedule changes",
       features: ["Meeting prep", "Schedule conflicts", "Deadline tracking"]
