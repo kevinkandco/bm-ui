@@ -67,26 +67,9 @@ const BriefDetail = () => {
     timeRange: "5:00 AM - 8:00 AM",
     timeSaved: "~25min reading + 8min processing = 33min total",
     stats: {
-      totalMessagesAnalyzed: {
-        total: 46,
-        breakdown: { slack: 25, gmail: 21 }
-      },
-      lowPriority: {
-        total: 18,
-        breakdown: { slack: 10, gmail: 8 }
-      },
-      mediumPriority: {
-        total: 15,
-        breakdown: { slack: 8, gmail: 7 }
-      },
-      highPriority: {
-        total: 13,
-        breakdown: { slack: 7, gmail: 6 }
-      },
-      actionItems: {
-        total: 4,
-        breakdown: { slack: 2, gmail: 2 }
-      }
+      interruptsPrevented: 14,
+      focusGained: "2h 17m", 
+      followUps: 7
     },
     audioUrl: "/path/to/audio.mp3",
     audioDuration: "3:00"
@@ -94,51 +77,34 @@ const BriefDetail = () => {
 
   const statsConfig = [
     {
-      icon: BarChart3,
-      label: "Total Messages Analyzed",
-      value: briefData.stats.totalMessagesAnalyzed.total,
-      breakdown: briefData.stats.totalMessagesAnalyzed.breakdown,
+      icon: AlertCircle,
+      label: "Interrupts Prevented",
+      value: briefData.stats.interruptsPrevented,
       color: "text-blue-400"
     },
     {
-      icon: CheckCircle,
-      label: "Low Priority",
-      value: briefData.stats.lowPriority.total,
-      breakdown: briefData.stats.lowPriority.breakdown,
-      color: "text-gray-400"
-    },
-    {
-      icon: AlertCircle,
-      label: "Medium Priority",
-      value: briefData.stats.mediumPriority.total,
-      breakdown: briefData.stats.mediumPriority.breakdown,
-      color: "text-orange-400"
-    },
-    {
-      icon: AlertCircle,
-      label: "High Priority",
-      value: briefData.stats.highPriority.total,
-      breakdown: briefData.stats.highPriority.breakdown,
-      color: "text-red-400"
+      icon: Clock,
+      label: "Focus Gained", 
+      value: briefData.stats.focusGained,
+      color: "text-green-400"
     },
     {
       icon: CheckSquare,
-      label: "Action Items",
-      value: briefData.stats.actionItems.total,
-      breakdown: briefData.stats.actionItems.breakdown,
+      label: "Follow-ups",
+      value: briefData.stats.followUps,
       color: "text-accent-primary"
     }
   ];
 
   const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
 
-  const actionItems = [
+  const followUps = [
     {
       id: 1,
       source: "gmail",
-      priority: "high",
+      badge: "Critical",
       title: "Review launch materials for marketing team",
-      subtitle: "(Due: 2 PM today)",
+      summary: "Marketing team needs approval for press release, social media assets, and landing page copy by 2 PM today.",
       time: "7:45 AM",
       sender: "Sarah Johnson",
       subject: "Urgent: Launch Materials Review Needed",
@@ -155,9 +121,9 @@ const BriefDetail = () => {
     {
       id: 2,
       source: "gmail", 
-      priority: "medium",
+      badge: "Approval",
       title: "Approve Q4 budget allocations for finance team",
-      subtitle: "",
+      summary: "Finance team requires approval to proceed with quarterly planning.",
       time: "6:30 AM",
       sender: "Finance Team <finance@company.com>",
       subject: "Q4 Budget Approval Required",
@@ -174,9 +140,9 @@ const BriefDetail = () => {
     {
       id: 3,
       source: "slack",
-      priority: "high", 
+      badge: "Decision", 
       title: "Respond to Sarah about testing phase timeline concerns",
-      subtitle: "",
+      summary: "Need to discuss potential timeline extension for testing phase to ensure quality.",
       time: "7:15 AM",
       sender: "Sarah Johnson",
       channel: "#product-dev",
@@ -193,9 +159,9 @@ const BriefDetail = () => {
     {
       id: 4,
       source: "slack",
-      priority: "low",
+      badge: "Heads-Up",
       title: "Schedule follow-up meeting with product team for next week",
-      subtitle: "",
+      summary: "Team wants to schedule a meeting to discuss roadmap updates.",
       time: "5:30 AM",
       sender: "Product Team",
       channel: "#general",
@@ -319,15 +285,23 @@ const BriefDetail = () => {
     });
   };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "High": return "bg-red-500/20 text-red-400 border-red-500/30";
-      case "high": return "bg-red-500/20 text-red-400 border-red-500/30";
-      case "Medium": return "bg-green-500/20 text-green-400 border-green-500/30";
-      case "medium": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
-      case "Low": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
-      case "low": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+  const getBadgeColor = (badge: string) => {
+    switch (badge) {
+      case "Critical": return "bg-red-500/20 text-red-400 border-red-500/30";
+      case "Decision": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+      case "Approval": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+      case "Heads-Up": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
       default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+    }
+  };
+
+  const getBadgeEmoji = (badge: string) => {
+    switch (badge) {
+      case "Critical": return "🔴";
+      case "Decision": return "🔵";
+      case "Approval": return "🟠";
+      case "Heads-Up": return "⚫";
+      default: return "⚫";
     }
   };
 
@@ -387,10 +361,9 @@ const BriefDetail = () => {
               <CheckSquare className="h-6 w-6 text-accent-primary flex-shrink-0" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{briefData.title}</h1>
-                <p className="text-sm text-text-secondary">{briefData.timestamp}</p>
+                <p className="text-sm text-text-secondary">Here's your briefing for Thu, Jul 3, 2025 from {briefData.timeRange}:</p>
               </div>
             </div>
-            <p className="text-sm text-text-secondary">Range: {briefData.timeRange}</p>
           </div>
 
           {/* Main Content */}
@@ -404,40 +377,23 @@ const BriefDetail = () => {
               </div>
 
               {/* Horizontal Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {statsConfig.map((stat, index) => {
                   const IconComponent = stat.icon;
                   return (
-                    <Tooltip key={index}>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-surface-raised/30 cursor-pointer hover:bg-surface-raised/50 transition-colors">
-                          <div className="flex items-center gap-3">
-                            <IconComponent className={`h-4 w-4 ${stat.color} flex-shrink-0`} />
-                            <div>
-                              <div className="text-lg font-semibold text-text-primary">
-                                {stat.value}
-                              </div>
-                              <div className="text-xs text-text-secondary">
-                                {stat.label}
-                              </div>
-                            </div>
+                    <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-surface-raised/30">
+                      <div className="flex items-center gap-3">
+                        <IconComponent className={`h-4 w-4 ${stat.color} flex-shrink-0`} />
+                        <div>
+                          <div className="text-lg font-semibold text-text-primary">
+                            {stat.value}
+                          </div>
+                          <div className="text-xs text-text-secondary">
+                            {stat.label}
                           </div>
                         </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-surface-raised border border-white/20">
-                        <div className="space-y-1">
-                          <div className="text-sm font-medium text-text-primary">{stat.label}</div>
-                          <div className="space-y-1">
-                            {Object.entries(stat.breakdown).map(([platform, count]) => (
-                              <div key={platform} className="flex justify-between text-xs">
-                                <span className="text-text-secondary capitalize">{platform}:</span>
-                                <span className="text-text-primary font-medium">{count}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
@@ -524,25 +480,40 @@ const BriefDetail = () => {
                     <span className="text-sm text-text-secondary">{briefData.audioDuration}</span>
                   </div>
                 </div>
+                
+                {/* Subscribe to podcast link */}
+                <div className="mt-3 text-center">
+                  <a 
+                    href="#" 
+                    className="text-sm text-accent-primary hover:underline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toast({
+                        title: "RSS Feed",
+                        description: "Subscribe to your brief podcast feature coming soon!"
+                      });
+                    }}
+                  >
+                    Subscribe to your brief podcast
+                  </a>
+                </div>
               </div>
             </div>
 
-            {/* Action Items Section with Feedback */}
+            {/* Follow-ups Section with Feedback */}
             <div className="glass-card rounded-2xl p-4 md:p-6">
-              <h2 className="text-lg font-semibold text-text-primary mb-4">Action Items</h2>
+              <h2 className="text-lg font-semibold text-text-primary mb-4">Follow-ups</h2>
               
               <Table>
                 <TableHeader>
                   <TableRow className="border-white/10">
-                    <TableHead className="text-text-secondary px-1">Source</TableHead>
-                    <TableHead className="text-text-secondary px-1">Priority</TableHead>
-                    <TableHead className="text-text-secondary px-1">Action Item</TableHead>
-                    <TableHead className="text-text-secondary px-1">Time</TableHead>
-                    <TableHead className="text-text-secondary px-1">Actions</TableHead>
+                    <TableHead className="text-text-secondary px-1">Badge</TableHead>
+                    <TableHead className="text-text-secondary px-1">Title + Summary</TableHead>
+                    <TableHead className="text-text-secondary px-1">Action Menu</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {actionItems.map((item) => (
+                  {followUps.map((item) => (
                     <React.Fragment key={item.id}>
                       <TableRow 
                         className="border-white/10 hover:bg-white/5 cursor-pointer group"
@@ -561,13 +532,11 @@ const BriefDetail = () => {
                                 <ChevronRight className="h-3 w-3" />
                               )}
                             </Button>
-                            {getSourceIcon(item.source)}
+                            <Badge className={`text-xs border ${getBadgeColor(item.badge)} flex items-center gap-1`}>
+                              <span>{getBadgeEmoji(item.badge)}</span>
+                              {item.badge}
+                            </Badge>
                           </div>
-                        </TableCell>
-                        <TableCell className="px-1">
-                          <Badge className={`text-xs border ${getPriorityColor(item.priority)}`}>
-                            {item.priority}
-                          </Badge>
                         </TableCell>
                         <TableCell className="px-1">
                           <div className="flex items-center justify-between">
@@ -575,11 +544,9 @@ const BriefDetail = () => {
                               <div className="text-sm text-text-primary font-medium">
                                 {item.title}
                               </div>
-                              {item.subtitle && (
-                                <div className="text-xs text-text-secondary">
-                                  {item.subtitle}
-                                </div>
-                              )}
+                              <div className="text-xs text-text-secondary mt-1">
+                                {item.summary}
+                              </div>
                             </div>
                             <div className="flex items-center gap-2">
                               <ActionItemControls
@@ -598,21 +565,19 @@ const BriefDetail = () => {
                           </div>
                         </TableCell>
                         <TableCell className="px-1">
-                          <span className="text-sm text-text-secondary">{item.time}</span>
-                        </TableCell>
-                        <TableCell className="px-1">
                           <div className="flex gap-1">
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleActionClick("Add to Asana", item);
+                                const channelName = item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Asana';
+                                handleActionClick(`Open in ${channelName}`, item);
                               }}
                               className="text-xs px-2 py-1 h-auto"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
-                              Add to Asana
+                              Open in {item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Asana'}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -644,15 +609,15 @@ const BriefDetail = () => {
                                     <div className="text-sm font-medium text-text-primary mb-1">Channel: {item.channel}</div>
                                   )}
                                 </div>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => window.open(item.originalLink, '_blank')}
-                                  className="text-xs flex items-center gap-1"
-                                >
-                                  <Mail className="h-3 w-3" />
-                                  Open in {item.source === 'slack' ? 'Slack' : 'Gmail'}
-                                </Button>
+                                 <Button
+                                   variant="outline"
+                                   size="sm"
+                                   onClick={() => window.open(item.originalLink, '_blank')}
+                                   className="text-xs flex items-center gap-1"
+                                 >
+                                   <Mail className="h-3 w-3" />
+                                   Open in {item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Channel'}
+                                 </Button>
                               </div>
                               
                               <div>
@@ -667,10 +632,10 @@ const BriefDetail = () => {
                                   <div className="text-sm font-medium text-text-primary mb-1">Relevancy:</div>
                                   <div className="text-sm text-text-secondary">{item.relevancy}</div>
                                 </div>
-                                <div>
-                                  <div className="text-sm font-medium text-text-primary mb-1">Why this is an action item:</div>
-                                  <div className="text-sm text-text-secondary">{item.justification}</div>
-                                </div>
+                                 <div>
+                                   <div className="text-sm font-medium text-text-primary mb-1">Why this is a follow-up:</div>
+                                   <div className="text-sm text-text-secondary">{item.justification}</div>
+                                 </div>
                               </div>
                             </div>
                           </TableCell>
@@ -726,7 +691,7 @@ const BriefDetail = () => {
                           <TableCell className="text-text-secondary">{message.sender}</TableCell>
                           <TableCell className="text-text-secondary">{message.time}</TableCell>
                           <TableCell>
-                            <Badge className={`text-xs border ${getPriorityColor(message.priority)}`}>
+                            <Badge className={`text-xs border ${getBadgeColor(message.priority)}`}>
                               {message.priority}
                             </Badge>
                           </TableCell>
