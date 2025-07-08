@@ -164,6 +164,7 @@
             const statusUpdates = { slack: slackStatus };
 
             try {
+
                 const res = await fetch(`${BASE_URL}/focus-mode`, {
                     method: "POST",
                     credentials: "include",
@@ -182,8 +183,13 @@
                     const msg = await res.text();
                     throw new Error(`API ${res.status}: ${msg}`);
                 }
+                
+                // close slack application
+                if (closeApps.slack) {
+                    await window.electronAPI.closeSlack();
+                }
 
-                window.close(); 
+                window.close();
             } catch (err) {
                 console.error(err);
                 alert(err.message || "Request failed – check console");
