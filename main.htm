@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html
-  lang="en"
-  class="h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
->
-  <head>
+<html lang="en" class="h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Focus Mode</title>
@@ -11,180 +9,189 @@
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <style>
-      /* simple toggle switch */
-      .switch input:checked + span {
-        @apply bg-emerald-500;
-      }
-      .switch input:checked + span::after {
-        @apply translate-x-3.5;
-      }
-    </style>
-  </head>
+        /* simple toggle switch */
+        .switch input:checked+span {
+            @apply bg-emerald-500;
+        }
 
-  <body
-    class="h-full flex items-center justify-center text-slate-100 antialiased"
-  >
+        .switch input:checked+span::after {
+            @apply translate-x-3.5;
+        }
+    </style>
+</head>
+
+<body class="h-full flex items-center justify-center text-slate-100 antialiased">
     <!-- ═════════════ Trigger button (opens modal) ═════════════ -->
-    <button
-      id="open-modal"
-      class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 transition"
-    >
-      🎧  Start Focus
+    <button id="open-modal" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 transition">
+        🎧  Start Focus
     </button>
 
     <!-- ═════════════ Modal overlay ═════════════ -->
-    <div
-      id="modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur"
-    >
-      <div
-        class="w-full rounded-2xl bg-slate-850/90 backdrop-blur-lg p-6 shadow-lg shadow-black/40"
-      >
-        <!-- header -->
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <span class="text-emerald-400 text-xl">🎧</span>
-            <h2 class="text-lg font-semibold">Focus Mode</h2>
-          </div>
-          <button id="close-modal" class="text-slate-400 hover:text-slate-200">
-            ✕
-          </button>
+    <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur">
+        <div class="w-full rounded-2xl bg-slate-850/90 backdrop-blur-lg p-6 shadow-lg shadow-black/40">
+            <!-- header -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-emerald-400 text-xl">🎧</span>
+                    <h2 class="text-lg font-semibold">Focus Mode</h2>
+                </div>
+                <button id="close-modal" class="text-slate-400 hover:text-slate-200">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Duration -->
+            <label class="block text-sm mb-1">Duration</label>
+            <select id="duration"
+                class="w-full mb-4 rounded-lg bg-slate-800 py-2 px-3 ring-1 ring-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option>15 min</option>
+                <option selected>30 min</option>
+                <option>45 min</option>
+                <option>60 min</option>
+            </select>
+
+            <!-- Close apps -->
+            <p class="text-sm mb-2">Close Apps</p>
+            <div class="grid grid-cols-3 gap-3 mb-4">
+                <!-- card template -->
+                <div class="app-card flex flex-col items-center gap-2 rounded-xl bg-slate-800 py-4" data-app="slack">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/slack.svg" class="h-6 w-6" />
+                    <span class="text-xs">Slack</span>
+                    <label class="switch relative inline-block w-7 h-4">
+                        <input type="checkbox" class="peer sr-only" />
+                        <span class="absolute inset-0 rounded-full bg-slate-600 transition
+                                    peer-checked:bg-emerald-500
+                                    before:content-[''] before:absolute before:h-3 before:w-3
+                                    before:rounded-full before:bg-white before:left-0.5 before:top-0.5
+                                    before:transition
+                                    peer-checked:before:translate-x-3.5">
+                        </span>
+                    </label>
+                </div>
+
+                <div class="app-card flex flex-col items-center gap-2 rounded-xl bg-slate-800 py-4" data-app="gmail">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" class="h-6 w-6" />
+                    <span class="text-xs">Gmail</span>
+                    <label class="switch relative inline-block w-7 h-4">
+                        <input type="checkbox" class="peer sr-only" />
+                        <span class="absolute inset-0 rounded-full bg-slate-600 transition
+                                peer-checked:bg-emerald-500
+                                before:content-[''] before:absolute before:h-3 before:w-3
+                                before:rounded-full before:bg-white before:left-0.5 before:top-0.5
+                                before:transition
+                                peer-checked:before:translate-x-3.5">
+                        </span>
+                    </label>
+                </div>
+
+                <div class="app-card flex flex-col items-center gap-2 rounded-xl bg-slate-800 py-4" data-app="calendar">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlecalendar.svg"
+                        class="h-6 w-6" />
+                    <span class="text-xs">Calendar</span>
+                    <label class="switch relative inline-block w-7 h-4">
+                        <input type="checkbox" class="peer sr-only" />
+                        <span class="absolute inset-0 rounded-full bg-slate-600 transition
+                                    peer-checked:bg-emerald-500
+                                    before:content-[''] before:absolute before:h-3 before:w-3
+                                    before:rounded-full before:bg-white before:left-0.5 before:top-0.5
+                                    before:transition
+                                    peer-checked:before:translate-x-3.5">
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Slack status -->
+            <label class="block text-sm mb-1">Slack Status</label>
+            <select id="slack-status"
+                class="w-full mb-6 rounded-lg bg-slate-800 py-2 px-3 ring-1 ring-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option selected>Focused</option>
+                <option>Do Not Disturb</option>
+                <option>In a meeting</option>
+            </select>
+
+            <!-- footer buttons -->
+            <div class="flex justify-end gap-3">
+                <button id="btn-cancel" class="px-4 py-2 rounded-xl ring-1 ring-slate-500 hover:bg-slate-700">
+                    Cancel
+                </button>
+                <button id="btn-start"
+                    class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 flex items-center gap-2">
+                    🎧 <span>Start Focus</span>
+                </button>
+            </div>
         </div>
-
-        <!-- Duration -->
-        <label class="block text-sm mb-1">Duration</label>
-        <select
-          id="duration"
-          class="w-full mb-4 rounded-lg bg-slate-800 py-2 px-3 ring-1 ring-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-        >
-          <option>15 min</option>
-          <option selected>30 min</option>
-          <option>45 min</option>
-          <option>60 min</option>
-        </select>
-
-        <!-- Close apps -->
-        <p class="text-sm mb-2">Close Apps</p>
-        <div class="grid grid-cols-3 gap-3 mb-4">
-          <!-- card template -->
-          <div
-            class="app-card flex flex-col items-center gap-2 rounded-xl bg-slate-800 py-4"
-            data-app="slack"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/slack.svg"
-              class="h-6 w-6"
-            />
-            <span class="text-xs">Slack</span>
-            <label class="switch relative inline-block w-7 h-4">
-              <input type="checkbox" class="peer sr-only" />
-              <span
-                class="absolute inset-0 rounded-full bg-slate-600 transition before:content-[''] before:absolute before:h-3 before:w-3 before:rounded-full before:bg-white before:left-0.5 before:top-0.5 before:transition"
-              ></span>
-            </label>
-          </div>
-
-          <div
-            class="app-card flex flex-col items-center gap-2 rounded-xl bg-slate-800 py-4"
-            data-app="gmail"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg"
-              class="h-6 w-6"
-            />
-            <span class="text-xs">Gmail</span>
-            <label class="switch relative inline-block w-7 h-4">
-              <input type="checkbox" class="peer sr-only" />
-              <span
-                class="absolute inset-0 rounded-full bg-slate-600 transition before:absolute before:h-3 before:w-3 before:rounded-full before:bg-white before:left-0.5 before:top-0.5 before:transition"
-              ></span>
-            </label>
-          </div>
-
-          <div
-            class="app-card flex flex-col items-center gap-2 rounded-xl bg-slate-800 py-4"
-            data-app="calendar"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlecalendar.svg"
-              class="h-6 w-6"
-            />
-            <span class="text-xs">Calendar</span>
-            <label class="switch relative inline-block w-7 h-4">
-              <input type="checkbox" class="peer sr-only" />
-              <span
-                class="absolute inset-0 rounded-full bg-slate-600 transition before:absolute before:h-3 before:w-3 before:rounded-full before:bg-white before:left-0.5 before:top-0.5 before:transition"
-              ></span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Slack status -->
-        <label class="block text-sm mb-1">Slack Status</label>
-        <select
-          id="slack-status"
-          class="w-full mb-6 rounded-lg bg-slate-800 py-2 px-3 ring-1 ring-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-        >
-          <option selected>Focused</option>
-          <option>Do Not Disturb</option>
-          <option>In a meeting</option>
-        </select>
-
-        <!-- footer buttons -->
-        <div class="flex justify-end gap-3">
-          <button
-            id="btn-cancel"
-            class="px-4 py-2 rounded-xl ring-1 ring-slate-500 hover:bg-slate-700"
-          >
-            Cancel
-          </button>
-          <button
-            id="btn-start"
-            class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 flex items-center gap-2"
-          >
-            🎧 <span>Start Focus</span>
-          </button>
-        </div>
-      </div>
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
     <script>
-       const BASE_URL = "https://brief-me-api.test/api";
+        /* ───────────────────────────────────────────────────────────
+           Config
+        ─────────────────────────────────────────────────────────── */
+        const BASE_URL = "https://brief-me-api.test/api";
+        const token = window.focusEnv?.token ?? '';
 
+        /* DOM refs */
+        const modal = document.getElementById("modal");
         const openFocusModal = document.getElementById("open-modal");
         const closeFocusModal = document.getElementById("close-modal");
         const cancelFocusModal = document.getElementById("btn-cancel");
         const focusModalStart = document.getElementById("btn-start");
 
-        // Focus mode Modal Hide Show
+        /* helpers */
         const toggleModal = (show) =>
-        modal.classList[show ? "remove" : "add"]("hidden");
+            modal.classList[show ? "remove" : "add"]("hidden");
 
         openFocusModal.onclick = () => toggleModal(true);
-        closeFocusModal.onclick =  cancelFocusModal.onclick = () => toggleModal(false);
+        closeFocusModal.onclick =
+            cancelFocusModal.onclick = () => toggleModal(false);
 
-        // Focus Mode Process
+        /* ───────────────────────────────────────────────────────────
+           Start Focus flow
+        ─────────────────────────────────────────────────────────── */
         focusModalStart.addEventListener("click", async () => {
-       
-          // alert('token :', token);
-          const focusModeDuration = document.getElementById("duration").value;
-            try {
-                const result = await window.electronAPI.closeSlack();
-              //    const res = await axios.post(
-              //   `${BASE_URL}/focus-mode`,
-              //   { duration: focusModeDuration },
-              //   { withCredentials: true }
-              // );
+            const focusModeDuration = document.getElementById("duration").value;
+            const slackStatus = document.getElementById("slack-status").value;
 
-              // alert(res, 'Res');
-            } finally {
-                focusModalStart.disabled = false;
-                focusModalStart.textContent = "🔒  Close Slack";
+            /* build closeApps object with booleans */
+            const closeApps = { slack: false, gmail: false, calendar: false };
+            document.querySelectorAll(".app-card").forEach(card => {
+                const key = card.dataset.app;                     // "slack" | "gmail" | "calendar"
+                closeApps[key] = card.querySelector("input").checked;
+            });
+
+            /* build statusUpdates object */
+            const statusUpdates = { slack: slackStatus };
+
+            try {
+                const res = await fetch(`${BASE_URL}/focus-mode`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        duration: focusModeDuration,
+                        closeApps,
+                        statusUpdates,
+                    }),
+                });
+
+                if (!res.ok) {
+                    const msg = await res.text();
+                    throw new Error(`API ${res.status}: ${msg}`);
+                }
+
+                window.close(); 
+            } catch (err) {
+                console.error(err);
+                alert(err.message || "Request failed – check console");
             }
         });
+
     </script>
+
     <!-- <script>
       const modal = document.getElementById("modal");
       const openBtn = document.getElementById("open-modal");
@@ -220,5 +227,6 @@
         window.close();
       };
     </script> -->
-  </body>
+</body>
+
 </html>

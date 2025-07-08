@@ -12,6 +12,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
+     icon: path.join(__dirname, 'assets', 'icon.png'), // see next step
   });
 
   // win.loadURL('http://localhost:8080');
@@ -19,6 +20,7 @@ function createWindow() {
   win.loadFile(htmlPath);
 }
 
+app.setName("Focus Mode");
 app.whenReady().then(createWindow);
 
 ipcMain.handle('close-slack', async (event) => {

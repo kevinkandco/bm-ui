@@ -5,6 +5,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   closeSlack: () => ipcRenderer.invoke("close-slack"),
 });
 
-// contextBridge.exposeInMainWorld("focusEnv", {
-//   token: process.env.FOCUS_ACCESS_TOKEN || "",
-// });
+contextBridge.exposeInMainWorld('focusEnv', {
+  token: process.env.FOCUS_ACCESS_TOKEN || '',
+});
