@@ -6,9 +6,19 @@ export interface ProviderData {
   priorityTopics: string[];
   ignoreChannels: string[];
   ignoreKeywords: string[];
+  aiFeatures: {
+    autoLabel: boolean;
+    autoSort: boolean;
+    autoArchive: boolean;
+    priorityOnly: boolean;
+  };
+  interruptRules: {
+    contacts: { name: string; email: string }[];
+    keywords: string[];
+    systemAlerts: string[];
+  }
   includeIgnoredInSummary: boolean;
 }
-
 
 export interface SettingsTabProps {
   providerData: ProviderData;

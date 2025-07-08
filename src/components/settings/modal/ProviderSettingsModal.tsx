@@ -16,6 +16,8 @@ import { SettingsTabProps, ProviderData } from "./types";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Provider } from "../types";
 import useAuthStore from "@/store/useAuthStore";
+import AiFeatures from "./AiFeatures";
+import InterruptRules from "./InterruptRules";
 
 interface ProviderSettingsModalProps {
   open: boolean;
@@ -30,6 +32,8 @@ type SettingsTab =
   | "priorityPeople"
   | "priorityChannels"
   | "priorityTopics"
+  | "aiFeatures"
+  | "interruptRules"
   | "ignore";
 
 interface TabConfig {
@@ -61,6 +65,8 @@ const ProviderSettingsModal = ({
   const priorityPeopleActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
   const priorityChannelsActive = useMemo(() => ['slack'], []);
   const priorityTopicsActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
+  const aiFeaturesActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
+  // const interruptRulesActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
   const ignoreActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
 
   const tabs: TabConfig[] = useMemo(() => [
@@ -86,20 +92,54 @@ const ProviderSettingsModal = ({
       active: priorityTopicsActive.includes(provider?.name?.toLowerCase() || ''),
     },
     {
+      id: "aiFeatures",
+      label: "AI Features",
+      icon: <ChevronRight className="h-4 w-4" />,
+      Component: AiFeatures,
+      active: aiFeaturesActive.includes(provider?.name?.toLowerCase() || ''),
+    },
+    {
+      id: "interruptRules",
+      label: "Interrupt Rules",
+      icon: <ChevronRight className="h-4 w-4" />,
+      Component: InterruptRules,
+      active: true,
+    },
+    {
       id: "ignore",
       label: "Ignore Configuration",
       icon: <ChevronRight className="h-4 w-4" />,
       Component: IgnoreSetting,
       active: ignoreActive.includes(provider?.name?.toLowerCase() || ''),
     },
-  ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, ignoreActive, provider?.name]);
+  ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, aiFeaturesActive, ignoreActive, provider?.name]);
 
   const getProviderData = useCallback(async (): Promise<void> => {
     setLoadingProviderData(true);
     const response = await call("get", "/settings/system-integrations/" + provider.id);
 
     if (response) {
-      setProviderData(response);
+      const providerData: ProviderData = {
+        priorityPeople: response?.priorityPeople ?? [],
+        priorityChannels: response?.priorityChannels ?? [],
+        priorityTopics: response?.priorityTopics ?? [],
+        ignoreChannels: response?.ignoreChannels ?? [],
+        ignoreKeywords: response?.ignoreKeywords ?? [],
+        aiFeatures: {
+          autoLabel: response?.autoLabel ?? false,
+          autoSort: response?.autoSort ?? false,
+          autoArchive: response?.autoArchive ?? false,
+          priorityOnly: response?.priorityOnly ?? false,
+        },
+        interruptRules: {
+          contacts: response?.interruptRules?.contacts ?? [],
+          keywords: response?.interruptRules?.keywords ?? [],
+          systemAlerts: response?.interruptRules?.systemAlerts ?? [],
+        },
+        includeIgnoredInSummary: response?.includeIgnoredInSummary ?? false,
+      }
+      
+      setProviderData(providerData);
     }
     setLoadingProviderData(false);
   }, [call, provider.id]);
