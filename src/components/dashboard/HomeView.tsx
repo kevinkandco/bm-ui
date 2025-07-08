@@ -389,22 +389,27 @@ const HomeView = ({
           </Sheet>
         </div>
 
-        {/* Status Selector at Top */}
+        {/* Monitoring Section - Top Left */}
+        <div className="fixed top-4 left-4 z-40">
+          <ConnectedChannelsSection showAsHorizontal={true} />
+        </div>
+
+        {/* Status Selector - Center Top */}
         {currentStatus === 'active' && (
-          <div className="px-4 pt-4 pb-2 flex-shrink-0">
+          <div className="px-4 pt-4 pb-2 flex-shrink-0 flex justify-center">
             <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="outline" 
-                  className="w-full bg-surface-raised/30 border border-white/20 text-white-text rounded-lg px-4 py-3 hover:border-white/40 flex items-center justify-center gap-2"
+                  className="bg-surface-raised/30 border-0 border-b border-white/20 text-white-text rounded-none px-4 py-3 hover:border-white/40 flex items-center gap-2"
                 >
+                  <ChevronDown className="w-4 h-4" />
                   <div className="w-2 h-2 rounded-full bg-green-400"></div>
                   <span>Active</span>
-                  <ChevronDown className="w-4 h-4 ml-auto" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent 
-                className="w-full bg-dark-navy/95 backdrop-blur-xl border-white/20 z-50" 
+                className="bg-dark-navy/95 backdrop-blur-xl border-white/20 z-50" 
                 align="center"
                 side="bottom"
               >
@@ -468,11 +473,6 @@ const HomeView = ({
             Good morning, Alex
           </h1>
           <p className="text-light-gray-text text-sm mb-4">Ready to catch up or focus?</p>
-          
-          {/* Accounts Section */}
-          <div className="flex items-center justify-center">
-            <ConnectedChannelsSection showAsHorizontal={true} />
-          </div>
         </div>
 
         {/* Main Content */}
