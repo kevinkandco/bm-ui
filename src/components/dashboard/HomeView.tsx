@@ -330,10 +330,6 @@ const HomeView = ({
   if (isMobile) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        {/* Monitoring Section - Top Left */}
-        <div className="fixed top-4 left-4 z-40">
-          <ConnectedChannelsSection showAsHorizontal={true} />
-        </div>
 
         {/* Status Selector - Center Top */}
         {currentStatus === 'active' && (
@@ -414,59 +410,76 @@ const HomeView = ({
             Good morning, Alex
           </h1>
           <p className="text-light-gray-text text-sm mb-4">Ready to catch up or focus?</p>
+          
+          {/* Monitoring Section */}
+          <div className="flex items-center justify-center">
+            <ConnectedChannelsSection showAsHorizontal={true} />
+          </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 px-4 space-y-6 overflow-y-auto">
 
-          {/* Follow-ups/Actions - Max 2 Actions */}
+          {/* Meetings */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-text-primary text-base font-medium">Follow-ups</h2>
-              {actionItems.length > 2 && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleViewAllTasks}
-                  className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2"
-                >
-                  See all
-                </Button>
-              )}
-            </div>
-            
+            <h2 className="text-text-primary text-base font-medium">Meetings</h2>
             <div className="space-y-2">
-              {actionItems.slice(0, 2).map(item => (
-                <div key={item.id} className="flex items-start gap-3 p-3 rounded-lg bg-surface-raised/30">
-                  <div className="w-4 h-4 rounded border border-light-gray-text/30 mt-0.5 flex-shrink-0"></div>
+              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-primary-teal flex-shrink-0"></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white-text font-medium">{item.title}</p>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-light-gray-text">
-                      <span>from {item.sender}</span>
-                      {item.isVip && (
-                        <>
-                          <span>•</span>
-                          <Star className="w-3 h-3 text-green-400" fill="currentColor" />
-                        </>
-                      )}
-                    </div>
+                    <p className="text-sm text-white-text font-medium">Team Standup</p>
+                    <p className="text-xs text-light-gray-text">Today at 10:00 AM</p>
                   </div>
+                  <ArrowRight className="w-4 h-4 text-light-gray-text" />
                 </div>
-              ))}
+              </div>
+              
+              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0"></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white-text font-medium">Product Review</p>
+                    <p className="text-xs text-light-gray-text">Today at 2:00 PM</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-light-gray-text" />
+                </div>
+              </div>
+              
+              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-purple-400 flex-shrink-0"></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white-text font-medium">Client Check-in</p>
+                    <p className="text-xs text-light-gray-text">Tomorrow at 9:00 AM</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-light-gray-text" />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Single Upcoming Event */}
+          {/* Upcoming Brief */}
           <div className="space-y-3">
-            <h2 className="text-text-primary text-base font-medium">Next meeting</h2>
-            <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-primary-teal flex-shrink-0"></div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white-text font-medium">Team Standup</p>
-                  <p className="text-xs text-light-gray-text">Today at 10:00 AM</p>
+            <h2 className="text-text-primary text-base font-medium">Upcoming</h2>
+            <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Clock className="w-4 h-4 text-primary-teal" />
+                  <div>
+                    <p className="text-sm text-white-text font-medium">{upcomingBrief.name}</p>
+                    <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
+                  </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-light-gray-text" />
+                <Button 
+                  onClick={handleGetBriefedNow} 
+                  size="sm" 
+                  variant="outline" 
+                  className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent"
+                >
+                  <Zap className="w-3 h-3 mr-1" />
+                  Now
+                </Button>
               </div>
             </div>
           </div>
@@ -485,29 +498,25 @@ const HomeView = ({
               </Button>
             </div>
             <div 
-              className="p-4 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer"
-              onClick={() => onOpenBrief(latestBrief.id)}
+              className="p-3 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors"
+              onClick={() => {
+                handlePlayBrief(latestBrief.id);
+                setShowBriefDetail(true);
+              }}
             >
-              <div className="flex items-center gap-3 mb-2">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePlayBrief(latestBrief.id);
-                  }}
-                  className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
-                >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center flex-shrink-0">
                   <Play className="h-4 w-4 text-primary-teal" />
-                </button>
+                </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm text-white-text font-medium">{latestBrief.name}</h3>
                   <p className="text-xs text-light-gray-text">{latestBrief.timeCreated}</p>
+                  <div className="flex items-center gap-4 text-xs text-light-gray-text mt-1">
+                    <span>{latestBrief.slackMessages.total} Slack</span>
+                    <span>{latestBrief.emails.total} Emails</span>
+                    <span>{latestBrief.actionItems} Actions</span>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="flex items-center gap-4 text-xs text-light-gray-text">
-                <span>{latestBrief.slackMessages.total} Slack</span>
-                <span>{latestBrief.emails.total} Emails</span>
-                <span>{latestBrief.actionItems} Actions</span>
               </div>
             </div>
           </div>
