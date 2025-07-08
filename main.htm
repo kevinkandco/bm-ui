@@ -21,6 +21,26 @@
 </head>
 
 <body class="h-full flex items-center justify-center text-slate-100 antialiased">
+
+    <!-- ═════════════ Focus‑Mode banner (paste BEFORE the trigger button) ═════════════ -->
+    <div id="focus-banner" class="w-full flex items-center justify-between px-6 py-3 rounded-b-2xl
+         text-white/90 shadow-lg shadow-orange-50 mb-10 fixed top-0">
+
+        <div class="flex items-center gap-3">
+            <span class="text-emerald-300 text-xl">🎧</span>
+            <div>
+                <p class="font-semibold leading-none">Focus Mode</p>
+                <p id="countdown" class="text-xs text-white/70 leading-none mt-2">00:30:00 remaining</p>
+            </div>
+        </div>
+
+
+        <button id="end-focus" class="flex items-center gap-2 px-6 py-2 rounded-full border border-white/40
+           hover:bg-white/10 transition text-sm">
+            ✕ End focus mode
+        </button>
+    </div>
+
     <!-- ═════════════ Trigger button (opens modal) ═════════════ -->
     <button id="open-modal" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 transition">
         🎧  Start Focus
@@ -124,13 +144,9 @@
     </div>
 
 
+    <script src="js/helper.js"></script>
+    <script src="js/focus‑mode.js"></script>
     <script>
-        /* ───────────────────────────────────────────────────────────
-           Config
-        ─────────────────────────────────────────────────────────── */
-        const BASE_URL = "https://brief-me-api.test/api";
-        const token = window.focusEnv?.token ?? '';
-
         /* DOM refs */
         const modal = document.getElementById("modal");
         const openFocusModal = document.getElementById("open-modal");
@@ -183,13 +199,13 @@
                     const msg = await res.text();
                     throw new Error(`API ${res.status}: ${msg}`);
                 }
-                
+
                 // close slack application
                 if (closeApps.slack) {
                     await window.electronAPI.closeSlack();
                 }
 
-                window.close();
+                window.location.reload();
             } catch (err) {
                 console.error(err);
                 alert(err.message || "Request failed – check console");
@@ -197,42 +213,6 @@
         });
 
     </script>
-
-    <!-- <script>
-      const modal = document.getElementById("modal");
-      const openBtn = document.getElementById("open-modal");
-      const closeBtn = document.getElementById("close-modal");
-      const cancelBtn = document.getElementById("btn-cancel");
-      const startBtn = document.getElementById("btn-start");
-
-      const toggleModal = (show) =>
-        modal.classList[show ? "remove" : "add"]("hidden");
-
-      openBtn.onclick = () => toggleModal(true);
-      closeBtn.onclick = cancelBtn.onclick = () => toggleModal(false);
-
-      startBtn.onclick = async () => {
-        // collect settings
-        const duration = document.getElementById("duration").value;
-        const status = document.getElementById("slack-status").value;
-        const appKeys = [...document.querySelectorAll(".app-card")].flatMap(
-          (card) =>
-            card.querySelector("input").checked ? [card.dataset.app] : []
-        );
-
-        // simple config object
-        const config = { duration, status, closeApps: appKeys };
-        console.log("Focus config →", config);
-
-        // kill selected apps (adjust channel name if you only expose closeSlack)
-        if (appKeys.length) {
-          await window.electronAPI.closeApps(appKeys);
-        }
-
-        // close the Electron window itself
-        window.close();
-      };
-    </script> -->
 </body>
 
 </html>
