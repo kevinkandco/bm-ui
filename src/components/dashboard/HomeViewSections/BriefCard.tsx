@@ -90,44 +90,61 @@ const BriefCard = ({
     setActionItems(data);
   }, [brief?.vote, brief?.messages]);
 
-  const statsConfig = [
-    {
-      icon: BarChart3,
-      label: "Total Messages Analyzed",
-      value: brief?.stats?.totalMessagesAnalyzed?.total,
-      breakdown: brief?.stats?.totalMessagesAnalyzed.breakdown,
-      color: "text-blue-400"
-    },
-    {
-      icon: CheckCircle,
-      label: "Low Priority",
-      value: brief?.stats?.lowPriority?.total,
-      breakdown: brief?.stats?.lowPriority?.breakdown,
-      color: "text-gray-400"
-    },
-    {
-      icon: AlertCircle,
-      label: "Medium Priority",
-      value: brief?.stats?.mediumPriority?.total,
-      breakdown: brief?.stats?.mediumPriority?.breakdown,
-      color: "text-orange-400"
-    },
-    {
-      icon: AlertCircle,
-      label: "High Priority",
-      value: brief?.stats?.highPriority?.total,
-      breakdown: brief?.stats?.highPriority?.breakdown,
-      color: "text-red-400"
-    },
-    {
-      icon: CheckSquare,
-      label: "Action Items",
-      value: brief?.stats?.actionItems?.total,
-      breakdown: brief?.stats?.actionItems?.breakdown,
-      color: "text-accent-primary"
-    }
-  ];
+  // const statsConfig = [
+  //   {
+  //     icon: BarChart3,
+  //     label: "Total Messages Analyzed",
+  //     value: brief?.stats?.totalMessagesAnalyzed?.total,
+  //     breakdown: brief?.stats?.totalMessagesAnalyzed.breakdown,
+  //     color: "text-blue-400"
+  //   },
+  //   {
+  //     icon: CheckCircle,
+  //     label: "Low Priority",
+  //     value: brief?.stats?.lowPriority?.total,
+  //     breakdown: brief?.stats?.lowPriority?.breakdown,
+  //     color: "text-gray-400"
+  //   },
+  //   {
+  //     icon: AlertCircle,
+  //     label: "Medium Priority",
+  //     value: brief?.stats?.mediumPriority?.total,
+  //     breakdown: brief?.stats?.mediumPriority?.breakdown,
+  //     color: "text-orange-400"
+  //   },
+  //   {
+  //     icon: AlertCircle,
+  //     label: "High Priority",
+  //     value: brief?.stats?.highPriority?.total,
+  //     breakdown: brief?.stats?.highPriority?.breakdown,
+  //     color: "text-red-400"
+  //   },
+  //   {
+  //     icon: CheckSquare,
+  //     label: "Action Items",
+  //     value: brief?.stats?.actionItems?.total,
+  //     breakdown: brief?.stats?.actionItems?.breakdown,
+  //     color: "text-accent-primary"
+  //   }
+  // ];
 
+  const statsConfig = [{
+    icon: AlertCircle,
+    label: "Interrupts Prevented",
+    value: 14,
+    color: "text-blue-400"
+  }, {
+    icon: Clock,
+    label: "Focus Gained",
+    value: "2h 17m",
+    color: "text-green-400"
+  }, {
+    icon: CheckSquare,
+    label: "Follow-ups",
+    value: brief.actionItems,
+    color: "text-accent-primary"
+  }];
+  
   const playbackSpeeds = [1, 1.1, 1.2, 1.5, 2, 3];
   const handleCardClick = () => {
     setIsExpanded(!isExpanded);
@@ -403,41 +420,25 @@ const BriefCard = ({
                 </span>
               </div>
 
-              {/* New Stats Grid with Tooltips */}
-              <div className="grid grid-cols-5 gap-2 mb-3">
+              {/* Compact Stats Grid */}
+              <div className="grid grid-cols-3 gap-1 mb-2">
                 {statsConfig.map((stat, index) => {
               const IconComponent = stat.icon;
-              return <Tooltip key={index}>
-                      <TooltipTrigger asChild>
-                        <div className="flex flex-col items-center p-2 rounded-lg bg-surface-raised/30 cursor-pointer hover:bg-surface-raised/50 transition-colors">
-                          <IconComponent className={`h-4 w-4 ${stat.color} mb-1`} />
-                          <div className="text-lg font-semibold text-text-primary">
-                            {stat.value}
-                          </div>
-                          <div className="text-xs text-text-secondary text-center leading-tight">
-                            {stat.label}
-                          </div>
+              return <div key={index} className="flex flex-col items-center p-1.5 rounded-md bg-surface-raised/20">
+                        <IconComponent className={`h-3 w-3 ${stat.color} mb-0.5`} />
+                        <div className="text-sm font-semibold text-text-primary">
+                          {stat.value}
                         </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-surface-raised border border-white/20">
-                        <div className="space-y-1">
-                          <div className="text-sm font-medium text-text-primary">{stat.label}</div>
-                          <div className="space-y-1">
-                            {stat?.breakdown && Object.entries(stat?.breakdown).map(([platform, count]) => (
-                              <div key={platform} className="flex justify-between text-xs">
-                                <span className="text-text-secondary capitalize">{platform}:</span>
-                                <span className="text-text-primary font-medium">{count}</span>
-                              </div>))}
-                          </div>
+                        <div className="text-[10px] text-text-secondary text-center leading-tight">
+                          {stat.label}
                         </div>
-                      </TooltipContent>
-                    </Tooltip>;
+                      </div>;
             })}
               </div>
 
-              {/* Action Items with Feedback */}
+              {/* Follow-ups with Feedback */}
               <div className="mb-3">
-                <h4 className="text-sm font-medium text-text-primary mb-2">Action Items</h4>
+                <h4 className="text-sm font-medium text-text-primary mb-2">Follow-ups</h4>
                 <div className="space-y-2">
                   {actionItems?.slice(0, 5)?.map((item, i) => (
                     <div key={item?.id ? (item?.platform + item?.id) : i} className="group flex items-center justify-between p-2 rounded-lg bg-surface-raised/30 hover:bg-surface-raised/50 transition-colors">
@@ -464,6 +465,21 @@ const BriefCard = ({
                         <ActionItemFeedback itemId={item.id} onRelevanceFeedback={handleActionItemFeedback} />
                       </div>
                     </div>))}
+                </div>
+                
+                {/* View All Link */}
+                <div className="mt-2 text-right">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onViewBrief(brief.id);
+                    }}
+                    className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2"
+                  >
+                    View all
+                  </Button>
                 </div>
               </div>
 
