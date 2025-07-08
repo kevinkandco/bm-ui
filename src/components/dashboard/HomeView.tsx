@@ -329,6 +329,66 @@ const HomeView = ({
   if (isMobile) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
+        {/* Hamburger Menu Button - Top Right */}
+        <div className="fixed top-4 right-4 z-50">
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0 hover:bg-white/10"
+              >
+                <Menu className="h-5 w-5 text-white-text" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[60vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
+              <div className="p-6 space-y-6">
+                <h2 className="text-lg font-semibold text-white-text">Menu</h2>
+                
+                <div className="space-y-6">
+                  <button 
+                    onClick={() => {
+                      navigate("/dashboard/settings");
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
+                  >
+                    Brief Schedule
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      navigate("/dashboard/settings");
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
+                  >
+                    Priorities
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      navigate("/dashboard/settings");
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
+                  >
+                    Integrations
+                  </button>
+                  
+                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
+                    Feedback
+                  </span>
+                  
+                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
+                    Contact Us
+                  </span>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
         {/* Sticky Audio Player at Top */}
         {playingBrief && (
           <div className="sticky top-0 z-40 bg-surface-raised/80 backdrop-blur-md border-b border-white/10 px-4 py-3">
@@ -355,9 +415,9 @@ const HomeView = ({
           </div>
         )}
 
-        {/* Floating Status Pill - Top Right Corner */}
+        {/* Floating Status Pill - Top Left when active status */}
         {currentStatus !== 'active' && (
-          <div className="fixed top-4 right-4 z-50">
+          <div className="fixed top-4 left-4 z-40">
             <div className="flex items-center gap-1 px-3 py-1.5 bg-surface-raised/90 backdrop-blur-md border border-white/20 rounded-full">
               {currentStatus === 'focus' ? (
                 <>
@@ -483,63 +543,66 @@ const HomeView = ({
           <div className="h-4"></div>
         </div>
 
-        {/* Mobile Menu Button - Bottom Right */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
+        {/* Status Selector Button - Bottom Full Width */}
+        <div className="px-4 pb-4 flex-shrink-0">
+          <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
+            <DropdownMenuTrigger asChild>
               <Button 
-                size="icon" 
-                className="w-12 h-12 rounded-full bg-primary-teal hover:bg-accent-green shadow-lg"
+                variant="outline" 
+                className="w-full bg-surface-raised/30 border border-white/20 text-white-text rounded-lg px-4 py-3 hover:border-white/40 flex items-center justify-center gap-2"
               >
-                <Menu className="h-5 w-5" />
+                {currentStatus === 'active' && (
+                  <>
+                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <span>Active</span>
+                  </>
+                )}
+                {currentStatus === 'focus' && (
+                  <>
+                    <Focus className="w-4 h-4 text-primary-teal" />
+                    <span>Focus Mode</span>
+                  </>
+                )}
+                {currentStatus === 'offline' && (
+                  <>
+                    <Clock className="w-4 h-4 text-orange-400" />
+                    <span>Away</span>
+                  </>
+                )}
+                <ChevronDown className="w-4 h-4 ml-auto" />
               </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="h-[60vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
-              <div className="p-6 space-y-6">
-                <h2 className="text-lg font-semibold text-white-text">Menu</h2>
-                
-                <div className="space-y-6">
-                  <button 
-                    onClick={() => {
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
-                  >
-                    Brief Schedule
-                  </button>
-                  
-                  <button 
-                    onClick={() => {
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
-                  >
-                    Priorities
-                  </button>
-                  
-                  <button 
-                    onClick={() => {
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
-                  >
-                    Integrations
-                  </button>
-                  
-                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
-                    Feedback
-                  </span>
-                  
-                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
-                    Contact Us
-                  </span>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              className="w-full bg-dark-navy/95 backdrop-blur-xl border-white/20 z-50" 
+              align="center"
+              side="top"
+            >
+              <DropdownMenuItem 
+                onClick={() => {
+                  setCurrentStatus('active');
+                  setShowStatusModal(false);
+                }} 
+                className="text-white-text hover:bg-white/10 cursor-pointer flex items-center gap-2"
+              >
+                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                Active
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('focus')} 
+                className="text-white-text hover:bg-white/10 cursor-pointer"
+              >
+                <Focus className="mr-2 h-4 w-4 text-primary-teal" />
+                Focus Mode
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('offline')} 
+                className="text-white-text hover:bg-white/10 cursor-pointer"
+              >
+                <Clock className="mr-2 h-4 w-4 text-orange-400" />
+                Away
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
