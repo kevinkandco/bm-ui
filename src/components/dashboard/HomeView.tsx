@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -329,66 +329,6 @@ const HomeView = ({
   if (isMobile) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        {/* Hamburger Menu Button - Top Right */}
-        <div className="fixed top-4 right-4 z-50">
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-8 w-8 p-0 hover:bg-white/10"
-              >
-                <Menu className="h-5 w-5 text-white-text" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="h-[60vh] bg-dark-navy/95 backdrop-blur-xl border-light-gray-text/20">
-              <div className="p-6 space-y-6">
-                <h2 className="text-lg font-semibold text-white-text">Menu</h2>
-                
-                <div className="space-y-6">
-                  <button 
-                    onClick={() => {
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
-                  >
-                    Brief Schedule
-                  </button>
-                  
-                  <button 
-                    onClick={() => {
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
-                  >
-                    Priorities
-                  </button>
-                  
-                  <button 
-                    onClick={() => {
-                      navigate("/dashboard/settings");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
-                  >
-                    Integrations
-                  </button>
-                  
-                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
-                    Feedback
-                  </span>
-                  
-                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
-                    Contact Us
-                  </span>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-
         {/* Monitoring Section - Top Left */}
         <div className="fixed top-4 left-4 z-40">
           <ConnectedChannelsSection showAsHorizontal={true} />
@@ -569,9 +509,10 @@ const HomeView = ({
                 <span>{latestBrief.actionItems} Actions</span>
               </div>
             </div>
+          </div>
         </div>
 
-        {/* Audio Player - Always Visible at Bottom */}
+        {/* Audio Player - Above Bottom Nav */}
         <div className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <button 
@@ -604,7 +545,84 @@ const HomeView = ({
             )}
           </div>
         </div>
-      </div>
+
+        {/* Bottom Navigation */}
+        <div className="border-t border-white/10 bg-surface-raised/80 backdrop-blur-md">
+          <div className="grid grid-cols-4 px-2 py-2">
+            {/* Home */}
+            <button 
+              onClick={() => navigate('/dashboard')}
+              className="flex flex-col items-center gap-1 p-3 text-primary-teal"
+            >
+              <Home className="h-5 w-5" />
+              <span className="text-xs font-medium">Home</span>
+            </button>
+
+            {/* Briefs */}
+            <button 
+              onClick={handleViewAllBriefs}
+              className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors"
+            >
+              <FileText className="h-5 w-5" />
+              <span className="text-xs font-medium">Briefs</span>
+            </button>
+
+            {/* Status */}
+            <Sheet open={showStatusModal} onOpenChange={setShowStatusModal}>
+              <SheetTrigger asChild>
+                <button className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
+                  {currentStatus === 'active' && <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center"></div>}
+                  {currentStatus === 'focus' && <Focus className="h-5 w-5 text-primary-teal" />}
+                  {currentStatus === 'offline' && <Clock className="h-5 w-5 text-orange-400" />}
+                  <span className="text-xs font-medium">Status</span>
+                </button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[40vh] bg-dark-navy/95 backdrop-blur-xl border-white/20">
+                <div className="p-6 space-y-4">
+                  <h2 className="text-lg font-semibold text-white-text">Set Status</h2>
+                  
+                  <div className="space-y-3">
+                    <button 
+                      onClick={() => {
+                        setCurrentStatus('active');
+                        setShowStatusModal(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
+                      <div className="w-4 h-4 rounded-full bg-green-400"></div>
+                      <span className="text-white-text">Active</span>
+                    </button>
+                    
+                    <button 
+                      onClick={() => handleStatusChange('focus')}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
+                      <Focus className="h-4 w-4 text-primary-teal" />
+                      <span className="text-white-text">Focus Mode</span>
+                    </button>
+                    
+                    <button 
+                      onClick={() => handleStatusChange('offline')}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
+                      <Clock className="h-4 w-4 text-orange-400" />
+                      <span className="text-white-text">Away</span>
+                    </button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            {/* Settings */}
+            <button 
+              onClick={() => navigate('/dashboard/settings')}
+              className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors"
+            >
+              <Settings className="h-5 w-5" />
+              <span className="text-xs font-medium">Settings</span>
+            </button>
+          </div>
+        </div>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
         <CatchMeUpWithScheduling 
