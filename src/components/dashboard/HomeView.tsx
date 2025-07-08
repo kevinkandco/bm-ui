@@ -331,53 +331,6 @@ const HomeView = ({
     return (
       <div className="h-screen flex flex-col overflow-hidden">
 
-        {/* Status Selector - Center Top */}
-        {currentStatus === 'active' && (
-          <div className="px-4 pt-4 pb-2 flex-shrink-0 flex justify-center">
-            <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  className="bg-surface-raised/30 border-0 border-b border-white/20 text-white-text rounded-none px-4 py-3 hover:border-white/40 flex items-center gap-2"
-                >
-                  <ChevronDown className="w-4 h-4" />
-                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                  <span>Active</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                className="bg-dark-navy/95 backdrop-blur-xl border-white/20 z-50" 
-                align="center"
-                side="bottom"
-              >
-                <DropdownMenuItem 
-                  onClick={() => {
-                    setCurrentStatus('active');
-                    setShowStatusModal(false);
-                  }} 
-                  className="text-white-text hover:bg-white/10 cursor-pointer flex items-center gap-2"
-                >
-                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                  Active
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => handleStatusChange('focus')} 
-                  className="text-white-text hover:bg-white/10 cursor-pointer"
-                >
-                  <Focus className="mr-2 h-4 w-4 text-primary-teal" />
-                  Focus Mode
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => handleStatusChange('offline')} 
-                  className="text-white-text hover:bg-white/10 cursor-pointer"
-                >
-                  <Clock className="mr-2 h-4 w-4 text-orange-400" />
-                  Away
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
 
         {/* Floating Status Pill - Top Left when active status */}
         {currentStatus !== 'active' && (
@@ -590,11 +543,34 @@ const HomeView = ({
             {/* Status */}
             <Sheet open={showStatusModal} onOpenChange={setShowStatusModal}>
               <SheetTrigger asChild>
-                <button className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
-                  {currentStatus === 'active' && <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center"></div>}
-                  {currentStatus === 'focus' && <Focus className="h-5 w-5 text-primary-teal" />}
-                  {currentStatus === 'offline' && <Clock className="h-5 w-5 text-orange-400" />}
-                  <span className="text-xs font-medium">Status</span>
+                <button className="flex flex-col items-center gap-1 p-3 relative">
+                  {/* Status indicator with better visual feedback */}
+                  <div className="relative">
+                    {currentStatus === 'active' && (
+                      <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      </div>
+                    )}
+                    {currentStatus === 'focus' && (
+                      <div className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center border-2 border-primary-teal">
+                        <Focus className="h-3 w-3 text-primary-teal" />
+                      </div>
+                    )}
+                    {currentStatus === 'offline' && (
+                      <div className="w-5 h-5 rounded-full bg-orange-400/20 flex items-center justify-center border-2 border-orange-400">
+                        <Clock className="h-3 w-3 text-orange-400" />
+                      </div>
+                    )}
+                    {/* Active indicator dot */}
+                    {currentStatus !== 'active' && (
+                      <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white"></div>
+                    )}
+                  </div>
+                  <span className={`text-xs font-medium ${
+                    currentStatus === 'active' ? 'text-green-400' :
+                    currentStatus === 'focus' ? 'text-primary-teal' :
+                    'text-orange-400'
+                  }`}>Status</span>
                 </button>
               </SheetTrigger>
               <SheetContent side="bottom" className="h-[40vh] bg-dark-navy/95 backdrop-blur-xl border-white/20">
