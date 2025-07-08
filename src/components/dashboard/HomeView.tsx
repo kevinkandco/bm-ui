@@ -52,6 +52,7 @@ const HomeView = ({
   const [isActionItemsHovered, setIsActionItemsHovered] = useState(false);
   const [isPrioritiesHovered, setIsPrioritiesHovered] = useState(false);
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
+  const [showBriefDetail, setShowBriefDetail] = useState(false);
 
   // Sample connected integrations
   const connectedIntegrations = [{
@@ -513,10 +514,16 @@ const HomeView = ({
         </div>
 
         {/* Audio Player - Above Bottom Nav */}
-        <div className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md">
+        <div 
+          className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors"
+          onClick={() => setShowBriefDetail(true)}
+        >
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => playingBrief ? handlePlayBrief(playingBrief) : handlePlayBrief(latestBrief.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                playingBrief ? handlePlayBrief(playingBrief) : handlePlayBrief(latestBrief.id);
+              }}
               className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
             >
               {playingBrief ? (
@@ -537,12 +544,16 @@ const HomeView = ({
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => setPlayingBrief(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPlayingBrief(null);
+                }}
                 className="h-8 w-8 p-0"
               >
                 <X className="h-4 w-4" />
               </Button>
             )}
+            <ChevronDown className="h-4 w-4 text-light-gray-text" />
           </div>
         </div>
 
@@ -623,6 +634,100 @@ const HomeView = ({
             </button>
           </div>
         </div>
+
+        {/* Brief Detail Sheet */}
+        <Sheet open={showBriefDetail} onOpenChange={setShowBriefDetail}>
+          <SheetContent side="bottom" className="h-[90vh] bg-dark-navy/95 backdrop-blur-xl border-white/20 overflow-hidden">
+            <div className="flex flex-col h-full">
+              {/* Header */}
+              <div className="p-6 border-b border-white/10">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-white-text">Morning Brief</h2>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setShowBriefDetail(false)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-sm text-light-gray-text mt-1">Today, 8:00 AM • 5:00 AM - 8:00 AM</p>
+              </div>
+
+              {/* Content */}
+              <ScrollArea className="flex-1">
+                <div className="p-6 space-y-6">
+                  {/* Summary */}
+                  <div>
+                    <h3 className="text-lg font-medium text-white-text mb-3">Summary</h3>
+                    <p className="text-text-secondary leading-relaxed">
+                      This morning's brief covers critical updates from your priority channels. Sarah Chen requires urgent approval for the Q3 budget proposal, and there are several high-priority items requiring your attention before the team standup at 10 AM.
+                    </p>
+                  </div>
+
+                  {/* Action Items */}
+                  <div>
+                    <h3 className="text-lg font-medium text-white-text mb-3">Action Items ({actionItems.length})</h3>
+                    <div className="space-y-3">
+                      {actionItems.map(item => (
+                        <div key={item.id} className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
+                          <div className="flex items-start gap-3">
+                            <div className="w-4 h-4 rounded border border-light-gray-text/30 mt-0.5 flex-shrink-0"></div>
+                            <div className="flex-1">
+                              <p className="text-sm text-white-text font-medium">{item.title}</p>
+                              <div className="flex items-center gap-2 mt-1 text-xs text-light-gray-text">
+                                <span>from {item.sender}</span>
+                                {item.isVip && (
+                                  <>
+                                    <span>•</span>
+                                    <Star className="w-3 h-3 text-green-400" fill="currentColor" />
+                                  </>
+                                )}
+                                <span>•</span>
+                                <span className={`px-1.5 py-0.5 rounded text-xs ${
+                                  item.urgency === 'critical' ? 'bg-red-500/20 text-red-400' :
+                                  item.urgency === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                                  item.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                  'bg-gray-500/20 text-gray-400'
+                                }`}>
+                                  {item.urgency}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Messages Summary */}
+                  <div>
+                    <h3 className="text-lg font-medium text-white-text mb-3">Messages Analyzed</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-3 rounded-lg bg-surface-raised/30">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-3 h-3 bg-purple-500 rounded-sm"></div>
+                          <span className="text-sm font-medium text-white-text">Slack</span>
+                        </div>
+                        <p className="text-lg font-semibold text-white-text">{latestBrief.slackMessages.total}</p>
+                        <p className="text-xs text-light-gray-text">{latestBrief.slackMessages.fromPriorityPeople} from priority people</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-surface-raised/30">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-3 h-3 bg-blue-500 rounded-sm"></div>
+                          <span className="text-sm font-medium text-white-text">Gmail</span>
+                        </div>
+                        <p className="text-lg font-semibold text-white-text">{latestBrief.emails.total}</p>
+                        <p className="text-xs text-light-gray-text">{latestBrief.emails.fromPriorityPeople} from priority people</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+            </div>
+          </SheetContent>
+        </Sheet>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
         <CatchMeUpWithScheduling 
