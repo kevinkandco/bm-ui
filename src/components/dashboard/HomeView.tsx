@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -53,6 +53,7 @@ const HomeView = ({
   const [isPrioritiesHovered, setIsPrioritiesHovered] = useState(false);
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
   const [showBriefDetail, setShowBriefDetail] = useState(false);
+  const [showUpcomingBrief, setShowUpcomingBrief] = useState(false);
 
   // Sample connected integrations
   const connectedIntegrations = [{
@@ -412,31 +413,6 @@ const HomeView = ({
             </div>
           </div>
 
-          {/* Upcoming Brief */}
-          <div className="space-y-3">
-            <h2 className="text-text-primary text-base font-medium">Upcoming</h2>
-            <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-primary-teal" />
-                  <div>
-                    <p className="text-sm text-white-text font-medium">{upcomingBrief.name}</p>
-                    <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
-                  </div>
-                </div>
-                <Button 
-                  onClick={handleGetBriefedNow} 
-                  size="sm" 
-                  variant="outline" 
-                  className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent"
-                >
-                  <Zap className="w-3 h-3 mr-1" />
-                  Now
-                </Button>
-              </div>
-            </div>
-          </div>
-
           {/* Briefs Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -473,6 +449,47 @@ const HomeView = ({
               </div>
             </div>
           </div>
+
+          {/* Upcoming Brief - Collapsible Toggle */}
+          <div className="space-y-3">
+            <button 
+              onClick={() => setShowUpcomingBrief(!showUpcomingBrief)}
+              className="flex items-center justify-between w-full text-left"
+            >
+              <h2 className="text-text-primary text-base font-medium">Upcoming</h2>
+              {showUpcomingBrief ? (
+                <ChevronDown className="w-4 h-4 text-light-gray-text" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-light-gray-text" />
+              )}
+            </button>
+            
+            {showUpcomingBrief && (
+              <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10 animate-fade-in">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-4 h-4 text-primary-teal" />
+                    <div>
+                      <p className="text-sm text-white-text font-medium">{upcomingBrief.name}</p>
+                      <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={handleGetBriefedNow} 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent"
+                  >
+                    <Zap className="w-3 h-3 mr-1" />
+                    Now
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom spacing for safe area */}
+          <div className="h-4"></div>
         </div>
 
         {/* Audio Player - Above Bottom Nav */}
