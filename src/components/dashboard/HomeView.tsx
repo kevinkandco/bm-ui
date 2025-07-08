@@ -389,29 +389,51 @@ const HomeView = ({
           </Sheet>
         </div>
 
-        {/* Sticky Audio Player at Top */}
-        {playingBrief && (
-          <div className="sticky top-0 z-40 bg-surface-raised/80 backdrop-blur-md border-b border-white/10 px-4 py-3">
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => handlePlayBrief(playingBrief)}
-                className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+        {/* Status Selector at Top */}
+        {currentStatus === 'active' && (
+          <div className="px-4 pt-4 pb-2 flex-shrink-0">
+            <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full bg-surface-raised/30 border border-white/20 text-white-text rounded-lg px-4 py-3 hover:border-white/40 flex items-center justify-center gap-2"
+                >
+                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                  <span>Active</span>
+                  <ChevronDown className="w-4 h-4 ml-auto" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                className="w-full bg-dark-navy/95 backdrop-blur-xl border-white/20 z-50" 
+                align="center"
+                side="bottom"
               >
-                <Pause className="h-4 w-4 text-primary-teal" />
-              </button>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm text-white-text font-medium truncate">Morning Brief</div>
-                <div className="text-xs text-light-gray-text">2:34 / 5:12</div>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setPlayingBrief(null)}
-                className="h-8 w-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+                <DropdownMenuItem 
+                  onClick={() => {
+                    setCurrentStatus('active');
+                    setShowStatusModal(false);
+                  }} 
+                  className="text-white-text hover:bg-white/10 cursor-pointer flex items-center gap-2"
+                >
+                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                  Active
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleStatusChange('focus')} 
+                  className="text-white-text hover:bg-white/10 cursor-pointer"
+                >
+                  <Focus className="mr-2 h-4 w-4 text-primary-teal" />
+                  Focus Mode
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleStatusChange('offline')} 
+                  className="text-white-text hover:bg-white/10 cursor-pointer"
+                >
+                  <Clock className="mr-2 h-4 w-4 text-orange-400" />
+                  Away
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
 
@@ -539,70 +561,34 @@ const HomeView = ({
             </div>
           </div>
 
+          {/* Audio Player - Fixed to Bottom of Content */}
+          {playingBrief && (
+            <div className="px-4 py-3 bg-surface-raised/80 backdrop-blur-md border border-white/10 rounded-lg">
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => handlePlayBrief(playingBrief)}
+                  className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+                >
+                  <Pause className="h-4 w-4 text-primary-teal" />
+                </button>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-white-text font-medium truncate">Morning Brief</div>
+                  <div className="text-xs text-light-gray-text">2:34 / 5:12</div>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setPlayingBrief(null)}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Bottom spacing for safe area */}
           <div className="h-4"></div>
-        </div>
-
-        {/* Status Selector Button - Bottom Full Width */}
-        <div className="px-4 pb-4 flex-shrink-0">
-          <DropdownMenu open={showStatusModal} onOpenChange={setShowStatusModal}>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
-                className="w-full bg-surface-raised/30 border border-white/20 text-white-text rounded-lg px-4 py-3 hover:border-white/40 flex items-center justify-center gap-2"
-              >
-                {currentStatus === 'active' && (
-                  <>
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    <span>Active</span>
-                  </>
-                )}
-                {currentStatus === 'focus' && (
-                  <>
-                    <Focus className="w-4 h-4 text-primary-teal" />
-                    <span>Focus Mode</span>
-                  </>
-                )}
-                {currentStatus === 'offline' && (
-                  <>
-                    <Clock className="w-4 h-4 text-orange-400" />
-                    <span>Away</span>
-                  </>
-                )}
-                <ChevronDown className="w-4 h-4 ml-auto" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              className="w-full bg-dark-navy/95 backdrop-blur-xl border-white/20 z-50" 
-              align="center"
-              side="top"
-            >
-              <DropdownMenuItem 
-                onClick={() => {
-                  setCurrentStatus('active');
-                  setShowStatusModal(false);
-                }} 
-                className="text-white-text hover:bg-white/10 cursor-pointer flex items-center gap-2"
-              >
-                <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                Active
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => handleStatusChange('focus')} 
-                className="text-white-text hover:bg-white/10 cursor-pointer"
-              >
-                <Focus className="mr-2 h-4 w-4 text-primary-teal" />
-                Focus Mode
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => handleStatusChange('offline')} 
-                className="text-white-text hover:bg-white/10 cursor-pointer"
-              >
-                <Clock className="mr-2 h-4 w-4 text-orange-400" />
-                Away
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
