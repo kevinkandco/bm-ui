@@ -423,6 +423,21 @@ const BriefCard = ({
                       </div>
                     </div>)}
                 </div>
+                
+                {/* View All Link */}
+                <div className="mt-2 text-center">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onViewBrief(brief.id);
+                    }}
+                    className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2"
+                  >
+                    View all follow-ups and messages →
+                  </Button>
+                </div>
               </div>
 
               {/* Add Missing Content */}
