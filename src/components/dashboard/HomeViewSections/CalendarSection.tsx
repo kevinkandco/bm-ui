@@ -390,68 +390,79 @@ const CalendarSection = ({
                 Today's Schedule
               </h3>
               <div className="space-y-0">
-                {allMeetings.map((meeting, index) => {
-                  const isPast = meeting.minutesUntil < 0;
-                  const isNext = meeting.id === nextMeeting?.id;
-
-                  return (
-                    <div key={meeting.id} className="relative">
-                      {/* Timeline connector */}
-                      {index > 0 && (
-                        <div
-                          className={`absolute left-16 top-0 w-0.5 h-4 ${
-                            allMeetings[index - 1].minutesUntil < 0
-                              ? "bg-red-500"
-                              : "bg-border-subtle"
-                          }`}
-                        />
-                      )}
-
-                      <div
-                        className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
-                          isNext ? "opacity-100" : "opacity-80"
-                        }`}
-                        onClick={() => openMeetingDetails(meeting)}
-                      >
-                        {/* Time */}
-                        <div className="text-sm text-text-secondary min-w-[100px] font-mono">
-                          {meeting.time}
-                        </div>
-
-                        {/* Title */}
-                        <div className="flex-1">
-                          <span
-                            className={`text-sm ${
-                              isPast
-                                ? "text-text-secondary"
-                                : "text-text-primary"
-                            }`}
-                          >
-                            {meeting.title}
-                          </span>
-                        </div>
-
-                        {/* Status indicator */}
-                        <div className="flex items-center gap-2">
-                          {meeting.hasProxy && (
-                            <div className="w-2 h-2 bg-green-500 rounded-full" />
-                          )}
-                          {meeting.isRecording && (
-                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Timeline indicator line - red line shows current time */}
-                      {meeting.minutesUntil < 0 &&
-                        allMeetings[index + 1]?.minutesUntil >= 0 && (
-                          <div className="absolute left-0 right-0 top-full">
-                            <div className="h-0.5 bg-red-500 w-full" />
-                          </div>
-                        )}
+                {!(allMeetings.length > 0) ? (
+                  <div className="w-full">
+                    <div className="text-center py-6">
+                      <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+                      <p className="text-sm text-text-secondary">
+                        No meetings for today
+                      </p>
                     </div>
-                  );
-                })}
+                  </div>
+                ) : (
+                  allMeetings.map((meeting, index) => {
+                    const isPast = meeting.minutesUntil < 0;
+                    const isNext = meeting.id === nextMeeting?.id;
+
+                    return (
+                      <div key={meeting.id} className="relative">
+                        {/* Timeline connector */}
+                        {index > 0 && (
+                          <div
+                            className={`absolute left-16 top-0 w-0.5 h-4 ${
+                              allMeetings[index - 1].minutesUntil < 0
+                                ? "bg-red-500"
+                                : "bg-border-subtle"
+                            }`}
+                          />
+                        )}
+
+                        <div
+                          className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
+                            isNext ? "opacity-100" : "opacity-80"
+                          }`}
+                          onClick={() => openMeetingDetails(meeting)}
+                        >
+                          {/* Time */}
+                          <div className="text-sm text-text-secondary min-w-[100px] font-mono">
+                            {meeting.time}
+                          </div>
+
+                          {/* Title */}
+                          <div className="flex-1">
+                            <span
+                              className={`text-sm ${
+                                isPast
+                                  ? "text-text-secondary"
+                                  : "text-text-primary"
+                              }`}
+                            >
+                              {meeting.title}
+                            </span>
+                          </div>
+
+                          {/* Status indicator */}
+                          <div className="flex items-center gap-2">
+                            {meeting.hasProxy && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full" />
+                            )}
+                            {meeting.isRecording && (
+                              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Timeline indicator line - red line shows current time */}
+                        {meeting.minutesUntil < 0 &&
+                          allMeetings[index + 1]?.minutesUntil >= 0 && (
+                            <div className="absolute left-0 right-0 top-full">
+                              <div className="h-0.5 bg-red-500 w-full" />
+                            </div>
+                          )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
               <Separator className="my-3 bg-white-text/10" />
 
