@@ -530,9 +530,19 @@ const HomeView = ({
             </div>
           </div>
 
-          {/* Latest Brief Card - Compact */}
+          {/* Briefs Section */}
           <div className="space-y-3">
-            <h2 className="text-text-primary text-base font-medium">Latest brief</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-text-primary text-base font-medium">Briefs</h2>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleViewAllBriefs}
+                className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2"
+              >
+                View all
+              </Button>
+            </div>
             <div 
               className="p-4 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer"
               onClick={() => onOpenBrief(latestBrief.id)}
@@ -559,37 +569,42 @@ const HomeView = ({
                 <span>{latestBrief.actionItems} Actions</span>
               </div>
             </div>
-          </div>
+        </div>
 
-          {/* Audio Player - Fixed to Bottom of Content */}
-          {playingBrief && (
-            <div className="px-4 py-3 bg-surface-raised/80 backdrop-blur-md border border-white/10 rounded-lg">
-              <div className="flex items-center gap-3">
-                <button 
-                  onClick={() => handlePlayBrief(playingBrief)}
-                  className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
-                >
-                  <Pause className="h-4 w-4 text-primary-teal" />
-                </button>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm text-white-text font-medium truncate">Morning Brief</div>
-                  <div className="text-xs text-light-gray-text">2:34 / 5:12</div>
-                </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setPlayingBrief(null)}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+        {/* Audio Player - Always Visible at Bottom */}
+        <div className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => playingBrief ? handlePlayBrief(playingBrief) : handlePlayBrief(latestBrief.id)}
+              className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+            >
+              {playingBrief ? (
+                <Pause className="h-4 w-4 text-primary-teal" />
+              ) : (
+                <Play className="h-4 w-4 text-primary-teal" />
+              )}
+            </button>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm text-white-text font-medium truncate">
+                {playingBrief ? "Morning Brief" : latestBrief.name}
+              </div>
+              <div className="text-xs text-light-gray-text">
+                {playingBrief ? "2:34 / 5:12" : "Ready to play"}
               </div>
             </div>
-          )}
-
-          {/* Bottom spacing for safe area */}
-          <div className="h-4"></div>
+            {playingBrief && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setPlayingBrief(null)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
+      </div>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
         <CatchMeUpWithScheduling 
