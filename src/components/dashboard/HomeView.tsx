@@ -570,7 +570,7 @@ const handleViewAllTasks = useCallback(() => {
           </div>
 
           {/* Latest Brief Card - Compact */}
-          <div className="space-y-3">
+          {recentBriefs.length > 0 && <div className="space-y-3">
             <h2 className="text-text-primary text-base font-medium">Latest brief</h2>
             <div 
               className="p-4 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer"
@@ -598,7 +598,7 @@ const handleViewAllTasks = useCallback(() => {
                 <span>{recentBriefs[0]?.stats?.actionItems?.total} Actions</span>
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* Audio Player - Fixed to Bottom of Content */}
           {playingBrief && (
@@ -635,8 +635,8 @@ const handleViewAllTasks = useCallback(() => {
           open={showSchedulingModal} 
           onClose={handleCloseSchedulingModal} 
           onGenerateSummary={handleGenerateSummaryWithScheduling} 
-          upcomingBriefName={upcomingBrief.title} 
-          upcomingBriefTime={upcomingBrief.time} 
+          upcomingBriefName={upcomingBrief?.title} 
+          upcomingBriefTime={upcomingBrief?.time} 
         />
       </div>
     );
