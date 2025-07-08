@@ -382,10 +382,10 @@ const BriefDetail = () => {
             {/* Stats Section */}
             <div className="glass-card rounded-2xl p-4 md:p-6">
               {/* Time Saved Banner */}
-              <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-4">
+              {briefData?.savedTime?.total_saved_minutes && <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-4">
                 <Clock className="h-4 w-4" />
-                <span>Time saved: {briefData?.savedTime}</span>
-              </div>
+                <span>Time saved: ~{Math.round(briefData?.savedTime?.breakdown?.context_saved + briefData?.savedTime?.breakdown?.reading_saved)}min reading + {Math.round(briefData?.savedTime?.breakdown?.processing_saved)}min processing = {Math.round(briefData?.savedTime?.total_saved_minutes)}min total</span>
+              </div>}
 
               {/* Horizontal Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">

@@ -101,6 +101,19 @@ export interface PriorityItems {
   };
 }
 
+interface TimeSavedBreakdown {
+  context_saved: number;
+  reading_saved: number;
+  processing_saved: number;
+}
+
+interface TimeSavedData {
+  breakdown: TimeSavedBreakdown;
+  brief_total: number;
+  baseline_total: number;
+  total_saved_minutes: number;
+}
+
 export interface Summary {
   id: number;
   user_id?: number;
@@ -111,7 +124,7 @@ export interface Summary {
   description?: string;
   duration?: string;
   timestamp?: string;
-  savedTime?: string;
+  savedTime?: TimeSavedData;
   messages?: SummaryMassage[];
   messagesCount?: number;
   taskCount?: number;
