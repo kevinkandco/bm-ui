@@ -425,7 +425,7 @@ const BriefCard = ({
                 </div>
                 
                 {/* View All Link */}
-                <div className="mt-2 text-center">
+                <div className="mt-2 text-right">
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -435,7 +435,7 @@ const BriefCard = ({
                     }}
                     className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2"
                   >
-                    View all follow-ups and messages →
+                    View all
                   </Button>
                 </div>
               </div>
