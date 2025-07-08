@@ -141,7 +141,7 @@ const BriefCard = ({
   }, {
     icon: CheckSquare,
     label: "Follow-ups",
-    value: brief.actionItems,
+    value: brief?.actionItems,
     color: "text-accent-primary"
   }];
   
@@ -413,12 +413,12 @@ const BriefCard = ({
                 </div>}
 
               {/* Time Saved Breakdown - Expanded State */}
-              <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
+              {brief?.savedTime?.total_saved_minutes && <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
                 <Clock className="h-4 w-4 text-green-400" />
                 <span>
-                  <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
+                  <span className="text-green-400 font-medium">Time saved:</span> ~{Math.round(brief?.savedTime?.breakdown?.context_saved + brief?.savedTime?.breakdown?.reading_saved)}min reading + {Math.round(brief?.savedTime?.breakdown?.processing_saved)}min processing = <span className="text-green-400 font-medium">{Math.round(brief?.savedTime?.total_saved_minutes)}min total</span>
                 </span>
-              </div>
+              </div>}
 
               {/* Compact Stats Grid */}
               <div className="grid grid-cols-3 gap-1 mb-2">

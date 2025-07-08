@@ -101,8 +101,10 @@ const BriefDetail = () => {
     });
 
     if (response) {
-      const stats = transformToStats(response?.data);
-      setBriefData({...response?.data, stats});
+    //   const stats = transformToStats(response?.data);
+      setBriefData({...response?.data, 
+        //stats
+    });
       setActionItems(response?.data?.messages?.map((item: SummaryMassage, index: number) => ({...item, id: index})));
       setSelectedFeedback(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : null);
     }
@@ -153,19 +155,22 @@ const BriefDetail = () => {
     {
       icon: AlertCircle,
       label: "Interrupts Prevented",
-      value: briefData.stats.interruptsPrevented || 14,
+    //   value: briefData?.stats?.interruptsPrevented || 14,
+      value: 14,
       color: "text-blue-400"
     },
     {
       icon: Clock,
       label: "Focus Gained", 
-      value: briefData.stats.focusGained || 45,
+    //   value: briefData?.stats?.focusGained || 45,
+      value: 45,
       color: "text-green-400"
     },
     {
       icon: CheckSquare,
       label: "Follow-ups",
-      value: briefData.stats.followUps || 5,
+    //   value: briefData?.stats?.followUps || 5,
+      value: 5,
       color: "text-accent-primary"
     }
   ];
@@ -481,8 +486,8 @@ const BriefDetail = () => {
             <div className="flex items-center gap-3 mb-2">
               <CheckSquare className="h-6 w-6 text-accent-primary flex-shrink-0" />
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{briefData.title}</h1>
-                <p className="text-sm text-text-secondary">Here's your briefing for Thu, Jul 3, 2025 from {briefData.timeRange}:</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{briefData?.title}</h1>
+                <p className="text-sm text-text-secondary">Here's your briefing for Thu, Jul 3, 2025 from {briefData?.timeRange}:</p>
               </div>
             </div>
           </div>
@@ -492,10 +497,10 @@ const BriefDetail = () => {
             {/* Stats Section */}
             <div className="glass-card rounded-2xl p-4 md:p-6">
               {/* Time Saved Banner */}
-              <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-4">
+              {briefData?.savedTime?.total_saved_minutes && <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-4">
                 <Clock className="h-4 w-4" />
-                <span>Time saved: {briefData?.savedTime}</span>
-              </div>
+                <span>Time saved: ~{Math.round(briefData?.savedTime?.breakdown?.context_saved + briefData?.savedTime?.breakdown?.reading_saved)}min reading + {Math.round(briefData?.savedTime?.breakdown?.processing_saved)}min processing = {Math.round(briefData?.savedTime?.total_saved_minutes)}min total</span>
+              </div>}
 
               {/* Horizontal Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -756,7 +761,7 @@ const BriefDetail = () => {
                               <div>
                                 <div className="text-sm font-medium text-text-primary mb-2">Full Message:</div>
                                 <div className="text-sm text-text-secondary bg-white/5 rounded p-3 border border-white/10">
-                                  {item.message}
+                                  {item?.summary}
                                 </div>
                               </div>
 
