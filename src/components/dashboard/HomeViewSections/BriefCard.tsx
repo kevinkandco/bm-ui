@@ -386,16 +386,16 @@ const BriefCard = ({
                 </span>
               </div>
 
-              {/* New Stats Grid */}
-              <div className="grid grid-cols-3 gap-2 mb-3">
+              {/* Compact Stats Grid */}
+              <div className="grid grid-cols-3 gap-1 mb-2">
                 {statsConfig.map((stat, index) => {
               const IconComponent = stat.icon;
-              return <div key={index} className="flex flex-col items-center p-2 rounded-lg bg-surface-raised/30">
-                        <IconComponent className={`h-4 w-4 ${stat.color} mb-1`} />
-                        <div className="text-lg font-semibold text-text-primary">
+              return <div key={index} className="flex flex-col items-center p-1.5 rounded-md bg-surface-raised/20">
+                        <IconComponent className={`h-3 w-3 ${stat.color} mb-0.5`} />
+                        <div className="text-sm font-semibold text-text-primary">
                           {stat.value}
                         </div>
-                        <div className="text-xs text-text-secondary text-center leading-tight">
+                        <div className="text-[10px] text-text-secondary text-center leading-tight">
                           {stat.label}
                         </div>
                       </div>;
