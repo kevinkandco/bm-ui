@@ -380,12 +380,21 @@ const HomeView = ({
           </div>
         )}
 
-        {/* Main Content */}
-        <div className="flex-1 px-4 py-4 space-y-6 overflow-y-auto">
+        {/* Welcome Header Section */}
+        <div className="text-center px-4 py-4 flex-shrink-0">
+          <h1 className="text-xl font-semibold text-white-text mb-1">
+            Good morning, Alex
+          </h1>
+          <p className="text-light-gray-text text-sm mb-4">Ready to catch up or focus?</p>
+          
           {/* Accounts Section */}
           <div className="flex items-center justify-center">
             <ConnectedChannelsSection showAsHorizontal={true} />
           </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 px-4 space-y-6 overflow-y-auto">
 
           {/* Follow-ups/Actions - Max 2 Actions */}
           <div className="space-y-3">
@@ -489,7 +498,7 @@ const HomeView = ({
               <div className="p-6 space-y-6">
                 <h2 className="text-lg font-semibold text-white-text">Menu</h2>
                 
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <button 
                     onClick={() => {
                       navigate("/dashboard/settings");
@@ -497,28 +506,36 @@ const HomeView = ({
                     }}
                     className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
                   >
-                    Settings
+                    Brief Schedule
                   </button>
                   
                   <button 
                     onClick={() => {
-                      onToggleCatchMeUp();
+                      navigate("/dashboard/settings");
                       setMobileMenuOpen(false);
                     }}
                     className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
                   >
-                    Catch me up
+                    Priorities
                   </button>
                   
                   <button 
                     onClick={() => {
-                      onStartFocusMode();
+                      navigate("/dashboard/settings");
                       setMobileMenuOpen(false);
                     }}
                     className="block w-full text-left text-lg text-white-text hover:text-primary-teal transition-colors py-2"
                   >
-                    Focus mode
+                    Integrations
                   </button>
+                  
+                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
+                    Feedback
+                  </span>
+                  
+                  <span className="block w-full text-left text-lg text-light-gray-text py-2">
+                    Contact Us
+                  </span>
                 </div>
               </div>
             </SheetContent>
