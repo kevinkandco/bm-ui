@@ -660,7 +660,7 @@ const BriefDetail = () => {
                                   className="text-xs flex items-center gap-1"
                                 >
                                   <Mail className="h-3 w-3" />
-                                  Open in {item.platform === 'S' ? 'Slack' : 'Gmail'}
+                                  Open in {item.platform === 'slack' ? 'Slack' : 'Gmail'}
                                 </Button>
                               </div>
                               
