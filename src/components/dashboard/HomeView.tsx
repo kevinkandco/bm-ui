@@ -329,34 +329,24 @@ const HomeView = ({
 
   // Mobile View  
   if (isMobile) {
-    return (
-      <div className="h-screen flex flex-col overflow-hidden">
+    return <div className="h-screen flex flex-col overflow-hidden">
 
 
         {/* Floating Status Pill - Top Left when active status */}
-        {currentStatus !== 'active' && (
-          <div className="fixed top-4 left-4 z-40">
+        {currentStatus !== 'active' && <div className="fixed top-4 left-4 z-40">
             <div className="flex items-center gap-1 px-3 py-1.5 bg-surface-raised/90 backdrop-blur-md border border-white/20 rounded-full">
-              {currentStatus === 'focus' ? (
-                <>
+              {currentStatus === 'focus' ? <>
                   <Focus className="w-3 h-3 text-primary-teal" />
                   <span className="text-xs text-white-text">Focus</span>
-                </>
-              ) : (
-                <>
+                </> : <>
                   <Clock className="w-3 h-3 text-orange-400" />
                   <span className="text-xs text-white-text">Away</span>
-                </>
-              )}
-              <button 
-                onClick={handleExitStatus}
-                className="ml-1 hover:bg-white/10 rounded-full p-0.5 transition-colors"
-              >
+                </>}
+              <button onClick={handleExitStatus} className="ml-1 hover:bg-white/10 rounded-full p-0.5 transition-colors">
                 <X className="w-3 h-3" />
               </button>
             </div>
-          </div>
-        )}
+          </div>}
 
         {/* Welcome Header Section */}
         <div className="text-center px-4 py-4 flex-shrink-0">
@@ -417,22 +407,14 @@ const HomeView = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-text-primary text-base font-medium">Briefs</h2>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleViewAllBriefs}
-                className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2"
-              >
+              <Button variant="ghost" size="sm" onClick={handleViewAllBriefs} className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2">
                 View all
               </Button>
             </div>
-            <div 
-              className="p-3 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors"
-              onClick={() => {
-                handlePlayBrief(latestBrief.id);
-                setShowBriefDetail(true);
-              }}
-            >
+            <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors" onClick={() => {
+            handlePlayBrief(latestBrief.id);
+            setShowBriefDetail(true);
+          }}>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center flex-shrink-0">
                   <Play className="h-4 w-4 text-primary-teal" />
@@ -452,20 +434,12 @@ const HomeView = ({
 
           {/* Upcoming Brief - Collapsible Toggle */}
           <div className="space-y-3">
-            <button 
-              onClick={() => setShowUpcomingBrief(!showUpcomingBrief)}
-              className="flex items-center justify-between w-full text-left"
-            >
-              <h2 className="text-text-primary text-base font-medium">Upcoming</h2>
-              {showUpcomingBrief ? (
-                <ChevronDown className="w-4 h-4 text-light-gray-text" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-light-gray-text" />
-              )}
+            <button onClick={() => setShowUpcomingBrief(!showUpcomingBrief)} className="flex items-center justify-between w-full text-left">
+              <h2 className="text-text-primary text-xs font-normal text-slate-400">Upcoming</h2>
+              {showUpcomingBrief ? <ChevronDown className="w-4 h-4 text-light-gray-text" /> : <ChevronRight className="w-4 h-4 text-light-gray-text" />}
             </button>
             
-            {showUpcomingBrief && (
-              <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10 animate-fade-in">
+            {showUpcomingBrief && <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10 animate-fade-in">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-primary-teal" />
@@ -474,18 +448,12 @@ const HomeView = ({
                       <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
                     </div>
                   </div>
-                  <Button 
-                    onClick={handleGetBriefedNow} 
-                    size="sm" 
-                    variant="outline" 
-                    className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent"
-                  >
+                  <Button onClick={handleGetBriefedNow} size="sm" variant="outline" className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent">
                     <Zap className="w-3 h-3 mr-1" />
                     Now
                   </Button>
                 </div>
-              </div>
-            )}
+              </div>}
           </div>
 
           {/* Bottom spacing for safe area */}
@@ -493,23 +461,13 @@ const HomeView = ({
         </div>
 
         {/* Audio Player - Above Bottom Nav */}
-        <div 
-          className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors"
-          onClick={() => setShowBriefDetail(true)}
-        >
+        <div className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors" onClick={() => setShowBriefDetail(true)}>
           <div className="flex items-center gap-3">
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                playingBrief ? handlePlayBrief(playingBrief) : handlePlayBrief(latestBrief.id);
-              }}
-              className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
-            >
-              {playingBrief ? (
-                <Pause className="h-4 w-4 text-primary-teal" />
-              ) : (
-                <Play className="h-4 w-4 text-primary-teal" />
-              )}
+            <button onClick={e => {
+            e.stopPropagation();
+            playingBrief ? handlePlayBrief(playingBrief) : handlePlayBrief(latestBrief.id);
+          }} className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
+              {playingBrief ? <Pause className="h-4 w-4 text-primary-teal" /> : <Play className="h-4 w-4 text-primary-teal" />}
             </button>
             <div className="flex-1 min-w-0">
               <div className="text-sm text-white-text font-medium truncate">
@@ -519,19 +477,12 @@ const HomeView = ({
                 {playingBrief ? "2:34 / 5:12" : "Ready to play"}
               </div>
             </div>
-            {playingBrief && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPlayingBrief(null);
-                }}
-                className="h-8 w-8 p-0"
-              >
+            {playingBrief && <Button variant="ghost" size="sm" onClick={e => {
+            e.stopPropagation();
+            setPlayingBrief(null);
+          }} className="h-8 w-8 p-0">
                 <X className="h-4 w-4" />
-              </Button>
-            )}
+              </Button>}
             <ChevronDown className="h-4 w-4 text-light-gray-text" />
           </div>
         </div>
@@ -540,19 +491,13 @@ const HomeView = ({
         <div className="border-t border-white/10 bg-surface-raised/80 backdrop-blur-md">
           <div className="grid grid-cols-4 px-2 py-2">
             {/* Home */}
-            <button 
-              onClick={() => navigate('/dashboard')}
-              className="flex flex-col items-center gap-1 p-3 text-primary-teal"
-            >
+            <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center gap-1 p-3 text-primary-teal">
               <Home className="h-5 w-5" />
               <span className="text-xs font-medium">Home</span>
             </button>
 
             {/* Briefs */}
-            <button 
-              onClick={handleViewAllBriefs}
-              className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors"
-            >
+            <button onClick={handleViewAllBriefs} className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
               <FileText className="h-5 w-5" />
               <span className="text-xs font-medium">Briefs</span>
             </button>
@@ -563,31 +508,19 @@ const HomeView = ({
                 <button className="flex flex-col items-center gap-1 p-3 relative">
                   {/* Status indicator with better visual feedback */}
                   <div className="relative">
-                    {currentStatus === 'active' && (
-                      <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
+                    {currentStatus === 'active' && <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
                         <div className="w-2 h-2 rounded-full bg-white"></div>
-                      </div>
-                    )}
-                    {currentStatus === 'focus' && (
-                      <div className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center border-2 border-primary-teal">
+                      </div>}
+                    {currentStatus === 'focus' && <div className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center border-2 border-primary-teal">
                         <Focus className="h-3 w-3 text-primary-teal" />
-                      </div>
-                    )}
-                    {currentStatus === 'offline' && (
-                      <div className="w-5 h-5 rounded-full bg-orange-400/20 flex items-center justify-center border-2 border-orange-400">
+                      </div>}
+                    {currentStatus === 'offline' && <div className="w-5 h-5 rounded-full bg-orange-400/20 flex items-center justify-center border-2 border-orange-400">
                         <Clock className="h-3 w-3 text-orange-400" />
-                      </div>
-                    )}
+                      </div>}
                     {/* Active indicator dot */}
-                    {currentStatus !== 'active' && (
-                      <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white"></div>
-                    )}
+                    {currentStatus !== 'active' && <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white"></div>}
                   </div>
-                  <span className={`text-xs font-medium ${
-                    currentStatus === 'active' ? 'text-green-400' :
-                    currentStatus === 'focus' ? 'text-primary-teal' :
-                    'text-orange-400'
-                  }`}>Status</span>
+                  <span className={`text-xs font-medium ${currentStatus === 'active' ? 'text-green-400' : currentStatus === 'focus' ? 'text-primary-teal' : 'text-orange-400'}`}>Status</span>
                 </button>
               </SheetTrigger>
               <SheetContent side="bottom" className="h-[40vh] bg-dark-navy/95 backdrop-blur-xl border-white/20">
@@ -595,29 +528,20 @@ const HomeView = ({
                   <h2 className="text-lg font-semibold text-white-text">Set Status</h2>
                   
                   <div className="space-y-3">
-                    <button 
-                      onClick={() => {
-                        setCurrentStatus('active');
-                        setShowStatusModal(false);
-                      }}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-                    >
+                    <button onClick={() => {
+                    setCurrentStatus('active');
+                    setShowStatusModal(false);
+                  }} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                       <div className="w-4 h-4 rounded-full bg-green-400"></div>
                       <span className="text-white-text">Active</span>
                     </button>
                     
-                    <button 
-                      onClick={() => handleStatusChange('focus')}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-                    >
+                    <button onClick={() => handleStatusChange('focus')} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                       <Focus className="h-4 w-4 text-primary-teal" />
                       <span className="text-white-text">Focus Mode</span>
                     </button>
                     
-                    <button 
-                      onClick={() => handleStatusChange('offline')}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-                    >
+                    <button onClick={() => handleStatusChange('offline')} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                       <Clock className="h-4 w-4 text-orange-400" />
                       <span className="text-white-text">Away</span>
                     </button>
@@ -627,10 +551,7 @@ const HomeView = ({
             </Sheet>
 
             {/* Settings */}
-            <button 
-              onClick={() => navigate('/dashboard/settings')}
-              className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors"
-            >
+            <button onClick={() => navigate('/dashboard/settings')} className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
               <Settings className="h-5 w-5" />
               <span className="text-xs font-medium">Settings</span>
             </button>
@@ -645,12 +566,7 @@ const HomeView = ({
               <div className="p-6 border-b border-white/10">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-white-text">Morning Brief</h2>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => setShowBriefDetail(false)}
-                    className="h-8 w-8 p-0"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => setShowBriefDetail(false)} className="h-8 w-8 p-0">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
@@ -672,34 +588,25 @@ const HomeView = ({
                   <div>
                     <h3 className="text-lg font-medium text-white-text mb-3">Action Items ({actionItems.length})</h3>
                     <div className="space-y-3">
-                      {actionItems.map(item => (
-                        <div key={item.id} className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
+                      {actionItems.map(item => <div key={item.id} className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
                           <div className="flex items-start gap-3">
                             <div className="w-4 h-4 rounded border border-light-gray-text/30 mt-0.5 flex-shrink-0"></div>
                             <div className="flex-1">
                               <p className="text-sm text-white-text font-medium">{item.title}</p>
                               <div className="flex items-center gap-2 mt-1 text-xs text-light-gray-text">
                                 <span>from {item.sender}</span>
-                                {item.isVip && (
-                                  <>
+                                {item.isVip && <>
                                     <span>•</span>
                                     <Star className="w-3 h-3 text-green-400" fill="currentColor" />
-                                  </>
-                                )}
+                                  </>}
                                 <span>•</span>
-                                <span className={`px-1.5 py-0.5 rounded text-xs ${
-                                  item.urgency === 'critical' ? 'bg-red-500/20 text-red-400' :
-                                  item.urgency === 'high' ? 'bg-orange-500/20 text-orange-400' :
-                                  item.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                                  'bg-gray-500/20 text-gray-400'
-                                }`}>
+                                <span className={`px-1.5 py-0.5 rounded text-xs ${item.urgency === 'critical' ? 'bg-red-500/20 text-red-400' : item.urgency === 'high' ? 'bg-orange-500/20 text-orange-400' : item.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400'}`}>
                                   {item.urgency}
                                 </span>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
                   </div>
 
@@ -732,15 +639,8 @@ const HomeView = ({
         </Sheet>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
-        <CatchMeUpWithScheduling 
-          open={showSchedulingModal} 
-          onClose={handleCloseSchedulingModal} 
-          onGenerateSummary={handleGenerateSummaryWithScheduling} 
-          upcomingBriefName={upcomingBrief.name} 
-          upcomingBriefTime={upcomingBrief.scheduledTime} 
-        />
-      </div>
-    );
+        <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
+      </div>;
   }
 
   // Desktop View
