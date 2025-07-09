@@ -153,10 +153,8 @@ const ConnectedChannelsSection = ({
   if (showAsHorizontal) {
     return (
       <TooltipProvider delayDuration={300}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-            <h2 className="text-text-primary font-light text-sm">Monitoring:</h2>
-            
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
             {/* Condensed Integration Display */}
             <div className="flex items-center gap-2">
               {connectedPlatforms?.map((integration, i) => {
