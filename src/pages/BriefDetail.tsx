@@ -335,6 +335,18 @@ const BriefDetail = () => {
     }
   };
 
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "High": return "bg-red-500/20 text-red-400 border-red-500/30";
+      case "high": return "bg-red-500/20 text-red-400 border-red-500/30";
+      case "Medium": return "bg-green-500/20 text-green-400 border-green-500/30";
+      case "medium": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+      case "Low": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+      case "low": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+      default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+    }
+  };
+
   const getSourceIcon = (source: string) => {
     console.log(source);
     switch (source) {
@@ -606,10 +618,13 @@ const BriefDetail = () => {
                                 <ChevronRight className="h-3 w-3" />
                               )}
                             </Button>
-                            <Badge className={`text-xs border ${getBadgeColor(capitalizeFirstLetter(item.tag))} flex items-center gap-1`}>
+                            {item.tag && <Badge className={`text-xs border ${getBadgeColor(capitalizeFirstLetter(item.tag))} flex items-center gap-1`}>
                               <span>{getBadgeEmoji(capitalizeFirstLetter(item.tag))}</span>
                               {capitalizeFirstLetter(item.tag)}
-                            </Badge>
+                            </Badge>}
+                            {item.priority && <Badge className={`text-xs border ${getPriorityColor(item.priority)}`}>
+                                {item.priority}
+                            </Badge>}
                           </div>
                         </TableCell>
                         <TableCell className="px-1">
