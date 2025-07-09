@@ -402,6 +402,12 @@ const Dashboard = () => {
     });
   }, [toast, call, getRecentBriefs]);
 
+  const handleStartApp = async () => {
+    const response = await call("get", "/start-foucs-app");
+    console.log(response, 'resr');
+    
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
 
@@ -450,6 +456,7 @@ const Dashboard = () => {
             onStartFocusMode={handleStartFocusMode}
             onToggleFocusMode={handleToggleFocusMode}
             onToggleCatchMeUp={handleToggleCatchMeUp}
+            onStartApp={handleStartApp}
             onOpenBriefModal={openBriefModal}
             onExitFocusMode={handleExitFocusMode}
             onSignOffForDay={handleSignOffForDay}

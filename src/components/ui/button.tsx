@@ -21,6 +21,7 @@ const buttonVariants = cva(
           "border bg-surface-overlay backdrop-blur-md hover:bg-white/15 text-text-primary hover:text-text-primary dark:border-white/40 light:border-black/20",
         secondary:
           "bg-white/25 backdrop-blur-md text-text-primary hover:bg-white/35 shadow-sm",
+        danger: "bg-gradient-to-r from-[#910a0a] to-[#3d0a0a] text-white hover:from-[#3d0a0a] hover:to-[#910a0a] transition-all duration-300 shadow-lg hover:shadow-xl",
         ghost: "hover:bg-white/15 hover:text-text-primary text-text-secondary",
         link: "text-text-secondary underline-offset-4 hover:text-accent-primary",
         plain: "bg-transparent text-text-primary hover:text-accent-primary p-0 border-none",
