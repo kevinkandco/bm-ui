@@ -47,7 +47,7 @@ import { Summary, SummaryMassage } from "@/components/dashboard/types";
 import Audio from "@/components/dashboard/Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import TranscriptView from "@/components/dashboard/TranscriptView";
-import { transformToStats } from "@/lib/utils";
+import { capitalizeFirstLetter, transformToStats } from "@/lib/utils";
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
 import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
@@ -225,7 +225,7 @@ const BriefDetail = () => {
     });
   };
 
-  const toggleActionItem = (itemId: number) => {
+  const toggleActionItem = (itemId: number | string) => {
     setExpandedActionItem(expandedActionItem === itemId ? null : itemId);
   };
 
@@ -606,9 +606,9 @@ const BriefDetail = () => {
                                 <ChevronRight className="h-3 w-3" />
                               )}
                             </Button>
-                            <Badge className={`text-xs border ${getBadgeColor(item.tag)} flex items-center gap-1`}>
-                              <span>{getBadgeEmoji(item.tag)}</span>
-                              {item.tag}
+                            <Badge className={`text-xs border ${getBadgeColor(capitalizeFirstLetter(item.tag))} flex items-center gap-1`}>
+                              <span>{getBadgeEmoji(capitalizeFirstLetter(item.tag))}</span>
+                              {capitalizeFirstLetter(item.tag)}
                             </Badge>
                           </div>
                         </TableCell>
