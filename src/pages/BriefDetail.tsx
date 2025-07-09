@@ -634,6 +634,19 @@ const BriefDetail = () => {
                     Subscribe to your brief podcast
                   </a>
                 </div>
+                <div className="flex gap-2">
+                    <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </Button>
+                    <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                      <Share className="mr-2 h-4 w-4" />
+                      Share
+                    </Button>
+                    <Button onClick={handleTranscriptOpen} variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
+                      View Transcript
+                    </Button>
+                  </div>
               </div>
             </div>
 
