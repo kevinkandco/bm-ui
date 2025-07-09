@@ -61,13 +61,14 @@ const BriefDetail = () => {
   const { call } = useApi();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedActionItem, setExpandedActionItem] = useState<number | null>(null);
-  // const [allMessagesOpen, setAllMessagesOpen] = useState(false);
+  const [allMessagesOpen, setAllMessagesOpen] = useState(false);
+  const [messages, setMessages] = useState<SummaryMassage[]>([]);
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
   const [briefData, setBriefData] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState<'up' | 'down' | null>(null);
-  const [actionItems, setActionItems] = useState<SummaryMassage[]>([]);
+  const [followUps, setFollowUps] = useState<SummaryMassage[]>([]);
   const [transcriptOpen, setTranscriptOpen] = useState(false);
   const { handleActionRelevance } = useFeedbackTracking();
   const {
@@ -105,7 +106,8 @@ const BriefDetail = () => {
       setBriefData({...response?.data, 
         //stats
     });
-      setActionItems(response?.data?.follow_ups?.map((item: SummaryMassage, index: number) => ({...item, id: index})));
+      setFollowUps(response?.data?.follow_ups);
+      setMessages(response?.data?.all_messages);
       setSelectedFeedback(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : null);
     }
     setLoading(false);
@@ -187,85 +189,6 @@ const BriefDetail = () => {
       setBriefData(null);
     };
   }, [briefId, getBriefData]);
-  
-  const followUps = [
-    {
-      id: 1,
-      source: "gmail",
-      badge: "Critical",
-      title: "Review launch materials for marketing team",
-      summary: "Marketing team needs approval for press release, social media assets, and landing page copy by 2 PM today.",
-      time: "7:45 AM",
-      sender: "Sarah Johnson",
-      subject: "Urgent: Launch Materials Review Needed",
-      originalMessage: "Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials we discussed yesterday. The marketing team needs your review and approval by 2 PM today to stay on track with our product launch timeline. The materials include the press release, social media assets, and the updated landing page copy. Please let me know if you have any questions or need any changes. Thanks!",
-      justification: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-      originalLink: "https://mail.google.com/mail/u/0/#inbox/message123",
-      relevancy: "Critical - blocking marketing team progress",
-      triggerPhrase: "needs your review and approval by 2 PM today",
-      ruleHit: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-      priorityLogic: "Ranked as High priority due to same-day deadline (2 PM today) and potential to block team progress if delayed.",
-      confidence: "High",
-      messageId: "msg_123"
-    },
-    {
-      id: 2,
-      source: "gmail", 
-      badge: "Approval",
-      title: "Approve Q4 budget allocations for finance team",
-      summary: "Finance team requires approval to proceed with quarterly planning.",
-      time: "6:30 AM",
-      sender: "Finance Team <finance@company.com>",
-      subject: "Q4 Budget Approval Required",
-      originalMessage: "Please review and approve the Q4 budget allocations. The finance team needs your approval to proceed with the quarterly planning.",
-      justification: "Requires approval action from the recipient and involves budget decisions that impact quarterly planning.",
-      originalLink: "https://mail.google.com/mail/u/0/#inbox/message124",
-      relevancy: "Important - quarterly planning dependency",
-      triggerPhrase: "review and approve",
-      ruleHit: "Contains approval request with business impact",
-      priorityLogic: "Medium priority due to quarterly timeline and business planning impact.",
-      confidence: "Medium",
-      messageId: "msg_124"
-    },
-    {
-      id: 3,
-      source: "slack",
-      badge: "Decision", 
-      title: "Respond to Sarah about testing phase timeline concerns",
-      summary: "Need to discuss potential timeline extension for testing phase to ensure quality.",
-      time: "7:15 AM",
-      sender: "Sarah Johnson",
-      channel: "#product-dev",
-      originalMessage: "Hey @channel, I'm concerned about the testing phase timeline. We might need to extend it by a week to ensure quality. Can we discuss this in our next meeting?",
-      justification: "Direct mention requiring response about timeline concerns that could impact project delivery.",
-      originalLink: "https://app.slack.com/client/workspace/channel/message456",
-      relevancy: "Critical - project timeline impact",
-      triggerPhrase: "Can we discuss this",
-      ruleHit: "Direct mention with discussion request about project concerns",
-      priorityLogic: "High priority due to potential project timeline impact and quality concerns.",
-      confidence: "High",
-      messageId: "msg_456"
-    },
-    {
-      id: 4,
-      source: "slack",
-      badge: "Heads-Up",
-      title: "Schedule follow-up meeting with product team for next week",
-      summary: "Team wants to schedule a meeting to discuss roadmap updates.",
-      time: "5:30 AM",
-      sender: "Product Team",
-      channel: "#general",
-      originalMessage: "We should schedule a follow-up meeting to discuss the roadmap updates. Next week would work well for most of the team.",
-      justification: "Scheduling request that requires coordination but is not time-sensitive.",
-      originalLink: "https://app.slack.com/client/workspace/channel/message789",
-      relevancy: "Low - scheduling coordination",
-      triggerPhrase: "should schedule",
-      ruleHit: "Contains scheduling request without urgency",
-      priorityLogic: "Low priority due to flexible timeline and routine coordination.",
-      confidence: "Medium",
-      messageId: "msg_789"
-    }
-  ];
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -664,7 +587,7 @@ const BriefDetail = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {actionItems.map((item) => (
+                  {followUps.map((item) => (
                     <React.Fragment key={item.id}>
                       <TableRow 
                         className="border-white/10 hover:bg-white/5 cursor-pointer group"
@@ -800,7 +723,7 @@ const BriefDetail = () => {
             </div>
 
             {/* All Messages & Items Section */}
-            {/* <div className="glass-card rounded-2xl p-4 md:p-6">
+            <div className="glass-card rounded-2xl p-4 md:p-6">
               <Collapsible open={allMessagesOpen} onOpenChange={setAllMessagesOpen}>
                 <div className="flex items-center justify-between mb-4">
                   <CollapsibleTrigger asChild>
@@ -832,18 +755,18 @@ const BriefDetail = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {recentMessages.map((message) => (
+                      {messages?.map((message) => (
                         <TableRow key={message.id} className="border-white/10 hover:bg-white/5">
                           <TableCell>
                             <div className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium">
                               {getPlatformIcon(message.platform)}
                             </div>
                           </TableCell>
-                          <TableCell className="text-text-primary">{message.message}</TableCell>
-                          <TableCell className="text-text-secondary">{message.sender}</TableCell>
-                          <TableCell className="text-text-secondary">{message.time}</TableCell>
+                          <TableCell className="text-text-primary break-all">{message.message}</TableCell>
+                          <TableCell className="text-text-secondary break-all">{message.sender}</TableCell>
+                          <TableCell className="text-text-secondary break-all">{message.time}</TableCell>
                           <TableCell>
-                            <Badge className={`text-xs border ${getBadgeColor(message.priority)}`}>
+                            <Badge className={`text-xs border capitalize ${getBadgeColor(message.priority)}`}>
                               {message.priority}
                             </Badge>
                           </TableCell>
@@ -853,7 +776,7 @@ const BriefDetail = () => {
                   </Table>
                 </CollapsibleContent>
               </Collapsible>
-            </div> */}
+            </div>
 
             {/* Add What's Missing Section */}
             {/* <div className="glass-card rounded-2xl p-4 md:p-6">

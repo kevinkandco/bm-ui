@@ -35,7 +35,7 @@ export interface DailySchedule {
 }
 
 export interface SummaryMassage {
-  id: number;
+  id: number | string;
   platform?: string;
   message?: string;
   sender?: string;
@@ -126,7 +126,7 @@ export interface Summary {
   duration?: string;
   timestamp?: string;
   savedTime?: TimeSavedData;
-  messages?: SummaryMassage[];
+  all_messages?: SummaryMassage[];
   follow_ups?: SummaryMassage[];
   messagesCount?: number;
   taskCount?: number;
