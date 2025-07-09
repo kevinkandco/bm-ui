@@ -13,6 +13,7 @@ import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import { enrichBriefsWithStats, transformToStats } from "@/lib/utils";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
+import FancyLoader from "@/components/settings/modal/FancyLoader";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -71,6 +72,7 @@ const Dashboard = () => {
     triggers: [],
     integrations: [],
   });
+  const [loading, setLoading] = useState(true);
 
   const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [searchParams] = useSearchParams();
@@ -149,25 +151,36 @@ const Dashboard = () => {
       },
       [call]
     );
-
     useEffect(() => {
-    const tokenFromUrl = searchParams.get("token");
+        const loadData = async () => {
+            setLoading(true);
 
-    if (tokenFromUrl) {
-      localStorage.setItem("token", tokenFromUrl);
-      const url = new URL(window.location.href);
-      url.searchParams.delete("token");
-      url.searchParams.delete("provider");
-      window.history.replaceState(
-        {},
-        document.title,
-        url.pathname + url.search
-      );
-    }
-    fetchDashboardData();
-    getCalendarData();
-    getRecentBriefs(); 
-  }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData]);
+            const tokenFromUrl = searchParams.get("token");
+
+            if (tokenFromUrl) {
+            localStorage.setItem("token", tokenFromUrl);
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete("token");
+            url.searchParams.delete("provider");
+            window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+
+            try {
+            await Promise.all([
+                fetchDashboardData(),
+                getCalendarData(),
+                getRecentBriefs()
+            ]);
+            } catch (error) {
+            console.error("Failed to load data:", error);
+            } finally {
+            setLoading(false);
+            }
+        };
+
+        loadData();
+    }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData]);
 
   useEffect(() => {
       if (!recentBriefs) return;
@@ -401,6 +414,10 @@ const Dashboard = () => {
       description: "You're now back online and monitoring"
     });
   }, [toast, call, getRecentBriefs]);
+
+  if (loading) {
+    return <FancyLoader />
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
