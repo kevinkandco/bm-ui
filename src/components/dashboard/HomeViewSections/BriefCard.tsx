@@ -86,9 +86,9 @@ const BriefCard = ({
       };
     };
 
-    const data = brief?.messages?.map(transformToActionItem);
+    const data = brief?.follow_ups?.map(transformToActionItem);
     setActionItems(data);
-  }, [brief?.vote, brief?.messages]);
+  }, [brief?.vote, brief?.follow_ups]);
 
   // const statsConfig = [
   //   {

@@ -127,6 +127,7 @@ export interface Summary {
   timestamp?: string;
   savedTime?: TimeSavedData;
   messages?: SummaryMassage[];
+  follow_ups?: SummaryMassage[];
   messagesCount?: number;
   taskCount?: number;
   summaryTime?: string;
