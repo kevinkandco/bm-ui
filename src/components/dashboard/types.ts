@@ -44,6 +44,7 @@ export interface SummaryMassage {
   title?: string;
   redirectLink?: string;
   channel?: string;
+  tag: "Critical" | "Decision" | "Approval" | "Heads-Up";
 }
 
 export interface Stats {

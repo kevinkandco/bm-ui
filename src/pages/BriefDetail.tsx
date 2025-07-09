@@ -105,7 +105,7 @@ const BriefDetail = () => {
       setBriefData({...response?.data, 
         //stats
     });
-      setActionItems(response?.data?.messages?.map((item: SummaryMassage, index: number) => ({...item, id: index})));
+      setActionItems(response?.data?.follow_ups?.map((item: SummaryMassage, index: number) => ({...item, id: index})));
       setSelectedFeedback(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : null);
     }
     setLoading(false);
@@ -287,6 +287,7 @@ const BriefDetail = () => {
     );
 
   const handleActionClick = (action: string, item: any) => {
+    window.open(item.redirectLink, '_blank')
     toast({
       title: `${action}`,
       description: `Action "${action}" applied to: ${item.title}`
@@ -663,7 +664,7 @@ const BriefDetail = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {followUps.map((item) => (
+                  {actionItems.map((item) => (
                     <React.Fragment key={item.id}>
                       <TableRow 
                         className="border-white/10 hover:bg-white/5 cursor-pointer group"
@@ -682,9 +683,9 @@ const BriefDetail = () => {
                                 <ChevronRight className="h-3 w-3" />
                               )}
                             </Button>
-                            <Badge className={`text-xs border ${getBadgeColor(item.badge)} flex items-center gap-1`}>
-                              <span>{getBadgeEmoji(item.badge)}</span>
-                              {item.badge}
+                            <Badge className={`text-xs border ${getBadgeColor(item.tag)} flex items-center gap-1`}>
+                              <span>{getBadgeEmoji(item.tag)}</span>
+                              {item.tag}
                             </Badge>
                           </div>
                         </TableCell>
@@ -694,9 +695,9 @@ const BriefDetail = () => {
                               <div className="text-sm text-text-primary font-medium">
                                 {item.title}
                               </div>
-                              <div className="text-xs text-text-secondary mt-1">
-                                {item.summary}
-                              </div>
+                              {/* <div className="text-xs text-text-secondary mt-1">
+                                {item.message}
+                              </div> */}
                             </div>
 
                               {/* <div className="flex items-center gap-2">
@@ -722,13 +723,13 @@ const BriefDetail = () => {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                const channelName = item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Asana';
+                                const channelName = item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana';
                                 handleActionClick(`Open in ${channelName}`, item);
                               }}
                               className="text-xs px-2 py-1 h-auto"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
-                              Open in {item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Asana'}
+                              Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana'}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -763,18 +764,18 @@ const BriefDetail = () => {
                                  <Button
                                    variant="outline"
                                    size="sm"
-                                   onClick={() => window.open(item.originalLink, '_blank')}
+                                   onClick={() => window.open(item.redirectLink, '_blank')}
                                    className="text-xs flex items-center gap-1"
                                  >
                                    <Mail className="h-3 w-3" />
-                                   Open in {item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Channel'}
+                                   Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Channel'}
                                  </Button>
                               </div>
                               
                               <div>
                                 <div className="text-sm font-medium text-text-primary mb-2">Full Message:</div>
                                 <div className="text-sm text-text-secondary bg-white/5 rounded p-3 border border-white/10">
-                                  {item?.summary}
+                                  {item?.message}
                                 </div>
                               </div>
 
