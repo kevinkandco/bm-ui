@@ -369,7 +369,7 @@ const TasksPage = () => {
             <div
               key={item.id}
               onClick={() => handleItemClick(item)}
-              className="group cursor-pointer bg-surface-overlay/30 border border-border-subtle rounded-xl p-4 hover:bg-surface-overlay/50 transition-colors"
+              className="group/item cursor-pointer bg-surface-overlay/30 border border-border-subtle rounded-xl p-4 hover:bg-surface-overlay/50 transition-colors"
             >
               <div className="flex items-start gap-3">
                 {/* Source Icon */}
@@ -388,7 +388,7 @@ const TasksPage = () => {
                 >
                   <Check className={cn(
                     "w-3 h-3 text-accent-primary transition-opacity",
-                    showCompleted ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    showCompleted ? "opacity-100" : "opacity-0 group-hover/item:opacity-100"
                   )} />
                 </button>
 
@@ -439,7 +439,7 @@ const TasksPage = () => {
 
                     
                     {/* External link icon */}
-                    <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover/item:opacity-100 transition-opacity" />
                   </div>
                 </div>
               </div>
