@@ -182,7 +182,8 @@ export interface ActionItem {
   isVip?: boolean;
   priorityPerson?: string; // Name or initials of flagged person
   triggerKeyword?: string; // Matched trigger keyword
-  urgency?: "critical" | "high" | "medium" | "low";
+  urgency?: "high" | "medium" | "low";
+  tag?: "critical" | "decision" | "approval" | "heads-up";
   isNew?: boolean;
   createdAt?: string;
   threadUrl?: string;

@@ -77,7 +77,8 @@ const BriefCard = ({
         isVip: false, // Placeholder – set via business logic
         priorityPerson: undefined, // Set if needed by keyword/name detection
         triggerKeyword: undefined, // Set if keyword-based filtering is applied
-        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        urgency: item.priority as 'high' | 'medium' | 'low',
+        tag: item.tag as 'critical' | 'decision' | 'approval' | 'heads-up',
         isNew: !item.status,
         createdAt: item.created_at,
         threadUrl: item.redirect_link,
@@ -141,7 +142,7 @@ const BriefCard = ({
   }, {
     icon: CheckSquare,
     label: "Follow-ups",
-    value: brief?.actionItems,
+    value: brief?.stats?.actionItems?.total,
     color: "text-accent-primary"
   }];
   
@@ -243,6 +244,27 @@ const BriefCard = ({
     }
     return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
   };
+
+      const getBadgeColor = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "bg-red-500/20 text-red-400 border-red-500/30";
+            case "decision": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+            case "approval": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+            case "heads-Up": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+            default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        }
+    };
+
+    const getBadgeEmoji = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "🔴";
+            case "decision": return "🔵";
+            case "approval": return "🟠";
+            case "heads-up": return "⚫";
+            default: return "⚫";
+        }
+    };
+
   return <TooltipProvider>
       <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden group" style={{
       background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
@@ -449,13 +471,17 @@ const BriefCard = ({
                           ) : (
                             <MessageSquare className="h-3 w-3 text-purple-400" />
                           )}
-                          <Badge className={`text-xs px-1 py-0 ${
+                          <Badge className={`text-xs px-1 py-0 capitalize ${
                             item?.urgency === 'high' ? 'bg-red-500/20 text-red-400' :
                             item?.urgency === 'medium' ? 'bg-orange-500/20 text-orange-400' :
                             'bg-gray-500/20 text-gray-400'
                           }`}>
                             {item?.urgency}
                           </Badge>
+                          {item.tag && <Badge className={`text-xs border ${getBadgeColor(item.tag)} flex items-center gap-1 capitalize`}>
+                            <span>{getBadgeEmoji(item.tag)}</span>
+                            {item.tag}
+                          </Badge>}
                         </div>
                         <span className="text-sm text-text-primary">{item?.title}</span>
                       </div>

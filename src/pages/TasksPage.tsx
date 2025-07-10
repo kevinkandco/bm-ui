@@ -55,7 +55,8 @@ const TasksPage = () => {
         isVip: false, // Placeholder – set via business logic
         priorityPerson: undefined, // Set if needed by keyword/name detection
         triggerKeyword: undefined, // Set if keyword-based filtering is applied
-        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        urgency: item.priority as 'high' | 'medium' | 'low',
+        tag: item.tag as 'critical' | 'decision' | 'approval' | 'heads-up',
         isNew: !item.status,
         createdAt: item.created_at,
         threadUrl: item.redirect_link,
@@ -203,7 +204,7 @@ const TasksPage = () => {
     });
   }, [toast, actionItems, groupTaskIdsByPlatform, call, pagination, getActionItems]);
 
-  const handleUpdatePriority = useCallback(async (selectedItem: ActionItem, newUrgency: 'critical' | 'high' | 'medium' | 'low') => {
+  const handleUpdatePriority = useCallback(async (selectedItem: ActionItem, newUrgency: 'high' | 'medium' | 'low') => {
     const itemId = selectedItem?.id?.replace(`${selectedItem?.platform}-`, '') || '';
 
     const response = await call("post", `/action-item/update`, {
@@ -244,7 +245,6 @@ const TasksPage = () => {
     if (!urgency) return null;
     
     const urgencyConfig = {
-      'critical': { label: 'Critical', className: 'bg-red-500/20 text-red-400 hover:bg-red-500/30' },
       'high': { label: 'High', className: 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30' },
       'medium': { label: 'Medium', className: 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' },
       'low': { label: 'Low', className: 'bg-gray-500/20 text-gray-400 hover:bg-gray-500/30' }
@@ -253,7 +253,7 @@ const TasksPage = () => {
     const config = urgencyConfig[urgency as keyof typeof urgencyConfig];
     if (!config) return null;
     
-    const urgencyOptions = ['critical', 'high', 'medium', 'low'] as const;
+    const urgencyOptions = ['high', 'medium', 'low'] as const;
     
     return (
       <div className="relative group">
@@ -284,6 +284,26 @@ const TasksPage = () => {
       </div>
     );
   };
+
+      const getBadgeColor = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "bg-red-500/20 text-red-400 border-red-500/30";
+            case "decision": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+            case "approval": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+            case "heads-Up": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+            default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        }
+    };
+
+    const getBadgeEmoji = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "🔴";
+            case "decision": return "🔵";
+            case "approval": return "🟠";
+            case "heads-up": return "⚫";
+            default: return "⚫";
+        }
+    };
 
   return (
     <div className="min-h-screen px-4 py-6">
@@ -409,8 +429,14 @@ const TasksPage = () => {
                       </Badge>
                     )}
                     
+                    {item.tag && <Badge className={`text-xs border ${getBadgeColor(item.tag)} flex items-center gap-1 capitalize`}>
+                        <span>{getBadgeEmoji(item.tag)}</span>
+                        {item.tag}
+                    </Badge>}
+                    
                     {/* Urgency Tag - Clickable */}
                     {getUrgencyBadge(item.urgency, item)}
+
                     
                     {/* External link icon */}
                     <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
