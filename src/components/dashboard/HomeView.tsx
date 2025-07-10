@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -54,6 +54,7 @@ const HomeView = ({
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
   const [showBriefDetail, setShowBriefDetail] = useState(false);
   const [showUpcomingBrief, setShowUpcomingBrief] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("Today");
 
   // Sample connected integrations
   const connectedIntegrations = [{
@@ -200,6 +201,23 @@ const HomeView = ({
   const handleTeamInterest = useCallback(() => {
     setWaitlistStatus('added');
   }, []);
+
+  // Day picker handlers
+  const handlePreviousDay = useCallback(() => {
+    if (selectedDate === "Today") {
+      setSelectedDate("Yesterday");
+    } else if (selectedDate === "Yesterday") {
+      setSelectedDate("2 days ago");
+    }
+  }, [selectedDate]);
+
+  const handleNextDay = useCallback(() => {
+    if (selectedDate === "2 days ago") {
+      setSelectedDate("Yesterday");
+    } else if (selectedDate === "Yesterday") {
+      setSelectedDate("Today");
+    }
+  }, [selectedDate]);
 
   // Status management handlers
   const handleStatusChange = useCallback((status: 'focus' | 'offline') => {
@@ -395,9 +413,27 @@ const HomeView = ({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <h2 className="text-text-primary text-sm font-medium">Briefs</h2>
-              <Button variant="ghost" size="sm" onClick={handleViewAllBriefs} className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2">
-                View all
-              </Button>
+              {/* Day Picker */}
+              <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-2 py-1 border border-white/10">
+                <button 
+                  onClick={handlePreviousDay}
+                  disabled={selectedDate === "2 days ago"}
+                  className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5 text-light-gray-text" />
+                </button>
+                <div className="flex items-center gap-1 px-2">
+                  <Calendar className="w-3 h-3 text-light-gray-text" />
+                  <span className="text-xs text-white-text font-medium min-w-[50px] text-center">{selectedDate}</span>
+                </div>
+                <button 
+                  onClick={handleNextDay}
+                  disabled={selectedDate === "Today"}
+                  className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-3.5 h-3.5 text-light-gray-text" />
+                </button>
+              </div>
             </div>
             <div className="p-2.5 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors" onClick={() => {
             handlePlayBrief(latestBrief.id);
