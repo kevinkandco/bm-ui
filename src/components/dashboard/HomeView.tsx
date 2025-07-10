@@ -1,5 +1,26 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home } from "lucide-react";
+import {
+  Zap,
+  Headphones,
+  Archive,
+  Menu,
+  X,
+  FileText,
+  Focus,
+  Clock,
+  ChevronDown,
+  ChevronRight,
+  Play,
+  Pause,
+  Users,
+  User,
+  Settings,
+  LogOut,
+  CheckSquare,
+  Star,
+  ArrowRight,
+  Home,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +31,12 @@ import StatusTimer, {
   StatusTimerProps,
 } from "@/components/dashboard/StatusTimer";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -22,7 +48,13 @@ import {
   NextBriefSection,
   UpcomingMeetingsSection,
 } from "./HomeViewSections/SidebarSections";
-import { CalendarEvent, CalenderData, Priorities, PriorityPeople, Summary } from "./types";
+import {
+  CalendarEvent,
+  CalenderData,
+  Priorities,
+  PriorityPeople,
+  Summary,
+} from "./types";
 import useAuthStore from "@/store/useAuthStore";
 import ListeningScreen from "./ListeningScreen";
 import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
@@ -42,7 +74,11 @@ interface HomeViewProps {
   upcomingBrief: Summary | null;
   calendarData: CalenderData;
   onOpenBrief: (briefId: number) => void;
-  onViewTranscript: (briefId: number, title: string, transcript: string) => void;
+  onViewTranscript: (
+    briefId: number,
+    title: string,
+    transcript: string
+  ) => void;
   onStartFocusMode: (focusTime: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
@@ -82,13 +118,15 @@ const HomeView = ({
   });
 
   const handleOpenSettings = () => {
-      navigate("/dashboard/settings", { state: { activeSection: "integrations" } });
-    };
-  
-    const handleCloseSettings = () => {
-      setSlackModalOpen(false);
-      fetchDashboardData();
-    };
+    navigate("/dashboard/settings", {
+      state: { activeSection: "integrations" },
+    });
+  };
+
+  const handleCloseSettings = () => {
+    setSlackModalOpen(false);
+    fetchDashboardData();
+  };
 
   const currentAudioUrl = useMemo(() => {
     const audioPath = recentBriefs?.find(
@@ -106,8 +144,13 @@ const HomeView = ({
     });
   }, [toast]);
 
-  const audioPlayer: UseAudioPlayerType = useAudioPlayer(currentAudioUrl, true, handleAudioEnded, 1.0);
-  const {audioRef} = audioPlayer;
+  const audioPlayer: UseAudioPlayerType = useAudioPlayer(
+    currentAudioUrl,
+    true,
+    handleAudioEnded,
+    1.0
+  );
+  const { audioRef } = audioPlayer;
 
   useEffect(() => {
     return () => {
@@ -127,107 +170,108 @@ const HomeView = ({
     };
   }, []);
   const [showSchedulingModal, setShowSchedulingModal] = useState(false);
-  const [waitlistStatus, setWaitlistStatus] = useState<'initial' | 'added'>('initial');
+  const [waitlistStatus, setWaitlistStatus] = useState<"initial" | "added">(
+    "initial"
+  );
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState<'active' | 'focus' | 'offline'>('active');
   const [isActionItemsHovered, setIsActionItemsHovered] = useState(false);
   const [isPrioritiesHovered, setIsPrioritiesHovered] = useState(false);
   const [isBriefsHovered, setIsBriefsHovered] = useState(false);
   const [showBriefDetail, setShowBriefDetail] = useState(false);
+  const [selectedBrief, setSelectedBrief] = useState<Summary | null>(null);
   const [showUpcomingBrief, setShowUpcomingBrief] = useState(false);
-
-  // Sample connected integrations
-  const connectedIntegrations = [{
-    name: "Slack",
-    channels: 12
-  }, {
-    name: "Gmail",
-    emails: 5
-  }, {
-    name: "Google Calendar",
-    events: 3
-  }];
+  const [fullPlayingBrief, setFullPlayingBrief] = useState<Summary | null>(
+    recentBriefs?.[0] || null
+  );
 
   // Sample action items for mobile with proper typing
-  const [actionItems] = useState<Array<{
-    id: string;
-    title: string;
-    source: 'slack' | 'gmail';
-    sender: string;
-    isVip: boolean;
-    priorityPerson?: string;
-    triggerKeyword?: string;
-    urgency?: 'critical' | 'high' | 'medium' | 'low';
-    isNew: boolean;
-    createdAt: string;
-    threadUrl: string;
-    completed: boolean;
-    lastActivity: string;
-  }>>([{
-    id: '1',
-    title: 'Approve Q3 budget proposal',
-    source: 'slack' as const,
-    sender: 'Sarah Chen',
-    isVip: true,
-    priorityPerson: 'Sarah Chen',
-    triggerKeyword: 'budget',
-    urgency: 'critical' as const,
-    isNew: false,
-    createdAt: '2024-06-30T08:00:00Z',
-    threadUrl: 'https://app.slack.com/client/T123/C456/p789',
-    completed: false,
-    lastActivity: '2024-06-30T08:00:00Z'
-  }, {
-    id: '2',
-    title: 'Review contract amendments',
-    source: 'gmail' as const,
-    sender: 'legal@company.com',
-    isVip: false,
-    urgency: 'high' as const,
-    isNew: true,
-    createdAt: '2024-06-30T09:30:00Z',
-    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/abc123',
-    completed: false,
-    lastActivity: '2024-06-30T09:30:00Z'
-  }, {
-    id: '3',
-    title: 'Sign off on marketing campaign',
-    source: 'slack' as const,
-    sender: 'Mike Johnson',
-    isVip: true,
-    priorityPerson: 'Mike J',
-    triggerKeyword: 'urgent',
-    urgency: 'critical' as const,
-    isNew: false,
-    createdAt: '2024-06-29T14:20:00Z',
-    threadUrl: 'https://app.slack.com/client/T123/C456/p790',
-    completed: false,
-    lastActivity: '2024-06-29T14:20:00Z'
-  }, {
-    id: '4',
-    title: 'Provide feedback on design mockups',
-    source: 'gmail' as const,
-    sender: 'design@company.com',
-    isVip: false,
-    urgency: 'medium' as const,
-    isNew: true,
-    createdAt: '2024-06-29T11:15:00Z',
-    threadUrl: 'https://mail.google.com/mail/u/0/#inbox/def456',
-    completed: false,
-    lastActivity: '2024-06-29T11:15:00Z'
-  }, {
-    id: '5',
-    title: 'Update quarterly presentation slides',
-    source: 'slack' as const,
-    sender: 'team@company.com',
-    isVip: false,
-    urgency: 'low' as const,
-    isNew: false,
-    createdAt: '2024-06-28T16:30:00Z',
-    threadUrl: 'https://app.slack.com/client/T123/C456/p791',
-    completed: false,
-    lastActivity: '2024-06-28T16:30:00Z'
-  }]);
+  const [actionItems] = useState<
+    Array<{
+      id: string;
+      title: string;
+      source: "slack" | "gmail";
+      sender: string;
+      isVip: boolean;
+      priorityPerson?: string;
+      triggerKeyword?: string;
+      urgency?: "critical" | "high" | "medium" | "low";
+      isNew: boolean;
+      createdAt: string;
+      threadUrl: string;
+      completed: boolean;
+      lastActivity: string;
+    }>
+  >([
+    {
+      id: "1",
+      title: "Approve Q3 budget proposal",
+      source: "slack" as const,
+      sender: "Sarah Chen",
+      isVip: true,
+      priorityPerson: "Sarah Chen",
+      triggerKeyword: "budget",
+      urgency: "critical" as const,
+      isNew: false,
+      createdAt: "2024-06-30T08:00:00Z",
+      threadUrl: "https://app.slack.com/client/T123/C456/p789",
+      completed: false,
+      lastActivity: "2024-06-30T08:00:00Z",
+    },
+    {
+      id: "2",
+      title: "Review contract amendments",
+      source: "gmail" as const,
+      sender: "legal@company.com",
+      isVip: false,
+      urgency: "high" as const,
+      isNew: true,
+      createdAt: "2024-06-30T09:30:00Z",
+      threadUrl: "https://mail.google.com/mail/u/0/#inbox/abc123",
+      completed: false,
+      lastActivity: "2024-06-30T09:30:00Z",
+    },
+    {
+      id: "3",
+      title: "Sign off on marketing campaign",
+      source: "slack" as const,
+      sender: "Mike Johnson",
+      isVip: true,
+      priorityPerson: "Mike J",
+      triggerKeyword: "urgent",
+      urgency: "critical" as const,
+      isNew: false,
+      createdAt: "2024-06-29T14:20:00Z",
+      threadUrl: "https://app.slack.com/client/T123/C456/p790",
+      completed: false,
+      lastActivity: "2024-06-29T14:20:00Z",
+    },
+    {
+      id: "4",
+      title: "Provide feedback on design mockups",
+      source: "gmail" as const,
+      sender: "design@company.com",
+      isVip: false,
+      urgency: "medium" as const,
+      isNew: true,
+      createdAt: "2024-06-29T11:15:00Z",
+      threadUrl: "https://mail.google.com/mail/u/0/#inbox/def456",
+      completed: false,
+      lastActivity: "2024-06-29T11:15:00Z",
+    },
+    {
+      id: "5",
+      title: "Update quarterly presentation slides",
+      source: "slack" as const,
+      sender: "team@company.com",
+      isVip: false,
+      urgency: "low" as const,
+      isNew: false,
+      createdAt: "2024-06-28T16:30:00Z",
+      threadUrl: "https://app.slack.com/client/T123/C456/p791",
+      completed: false,
+      lastActivity: "2024-06-28T16:30:00Z",
+    },
+  ]);
   const showBriefDetails = useCallback(() => {
     onOpenBrief(1);
   }, [onOpenBrief]);
@@ -240,18 +284,23 @@ const HomeView = ({
     navigate("/dashboard/briefs");
   }, [navigate]);
 
-  const handleViewAllSchedule = useCallback((isPast: boolean) => {
-    navigate("/dashboard/meetings", { state: { isPast } });
+  const handleViewAllSchedule = useCallback(
+    (isPast: boolean) => {
+      navigate("/dashboard/meetings", { state: { isPast } });
+    },
+    [navigate]
+  );
+
+  const handleViewAllTasks = useCallback(() => {
+    navigate("/dashboard/tasks");
   }, [navigate]);
 
-const handleViewAllTasks = useCallback(() => {
-  navigate("/dashboard/tasks");
-}, [navigate]);
-
-  const handleViewTranscript = useCallback((briefId: number, title: string, transcript: string) => {
-    onViewTranscript(briefId, title, transcript);
-  }, [onViewTranscript]);
-
+  const handleViewTranscript = useCallback(
+    (briefId: number, title: string, transcript: string) => {
+      onViewTranscript(briefId, title, transcript);
+    },
+    [onViewTranscript]
+  );
 
   const handleGetBriefedNow = useCallback(() => {
     setShowSchedulingModal(true);
@@ -259,55 +308,56 @@ const handleViewAllTasks = useCallback(() => {
   const handleCloseSchedulingModal = useCallback(() => {
     setShowSchedulingModal(false);
   }, []);
-  const handleGenerateSummaryWithScheduling = useCallback((timeDescription: string, skipScheduled?: boolean) => {
-    setShowSchedulingModal(false);
-    if (skipScheduled) {
-      toast({
-        title: "Brief Generated",
-        description: "Your catch-up summary is ready and the scheduled brief has been skipped"
-      });
-    } else {
-      toast({
-        title: "Brief Generated",
-        description: "Your catch-up summary is ready. Your scheduled brief will still arrive on time."
-      });
-    }
-  }, [toast]);
+  const handleGenerateSummaryWithScheduling = useCallback(
+    (timeDescription: string, skipScheduled?: boolean) => {
+      setShowSchedulingModal(false);
+      if (skipScheduled) {
+        toast({
+          title: "Brief Generated",
+          description:
+            "Your catch-up summary is ready and the scheduled brief has been skipped",
+        });
+      } else {
+        toast({
+          title: "Brief Generated",
+          description:
+            "Your catch-up summary is ready. Your scheduled brief will still arrive on time.",
+        });
+      }
+    },
+    [toast]
+  );
   const handleTeamInterest = useCallback(() => {
-    setWaitlistStatus('added');
+    setWaitlistStatus("added");
   }, []);
-    
 
   const handleClose = () => {
     setMessageTranscript({
       open: false,
       message: "",
     });
-  }
+  };
 
   // Status management handlers
-  const handleStatusChange = useCallback((status: 'focus' | 'offline') => {
-    setCurrentStatus(status);
-    setShowStatusModal(false);
-    if (status === 'focus') {
-      onStartFocusMode(30);
-      toast({
-        title: "Focus Mode Activated",
-        description: "You won't receive notifications unless they're marked as urgent"
-      });
-    } else if (status === 'offline') {
-      onSignOffForDay();
-      toast({
-        title: "Offline Mode Activated",
-        description: "Brief-me will monitor but won't send notifications"
-      });
-    }
-  }, [onStartFocusMode, onSignOffForDay, toast]);
+  const handleStatusChange = useCallback(
+    (status: "focus" | "offline") => {
+      setShowStatusModal(false);
+      if (status === "focus") {
+        onToggleFocusMode();
+      } else if (status === "offline") {
+        onSignOffForDay();
+        toast({
+          title: "Offline Mode Activated",
+          description: "Brief-me will monitor but won't send notifications",
+        });
+      }
+    },
+    [onToggleFocusMode, onSignOffForDay, toast]
+  );
   const handleExitStatus = useCallback(() => {
-    setCurrentStatus('active');
     toast({
       title: "Status Reset",
-      description: "You're back to active monitoring"
+      description: "You're back to active monitoring",
     });
   }, [toast]);
 
@@ -315,22 +365,22 @@ const handleViewAllTasks = useCallback(() => {
   const handleProfileClick = useCallback(() => {
     navigate("/dashboard/settings", {
       state: {
-        activeSection: "profile"
-      }
+        activeSection: "profile",
+      },
     });
   }, [navigate]);
   const handleIntegrationsClick = useCallback(() => {
     navigate("/dashboard/settings", {
       state: {
-        activeSection: "integrations"
-      }
+        activeSection: "integrations",
+      },
     });
   }, [navigate]);
   const handleBriefConfigClick = useCallback(() => {
     navigate("/dashboard/settings", {
       state: {
-        activeSection: "brief-config"
-      }
+        activeSection: "brief-config",
+      },
     });
   }, [navigate]);
   const handleAllSettingsClick = useCallback(() => {
@@ -345,7 +395,7 @@ const handleViewAllTasks = useCallback(() => {
           title: "Audio not found",
           description: `Audio not found, please try again`,
           variant: "destructive",
-        })
+        });
         return;
       }
 
@@ -366,34 +416,46 @@ const handleViewAllTasks = useCallback(() => {
     [playingBrief, toast, recentBriefs]
   );
 
-  // Mobile View  
+  const dotColors = ["bg-primary-teal", "bg-orange-400", "bg-purple-400"];
+
+  // Mobile View
   if (isMobile) {
-    return <div className="h-screen flex flex-col overflow-hidden">
-
-
+    return (
+      <div className="h-screen flex flex-col overflow-hidden">
         {/* Floating Status Pill - Top Left when active status */}
-        {currentStatus !== 'active' && <div className="fixed top-4 left-4 z-40">
+        {status !== "active" && (
+          <div className="fixed top-4 left-4 z-40">
             <div className="flex items-center gap-1 px-3 py-1.5 bg-surface-raised/90 backdrop-blur-md border border-white/20 rounded-full">
-              {currentStatus === 'focus' ? <>
+              {status === "focus" ? (
+                <>
                   <Focus className="w-3 h-3 text-primary-teal" />
                   <span className="text-xs text-white-text">Focus</span>
-                </> : <>
+                </>
+              ) : (
+                <>
                   <Clock className="w-3 h-3 text-orange-400" />
                   <span className="text-xs text-white-text">Away</span>
-                </>}
-              <button onClick={handleExitStatus} className="ml-1 hover:bg-white/10 rounded-full p-0.5 transition-colors">
+                </>
+              )}
+              <button
+                onClick={handleExitStatus}
+                className="ml-1 hover:bg-white/10 rounded-full p-0.5 transition-colors"
+              >
                 <X className="w-3 h-3" />
               </button>
             </div>
-          </div>}
+          </div>
+        )}
 
         {/* Welcome Header Section */}
         <div className="text-center px-4 py-4 flex-shrink-0">
           <h1 className="text-xl font-semibold text-white-text mb-1">
-            Good morning, Alex
+            Good morning, {user?.name}
           </h1>
-          <p className="text-light-gray-text text-sm mb-4">Ready to catch up or focus?</p>
-          
+          <p className="text-light-gray-text text-sm mb-4">
+            Ready to catch up or focus?
+          </p>
+
           {/* Monitoring Section */}
           <div className="flex items-center justify-center">
             <ConnectedChannelsSection showAsHorizontal={true} />
@@ -402,97 +464,140 @@ const handleViewAllTasks = useCallback(() => {
 
         {/* Main Content */}
         <div className="flex-1 px-4 space-y-6 overflow-y-auto">
-
           {/* Meetings */}
           <div className="space-y-3">
-            <h2 className="text-text-primary text-base font-medium">Meetings</h2>
+            <h2 className="text-text-primary text-base font-medium">
+              Meetings
+            </h2>
             <div className="space-y-2">
-              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-primary-teal flex-shrink-0"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white-text font-medium">Team Standup</p>
-                    <p className="text-xs text-light-gray-text">Today at 10:00 AM</p>
+              {calendarData?.today?.map((event, index) => {
+                const colorClass = dotColors[index % dotColors.length];
+
+                return (
+                  <div
+                    key={index}
+                    className="p-3 rounded-lg bg-surface-raised/30 border border-white/10"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-2 h-2 rounded-full ${colorClass} flex-shrink-0`}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-white-text font-medium">
+                          {event.title}
+                        </p>
+                        <p className="text-xs text-light-gray-text">
+                          Today at {event.start_time}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-light-gray-text" />
+                    </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-light-gray-text" />
-                </div>
-              </div>
-              
-              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white-text font-medium">Product Review</p>
-                    <p className="text-xs text-light-gray-text">Today at 2:00 PM</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-light-gray-text" />
-                </div>
-              </div>
-              
-              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-purple-400 flex-shrink-0"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white-text font-medium">Client Check-in</p>
-                    <p className="text-xs text-light-gray-text">Tomorrow at 9:00 AM</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-light-gray-text" />
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
 
           {/* Briefs Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-text-primary text-base font-medium">Briefs</h2>
-              <Button variant="ghost" size="sm" onClick={handleViewAllBriefs} className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2">
+              <h2 className="text-text-primary text-base font-medium">
+                Briefs
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleViewAllBriefs}
+                className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2"
+              >
                 View all
               </Button>
             </div>
-            <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors" onClick={() => {
-            handlePlayBrief(recentBriefs?.[0]?.id);
-            setShowBriefDetail(true);
-          }}>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center flex-shrink-0">
-                  <Play className="h-4 w-4 text-primary-teal" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm text-white-text font-medium">{recentBriefs?.[0]?.title}</h3>
-                  <p className="text-xs text-light-gray-text">{recentBriefs?.[0]?.time}</p>
-                  <div className="flex items-center gap-4 text-xs text-light-gray-text mt-1">
-                    <span>{recentBriefs?.[0]?.stats?.totalMessagesAnalyzed?.breakdown?.slack} Slack</span>
-                    <span>{recentBriefs?.[0]?.stats?.totalMessagesAnalyzed?.breakdown?.slack} Emails</span>
-                    <span>{recentBriefs?.[0]?.stats?.actionItems?.total} Actions</span>
+            {recentBriefs.map((brief) => (
+              <div
+                className="p-3 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors"
+                onClick={() => {
+                  setSelectedBrief(brief);
+                  setShowBriefDetail(true);
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlayBrief(brief?.id);
+                      setFullPlayingBrief(brief);
+                    }}
+                    className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center flex-shrink-0"
+                  >
+                    {playingBrief === brief?.id ? <Pause className="h-4 w-4 text-primary-teal" /> : <Play className="h-4 w-4 text-primary-teal" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm text-white-text font-medium">
+                      {brief?.title}
+                    </h3>
+                    <p className="text-xs text-light-gray-text">
+                      {brief?.time}
+                    </p>
+                    <div className="flex items-center gap-4 text-xs text-light-gray-text mt-1">
+                      <span>
+                        {brief?.stats?.totalMessagesAnalyzed?.breakdown?.slack}{" "}
+                        Slack
+                      </span>
+                      <span>
+                        {brief?.stats?.totalMessagesAnalyzed?.breakdown?.slack}{" "}
+                        Emails
+                      </span>
+                      <span>{brief?.stats?.actionItems?.total} Actions</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
 
           {/* Upcoming Brief - Collapsible Toggle */}
           <div className="space-y-3">
-            <button onClick={() => setShowUpcomingBrief(!showUpcomingBrief)} className="flex items-center justify-between w-full text-left">
-              <h2 className="text-text-primary text-xs font-normal text-slate-400">Upcoming</h2>
-              {showUpcomingBrief ? <ChevronDown className="w-4 h-4 text-light-gray-text" /> : <ChevronRight className="w-4 h-4 text-light-gray-text" />}
+            <button
+              onClick={() => setShowUpcomingBrief(!showUpcomingBrief)}
+              className="flex items-center justify-between w-full text-left"
+            >
+              <h2 className="text-text-primary text-xs font-normal text-slate-400">
+                Upcoming
+              </h2>
+              {showUpcomingBrief ? (
+                <ChevronDown className="w-4 h-4 text-light-gray-text" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-light-gray-text" />
+              )}
             </button>
-            
-            {showUpcomingBrief && <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10 animate-fade-in">
+
+            {showUpcomingBrief && (
+              <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10 animate-fade-in">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-primary-teal" />
                     <div>
-                      <p className="text-sm text-white-text font-medium">{upcomingBrief?.title}</p>
-                      <p className="text-xs text-light-gray-text">{upcomingBrief?.time}</p>
+                      <p className="text-sm text-white-text font-medium">
+                        {upcomingBrief?.title}
+                      </p>
+                      <p className="text-xs text-light-gray-text">
+                        {upcomingBrief?.time}
+                      </p>
                     </div>
                   </div>
-                  <Button onClick={handleGetBriefedNow} size="sm" variant="outline" className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent">
+                  <Button
+                    onClick={handleGetBriefedNow}
+                    size="sm"
+                    variant="outline"
+                    className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent"
+                  >
                     <Zap className="w-3 h-3 mr-1" />
                     Now
                   </Button>
                 </div>
-              </div>}
+              </div>
+            )}
           </div>
 
           {/* Bottom spacing for safe area */}
@@ -500,47 +605,82 @@ const handleViewAllTasks = useCallback(() => {
         </div>
 
         {/* Audio Player - Above Bottom Nav */}
-        <div className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors" onClick={() => setShowBriefDetail(true)}>
-          <div className="flex items-center gap-3">
-            <button onClick={e => {
-            e.stopPropagation();
-            if (playingBrief) {
-                handlePlayBrief(playingBrief);
-            } else {
-                handlePlayBrief(recentBriefs?.[0]?.id);
-            };
-          }} className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
-              {playingBrief ? <Pause className="h-4 w-4 text-primary-teal" /> : <Play className="h-4 w-4 text-primary-teal" />}
-            </button>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm text-white-text font-medium truncate">
-                {playingBrief ? "Morning Brief" : recentBriefs?.[0]?.title}
+        {recentBriefs?.[0] && (
+          <div
+            className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors"
+            onClick={() => {
+              setSelectedBrief(fullPlayingBrief);
+              setShowBriefDetail(true);
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (playingBrief) {
+                    handlePlayBrief(playingBrief);
+                  } else {
+                    handlePlayBrief(fullPlayingBrief?.id);
+                  }
+                }}
+                className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors"
+              >
+                {playingBrief ? (
+                  <Pause className="h-4 w-4 text-primary-teal" />
+                ) : (
+                  <Play className="h-4 w-4 text-primary-teal" />
+                )}
+              </button>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm text-white-text font-medium truncate">
+                  {fullPlayingBrief?.title}
+                </div>
+                <div className="text-xs text-light-gray-text">
+                  {playingBrief
+                    ? `${audioPlayer?.formatDuration(
+                        audioPlayer?.currentTime
+                      )} / ${audioPlayer?.formatDuration(
+                        audioPlayer?.duration
+                      )}`
+                    : "Ready to play"}
+                </div>
               </div>
-              <div className="text-xs text-light-gray-text">
-                {playingBrief ? "2:34 / 5:12" : "Ready to play"}
-              </div>
+              {playingBrief && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPlayingBrief(null);
+                  }}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+              <ChevronDown className="h-4 w-4 text-light-gray-text" />
             </div>
-            {playingBrief && <Button variant="ghost" size="sm" onClick={e => {
-            e.stopPropagation();
-            setPlayingBrief(null);
-          }} className="h-8 w-8 p-0">
-                <X className="h-4 w-4" />
-              </Button>}
-            <ChevronDown className="h-4 w-4 text-light-gray-text" />
           </div>
-        </div>
+        )}
+        <Audio audioSrc={currentAudioUrl} audioRef={audioRef} />
 
         {/* Bottom Navigation */}
         <div className="border-t border-white/10 bg-surface-raised/80 backdrop-blur-md">
           <div className="grid grid-cols-4 px-2 py-2">
             {/* Home */}
-            <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center gap-1 p-3 text-primary-teal">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="flex flex-col items-center gap-1 p-3 text-primary-teal"
+            >
               <Home className="h-5 w-5" />
               <span className="text-xs font-medium">Home</span>
             </button>
 
             {/* Briefs */}
-            <button onClick={handleViewAllBriefs} className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
+            <button
+              onClick={handleViewAllBriefs}
+              className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors"
+            >
               <FileText className="h-5 w-5" />
               <span className="text-xs font-medium">Briefs</span>
             </button>
@@ -551,40 +691,71 @@ const handleViewAllTasks = useCallback(() => {
                 <button className="flex flex-col items-center gap-1 p-3 relative">
                   {/* Status indicator with better visual feedback */}
                   <div className="relative">
-                    {currentStatus === 'active' && <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
+                    {status === "active" && (
+                      <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
                         <div className="w-2 h-2 rounded-full bg-white"></div>
-                      </div>}
-                    {currentStatus === 'focus' && <div className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center border-2 border-primary-teal">
+                      </div>
+                    )}
+                    {status === "focus" && (
+                      <div className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center border-2 border-primary-teal">
                         <Focus className="h-3 w-3 text-primary-teal" />
-                      </div>}
-                    {currentStatus === 'offline' && <div className="w-5 h-5 rounded-full bg-orange-400/20 flex items-center justify-center border-2 border-orange-400">
+                      </div>
+                    )}
+                    {status === "away" && (
+                      <div className="w-5 h-5 rounded-full bg-orange-400/20 flex items-center justify-center border-2 border-orange-400">
                         <Clock className="h-3 w-3 text-orange-400" />
-                      </div>}
+                      </div>
+                    )}
                     {/* Active indicator dot */}
-                    {currentStatus !== 'active' && <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white"></div>}
+                    {status !== "active" && (
+                      <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white"></div>
+                    )}
                   </div>
-                  <span className={`text-xs font-medium ${currentStatus === 'active' ? 'text-green-400' : currentStatus === 'focus' ? 'text-primary-teal' : 'text-orange-400'}`}>Status</span>
+                  <span
+                    className={`text-xs font-medium ${
+                      status === "active"
+                        ? "text-green-400"
+                        : status === "focus"
+                        ? "text-primary-teal"
+                        : "text-orange-400"
+                    }`}
+                  >
+                    Status
+                  </span>
                 </button>
               </SheetTrigger>
-              <SheetContent side="bottom" className="h-[40vh] bg-dark-navy/95 backdrop-blur-xl border-white/20">
+              <SheetContent
+                side="bottom"
+                className="h-[40vh] bg-dark-navy/95 backdrop-blur-xl border-white/20"
+              >
                 <div className="p-6 space-y-4">
-                  <h2 className="text-lg font-semibold text-white-text">Set Status</h2>
-                  
+                  <h2 className="text-lg font-semibold text-white-text">
+                    Set Status
+                  </h2>
+
                   <div className="space-y-3">
-                    <button onClick={() => {
-                    setCurrentStatus('active');
-                    setShowStatusModal(false);
-                  }} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                    <button
+                      onClick={() => {
+                        setShowStatusModal(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
                       <div className="w-4 h-4 rounded-full bg-green-400"></div>
                       <span className="text-white-text">Active</span>
                     </button>
-                    
-                    <button onClick={() => handleStatusChange('focus')} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+
+                    <button
+                      onClick={() => handleStatusChange("focus")}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
                       <Focus className="h-4 w-4 text-primary-teal" />
                       <span className="text-white-text">Focus Mode</span>
                     </button>
-                    
-                    <button onClick={() => handleStatusChange('offline')} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+
+                    <button
+                      onClick={() => handleStatusChange("offline")}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
                       <Clock className="h-4 w-4 text-orange-400" />
                       <span className="text-white-text">Away</span>
                     </button>
@@ -594,7 +765,10 @@ const handleViewAllTasks = useCallback(() => {
             </Sheet>
 
             {/* Settings */}
-            <button onClick={() => navigate('/dashboard/settings')} className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
+            <button
+              onClick={() => navigate("/dashboard/settings")}
+              className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors"
+            >
               <Settings className="h-5 w-5" />
               <span className="text-xs font-medium">Settings</span>
             </button>
@@ -603,75 +777,141 @@ const handleViewAllTasks = useCallback(() => {
 
         {/* Brief Detail Sheet */}
         <Sheet open={showBriefDetail} onOpenChange={setShowBriefDetail}>
-          <SheetContent side="bottom" className="h-[90vh] bg-dark-navy/95 backdrop-blur-xl border-white/20 overflow-hidden">
+          <SheetContent
+            side="bottom"
+            className="h-[90vh] bg-dark-navy/95 backdrop-blur-xl border-white/20 overflow-hidden"
+          >
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="p-6 border-b border-white/10">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-white-text">Morning Brief</h2>
-                  <Button variant="ghost" size="sm" onClick={() => setShowBriefDetail(false)} className="h-8 w-8 p-0">
+                  <h2 className="text-xl font-semibold text-white-text">
+                    {selectedBrief?.title}
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setShowBriefDetail(false);
+                      setSelectedBrief(null);
+                    }}
+                    className="h-8 w-8 p-0"
+                  >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-sm text-light-gray-text mt-1">Today, 8:00 AM • 5:00 AM - 8:00 AM</p>
+                <p className="text-sm text-light-gray-text mt-1">
+                  {selectedBrief?.delivery_at}{" "}
+                  {selectedBrief?.delivery_at && selectedBrief?.ended_at && "•"}{" "}
+                  {selectedBrief?.start_at} - {selectedBrief?.ended_at}
+                </p>
               </div>
 
               {/* Content */}
               <ScrollArea className="flex-1">
                 <div className="p-6 space-y-6">
                   {/* Summary */}
-                  <div>
-                    <h3 className="text-lg font-medium text-white-text mb-3">Summary</h3>
-                    <p className="text-text-secondary leading-relaxed">
-                      This morning's brief covers critical updates from your priority channels. Sarah Chen requires urgent approval for the Q3 budget proposal, and there are several high-priority items requiring your attention before the team standup at 10 AM.
-                    </p>
-                  </div>
+                  {selectedBrief?.summary && (
+                    <div>
+                      <h3 className="text-lg font-medium text-white-text mb-3">
+                        Summary
+                      </h3>
+                      <p className="text-text-secondary leading-relaxed">
+                        {selectedBrief?.summary}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Action Items */}
-                  <div>
-                    <h3 className="text-lg font-medium text-white-text mb-3">Action Items ({actionItems.length})</h3>
-                    <div className="space-y-3">
-                      {actionItems.map(item => <div key={item.id} className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                          <div className="flex items-start gap-3">
-                            <div className="w-4 h-4 rounded border border-light-gray-text/30 mt-0.5 flex-shrink-0"></div>
-                            <div className="flex-1">
-                              <p className="text-sm text-white-text font-medium">{item.title}</p>
-                              <div className="flex items-center gap-2 mt-1 text-xs text-light-gray-text">
-                                <span>from {item.sender}</span>
-                                {item.isVip && <>
+                  {selectedBrief?.follow_ups?.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-medium text-white-text mb-3">
+                        Action Items ({selectedBrief?.follow_ups?.length})
+                      </h3>
+                      <div className="space-y-3">
+                        {selectedBrief?.follow_ups?.map((item) => (
+                          <div
+                            key={item.id}
+                            className="p-3 rounded-lg bg-surface-raised/30 border border-white/10"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="w-4 h-4 rounded border border-light-gray-text/30 mt-0.5 flex-shrink-0"></div>
+                              <div className="flex-1">
+                                <p className="text-sm text-white-text font-medium">
+                                  {item?.title}
+                                </p>
+                                <div className="flex items-center gap-2 mt-1 text-xs text-light-gray-text">
+                                  <span className="break-all">
+                                    from {item?.sender}
+                                  </span>
+                                  {/* {item.isVip && <>
                                     <span>•</span>
                                     <Star className="w-3 h-3 text-green-400" fill="currentColor" />
-                                  </>}
-                                <span>•</span>
-                                <span className={`px-1.5 py-0.5 rounded text-xs ${item.urgency === 'critical' ? 'bg-red-500/20 text-red-400' : item.urgency === 'high' ? 'bg-orange-500/20 text-orange-400' : item.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400'}`}>
-                                  {item.urgency}
-                                </span>
+                                  </>} */}
+                                  <span>•</span>
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded text-xs ${
+                                      item?.priority === "critical"
+                                        ? "bg-red-500/20 text-red-400"
+                                        : item.priority === "high"
+                                        ? "bg-orange-500/20 text-orange-400"
+                                        : item.priority === "medium"
+                                        ? "bg-yellow-500/20 text-yellow-400"
+                                        : "bg-gray-500/20 text-gray-400"
+                                    }`}
+                                  >
+                                    {item?.priority}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>)}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Messages Summary */}
                   <div>
-                    <h3 className="text-lg font-medium text-white-text mb-3">Messages Analyzed</h3>
+                    <h3 className="text-lg font-medium text-white-text mb-3">
+                      Messages Analyzed
+                    </h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-3 rounded-lg bg-surface-raised/30">
                         <div className="flex items-center gap-2 mb-1">
                           <div className="w-3 h-3 bg-purple-500 rounded-sm"></div>
-                          <span className="text-sm font-medium text-white-text">Slack</span>
+                          <span className="text-sm font-medium text-white-text">
+                            Slack
+                          </span>
                         </div>
-                        <p className="text-lg font-semibold text-white-text">{recentBriefs?.[0]?.stats?.totalMessagesAnalyzed?.breakdown?.slack}</p>
-                        <p className="text-xs text-light-gray-text">{recentBriefs?.[0]?.slackMessages?.fromPriorityPeople || 5} from priority people</p>
+                        <p className="text-lg font-semibold text-white-text">
+                          {
+                            selectedBrief?.stats?.totalMessagesAnalyzed
+                              ?.breakdown?.slack
+                          }
+                        </p>
+                        <p className="text-xs text-light-gray-text">
+                          {selectedBrief?.stats?.actionItems?.breakdown?.slack}{" "}
+                          from priority people
+                        </p>
                       </div>
                       <div className="p-3 rounded-lg bg-surface-raised/30">
                         <div className="flex items-center gap-2 mb-1">
                           <div className="w-3 h-3 bg-blue-500 rounded-sm"></div>
-                          <span className="text-sm font-medium text-white-text">Gmail</span>
+                          <span className="text-sm font-medium text-white-text">
+                            Gmail
+                          </span>
                         </div>
-                        <p className="text-lg font-semibold text-white-text">{recentBriefs?.[0]?.stats?.totalMessagesAnalyzed?.breakdown?.gmail}</p>
-                        <p className="text-xs text-light-gray-text">{recentBriefs?.[0]?.emails?.fromPriorityPeople || 2} from priority people</p>
+                        <p className="text-lg font-semibold text-white-text">
+                          {
+                            selectedBrief?.stats?.totalMessagesAnalyzed
+                              ?.breakdown?.gmail
+                          }
+                        </p>
+                        <p className="text-xs text-light-gray-text">
+                          {selectedBrief?.stats?.actionItems?.breakdown?.gmail}{" "}
+                          from priority people
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -682,8 +922,15 @@ const handleViewAllTasks = useCallback(() => {
         </Sheet>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
-        <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.title} upcomingBriefTime={upcomingBrief.time} />
-      </div>;
+        <CatchMeUpWithScheduling
+          open={showSchedulingModal}
+          onClose={handleCloseSchedulingModal}
+          onGenerateSummary={handleGenerateSummaryWithScheduling}
+          upcomingBriefName={upcomingBrief.title}
+          upcomingBriefTime={upcomingBrief.time}
+        />
+      </div>
+    );
   }
 
   // Desktop View
@@ -696,9 +943,8 @@ const handleViewAllTasks = useCallback(() => {
             <h1 className="font-bold text-text-primary mb-2 text-2xl">
               Good morning, {user.name}
             </h1>
-            
           </div>
-          
+
           {/* Updated CTAs on the right with Profile Dropdown */}
           <div className="flex gap-3 items-center">
             <DropdownMenu>
@@ -718,8 +964,8 @@ const handleViewAllTasks = useCallback(() => {
                   onClick={onToggleFocusMode}
                 >
                   {/* <div className="flex items-center pl-2 py-1.5" > */}
-                    <Headphones className="mr-2 h-4 w-4" />
-                    Start Focus Mode
+                  <Headphones className="mr-2 h-4 w-4" />
+                  Start Focus Mode
                   {/* </div> */}
                   {/* <div className="flex items-center rounded-full p-1 text-sm cursor-pointer" onClick={onToggleFocusMode}>
                      <Settings size={16}>Configure Slack</Settings>
@@ -750,30 +996,53 @@ const handleViewAllTasks = useCallback(() => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="p-0 h-auto">
                   <Avatar className="h-10 w-10 border-2 border-border-subtle border-accent-primary transition-colors cursor-pointer">
-                    <AvatarImage src={user?.profile_path ?  user?.profile_path : '/images/default.png'} alt={user.name} onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
+                    <AvatarImage
+                      src={
+                        user?.profile_path
+                          ? user?.profile_path
+                          : "/images/default.png"
+                      }
+                      alt={user.name}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display =
+                          "none";
+                      }}
+                    />
                     <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
                       {user.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
-                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
+              <DropdownMenuContent
+                className="bg-surface border-border-subtle w-56"
+                align="end"
+              >
+                <DropdownMenuItem
+                  onClick={handleProfileClick}
+                  className="text-text-primary hover:bg-white/5"
+                >
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
+                <DropdownMenuItem
+                  onClick={handleIntegrationsClick}
+                  className="text-text-primary hover:bg-white/5"
+                >
                   <Zap className="mr-2 h-4 w-4" />
                   Integrations
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
+                <DropdownMenuItem
+                  onClick={handleBriefConfigClick}
+                  className="text-text-primary hover:bg-white/5"
+                >
                   <FileText className="mr-2 h-4 w-4" />
                   Brief Configuration
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
+                <DropdownMenuItem
+                  onClick={handleAllSettingsClick}
+                  className="text-text-primary hover:bg-white/5"
+                >
                   <Settings className="mr-2 h-4 w-4" />
                   All Settings
                 </DropdownMenuItem>
@@ -794,16 +1063,18 @@ const handleViewAllTasks = useCallback(() => {
             {/* Briefs Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
+                <h2 className="font-semibold text-text-primary text-lg">
+                  Daily Brief(s)
+                </h2>
               </div>
-              
+
               {/* Unified Brief Container with upcoming brief */}
-              <BriefsContainer 
-                briefs={recentBriefs} 
+              <BriefsContainer
+                briefs={recentBriefs}
                 totalBriefs={totalBriefs}
                 briefsLoading={briefsLoading}
-                onViewBrief={onOpenBrief} 
-                onViewTranscript={handleViewTranscript} 
+                onViewBrief={onOpenBrief}
+                onViewTranscript={handleViewTranscript}
                 onViewAllBriefs={handleViewAllBriefs}
                 onGetBriefedNow={handleGetBriefedNow}
                 onUpdateSchedule={handleUpdateSchedule}
@@ -817,42 +1088,71 @@ const handleViewAllTasks = useCallback(() => {
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
+                <h2 className="font-semibold text-text-primary text-lg">
+                  Calendar
+                </h2>
               </div>
-              <CalendarSection calendarData={calendarData} onViewAllSchedule={handleViewAllSchedule} />
+              <CalendarSection
+                calendarData={calendarData}
+                onViewAllSchedule={handleViewAllSchedule}
+              />
             </div>
           </div>
-          
+
           {/* Sidebar - 5 columns (increased from 4) */}
           <div className="col-span-5 space-y-4">
             {/* Action Items Panel with header outside */}
-            <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
+            <div
+              className="space-y-3 relative"
+              onMouseEnter={() => setIsActionItemsHovered(true)}
+              onMouseLeave={() => setIsActionItemsHovered(false)}
+            >
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Follow ups ({actionItemsCount})</h2>
-                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
+                <h2 className="font-semibold text-text-primary text-lg">
+                  Follow ups ({actionItemsCount})
+                </h2>
+                {isActionItemsHovered && (
+                  <Button
+                    variant="ghost"
+                    onClick={handleViewAllTasks}
+                    className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10"
+                  >
                     View all
                     <ArrowRight className="w-3 h-3" />
-                  </Button>}
+                  </Button>
+                )}
               </div>
               <ActionItemsPanel setActionItemsCount={setActionItemsCount} />
             </div>
-            
+
             {/* Priorities Section with title outside */}
-            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
+            <div
+              className="space-y-3"
+              onMouseEnter={() => setIsPrioritiesHovered(true)}
+              onMouseLeave={() => setIsPrioritiesHovered(false)}
+            >
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
-                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
+                <h2 className="font-semibold text-text-primary text-lg">
+                  Priorities
+                </h2>
+                {isPrioritiesHovered && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => navigate("/dashboard/settings")}
+                    className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200"
+                  >
                     Edit
-                  </Button>}
+                  </Button>
+                )}
               </div>
               <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
                 <PrioritiesSection
-                priorities={priorities}
-                fetchDashboardData={fetchDashboardData}
-              />
+                  priorities={priorities}
+                  fetchDashboardData={fetchDashboardData}
+                />
               </div>
             </div>
-            
+
             {/* Brief Me Teams - With enhanced blurred background mockups */}
             <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
               {/* Enhanced blurred background mockups */}
@@ -867,27 +1167,29 @@ const handleViewAllTasks = useCallback(() => {
                         <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
                         <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
                         <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
-                          <span className="text-xs text-white/90 font-medium">+5</span>
+                          <span className="text-xs text-white/90 font-medium">
+                            +5
+                          </span>
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Team stats bars */}
                     <div className="space-y-3 mb-4">
                       <div className="bg-white/40 rounded-full h-3 w-full"></div>
                       <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
                       <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
                     </div>
-                    
+
                     {/* Team name */}
                     <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
                   </div>
-                  
+
                   {/* Analytics card mockup */}
                   <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
                     {/* Chart header */}
                     <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
-                    
+
                     {/* Mock chart bars - more detailed */}
                     <div className="flex items-end gap-2 h-16 mb-3">
                       <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
@@ -898,7 +1200,7 @@ const handleViewAllTasks = useCallback(() => {
                       <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
                       <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
                     </div>
-                    
+
                     {/* Analytics labels */}
                     <div className="space-y-2">
                       <div className="bg-white/35 rounded h-2 w-full"></div>
@@ -908,45 +1210,64 @@ const handleViewAllTasks = useCallback(() => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Clear content with better contrast */}
               <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
                 <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   Brief Me Teams
                 </h2>
-                
-                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
-                
+
+                <p className="text-text-secondary text-sm mb-4">
+                  Coming soon...
+                </p>
+
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">AI meeting proxy</p>
+                    <p className="text-sm text-text-primary">
+                      AI meeting proxy
+                    </p>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
+                    <p className="text-sm text-text-primary">
+                      Onboarding/new hire briefs
+                    </p>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
+                    <p className="text-sm text-text-primary">
+                      Pre-meeting, handoff, and shared daily briefs
+                    </p>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
                     <p className="text-sm text-text-primary">Team analytics</p>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
                     <p className="text-sm text-text-primary">and more...</p>
                   </div>
                 </div>
-                
-                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
-                  {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
+
+                <Button
+                  onClick={handleTeamInterest}
+                  size="sm"
+                  className={`rounded-lg px-4 py-2 text-sm w-full ${
+                    waitlistStatus === "added"
+                      ? "bg-green-600 text-white hover:bg-green-600"
+                      : "bg-accent-primary text-white hover:bg-accent-primary/90"
+                  }`}
+                  disabled={waitlistStatus === "added"}
+                >
+                  {waitlistStatus === "added"
+                    ? "Added to waitlist"
+                    : "Join waitlist"}
                 </Button>
               </div>
             </div>
