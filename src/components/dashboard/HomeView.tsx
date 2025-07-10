@@ -331,10 +331,9 @@ const HomeView = ({
   if (isMobile) {
     return <div className="h-screen flex flex-col overflow-hidden">
 
-
         {/* Floating Status Pill - Top Left when active status */}
-        {currentStatus !== 'active' && <div className="fixed top-4 left-4 z-40">
-            <div className="flex items-center gap-1 px-3 py-1.5 bg-surface-raised/90 backdrop-blur-md border border-white/20 rounded-full">
+        {currentStatus !== 'active' && <div className="fixed top-3 left-3 z-40">
+            <div className="flex items-center gap-1 px-2.5 py-1 bg-surface-raised/90 backdrop-blur-md border border-white/20 rounded-full">
               {currentStatus === 'focus' ? <>
                   <Focus className="w-3 h-3 text-primary-teal" />
                   <span className="text-xs text-white-text">Focus</span>
@@ -348,12 +347,12 @@ const HomeView = ({
             </div>
           </div>}
 
-        {/* Welcome Header Section */}
-        <div className="text-center px-4 py-4 flex-shrink-0">
-          <h1 className="text-xl font-semibold text-white-text mb-1">
+        {/* Welcome Header Section - Optimized spacing */}
+        <div className="text-center px-4 py-3 flex-shrink-0">
+          <h1 className="text-lg font-semibold text-white-text mb-1">
             Good morning, Alex
           </h1>
-          <p className="text-light-gray-text text-sm mb-4">Ready to catch up or focus?</p>
+          <p className="text-light-gray-text text-sm mb-3">Ready to catch up or focus?</p>
           
           {/* Monitoring Section */}
           <div className="flex items-center justify-center">
@@ -361,15 +360,15 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 px-4 space-y-6 overflow-y-auto">
+        {/* Main Content - Optimized spacing and height */}
+        <div className="flex-1 px-4 space-y-4 overflow-y-auto pb-safe">
 
-          {/* Meetings */}
-          <div className="space-y-3">
-            <h2 className="text-text-primary text-base font-medium">Meetings</h2>
-            <div className="space-y-2">
-              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                <div className="flex items-center gap-3">
+          {/* Meetings - Reduced height */}
+          <div className="space-y-2">
+            <h2 className="text-text-primary text-sm font-medium">Meetings</h2>
+            <div className="space-y-1.5">
+              <div className="p-2.5 rounded-lg bg-surface-raised/30 border border-white/10">
+                <div className="flex items-center gap-2.5">
                   <div className="w-2 h-2 rounded-full bg-primary-teal flex-shrink-0"></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white-text font-medium">Team Standup</p>
@@ -379,8 +378,8 @@ const HomeView = ({
                 </div>
               </div>
               
-              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-surface-raised/30 border border-white/10">
+                <div className="flex items-center gap-2.5">
                   <div className="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0"></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white-text font-medium">Product Review</p>
@@ -389,40 +388,29 @@ const HomeView = ({
                   <ArrowRight className="w-4 h-4 text-light-gray-text" />
                 </div>
               </div>
-              
-              <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-purple-400 flex-shrink-0"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white-text font-medium">Client Check-in</p>
-                    <p className="text-xs text-light-gray-text">Tomorrow at 9:00 AM</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-light-gray-text" />
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Briefs Section */}
-          <div className="space-y-3">
+          {/* Briefs Section - Reduced spacing */}
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-text-primary text-base font-medium">Briefs</h2>
+              <h2 className="text-text-primary text-sm font-medium">Briefs</h2>
               <Button variant="ghost" size="sm" onClick={handleViewAllBriefs} className="text-xs text-text-secondary hover:text-primary-teal h-6 px-2">
                 View all
               </Button>
             </div>
-            <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors" onClick={() => {
+            <div className="p-2.5 rounded-lg bg-surface-raised/30 border border-white/10 cursor-pointer hover:bg-surface-raised/40 transition-colors" onClick={() => {
             handlePlayBrief(latestBrief.id);
             setShowBriefDetail(true);
           }}>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center flex-shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-primary-teal/20 flex items-center justify-center flex-shrink-0">
                   <Play className="h-4 w-4 text-primary-teal" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm text-white-text font-medium">{latestBrief.name}</h3>
                   <p className="text-xs text-light-gray-text">{latestBrief.timeCreated}</p>
-                  <div className="flex items-center gap-4 text-xs text-light-gray-text mt-1">
+                  <div className="flex items-center gap-3 text-xs text-light-gray-text mt-0.5">
                     <span>{latestBrief.slackMessages.total} Slack</span>
                     <span>{latestBrief.emails.total} Emails</span>
                     <span>{latestBrief.actionItems} Actions</span>
@@ -432,42 +420,39 @@ const HomeView = ({
             </div>
           </div>
 
-          {/* Upcoming Brief - Collapsible Toggle */}
-          <div className="space-y-3">
+          {/* Upcoming Brief - Collapsible Toggle - Reduced spacing */}
+          <div className="space-y-2">
             <button onClick={() => setShowUpcomingBrief(!showUpcomingBrief)} className="flex items-center justify-between w-full text-left">
               <h2 className="text-text-primary text-xs font-normal text-slate-400">Upcoming</h2>
               {showUpcomingBrief ? <ChevronDown className="w-4 h-4 text-light-gray-text" /> : <ChevronRight className="w-4 h-4 text-light-gray-text" />}
             </button>
             
-            {showUpcomingBrief && <div className="p-3 rounded-lg bg-surface-raised/20 border border-white/10 animate-fade-in">
+            {showUpcomingBrief && <div className="p-2.5 rounded-lg bg-surface-raised/20 border border-white/10 animate-fade-in">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     <Clock className="w-4 h-4 text-primary-teal" />
                     <div>
                       <p className="text-sm text-white-text font-medium">{upcomingBrief.name}</p>
                       <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
                     </div>
                   </div>
-                  <Button onClick={handleGetBriefedNow} size="sm" variant="outline" className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-3 py-1 h-auto bg-transparent">
+                  <Button onClick={handleGetBriefedNow} size="sm" variant="outline" className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-2.5 py-1 h-auto bg-transparent">
                     <Zap className="w-3 h-3 mr-1" />
                     Now
                   </Button>
                 </div>
               </div>}
           </div>
-
-          {/* Bottom spacing for safe area */}
-          <div className="h-4"></div>
         </div>
 
-        {/* Audio Player - Above Bottom Nav */}
-        <div className="border-t border-white/10 px-4 py-3 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors" onClick={() => setShowBriefDetail(true)}>
-          <div className="flex items-center gap-3">
+        {/* Audio Player - Above Bottom Nav - Reduced height */}
+        <div className="border-t border-white/10 px-4 py-2 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors flex-shrink-0" onClick={() => setShowBriefDetail(true)}>
+          <div className="flex items-center gap-2.5">
             <button onClick={e => {
             e.stopPropagation();
             playingBrief ? handlePlayBrief(playingBrief) : handlePlayBrief(latestBrief.id);
-          }} className="w-8 h-8 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
-              {playingBrief ? <Pause className="h-4 w-4 text-primary-teal" /> : <Play className="h-4 w-4 text-primary-teal" />}
+          }} className="w-7 h-7 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
+              {playingBrief ? <Pause className="h-3.5 w-3.5 text-primary-teal" /> : <Play className="h-3.5 w-3.5 text-primary-teal" />}
             </button>
             <div className="flex-1 min-w-0">
               <div className="text-sm text-white-text font-medium truncate">
@@ -480,24 +465,24 @@ const HomeView = ({
             {playingBrief && <Button variant="ghost" size="sm" onClick={e => {
             e.stopPropagation();
             setPlayingBrief(null);
-          }} className="h-8 w-8 p-0">
-                <X className="h-4 w-4" />
+          }} className="h-7 w-7 p-0">
+                <X className="h-3.5 w-3.5" />
               </Button>}
             <ChevronDown className="h-4 w-4 text-light-gray-text" />
           </div>
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="border-t border-white/10 bg-surface-raised/80 backdrop-blur-md">
-          <div className="grid grid-cols-4 px-2 py-2">
+        {/* Bottom Navigation - Fixed position to ensure always visible */}
+        <div className="border-t border-white/10 bg-surface-raised/90 backdrop-blur-md flex-shrink-0 pb-safe">
+          <div className="grid grid-cols-4 px-2 py-1.5">
             {/* Home */}
-            <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center gap-1 p-3 text-primary-teal">
+            <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center gap-0.5 p-2.5 text-primary-teal">
               <Home className="h-5 w-5" />
               <span className="text-xs font-medium">Home</span>
             </button>
 
             {/* Briefs */}
-            <button onClick={handleViewAllBriefs} className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
+            <button onClick={handleViewAllBriefs} className="flex flex-col items-center gap-0.5 p-2.5 text-light-gray-text hover:text-white-text transition-colors">
               <FileText className="h-5 w-5" />
               <span className="text-xs font-medium">Briefs</span>
             </button>
@@ -505,7 +490,7 @@ const HomeView = ({
             {/* Status */}
             <Sheet open={showStatusModal} onOpenChange={setShowStatusModal}>
               <SheetTrigger asChild>
-                <button className="flex flex-col items-center gap-1 p-3 relative">
+                <button className="flex flex-col items-center gap-0.5 p-2.5 relative">
                   {/* Status indicator with better visual feedback */}
                   <div className="relative">
                     {currentStatus === 'active' && <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
@@ -551,7 +536,7 @@ const HomeView = ({
             </Sheet>
 
             {/* Settings */}
-            <button onClick={() => navigate('/dashboard/settings')} className="flex flex-col items-center gap-1 p-3 text-light-gray-text hover:text-white-text transition-colors">
+            <button onClick={() => navigate('/dashboard/settings')} className="flex flex-col items-center gap-0.5 p-2.5 text-light-gray-text hover:text-white-text transition-colors">
               <Settings className="h-5 w-5" />
               <span className="text-xs font-medium">Settings</span>
             </button>
