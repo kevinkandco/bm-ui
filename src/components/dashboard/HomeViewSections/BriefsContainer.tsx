@@ -115,46 +115,6 @@ const BriefsContainer = ({
             </div>
           )}
 
-          {/* Past Briefs Section - Header with View all button */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between w-full">
-              <h3 className="text-sm font-medium text-white-text/80 px-1">Past briefs</h3>
-              <Button
-                onClick={onViewAllBriefs}
-                variant="ghost"
-                size="sm"
-                className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
-              >
-                View all
-                <ArrowRight className="w-3 h-3 ml-1" />
-              </Button>
-            </div>
-            
-            {isFirstTimeUser && (
-              // Empty state for first-time users
-              <div className="text-center py-8 px-4">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-surface-overlay/50 flex items-center justify-center">
-                  <Clock className="w-8 h-8 text-text-secondary" />
-                </div>
-                <h4 className="text-sm font-medium text-text-primary mb-2">
-                  Your first brief is on the way!
-                </h4>
-                <p className="text-xs text-text-secondary mb-4 max-w-xs mx-auto">
-                  We're monitoring your connected accounts. Your first brief will appear here once it's ready based on your schedule.
-                </p>
-                {onGetBriefedNow && (
-                  <Button
-                    onClick={onGetBriefedNow}
-                    size="sm"
-                    className="bg-accent-primary text-white hover:bg-accent-primary/90 rounded-lg px-4 py-2"
-                  >
-                    <Zap className="w-3 h-3 mr-1" />
-                    Get briefed now
-                  </Button>
-                )}
-              </div>
-            )}
-          </div>
         </div>
       </CardContent>
     </Card>

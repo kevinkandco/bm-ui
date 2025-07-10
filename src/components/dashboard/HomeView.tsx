@@ -751,6 +751,27 @@ const HomeView = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
+                {/* Day Picker */}
+                <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2 border border-white/10">
+                  <button 
+                    onClick={handlePreviousDay}
+                    disabled={selectedDate === "2 days ago"}
+                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-light-gray-text" />
+                  </button>
+                  <div className="flex items-center gap-2 px-3">
+                    <Calendar className="w-4 h-4 text-light-gray-text" />
+                    <span className="text-sm text-white-text font-medium min-w-[70px] text-center">{selectedDate}</span>
+                  </div>
+                  <button 
+                    onClick={handleNextDay}
+                    disabled={selectedDate === "Today"}
+                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronRight className="w-4 h-4 text-light-gray-text" />
+                  </button>
+                </div>
               </div>
               
               {/* Unified Brief Container with upcoming brief */}
