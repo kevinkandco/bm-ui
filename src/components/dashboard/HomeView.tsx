@@ -360,8 +360,8 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Main Content - Optimized spacing and height */}
-        <div className="flex-1 px-4 space-y-4 overflow-y-auto pb-safe">
+        {/* Main Content - Fixed height container with padding for fixed nav */}
+        <div className="flex-1 px-4 space-y-3 overflow-y-auto pb-32">
 
           {/* Meetings - Reduced height */}
           <div className="space-y-2">
@@ -421,7 +421,7 @@ const HomeView = ({
           </div>
 
           {/* Upcoming Brief - Collapsible Toggle - Reduced spacing */}
-          <div className="space-y-2">
+          <div className="space-y-1">
             <button onClick={() => setShowUpcomingBrief(!showUpcomingBrief)} className="flex items-center justify-between w-full text-left">
               <h2 className="text-text-primary text-xs font-normal text-slate-400">Upcoming</h2>
               {showUpcomingBrief ? <ChevronDown className="w-4 h-4 text-light-gray-text" /> : <ChevronRight className="w-4 h-4 text-light-gray-text" />}
@@ -445,8 +445,8 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Audio Player - Above Bottom Nav - Reduced height */}
-        <div className="border-t border-white/10 px-4 py-2 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors flex-shrink-0" onClick={() => setShowBriefDetail(true)}>
+        {/* Fixed Audio Player - Above Bottom Nav */}
+        <div className="fixed bottom-16 left-0 right-0 border-t border-white/10 px-4 py-2 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors" onClick={() => setShowBriefDetail(true)}>
           <div className="flex items-center gap-2.5">
             <button onClick={e => {
             e.stopPropagation();
@@ -472,8 +472,8 @@ const HomeView = ({
           </div>
         </div>
 
-        {/* Bottom Navigation - Fixed position to ensure always visible */}
-        <div className="border-t border-white/10 bg-surface-raised/90 backdrop-blur-md flex-shrink-0 pb-safe">
+        {/* Bottom Navigation - Fixed at bottom of screen */}
+        <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-surface-raised/90 backdrop-blur-md pb-safe">
           <div className="grid grid-cols-4 px-2 py-1.5">
             {/* Home */}
             <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center gap-0.5 p-2.5 text-primary-teal">
