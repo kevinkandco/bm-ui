@@ -204,6 +204,7 @@ const HomeView = ({
 
   // Day picker handlers
   const handlePreviousDay = useCallback(() => {
+    console.log("Previous day clicked, current selectedDate:", selectedDate);
     if (selectedDate === "Today") {
       setSelectedDate("Yesterday");
     } else if (selectedDate === "Yesterday") {
@@ -212,6 +213,7 @@ const HomeView = ({
   }, [selectedDate]);
 
   const handleNextDay = useCallback(() => {
+    console.log("Next day clicked, current selectedDate:", selectedDate);
     if (selectedDate === "2 days ago") {
       setSelectedDate("Yesterday");
     } else if (selectedDate === "Yesterday") {
