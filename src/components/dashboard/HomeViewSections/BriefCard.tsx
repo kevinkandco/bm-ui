@@ -336,10 +336,10 @@ const BriefCard = ({
                 </div>
                 
                 {/* Time Saved below the stats */}
-                <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
+                {brief?.savedTime?.total_saved_minutes && <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
                   <Clock className="h-2.5 w-2.5 text-green-400" />
-                  <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
-                </div>
+                  <span className="text-green-400 font-medium">~{Math.round(brief?.savedTime?.total_saved_minutes)}min saved</span>
+                </div>}
               </div>
               
               {/* Chevron */}
