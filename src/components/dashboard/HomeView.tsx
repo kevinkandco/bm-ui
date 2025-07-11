@@ -660,10 +660,46 @@ const HomeView = ({
   // Desktop View
   return (
     <div className="min-h-screen flex">
-      {/* Full Height Sidebar */}
-      <div className="w-80 bg-surface-raised/20 border-r border-border-subtle">
-        <div className="p-6 space-y-6">
-          {/* Brief Me Button */}
+      {/* Full Height Sidebar - Made Narrower */}
+      <div className="w-64 bg-surface-raised/20">
+        <div className="p-4 space-y-4">
+          {/* Profile Section - Moved to top, removed email */}
+          <div className="flex items-center gap-3 p-3 rounded-lg">
+            <Avatar className="w-8 h-8">
+              <AvatarImage src="/placeholder.svg" />
+              <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-white-text text-sm font-medium">Alex</p>
+            </div>
+          </div>
+
+          {/* Stats Row - Added above Brief Me button */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-1">
+              <div className="w-4 h-4 bg-primary-teal rounded flex items-center justify-center">
+                <span className="text-xs text-white font-medium">2</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-1">
+              <div className="w-4 h-4 bg-green-500 rounded flex items-center justify-center">
+                <span className="text-xs text-white font-medium">3</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-1">
+              <div className="w-4 h-4 bg-blue-500 rounded flex items-center justify-center">
+                <Calendar className="w-2 h-2 text-white" />
+              </div>
+            </div>
+          </div>
+
+          {/* Upcoming Brief - Moved above Brief Me button */}
+          <div className="space-y-1">
+            <p className="text-text-secondary text-sm">Upcoming brief</p>
+            <p className="text-text-primary text-sm font-medium">{upcomingBrief.scheduledTime}</p>
+          </div>
+
+          {/* Brief Me Button - Removed shadow */}
           <Button 
             onClick={onOpenBriefModal}
             className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-3 font-medium"
@@ -671,46 +707,34 @@ const HomeView = ({
             Brief Me
           </Button>
 
-          {/* Upcoming Brief */}
-          <div className="space-y-1">
-            <p className="text-text-secondary text-sm">Upcoming brief</p>
-            <p className="text-text-primary text-sm font-medium">{upcomingBrief.scheduledTime}</p>
-          </div>
-
-          {/* Navigation Items */}
+          {/* Navigation Items - Added hover states */}
           <div className="space-y-1">
             <button 
               onClick={handleViewAllBriefs}
-              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors text-primary-teal"
+              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 text-primary-teal group"
             >
-              <FileText className="w-5 h-5" />
+              <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
               <span className="font-medium">Briefs</span>
             </button>
             <button 
               onClick={handleViewAllTasks}
-              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors"
+              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group"
             >
-              <CheckSquare className="w-5 h-5 text-light-gray-text" />
-              <span className="text-light-gray-text">Follow-ups</span>
+              <CheckSquare className="w-5 h-5 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
+              <span className="text-light-gray-text group-hover:text-white transition-colors">Follow-ups</span>
             </button>
-            <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors">
-              <Calendar className="w-5 h-5 text-light-gray-text" />
-              <span className="text-light-gray-text">Meetings</span>
+            <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
+              <Calendar className="w-5 h-5 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
+              <span className="text-light-gray-text group-hover:text-white transition-colors">Meetings</span>
             </button>
           </div>
 
-          {/* Profile Section */}
+          {/* Profile Dropdown Section - Moved to bottom */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors">
-                <Avatar className="w-8 h-8">
-                  <AvatarImage src="/placeholder.svg" />
-                  <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-white-text text-sm font-medium">Alex</p>
-                  <p className="text-light-gray-text text-xs">alex@company.com</p>
-                </div>
+              <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
+                <Settings className="w-5 h-5 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
+                <span className="text-light-gray-text group-hover:text-white transition-colors">Settings</span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="start" className="w-56 bg-surface border-border-subtle">
