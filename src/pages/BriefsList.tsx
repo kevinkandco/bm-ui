@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from "react";
-import AppLayout from "@/components/layout/AppLayout";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,12 @@ import { useNavigate } from "react-router-dom";
 const BriefsList = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleToggleSidebar = () => {
+    setSidebarOpen(prev => !prev);
+  };
 
   const handleOpenBrief = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -74,8 +79,12 @@ const BriefsList = () => {
   );
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
+    <DashboardLayout 
+      currentPage="briefs" 
+      sidebarOpen={sidebarOpen} 
+      onToggleSidebar={handleToggleSidebar}
+    >
+      <div className="min-h-screen bg-surface px-4 py-6">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -94,55 +103,55 @@ const BriefsList = () => {
         </Breadcrumb>
 
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-white mb-2">All Briefs</h1>
-          <p className="text-light-gray-text">Search and view your brief history</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+          <p className="text-text-secondary">Search and view your brief history</p>
         </div>
         
         {/* Search */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-light-gray-text" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
             <Input
               placeholder="Search briefs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 rounded-xl bg-surface-raised border-border-muted"
+              className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
             />
           </div>
         </div>
         
         {/* Briefs List */}
-        <div className="card-dark rounded-lg overflow-hidden">
-          <div className="p-6">
+        <div className="glass-card rounded-2xl overflow-hidden">
+          <div className="p-4 md:p-6">
             <div className="space-y-1">
               {filteredBriefs.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-light-gray-text">No briefs found matching your search.</p>
+                  <p className="text-text-secondary">No briefs found matching your search.</p>
                 </div>
               ) : (
                 filteredBriefs.map((brief) => (
                   <React.Fragment key={brief.id}>
                     <div 
-                      className="flex items-center justify-between p-4 rounded-xl hover:bg-surface-raised/60 transition-all cursor-pointer"
+                      className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
                       onClick={() => handleOpenBrief(brief.id)}
                     >
                       <div className="flex items-center flex-1">
-                        <Archive className="h-5 w-5 text-primary-teal mr-3 flex-shrink-0" />
+                        <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center">
-                            <h3 className="font-medium text-white truncate">{brief.title}</h3>
+                            <h3 className="font-medium text-text-primary truncate">{brief.title}</h3>
                             {brief.unread && (
-                              <span className="ml-2 h-2 w-2 bg-primary-teal rounded-full flex-shrink-0"></span>
+                              <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
                             )}
                           </div>
-                          <p className="text-sm text-light-gray-text">{brief.date}</p>
-                          <p className="text-xs text-light-gray-text mt-1">Time Range: {brief.timeRange}</p>
-                          <p className="text-xs text-light-gray-text mt-1">{brief.summary}</p>
+                          <p className="text-sm text-text-secondary">{brief.date}</p>
+                          <p className="text-xs text-text-secondary mt-1">Time Range: {brief.timeRange}</p>
+                          <p className="text-xs text-text-secondary mt-1">{brief.summary}</p>
                         </div>
                       </div>
                     </div>
                     {brief.id !== filteredBriefs[filteredBriefs.length - 1].id && 
-                      <Separator className="bg-border-muted my-1" />
+                      <Separator className="bg-border-subtle my-1" />
                     }
                   </React.Fragment>
                 ))
@@ -151,7 +160,7 @@ const BriefsList = () => {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </DashboardLayout>
   );
 };
 

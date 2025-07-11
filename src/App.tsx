@@ -27,7 +27,6 @@ const CatchUpPage = lazyImport(() => import("./pages/CatchUpPage"));
 const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
 const MacPage = lazyImport(() => import("./pages/MacPage"));
 const BriefDetail = lazyImport(() => import("./pages/BriefDetail"));
-const FollowUps = lazyImport(() => import("./pages/FollowUps"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
 
 // Create QueryClient with optimized settings
@@ -86,7 +85,6 @@ const App = () => (
                 <Route path="/dashboard/tasks" element={<TasksPage />} />
                 <Route path="/dashboard/meetings" element={<MeetingsList />} />
                 <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
-                <Route path="/dashboard/follow-ups" element={<FollowUps />} />
                 <Route path="/dashboard/settings" element={<SettingsPage />} />
                 <Route path="/mac" element={<MacRouteGuard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
