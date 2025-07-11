@@ -211,7 +211,6 @@ const HomeView = ({
       setSelectedDate("2 days ago");
     }
   }, [selectedDate]);
-
   const handleNextDay = useCallback(() => {
     console.log("Next day clicked, current selectedDate:", selectedDate);
     if (selectedDate === "2 days ago") {
@@ -417,22 +416,14 @@ const HomeView = ({
               <h2 className="text-text-primary text-sm font-medium">Briefs</h2>
               {/* Day Picker */}
               <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-2 py-1 border border-white/10">
-                <button 
-                  onClick={handlePreviousDay}
-                  disabled={selectedDate === "2 days ago"}
-                  className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <button onClick={handlePreviousDay} disabled={selectedDate === "2 days ago"} className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                   <ChevronLeft className="w-3.5 h-3.5 text-light-gray-text" />
                 </button>
                 <div className="flex items-center gap-1 px-2">
                   <Calendar className="w-3 h-3 text-light-gray-text" />
                   <span className="text-xs text-white-text font-medium min-w-[50px] text-center">{selectedDate}</span>
                 </div>
-                <button 
-                  onClick={handleNextDay}
-                  disabled={selectedDate === "Today"}
-                  className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <button onClick={handleNextDay} disabled={selectedDate === "Today"} className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                   <ChevronRight className="w-3.5 h-3.5 text-light-gray-text" />
                 </button>
               </div>
@@ -667,8 +658,7 @@ const HomeView = ({
   }
 
   // Desktop View
-  return (
-    <div className="min-h-screen px-4 py-6">
+  return <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
@@ -745,24 +735,7 @@ const HomeView = ({
         </div>
 
         {/* Greeting + Quick Stats Bar */}
-        <div className="flex items-center justify-between bg-surface-overlay/30 rounded-2xl p-6 mb-8 shadow-sm">
-          <div className="flex items-center gap-6">
-            <div>
-              <h1 className="text-2xl font-semibold text-text-primary">Good morning, Alex</h1>
-              <p className="text-text-secondary mt-1">Ready to catch up on what matters</p>
-            </div>
-            <div className="flex items-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-accent-primary" />
-                <span className="text-text-secondary">33 min saved today</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckSquare className="h-4 w-4 text-accent-primary" />
-                <span className="text-text-secondary">{actionItems.length} follow-ups</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        
 
         {/* Three-Column Grid Layout: 25% | 50% | 25% */}
         <div className="grid grid-cols-12 gap-6">
@@ -827,20 +800,11 @@ const HomeView = ({
             {/* Focus Toggle / Sign-off Pill */}
             <div className="rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
               <div className="space-y-3">
-                <Button 
-                  onClick={onStartFocusMode} 
-                  size="sm" 
-                  className="w-full bg-accent-primary text-white hover:bg-accent-primary/90"
-                >
+                <Button onClick={onStartFocusMode} size="sm" className="w-full bg-accent-primary text-white hover:bg-accent-primary/90">
                   <Focus className="mr-2 h-4 w-4" />
                   Start Focus Mode
                 </Button>
-                <Button 
-                  onClick={onSignOffForDay} 
-                  size="sm" 
-                  variant="outline" 
-                  className="w-full border-border-subtle text-text-secondary hover:text-text-primary hover:bg-white/5"
-                >
+                <Button onClick={onSignOffForDay} size="sm" variant="outline" className="w-full border-border-subtle text-text-secondary hover:text-text-primary hover:bg-white/5">
                   <Clock className="mr-2 h-4 w-4" />
                   Sign Off
                 </Button>
@@ -855,22 +819,14 @@ const HomeView = ({
               {/* Day Picker */}
               <div className="flex items-center justify-end">
                 <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2">
-                  <button 
-                    onClick={handlePreviousDay}
-                    disabled={selectedDate === "2 days ago"}
-                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
+                  <button onClick={handlePreviousDay} disabled={selectedDate === "2 days ago"} className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     <ChevronLeft className="w-4 h-4 text-light-gray-text" />
                   </button>
                   <div className="flex items-center gap-2 px-3">
                     <Calendar className="w-4 h-4 text-light-gray-text" />
                     <span className="text-sm text-white-text font-medium min-w-[70px] text-center">{selectedDate}</span>
                   </div>
-                  <button 
-                    onClick={handleNextDay}
-                    disabled={selectedDate === "Today"}
-                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
+                  <button onClick={handleNextDay} disabled={selectedDate === "Today"} className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     <ChevronRight className="w-4 h-4 text-light-gray-text" />
                   </button>
                 </div>
@@ -962,8 +918,6 @@ const HomeView = ({
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
         <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default React.memo(HomeView);
