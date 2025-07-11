@@ -2,9 +2,11 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Clock, Calendar, ChevronLeft, ChevronRight, Play, ArrowRight, CheckSquare, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 import ConnectedChannelsSection from "@/components/dashboard/HomeViewSections/ConnectedChannelsSection";
-import PrioritiesSection from "@/components/dashboard/HomeViewSections/PrioritiesSection";
+import { FollowUpsSection } from "@/components/dashboard/HomeViewSections/FollowUpsSection";
+import { CalendarScheduleSection } from "@/components/dashboard/HomeViewSections/CalendarScheduleSection";
 import BriefsContainer from "@/components/dashboard/HomeViewSections/BriefsContainer";
 
 const DashboardHome = () => {
@@ -175,53 +177,8 @@ const DashboardHome = () => {
 
               {/* Right panel (1/3) - Follow ups and Calendar */}
               <div className="col-span-1 space-y-6">
-                {/* Follow ups Section */}
-                <div className="space-y-4">
-                  <h2 className="text-lg font-semibold text-text-primary">Follow ups</h2>
-                  <div className="space-y-2">
-                    <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                      <div className="flex items-center gap-3">
-                        <CheckSquare className="h-4 w-4 text-accent-primary" />
-                        <div className="flex-1">
-                          <p className="text-sm text-text-primary font-medium">Approve Q3 budget proposal</p>
-                          <p className="text-xs text-text-secondary">from Sarah Chen • Critical</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                      <div className="flex items-center gap-3">
-                        <CheckSquare className="h-4 w-4 text-accent-primary" />
-                        <div className="flex-1">
-                          <p className="text-sm text-text-primary font-medium">Sign off on marketing campaign</p>
-                          <p className="text-xs text-text-secondary">from Mike Johnson • Critical</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Calendar/Schedule Section */}
-                <div className="space-y-4">
-                  <h2 className="text-lg font-semibold text-text-primary">Upcoming</h2>
-                  <div className="p-4 rounded-lg bg-surface-raised/30 border border-white/10">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-medium text-text-primary">internal project meeting</h3>
-                      <div className="flex gap-2">
-                        <Button size="sm" className="bg-primary-teal hover:bg-primary-teal/90">Join Live</Button>
-                        <Button size="sm" variant="outline">Send Proxy</Button>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-text-secondary mb-2">
-                      <Clock className="h-3 w-3" />
-                      <span>9:00 AM • 2 hours</span>
-                    </div>
-                    <p className="text-sm text-text-secondary mb-2">Regular project sync to discuss progress and next steps.</p>
-                    <div className="flex items-center gap-1 text-xs text-text-secondary">
-                      <User className="h-3 w-3" />
-                      <span>1 attending</span>
-                    </div>
-                  </div>
-                </div>
+                <FollowUpsSection />
+                <CalendarScheduleSection />
               </div>
             </div>
           </div>

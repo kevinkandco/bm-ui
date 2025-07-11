@@ -238,8 +238,7 @@ const SettingsPage = () => {
            </div>
          </div>
        </div>
-     </div>
-   );
+     );
 };
 
 export default SettingsPage;

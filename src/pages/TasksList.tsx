@@ -163,12 +163,11 @@ const TasksList = () => {
                   </div>
                 </React.Fragment>
                ))}
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
-   );
+            </div>
+          </div>
+        </div>
+      </div>
+    );
 };
 
 export default TasksList;

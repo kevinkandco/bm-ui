@@ -166,13 +166,12 @@ const CatchUpPage = () => {
                     <p className="text-text-secondary">{item.content}</p>
                   </div>
                 ))}
-              </div>
+               </div>
              </div>
            </div>
          ))}
        </div>
-     </div>
-   );
+     );
 };
 
 export default CatchUpPage;
