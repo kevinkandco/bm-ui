@@ -7,54 +7,50 @@
 
 @layer base {
   :root {
-    /* Light Mode Design Tokens */
-    --surface: #FFFFFF;
-    --surface-raised: #FFFFFF;
-    --surface-overlay: rgba(255, 255, 255, 0.95);
-    --glow-highlight: rgba(20, 197, 139, 0.1);
-    --glow-line: rgba(20, 197, 139, 0.2);
-    --accent-primary: #14C58B;  /* Brief Me Teal */
-    --accent-secondary: #F7C7A8;  /* Peach */
-    --text-primary: #333333;
-    --text-secondary: #606060;
-    --text-muted: #9A9A9A;
-    --border-subtle: #ECECEC;
-    
-    /* Light mode card shadows */
-    --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06);
-    --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.08);
+    /* New Podia Color System */
+    --surface: #0A0F19;  /* Dark Navy */
+    --surface-raised: #131B2B;  /* Deep Blue */
+    --surface-overlay: rgba(19, 27, 43, 0.95);  /* Deep Blue with opacity */
+    --glow-highlight: rgba(46, 226, 173, 0.1);
+    --glow-line: rgba(46, 226, 173, 0.2);
+    --accent-primary: #2EE2AD;  /* Primary Teal */
+    --accent-secondary: #3DE48D;  /* Accent Green */
+    --text-primary: #FFFFFF;  /* White Text */
+    --text-secondary: #B3B8C1;  /* Light Gray Text */
+    --text-muted: rgba(179, 184, 193, 0.7);
+    --border-subtle: rgba(179, 184, 193, 0.2);
     
     /* Standard radius */
-    --radius: 12px;
+    --radius: 16px;
 
-    /* Updated shadcn variables for light theme */
-    --background: 0 0% 100%;       /* White */
-    --foreground: 0 0% 20%;        /* #333333 */
-    --card: 0 0% 100%;             /* White */
-    --card-foreground: 0 0% 20%;   /* #333333 */
-    --popover: 0 0% 100%;          /* White */
-    --popover-foreground: 0 0% 20%; /* #333333 */
-    --primary: 160 74% 42%;        /* Brief Me Teal #14C58B */
+    /* Updated shadcn variables for Podia theme */
+    --background: 218 42% 8%;     /* Dark Navy */
+    --foreground: 0 0% 100%;      /* White */
+    --card: 218 42% 11%;          /* Deep Blue */
+    --card-foreground: 0 0% 100%; /* White */
+    --popover: 218 42% 11%;       /* Deep Blue */
+    --popover-foreground: 0 0% 100%; /* White */
+    --primary: 162 84% 55%;       /* Primary Teal */
     --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 0 0% 96%;         /* Light surface */
-    --secondary-foreground: 0 0% 20%; /* #333333 */
-    --muted: 0 0% 93%;             /* #ECECEC */
-    --muted-foreground: 0 0% 38%;  /* #606060 */
-    --accent: 23 61% 82%;          /* Peach #F7C7A8 */
-    --accent-foreground: 0 0% 20%; /* #333333 */
+    --secondary: 218 42% 11%;     /* Deep Blue */
+    --secondary-foreground: 0 0% 100%; /* White */
+    --muted: 218 42% 15%;         /* Lighter Deep Blue */
+    --muted-foreground: 221 12% 73%; /* Light Gray Text */
+    --accent: 162 84% 55%;        /* Primary Teal */
+    --accent-foreground: 0 0% 100%; /* White */
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 93%;            /* #ECECEC */
-    --input: 0 0% 93%;             /* #ECECEC */
-    --ring: 160 74% 42%;           /* Brief Me Teal */
+    --border: 221 12% 50%;        /* Light Gray border */
+    --input: 221 12% 50%;         /* Light Gray */
+    --ring: 162 84% 55%;          /* Primary Teal */
     
     /* Accent colors with opacity for hover states */
-    --accent-primary-hover: rgba(20, 197, 139, 0.1);
-    --accent-primary-hover-light: rgba(20, 197, 139, 0.05);
+    --accent-primary-hover: rgba(46, 226, 173, 0.2);
+    --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
   }
 
   .dark {
-    /* Dark Mode Design Tokens */
+    /* Same as root for dark mode */
     --surface: #0A0F19;
     --surface-raised: #131B2B;
     --surface-overlay: rgba(19, 27, 43, 0.85);
@@ -66,10 +62,6 @@
     --text-secondary: #B3B8C1;
     --text-muted: rgba(179, 184, 193, 0.5);
     --border-subtle: rgba(179, 184, 193, 0.08);
-    
-    /* Dark mode card shadows */
-    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
-    --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.4);
     
     --accent-primary-hover: rgba(46, 226, 173, 0.2);
     --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
@@ -99,16 +91,6 @@
   body {
     @apply font-inter;
     font-feature-settings: "rlig" 1, "calt" 1;
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding: 96px 64px 48px;
-    
-    /* Light mode: diagonal sunrise gradient */
-    background: linear-gradient(3deg, #FFFFFF 0%, #FFE8D8 100%);
-  }
-  
-  .dark body {
-    /* Dark mode: original gradient */
     background: 
       radial-gradient(
         circle at top left,
@@ -118,6 +100,8 @@
       ),
       url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
   }
 }
 
@@ -169,22 +153,10 @@
 
   /* Shadow utilities */
   .shadow-subtle {
-    box-shadow: var(--shadow-card);
-  }
-  
-  .shadow-subtle:hover {
-    box-shadow: var(--shadow-card-hover);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .shadow-glow {
-    box-shadow: 0 0 20px rgba(20, 197, 139, 0.4);
-  }
-  
-  .dark .shadow-subtle {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-  
-  .dark .shadow-glow {
     box-shadow: 0 0 20px rgba(46, 226, 173, 0.4);
   }
 
@@ -259,32 +231,16 @@
     @apply text-primary-teal w-5 h-5;
   }
   
-  /* Glass Card Component - updated for both themes */
+  /* Glass Card Component - updated for Podia theme */
   .glass-card {
-    @apply rounded-xl border backdrop-blur-md transition-all duration-300 ease-out overflow-hidden;
-    background: var(--surface);
+    @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
+    background: linear-gradient(to bottom, var(--surface-raised), var(--surface));
     border-color: var(--border-subtle);
-    box-shadow: var(--shadow-card);
   }
   
   .glass-card:hover {
-    box-shadow: var(--shadow-card-hover);
-    border-color: var(--accent-primary);
-  }
-  
-  /* Light mode specific card styling */
-  .section-card {
-    @apply rounded-xl bg-surface-light border border-border-light shadow-subtle transition-all duration-300;
-    padding: 24px;
-  }
-  
-  .section-card:hover {
-    @apply shadow-subtle-hover;
-  }
-  
-  .dark .section-card {
-    @apply bg-surface-raised border-border-subtle;
-    box-shadow: var(--shadow-card);
+    @apply shadow-lg;
+    border-color: rgba(46, 226, 173, 0.2);
   }
 }
 

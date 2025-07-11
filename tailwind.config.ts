@@ -63,31 +63,13 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				
-				// Light Mode Color Palette
-				'primary-teal': '#14C58B',  // Brief Me Teal
+				// New Podia Color Palette
+				'primary-teal': '#2EE2AD',
 				'accent-green': '#3DE48D',
-				'accent-peach': '#F7C7A8',  // Peach for passive highlights
-				'peach-bg': '#FFE8D8',      // Sunrise gradient peach
-				'text-primary': '#333333',
-				'text-secondary': '#606060',
-				'text-muted': '#9A9A9A',
-				'surface-light': '#FFFFFF',
-				'border-light': '#ECECEC',
-				
-				// Dark Mode Color Palette (for .dark class)
-				'dark-primary-teal': '#2EE2AD',
-				'dark-accent-green': '#3DE48D',
 				'dark-navy': '#0A0F19',
 				'deep-blue': '#131B2B',
 				'light-gray-text': '#B3B8C1',
 				'white-text': '#FFFFFF',
-				// Priority chip colors for light mode
-				'priority-high': '#E69570',        // Peach medium
-				'priority-high-bg': 'rgba(230, 149, 112, 0.1)', // Peach 10%
-				'priority-medium': '#F7C7A8',      // Peach light  
-				'priority-medium-bg': 'rgba(247, 199, 168, 0.2)', // Peach 20%
-				'priority-low': '#606060',         // Grey 70
-				'chip-bg': '#EDEDED',              // Standard chip background
 				
 				// Glass morphism design system colors - updated for new palette
 				'surface': 'var(--surface)',
@@ -135,9 +117,9 @@ export default {
 				'inter': ['Inter', 'system-ui', 'sans-serif'],
 			},
 			fontSize: {
-				// Light Mode Typography Scale - better contrast
+				// Podia Typography Scale
 				'heading': ['32px', { lineHeight: '1.2', fontWeight: '600' }],
-				'subheading': ['20px', { lineHeight: '1.3', fontWeight: '600' }], // Increased weight for light mode
+				'subheading': ['20px', { lineHeight: '1.3', fontWeight: '400' }],
 				'body': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
 				'secondary': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
 				'button': ['16px', { lineHeight: '1', fontWeight: '500' }],
@@ -160,14 +142,13 @@ export default {
 				'podia-card': '16px',
 			},
 			boxShadow: {
-				'podia-button': '0 4px 8px rgba(20, 197, 139, 0.2)',
-				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
-				'elevated': '0 10px 30px rgba(0, 0, 0, 0.08)',
-				'neo': '0 10px 30px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(20, 197, 139, 0.1)',
-				'neon': '0 0 15px rgba(20, 197, 139, 0.4)',
-				'subtle': 'var(--shadow-card)',
-				'subtle-hover': 'var(--shadow-card-hover)',
-				'light-subtle': '0 8px 32px rgba(0, 0, 0, 0.05)',
+				'podia-button': '0 4px 8px rgba(46, 226, 173, 0.2)',
+				'glass': '0 4px 30px rgba(0, 0, 0, 0.2)',
+				'elevated': '0 10px 30px rgba(0, 0, 0, 0.15)',
+				'neo': '0 10px 30px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(46, 226, 173, 0.1)',
+				'neon': '0 0 15px rgba(46, 226, 173, 0.4)',
+				'subtle': '0 8px 32px rgba(0, 0, 0, 0.2)',
+				'light-subtle': '0 8px 32px rgba(0, 0, 0, 0.1)',
 			},
 			transitionDuration: {
 				'400': '400ms',

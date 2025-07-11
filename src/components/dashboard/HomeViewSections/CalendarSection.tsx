@@ -223,22 +223,25 @@ const CalendarSection = () => {
 
   return (
     <TooltipProvider>
-      <div className="w-full space-y-6">
+      <div className="w-full space-y-4">
         {/* Upcoming header */}
-        <h3 className="text-sm font-semibold text-text-primary">Upcoming</h3>
+        <h3 className="text-sm font-medium text-text-primary">Upcoming</h3>
         
-        {/* Next Meeting Card - Light mode white card */}
+        {/* Next Meeting Card - Reverted to original version with outline */}
         {nextMeeting && (
           <Card 
-            className="section-card cursor-pointer hover:shadow-subtle-hover transition-shadow border-l-4 border-l-primary-teal" 
+            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow" 
+            style={{
+              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
+            }}
             onClick={() => openMeetingDetails(nextMeeting)}
           >
-            <CardContent className="p-0">
-              <div className="bg-transparent rounded-xl p-4">
+            <CardContent className="p-4">
+              <div className="bg-surface-overlay/50 rounded-xl p-4">
                 {/* Header with time and chips */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h4 className="text-sm font-semibold text-text-primary mb-1">
+                    <h4 className="text-sm font-medium text-text-primary mb-1">
                       {nextMeeting.title}
                     </h4>
                     <div className="flex items-center gap-2 text-xs text-text-secondary">
@@ -265,10 +268,10 @@ const CalendarSection = () => {
                           }}
                           variant={nextMeeting.hasProxy ? "default" : "outline"}
                           size="sm"
-                          className={`h-7 px-3 text-xs rounded-lg border ${
+                          className={`h-6 px-2 text-xs rounded-full ${
                             nextMeeting.hasProxy 
-                              ? "bg-primary-teal text-white hover:bg-primary-teal/90" 
-                              : "border-primary-teal text-primary-teal bg-white hover:bg-primary-teal/10"
+                              ? "bg-green-600 text-white hover:bg-green-700" 
+                              : "border-text-secondary text-text-secondary hover:border-green-600 hover:text-green-600"
                           }`}
                         >
                           {nextMeeting.hasProxy ? "Proxy On" : "Send Proxy"}
@@ -296,7 +299,7 @@ const CalendarSection = () => {
                       }}
                       variant="ghost"
                       size="sm"
-                      className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                      className="h-5 w-5 p-0 text-text-secondary hover:text-text-primary"
                     >
                       {nextMeeting.hasNotes ? (
                         <BookOpen className="w-3 h-3" />
@@ -312,7 +315,7 @@ const CalendarSection = () => {
                   <div className="mb-3">
                     <p className="text-xs text-text-secondary">
                       {nextMeeting.summaryReady ? (
-                        <span className="text-primary-teal cursor-pointer hover:underline">
+                        <span className="text-accent-primary cursor-pointer hover:underline">
                           Summary & action items ready
                         </span>
                       ) : (
@@ -331,14 +334,14 @@ const CalendarSection = () => {
                     </span>
                   </div>
 
-                  {/* Ghost buttons for "Send Proxy / Join Live" */}
+                  {/* Split button CTA */}
                   <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                     <Button
                       size="sm"
-                      className={`h-7 px-3 text-xs rounded-lg border transition-colors ${
+                      className={`h-7 px-3 text-xs rounded-l-lg rounded-r-none ${
                         nextMeeting.hasProxy 
-                          ? "bg-muted text-text-secondary hover:bg-muted/80 border-border-light" 
-                          : "bg-white text-primary-teal border-primary-teal hover:bg-primary-teal hover:text-white"
+                          ? "bg-surface text-text-secondary hover:bg-surface" 
+                          : "bg-accent-primary text-white hover:bg-accent-primary/90"
                       }`}
                       disabled={nextMeeting.hasProxy}
                     >
@@ -349,19 +352,19 @@ const CalendarSection = () => {
                       <DropdownMenuTrigger asChild>
                         <Button
                           size="sm"
-                          className={`h-7 w-6 px-0 rounded-lg border-l border-l-primary-teal/20 ${
+                          className={`h-7 w-6 px-0 rounded-r-lg rounded-l-none border-l border-l-white/20 ${
                             nextMeeting.hasProxy 
-                              ? "bg-muted text-text-secondary hover:bg-muted/80 border-border-light" 
-                              : "bg-white text-primary-teal border-primary-teal hover:bg-primary-teal hover:text-white"
+                              ? "bg-surface text-text-secondary hover:bg-surface" 
+                              : "bg-accent-primary text-white hover:bg-accent-primary/90"
                           }`}
                         >
                           <ChevronDown className="w-3 h-3" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-surface border-border-light">
+                      <DropdownMenuContent align="end" className="bg-surface border-border-subtle">
                         <DropdownMenuItem 
                           onClick={() => toggleProxy(nextMeeting.id)}
-                          className="text-text-primary hover:bg-muted/20"
+                          className="text-text-primary hover:bg-white/5"
                         >
                           Send Proxy Instead
                         </DropdownMenuItem>
@@ -375,10 +378,13 @@ const CalendarSection = () => {
         )}
 
         {/* Schedule section with header above */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-text-primary">Schedule</h3>
-          <Card className="section-card">
-            <CardContent className="p-0">
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
+          <Card className="w-full rounded-xl shadow-none border-0" style={{
+            background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
+            boxShadow: 'none'
+          }}>
+            <CardContent className="p-4">
               <div className="space-y-0">
                 {allMeetings.map((meeting, index) => {
                   const isPast = meeting.minutesUntil < 0;
@@ -388,13 +394,13 @@ const CalendarSection = () => {
                     <div key={meeting.id} className="relative">
                       {/* Timeline connector */}
                       {index > 0 && (
-                        <div className={`absolute left-20 top-0 w-0.5 h-4 ${
-                          allMeetings[index - 1].minutesUntil < 0 ? 'bg-red-400/60' : 'bg-border-light'
+                        <div className={`absolute left-16 top-0 w-0.5 h-4 ${
+                          allMeetings[index - 1].minutesUntil < 0 ? 'bg-red-500' : 'bg-border-subtle'
                         }`} />
                       )}
                       
                       <div 
-                        className={`flex items-center gap-4 py-3 px-4 cursor-pointer hover:bg-muted/10 rounded-lg transition-colors ${
+                        className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
                           isNext ? 'opacity-100' : 'opacity-80'
                         }`}
                         onClick={() => openMeetingDetails(meeting)}
@@ -414,7 +420,7 @@ const CalendarSection = () => {
                         {/* Status indicator */}
                         <div className="flex items-center gap-2">
                           {meeting.hasProxy && (
-                            <div className="w-2 h-2 bg-primary-teal rounded-full" />
+                            <div className="w-2 h-2 bg-green-500 rounded-full" />
                           )}
                           {meeting.isRecording && (
                             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
@@ -425,7 +431,7 @@ const CalendarSection = () => {
                       {/* Timeline indicator line - red line shows current time */}
                       {meeting.minutesUntil < 0 && allMeetings[index + 1]?.minutesUntil >= 0 && (
                         <div className="absolute left-0 right-0 top-full">
-                          <div className="h-0.5 bg-red-400/60 w-full" />
+                          <div className="h-0.5 bg-red-500 w-full" />
                         </div>
                       )}
                     </div>
