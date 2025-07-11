@@ -793,7 +793,7 @@ const HomeView = ({
           {/* Two-Column Content Grid with Unified Background */}
           <div className="grid grid-cols-3 gap-6">
             {/* Combined Briefs and Follow-ups area with shared background */}
-            <div className="col-span-3 rounded-2xl p-6" style={{
+            <div className="col-span-3 card-dark p-6" style={{
             background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
           }}>
               <div className="grid grid-cols-3 gap-6">
