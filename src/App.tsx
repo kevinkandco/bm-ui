@@ -19,7 +19,8 @@ const lazyImport = (importFn) => {
 const Index = lazyImport(() => import("./pages/Index"));
 const Login = lazyImport(() => import("./pages/Login"));
 const Onboarding = lazyImport(() => import("./pages/Onboarding"));
-const Dashboard = lazyImport(() => import("./pages/Dashboard"));
+const DashboardWrapper = lazyImport(() => import("./components/dashboard/DashboardWrapper"));
+const DashboardHome = lazyImport(() => import("./pages/DashboardHome"));
 const BriefsList = lazyImport(() => import("./pages/BriefsList"));
 const TasksPage = lazyImport(() => import("./pages/TasksPage"));
 const MeetingsList = lazyImport(() => import("./pages/MeetingsList"));
@@ -79,13 +80,15 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/dashboard/briefs" element={<BriefsList />} />
-                <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
-                <Route path="/dashboard/tasks" element={<TasksPage />} />
-                <Route path="/dashboard/meetings" element={<MeetingsList />} />
-                <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
-                <Route path="/dashboard/settings" element={<SettingsPage />} />
+                <Route path="/dashboard" element={<DashboardWrapper />}>
+                  <Route index element={<DashboardHome />} />
+                  <Route path="briefs" element={<BriefsList />} />
+                  <Route path="briefs/:briefId" element={<BriefDetail />} />
+                  <Route path="tasks" element={<TasksPage />} />
+                  <Route path="meetings" element={<MeetingsList />} />
+                  <Route path="catch-up" element={<CatchUpPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
+                </Route>
                 <Route path="/mac" element={<MacRouteGuard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

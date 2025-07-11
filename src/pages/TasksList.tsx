@@ -1,6 +1,5 @@
 
 import React from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { CheckSquare, Plus, Filter, Clock, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -18,11 +17,6 @@ import { useNavigate } from "react-router-dom";
 const TasksList = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
-
-  const handleToggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
-  };
 
   const handleCreateTask = () => {
     toast({
@@ -70,12 +64,7 @@ const TasksList = () => {
   ];
 
   return (
-    <DashboardLayout 
-      currentPage="tasks" 
-      sidebarOpen={sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="container p-4 md:p-6 max-w-7xl mx-auto">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -178,7 +167,7 @@ const TasksList = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

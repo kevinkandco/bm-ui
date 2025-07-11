@@ -1,6 +1,5 @@
 
 import React, { useState, useCallback } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +18,7 @@ import { useNavigate } from "react-router-dom";
 const BriefsList = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleToggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
-  };
 
   const handleOpenBrief = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -79,12 +73,7 @@ const BriefsList = () => {
   );
 
   return (
-    <DashboardLayout 
-      currentPage="briefs" 
-      sidebarOpen={sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="min-h-screen bg-surface px-4 py-6">
+    <div className="min-h-screen bg-surface px-4 py-6">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -160,7 +149,7 @@ const BriefsList = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 
