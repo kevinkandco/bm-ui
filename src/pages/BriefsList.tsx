@@ -74,42 +74,45 @@ const BriefsList = () => {
 
   return (
     <div className="min-h-screen bg-surface px-4 py-6">
-        <Breadcrumb className="mb-4">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink 
-                onClick={() => navigate("/dashboard")} 
-                className="cursor-pointer"
-              >
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Briefs</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink 
+              onClick={() => navigate("/dashboard")} 
+              className="cursor-pointer"
+            >
+              Dashboard
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Briefs</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
-          <p className="text-text-secondary">Search and view your brief history</p>
+      <div className="mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+        <p className="text-text-secondary">Search and view your brief history</p>
+      </div>
+      
+      {/* Search */}
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
+          <Input
+            placeholder="Search briefs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
+          />
         </div>
-        
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
-            <Input
-              placeholder="Search briefs..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
-            />
-          </div>
-        </div>
-        
-        {/* Briefs List */}
+      </div>
+      
+      {/* Briefs List with same background as dashboard */}
+      <div className="card-dark p-6" style={{
+        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
+      }}>
         <div className="glass-card rounded-2xl overflow-hidden">
           <div className="p-4 md:p-6">
             <div className="space-y-1">
