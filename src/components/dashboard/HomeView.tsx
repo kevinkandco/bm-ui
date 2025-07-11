@@ -659,134 +659,99 @@ const HomeView = ({
 
   // Desktop View
   return (
-    <div className="min-h-screen px-4 py-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Desktop Header - Just Profile */}
-        <div className="flex items-center justify-end mb-8">
-          {/* Profile Dropdown */}
+    <div className="min-h-screen flex">
+      {/* Full Height Sidebar */}
+      <div className="w-80 bg-surface-raised/20 border-r border-border-subtle">
+        <div className="p-6 space-y-6">
+          {/* Brief Me Button */}
+          <Button 
+            onClick={onOpenBriefModal}
+            className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-3 font-medium"
+          >
+            Brief Me
+          </Button>
+
+          {/* Upcoming Brief */}
+          <div className="space-y-1">
+            <p className="text-text-secondary text-sm">Upcoming brief</p>
+            <p className="text-text-primary text-sm font-medium">{upcomingBrief.scheduledTime}</p>
+          </div>
+
+          {/* Navigation Items */}
+          <div className="space-y-1">
+            <button 
+              onClick={handleViewAllBriefs}
+              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors text-primary-teal"
+            >
+              <FileText className="w-5 h-5" />
+              <span className="font-medium">Briefs</span>
+            </button>
+            <button 
+              onClick={handleViewAllTasks}
+              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors"
+            >
+              <CheckSquare className="w-5 h-5 text-light-gray-text" />
+              <span className="text-light-gray-text">Follow-ups</span>
+            </button>
+            <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors">
+              <Calendar className="w-5 h-5 text-light-gray-text" />
+              <span className="text-light-gray-text">Meetings</span>
+            </button>
+          </div>
+
+          {/* Profile Section */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="p-0 h-auto">
-                <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
-                  <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
-                  <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
-                    AJ
-                  </AvatarFallback>
+              <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
                 </Avatar>
-              </Button>
+                <div>
+                  <p className="text-white-text text-sm font-medium">Alex</p>
+                  <p className="text-light-gray-text text-xs">alex@company.com</p>
+                </div>
+              </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
-              <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
-                <User className="mr-2 h-4 w-4" />
-                Profile
+            <DropdownMenuContent side="top" align="start" className="w-56 bg-surface border-border-subtle">
+              <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5 cursor-pointer">
+                <span>Integrations</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
-                <Zap className="mr-2 h-4 w-4" />
-                Integrations
+              <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5 cursor-pointer">
+                <span>Brief Schedule</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
-                <FileText className="mr-2 h-4 w-4" />
-                Brief Configuration
+              <DropdownMenuItem className="text-text-primary hover:bg-white/5 cursor-pointer">
+                <span>Referrals</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
-                <Settings className="mr-2 h-4 w-4" />
-                All Settings
+              <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5 cursor-pointer">
+                <span>Settings</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+      </div>
 
-        {/* Connected Channels Section - Desktop Only */}
-        <div className="mb-6">
-          <ConnectedChannelsSection showAsHorizontal={true} />
-        </div>
-
-        {/* Greeting + Quick Stats Bar */}
-        
-
-        {/* Three-Column Grid Layout: 25% | 50% | 25% */}
-        <div className="grid grid-cols-12 gap-6">
-          {/* Column 1 - Navigation Sidebar (25% - 3 columns) */}
-          <div className="col-span-3 space-y-4">
-            {/* Brief Me Button */}
-            <Button 
-              onClick={onOpenBriefModal}
-              className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-3 font-medium"
-            >
-              Brief Me
-            </Button>
-
-            {/* Upcoming Brief */}
-            <div className="space-y-1">
-              <p className="text-text-secondary text-sm">Upcoming brief</p>
-              <p className="text-text-primary text-sm font-medium">{upcomingBrief.scheduledTime}</p>
-            </div>
-
-            {/* Divider */}
-            <Separator className="my-4" />
-
-            {/* Navigation Items */}
-            <div className="space-y-1">
-              <button 
-                onClick={handleViewAllBriefs}
-                className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors text-primary-teal"
-              >
-                <FileText className="w-5 h-5" />
-                <span className="font-medium">Briefs</span>
-              </button>
-              <button 
-                onClick={handleViewAllTasks}
-                className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors"
-              >
-                <CheckSquare className="w-5 h-5 text-light-gray-text" />
-                <span className="text-light-gray-text">Follow-ups</span>
-              </button>
-              <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors">
-                <Calendar className="w-5 h-5 text-light-gray-text" />
-                <span className="text-light-gray-text">Meetings</span>
-              </button>
-            </div>
-
-            {/* Divider */}
-            <Separator className="my-4" />
-
-            {/* Profile Section */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/40 rounded-lg transition-colors">
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src="/placeholder.svg" />
-                    <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-white-text text-sm font-medium">Alex</p>
-                    <p className="text-light-gray-text text-xs">alex@company.com</p>
-                  </div>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" align="start" className="w-56 bg-surface border-border-subtle">
-                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5 cursor-pointer">
-                  <span>Integrations</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5 cursor-pointer">
-                  <span>Brief Schedule</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-text-primary hover:bg-white/5 cursor-pointer">
-                  <span>Referrals</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5 cursor-pointer">
-                  <span>Settings</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+      {/* Main Content Area */}
+      <div className="flex-1 px-6 py-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Connected Channels Section */}
+          <div className="mb-6">
+            <ConnectedChannelsSection showAsHorizontal={true} />
           </div>
 
-          {/* Columns 2 & 3 - Core Brief Workflow + Task Triage (75% - 9 columns) */}
-          <div className="col-span-9">
-            {/* Combined background container with internal layout */}
-            <div className="space-y-6">
+          {/* Two-Column Content Grid */}
+          <div className="grid grid-cols-3 gap-6">
+            {/* Briefs area (2/3) */}
+            <div className="col-span-2">
+              {/* Good morning greeting */}
+              <div className="mb-6">
+                <h1 className="font-bold text-text-primary text-2xl">
+                  Good morning, Alex
+                </h1>
+              </div>
+              
               {/* Day Picker */}
-              <div className="flex items-center justify-end">
+              <div className="flex items-center justify-end mb-6">
                 <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2">
                   <button onClick={handlePreviousDay} disabled={selectedDate === "2 days ago"} className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     <ChevronLeft className="w-4 h-4 text-light-gray-text" />
@@ -801,90 +766,77 @@ const HomeView = ({
                 </div>
               </div>
               
-              {/* Brief Container with internal layout spanning both areas */}
-              <div className="grid grid-cols-3 gap-6">
-                {/* Briefs area (2/3) */}
-                <div className="col-span-2">
-                  {/* Good morning greeting */}
-                  <div className="mb-6">
-                    <h1 className="font-bold text-text-primary text-2xl">
-                      Good morning, Alex
-                    </h1>
+              <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
+            </div>
+            
+            {/* Right content area (1/3) - Task Triage */}
+            <div className="space-y-6">
+              {/* Follow-ups List */}
+              <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
+                <div className="flex items-center justify-between">
+                  <h2 className="font-semibold text-text-primary text-lg">Follow ups</h2>
+                  {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
+                      View all
+                      <ArrowRight className="w-3 h-3" />
+                    </Button>}
+                </div>
+                <ActionItemsPanel />
+              </div>
+              
+              {/* Calendar Section */}
+              <CalendarSection />
+            
+              {/* Promo / Brief Me Teams Card */}
+              <div className="rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+                {/* Enhanced blurred background mockups */}
+                <div className="absolute inset-0 opacity-20 blur-[1px] pointer-events-none">
+                  <div className="grid grid-cols-1 gap-2 h-full p-2">
+                    {/* Team card mockup */}
+                    <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-lg p-2 shadow-lg">
+                      <div className="flex items-center gap-1 mb-2">
+                        <div className="flex -space-x-1">
+                          <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                          <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                          <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="bg-white/40 rounded h-1.5 w-full"></div>
+                        <div className="bg-white/35 rounded h-1.5 w-3/4"></div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
                 </div>
                 
-                {/* Right content area (1/3) - Task Triage */}
-                <div className="space-y-6">
-                  {/* Follow-ups List */}
-                  <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
-                    <div className="flex items-center justify-between">
-                      <h2 className="font-semibold text-text-primary text-lg">Follow ups</h2>
-                      {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
-                          View all
-                          <ArrowRight className="w-3 h-3" />
-                        </Button>}
-                    </div>
-                    <ActionItemsPanel />
-                  </div>
+                {/* Clear content with better contrast */}
+                <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-lg p-3">
+                  <h3 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    Brief Me Teams
+                  </h3>
                   
-                  {/* Calendar Section */}
-                  <CalendarSection />
-                
-                  {/* Promo / Brief Me Teams Card */}
-                  <div className="rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-                    {/* Enhanced blurred background mockups */}
-                    <div className="absolute inset-0 opacity-20 blur-[1px] pointer-events-none">
-                      <div className="grid grid-cols-1 gap-2 h-full p-2">
-                        {/* Team card mockup */}
-                        <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-lg p-2 shadow-lg">
-                          <div className="flex items-center gap-1 mb-2">
-                            <div className="flex -space-x-1">
-                              <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                              <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                              <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                            </div>
-                          </div>
-                          <div className="space-y-1">
-                            <div className="bg-white/40 rounded h-1.5 w-full"></div>
-                            <div className="bg-white/35 rounded h-1.5 w-3/4"></div>
-                          </div>
-                        </div>
-                      </div>
+                  <p className="text-text-secondary text-xs mb-3">Coming soon...</p>
+                  
+                  <div className="space-y-1.5 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                      <p className="text-xs text-text-primary">AI meeting proxy</p>
                     </div>
                     
-                    {/* Clear content with better contrast */}
-                    <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-lg p-3">
-                      <h3 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Brief Me Teams
-                      </h3>
-                      
-                      <p className="text-text-secondary text-xs mb-3">Coming soon...</p>
-                      
-                      <div className="space-y-1.5 mb-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                          <p className="text-xs text-text-primary">AI meeting proxy</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                          <p className="text-xs text-text-primary">Team analytics</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                          <p className="text-xs text-text-primary">Shared briefs</p>
-                        </div>
-                      </div>
-                      
-                      <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-3 py-1.5 text-xs w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
-                        {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
-                      </Button>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                      <p className="text-xs text-text-primary">Team analytics</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                      <p className="text-xs text-text-primary">Shared briefs</p>
                     </div>
                   </div>
+                  
+                  <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-3 py-1.5 text-xs w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
+                    {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -897,4 +849,5 @@ const HomeView = ({
     </div>
   );
 };
+
 export default React.memo(HomeView);
