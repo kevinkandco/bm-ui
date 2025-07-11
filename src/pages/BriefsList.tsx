@@ -1,5 +1,6 @@
 
 import React, { useState, useCallback } from "react";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,12 @@ import { useNavigate } from "react-router-dom";
 const BriefsList = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleToggleSidebar = () => {
+    setSidebarOpen(prev => !prev);
+  };
 
   const handleOpenBrief = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -73,46 +79,48 @@ const BriefsList = () => {
   );
 
   return (
-    <div className="min-h-screen bg-surface px-4 py-6">
-      <Breadcrumb className="mb-4">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink 
-              onClick={() => navigate("/dashboard")} 
-              className="cursor-pointer"
-            >
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Briefs</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <DashboardLayout 
+      currentPage="briefs" 
+      sidebarOpen={sidebarOpen} 
+      onToggleSidebar={handleToggleSidebar}
+    >
+      <div className="min-h-screen bg-surface px-4 py-6">
+        <Breadcrumb className="mb-4">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink 
+                onClick={() => navigate("/dashboard")} 
+                className="cursor-pointer"
+              >
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Briefs</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-      <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
-        <p className="text-text-secondary">Search and view your brief history</p>
-      </div>
-      
-      {/* Search */}
-      <div className="mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
-          <Input
-            placeholder="Search briefs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
-          />
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+          <p className="text-text-secondary">Search and view your brief history</p>
         </div>
-      </div>
-      
-      {/* Briefs List with same background as dashboard */}
-      <div className="card-dark p-6" style={{
-        background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
-      }}>
+        
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
+            <Input
+              placeholder="Search briefs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
+            />
+          </div>
+        </div>
+        
+        {/* Briefs List */}
         <div className="glass-card rounded-2xl overflow-hidden">
           <div className="p-4 md:p-6">
             <div className="space-y-1">
@@ -152,7 +160,7 @@ const BriefsList = () => {
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
