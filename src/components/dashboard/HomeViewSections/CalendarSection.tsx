@@ -231,9 +231,6 @@ const CalendarSection = () => {
         {nextMeeting && (
           <Card 
             className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow" 
-            style={{
-              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-            }}
             onClick={() => openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
