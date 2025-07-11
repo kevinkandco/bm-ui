@@ -859,17 +859,14 @@ const HomeView = ({
               <div className="grid grid-cols-3 gap-6">
                 {/* Briefs area (2/3) */}
                 <div className="col-span-2">
-                  {/* Hamburger Menu for iPad breakpoint - only show when nav is collapsed and at tablet/mobile */}
+                  {/* Hamburger Menu - show whenever nav is collapsed */}
                   {isNavCollapsed && (
-                    <div className="mb-4 lg:hidden">
+                    <div className="mb-4">
                       <button
                         onClick={handleToggleNav}
                         className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                       >
-                        <div className="flex flex-col gap-1">
-                          <div className="w-5 h-0.5 bg-text-primary rounded"></div>
-                          <div className="w-5 h-0.5 bg-text-primary rounded"></div>
-                        </div>
+                        <Menu className="w-5 h-5 text-text-primary" />
                       </button>
                     </div>
                   )}
