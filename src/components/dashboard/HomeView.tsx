@@ -474,477 +474,251 @@ const HomeView = ({
                       <p className="text-xs text-light-gray-text">{upcomingBrief.scheduledTime}</p>
                     </div>
                   </div>
-                  <Button onClick={handleGetBriefedNow} size="sm" variant="outline" className="border-primary-teal/60 text-primary-teal hover:border-primary-teal hover:text-white text-xs px-2.5 py-1 h-auto bg-transparent">
-                    <Zap className="w-3 h-3 mr-1" />
-                    Now
+                  <Button size="sm" onClick={handleGetBriefedNow} className="bg-primary-teal hover:bg-primary-teal/90 text-white text-xs px-2 py-1 h-6">
+                    Get briefed now
                   </Button>
                 </div>
               </div>}
           </div>
-        </div>
 
-        {/* Fixed Audio Player - Above Bottom Nav */}
-        <div className="fixed bottom-16 left-0 right-0 border-t border-white/10 px-4 py-2 bg-surface-raised/80 backdrop-blur-md cursor-pointer hover:bg-surface-raised/90 transition-colors" onClick={() => setShowBriefDetail(true)}>
-          <div className="flex items-center gap-2.5">
-            <button onClick={e => {
-            e.stopPropagation();
-            playingBrief ? handlePlayBrief(playingBrief) : handlePlayBrief(latestBrief.id);
-          }} className="w-7 h-7 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors">
-              {playingBrief ? <Pause className="h-3.5 w-3.5 text-primary-teal" /> : <Play className="h-3.5 w-3.5 text-primary-teal" />}
-            </button>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm text-white-text font-medium truncate">
-                {playingBrief ? "Morning Brief" : latestBrief.name}
-              </div>
-              <div className="text-xs text-light-gray-text">
-                {playingBrief ? "2:34 / 5:12" : "Ready to play"}
-              </div>
+          {/* Action Items - Reduced spacing */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <h2 className="text-text-primary text-sm font-medium">Follow ups</h2>
+              <Button size="sm" variant="ghost" onClick={handleViewAllTasks} className="text-xs text-light-gray-text hover:text-primary-teal">
+                View all
+              </Button>
             </div>
-            {playingBrief && <Button variant="ghost" size="sm" onClick={e => {
-            e.stopPropagation();
-            setPlayingBrief(null);
-          }} className="h-7 w-7 p-0">
-                <X className="h-3.5 w-3.5" />
-              </Button>}
-            <ChevronDown className="h-4 w-4 text-light-gray-text" />
+            <div className="space-y-1.5 max-h-40 overflow-y-auto">
+              {actionItems.slice(0, 4).map(item => <div key={item.id} className="p-2 rounded-lg bg-surface-raised/30 border border-white/10">
+                  <div className="flex items-start gap-2">
+                    <CheckSquare className="w-3.5 h-3.5 text-primary-teal mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-white-text">{item.title}</p>
+                      <p className="text-xs text-light-gray-text mt-0.5">from {item.sender}</p>
+                    </div>
+                  </div>
+                </div>)}
+            </div>
           </div>
         </div>
 
-        {/* Bottom Navigation - Fixed at bottom of screen */}
-        <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-surface-raised/90 backdrop-blur-md pb-safe">
-          <div className="grid grid-cols-4 px-2 py-1.5">
+        {/* Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 bg-surface-raised/90 backdrop-blur-md border-t border-white/10 px-4 py-3">
+          <div className="flex items-center justify-between max-w-md mx-auto">
             {/* Home */}
-            <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center gap-0.5 p-2.5 text-primary-teal">
-              <Home className="h-5 w-5" />
-              <span className="text-xs font-medium">Home</span>
-            </button>
+            <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 text-primary-teal">
+              <Home className="h-4 w-4" />
+              <span className="text-xs">Home</span>
+            </Button>
 
             {/* Briefs */}
-            <button onClick={handleViewAllBriefs} className="flex flex-col items-center gap-0.5 p-2.5 text-light-gray-text hover:text-white-text transition-colors">
-              <FileText className="h-5 w-5" />
-              <span className="text-xs font-medium">Briefs</span>
-            </button>
+            <Button variant="ghost" size="sm" onClick={handleViewAllBriefs} className="flex flex-col items-center gap-1 text-light-gray-text hover:text-primary-teal">
+              <Headphones className="h-4 w-4" />
+              <span className="text-xs">Briefs</span>
+            </Button>
 
-            {/* Status */}
-            <Sheet open={showStatusModal} onOpenChange={setShowStatusModal}>
-              <SheetTrigger asChild>
-                <button className="flex flex-col items-center gap-0.5 p-2.5 relative">
-                  {/* Status indicator with better visual feedback */}
-                  <div className="relative">
-                    {currentStatus === 'active' && <div className="w-5 h-5 rounded-full bg-green-400 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
-                      </div>}
-                    {currentStatus === 'focus' && <div className="w-5 h-5 rounded-full bg-primary-teal/20 flex items-center justify-center border-2 border-primary-teal">
-                        <Focus className="h-3 w-3 text-primary-teal" />
-                      </div>}
-                    {currentStatus === 'offline' && <div className="w-5 h-5 rounded-full bg-orange-400/20 flex items-center justify-center border-2 border-orange-400">
-                        <Clock className="h-3 w-3 text-orange-400" />
-                      </div>}
-                    {/* Active indicator dot */}
-                    {currentStatus !== 'active' && <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white"></div>}
-                  </div>
-                  <span className={`text-xs font-medium ${currentStatus === 'active' ? 'text-green-400' : currentStatus === 'focus' ? 'text-primary-teal' : 'text-orange-400'}`}>Status</span>
-                </button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="h-[40vh] bg-dark-navy/95 backdrop-blur-xl border-white/20">
-                <div className="p-6 space-y-4">
-                  <h2 className="text-lg font-semibold text-white-text">Set Status</h2>
-                  
-                  <div className="space-y-3">
-                    <button onClick={() => {
-                    setCurrentStatus('active');
-                    setShowStatusModal(false);
-                  }} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                      <div className="w-4 h-4 rounded-full bg-green-400"></div>
-                      <span className="text-white-text">Active</span>
-                    </button>
-                    
-                    <button onClick={() => handleStatusChange('focus')} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                      <Focus className="h-4 w-4 text-primary-teal" />
-                      <span className="text-white-text">Focus Mode</span>
-                    </button>
-                    
-                    <button onClick={() => handleStatusChange('offline')} className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                      <Clock className="h-4 w-4 text-orange-400" />
-                      <span className="text-white-text">Away</span>
-                    </button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+            {/* Tasks */}
+            <Button variant="ghost" size="sm" onClick={handleViewAllTasks} className="flex flex-col items-center gap-1 text-light-gray-text hover:text-primary-teal relative">
+              <CheckSquare className="h-4 w-4" />
+              <span className="text-xs">Tasks</span>
+              {actionItems.filter(item => !item.completed).length > 0 && <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {actionItems.filter(item => !item.completed).length}
+                </div>}
+            </Button>
 
             {/* Settings */}
-            <button onClick={() => navigate('/dashboard/settings')} className="flex flex-col items-center gap-0.5 p-2.5 text-light-gray-text hover:text-white-text transition-colors">
-              <Settings className="h-5 w-5" />
-              <span className="text-xs font-medium">Settings</span>
-            </button>
+            <Button variant="ghost" size="sm" onClick={handleAllSettingsClick} className="flex flex-col items-center gap-1 text-light-gray-text hover:text-primary-teal">
+              <Settings className="h-4 w-4" />
+              <span className="text-xs">Settings</span>
+            </Button>
           </div>
         </div>
-
-        {/* Brief Detail Sheet */}
-        <Sheet open={showBriefDetail} onOpenChange={setShowBriefDetail}>
-          <SheetContent side="bottom" className="h-[90vh] bg-dark-navy/95 backdrop-blur-xl border-white/20 overflow-hidden">
-            <div className="flex flex-col h-full">
-              {/* Header */}
-              <div className="p-6 border-b border-white/10">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-white-text">Morning Brief</h2>
-                  <Button variant="ghost" size="sm" onClick={() => setShowBriefDetail(false)} className="h-8 w-8 p-0">
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <p className="text-sm text-light-gray-text mt-1">Today, 8:00 AM • 5:00 AM - 8:00 AM</p>
-              </div>
-
-              {/* Content */}
-              <ScrollArea className="flex-1">
-                <div className="p-6 space-y-6">
-                  {/* Summary */}
-                  <div>
-                    <h3 className="text-lg font-medium text-white-text mb-3">Summary</h3>
-                    <p className="text-text-secondary leading-relaxed">
-                      This morning's brief covers critical updates from your priority channels. Sarah Chen requires urgent approval for the Q3 budget proposal, and there are several high-priority items requiring your attention before the team standup at 10 AM.
-                    </p>
-                  </div>
-
-                  {/* Action Items */}
-                  <div>
-                    <h3 className="text-lg font-medium text-white-text mb-3">Action Items ({actionItems.length})</h3>
-                    <div className="space-y-3">
-                      {actionItems.map(item => <div key={item.id} className="p-3 rounded-lg bg-surface-raised/30 border border-white/10">
-                          <div className="flex items-start gap-3">
-                            <div className="w-4 h-4 rounded border border-light-gray-text/30 mt-0.5 flex-shrink-0"></div>
-                            <div className="flex-1">
-                              <p className="text-sm text-white-text font-medium">{item.title}</p>
-                              <div className="flex items-center gap-2 mt-1 text-xs text-light-gray-text">
-                                <span>from {item.sender}</span>
-                                {item.isVip && <>
-                                    <span>•</span>
-                                    <Star className="w-3 h-3 text-green-400" fill="currentColor" />
-                                  </>}
-                                <span>•</span>
-                                <span className={`px-1.5 py-0.5 rounded text-xs ${item.urgency === 'critical' ? 'bg-red-500/20 text-red-400' : item.urgency === 'high' ? 'bg-orange-500/20 text-orange-400' : item.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400'}`}>
-                                  {item.urgency}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>)}
-                    </div>
-                  </div>
-
-                  {/* Messages Summary */}
-                  <div>
-                    <h3 className="text-lg font-medium text-white-text mb-3">Messages Analyzed</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="p-3 rounded-lg bg-surface-raised/30">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-3 h-3 bg-purple-500 rounded-sm"></div>
-                          <span className="text-sm font-medium text-white-text">Slack</span>
-                        </div>
-                        <p className="text-lg font-semibold text-white-text">{latestBrief.slackMessages.total}</p>
-                        <p className="text-xs text-light-gray-text">{latestBrief.slackMessages.fromPriorityPeople} from priority people</p>
-                      </div>
-                      <div className="p-3 rounded-lg bg-surface-raised/30">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-3 h-3 bg-blue-500 rounded-sm"></div>
-                          <span className="text-sm font-medium text-white-text">Gmail</span>
-                        </div>
-                        <p className="text-lg font-semibold text-white-text">{latestBrief.emails.total}</p>
-                        <p className="text-xs text-light-gray-text">{latestBrief.emails.fromPriorityPeople} from priority people</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ScrollArea>
-            </div>
-          </SheetContent>
-        </Sheet>
-
-        {/* Enhanced Catch Me Up Modal with Scheduling Options */}
-        <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
       </div>;
   }
 
   // Desktop View
-  return <div className="min-h-screen px-4 py-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Desktop Header - Horizontal Layout */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-bold text-text-primary mb-2 text-2xl">
-              Good morning, Alex
-            </h1>
-            
+  return <div className="min-h-screen bg-surface-primary">
+      
+      {/* Desktop Layout */}
+      <div className="min-h-screen bg-surface-primary">
+        
+        {/* Top Bar - Single Line */}
+        <div className="flex items-center justify-between px-8 py-4 border-b border-border-subtle/30">
+          {/* Left - Brief Me Logo Pill */}
+          <div className="bg-accent-primary/10 text-accent-primary px-4 py-2 rounded-full font-medium text-sm">
+            Brief Me
           </div>
           
-          {/* Updated CTAs on the right with Profile Dropdown */}
-          <div className="flex gap-3 items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
-                  Update Status
-                  <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle">
-                <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-white/5">
-                  <Headphones className="mr-2 h-4 w-4" />
-                  Start Focus Mode
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-white/5">
-                  <Clock className="mr-2 h-4 w-4" />
-                  Sign Off for the Day
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {/* Center - Intentionally Blank */}
+          <div className="flex-1"></div>
+          
+          {/* Right - Profile Avatar */}
+          <div className="flex items-center">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/placeholder.svg" alt="Alex" />
+              <AvatarFallback className="bg-accent-primary text-white">A</AvatarFallback>
+            </Avatar>
+          </div>
+        </div>
+
+        {/* Greeting / Stats Row */}
+        <div className="flex items-center justify-between px-8 py-6 bg-surface-overlay/20">
+          {/* Left - Greeting */}
+          <div>
+            <h1 className="text-2xl font-semibold text-text-primary">Good morning, Alex 👋</h1>
+            <p className="text-text-secondary mt-1">Ready to catch up on what matters</p>
+          </div>
+          
+          {/* Center - Intentionally Blank */}
+          <div className="flex-1"></div>
+          
+          {/* Right - Three Big Number Stats */}
+          <div className="flex items-center gap-8">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-text-primary">47</div>
+              <div className="text-xs text-text-secondary">Interrupts Prevented</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-text-primary">3.2h</div>
+              <div className="text-xs text-text-secondary">Focus Gained</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-text-primary">{actionItems.length}</div>
+              <div className="text-xs text-text-secondary">Follow-ups</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Three-Column Content Grid */}
+        <div className="px-8 py-6">
+          <div className="grid grid-cols-12 gap-8">
             
-            <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
-              <Zap className="mr-2 h-4 w-4" />
-              Brief Me
-            </Button>
-
-            {/* Profile Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 h-auto">
-                  <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
-                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
-                    <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
-                      AJ
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
-                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Integrations
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Brief Configuration
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
-                  <Settings className="mr-2 h-4 w-4" />
-                  All Settings
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-
-        {/* Connected Channels Section - Desktop Only */}
-        <div className="mb-6">
-          <ConnectedChannelsSection showAsHorizontal={true} />
-        </div>
-
-        {/* Greeting + Quick Stats Bar */}
-        <div className="flex items-center justify-between bg-surface-overlay/30 rounded-2xl p-6 mb-8 shadow-sm">
-          <div className="flex items-center gap-6">
-            <div>
-              <h1 className="text-2xl font-semibold text-text-primary">Good morning, Alex</h1>
-              <p className="text-text-secondary mt-1">Ready to catch up on what matters</p>
-            </div>
-            <div className="flex items-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-accent-primary" />
-                <span className="text-text-secondary">33 min saved today</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckSquare className="h-4 w-4 text-accent-primary" />
-                <span className="text-text-secondary">{actionItems.length} follow-ups</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Three-Column Grid Layout: 25% | 50% | 25% */}
-        <div className="grid grid-cols-12 gap-6">
-          {/* Column 1 - Context & Status (25% - 3 columns) */}
-          <div className="col-span-3 space-y-6">
-            {/* Calendar Section Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
-            </div>
-            
-            {/* Upcoming Meeting Card */}
-            <div className="rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-text-primary">Next Meeting</h3>
-                <Clock className="h-4 w-4 text-accent-primary" />
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-text-primary">Team Standup</p>
-                <p className="text-xs text-text-secondary">Today at 10:00 AM</p>
-                <div className="flex gap-2 mt-3">
-                  <Button size="sm" variant="outline" className="flex-1 text-xs border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-white">
-                    Join Live
-                  </Button>
-                  <Button size="sm" variant="ghost" className="flex-1 text-xs text-text-secondary hover:text-accent-primary hover:bg-white/5">
-                    Send Proxy
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Today's Schedule Timeline */}
-            <div className="rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
-                <Calendar className="h-4 w-4 text-accent-primary" />
-              </div>
-              <div className="space-y-2 max-h-48 overflow-y-auto">
-                <div className="flex items-center gap-3 py-2 border-b border-border-subtle/50">
-                  <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-text-primary">10:00 AM</p>
-                    <p className="text-xs text-text-secondary">Team Standup</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 py-2 border-b border-border-subtle/50">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-text-primary">1:30 PM</p>
-                    <p className="text-xs text-text-secondary">Product Review</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 py-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-text-primary">3:00 PM</p>
-                    <p className="text-xs text-text-secondary">Client Call</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Focus Toggle / Sign-off Pill */}
-            <div className="rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
-              <div className="space-y-3">
-                <Button 
-                  onClick={onStartFocusMode} 
-                  size="sm" 
-                  className="w-full bg-accent-primary text-white hover:bg-accent-primary/90"
+            {/* Column 1 - Navigation List (2 columns) */}
+            <div className="col-span-2">
+              <nav className="space-y-2">
+                <button 
+                  onClick={() => navigate("/dashboard")}
+                  className="w-full text-left px-4 py-3 rounded-lg bg-accent-primary/10 text-accent-primary font-medium"
                 >
-                  <Focus className="mr-2 h-4 w-4" />
-                  Start Focus Mode
-                </Button>
-                <Button 
-                  onClick={onSignOffForDay} 
-                  size="sm" 
-                  variant="outline" 
-                  className="w-full border-border-subtle text-text-secondary hover:text-text-primary hover:bg-white/5"
+                  Briefs
+                </button>
+                <button 
+                  onClick={handleViewAllTasks}
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-surface-overlay/30 text-text-primary transition-colors"
                 >
-                  <Clock className="mr-2 h-4 w-4" />
-                  Sign Off
-                </Button>
-              </div>
+                  Follow-ups
+                </button>
+                <button 
+                  onClick={() => navigate("/dashboard/settings")}
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-surface-overlay/30 text-text-primary transition-colors"
+                >
+                  Referrals
+                </button>
+                <button 
+                  onClick={handleAllSettingsClick}
+                  className="w-full text-left px-4 py-3 rounded-lg hover:bg-surface-overlay/30 text-text-primary transition-colors"
+                >
+                  Settings
+                </button>
+              </nav>
             </div>
-          </div>
 
-          {/* Column 2 - Core Brief Workflow (50% - 6 columns) */}
-          <div className="col-span-6 space-y-6">
-            {/* Latest Brief Card - Hero Block */}
-            <div className="space-y-4">
-              {/* Day Picker */}
-              <div className="flex items-center justify-end">
-                <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2">
-                  <button 
-                    onClick={handlePreviousDay}
-                    disabled={selectedDate === "2 days ago"}
-                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-light-gray-text" />
-                  </button>
-                  <div className="flex items-center gap-2 px-3">
-                    <Calendar className="w-4 h-4 text-light-gray-text" />
-                    <span className="text-sm text-white-text font-medium min-w-[70px] text-center">{selectedDate}</span>
-                  </div>
-                  <button 
-                    onClick={handleNextDay}
-                    disabled={selectedDate === "Today"}
-                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronRight className="w-4 h-4 text-light-gray-text" />
-                  </button>
-                </div>
-              </div>
+            {/* Column 2 - Core Work (7 columns) */}
+            <div className="col-span-7 space-y-6">
               
-              {/* Unified Brief Container */}
-              <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
-            </div>
-          </div>
-
-          {/* Column 3 - Task Triage (25% - 3 columns) */}
-          <div className="col-span-3 space-y-6">
-            {/* Follow-ups List */}
-            <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Follow ups</h2>
-                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
-                    View all
-                    <ArrowRight className="w-3 h-3" />
-                  </Button>}
-              </div>
-              <ActionItemsPanel />
-            </div>
-            
-            {/* Promo / Brief Me Teams Card */}
-            <div className="rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-              {/* Enhanced blurred background mockups */}
-              <div className="absolute inset-0 opacity-20 blur-[1px] pointer-events-none">
-                <div className="grid grid-cols-1 gap-2 h-full p-2">
-                  {/* Team card mockup */}
-                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-lg p-2 shadow-lg">
-                    <div className="flex items-center gap-1 mb-2">
-                      <div className="flex -space-x-1">
-                        <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                        <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                        <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+              {/* Today's Schedule */}
+              <div className="bg-surface-overlay/30 rounded-2xl p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-text-primary">Today's Schedule</h2>
+                  <Calendar className="h-5 w-5 text-accent-primary" />
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center gap-4 p-3 rounded-lg bg-surface-overlay/40">
+                    <div className="w-3 h-3 bg-accent-primary rounded-full"></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-text-primary">Team Standup</p>
+                          <p className="text-sm text-text-secondary">10:00 AM - 10:30 AM</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" className="border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-white">
+                            Join Live
+                          </Button>
+                          <Button size="sm" variant="ghost" className="text-text-secondary hover:text-accent-primary">
+                            Send Proxy
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                    <div className="space-y-1">
-                      <div className="bg-white/40 rounded h-1.5 w-full"></div>
-                      <div className="bg-white/35 rounded h-1.5 w-3/4"></div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-surface-overlay/40 transition-colors">
+                    <div className="w-3 h-3 bg-orange-400 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="font-medium text-text-primary">Product Review</p>
+                      <p className="text-sm text-text-secondary">1:30 PM - 2:30 PM</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-surface-overlay/40 transition-colors">
+                    <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="font-medium text-text-primary">Client Call</p>
+                      <p className="text-sm text-text-secondary">3:00 PM - 4:00 PM</p>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Clear content with better contrast */}
-              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-lg p-3">
-                <h3 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Brief Me Teams
-                </h3>
-                
-                <p className="text-text-secondary text-xs mb-3">Coming soon...</p>
-                
-                <div className="space-y-1.5 mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                    <p className="text-xs text-text-primary">AI meeting proxy</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                    <p className="text-xs text-text-primary">Team analytics</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                    <p className="text-xs text-text-primary">Shared briefs</p>
+
+              {/* Latest Brief Card */}
+              <div className="space-y-4">
+                {/* Day Picker */}
+                <div className="flex items-center justify-end">
+                  <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2">
+                    <button 
+                      onClick={handlePreviousDay}
+                      disabled={selectedDate === "2 days ago"}
+                      className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="w-4 h-4 text-light-gray-text" />
+                    </button>
+                    <div className="flex items-center gap-2 px-3">
+                      <Calendar className="w-4 h-4 text-light-gray-text" />
+                      <span className="text-sm text-white-text font-medium min-w-[70px] text-center">{selectedDate}</span>
+                    </div>
+                    <button 
+                      onClick={handleNextDay}
+                      disabled={selectedDate === "Today"}
+                      className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="w-4 h-4 text-light-gray-text" />
+                    </button>
                   </div>
                 </div>
                 
-                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-3 py-1.5 text-xs w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
-                  {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
-                </Button>
+                {/* Brief Container */}
+                <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
+              </div>
+            </div>
+
+            {/* Column 3 - Action Rail (3 columns) */}
+            <div className="col-span-3">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-text-primary">Follow-ups</h2>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={handleViewAllTasks}
+                    className="text-accent-primary hover:text-accent-primary/80"
+                  >
+                    View All
+                  </Button>
+                </div>
+                <ActionItemsPanel />
               </div>
             </div>
           </div>
@@ -955,4 +729,5 @@ const HomeView = ({
       </div>
     </div>;
 };
-export default React.memo(HomeView);
+
+export default HomeView;
