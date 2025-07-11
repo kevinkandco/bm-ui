@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar, Plus, SkipBack, SkipForward, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -10,6 +10,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
@@ -743,175 +744,191 @@ const HomeView = ({
           <ConnectedChannelsSection showAsHorizontal={true} />
         </div>
 
-        {/* Desktop Grid Layout - Adjusted column widths */}
-        <div className="grid grid-cols-12 gap-6">
-          {/* Main content - 7 columns (reduced from 8) */}
-          <div className="col-span-7 space-y-6">
-            {/* Briefs Section */}
-            <div className="space-y-4">
+        {/* Desktop Layout - Wireframe Structure */}
+        <div className="space-y-6">
+          {/* Top Header Bar */}
+          <Card className="bg-surface-card border-border-primary rounded-xl">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
-                {/* Day Picker */}
-                <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2 border border-white/10">
-                  <button 
-                    onClick={handlePreviousDay}
-                    disabled={selectedDate === "2 days ago"}
-                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-light-gray-text" />
-                  </button>
-                  <div className="flex items-center gap-2 px-3">
-                    <Calendar className="w-4 h-4 text-light-gray-text" />
-                    <span className="text-sm text-white-text font-medium min-w-[70px] text-center">{selectedDate}</span>
+                <div className="flex items-center gap-4">
+                  <h1 className="text-lg font-semibold text-text-primary">Good morning!</h1>
+                  <div className="flex items-center gap-6 text-sm text-text-secondary">
+                    <span>Total briefs: {totalBriefs}</span>
+                    <span>Avg time saved: 2.4h</span>
+                    <span>Focus streak: 7 days</span>
                   </div>
-                  <button 
-                    onClick={handleNextDay}
-                    disabled={selectedDate === "Today"}
-                    className="p-1 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronRight className="w-4 h-4 text-light-gray-text" />
-                  </button>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-sm text-text-secondary">
+                    <span>Upcoming Brief</span>
+                    <div className="flex items-center gap-1">
+                      <Play className="w-3 h-3" />
+                      <span>23m</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      onClick={handleGetBriefedNow}
+                      size="sm" 
+                      className="bg-accent-primary text-white hover:bg-accent-primary/90"
+                    >
+                      Brief Now
+                    </Button>
+                    <Button 
+                      onClick={onStartFocusMode}
+                      size="sm" 
+                      variant="outline"
+                      className={`${currentStatus === 'focus' ? 'bg-purple-500/20 border-purple-500/50 text-purple-400' : ''}`}
+                    >
+                      Focus Toggle
+                    </Button>
+                  </div>
                 </div>
               </div>
-              
-              {/* Unified Brief Container with upcoming brief */}
-              <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
+            </CardContent>
+          </Card>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-3 gap-6">
+            {/* Left Column - Latest Brief (2/3 width) */}
+            <div className="col-span-2 space-y-4">
+              <Card className="bg-surface-card border-border-primary rounded-xl min-h-[400px]">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        onClick={() => handlePlayBrief(1)}
+                        size="sm"
+                        className="bg-accent-primary text-white hover:bg-accent-primary/90"
+                      >
+                        <Play className="w-4 h-4 mr-1" />
+                        Large Play
+                      </Button>
+                      <Button 
+                        onClick={() => onOpenBrief(1)}
+                        size="sm" 
+                        variant="outline"
+                      >
+                        Update
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="text-sm text-text-secondary">
+                      Morning Brief • Created today at 9:00 AM
+                    </div>
+                    <div className="text-text-primary">
+                      Your brief content would appear here with key updates from your connected accounts...
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Embedded Follow-up List */}
+              <Card className="bg-surface-card border-border-primary rounded-xl">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-medium text-text-primary">Follow-up items</h3>
+                    <span className="text-xs text-text-secondary">scrolls max 6</span>
+                  </div>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {[1, 2, 3, 4, 5, 6].map((item) => (
+                      <div key={item} className="flex items-center gap-3 p-2 hover:bg-surface-raised/50 rounded-lg">
+                        <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                        <span className="text-sm text-text-primary">Follow-up item {item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* Calendar Section - New */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
-              </div>
-              <CalendarSection />
-            </div>
-          </div>
-          
-          {/* Sidebar - 5 columns (increased from 4) */}
-          <div className="col-span-5 space-y-4">
-            {/* Action Items Panel with header outside */}
-            <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Follow ups (4)</h2>
-                {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
-                    View all
-                    <ArrowRight className="w-3 h-3" />
-                  </Button>}
-              </div>
-              <ActionItemsPanel />
-            </div>
-            
-            {/* Priorities Section with title outside */}
-            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
-                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
-                    Edit
-                  </Button>}
-              </div>
-              <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
-                <PrioritiesSection />
-              </div>
-            </div>
-            
-            {/* Brief Me Teams - With enhanced blurred background mockups */}
-            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-              {/* Enhanced blurred background mockups */}
-              <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
-                <div className="grid grid-cols-2 gap-4 h-full p-4">
-                  {/* Team card mockup */}
-                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-xl p-4 shadow-lg">
-                    {/* Team header with profile pics */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex -space-x-2">
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
-                          <span className="text-xs text-white/90 font-medium">+5</span>
+            {/* Right Column - Today Schedule (1/3 width) */}
+            <div className="col-span-1 space-y-4">
+              <Card className="bg-surface-card border-border-primary rounded-xl">
+                <CardContent className="p-4">
+                  <h3 className="text-lg font-semibold text-text-primary mb-4">Today Schedule</h3>
+                  <div className="space-y-3">
+                    {/* Mini timeline */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3 text-sm">
+                        <span className="text-text-secondary w-12">9:00</span>
+                        <div className="flex-1 bg-accent-primary/20 rounded px-2 py-1">
+                          <span className="text-accent-primary">Team standup</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm">
+                        <span className="text-text-secondary w-12">10:30</span>
+                        <div className="flex-1 bg-surface-raised rounded px-2 py-1">
+                          <span className="text-text-primary">Product review</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm">
+                        <span className="text-text-secondary w-12">14:00</span>
+                        <div className="flex-1 bg-surface-raised rounded px-2 py-1">
+                          <span className="text-text-primary">Client call</span>
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Team stats bars */}
-                    <div className="space-y-3 mb-4">
-                      <div className="bg-white/40 rounded-full h-3 w-full"></div>
-                      <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
-                      <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
-                    </div>
-                    
-                    {/* Team name */}
-                    <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add focus block
+                    </Button>
                   </div>
-                  
-                  {/* Analytics card mockup */}
-                  <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
-                    {/* Chart header */}
-                    <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
-                    
-                    {/* Mock chart bars - more detailed */}
-                    <div className="flex items-end gap-2 h-16 mb-3">
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-12"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-6"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-14"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-10"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
-                    </div>
-                    
-                    {/* Analytics labels */}
-                    <div className="space-y-2">
-                      <div className="bg-white/35 rounded h-2 w-full"></div>
-                      <div className="bg-white/30 rounded h-2 w-3/4"></div>
-                      <div className="bg-white/25 rounded h-2 w-5/6"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Clear content with better contrast */}
-              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
-                <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Brief Me Teams
-                </h2>
-                
-                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
-                
-                <div className="space-y-2 mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">AI meeting proxy</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Team analytics</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">and more...</p>
-                  </div>
-                </div>
-                
-                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
-                  {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
-                </Button>
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
+
+          {/* Bottom Metrics Bar */}
+          <Card className="bg-surface-card border-border-primary rounded-xl">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-8 text-sm text-text-secondary">
+                  <span>Total briefs: {totalBriefs}</span>
+                  <span>Avg time saved: 2.4h</span>
+                  <span>Focus streak: 7 days</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span className="text-text-primary">Focus ON until 3:00</span>
+                    <Button size="sm" variant="outline" className="ml-2">
+                      End Focus
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Sticky Audio Player */}
+          <Card className="bg-surface-card border-border-primary rounded-xl">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                <Button size="sm" variant="outline">
+                  <Play className="w-4 h-4" />
+                </Button>
+                <div className="flex-1 h-2 bg-surface-raised rounded-full">
+                  <div className="w-1/3 h-full bg-accent-primary rounded-full"></div>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-text-secondary">
+                  <Button size="sm" variant="ghost">
+                    <SkipBack className="w-4 h-4" />
+                  </Button>
+                  <Button size="sm" variant="ghost">
+                    <SkipForward className="w-4 h-4" />
+                  </Button>
+                  <span>1.5x</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
