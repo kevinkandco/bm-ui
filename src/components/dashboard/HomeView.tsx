@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar, Network, Mail, ArrowLeft } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar, Network, Mail, ArrowLeft, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -674,11 +674,11 @@ const HomeView = ({
         <div className="p-4 pt-12 space-y-4 flex-1">
           {/* Profile Section - Moved to top, removed email */}
           <div 
-            className="flex items-center gap-3 p-3 rounded-lg relative group"
+            className={`flex items-center gap-3 p-3 rounded-lg relative group transition-all duration-200 ${isNavCollapsed ? 'justify-center' : ''} ${isProfileHovered ? 'bg-white/5' : ''}`}
             onMouseEnter={() => setIsProfileHovered(true)}
             onMouseLeave={() => setIsProfileHovered(false)}
           >
-            <Avatar className="w-8 h-8">
+            <Avatar className={`${isNavCollapsed ? 'w-6 h-6' : 'w-8 h-8'}`}>
               <AvatarImage src="/placeholder.svg" />
               <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
             </Avatar>
@@ -691,7 +691,7 @@ const HomeView = ({
             {!isNavCollapsed && isProfileHovered && (
               <button
                 onClick={handleToggleNav}
-                className="absolute right-3 p-1 hover:bg-white/10 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                className="absolute right-3 p-1 hover:bg-white/10 rounded-full transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 text-light-gray-text" />
               </button>
@@ -751,6 +751,10 @@ const HomeView = ({
             <button className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
               <Calendar className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
               {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Meetings</span>}
+            </button>
+            <button onClick={handleAllSettingsClick} className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
+              <Cog className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
+              {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Settings</span>}
             </button>
           </div>
 
