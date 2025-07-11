@@ -743,6 +743,30 @@ const HomeView = ({
           <ConnectedChannelsSection showAsHorizontal={true} />
         </div>
 
+        {/* Greeting + Quick Stats Bar */}
+        <div className="flex items-center justify-between bg-surface-overlay/30 rounded-2xl p-6 mb-8 shadow-sm">
+          <div className="flex items-center gap-6">
+            <div>
+              <h1 className="text-2xl font-semibold text-text-primary">Good morning, Alex</h1>
+              <p className="text-text-secondary mt-1">Ready to catch up on what matters</p>
+            </div>
+            <div className="flex items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-accent-primary" />
+                <span className="text-text-secondary">33 min saved today</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckSquare className="h-4 w-4 text-accent-primary" />
+                <span className="text-text-secondary">{actionItems.length} follow-ups</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 bg-accent-primary/10 text-accent-primary px-3 py-2 rounded-xl font-medium">
+            <Clock className="h-4 w-4" />
+            <span>Next brief in 2h 15m</span>
+          </div>
+        </div>
+
         {/* Three-Column Grid Layout: 25% | 50% | 25% */}
         <div className="grid grid-cols-12 gap-6">
           {/* Column 1 - Context & Status (25% - 3 columns) */}
@@ -872,19 +896,8 @@ const HomeView = ({
                     <ArrowRight className="w-3 h-3" />
                   </Button>}
               </div>
-              <ActionItemsPanel />
-            </div>
-            
-            {/* Priorities Accordion */}
-            <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
-                {isPrioritiesHovered && <Button variant="ghost" onClick={() => navigate("/dashboard/settings")} className="px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 rounded-lg transition-all duration-200">
-                    Edit
-                  </Button>}
-              </div>
               <div className="bg-surface-overlay/30 shadow-sm rounded-2xl">
-                <PrioritiesSection />
+                <ActionItemsPanel />
               </div>
             </div>
             
