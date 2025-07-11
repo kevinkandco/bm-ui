@@ -680,7 +680,7 @@ const HomeView = ({
           </div>
 
           {/* Brief Me Button - Removed shadow, smaller */}
-          <Button onClick={onOpenBriefModal} className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-2 font-medium text-sm shadow-none">
+          <Button onClick={onOpenBriefModal} className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none">
             Brief Me
           </Button>
 
