@@ -232,14 +232,14 @@ const SettingsPage = () => {
               </div>
             </div>
             
-            <div className="md:col-span-3 p-6">
-              {renderContent()}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+             <div className="md:col-span-3 p-6">
+               {renderContent()}
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   );
 };
 
 export default SettingsPage;

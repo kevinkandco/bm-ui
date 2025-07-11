@@ -162,13 +162,13 @@ const TasksList = () => {
                     <Button size="sm" variant="ghost">Undo</Button>
                   </div>
                 </React.Fragment>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+               ))}
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   );
 };
 
 export default TasksList;
