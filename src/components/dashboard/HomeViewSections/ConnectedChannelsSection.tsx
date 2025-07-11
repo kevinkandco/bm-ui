@@ -97,42 +97,9 @@ const ConnectedChannelsSection = ({
       <TooltipProvider delayDuration={300}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {/* Condensed Integration Display */}
-            <div className="flex items-center gap-2">
-              {integrations.map((integration, i) => {
-                const overallStatus = getOverallStatus(integration.accounts);
-                return (
-                  <Tooltip key={i}>
-                    <TooltipTrigger asChild>
-                      <div className="relative flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200">
-                        <div className="flex items-center justify-center relative">
-                          {renderIcon(integration)}
-                          {/* Status dot - positioned as overlay */}
-                          <div className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-white/20 ${getStatusColor(overallStatus)}`}></div>
-                        </div>
-                        {/* Count badge */}
-                        {integration.totalCount > 1 && (
-                          <span className="text-xs font-medium text-white bg-white/20 rounded-full px-1.5 py-0.5 min-w-[18px] text-center">
-                            {integration.totalCount}
-                          </span>
-                        )}
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="text-sm max-w-xs">
-                      <div className="space-y-1">
-                        <div className="font-medium">{integration.name}</div>
-                        {integration.accounts.map((account, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-xs">
-                            <div className={`h-1.5 w-1.5 rounded-full ${getStatusColor(account.status)}`}></div>
-                            <span>{account.email}</span>
-                            <span className="text-gray-400">• {account.status}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
+            {/* Integration status moved to sidebar */}
+            <div className="text-text-secondary text-sm">
+              Connected integrations moved to sidebar
             </div>
           </div>
         </div>
