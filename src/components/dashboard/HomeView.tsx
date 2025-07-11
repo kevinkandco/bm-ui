@@ -806,17 +806,17 @@ const HomeView = ({
       {/* Main Content Area */}
       <div className="flex-1 px-6 py-6">
         <div className="max-w-6xl mx-auto">
-          {/* Connected Channels Section */}
-          <div className="mb-6">
-            <ConnectedChannelsSection showAsHorizontal={true} />
-          </div>
-
           {/* Two-Column Content Grid with Unified Background */}
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-6 mb-6">
             {/* Combined Briefs and Follow-ups area with shared background */}
             <div className="col-span-3 card-dark p-6" style={{
             background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
           }}>
+              {/* Connected Channels Section */}
+              <div className="mb-6">
+                <ConnectedChannelsSection showAsHorizontal={true} />
+              </div>
+              
               <div className="grid grid-cols-3 gap-6">
                 {/* Briefs area (2/3) */}
                 <div className="col-span-2">
