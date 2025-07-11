@@ -674,58 +674,39 @@ const HomeView = ({
             </div>
           </div>
 
-          {/* Stats Row - Added above Brief Me button */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-1">
-              <div className="w-4 h-4 bg-primary-teal rounded flex items-center justify-center">
-                <span className="text-xs text-white font-medium">2</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-1">
-              <div className="w-4 h-4 bg-green-500 rounded flex items-center justify-center">
-                <span className="text-xs text-white font-medium">3</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-1">
-              <div className="w-4 h-4 bg-blue-500 rounded flex items-center justify-center">
-                <Calendar className="w-2 h-2 text-white" />
-              </div>
-            </div>
-          </div>
-
           {/* Upcoming Brief - Moved above Brief Me button */}
           <div className="space-y-1">
-            <p className="text-text-secondary text-sm">Upcoming brief</p>
-            <p className="text-text-primary text-sm font-medium">{upcomingBrief.scheduledTime}</p>
+            <p className="text-text-secondary text-xs">Upcoming brief</p>
+            <p className="text-text-primary text-xs font-medium">{upcomingBrief.scheduledTime}</p>
           </div>
 
-          {/* Brief Me Button - Removed shadow */}
+          {/* Brief Me Button - Removed shadow, smaller */}
           <Button 
             onClick={onOpenBriefModal}
-            className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-3 font-medium"
+            className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-2 font-medium text-sm shadow-none"
           >
             Brief Me
           </Button>
 
-          {/* Navigation Items - Added hover states */}
+          {/* Navigation Items - Added hover states, reduced text size, left aligned */}
           <div className="space-y-1">
             <button 
               onClick={handleViewAllBriefs}
-              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 text-primary-teal group"
+              className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 text-primary-teal group"
             >
-              <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="font-medium">Briefs</span>
+              <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <span className="font-medium text-sm">Briefs</span>
             </button>
             <button 
               onClick={handleViewAllTasks}
-              className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group"
+              className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group"
             >
-              <CheckSquare className="w-5 h-5 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-              <span className="text-light-gray-text group-hover:text-white transition-colors">Follow-ups</span>
+              <CheckSquare className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
+              <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Follow-ups</span>
             </button>
-            <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
-              <Calendar className="w-5 h-5 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-              <span className="text-light-gray-text group-hover:text-white transition-colors">Meetings</span>
+            <button className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
+              <Calendar className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
+              <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Meetings</span>
             </button>
           </div>
 
@@ -772,6 +753,19 @@ const HomeView = ({
               <div className="grid grid-cols-3 gap-6">
                 {/* Briefs area (2/3) */}
                 <div className="col-span-2">
+                  {/* Stats Row - Moved from sidebar */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-6 h-6 bg-primary-teal/20 rounded flex items-center justify-center">
+                      <span className="text-xs text-primary-teal font-medium">2</span>
+                    </div>
+                    <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
+                      <span className="text-xs text-green-500 font-medium">3</span>
+                    </div>
+                    <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
+                      <Calendar className="w-3 h-3 text-blue-500" />
+                    </div>
+                  </div>
+
                   {/* Good morning greeting */}
                   <div className="mb-6">
                     <h1 className="font-bold text-text-primary text-2xl">
