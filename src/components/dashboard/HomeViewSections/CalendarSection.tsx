@@ -238,9 +238,9 @@ const CalendarSection = () => {
           >
             <CardContent className="p-4">
               <div className="bg-surface-overlay/50 rounded-xl p-4">
-                {/* Header with time and chips */}
+                {/* Header with time and title */}
                 <div className="flex items-start justify-between mb-3">
-                  <div>
+                  <div className="flex-1">
                     <h4 className="text-sm font-medium text-text-primary mb-1">
                       {nextMeeting.title}
                     </h4>
@@ -250,14 +250,26 @@ const CalendarSection = () => {
                     </div>
                   </div>
                   
-                  {/* Top-right chips */}
-                  <div className="flex items-center gap-2">
+                  {/* Top-right buttons - moved from bottom */}
+                  <div className="flex flex-col items-end gap-2">
                     {nextMeeting.isRecording && (
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                         <span className="text-xs text-red-400">REC</span>
                       </div>
                     )}
+                    
+                    <Button
+                      size="sm"
+                      className={`h-7 px-3 text-xs rounded-lg ${
+                        nextMeeting.hasProxy 
+                          ? "bg-surface text-text-secondary hover:bg-surface" 
+                          : "bg-accent-primary text-white hover:bg-accent-primary/90"
+                      }`}
+                      disabled={nextMeeting.hasProxy}
+                    >
+                      Join Live
+                    </Button>
                     
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -325,51 +337,13 @@ const CalendarSection = () => {
                   </div>
                 )}
 
-                {/* Bottom section with attendance and CTA */}
-                <div className="flex items-center justify-between">
+                {/* Bottom section with attendance only */}
+                <div className="flex items-center">
                   <div className="flex items-center gap-2">
                     <Users className="w-3 h-3 text-text-secondary" />
                     <span className="text-xs text-text-secondary">
                       {getAttendanceText(nextMeeting)}
                     </span>
-                  </div>
-
-                  {/* Split button CTA */}
-                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                    <Button
-                      size="sm"
-                      className={`h-7 px-3 text-xs rounded-l-lg rounded-r-none ${
-                        nextMeeting.hasProxy 
-                          ? "bg-surface text-text-secondary hover:bg-surface" 
-                          : "bg-accent-primary text-white hover:bg-accent-primary/90"
-                      }`}
-                      disabled={nextMeeting.hasProxy}
-                    >
-                      Join Live
-                    </Button>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          size="sm"
-                          className={`h-7 w-6 px-0 rounded-r-lg rounded-l-none border-l border-l-white/20 ${
-                            nextMeeting.hasProxy 
-                              ? "bg-surface text-text-secondary hover:bg-surface" 
-                              : "bg-accent-primary text-white hover:bg-accent-primary/90"
-                          }`}
-                        >
-                          <ChevronDown className="w-3 h-3" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-surface border-border-subtle">
-                        <DropdownMenuItem 
-                          onClick={() => toggleProxy(nextMeeting.id)}
-                          className="text-text-primary hover:bg-white/5"
-                        >
-                          Send Proxy Instead
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </div>
                 </div>
               </div>
@@ -400,7 +374,7 @@ const CalendarSection = () => {
                       )}
                       
                       <div 
-                        className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
+                        className={`flex items-center gap-4 py-2 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
                           isNext ? 'opacity-100' : 'opacity-80'
                         }`}
                         onClick={() => openMeetingDetails(meeting)}
