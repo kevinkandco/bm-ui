@@ -826,9 +826,6 @@ const HomeView = ({
                   </div>
                   
                   <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
-                  
-                  {/* Calendar Section */}
-                  <CalendarSection />
                 </div>
                 
                 {/* Right content area (1/3) - Task Triage */}
@@ -844,6 +841,9 @@ const HomeView = ({
                     </div>
                     <ActionItemsPanel />
                   </div>
+                  
+                  {/* Calendar Section */}
+                  <CalendarSection />
                 </div>
               </div>
             </div>
