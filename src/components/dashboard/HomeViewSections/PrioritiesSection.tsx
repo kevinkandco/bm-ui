@@ -139,7 +139,7 @@ const PrioritiesSection = () => {
           <div key={i} className="relative">
             <Avatar className="h-6 w-6 ring-1 ring-background">
               <AvatarImage src={person.image} alt={person.name} />
-              <AvatarFallback className={`${person.active ? "bg-accent-primary/20 text-accent-primary" : "bg-surface-raised/30 text-text-secondary"} text-xs`}>
+              <AvatarFallback className={`${person.active ? "bg-primary-teal/10 text-primary-teal" : "bg-chip-bg text-text-secondary"} text-xs`}>
                 {person.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
@@ -149,7 +149,7 @@ const PrioritiesSection = () => {
           </div>
         ))}
         {priorityPeople.length > 4 && (
-          <div className="w-6 h-6 rounded-full bg-surface-raised/30 border border-border-subtle flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full bg-chip-bg border border-border-light flex items-center justify-center">
             <span className="text-xs text-text-secondary">+{priorityPeople.length - 4}</span>
           </div>
         )}
@@ -161,13 +161,13 @@ const PrioritiesSection = () => {
     <CollapsibleContent className="mt-1">
       <div className="flex items-center gap-1 flex-wrap">
         {priorityChannels.slice(0, 3).map((channel, i) => (
-          <div key={i} className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${channel.active ? "bg-accent-primary/20 text-accent-primary" : "bg-surface-raised/30 text-text-secondary"}`}>
+          <div key={i} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs ${channel.active ? "bg-primary-teal/10 text-primary-teal" : "bg-chip-bg text-priority-low"}`}>
             <Hash className="h-2.5 w-2.5" />
             <span>{channel.name}</span>
           </div>
         ))}
         {priorityChannels.length > 3 && (
-          <div className="px-2 py-1 rounded text-xs bg-surface-raised/30 text-text-secondary">
+          <div className="px-2 py-1 rounded-lg text-xs bg-chip-bg text-priority-low">
             +{priorityChannels.length - 3}
           </div>
         )}
@@ -179,13 +179,13 @@ const PrioritiesSection = () => {
     <CollapsibleContent className="mt-1">
       <div className="flex items-center gap-1 flex-wrap">
         {priorityTriggers.slice(0, 3).map((trigger, i) => (
-          <div key={i} className="flex items-center gap-1 px-2 py-1 rounded text-xs bg-orange-500/20 text-orange-400">
+          <div key={i} className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs bg-priority-high-bg text-priority-high">
             <AlertTriangle className="h-2.5 w-2.5" />
             <span>{trigger}</span>
           </div>
         ))}
         {priorityTriggers.length > 3 && (
-          <div className="px-2 py-1 rounded text-xs bg-surface-raised/30 text-text-secondary">
+          <div className="px-2 py-1 rounded-lg text-xs bg-chip-bg text-priority-low">
             +{priorityTriggers.length - 3}
           </div>
         )}
@@ -197,7 +197,7 @@ const PrioritiesSection = () => {
     <CollapsibleContent className="mt-1">
       <div className="flex items-center gap-1 flex-wrap">
         {connectedIntegrations.map((integration, i) => (
-          <div key={i} className="flex items-center gap-1 px-2 py-1 rounded text-xs bg-accent-primary/20 text-accent-primary">
+          <div key={i} className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs bg-primary-teal/10 text-primary-teal">
             <integration.icon className="h-2.5 w-2.5" />
             <span>{integration.name}</span>
           </div>
@@ -252,29 +252,29 @@ const PrioritiesSection = () => {
             onDragEnd={handleDragEnd}
             className="group cursor-move"
           >
-            <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-surface-raised/20 rounded p-1 transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-between w-full hover:bg-muted/10 rounded-lg p-2 transition-colors">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
                   {getSectionIcon(sectionId)}
                   <GripVertical className="h-3 w-3 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <span className="text-xs text-text-secondary font-medium">{title}</span>
-                <span className="text-xs text-text-secondary bg-surface-raised/30 px-1.5 py-0.5 rounded">{count}</span>
+                <span className="text-xs text-text-secondary bg-chip-bg px-1.5 py-0.5 rounded">{count}</span>
               </div>
-              <ChevronDown className={`h-3 w-3 text-text-secondary transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-3 w-3 text-text-secondary transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`} />
             </CollapsibleTrigger>
           </div>
           {content}
         </Collapsible>
         {sectionId !== sections[sections.length - 1] && (
-          <Separator className="my-3 bg-border-subtle" />
+          <hr className="my-3 border-border-light" />
         )}
       </div>
     );
   };
 
   return (
-    <div className="p-4">
+    <div className="section-card">
       {sections.map(renderSection)}
     </div>
   );

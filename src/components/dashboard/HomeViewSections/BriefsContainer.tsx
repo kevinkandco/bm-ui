@@ -62,17 +62,14 @@ const BriefsContainer = ({
   const pastBriefs = briefs.filter(brief => !brief.timeCreated.includes("Today"));
 
   return (
-    <Card className="w-full rounded-xl shadow-none border-0" style={{
-      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-      boxShadow: 'none'
-    }}>
-      <CardContent className="p-3">
-        <div className="space-y-4">
+    <Card className="section-card">
+      <CardContent className="p-0">
+        <div className="space-y-6">
           {/* Today's Briefs Section - Show if there are any briefs from today */}
           {todaysBriefs.length > 0 && (
-            <div className="pt-2">
-              <h3 className="text-sm font-medium text-white-text/80 px-1 mb-2">Today's Briefs</h3>
-              <div className="space-y-2">
+            <div>
+              <h3 className="text-sm font-semibold text-text-primary mb-4">Today's Briefs</h3>
+              <div className="space-y-3">
                 {todaysBriefs.map((brief, index) => (
                   <BriefCard
                     key={brief.id}
@@ -85,24 +82,24 @@ const BriefsContainer = ({
                   />
                 ))}
               </div>
-              {upcomingBrief && <Separator className="mt-4 bg-white-text/10" />}
+              {upcomingBrief && <hr className="border-border-light mt-6" />}
             </div>
           )}
 
           {/* Upcoming Briefs Section - Collapsible */}
           {upcomingBrief && (
-            <div className="pt-2">
+            <div>
               <Collapsible open={upcomingOpen} onOpenChange={setUpcomingOpen}>
-                <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-left hover:bg-muted/20 rounded-lg p-2 transition-colors">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-medium text-white-text/80 px-1">Upcoming</h3>
-                    <span className="text-xs text-white-text/60">
+                    <h3 className="text-sm font-semibold text-text-primary">Upcoming</h3>
+                    <span className="text-xs text-text-secondary">
                       {upcomingBrief.name} • {upcomingBrief.scheduledTime}
                     </span>
                   </div>
-                  <ChevronDown className={`h-4 w-4 text-white-text/60 transition-transform duration-200 ${upcomingOpen ? 'transform rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 text-text-secondary transition-transform duration-150 ${upcomingOpen ? 'transform rotate-180' : ''}`} />
                 </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-2 pt-2">
+                <CollapsibleContent className="space-y-3 pt-3">
                   <UpcomingBriefCard
                     briefName={upcomingBrief.name}
                     scheduledTime={upcomingBrief.scheduledTime}
@@ -111,7 +108,6 @@ const BriefsContainer = ({
                   />
                 </CollapsibleContent>
               </Collapsible>
-              <Separator className="mt-4 bg-white-text/10" />
             </div>
           )}
 

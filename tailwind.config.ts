@@ -81,6 +81,13 @@ export default {
 				'deep-blue': '#131B2B',
 				'light-gray-text': '#B3B8C1',
 				'white-text': '#FFFFFF',
+				// Priority chip colors for light mode
+				'priority-high': '#E69570',        // Peach medium
+				'priority-high-bg': 'rgba(230, 149, 112, 0.1)', // Peach 10%
+				'priority-medium': '#F7C7A8',      // Peach light  
+				'priority-medium-bg': 'rgba(247, 199, 168, 0.2)', // Peach 20%
+				'priority-low': '#606060',         // Grey 70
+				'chip-bg': '#EDEDED',              // Standard chip background
 				
 				// Glass morphism design system colors - updated for new palette
 				'surface': 'var(--surface)',

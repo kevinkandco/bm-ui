@@ -259,16 +259,32 @@
     @apply text-primary-teal w-5 h-5;
   }
   
-  /* Glass Card Component - updated for Podia theme */
+  /* Glass Card Component - updated for both themes */
   .glass-card {
-    @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
-    background: linear-gradient(to bottom, var(--surface-raised), var(--surface));
+    @apply rounded-xl border backdrop-blur-md transition-all duration-300 ease-out overflow-hidden;
+    background: var(--surface);
     border-color: var(--border-subtle);
+    box-shadow: var(--shadow-card);
   }
   
   .glass-card:hover {
-    @apply shadow-lg;
-    border-color: rgba(46, 226, 173, 0.2);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--accent-primary);
+  }
+  
+  /* Light mode specific card styling */
+  .section-card {
+    @apply rounded-xl bg-surface-light border border-border-light shadow-subtle transition-all duration-300;
+    padding: 24px;
+  }
+  
+  .section-card:hover {
+    @apply shadow-subtle-hover;
+  }
+  
+  .dark .section-card {
+    @apply bg-surface-raised border-border-subtle;
+    box-shadow: var(--shadow-card);
   }
 }
 

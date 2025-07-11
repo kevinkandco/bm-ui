@@ -245,39 +245,37 @@ const BriefCard = ({
     return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
   };
   return <TooltipProvider>
-      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden group" style={{
-      background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
-    }} onClick={handleCardClick}>
+      <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden bg-transparent hover:shadow-md" onClick={handleCardClick}>
         {/* Collapsed Header */}
         <div className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1 min-w-0">
-              {/* Play button moved to the left, doc icon removed */}
-              <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
+              {/* Play button - teal filled circle on white */}
+              <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal flex items-center justify-center hover:bg-primary-teal/90 transition-colors flex-shrink-0">
                 {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
-                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                    <div className="w-0.5 h-3 bg-white rounded-full animate-pulse" style={{
                   animationDelay: '0ms'
                 }} />
-                    <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
+                    <div className="w-0.5 h-4 bg-white rounded-full animate-pulse" style={{
                   animationDelay: '150ms'
                 }} />
-                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                    <div className="w-0.5 h-3 bg-white rounded-full animate-pulse" style={{
                   animationDelay: '300ms'
                 }} />
-                    <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
+                    <div className="w-0.5 h-2 bg-white rounded-full animate-pulse" style={{
                   animationDelay: '450ms'
                 }} />
-                  </div> : <Play className="h-5 w-5 text-primary-teal" />}
+                  </div> : <Play className="h-5 w-5 text-white" />}
               </button>
               
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-white-text truncate font-normal text-sm">
+                  <h3 className="text-text-primary truncate font-semibold text-sm">
                     {brief.name}
                   </h3>
                   
                   {/* Feedback Controls - Show on hover, next to brief name */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
+                  <div className="opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
                     <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
                       <ThumbsUp className="h-3 w-3" />
                     </Button>
@@ -296,7 +294,7 @@ const BriefCard = ({
                 </div>
                 
                 {/* Updated timestamp and range format with date */}
-                <p className="text-xs text-light-gray-text font-extralight">
+                <p className="text-xs text-text-secondary font-normal">
                   {formatDeliveryText(brief.timeCreated, brief.timeRange)}
                 </p>
               </div>
@@ -307,22 +305,22 @@ const BriefCard = ({
               {/* Stats and time saved section */}
               <div className="flex flex-col items-end gap-2">
                 {/* Horizontally aligned stats */}
-                <div className="flex items-center gap-3 text-xs text-light-gray-text">
+                <div className="flex items-center gap-3 text-xs text-text-secondary">
                   <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
                   <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
                   <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
                 </div>
                 
-                {/* Time Saved below the stats */}
-                <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
-                  <Clock className="h-2.5 w-2.5 text-green-400" />
-                  <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+                {/* Time Saved pill - teal text on teal-10% background */}
+                <div className="flex items-center gap-1 text-xs bg-primary-teal/10 rounded-xl py-1 px-3">
+                  <Clock className="h-3 w-3 text-primary-teal" />
+                  <span className="text-primary-teal font-medium text-xs">~{timeSaved.total}min saved</span>
                 </div>
               </div>
               
               {/* Chevron */}
               <div className="ml-2">
-                {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
+                {isExpanded ? <ChevronUp className="h-4 w-4 text-text-secondary" /> : <ChevronDown className="h-4 w-4 text-text-secondary" />}
               </div>
             </div>
           </div>
@@ -335,7 +333,7 @@ const BriefCard = ({
 
         {/* Expanded Content */}
         {isExpanded && <div className="px-6 pb-6">
-            <div className="border-t border-white/20 pt-3">
+            <div className="border-t border-border-light pt-6">
               {/* Audio Player Section - Only show when playing */}
               {playingBrief === brief.id && <div className="mb-4 p-4 rounded-lg bg-surface-raised/20 border border-white/10">
                   <div className="flex items-center justify-between mb-3">
