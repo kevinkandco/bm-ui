@@ -92,6 +92,13 @@ const ProviderSettingsModal = ({
       active: priorityTopicsActive.includes(provider?.name?.toLowerCase() || ''),
     },
     {
+      id: "ignore",
+      label: "Ignore Configuration",
+      icon: <ChevronRight className="h-4 w-4" />,
+      Component: IgnoreSetting,
+      active: ignoreActive.includes(provider?.name?.toLowerCase() || ''),
+    },
+    {
       id: "aiFeatures",
       label: "AI Features",
       icon: <ChevronRight className="h-4 w-4" />,
@@ -104,13 +111,6 @@ const ProviderSettingsModal = ({
       icon: <ChevronRight className="h-4 w-4" />,
       Component: InterruptRules,
       active: true,
-    },
-    {
-      id: "ignore",
-      label: "Ignore Configuration",
-      icon: <ChevronRight className="h-4 w-4" />,
-      Component: IgnoreSetting,
-      active: ignoreActive.includes(provider?.name?.toLowerCase() || ''),
     },
   ], [priorityChannelsActive, priorityPeopleActive, priorityTopicsActive, aiFeaturesActive, ignoreActive, provider?.name]);
 
