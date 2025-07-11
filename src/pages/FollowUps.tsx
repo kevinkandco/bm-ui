@@ -1,11 +1,10 @@
-import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar, Network, Mail, ArrowLeft, Cog, ExternalLink, Check } from "lucide-react";
+import React, { useState } from "react";
+import { ExternalLink, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { useIsMobile } from "@/hooks/use-mobile";
+import AppLayout from "@/components/layout/AppLayout";
 
 // Mock follow up data
 const followUps = [
@@ -54,29 +53,8 @@ const followUps = [
 ];
 
 export default function FollowUps() {
-  const [isNavCollapsed, setIsNavCollapsed] = useState(false);
-  const [isProfileHovered, setIsProfileHovered] = useState(false);
   const [selectedFollowUp, setSelectedFollowUp] = useState(followUps[0]);
   const { toast } = useToast();
-  const isMobile = useIsMobile();
-
-  const handleToggleNav = useCallback(() => {
-    setIsNavCollapsed(!isNavCollapsed);
-  }, [isNavCollapsed]);
-
-  const handleAllSettingsClick = () => {
-    toast({
-      title: "Settings",
-      description: "Settings panel would open here",
-    });
-  };
-
-  const handleProfileClick = () => {
-    toast({
-      title: "Profile",
-      description: "Profile menu would open here",
-    });
-  };
 
   const handleFollowUpClick = (followUp: any) => {
     setSelectedFollowUp(followUp);
@@ -108,319 +86,216 @@ export default function FollowUps() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-dark text-white">
-      <div className="flex">
-        {/* Left Navigation */}
-        <div 
-          className={`bg-surface-darker border-r border-border-muted transition-all duration-300 ease-in-out ${
-            isNavCollapsed ? 'w-16' : 'w-72'
-          } relative flex flex-col h-screen`}
-          onClick={isNavCollapsed ? handleToggleNav : undefined}
-        >
-          <div className="p-4 pt-12 space-y-4 flex-1">
-            {/* Profile Section */}
-            <div 
-              className={`flex items-center gap-3 p-3 rounded-lg relative group transition-all duration-200 ${isNavCollapsed ? 'justify-center' : ''} ${isProfileHovered ? 'bg-white/5' : ''}`}
-              onMouseEnter={() => setIsProfileHovered(true)}
-              onMouseLeave={() => setIsProfileHovered(false)}
-            >
-              <Avatar className={`${isNavCollapsed ? 'w-6 h-6' : 'w-8 h-8'}`}>
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
-              </Avatar>
-              {!isNavCollapsed && (
-                <div className="flex-1">
-                  <p className="text-white text-sm font-medium">Alex Kim</p>
+    <AppLayout>
+      <div className="flex h-full gap-6">
+        {/* Left Column - Follow Ups List */}
+        <div className="w-1/3 space-y-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-white">Follow Ups</h2>
+            <Badge variant="secondary" className="bg-primary-teal/10 text-primary-teal border-primary-teal/20">
+              {followUps.length} items
+            </Badge>
+          </div>
+
+          <div className="space-y-3">
+            {followUps.map((followUp) => (
+              <div
+                key={followUp.id}
+                onClick={() => handleFollowUpClick(followUp)}
+                className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:border-primary-teal/40 ${
+                  selectedFollowUp.id === followUp.id
+                    ? 'border-primary-teal/60 bg-primary-teal/5'
+                    : 'border-border-muted bg-surface-raised/30'
+                }`}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-medium text-white text-sm">{followUp.title}</h3>
+                  <Badge className={`text-xs ${getPriorityColor(followUp.priority)}`}>
+                    {followUp.priority}
+                  </Badge>
                 </div>
-              )}
-              {!isNavCollapsed && isProfileHovered && (
-                <button
-                  onClick={handleToggleNav}
-                  className="absolute right-3 p-1 hover:bg-white/10 rounded-full transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4 text-light-gray-text" />
-                </button>
-              )}
-            </div>
-
-            <Separator className="bg-border-muted" />
-
-            {/* Navigation Items */}
-            <div className="space-y-2">
-              <button className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <Home className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Home</span>}
-              </button>
-              
-              {/* Follow Ups - Active */}
-              <button className={`w-full flex items-start gap-3 p-2 text-left bg-primary-teal/10 border border-primary-teal/20 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <CheckSquare className="w-4 h-4 text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-primary-teal transition-colors text-sm font-medium">Follow Ups</span>}
-              </button>
-
-              <button className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <FileText className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Briefs</span>}
-              </button>
-
-              <button className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <Focus className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Focus</span>}
-              </button>
-
-              <button className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <CheckSquare className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Tasks</span>}
-              </button>
-
-              <button className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <Network className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Catch Up</span>}
-              </button>
-
-              <button className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <Calendar className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Meetings</span>}
-              </button>
-
-              <button onClick={handleAllSettingsClick} className={`w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group ${isNavCollapsed ? 'justify-center' : ''}`}>
-                <Cog className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
-                {!isNavCollapsed && <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Settings</span>}
-              </button>
-            </div>
+                <p className="text-xs text-light-gray-text mb-2">{followUp.type}</p>
+                {followUp.company && (
+                  <p className="text-xs text-light-gray-text mb-2">Company: {followUp.company}</p>
+                )}
+                {followUp.from && (
+                  <p className="text-xs text-light-gray-text mb-2">From: {followUp.from}</p>
+                )}
+                <p className="text-xs text-light-gray-text">{followUp.createdAt}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Header with hamburger menu for mobile */}
-          {isNavCollapsed && isMobile && (
-            <div className="p-4">
-              <button
-                onClick={handleToggleNav}
-                className="p-2 hover:bg-surface-raised/60 rounded-lg transition-colors"
-              >
-                <Menu className="w-5 h-5 text-light-gray-text" />
-              </button>
-            </div>
-          )}
-
-          {/* Follow Ups Content */}
-          <div className="p-6 flex-1">
-            <div className="col-span-3 card-dark p-6">
-              <div className="flex h-full gap-6">
-                {/* Left Column - Follow Ups List */}
-                <div className="w-1/3 space-y-4">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-white">Follow Ups</h2>
-                    <Badge variant="secondary" className="bg-primary-teal/10 text-primary-teal border-primary-teal/20">
-                      {followUps.length} items
+        {/* Right Panel - Follow Up Details */}
+        <div className="flex-1 border-l border-border-muted pl-6">
+          <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-white mb-2">{selectedFollowUp.title}</h1>
+                <div className="flex items-center gap-2 mb-4">
+                  <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20">
+                    {selectedFollowUp.type}
+                  </Badge>
+                  {selectedFollowUp.stage && (
+                    <Badge className="bg-green-500/10 text-green-400 border-green-500/20">
+                      {selectedFollowUp.stage}
                     </Badge>
-                  </div>
-
-                  <div className="space-y-3">
-                    {followUps.map((followUp) => (
-                      <div
-                        key={followUp.id}
-                        onClick={() => handleFollowUpClick(followUp)}
-                        className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:border-primary-teal/40 ${
-                          selectedFollowUp.id === followUp.id
-                            ? 'border-primary-teal/60 bg-primary-teal/5'
-                            : 'border-border-muted bg-surface-raised/30'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-medium text-white text-sm">{followUp.title}</h3>
-                          <Badge className={`text-xs ${getPriorityColor(followUp.priority)}`}>
-                            {followUp.priority}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-light-gray-text mb-2">{followUp.type}</p>
-                        {followUp.company && (
-                          <p className="text-xs text-light-gray-text mb-2">Company: {followUp.company}</p>
-                        )}
-                        {followUp.from && (
-                          <p className="text-xs text-light-gray-text mb-2">From: {followUp.from}</p>
-                        )}
-                        <p className="text-xs text-light-gray-text">{followUp.createdAt}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Right Panel - Follow Up Details */}
-                <div className="flex-1 border-l border-border-muted pl-6">
-                  <div className="space-y-6">
-                    {/* Header */}
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h1 className="text-2xl font-bold text-white mb-2">{selectedFollowUp.title}</h1>
-                        <div className="flex items-center gap-2 mb-4">
-                          <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20">
-                            {selectedFollowUp.type}
-                          </Badge>
-                          {selectedFollowUp.stage && (
-                            <Badge className="bg-green-500/10 text-green-400 border-green-500/20">
-                              {selectedFollowUp.stage}
-                            </Badge>
-                          )}
-                          {selectedFollowUp.status && (
-                            <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20">
-                              {selectedFollowUp.status}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          onClick={handleOpenExternal}
-                          variant="outline" 
-                          size="sm"
-                          className="border-primary-teal/20 text-primary-teal hover:bg-primary-teal/10"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Open External
-                        </Button>
-                        <Button 
-                          onClick={handleMarkDone}
-                          size="sm"
-                          className="bg-primary-teal hover:bg-primary-teal/80 text-white"
-                        >
-                          <Check className="w-4 h-4 mr-2" />
-                          Mark Done
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Details Grid */}
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        {selectedFollowUp.from && (
-                          <div>
-                            <label className="text-sm text-light-gray-text">From</label>
-                            <p className="text-white">{selectedFollowUp.from}</p>
-                          </div>
-                        )}
-                        {selectedFollowUp.owner && (
-                          <div>
-                            <label className="text-sm text-light-gray-text">Owner</label>
-                            <p className="text-white">{selectedFollowUp.owner}</p>
-                          </div>
-                        )}
-                        {selectedFollowUp.company && (
-                          <div>
-                            <label className="text-sm text-light-gray-text">Company</label>
-                            <p className="text-white">{selectedFollowUp.company}</p>
-                          </div>
-                        )}
-                        {selectedFollowUp.due && (
-                          <div>
-                            <label className="text-sm text-light-gray-text">Due</label>
-                            <p className="text-red-400 font-medium">{selectedFollowUp.due}</p>
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-sm text-light-gray-text">Created</label>
-                          <p className="text-white">{selectedFollowUp.createdAt}</p>
-                        </div>
-                        {selectedFollowUp.lastActivity && (
-                          <div>
-                            <label className="text-sm text-light-gray-text">Last Activity</label>
-                            <p className="text-white">{selectedFollowUp.lastActivity}</p>
-                          </div>
-                        )}
-                        {selectedFollowUp.source && (
-                          <div>
-                            <label className="text-sm text-light-gray-text">Source</label>
-                            <p className="text-white">{selectedFollowUp.source}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Summary */}
-                    {selectedFollowUp.summary && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">Summary</h3>
-                        <p className="text-light-gray-text leading-relaxed">{selectedFollowUp.summary}</p>
-                      </div>
-                    )}
-
-                    {/* Subject & Message */}
-                    {selectedFollowUp.subject && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">Subject</h3>
-                        <p className="text-white font-medium mb-4">{selectedFollowUp.subject}</p>
-                        {selectedFollowUp.message && (
-                          <div className="bg-surface-raised/30 p-4 rounded-lg border border-border-muted">
-                            <p className="text-light-gray-text">{selectedFollowUp.message}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Blockers */}
-                    {selectedFollowUp.blockers && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">Blockers</h3>
-                        <p className="text-light-gray-text leading-relaxed">{selectedFollowUp.blockers}</p>
-                      </div>
-                    )}
-
-                    {/* Notes */}
-                    {selectedFollowUp.notes && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">Notes</h3>
-                        <p className="text-light-gray-text leading-relaxed">{selectedFollowUp.notes}</p>
-                      </div>
-                    )}
-
-                    {/* Relevance & Action Reason */}
-                    {selectedFollowUp.relevance && (
-                      <div className="grid grid-cols-2 gap-6">
-                        <div>
-                          <h3 className="text-lg font-semibold text-white mb-3">Relevance</h3>
-                          <p className="text-red-400">{selectedFollowUp.relevance}</p>
-                        </div>
-                        {selectedFollowUp.actionReason && (
-                          <div>
-                            <h3 className="text-lg font-semibold text-white mb-3">Why this is an action item</h3>
-                            <p className="text-light-gray-text">{selectedFollowUp.actionReason}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* People */}
-                    {selectedFollowUp.people && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">People</h3>
-                        <div className="space-y-2">
-                          {selectedFollowUp.people.map((person, index) => (
-                            <div key={index} className="flex items-center gap-3 p-3 bg-surface-raised/30 rounded-lg border border-border-muted">
-                              <Avatar className="w-8 h-8">
-                                <AvatarFallback className="bg-primary-teal/20 text-primary-teal text-xs">
-                                  {person.name.split(' ').map(n => n[0]).join('')}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="text-white text-sm font-medium">{person.name}</p>
-                                <p className="text-light-gray-text text-xs">{person.email}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  )}
+                  {selectedFollowUp.status && (
+                    <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20">
+                      {selectedFollowUp.status}
+                    </Badge>
+                  )}
                 </div>
               </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleOpenExternal}
+                  variant="outline" 
+                  size="sm"
+                  className="border-primary-teal/20 text-primary-teal hover:bg-primary-teal/10"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Open External
+                </Button>
+                <Button 
+                  onClick={handleMarkDone}
+                  size="sm"
+                  className="bg-primary-teal hover:bg-primary-teal/80 text-white"
+                >
+                  <Check className="w-4 h-4 mr-2" />
+                  Mark Done
+                </Button>
+              </div>
             </div>
+
+            {/* Details Grid */}
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-4">
+                {selectedFollowUp.from && (
+                  <div>
+                    <label className="text-sm text-light-gray-text">From</label>
+                    <p className="text-white">{selectedFollowUp.from}</p>
+                  </div>
+                )}
+                {selectedFollowUp.owner && (
+                  <div>
+                    <label className="text-sm text-light-gray-text">Owner</label>
+                    <p className="text-white">{selectedFollowUp.owner}</p>
+                  </div>
+                )}
+                {selectedFollowUp.company && (
+                  <div>
+                    <label className="text-sm text-light-gray-text">Company</label>
+                    <p className="text-white">{selectedFollowUp.company}</p>
+                  </div>
+                )}
+                {selectedFollowUp.due && (
+                  <div>
+                    <label className="text-sm text-light-gray-text">Due</label>
+                    <p className="text-red-400 font-medium">{selectedFollowUp.due}</p>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-light-gray-text">Created</label>
+                  <p className="text-white">{selectedFollowUp.createdAt}</p>
+                </div>
+                {selectedFollowUp.lastActivity && (
+                  <div>
+                    <label className="text-sm text-light-gray-text">Last Activity</label>
+                    <p className="text-white">{selectedFollowUp.lastActivity}</p>
+                  </div>
+                )}
+                {selectedFollowUp.source && (
+                  <div>
+                    <label className="text-sm text-light-gray-text">Source</label>
+                    <p className="text-white">{selectedFollowUp.source}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Summary */}
+            {selectedFollowUp.summary && (
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Summary</h3>
+                <p className="text-light-gray-text leading-relaxed">{selectedFollowUp.summary}</p>
+              </div>
+            )}
+
+            {/* Subject & Message */}
+            {selectedFollowUp.subject && (
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Subject</h3>
+                <p className="text-white font-medium mb-4">{selectedFollowUp.subject}</p>
+                {selectedFollowUp.message && (
+                  <div className="bg-surface-raised/30 p-4 rounded-lg border border-border-muted">
+                    <p className="text-light-gray-text">{selectedFollowUp.message}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Blockers */}
+            {selectedFollowUp.blockers && (
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Blockers</h3>
+                <p className="text-light-gray-text leading-relaxed">{selectedFollowUp.blockers}</p>
+              </div>
+            )}
+
+            {/* Notes */}
+            {selectedFollowUp.notes && (
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Notes</h3>
+                <p className="text-light-gray-text leading-relaxed">{selectedFollowUp.notes}</p>
+              </div>
+            )}
+
+            {/* Relevance & Action Reason */}
+            {selectedFollowUp.relevance && (
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-3">Relevance</h3>
+                  <p className="text-red-400">{selectedFollowUp.relevance}</p>
+                </div>
+                {selectedFollowUp.actionReason && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3">Why this is an action item</h3>
+                    <p className="text-light-gray-text">{selectedFollowUp.actionReason}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* People */}
+            {selectedFollowUp.people && (
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">People</h3>
+                <div className="space-y-2">
+                  {selectedFollowUp.people.map((person, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-surface-raised/30 rounded-lg border border-border-muted">
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="bg-primary-teal/20 text-primary-teal text-xs">
+                          {person.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-white text-sm font-medium">{person.name}</p>
+                        <p className="text-light-gray-text text-xs">{person.email}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }
