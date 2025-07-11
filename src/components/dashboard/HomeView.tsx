@@ -747,8 +747,13 @@ const HomeView = ({
         <div className="grid grid-cols-12 gap-6">
           {/* Column 1 - Context & Status (25% - 3 columns) */}
           <div className="col-span-3 space-y-6">
+            {/* Calendar Section Header */}
+            <div className="flex items-center justify-between">
+              <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
+            </div>
+            
             {/* Upcoming Meeting Card */}
-            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
+            <div className="rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-text-primary">Next Meeting</h3>
                 <Clock className="h-4 w-4 text-accent-primary" />
@@ -768,7 +773,7 @@ const HomeView = ({
             </div>
 
             {/* Today's Schedule Timeline */}
-            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
+            <div className="rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
                 <Calendar className="h-4 w-4 text-accent-primary" />
@@ -799,7 +804,7 @@ const HomeView = ({
             </div>
 
             {/* Focus Toggle / Sign-off Pill */}
-            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
+            <div className="rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
               <div className="space-y-3">
                 <Button 
                   onClick={onStartFocusMode} 
@@ -829,7 +834,7 @@ const HomeView = ({
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
                 {/* Day Picker */}
-                <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2 border border-white/10">
+                <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2">
                   <button 
                     onClick={handlePreviousDay}
                     disabled={selectedDate === "2 days ago"}
@@ -853,24 +858,6 @@ const HomeView = ({
               
               {/* Unified Brief Container */}
               <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
-            </div>
-
-            {/* Upcoming Briefs List - Collapsed Summary */}
-            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-text-primary">Upcoming Briefs</h3>
-                <ChevronRight className="h-4 w-4 text-text-secondary" />
-              </div>
-              <div className="space-y-2 text-xs text-text-secondary">
-                <div className="flex justify-between">
-                  <span>Tomorrow 7:00 AM</span>
-                  <span>Morning Brief</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Friday 4:00 PM</span>
-                  <span>Weekly Recap</span>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -896,13 +883,13 @@ const HomeView = ({
                     Edit
                   </Button>}
               </div>
-              <div className="border border-border-subtle bg-surface-overlay/30 shadow-sm rounded-2xl">
+              <div className="bg-surface-overlay/30 shadow-sm rounded-2xl">
                 <PrioritiesSection />
               </div>
             </div>
             
             {/* Promo / Brief Me Teams Card */}
-            <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+            <div className="rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
               {/* Enhanced blurred background mockups */}
               <div className="absolute inset-0 opacity-20 blur-[1px] pointer-events-none">
                 <div className="grid grid-cols-1 gap-2 h-full p-2">
