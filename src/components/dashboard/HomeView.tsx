@@ -761,10 +761,6 @@ const HomeView = ({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-accent-primary/10 text-accent-primary px-3 py-2 rounded-xl font-medium">
-            <Clock className="h-4 w-4" />
-            <span>Next brief in 2h 15m</span>
-          </div>
         </div>
 
         {/* Three-Column Grid Layout: 25% | 50% | 25% */}
