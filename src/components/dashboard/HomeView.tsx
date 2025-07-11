@@ -851,9 +851,8 @@ const HomeView = ({
           <div className="col-span-6 space-y-6">
             {/* Latest Brief Card - Hero Block */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
-                {/* Day Picker */}
+              {/* Day Picker */}
+              <div className="flex items-center justify-end">
                 <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2">
                   <button 
                     onClick={handlePreviousDay}

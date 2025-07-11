@@ -68,28 +68,7 @@ const BriefsContainer = ({
     }}>
       <CardContent className="p-3">
         <div className="space-y-4">
-          {/* Today's Briefs Section - Show if there are any briefs from today */}
-          {todaysBriefs.length > 0 && (
-            <div className="pt-2">
-              <h3 className="text-sm font-medium text-white-text/80 px-1 mb-2">Today's Briefs</h3>
-              <div className="space-y-2">
-                {todaysBriefs.map((brief, index) => (
-                  <BriefCard
-                    key={brief.id}
-                    brief={brief}
-                    onViewBrief={onViewBrief}
-                    onViewTranscript={onViewTranscript}
-                    onPlayBrief={onPlayBrief}
-                    playingBrief={playingBrief}
-                    isLast={index === todaysBriefs.length - 1}
-                  />
-                ))}
-              </div>
-              {upcomingBrief && <Separator className="mt-4 bg-white-text/10" />}
-            </div>
-          )}
-
-          {/* Upcoming Briefs Section - Collapsible */}
+          {/* Upcoming Briefs Section - Collapsible (moved above) */}
           {upcomingBrief && (
             <div className="pt-2">
               <Collapsible open={upcomingOpen} onOpenChange={setUpcomingOpen}>
@@ -111,7 +90,27 @@ const BriefsContainer = ({
                   />
                 </CollapsibleContent>
               </Collapsible>
-              <Separator className="mt-4 bg-white-text/10" />
+              {todaysBriefs.length > 0 && <Separator className="mt-4 bg-white-text/10" />}
+            </div>
+          )}
+
+          {/* Today's Briefs Section - Show if there are any briefs from today */}
+          {todaysBriefs.length > 0 && (
+            <div className="pt-2">
+              <h3 className="text-sm font-medium text-white-text/80 px-1 mb-2">Today's Briefs</h3>
+              <div className="space-y-2">
+                {todaysBriefs.map((brief, index) => (
+                  <BriefCard
+                    key={brief.id}
+                    brief={brief}
+                    onViewBrief={onViewBrief}
+                    onViewTranscript={onViewTranscript}
+                    onPlayBrief={onPlayBrief}
+                    playingBrief={playingBrief}
+                    isLast={index === todaysBriefs.length - 1}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
