@@ -743,13 +743,13 @@ const HomeView = ({
               <div className="grid grid-cols-3 gap-6">
                 {/* Briefs area (2/3) */}
                 <div className="col-span-2">
-                  {/* Stats Row - Moved from sidebar */}
-                  
-
-                  {/* Good morning greeting */}
+                  {/* Date and Greeting */}
                   <div className="mb-6">
+                    <p className="text-sm text-text-secondary mb-1">
+                      {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                    </p>
                     <h1 className="font-bold text-text-primary text-2xl">
-                      Good morning, Alex
+                      Daily briefing
                     </h1>
                   </div>
                   
@@ -768,14 +768,9 @@ const HomeView = ({
                       </button>
                     </div>
                   </div>
-                  
-                  <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
-                </div>
-                
-                {/* Right content area (1/3) - Task Triage */}
-                <div className="space-y-6">
-                  {/* Follow-ups List */}
-                  <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
+
+                  {/* Follow-ups List - Moved below day picker */}
+                  <div className="mb-6 space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
                     <div className="flex items-center justify-between">
                       <h2 className="font-semibold text-text-primary text-lg">Follow ups</h2>
                       {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
@@ -785,6 +780,12 @@ const HomeView = ({
                     </div>
                     <ActionItemsPanel />
                   </div>
+                  
+                  <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
+                </div>
+                
+                {/* Right content area (1/3) - Calendar */}
+                <div className="space-y-6">
                   
                   {/* Calendar Section */}
                   <CalendarSection />
