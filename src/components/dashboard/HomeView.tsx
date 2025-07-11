@@ -658,7 +658,8 @@ const HomeView = ({
   }
 
   // Desktop View
-  return <div className="min-h-screen px-4 py-6">
+  return (
+    <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
@@ -813,9 +814,9 @@ const HomeView = ({
           </div>
 
           {/* Columns 2 & 3 - Core Brief Workflow + Task Triage (75% - 9 columns) */}
-          <div className="col-span-9 space-y-6">
-            {/* Latest Brief Card - Hero Block spanning both columns */}
-            <div className="space-y-4">
+          <div className="col-span-9">
+            {/* Combined background container with internal layout */}
+            <div className="space-y-6">
               {/* Day Picker */}
               <div className="flex items-center justify-end">
                 <div className="flex items-center gap-1 bg-surface-raised/40 rounded-full px-3 py-2">
@@ -832,30 +833,26 @@ const HomeView = ({
                 </div>
               </div>
               
-              {/* Unified Brief Container with internal two-column layout */}
-              <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
-            </div>
-            
-            {/* Content row with internal grid for middle and right content */}
-            <div className="grid grid-cols-3 gap-6">
-              {/* Middle content area (2/3) */}
-              <div className="col-span-2">
-                {/* Additional content for middle column can go here */}
-              </div>
-              
-              {/* Right content area (1/3) - Task Triage */}
-              <div className="space-y-6">
-                {/* Follow-ups List */}
-                <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
-                  <div className="flex items-center justify-between">
-                    <h2 className="font-semibold text-text-primary text-lg">Follow ups</h2>
-                    {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
-                        View all
-                        <ArrowRight className="w-3 h-3" />
-                      </Button>}
-                  </div>
-                  <ActionItemsPanel />
+              {/* Brief Container with internal layout spanning both areas */}
+              <div className="grid grid-cols-3 gap-6">
+                {/* Briefs area (2/3) */}
+                <div className="col-span-2">
+                  <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
                 </div>
+                
+                {/* Right content area (1/3) - Task Triage */}
+                <div className="space-y-6">
+                  {/* Follow-ups List */}
+                  <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
+                    <div className="flex items-center justify-between">
+                      <h2 className="font-semibold text-text-primary text-lg">Follow ups</h2>
+                      {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
+                          View all
+                          <ArrowRight className="w-3 h-3" />
+                        </Button>}
+                    </div>
+                    <ActionItemsPanel />
+                  </div>
                 
                 {/* Promo / Brief Me Teams Card */}
                 <div className="rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
@@ -910,6 +907,7 @@ const HomeView = ({
                     </Button>
                   </div>
                 </div>
+                </div>
               </div>
             </div>
           </div>
@@ -918,6 +916,7 @@ const HomeView = ({
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
         <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
       </div>
-    </div>;
+    </div>
+  );
 };
 export default React.memo(HomeView);
