@@ -230,7 +230,7 @@ const CalendarSection = () => {
         {/* Next Meeting Card - Reverted to original version with outline */}
         {nextMeeting && (
           <Card 
-            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow" 
+            className="w-full rounded-xl cursor-pointer hover:shadow-md transition-shadow" 
             onClick={() => openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
