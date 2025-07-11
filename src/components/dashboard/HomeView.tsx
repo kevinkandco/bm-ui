@@ -896,9 +896,7 @@ const HomeView = ({
                     <ArrowRight className="w-3 h-3" />
                   </Button>}
               </div>
-              <div className="bg-surface-overlay/30 shadow-sm rounded-2xl">
-                <ActionItemsPanel />
-              </div>
+              <ActionItemsPanel />
             </div>
             
             {/* Promo / Brief Me Teams Card */}
