@@ -661,73 +661,39 @@ const HomeView = ({
   return (
     <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
-        {/* Desktop Header - Horizontal Layout */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-bold text-text-primary mb-2 text-2xl">
-              Good morning, Alex
-            </h1>
-            
-          </div>
-          
-          {/* Updated CTAs on the right with Profile Dropdown */}
-          <div className="flex gap-3 items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="rounded-xl px-6 py-3 border-border-subtle text-text-primary shadow-sm hover:shadow-md transition-all">
-                  Update Status
-                  <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle">
-                <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-white/5">
-                  <Headphones className="mr-2 h-4 w-4" />
-                  Start Focus Mode
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-white/5">
-                  <Clock className="mr-2 h-4 w-4" />
-                  Sign Off for the Day
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <Button onClick={onToggleCatchMeUp} className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all">
-              <Zap className="mr-2 h-4 w-4" />
-              Brief Me
-            </Button>
-
-            {/* Profile Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 h-auto">
-                  <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
-                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
-                    <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
-                      AJ
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
-                <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Integrations
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Brief Configuration
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
-                  <Settings className="mr-2 h-4 w-4" />
-                  All Settings
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        {/* Desktop Header - Just Profile */}
+        <div className="flex items-center justify-end mb-8">
+          {/* Profile Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="p-0 h-auto">
+                <Avatar className="h-10 w-10 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
+                  <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
+                  <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
+                    AJ
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
+              <DropdownMenuItem onClick={handleProfileClick} className="text-text-primary hover:bg-white/5">
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleIntegrationsClick} className="text-text-primary hover:bg-white/5">
+                <Zap className="mr-2 h-4 w-4" />
+                Integrations
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleBriefConfigClick} className="text-text-primary hover:bg-white/5">
+                <FileText className="mr-2 h-4 w-4" />
+                Brief Configuration
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAllSettingsClick} className="text-text-primary hover:bg-white/5">
+                <Settings className="mr-2 h-4 w-4" />
+                All Settings
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Connected Channels Section - Desktop Only */}
@@ -839,6 +805,13 @@ const HomeView = ({
               <div className="grid grid-cols-3 gap-6">
                 {/* Briefs area (2/3) */}
                 <div className="col-span-2">
+                  {/* Good morning greeting */}
+                  <div className="mb-6">
+                    <h1 className="font-bold text-text-primary text-2xl">
+                      Good morning, Alex
+                    </h1>
+                  </div>
+                  
                   <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
                 </div>
                 
