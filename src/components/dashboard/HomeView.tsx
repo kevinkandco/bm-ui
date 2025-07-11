@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar } from "lucide-react";
+import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar, Network, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
@@ -670,6 +670,21 @@ const HomeView = ({
             </Avatar>
             <div>
               <p className="text-white-text text-sm font-medium">Alex</p>
+            </div>
+          </div>
+
+          {/* Status Indicators */}
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center gap-1.5 bg-surface-overlay/40 rounded-full px-2.5 py-1.5">
+              <Network className="w-3 h-3 text-primary-teal" />
+              <span className="text-white text-xs font-medium">2</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-surface-overlay/40 rounded-full px-2.5 py-1.5">
+              <Mail className="w-3 h-3 text-primary-teal" />
+              <span className="text-white text-xs font-medium">3</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-surface-overlay/40 rounded-full px-2.5 py-1.5">
+              <Calendar className="w-3 h-3 text-primary-teal" />
             </div>
           </div>
 
