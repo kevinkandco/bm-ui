@@ -660,8 +660,8 @@ const HomeView = ({
   // Desktop View
   return <div className="min-h-screen flex">
       {/* Full Height Sidebar - Made Narrower */}
-      <div className="w-64 bg-surface-raised/20">
-        <div className="p-4 space-y-4">
+      <div className="w-64 bg-surface-raised/20 flex flex-col">
+        <div className="p-4 space-y-4 flex-1">
           {/* Profile Section - Moved to top, removed email */}
           <div className="flex items-center gap-3 p-3 rounded-lg">
             <Avatar className="w-8 h-8">
@@ -700,7 +700,63 @@ const HomeView = ({
             </button>
           </div>
 
-          {/* Profile Dropdown Section - Moved to bottom */}
+          {/* Brief Me Teams Card */}
+          <div className="rounded-lg p-3 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+            {/* Enhanced blurred background mockups */}
+            <div className="absolute inset-0 opacity-20 blur-[1px] pointer-events-none">
+              <div className="grid grid-cols-1 gap-2 h-full p-2">
+                {/* Team card mockup */}
+                <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-lg p-2 shadow-lg">
+                  <div className="flex items-center gap-1 mb-2">
+                    <div className="flex -space-x-1">
+                      <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                      <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                      <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="bg-white/40 rounded h-1.5 w-full"></div>
+                    <div className="bg-white/35 rounded h-1.5 w-3/4"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Clear content with better contrast */}
+            <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-lg p-3">
+              <h3 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Brief Me Teams
+              </h3>
+              
+              <p className="text-text-secondary text-xs mb-3">Coming soon...</p>
+              
+              <div className="space-y-1.5 mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                  <p className="text-xs text-text-primary">AI meeting proxy</p>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                  <p className="text-xs text-text-primary">Team analytics</p>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                  <p className="text-xs text-text-primary">Shared briefs</p>
+                </div>
+              </div>
+              
+              <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-3 py-1.5 text-xs w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
+                {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Settings - Fixed at bottom */}
+        <div className="p-4 border-t border-white/10">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="w-full flex items-center gap-3 p-3 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
@@ -787,60 +843,6 @@ const HomeView = ({
                         </Button>}
                     </div>
                     <ActionItemsPanel />
-                  </div>
-                
-                  {/* Promo / Brief Me Teams Card */}
-                  <div className="rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
-                    {/* Enhanced blurred background mockups */}
-                    <div className="absolute inset-0 opacity-20 blur-[1px] pointer-events-none">
-                      <div className="grid grid-cols-1 gap-2 h-full p-2">
-                        {/* Team card mockup */}
-                        <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-lg p-2 shadow-lg">
-                          <div className="flex items-center gap-1 mb-2">
-                            <div className="flex -space-x-1">
-                              <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                              <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                              <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
-                            </div>
-                          </div>
-                          <div className="space-y-1">
-                            <div className="bg-white/40 rounded h-1.5 w-full"></div>
-                            <div className="bg-white/35 rounded h-1.5 w-3/4"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Clear content with better contrast */}
-                    <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-lg p-3">
-                      <h3 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Brief Me Teams
-                      </h3>
-                      
-                      <p className="text-text-secondary text-xs mb-3">Coming soon...</p>
-                      
-                      <div className="space-y-1.5 mb-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                          <p className="text-xs text-text-primary">AI meeting proxy</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                          <p className="text-xs text-text-primary">Team analytics</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
-                          <p className="text-xs text-text-primary">Shared briefs</p>
-                        </div>
-                      </div>
-                      
-                      <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-3 py-1.5 text-xs w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
-                        {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
-                      </Button>
-                    </div>
                   </div>
                 </div>
               </div>
