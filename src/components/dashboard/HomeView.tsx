@@ -658,8 +658,7 @@ const HomeView = ({
   }
 
   // Desktop View
-  return (
-    <div className="min-h-screen flex">
+  return <div className="min-h-screen flex">
       {/* Full Height Sidebar - Made Narrower */}
       <div className="w-64 bg-surface-raised/20">
         <div className="p-4 space-y-4">
@@ -681,26 +680,17 @@ const HomeView = ({
           </div>
 
           {/* Brief Me Button - Removed shadow, smaller */}
-          <Button 
-            onClick={onOpenBriefModal}
-            className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-2 font-medium text-sm shadow-none"
-          >
+          <Button onClick={onOpenBriefModal} className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-lg py-2 font-medium text-sm shadow-none">
             Brief Me
           </Button>
 
           {/* Navigation Items - Added hover states, reduced text size, left aligned */}
           <div className="space-y-1">
-            <button 
-              onClick={handleViewAllBriefs}
-              className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 text-primary-teal group"
-            >
+            <button onClick={handleViewAllBriefs} className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 text-primary-teal group">
               <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span className="font-medium text-sm">Briefs</span>
             </button>
-            <button 
-              onClick={handleViewAllTasks}
-              className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group"
-            >
+            <button onClick={handleViewAllTasks} className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
               <CheckSquare className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
               <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Follow-ups</span>
             </button>
@@ -748,23 +738,13 @@ const HomeView = ({
           <div className="grid grid-cols-3 gap-6">
             {/* Combined Briefs and Follow-ups area with shared background */}
             <div className="col-span-3 rounded-2xl p-6" style={{
-              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
-            }}>
+            background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
+          }}>
               <div className="grid grid-cols-3 gap-6">
                 {/* Briefs area (2/3) */}
                 <div className="col-span-2">
                   {/* Stats Row - Moved from sidebar */}
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-6 h-6 bg-primary-teal/20 rounded flex items-center justify-center">
-                      <span className="text-xs text-primary-teal font-medium">2</span>
-                    </div>
-                    <div className="w-6 h-6 bg-green-500/20 rounded flex items-center justify-center">
-                      <span className="text-xs text-green-500 font-medium">3</span>
-                    </div>
-                    <div className="w-6 h-6 bg-blue-500/20 rounded flex items-center justify-center">
-                      <Calendar className="w-3 h-3 text-blue-500" />
-                    </div>
-                  </div>
+                  
 
                   {/* Good morning greeting */}
                   <div className="mb-6">
@@ -871,8 +851,6 @@ const HomeView = ({
         {/* Enhanced Catch Me Up Modal with Scheduling Options */}
         <CatchMeUpWithScheduling open={showSchedulingModal} onClose={handleCloseSchedulingModal} onGenerateSummary={handleGenerateSummaryWithScheduling} upcomingBriefName={upcomingBrief.name} upcomingBriefTime={upcomingBrief.scheduledTime} />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default React.memo(HomeView);
