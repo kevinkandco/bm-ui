@@ -667,7 +667,8 @@ const HomeView = ({
   }
 
   // Desktop View
-  return <div className="min-h-screen px-4 py-6">
+  return (
+    <div className="min-h-screen px-4 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Desktop Header - Horizontal Layout */}
         <div className="flex items-center justify-between mb-8">
