@@ -743,11 +743,88 @@ const HomeView = ({
           <ConnectedChannelsSection showAsHorizontal={true} />
         </div>
 
-        {/* Desktop Grid Layout - Adjusted column widths */}
+        {/* Three-Column Grid Layout: 25% | 50% | 25% */}
         <div className="grid grid-cols-12 gap-6">
-          {/* Main content - 7 columns (reduced from 8) */}
-          <div className="col-span-7 space-y-6">
-            {/* Briefs Section */}
+          {/* Column 1 - Context & Status (25% - 3 columns) */}
+          <div className="col-span-3 space-y-6">
+            {/* Upcoming Meeting Card */}
+            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-medium text-text-primary">Next Meeting</h3>
+                <Clock className="h-4 w-4 text-accent-primary" />
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-text-primary">Team Standup</p>
+                <p className="text-xs text-text-secondary">Today at 10:00 AM</p>
+                <div className="flex gap-2 mt-3">
+                  <Button size="sm" variant="outline" className="flex-1 text-xs border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-white">
+                    Join Live
+                  </Button>
+                  <Button size="sm" variant="ghost" className="flex-1 text-xs text-text-secondary hover:text-accent-primary hover:bg-white/5">
+                    Send Proxy
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Today's Schedule Timeline */}
+            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
+                <Calendar className="h-4 w-4 text-accent-primary" />
+              </div>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                <div className="flex items-center gap-3 py-2 border-b border-border-subtle/50">
+                  <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-text-primary">10:00 AM</p>
+                    <p className="text-xs text-text-secondary">Team Standup</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 py-2 border-b border-border-subtle/50">
+                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-text-primary">1:30 PM</p>
+                    <p className="text-xs text-text-secondary">Product Review</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 py-2">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-text-primary">3:00 PM</p>
+                    <p className="text-xs text-text-secondary">Client Call</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Focus Toggle / Sign-off Pill */}
+            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
+              <div className="space-y-3">
+                <Button 
+                  onClick={onStartFocusMode} 
+                  size="sm" 
+                  className="w-full bg-accent-primary text-white hover:bg-accent-primary/90"
+                >
+                  <Focus className="mr-2 h-4 w-4" />
+                  Start Focus Mode
+                </Button>
+                <Button 
+                  onClick={onSignOffForDay} 
+                  size="sm" 
+                  variant="outline" 
+                  className="w-full border-border-subtle text-text-secondary hover:text-text-primary hover:bg-white/5"
+                >
+                  <Clock className="mr-2 h-4 w-4" />
+                  Sign Off
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 2 - Core Brief Workflow (50% - 6 columns) */}
+          <div className="col-span-6 space-y-6">
+            {/* Latest Brief Card - Hero Block */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Daily Brief(s)</h2>
@@ -774,25 +851,35 @@ const HomeView = ({
                 </div>
               </div>
               
-              {/* Unified Brief Container with upcoming brief */}
+              {/* Unified Brief Container */}
               <BriefsContainer briefs={recentBriefs} totalBriefs={totalBriefs} onViewBrief={onOpenBrief} onViewTranscript={handleViewTranscript} onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onViewAllBriefs={handleViewAllBriefs} onGetBriefedNow={handleGetBriefedNow} onUpdateSchedule={handleUpdateSchedule} upcomingBrief={upcomingBrief} />
             </div>
 
-            {/* Calendar Section - New */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Calendar</h2>
+            {/* Upcoming Briefs List - Collapsed Summary */}
+            <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-medium text-text-primary">Upcoming Briefs</h3>
+                <ChevronRight className="h-4 w-4 text-text-secondary" />
               </div>
-              <CalendarSection />
+              <div className="space-y-2 text-xs text-text-secondary">
+                <div className="flex justify-between">
+                  <span>Tomorrow 7:00 AM</span>
+                  <span>Morning Brief</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Friday 4:00 PM</span>
+                  <span>Weekly Recap</span>
+                </div>
+              </div>
             </div>
           </div>
-          
-          {/* Sidebar - 5 columns (increased from 4) */}
-          <div className="col-span-5 space-y-4">
-            {/* Action Items Panel with header outside */}
+
+          {/* Column 3 - Task Triage (25% - 3 columns) */}
+          <div className="col-span-3 space-y-6">
+            {/* Follow-ups List */}
             <div className="space-y-3 relative" onMouseEnter={() => setIsActionItemsHovered(true)} onMouseLeave={() => setIsActionItemsHovered(false)}>
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-text-primary text-lg">Follow ups (4)</h2>
+                <h2 className="font-semibold text-text-primary text-lg">Follow ups</h2>
                 {isActionItemsHovered && <Button variant="ghost" onClick={handleViewAllTasks} className="absolute right-0 top-0 px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary hover:bg-white/10 flex items-center gap-1 rounded-lg transition-all duration-200 z-10">
                     View all
                     <ArrowRight className="w-3 h-3" />
@@ -801,7 +888,7 @@ const HomeView = ({
               <ActionItemsPanel />
             </div>
             
-            {/* Priorities Section with title outside */}
+            {/* Priorities Accordion */}
             <div className="space-y-3" onMouseEnter={() => setIsPrioritiesHovered(true)} onMouseLeave={() => setIsPrioritiesHovered(false)}>
               <div className="flex items-center justify-between">
                 <h2 className="font-semibold text-text-primary text-lg">Priorities</h2>
@@ -814,99 +901,55 @@ const HomeView = ({
               </div>
             </div>
             
-            {/* Brief Me Teams - With enhanced blurred background mockups */}
-            <div className="border border-border-subtle rounded-2xl p-6 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
+            {/* Promo / Brief Me Teams Card */}
+            <div className="border border-border-subtle rounded-2xl p-4 bg-surface-overlay/30 shadow-sm relative overflow-hidden">
               {/* Enhanced blurred background mockups */}
-              <div className="absolute inset-0 opacity-40 blur-[1px] pointer-events-none">
-                <div className="grid grid-cols-2 gap-4 h-full p-4">
+              <div className="absolute inset-0 opacity-20 blur-[1px] pointer-events-none">
+                <div className="grid grid-cols-1 gap-2 h-full p-2">
                   {/* Team card mockup */}
-                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-xl p-4 shadow-lg">
-                    {/* Team header with profile pics */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex -space-x-2">
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50"></div>
-                        <div className="w-6 h-6 bg-white/70 rounded-full border-2 border-white/50 flex items-center justify-center">
-                          <span className="text-xs text-white/90 font-medium">+5</span>
-                        </div>
+                  <div className="bg-gradient-to-br from-accent-primary/50 to-accent-primary/70 rounded-lg p-2 shadow-lg">
+                    <div className="flex items-center gap-1 mb-2">
+                      <div className="flex -space-x-1">
+                        <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                        <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
+                        <div className="w-3 h-3 bg-white/70 rounded-full border border-white/50"></div>
                       </div>
                     </div>
-                    
-                    {/* Team stats bars */}
-                    <div className="space-y-3 mb-4">
-                      <div className="bg-white/40 rounded-full h-3 w-full"></div>
-                      <div className="bg-white/35 rounded-full h-3 w-3/4"></div>
-                      <div className="bg-white/30 rounded-full h-3 w-1/2"></div>
-                    </div>
-                    
-                    {/* Team name */}
-                    <div className="bg-white/50 rounded-lg h-4 w-2/3"></div>
-                  </div>
-                  
-                  {/* Analytics card mockup */}
-                  <div className="bg-gradient-to-br from-surface/90 to-surface/95 rounded-xl p-4 shadow-lg">
-                    {/* Chart header */}
-                    <div className="bg-white/40 rounded-lg h-3 w-2/3 mb-4"></div>
-                    
-                    {/* Mock chart bars - more detailed */}
-                    <div className="flex items-end gap-2 h-16 mb-3">
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-8"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-12"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-6"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-14"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-10"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-16"></div>
-                      <div className="bg-accent-primary/70 rounded-sm w-3 h-4"></div>
-                    </div>
-                    
-                    {/* Analytics labels */}
-                    <div className="space-y-2">
-                      <div className="bg-white/35 rounded h-2 w-full"></div>
-                      <div className="bg-white/30 rounded h-2 w-3/4"></div>
-                      <div className="bg-white/25 rounded h-2 w-5/6"></div>
+                    <div className="space-y-1">
+                      <div className="bg-white/40 rounded h-1.5 w-full"></div>
+                      <div className="bg-white/35 rounded h-1.5 w-3/4"></div>
                     </div>
                   </div>
                 </div>
               </div>
               
               {/* Clear content with better contrast */}
-              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-xl p-4">
-                <h2 className="text-lg font-semibold text-text-primary mb-2 flex items-center gap-2">
-                  <Users className="h-5 w-5" />
+              <div className="relative z-10 bg-surface-overlay/70 backdrop-blur-sm rounded-lg p-3">
+                <h3 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                  <Users className="h-4 w-4" />
                   Brief Me Teams
-                </h2>
+                </h3>
                 
-                <p className="text-text-secondary text-sm mb-4">Coming soon...</p>
+                <p className="text-text-secondary text-xs mb-3">Coming soon...</p>
                 
-                <div className="space-y-2 mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">AI meeting proxy</p>
+                <div className="space-y-1.5 mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                    <p className="text-xs text-text-primary">AI meeting proxy</p>
                   </div>
                   
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Onboarding/new hire briefs</p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                    <p className="text-xs text-text-primary">Team analytics</p>
                   </div>
                   
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Pre-meeting, handoff, and shared daily briefs</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">Team analytics</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-accent-primary rounded-full"></div>
-                    <p className="text-sm text-text-primary">and more...</p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-accent-primary rounded-full"></div>
+                    <p className="text-xs text-text-primary">Shared briefs</p>
                   </div>
                 </div>
                 
-                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-4 py-2 text-sm w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
+                <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-3 py-1.5 text-xs w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
                   {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
                 </Button>
               </div>
