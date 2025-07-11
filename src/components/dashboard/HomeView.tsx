@@ -661,22 +661,22 @@ const HomeView = ({
   return <div className="min-h-screen flex">
       {/* Full Height Sidebar - Made Narrower */}
       <div className="w-64 bg-surface-raised/20 flex flex-col">
-        <div className="p-4 space-y-4 flex-1">
+        <div className="p-4 pt-12 space-y-4 flex-1">
           {/* Profile Section - Moved to top, removed email */}
           <div className="flex items-center gap-3 p-3 rounded-lg">
             <Avatar className="w-8 h-8">
               <AvatarImage src="/placeholder.svg" />
               <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
             </Avatar>
-            <div>
+            <div className="text-left">
               <p className="text-white-text text-sm font-medium">Alex</p>
             </div>
           </div>
 
-          {/* Connected Integrations Status */}
-          <div className="flex items-center justify-center gap-2">
+          {/* Connected Integrations Status - Full Width */}
+          <div className="flex gap-2">
             {connectedIntegrations.map((integration, i) => (
-              <div key={i} className="relative flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200">
+              <div key={i} className="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200 flex-1 justify-center">
                 <div className="flex items-center justify-center relative">
                   {integration.name === 'Slack' && <div className="w-3 h-3 text-primary-teal"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg></div>}
                   {integration.name === 'Gmail' && <Mail className="w-3 h-3 text-primary-teal" />}
@@ -685,23 +685,23 @@ const HomeView = ({
                   <div className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-white/20 bg-green-400"></div>
                 </div>
                 {/* Count badge */}
-                {(integration.channels || integration.emails || integration.events) > 1 && (
-                  <span className="text-xs font-medium text-white bg-white/20 rounded-full px-1.5 py-0.5 min-w-[18px] text-center">
-                    {integration.channels || integration.emails || integration.events}
-                  </span>
-                )}
+                <span className="text-xs font-medium text-white">
+                  {integration.channels || integration.emails || integration.events}
+                </span>
               </div>
             ))}
           </div>
 
-          {/* Upcoming Brief - Moved above Brief Me button */}
+          {/* Upcoming Brief - Time on right side */}
           <div className="space-y-1">
-            <p className="text-text-secondary text-xs">Upcoming brief</p>
-            <p className="text-text-primary text-xs font-medium">{upcomingBrief.scheduledTime}</p>
+            <div className="flex items-center justify-between">
+              <p className="text-text-secondary text-xs text-left">Upcoming brief</p>
+              <p className="text-text-primary text-xs font-medium">{upcomingBrief.scheduledTime}</p>
+            </div>
           </div>
 
-          {/* Brief Me Button - Removed shadow, smaller */}
-          <Button onClick={onOpenBriefModal} className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none">
+          {/* Brief Me Button - Left aligned */}
+          <Button onClick={onOpenBriefModal} className="w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none justify-start">
             Brief Me
           </Button>
 
@@ -769,9 +769,9 @@ const HomeView = ({
                 </div>
               </div>
               
-              <Button onClick={handleTeamInterest} size="sm" className={`rounded-lg px-3 py-1.5 text-xs w-full ${waitlistStatus === 'added' ? 'bg-green-600 text-white hover:bg-green-600' : 'bg-accent-primary text-white hover:bg-accent-primary/90'}`} disabled={waitlistStatus === 'added'}>
+              <button onClick={handleTeamInterest} className={`text-xs w-full text-left p-0 h-auto font-normal ${waitlistStatus === 'added' ? 'text-green-400' : 'text-text-primary hover:text-text-secondary'} transition-colors`} disabled={waitlistStatus === 'added'}>
                 {waitlistStatus === 'added' ? 'Added to waitlist' : 'Join waitlist'}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
