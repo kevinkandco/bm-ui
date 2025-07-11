@@ -707,9 +707,13 @@ const HomeView = ({
 
           {/* Navigation Items - Added hover states, reduced text size, left aligned */}
           <div className="space-y-1">
-            <button onClick={handleViewAllBriefs} className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 text-primary-teal group">
-              <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span className="font-medium text-sm">Briefs</span>
+            <button onClick={() => navigate('/dashboard')} className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 text-primary-teal group">
+              <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <span className="font-medium text-sm">Home</span>
+            </button>
+            <button onClick={handleViewAllBriefs} className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
+              <FileText className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
+              <span className="text-light-gray-text group-hover:text-white transition-colors text-sm">Briefs</span>
             </button>
             <button onClick={handleViewAllTasks} className="w-full flex items-start gap-3 p-2 text-left hover:bg-surface-raised/60 rounded-lg transition-all duration-200 group">
               <CheckSquare className="w-4 h-4 text-light-gray-text group-hover:text-primary-teal group-hover:scale-110 transition-all" />
