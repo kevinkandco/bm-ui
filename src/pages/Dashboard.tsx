@@ -423,7 +423,9 @@ const Dashboard = () => {
     <div className="min-h-screen flex flex-col">
 
       {/* Focus Mode Timer Header */}
-      {userStatus === "focus" && (
+      {/* Away/Offline Timer Header */}
+      {/* Vacation/Out of Office Timer Header */}
+      {userStatus === "focus" || userStatus === "vacation" || userStatus === "away" && (
         <StatusTimer 
           status={userStatus}
           onExitFocusMode={handleExitFocusMode}
@@ -431,21 +433,6 @@ const Dashboard = () => {
           briefSchedules={briefSchedules}
           userSchedule={userSchedule}
           focusModeExitLoading={focusModeExitLoading}
-        />
-      )}
-
-      {/* Away/Offline Timer Header */}
-      {userStatus === "away" && (
-        <StatusTimer 
-          status={userStatus}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
-
-      {/* Vacation/Out of Office Timer Header */}
-      {userStatus === "vacation" && (
-        <StatusTimer 
-          status={userStatus}
           onToggleCatchMeUp={handleToggleCatchMeUp}
           onSignBackOn={handleSignBackOn}
         />
