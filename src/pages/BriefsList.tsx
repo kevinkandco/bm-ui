@@ -305,10 +305,10 @@ const BriefsList = () => {
                                 </span>
                               )}
                               {status === "failed" && (
-                                <span
+                                <span title={error}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleClick(error);
+                                    handleClick(error || "");
                                   }}
                                   className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500"
                                 >
@@ -337,6 +337,7 @@ const BriefsList = () => {
             onPageChange={getBriefs}
           />
         )}
+        <ViewErrorMessage open={open} onClose={handleClose} message={message} />
       </div>
     </DashboardLayout>
   );

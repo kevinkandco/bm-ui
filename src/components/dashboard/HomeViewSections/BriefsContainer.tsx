@@ -157,6 +157,7 @@ const BriefsContainer = ({
           </div>
         </div>
       </CardContent>
+      <ViewErrorMessage open={open} onClose={handleClose} message={message} />
     </Card>
   );
 };

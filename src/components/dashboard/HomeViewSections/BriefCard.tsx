@@ -360,7 +360,7 @@ const BriefCard = ({
 							</span>
 						)}
 						{brief?.status === "failed" && (
-							<span onClick={(e) => handleClick(brief?.error, e)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+							<span title={brief?.error || ""} onClick={(e) => handleClick(brief?.error, e)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
 								Failed to generate the summary
 							</span>
 						)}
