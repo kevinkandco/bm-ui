@@ -423,7 +423,7 @@ const BriefDetail = () => {
               <CheckSquare className="h-6 w-6 text-accent-primary flex-shrink-0" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{briefData?.title}</h1>
-                <p className="text-sm text-text-secondary">Here's your briefing for Thu, Jul 3, 2025 from {briefData?.timeRange}:</p>
+                <p className="text-sm text-text-secondary">Here's your briefing for {briefData?.delivery_at} from {briefData?.start_at} - {briefData?.ended_at} :</p>
               </div>
             </div>
           </div>
