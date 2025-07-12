@@ -225,11 +225,11 @@ const isValidTimeForPeriod = useCallback((key: keyof typeof times, time: string)
 
   switch (key) {
     case "morning":
-      return totalMinutes >= 360 && totalMinutes < 720; // 06:00–11:59
+      return totalMinutes >= 360 && totalMinutes <= 720; // 06:00–12:00
     case "midday":
-      return totalMinutes >= 720 && totalMinutes < 1020; // 12:00–16:59
+      return totalMinutes >= 721 && totalMinutes <= 1020; // 12:01–17:00
     case "evening":
-      return totalMinutes >= 1020 && totalMinutes < 1440; // 17:00–23:59
+      return totalMinutes >= 1021 && totalMinutes <= 1320; // 17:01–21:00
     default:
       return false;
   }
@@ -239,8 +239,9 @@ const updateTimeValue = useCallback(
   async (key: keyof typeof times, newTime: string) => {
 
     if (!isValidTimeForPeriod(key, newTime)) {
+      const TimeError = key === "morning" ? "(6:00 AM - 12:00 PM)" : key === "midday" ? "(12:01 PM - 5:00 PM)" : "(5:01 PM - 10:00 PM)";
       toast({
-        title: "Invalid time",
+        title: "Invalid time select from " + TimeError,
         description: `Selected time is not valid for the ${key} period.`,
         variant: "destructive",
       });
