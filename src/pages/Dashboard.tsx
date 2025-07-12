@@ -124,7 +124,7 @@ const Dashboard = () => {
 
   const getRecentBriefs = useCallback(async () => {
     setBriefsLoading(true);
-    const response = await call("get", `/summaries?today=true`, {
+    const response = await call("get", `/summaries?date_filter=${new Date().toISOString().slice(0, 10)}`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
