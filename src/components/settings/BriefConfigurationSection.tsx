@@ -140,7 +140,7 @@ const BriefConfigurationSection = () => {
       setEmailDigest(response?.data?.email_digest);
 
       const briefTime = response.data?.brief_time;
-      const timeFlags = getTimePeriod(null);
+      const timeFlags = getTimePeriod(briefTime);
 
       setTimes((prev) => {
         const updated = {
@@ -219,7 +219,7 @@ const BriefConfigurationSection = () => {
     }));
   }, [call, days, times]);
 
-const isValidTimeForPeriod = (key: keyof typeof times, time: string): boolean => {
+const isValidTimeForPeriod = useCallback((key: keyof typeof times, time: string): boolean => {
   const [hours, minutes] = time.split(":").map(Number);
   const totalMinutes = hours * 60 + minutes;
 
@@ -233,7 +233,7 @@ const isValidTimeForPeriod = (key: keyof typeof times, time: string): boolean =>
     default:
       return false;
   }
-};
+}, []);
 
 const updateTimeValue = useCallback(
   async (key: keyof typeof times, newTime: string) => {
@@ -276,7 +276,7 @@ const updateTimeValue = useCallback(
       }));
     }
   },
-  [call, days, times] // include required deps
+  [call, days, times, toast, isValidTimeForPeriod]
 );
 
   const addCustomBrief = () => {
