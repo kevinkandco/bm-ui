@@ -72,7 +72,7 @@ const BriefsList = () => {
       setLoading(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
 
-      const response = await call("get", `/summaries?page=${page}`, {
+      const response = await call("get", `/summaries?page=${page}&per_page=8`, {
         showToast: true,
         toastTitle: "Failed to fetch summaries",
         toastDescription: "Unable to load briefs. Please try again.",
