@@ -15,7 +15,7 @@ import ProviderSettingsModal from "./modal/ProviderSettingsModal";
 import ConnectModal from "./modal/ConnectModal";
 import { useApi } from "@/hooks/useApi";
 
-const AllowedProvidersForModal = ["slack", "google"];
+const AllowedProvidersForModal = ["slack", "google", "outlook"];
 
 const IntegrationsSection = () => {
   const { toast } = useToast();

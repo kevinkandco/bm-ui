@@ -27,7 +27,7 @@ const InputIntegrationsSection = ({ onConnect }: InputIntegrationsSectionProps) 
     { 
       name: "Outlook", 
       provider: "outlook", 
-      available: false, 
+      available: true, 
       icon: Mail,
       description: "Sync emails and calendar events for comprehensive briefings",
       features: ["Email processing", "Meeting summaries", "Task extraction"]

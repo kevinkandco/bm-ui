@@ -8,12 +8,14 @@ const AllowedProviders = [
   "slack",
   "google",
   'asana',
+  "outlook",
   'calendar'
 ]
 const redirectProvider = [
   "slack",
   "google",
   'asana',
+  "outlook",
 ]
 
 export const useIntegrationsState = () => {
@@ -117,7 +119,7 @@ export const useIntegrationsState = () => {
         slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=dashboard/settings`,
         google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings`,
         calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${REDIRECT_URL}/outlook/auth`,
+        outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=dashboard/settings`,
       };
       window.open(urls[provider], "_self");
     };
