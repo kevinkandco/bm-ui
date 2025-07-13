@@ -232,7 +232,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 bg-surface overflow-hidden">
+      <div className="flex-1 px-6 py-6">
         {/* Hamburger Menu - show whenever nav is collapsed */}
         {isNavCollapsed && (
           <div className="p-4">
@@ -246,14 +246,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
         )}
         
         {/* Page Content */}
-        <div className="flex-1 px-6 py-6">
-          <div className="max-w-6xl mx-auto">
-            {/* Main Content Container with consistent styling */}
-            <div className="col-span-3 card-dark p-6" style={{
-              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
-            }}>
-              {children}
-            </div>
+        <div className="max-w-6xl mx-auto">
+          {/* Main Content Container with consistent styling */}
+          <div className="col-span-3 card-dark p-6" style={{
+            background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
+          }}>
+            {children}
           </div>
         </div>
       </div>
