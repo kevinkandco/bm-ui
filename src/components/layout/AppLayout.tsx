@@ -245,7 +245,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 px-3 py-4 md:py-6">
+      <div className="flex-1 px-2 py-4 md:py-6">
         {/* Hamburger Menu - show whenever nav is collapsed */}
         {isNavCollapsed && (
           <div className="mb-2 md:mb-4">
