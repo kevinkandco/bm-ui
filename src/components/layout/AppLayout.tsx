@@ -246,8 +246,15 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
         )}
         
         {/* Page Content */}
-        <div className={`${isNavCollapsed ? '' : 'p-4'}`}>
-          {children}
+        <div className="flex-1 px-6 py-6">
+          <div className="max-w-6xl mx-auto">
+            {/* Main Content Container with consistent styling */}
+            <div className="col-span-3 card-dark p-6" style={{
+              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
+            }}>
+              {children}
+            </div>
+          </div>
         </div>
       </div>
     </div>
