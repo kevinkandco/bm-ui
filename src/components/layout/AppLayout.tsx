@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,19 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
   const location = useLocation();
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [isProfileHovered, setIsProfileHovered] = useState(false);
+
+  // Auto-collapse nav at iPad breakpoint (768px)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsNavCollapsed(true);
+      }
+    };
+
+    handleResize(); // Check on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleToggleNav = () => {
     setIsNavCollapsed(prev => !prev);
@@ -232,10 +245,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 px-6 py-6">
+      <div className="flex-1 px-4 py-4 md:px-6 md:py-6">
         {/* Hamburger Menu - show whenever nav is collapsed */}
         {isNavCollapsed && (
-          <div className="p-4">
+          <div className="mb-2 md:mb-4">
             <button
               onClick={handleToggleNav}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -248,7 +261,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
         {/* Page Content */}
         <div className="max-w-6xl mx-auto">
           {/* Main Content Container with consistent styling */}
-          <div className="col-span-3 card-dark p-6" style={{
+          <div className="card-dark p-4 md:p-6" style={{
             background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)'
           }}>
             {children}
