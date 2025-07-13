@@ -1,5 +1,5 @@
 import React from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import AppLayout from "@/components/layout/AppLayout";
 import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain, Calendar, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -23,16 +23,11 @@ const SettingsPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
   
   // Get activeSection from navigation state or default to "profile"
   const [activeSection, setActiveSection] = React.useState(
     location.state?.activeSection || "profile"
   );
-
-  const handleToggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
-  };
 
   const handleSaveSettings = () => {
     toast({
@@ -190,11 +185,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <DashboardLayout 
-      currentPage="settings" 
-      sidebarOpen={sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
+    <AppLayout currentPage="settings">
       <div className="container p-4 md:p-6 max-w-7xl mx-auto">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
@@ -249,7 +240,7 @@ const SettingsPage = () => {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </AppLayout>
   );
 };
 
