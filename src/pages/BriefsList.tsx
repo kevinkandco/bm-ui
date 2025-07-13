@@ -54,7 +54,7 @@ const BriefsList = () => {
   }];
   const filteredBriefs = briefs.filter(brief => brief.title.toLowerCase().includes(searchQuery.toLowerCase()) || brief.summary.toLowerCase().includes(searchQuery.toLowerCase()));
   return <AppLayout currentPage="briefs">
-      <div className="min-h-screen px-4 py-6 bg-transparent">
+      <div className="bg-transparent">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -69,36 +69,36 @@ const BriefsList = () => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
-          <p className="text-text-secondary">Search and view your brief history</p>
+        <div className="mb-4 md:mb-6">
+          <h1 className="text-xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+          <p className="text-sm md:text-base text-text-secondary">Search and view your brief history</p>
         </div>
         
         {/* Search */}
-        <div className="mb-6">
+        <div className="mb-4 md:mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
-            <Input placeholder="Search briefs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle" />
+            <Input placeholder="Search briefs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 h-10 md:h-12 rounded-xl bg-surface-overlay border-border-subtle text-sm md:text-base" />
           </div>
         </div>
         
         {/* Briefs List */}
-        <div className="glass-card rounded-2xl overflow-hidden">
-          <div className="p-4 md:p-6">
+        <div className="glass-card rounded-xl md:rounded-2xl overflow-hidden">
+          <div className="p-3 md:p-6">
             <div className="space-y-1">
-              {filteredBriefs.length === 0 ? <div className="text-center py-8">
-                  <p className="text-text-secondary">No briefs found matching your search.</p>
+              {filteredBriefs.length === 0 ? <div className="text-center py-6 md:py-8">
+                  <p className="text-text-secondary text-sm md:text-base">No briefs found matching your search.</p>
                 </div> : filteredBriefs.map(brief => <React.Fragment key={brief.id}>
-                    <div className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => handleOpenBrief(brief.id)}>
-                      <div className="flex items-center flex-1">
-                        <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
+                    <div className="flex items-center justify-between p-3 md:p-4 rounded-lg md:rounded-xl hover:bg-white/10 transition-all cursor-pointer" onClick={() => handleOpenBrief(brief.id)}>
+                      <div className="flex items-center flex-1 min-w-0">
+                        <Archive className="h-4 w-4 md:h-5 md:w-5 text-accent-primary mr-2 md:mr-3 flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center">
-                            <h3 className="font-medium text-text-primary truncate">{brief.title}</h3>
-                            {brief.unread && <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>}
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-medium text-text-primary truncate text-sm md:text-base">{brief.title}</h3>
+                            {brief.unread && <span className="h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>}
                           </div>
-                          <p className="text-sm text-text-secondary">{brief.date}</p>
-                          <p className="text-xs text-text-secondary mt-1">Time Range: {brief.timeRange}</p>
+                          <p className="text-xs md:text-sm text-text-secondary">{brief.date}</p>
+                          <p className="text-xs text-text-secondary mt-1 hidden md:block">Time Range: {brief.timeRange}</p>
                           <p className="text-xs text-text-secondary mt-1">{brief.summary}</p>
                         </div>
                       </div>

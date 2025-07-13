@@ -77,10 +77,16 @@ const FollowUps = () => {
 
   return (
     <AppLayout currentPage="follow-ups">
-      <div className="grid grid-cols-4 gap-6 h-full">
+      <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-4 md:gap-6 md:h-full">
+        {/* Mobile Header */}
+        <div className="md:hidden mb-4">
+          <h2 className="text-xl font-semibold text-text-primary mb-1">Follow-ups</h2>
+          <p className="text-text-secondary text-sm">Items requiring your attention</p>
+        </div>
+
         {/* Left Column - Follow-ups List */}
-        <div className="col-span-1 space-y-4 h-full overflow-auto">
-          <div className="mb-4">
+        <div className="md:col-span-1 space-y-4 md:h-full md:overflow-auto">
+          <div className="mb-4 hidden md:block">
             <h2 className="text-xl font-semibold text-text-primary mb-2">Follow-ups</h2>
             <p className="text-text-secondary text-sm">Items requiring your attention</p>
           </div>
@@ -90,13 +96,13 @@ const FollowUps = () => {
               <div
                 key={item.id}
                 onClick={() => setSelectedFollowUp(item.id)}
-                className={`p-4 rounded-lg cursor-pointer transition-all ${
+                className={`p-3 md:p-4 rounded-lg cursor-pointer transition-all ${
                   selectedFollowUp === item.id
                     ? 'bg-white/10 border border-primary-teal/30'
                     : 'bg-white/5 hover:bg-white/8 border border-transparent'
                 }`}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2 md:gap-3">
                   <CheckSquare 
                     className={`w-4 h-4 mt-1 flex-shrink-0 ${
                       item.status === 'completed' ? 'text-green-400' : 'text-text-secondary'
@@ -109,7 +115,7 @@ const FollowUps = () => {
                     <p className="text-text-secondary text-xs mt-1 line-clamp-2">
                       {item.description}
                     </p>
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className={`text-xs ${getPriorityColor(item.priority)}`}>
                         {item.priority}
                       </span>
@@ -125,16 +131,16 @@ const FollowUps = () => {
         </div>
 
         {/* Right Panel - Follow-up Details */}
-        <div className="col-span-3 card-dark p-6">
+        <div className="md:col-span-3 card-dark p-4 md:p-6">
           {selectedItem ? (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* Header */}
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl font-semibold text-text-primary mb-2">
+                  <h1 className="text-lg md:text-2xl font-semibold text-text-primary mb-2">
                     {selectedItem.title}
                   </h1>
-                  <div className="flex items-center gap-4 text-sm text-text-secondary">
+                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-text-secondary">
                     <div className="flex items-center gap-1">
                       <User className="w-4 h-4" />
                       <span>From {selectedItem.assignedBy}</span>
@@ -152,19 +158,21 @@ const FollowUps = () => {
                   </div>
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex flex-col md:flex-row gap-2">
                   {selectedItem.status !== 'completed' && (
                     <>
                       <Button
                         onClick={() => handleMarkComplete(selectedItem.id)}
-                        className="bg-primary-teal hover:bg-primary-teal/90"
+                        className="bg-primary-teal hover:bg-primary-teal/90 text-sm md:text-base"
+                        size="sm"
                       >
                         Mark Complete
                       </Button>
                       <Button
                         onClick={() => handleSnooze(selectedItem.id)}
                         variant="outline"
-                        className="border-border-subtle"
+                        className="border-border-subtle text-sm md:text-base"
+                        size="sm"
                       >
                         Snooze
                       </Button>
@@ -183,20 +191,20 @@ const FollowUps = () => {
 
               {/* Description */}
               <div>
-                <h3 className="text-lg font-medium text-text-primary mb-3">Details</h3>
-                <p className="text-text-secondary leading-relaxed">
+                <h3 className="text-base md:text-lg font-medium text-text-primary mb-3">Details</h3>
+                <p className="text-text-secondary leading-relaxed text-sm md:text-base">
                   {selectedItem.details}
                 </p>
               </div>
 
               {/* Original Message */}
               <div>
-                <h3 className="text-lg font-medium text-text-primary mb-3">Original Message</h3>
-                <div className="bg-white/5 rounded-lg p-4 border-l-4 border-primary-teal">
-                  <p className="text-text-secondary italic">
+                <h3 className="text-base md:text-lg font-medium text-text-primary mb-3">Original Message</h3>
+                <div className="bg-white/5 rounded-lg p-3 md:p-4 border-l-4 border-primary-teal">
+                  <p className="text-text-secondary italic text-sm md:text-base">
                     "{selectedItem.originalMessage}"
                   </p>
-                  <p className="text-text-secondary text-sm mt-2">
+                  <p className="text-text-secondary text-xs md:text-sm mt-2">
                     {selectedItem.context}
                   </p>
                 </div>
@@ -205,15 +213,15 @@ const FollowUps = () => {
               {/* Actions */}
               {selectedItem.status !== 'completed' && (
                 <div className="pt-4 border-t border-border-subtle">
-                  <h3 className="text-lg font-medium text-text-primary mb-3">Quick Actions</h3>
-                  <div className="flex gap-3">
-                    <Button variant="outline" className="border-border-subtle">
+                  <h3 className="text-base md:text-lg font-medium text-text-primary mb-3">Quick Actions</h3>
+                  <div className="flex flex-col md:flex-row gap-2 md:gap-3">
+                    <Button variant="outline" className="border-border-subtle text-sm" size="sm">
                       Reply
                     </Button>
-                    <Button variant="outline" className="border-border-subtle">
+                    <Button variant="outline" className="border-border-subtle text-sm" size="sm">
                       Delegate
                     </Button>
-                    <Button variant="outline" className="border-border-subtle">
+                    <Button variant="outline" className="border-border-subtle text-sm" size="sm">
                       Set Reminder
                     </Button>
                   </div>
@@ -221,13 +229,13 @@ const FollowUps = () => {
               )}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center h-32 md:h-full">
               <div className="text-center">
-                <CheckSquare className="w-12 h-12 text-text-secondary mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-text-primary mb-2">
+                <CheckSquare className="w-8 h-8 md:w-12 md:h-12 text-text-secondary mx-auto mb-4" />
+                <h3 className="text-base md:text-lg font-medium text-text-primary mb-2">
                   Select a Follow-up
                 </h3>
-                <p className="text-text-secondary">
+                <p className="text-text-secondary text-sm md:text-base">
                   Choose an item from the left to view details
                 </p>
               </div>
