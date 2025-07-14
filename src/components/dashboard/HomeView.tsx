@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Zap, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, Settings, LogOut, CheckSquare, ArrowRight, Home, ChevronLeft, Calendar, Mail, ArrowLeft, Cog } from "lucide-react";
+import { Zap, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, Settings, LogOut, CheckSquare, ArrowRight, Home, ChevronLeft, Calendar, Mail, ArrowLeft, Cog, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -862,6 +862,12 @@ const HomeView = ({
           {/* Brief Me Button - Left aligned */}
           <Button onClick={onToggleCatchMeUp} className={`w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none ${isNavCollapsed ? 'justify-center px-0' : 'justify-start'}`}>
             {isNavCollapsed ? <Zap className="w-4 h-4" /> : 'Brief Me'}
+          </Button>
+          <Button onClick={onToggleFocusMode} className={`w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none ${isNavCollapsed ? 'justify-center px-0' : 'justify-start'}`}>
+            {isNavCollapsed ? <Headphones className="w-4 h-4" /> : 'Start Focus Mode'}
+          </Button>
+          <Button onClick={onSignOffForDay} className={`w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none ${isNavCollapsed ? 'justify-center px-0' : 'justify-start'}`}>
+            {isNavCollapsed ? <Clock className="w-4 h-4" /> : 'Sign Off for the Day'}
           </Button>
 
           {/* Navigation Items - Added hover states, reduced text size, left aligned */}
