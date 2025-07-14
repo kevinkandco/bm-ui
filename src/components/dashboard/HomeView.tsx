@@ -54,6 +54,7 @@ interface HomeViewProps {
   upcomingBrief: Summary | null;
   calendarData: CalenderData;
   connectedPlatforms: Integration[];
+  selectedDate: string;
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (
     briefId: number,
@@ -67,6 +68,8 @@ interface HomeViewProps {
   onExitFocusMode: () => void;
   onSignOffForDay: () => void;
   fetchDashboardData: () => void;
+  handlePreviousDay: () => void;
+  handleNextDay: () => void;
 }
 const HomeView = ({
   status,
@@ -77,6 +80,7 @@ const HomeView = ({
   upcomingBrief,
   calendarData,
   connectedPlatforms,
+  selectedDate,
   onOpenBrief,
   onViewTranscript,
   onStartFocusMode,
@@ -85,6 +89,8 @@ const HomeView = ({
   onOpenBriefModal,
   onSignOffForDay,
   fetchDashboardData,
+  handlePreviousDay,
+  handleNextDay,
 }: HomeViewProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -109,7 +115,6 @@ const HomeView = ({
   const [showBriefDetail, setShowBriefDetail] = useState(false);
   const [selectedBrief, setSelectedBrief] = useState<Summary | null>(null);
   const [showUpcomingBrief, setShowUpcomingBrief] = useState(false);
-  const [selectedDate, setSelectedDate] = useState("Today");
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [isProfileHovered, setIsProfileHovered] = useState(false);
   const [fullPlayingBrief, setFullPlayingBrief] = useState<Summary | null>(
@@ -234,24 +239,6 @@ const HomeView = ({
       message: "",
     });
   };
-
-  // Day picker handlers
-  const handlePreviousDay = useCallback(() => {
-    console.log("Previous day clicked, current selectedDate:", selectedDate);
-    if (selectedDate === "Today") {
-      setSelectedDate("Yesterday");
-    } else if (selectedDate === "Yesterday") {
-      setSelectedDate("2 days ago");
-    }
-  }, [selectedDate]);
-  const handleNextDay = useCallback(() => {
-    console.log("Next day clicked, current selectedDate:", selectedDate);
-    if (selectedDate === "2 days ago") {
-      setSelectedDate("Yesterday");
-    } else if (selectedDate === "Yesterday") {
-      setSelectedDate("Today");
-    }
-  }, [selectedDate]);
 
   // Status management handlers
   const handleStatusChange = useCallback(

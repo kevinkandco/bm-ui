@@ -55,6 +55,7 @@ const Dashboard = () => {
   const [upcomingBrief, setUpcomingBrief] = useState<Summary | null>(null);
   const [focusTime, setFocusTime] = useState(0);
   const [recentBriefs, setRecentBriefs] = useState<Summary[]>([]);
+  const [selectedDate, setSelectedDate] = useState("Today");
   const [totalBriefs, setTotalBriefs] = useState(0);
   const [briefsLoading, setBriefsLoading] = useState(false);
   const [pendingData, setPendingData] = useState<PendingData[]>([]);
@@ -108,7 +109,6 @@ const Dashboard = () => {
   }, [call]);
 
   const getCalendarData = useCallback(async () => {
-    // setBriefsLoading(true);
     const response = await call("get", `/calendar/data`, {
       showToast: true,
       toastTitle: "Failed to fetch calendar data",
@@ -120,12 +120,14 @@ const Dashboard = () => {
       today: response.data.today,
       upcoming: response.data.upcoming
     });
-    // setBriefsLoading(false);
   }, [call]);
 
   const getRecentBriefs = useCallback(async () => {
     setBriefsLoading(true);
-    const response = await call("get", `/summaries?date_filter=${new Date().toISOString().slice(0, 10)}`, {
+    const date = new Date();
+    if (selectedDate === "Yesterday") date.setDate(date.getDate() - 1);
+    else if (selectedDate === "2 days ago") date.setDate(date.getDate() - 2);
+    const response = await call("get", `/summaries?date_filter=${date.toISOString().slice(0, 10)}`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
@@ -137,7 +139,7 @@ const Dashboard = () => {
     setRecentBriefs(enrichBriefsWithStats(response?.data));
     setTotalBriefs(response?.meta?.total);
     setBriefsLoading(false);
-  }, [call]);
+  }, [call, selectedDate]);
 
   const getBrief = useCallback(
     async (briefId: number): Promise<false | Summary> => {
@@ -203,6 +205,10 @@ const Dashboard = () => {
   }, [call]);
 
   useEffect(() => {
+    getRecentBriefs();
+  }, [getRecentBriefs]);
+
+  useEffect(() => {
     const loadData = async () => {
         setLoading(true);
         const tokenFromUrl = searchParams.get("token");
@@ -220,7 +226,6 @@ const Dashboard = () => {
         await Promise.all([
             fetchDashboardData(),
             getCalendarData(),
-            getRecentBriefs(),
             getProvider()
         ]);
         } catch (error) {
@@ -231,62 +236,62 @@ const Dashboard = () => {
     };
 
     loadData();
-  }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData, getProvider]);
+  }, [searchParams, fetchDashboardData, getCalendarData, getProvider]);
 
   useEffect(() => {
-      if (!recentBriefs) return;
-  
-      const newPending = recentBriefs
-        ?.filter(
-          (brief) => brief.status !== "success" && brief.status !== "failed"
-        )
-        .map((brief) => ({ id: brief.id, status: true }));
-  
-      setPendingData(newPending);
-    }, [recentBriefs, setPendingData]);
+    if (!recentBriefs) return;
+
+    const newPending = recentBriefs
+      ?.filter(
+        (brief) => brief.status !== "success" && brief.status !== "failed"
+      )
+      .map((brief) => ({ id: brief.id, status: true }));
+
+    setPendingData(newPending);
+  }, [recentBriefs, setPendingData]);
 
 
-    useEffect(() => {
-          // Clear existing intervals first
-          intervalIDsRef.current.forEach(clearInterval);
-          intervalIDsRef.current = [];
-      
-          if (!pendingData?.length) return;
-      
-          const ids = pendingData.map((item) => {
-            const intervalId = setInterval(async () => {
-              const data = await getBrief(item.id);
-      
-              if (data) {
-                const stats = transformToStats(data);
-                const dataWithStats = { ...data, stats };
-                setPendingData(
-                  (prev) => prev?.filter((data) => data.id !== item.id) ?? []
-                );
-      
-                setRecentBriefs((prev) => {
-                  if (!prev) return null;
-                  return prev?.map((brief) => brief.id === item.id ? dataWithStats : brief) || null;
-                });
-      
-                clearInterval(intervalId);
-      
-                intervalIDsRef.current = intervalIDsRef.current?.filter(
-                  (id) => id !== intervalId
-                );
-              }
-            }, 3000);
-      
-            return intervalId;
+  useEffect(() => {
+    // Clear existing intervals first
+    intervalIDsRef.current.forEach(clearInterval);
+    intervalIDsRef.current = [];
+
+    if (!pendingData?.length) return;
+
+    const ids = pendingData.map((item) => {
+      const intervalId = setInterval(async () => {
+        const data = await getBrief(item.id);
+
+        if (data) {
+          const stats = transformToStats(data);
+          const dataWithStats = { ...data, stats };
+          setPendingData(
+            (prev) => prev?.filter((data) => data.id !== item.id) ?? []
+          );
+
+          setRecentBriefs((prev) => {
+            if (!prev) return null;
+            return prev?.map((brief) => brief.id === item.id ? dataWithStats : brief) || null;
           });
-      
-          intervalIDsRef.current = ids;
-      
-          return () => {
-            intervalIDsRef.current.forEach(clearInterval);
-            intervalIDsRef.current = [];
-          };
-        }, [pendingData, getBrief]);
+
+          clearInterval(intervalId);
+
+          intervalIDsRef.current = intervalIDsRef.current?.filter(
+            (id) => id !== intervalId
+          );
+        }
+      }, 3000);
+
+      return intervalId;
+    });
+
+    intervalIDsRef.current = ids;
+
+    return () => {
+      intervalIDsRef.current.forEach(clearInterval);
+      intervalIDsRef.current = [];
+    };
+  }, [pendingData, getBrief]);
 
   const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -466,6 +471,24 @@ const Dashboard = () => {
     });
   }, [toast, call, getRecentBriefs]);
 
+  // Day picker handlers
+  const handlePreviousDay = useCallback(() => {
+    console.log("Previous day clicked, current selectedDate:", selectedDate);
+    if (selectedDate === "Today") {
+      setSelectedDate("Yesterday");
+    } else if (selectedDate === "Yesterday") {
+      setSelectedDate("2 days ago");
+    }
+  }, [selectedDate]);
+  const handleNextDay = useCallback(() => {
+    console.log("Next day clicked, current selectedDate:", selectedDate);
+    if (selectedDate === "2 days ago") {
+      setSelectedDate("Yesterday");
+    } else if (selectedDate === "Yesterday") {
+      setSelectedDate("Today");
+    }
+  }, [selectedDate]);
+
   if (loading) {
     return <FancyLoader />
   }
@@ -501,6 +524,7 @@ const Dashboard = () => {
             upcomingBrief={upcomingBrief}
             calendarData={calendarData}
             connectedPlatforms={connectedPlatforms}
+            selectedDate={selectedDate}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onStartFocusMode={handleStartFocusMode}
@@ -510,6 +534,8 @@ const Dashboard = () => {
             onExitFocusMode={handleExitFocusMode}
             onSignOffForDay={handleSignOffForDay}
             fetchDashboardData={fetchDashboardData}
+            handlePreviousDay={handlePreviousDay}
+            handleNextDay={handleNextDay}
           />
         )}
         {currentView === "listening" && <ListeningScreen />}

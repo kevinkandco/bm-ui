@@ -201,7 +201,7 @@ const MeetingsList = () => {
                       </div>
                       <div className="flex md:flex-col gap-2 md:space-y-2">
                         <Button  size="sm" variant="default" className={cn("w-full", isPast ? "invisible" : "flex-1 md:flex-none text-xs md:text-sm")}>Join</Button>
-                        <Button size="sm" variant="outline" className="flex-1 md:w-full text-xs md:text-sm">Details</Button>
+                        <Button size="sm" variant="outline" className="flex-1 md:w-full text-xs md:text-sm" onClick={() => openMeetingDetails(meeting)}>Details</Button>
                       </div>
                     </div>
                   </div>
