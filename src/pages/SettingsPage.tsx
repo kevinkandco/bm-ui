@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain, Calendar, Gift } from "lucide-react";
+import AppLayout from "@/components/layout/AppLayout";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
@@ -28,9 +29,9 @@ const SettingsPage = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [activeCategory, setActiveCategory] = React.useState("profile");
-  const [searchParams] = useSearchParams();
   const { call } = useApi();
   const { logout, gotoLogin } = useAuthStore();
   const [settings, setSettings] = React.useState({
@@ -383,12 +384,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <DashboardLayout 
-      currentPage="settings" 
-      sidebarOpen={sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
+    <AppLayout currentPage="settings">
+      <div className="max-w-7xl mx-auto">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -406,17 +403,39 @@ const SettingsPage = () => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary flex items-center">
-            <Settings className="mr-3 h-6 w-6" />
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-xl md:text-3xl font-bold text-text-primary flex items-center">
+            <Settings className="mr-2 md:mr-3 h-5 w-5 md:h-6 md:w-6" />
             Settings
           </h1>
-          <p className="text-text-secondary mt-1">Manage your account and preferences</p>
+          <p className="text-sm md:text-base text-text-secondary mt-1">Manage your account and preferences</p>
         </div>
         
-        <div className="glass-card rounded-3xl overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-4">
-            <div className="p-6 border-r border-border-subtle">
+        <div className="glass-card rounded-xl md:rounded-3xl overflow-hidden">
+          <div className="flex flex-col md:grid md:grid-cols-4">
+            {/* Mobile Category Selector */}
+            <div className="md:hidden p-4 border-b border-border-subtle">
+              <h2 className="text-base font-medium text-text-primary mb-3">Categories</h2>
+              <div className="grid grid-cols-2 gap-2">
+                {settingCategories.map((category) => (
+                  <button 
+                    key={category.id}
+                    onClick={() => setActiveSection(category.id)}
+                    className={`flex items-center p-2 rounded-lg transition-all text-sm ${
+                      category.active 
+                        ? 'bg-white/10 text-white' 
+                        : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
+                    }`}
+                  >
+                    <category.icon className="h-4 w-4 mr-2" />
+                    <span className="truncate">{category.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Sidebar */}
+            <div className="hidden md:block p-4 md:p-6 border-r border-border-subtle">
               <h2 className="text-lg font-medium text-text-primary mb-4">Categories</h2>
               <div className="space-y-1">
                 {settingCategories.map((category) => (
@@ -436,13 +455,13 @@ const SettingsPage = () => {
               </div>
             </div>
             
-            <div className="md:col-span-3 p-6">
+            <div className="md:col-span-3 p-4 md:p-6">
               {renderContent()}
             </div>
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </AppLayout>
   );
 };
 

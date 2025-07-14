@@ -237,3 +237,42 @@ export interface Meeting {
   preparationPoints?: string[];
   suggestedAgenda?: string[];
 }
+
+export type BackendIntegration = {
+  id: number;
+  provider: number;
+  provider_name: string;
+  email: string;
+  is_connected: boolean;
+  is_combined: number;
+  tag: {
+    id: number;
+    name: string;
+    color: string;
+    emoji: string;
+    send_at: string;
+    delivery_email: number;
+    delivery_audio: number;
+  } | null;
+  created_at: string;
+  updated_at: string;
+  workspace: string;
+};
+
+export type AccountStatus = 'active' | 'monitoring' | 'offline';
+
+export interface Integration {
+  id: string;
+  name: string;
+  icon: string;
+  accounts: Account[];
+  totalCount: number;
+  workspace?: string;
+}
+
+export interface Account {
+  email: string;
+  workspace: string;
+  status: AccountStatus;
+}
+

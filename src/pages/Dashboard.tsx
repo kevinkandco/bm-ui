@@ -7,7 +7,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, Integration, BackendIntegration, AccountStatus } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
@@ -62,6 +62,7 @@ const Dashboard = () => {
   const [focusModeActivationLoading, setFocusModeActivationLoading] = useState(false);
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
+  const [connectedPlatforms, setConnectedPlatforms] = useState<Integration[]>([]);
   const [calendarData, setCalendarData] = useState<CalenderData>({
     today: [],
     upcoming: [],
@@ -139,48 +140,98 @@ const Dashboard = () => {
   }, [call]);
 
   const getBrief = useCallback(
-      async (briefId: number): Promise<false | Summary> => {
-        const response = await call("get", `/summary/${briefId}/status`, {
-          showToast: true,
-          toastTitle: "Failed to fetch brief",
-          toastDescription: "Something went wrong while fetching the brief.",
-          returnOnFailure: false, 
-        });
-  
-        return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
-      },
-      [call]
-    );
-    useEffect(() => {
-        const loadData = async () => {
-            setLoading(true);
+    async (briefId: number): Promise<false | Summary> => {
+      const response = await call("get", `/summary/${briefId}/status`, {
+        showToast: true,
+        toastTitle: "Failed to fetch brief",
+        toastDescription: "Something went wrong while fetching the brief.",
+        returnOnFailure: false, 
+      });
 
-            const tokenFromUrl = searchParams.get("token");
+      return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
+    },
+    [call]
+  );
 
-            if (tokenFromUrl) {
-            localStorage.setItem("token", tokenFromUrl);
+  const getProvider = useCallback(async (): Promise<void> => {
+    const response = await call("get", "/settings/system-integrations", {
+      showToast: false,
+      returnOnFailure: false,
+    });
 
-            const url = new URL(window.location.href);
-            url.searchParams.delete("token");
-            url.searchParams.delete("provider");
-            window.history.replaceState({}, document.title, url.pathname + url.search);
-            }
+    if (response?.data) {
+      const grouped = response.data.reduce(
+        (acc: Record<string, Integration>, integration: BackendIntegration) => {
+          const provider = integration.provider_name;
+          const providerId = provider.toLowerCase();
 
-            try {
-            await Promise.all([
-                fetchDashboardData(),
-                getCalendarData(),
-                getRecentBriefs()
-            ]);
-            } catch (error) {
-            console.error("Failed to load data:", error);
-            } finally {
-            setLoading(false);
-            }
-        };
+          if (!acc[provider]) {
+            acc[provider] = {
+              name: provider,
+              id: providerId,
+              icon: provider.charAt(0).toUpperCase(),
+              accounts: [],
+              totalCount: 0,
+            };
+          }
 
-        loadData();
-    }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData]);
+          const status: AccountStatus = integration.is_connected
+            ? integration.is_combined
+              ? "active"
+              : "monitoring"
+            : "offline";
+
+          acc[provider].accounts.push({
+            email: integration.email,
+            workspace: integration.workspace,
+            status,
+          });
+          
+          return acc;
+        },
+        {}
+      );
+
+      const result: Integration[] = Object.values(grouped).map(
+        (provider: Integration) => ({
+          ...provider,
+          totalCount: provider.accounts.length,
+        })
+      );
+      setConnectedPlatforms(result);
+    }
+  }, [call]);
+
+  useEffect(() => {
+    const loadData = async () => {
+        setLoading(true);
+        const tokenFromUrl = searchParams.get("token");
+
+        if (tokenFromUrl) {
+        localStorage.setItem("token", tokenFromUrl);
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete("token");
+        url.searchParams.delete("provider");
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+        }
+
+        try {
+        await Promise.all([
+            fetchDashboardData(),
+            getCalendarData(),
+            getRecentBriefs(),
+            getProvider()
+        ]);
+        } catch (error) {
+        console.error("Failed to load data:", error);
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    loadData();
+  }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData, getProvider]);
 
   useEffect(() => {
       if (!recentBriefs) return;
@@ -449,6 +500,7 @@ const Dashboard = () => {
             briefsLoading={briefsLoading}
             upcomingBrief={upcomingBrief}
             calendarData={calendarData}
+            connectedPlatforms={connectedPlatforms}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onStartFocusMode={handleStartFocusMode}
