@@ -875,7 +875,7 @@ const HomeView = ({
           )}
 
           {/* Brief Me Button - Left aligned */}
-          <Button onClick={onOpenBriefModal} className={`w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none ${isNavCollapsed ? 'justify-center px-0' : 'justify-start'}`}>
+          <Button onClick={onToggleCatchMeUp} className={`w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none ${isNavCollapsed ? 'justify-center px-0' : 'justify-start'}`}>
             {isNavCollapsed ? <Zap className="w-4 h-4" /> : 'Brief Me'}
           </Button>
 
