@@ -257,6 +257,7 @@ export type BackendIntegration = {
   created_at: string;
   updated_at: string;
   workspace: string;
+  error: string | null;
 };
 
 export type AccountStatus = 'active' | 'monitoring' | 'offline';
@@ -274,5 +275,6 @@ export interface Account {
   email: string;
   workspace: string;
   status: AccountStatus;
+  error: string | null;
 }
 

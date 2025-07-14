@@ -28,6 +28,7 @@ import {
   UpcomingMeetingsSection,
 } from "./HomeViewSections/SidebarSections";
 import {
+  BackendIntegration,
   CalendarEvent,
   CalenderData,
   Integration,
@@ -55,6 +56,7 @@ interface HomeViewProps {
   calendarData: CalenderData;
   connectedPlatforms: Integration[];
   selectedDate: string;
+  IntegrationWarning: BackendIntegration[];
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (
     briefId: number,
@@ -81,6 +83,7 @@ const HomeView = ({
   calendarData,
   connectedPlatforms,
   selectedDate,
+  IntegrationWarning,
   onOpenBrief,
   onViewTranscript,
   onStartFocusMode,
@@ -1019,6 +1022,11 @@ const HomeView = ({
                       Good morning, {user?.name}
                     </h1>
                   </div>
+                  {IntegrationWarning.map((integration) => (
+                    <div className="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                      {integration.error}
+                    </div>
+                  ))}
                   
                   {/* Day Picker */}
                   <div className="flex items-center justify-end mb-6">

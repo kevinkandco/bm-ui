@@ -64,6 +64,7 @@ const Dashboard = () => {
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
   const [connectedPlatforms, setConnectedPlatforms] = useState<Integration[]>([]);
+  const [IntegrationWarning, setIntegrationWarning] = useState<BackendIntegration[]>([]);
   const [calendarData, setCalendarData] = useState<CalenderData>({
     today: [],
     upcoming: [],
@@ -162,6 +163,10 @@ const Dashboard = () => {
     });
 
     if (response?.data) {
+
+      const error = response.data.filter((integration: BackendIntegration) => integration.error);
+      setIntegrationWarning(error);
+
       const grouped = response.data.reduce(
         (acc: Record<string, Integration>, integration: BackendIntegration) => {
           const provider = integration.provider_name;
@@ -187,8 +192,9 @@ const Dashboard = () => {
             email: integration.email,
             workspace: integration.workspace,
             status,
+            error: integration.error ?? null,
           });
-          
+
           return acc;
         },
         {}
@@ -525,6 +531,7 @@ const Dashboard = () => {
             calendarData={calendarData}
             connectedPlatforms={connectedPlatforms}
             selectedDate={selectedDate}
+            IntegrationWarning={IntegrationWarning}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onStartFocusMode={handleStartFocusMode}
