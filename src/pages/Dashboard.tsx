@@ -506,7 +506,6 @@ const Dashboard = () => {
             onStartFocusMode={handleStartFocusMode}
             onToggleFocusMode={handleToggleFocusMode}
             onToggleCatchMeUp={handleToggleCatchMeUp}
-            onStartApp={handleStartApp}
             onOpenBriefModal={openBriefModal}
             onExitFocusMode={handleExitFocusMode}
             onSignOffForDay={handleSignOffForDay}

@@ -5,8 +5,8 @@ const killSlack = require('./killSlack.cjs');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 700,
-    height: 450,
+    width: 800,
+    height: 500,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,

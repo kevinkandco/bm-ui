@@ -44,6 +44,7 @@ import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 import { AUDIO_URL } from "@/config";
 import ActionItemsPanel from "./ActionItemsPanel";
 import CalendarSection from "./HomeViewSections/CalendarSection";
+import { useApi } from "@/hooks/useApi";
 
 interface HomeViewProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -63,7 +64,6 @@ interface HomeViewProps {
   onStartFocusMode: (focusTime: number) => void;
   onToggleFocusMode: () => void;
   onToggleCatchMeUp: () => void;
-  onStartApp: () => void;
   onOpenBriefModal: () => void;
   onExitFocusMode: () => void;
   onSignOffForDay: () => void;
@@ -83,12 +83,12 @@ const HomeView = ({
   onStartFocusMode,
   onToggleFocusMode,
   onToggleCatchMeUp,
-  onStartApp,
   onOpenBriefModal,
   onSignOffForDay,
   fetchDashboardData,
 }: HomeViewProps) => {
   const { toast } = useToast();
+  const { call } = useApi();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user } = useAuthStore();
@@ -339,6 +339,11 @@ const HomeView = ({
   );
 
   const dotColors = ["bg-primary-teal", "bg-orange-400", "bg-purple-400"];
+
+  const handleStartApp = async () => {
+    const response = await call("get", "/start-foucs-app");
+    console.log(response, 'resr');
+}
 
   // Mobile View
   if (isMobile) {
@@ -889,6 +894,10 @@ const HomeView = ({
           {/* Brief Me Button - Left aligned */}
           <Button onClick={onOpenBriefModal} className={`w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none ${isNavCollapsed ? 'justify-center px-0' : 'justify-start'}`}>
             {isNavCollapsed ? <Zap className="w-4 h-4" /> : 'Brief Me'}
+          </Button>
+
+          <Button onClick={handleStartApp} className={`w-full bg-primary-teal hover:bg-primary-teal/90 text-white rounded-md py-2 font-medium text-sm shadow-none ${isNavCollapsed ? 'justify-center px-0' : 'justify-start'}`}>
+            {isNavCollapsed ? <Headphones className="w-4 h-4" /> : 'Start App'}
           </Button>
 
           {/* Navigation Items - Added hover states, reduced text size, left aligned */}
