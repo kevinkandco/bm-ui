@@ -1,15 +1,11 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { Zap, Headphones, Archive, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, User, Settings, LogOut, CheckSquare, Star, ArrowRight, Home, ChevronLeft, Calendar, Network, Mail, ArrowLeft, Cog } from "lucide-react";
+import { Zap, Menu, X, FileText, Focus, Clock, ChevronDown, ChevronRight, Play, Pause, Users, Settings, LogOut, CheckSquare, ArrowRight, Home, ChevronLeft, Calendar, Mail, ArrowLeft, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import StatusTimer, {
-  StatusTimerProps,
-} from "@/components/dashboard/StatusTimer";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,27 +13,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-
-// Import optimized section components
 import ConnectedChannelsSection from "./HomeViewSections/ConnectedChannelsSection";
-import PrioritiesSection from "./HomeViewSections/PrioritiesSection";
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import {
-  NextBriefSection,
-  UpcomingMeetingsSection,
-} from "./HomeViewSections/SidebarSections";
-import {
   BackendIntegration,
-  CalendarEvent,
   CalenderData,
   Integration,
   Priorities,
-  PriorityPeople,
   Summary,
 } from "./types";
 import useAuthStore from "@/store/useAuthStore";
-import ListeningScreen from "./ListeningScreen";
 import useAudioPlayer, { UseAudioPlayerType } from "@/hooks/useAudioPlayer";
 import Audio from "./Audio";
 import ViewTranscript from "./ViewTranscript";
