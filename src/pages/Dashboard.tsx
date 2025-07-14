@@ -7,12 +7,13 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, Integration, BackendIntegration, AccountStatus } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import { enrichBriefsWithStats, transformToStats } from "@/lib/utils";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
+import FancyLoader from "@/components/settings/modal/FancyLoader";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -61,6 +62,7 @@ const Dashboard = () => {
   const [focusModeActivationLoading, setFocusModeActivationLoading] = useState(false);
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
+  const [connectedPlatforms, setConnectedPlatforms] = useState<Integration[]>([]);
   const [calendarData, setCalendarData] = useState<CalenderData>({
     today: [],
     upcoming: [],
@@ -71,6 +73,7 @@ const Dashboard = () => {
     triggers: [],
     integrations: [],
   });
+  const [loading, setLoading] = useState(true);
 
   const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [searchParams] = useSearchParams();
@@ -122,7 +125,7 @@ const Dashboard = () => {
 
   const getRecentBriefs = useCallback(async () => {
     setBriefsLoading(true);
-    const response = await call("get", `/summaries?today=true`, {
+    const response = await call("get", `/summaries?date_filter=${new Date().toISOString().slice(0, 10)}`, {
       showToast: true,
       toastTitle: "Failed to fetch briefs",
       toastDescription: "Something went wrong while fetching the briefs.",
@@ -137,37 +140,98 @@ const Dashboard = () => {
   }, [call]);
 
   const getBrief = useCallback(
-      async (briefId: number): Promise<false | Summary> => {
-        const response = await call("get", `/summary/${briefId}/status`, {
-          showToast: true,
-          toastTitle: "Failed to fetch brief",
-          toastDescription: "Something went wrong while fetching the brief.",
-          returnOnFailure: false, 
-        });
-  
-        return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
-      },
-      [call]
-    );
+    async (briefId: number): Promise<false | Summary> => {
+      const response = await call("get", `/summary/${briefId}/status`, {
+        showToast: true,
+        toastTitle: "Failed to fetch brief",
+        toastDescription: "Something went wrong while fetching the brief.",
+        returnOnFailure: false, 
+      });
 
-    useEffect(() => {
-    const tokenFromUrl = searchParams.get("token");
+      return response?.data?.status === "success" || response?.data?.status === "failed" ? response?.data : false;
+    },
+    [call]
+  );
 
-    if (tokenFromUrl) {
-      localStorage.setItem("token", tokenFromUrl);
-      const url = new URL(window.location.href);
-      url.searchParams.delete("token");
-      url.searchParams.delete("provider");
-      window.history.replaceState(
-        {},
-        document.title,
-        url.pathname + url.search
+  const getProvider = useCallback(async (): Promise<void> => {
+    const response = await call("get", "/settings/system-integrations", {
+      showToast: false,
+      returnOnFailure: false,
+    });
+
+    if (response?.data) {
+      const grouped = response.data.reduce(
+        (acc: Record<string, Integration>, integration: BackendIntegration) => {
+          const provider = integration.provider_name;
+          const providerId = provider.toLowerCase();
+
+          if (!acc[provider]) {
+            acc[provider] = {
+              name: provider,
+              id: providerId,
+              icon: provider.charAt(0).toUpperCase(),
+              accounts: [],
+              totalCount: 0,
+            };
+          }
+
+          const status: AccountStatus = integration.is_connected
+            ? integration.is_combined
+              ? "active"
+              : "monitoring"
+            : "offline";
+
+          acc[provider].accounts.push({
+            email: integration.email,
+            workspace: integration.workspace,
+            status,
+          });
+          
+          return acc;
+        },
+        {}
       );
+
+      const result: Integration[] = Object.values(grouped).map(
+        (provider: Integration) => ({
+          ...provider,
+          totalCount: provider.accounts.length,
+        })
+      );
+      setConnectedPlatforms(result);
     }
-    fetchDashboardData();
-    getCalendarData();
-    getRecentBriefs(); 
-  }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData]);
+  }, [call]);
+
+  useEffect(() => {
+    const loadData = async () => {
+        setLoading(true);
+        const tokenFromUrl = searchParams.get("token");
+
+        if (tokenFromUrl) {
+        localStorage.setItem("token", tokenFromUrl);
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete("token");
+        url.searchParams.delete("provider");
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+        }
+
+        try {
+        await Promise.all([
+            fetchDashboardData(),
+            getCalendarData(),
+            getRecentBriefs(),
+            getProvider()
+        ]);
+        } catch (error) {
+        console.error("Failed to load data:", error);
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    loadData();
+  }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData, getProvider]);
 
   useEffect(() => {
       if (!recentBriefs) return;
@@ -402,17 +466,17 @@ const Dashboard = () => {
     });
   }, [toast, call, getRecentBriefs]);
 
-  const handleStartApp = async () => {
-    const response = await call("get", "/start-foucs-app");
-    console.log(response, 'resr');
-    
+  if (loading) {
+    return <FancyLoader />
   }
 
   return (
     <div className="min-h-screen flex flex-col">
 
       {/* Focus Mode Timer Header */}
-      {userStatus === "focus" && (
+      {/* Away/Offline Timer Header */}
+      {/* Vacation/Out of Office Timer Header */}
+      {userStatus === "focus" || userStatus === "vacation" || userStatus === "away" && (
         <StatusTimer 
           status={userStatus}
           onExitFocusMode={handleExitFocusMode}
@@ -420,21 +484,6 @@ const Dashboard = () => {
           briefSchedules={briefSchedules}
           userSchedule={userSchedule}
           focusModeExitLoading={focusModeExitLoading}
-        />
-      )}
-
-      {/* Away/Offline Timer Header */}
-      {userStatus === "away" && (
-        <StatusTimer 
-          status={userStatus}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
-
-      {/* Vacation/Out of Office Timer Header */}
-      {userStatus === "vacation" && (
-        <StatusTimer 
-          status={userStatus}
           onToggleCatchMeUp={handleToggleCatchMeUp}
           onSignBackOn={handleSignBackOn}
         />
@@ -451,6 +500,7 @@ const Dashboard = () => {
             briefsLoading={briefsLoading}
             upcomingBrief={upcomingBrief}
             calendarData={calendarData}
+            connectedPlatforms={connectedPlatforms}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onStartFocusMode={handleStartFocusMode}

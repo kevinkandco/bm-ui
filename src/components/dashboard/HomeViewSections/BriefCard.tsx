@@ -77,7 +77,8 @@ const BriefCard = ({
         isVip: false, // Placeholder – set via business logic
         priorityPerson: undefined, // Set if needed by keyword/name detection
         triggerKeyword: undefined, // Set if keyword-based filtering is applied
-        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        urgency: item.priority as 'high' | 'medium' | 'low',
+        tag: item.tag as 'critical' | 'decision' | 'approval' | 'heads-up',
         isNew: !item.status,
         createdAt: item.created_at,
         threadUrl: item.redirect_link,
@@ -86,9 +87,9 @@ const BriefCard = ({
       };
     };
 
-    const data = brief?.messages?.map(transformToActionItem);
+    const data = brief?.follow_ups?.map(transformToActionItem);
     setActionItems(data);
-  }, [brief?.vote, brief?.messages]);
+  }, [brief?.vote, brief?.follow_ups]);
 
   // const statsConfig = [
   //   {
@@ -141,7 +142,7 @@ const BriefCard = ({
   }, {
     icon: CheckSquare,
     label: "Follow-ups",
-    value: brief.actionItems,
+    value: brief?.stats?.actionItems?.total,
     color: "text-accent-primary"
   }];
   
@@ -243,6 +244,27 @@ const BriefCard = ({
     }
     return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
   };
+
+      const getBadgeColor = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "bg-red-500/20 text-red-400 border-red-500/30";
+            case "decision": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+            case "approval": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+            case "heads-Up": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+            default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        }
+    };
+
+    const getBadgeEmoji = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "🔴";
+            case "decision": return "🔵";
+            case "approval": return "🟠";
+            case "heads-up": return "⚫";
+            default: return "⚫";
+        }
+    };
+
   return <TooltipProvider>
       <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden group" style={{
       background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.6) 0%, rgba(43, 49, 54, 0.6) 100%)'
@@ -314,10 +336,10 @@ const BriefCard = ({
                 </div>
                 
                 {/* Time Saved below the stats */}
-                <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
+                {brief?.savedTime?.total_saved_minutes && <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
                   <Clock className="h-2.5 w-2.5 text-green-400" />
-                  <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
-                </div>
+                  <span className="text-green-400 font-medium">~{Math.round(brief?.savedTime?.total_saved_minutes)}min saved</span>
+                </div>}
               </div>
               
               {/* Chevron */}
@@ -338,7 +360,7 @@ const BriefCard = ({
 							</span>
 						)}
 						{brief?.status === "failed" && (
-							<span onClick={(e) => handleClick(brief?.error, e)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
+							<span title={brief?.error || ""} onClick={(e) => handleClick(brief?.error, e)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
 								Failed to generate the summary
 							</span>
 						)}
@@ -413,12 +435,12 @@ const BriefCard = ({
                 </div>}
 
               {/* Time Saved Breakdown - Expanded State */}
-              <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
+              {brief?.savedTime?.total_saved_minutes && <div className="flex items-center gap-2 text-sm text-text-secondary bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-3">
                 <Clock className="h-4 w-4 text-green-400" />
                 <span>
-                  <span className="text-green-400 font-medium">Time saved:</span> ~{timeSaved.reading}min reading + {timeSaved.processing}min processing = <span className="text-green-400 font-medium">{timeSaved.total}min total</span>
+                  <span className="text-green-400 font-medium">Time saved:</span> ~{Math.round(brief?.savedTime?.breakdown?.context_saved + brief?.savedTime?.breakdown?.reading_saved)}min reading + {Math.round(brief?.savedTime?.breakdown?.processing_saved)}min processing = <span className="text-green-400 font-medium">{Math.round(brief?.savedTime?.total_saved_minutes)}min total</span>
                 </span>
-              </div>
+              </div>}
 
               {/* Compact Stats Grid */}
               <div className="grid grid-cols-3 gap-1 mb-2">
@@ -449,13 +471,17 @@ const BriefCard = ({
                           ) : (
                             <MessageSquare className="h-3 w-3 text-purple-400" />
                           )}
-                          <Badge className={`text-xs px-1 py-0 ${
+                          <Badge className={`text-xs px-1 py-0 capitalize ${
                             item?.urgency === 'high' ? 'bg-red-500/20 text-red-400' :
                             item?.urgency === 'medium' ? 'bg-orange-500/20 text-orange-400' :
                             'bg-gray-500/20 text-gray-400'
                           }`}>
                             {item?.urgency}
                           </Badge>
+                          {item.tag && <Badge className={`text-xs border ${getBadgeColor(item.tag)} flex items-center gap-1 capitalize`}>
+                            <span>{getBadgeEmoji(item.tag)}</span>
+                            {item.tag}
+                          </Badge>}
                         </div>
                         <span className="text-sm text-text-primary">{item?.title}</span>
                       </div>

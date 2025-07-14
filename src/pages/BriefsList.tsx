@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import AppLayout from "@/components/layout/AppLayout";
 import { Archive, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,14 +12,8 @@ import Pagination from "@/components/dashboard/Pagination";
 import { useApi } from "@/hooks/useApi";
 import { PendingData } from "./Dashboard";
 import ViewErrorMessage from "@/components/dashboard/ViewErrorMessage";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BriefsList = () => {
   const { toast } = useToast();
@@ -28,10 +23,11 @@ const BriefsList = () => {
   const [message, setMessage] = useState<string>("");
   const [briefs, setBriefs] = useState<Summary[]>([]);
   const [pendingData, setPendingData] = useState<PendingData[]>([]);
+  const [loading, setLoading] = useState(false);
   const { call } = useApi();
   const [uiState, setUiState] = useState({
     selectedBrief: null,
-    briefModalOpen: false
+    briefModalOpen: false,
   });
   const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [pagination, setPagination] = useState({
@@ -42,7 +38,7 @@ const BriefsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleToggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
+    setSidebarOpen((prev) => !prev);
   };
 
   // const handleOpenBrief = useCallback((briefId: number) => {
@@ -60,16 +56,17 @@ const BriefsList = () => {
     setMessage(message);
     setOpen(true);
   };
-  
+
   const handleClose = () => {
     setOpen(false);
-  }
+  };
 
   const getBriefs = useCallback(
     async (page = 1): Promise<void> => {
+      setLoading(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
 
-      const response = await call("get", `/summaries?page=${page}`, {
+      const response = await call("get", `/summaries?page=${page}&per_page=8`, {
         showToast: true,
         toastTitle: "Failed to fetch summaries",
         toastDescription: "Unable to load briefs. Please try again.",
@@ -85,6 +82,7 @@ const BriefsList = () => {
       } else {
         setBriefs([]);
       }
+      setLoading(false);
     },
     [call]
   );
@@ -95,7 +93,7 @@ const BriefsList = () => {
         showToast: true,
         toastTitle: "Failed to fetch brief",
         toastDescription: "Something went wrong while fetching the brief.",
-        returnOnFailure: false, 
+        returnOnFailure: false,
       });
 
       if (!response?.data) return false;
@@ -136,12 +134,16 @@ const BriefsList = () => {
         try {
           const data = await getBrief(item.id);
           if (data) {
-            setPendingData((prev) => prev?.filter((d) => d.id !== item.id) ?? []);
+            setPendingData(
+              (prev) => prev?.filter((d) => d.id !== item.id) ?? []
+            );
             setBriefs((prev) =>
               prev ? prev.map((b) => (b.id === item.id ? data : b)) : []
             );
             clearInterval(intervalId);
-            intervalIDsRef.current = intervalIDsRef.current.filter((id) => id !== intervalId);
+            intervalIDsRef.current = intervalIDsRef.current.filter(
+              (id) => id !== intervalId
+            );
           }
         } catch (error) {
           console.error(`Error polling brief ${item.id}:`, error);
@@ -158,30 +160,26 @@ const BriefsList = () => {
     };
   }, [pendingData, getBrief]);
 
-  const handleOpenBrief = useCallback((briefId: number) => {
-    if (!briefId) return;
-    navigate(`/dashboard/briefs/${briefId}`);
-  }, [navigate]);
-
-  const filteredBriefs = briefs?.filter((brief) =>
-    (brief.title?.toLowerCase() ?? "").includes(searchQuery.toLowerCase()) ||
-    (brief.summary?.toLowerCase() ?? "").includes(searchQuery.toLowerCase())
+  const handleOpenBrief = useCallback(
+    (briefId: number) => {
+      if (!briefId) return;
+      navigate(`/dashboard/briefs/${briefId}`);
+    },
+    [navigate]
   );
 
-  return (
-    <DashboardLayout 
-      currentPage="briefs" 
-      sidebarOpen={sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="min-h-screen bg-surface px-4 py-6">
+  const filteredBriefs = briefs?.filter(
+    (brief) =>
+      (brief.title?.toLowerCase() ?? "").includes(searchQuery.toLowerCase()) ||
+      (brief.summary?.toLowerCase() ?? "").includes(searchQuery.toLowerCase())
+  );
+
+  return <AppLayout currentPage="briefs">
+      <div className="bg-transparent">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink 
-                onClick={() => navigate("/dashboard")} 
-                className="cursor-pointer"
-              >
+              <BreadcrumbLink onClick={() => navigate("/dashboard")} className="cursor-pointer">
                 Dashboard
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -193,83 +191,123 @@ const BriefsList = () => {
         </Breadcrumb>
 
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
-          <p className="text-text-secondary">Search and view your brief history</p>
+          <h1 className="text-xl md:text-3xl font-bold text-text-primary mb-2">
+            All Briefs
+          </h1>
+          <p className="text-sm md:text-base text-text-secondary">
+            Search and view your brief history
+          </p>
         </div>
-        
+
         {/* Search */}
-        <div className="mb-6">
+        <div className="mb-4 md:mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
-            <Input
-              placeholder="Search briefs..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
-            />
+            <Input placeholder="Search briefs..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 h-10 md:h-12 rounded-xl bg-surface-overlay border-border-subtle text-sm md:text-base" />
           </div>
         </div>
-        
-        {/* Briefs List */}
-        <div className="glass-card rounded-2xl overflow-hidden">
-          <div className="p-4 md:p-6">
-            <div className="space-y-1">
 
-              {filteredBriefs?.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-text-secondary">No briefs found matching your search.</p>
+        {/* Briefs List */}
+        <div className="glass-card rounded-xl md:rounded-2xl overflow-hidden">
+          <div className="p-3 md:p-6">
+            <div className="space-y-1">
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <BriefItemSkeleton key={i} />
+                ))
+              ) : filteredBriefs?.length === 0 ? (
+                <div className="text-center py-6 md:py-8">
+                  <p className="text-text-secondary text-sm md:text-base">
+                    No briefs found matching your search.
+                  </p>
                 </div>
               ) : (
                 filteredBriefs?.map((brief, index) => {
-                  const { id, title, status, summaryTime, start_at, ended_at, emailCount, slackMessageCount, error } = brief;
+                  const {
+                    id,
+                    title,
+                    status,
+                    summaryTime,
+                    start_at,
+                    ended_at,
+                    emailCount,
+                    slackMessageCount,
+                    error,
+                  } = brief;
 
-                  const timeRange = start_at && ended_at ? `Time Range: ${start_at} - ${ended_at}` : "";
-                  const isClickable = status === "success" || status === "failed";
+                  const timeRange =
+                    start_at && ended_at
+                      ? `Time Range: ${start_at} - ${ended_at}`
+                      : "";
+                  const isClickable =
+                    status === "success" || status === "failed";
 
                   return (
                     <React.Fragment key={brief.id}>
-                      <div 
-                        className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
-                        onClick={isClickable ? () => handleOpenBrief(id) : undefined}
+                      <div
+                        className="flex items-center justify-between p-3 md:p-4 rounded-lg md:rounded-xl hover:bg-white/10 transition-all cursor-pointer"
+                        onClick={
+                          isClickable ? () => handleOpenBrief(id) : undefined
+                        }
                       >
-                        <div className="flex items-center flex-1">
-                          <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
+                        <div className="flex items-center flex-1 min-w-0">
+                          <Archive className="h-4 w-4 md:h-5 md:w-5 text-accent-primary mr-2 md:mr-3 flex-shrink-0" />
 
-                          <div className="flex justify-between w-full flex-col sm:flex-row gap-5 sm:gap-0"> 
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center">
-                              <h3 className="font-medium text-text-primary truncate">{title}</h3>
-                              {!brief?.read_at && (
-                                <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
+                          <div className="flex justify-between w-full flex-col sm:flex-row gap-5 sm:gap-0">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-medium text-text-primary truncate text-sm md:text-base">
+                                  {title}
+                                </h3>
+                                {!brief?.read_at && (
+                                  <span className="h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
+                                )}
+                              </div>
+                              <p className="text-xs md:text-sm text-text-secondary">
+                                {summaryTime}
+                              </p>
+                              {timeRange && (
+                                <p className="text-xs text-text-secondary mt-1">
+                                  {timeRange}
+                                </p>
+                              )}
+                              <p className="text-xs text-text-secondary mt-1">{`${
+                                emailCount ? `${emailCount} emails` : "0 email"
+                              }, ${
+                                slackMessageCount
+                                  ? `${slackMessageCount} slack messages`
+                                  : "0 slack messages"
+                              }`}</p>
+                            </div>
+                            <div>
+                              {status !== "failed" && status !== "success" && (
+                                <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
+                                  Generating summary
+                                </span>
+                              )}
+                              {status === "failed" && (
+                                <span title={error}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleClick(error || "");
+                                  }}
+                                  className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500"
+                                >
+                                  Failed to generate the summary
+                                </span>
                               )}
                             </div>
-                            <p className="text-sm text-text-secondary">{summaryTime}</p>
-                            {timeRange && <p className="text-xs text-text-secondary mt-1">{timeRange}</p>}
-                            <p className="text-xs text-text-secondary mt-1">{`${emailCount ? `${emailCount} emails` : "0 email"}, ${slackMessageCount ? `${slackMessageCount} slack messages` : "0 slack messages"}`}</p>
-                          </div>
-                          <div>
-                            {(status !== "failed" && status !== "success")  && (
-                              <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
-                                Generating summary
-                              </span>
-                            )}
-                            {status === "failed" && (
-                              <span onClick={(e) => {
-                                e.stopPropagation();
-                                handleClick(error);
-                              }} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
-                                Failed to generate the summary
-                              </span>
-                            )}
-                          </div>
                           </div>
                           {/* <p className="text-sm text-text-secondary">{brief.date}</p> */}
                         </div>
                       </div>
-                    {index + 1 !== briefs.length && <Separator className="bg-border-subtle my-1" />}
-                  </React.Fragment>
-                )
-                }))}
+                      {index + 1 !== briefs.length && (
+                        <Separator className="bg-border-subtle my-1" />
+                      )}
+                    </React.Fragment>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
@@ -280,8 +318,35 @@ const BriefsList = () => {
             onPageChange={getBriefs}
           />
         )}
+        <ViewErrorMessage open={open} onClose={handleClose} message={message} />
       </div>
-    </DashboardLayout>
+    </AppLayout>
+};
+
+export const BriefItemSkeleton = () => {
+  return (
+    <>
+      <div className="flex items-center justify-between p-4 rounded-xl bg-muted/50">
+        <div className="flex items-center flex-1">
+          <Archive className="h-5 w-5 text-muted-foreground mr-3 flex-shrink-0" />
+
+          <div className="flex justify-between w-full flex-col sm:flex-row gap-5 sm:gap-0">
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-2 w-2 rounded-full" />
+              </div>
+              <Skeleton className="h-3 w-1/4" />
+              <Skeleton className="h-2.5 w-1/3" />
+              <Skeleton className="h-2 w-3/4" />
+            </div>
+
+            <Skeleton className="h-6 w-32 rounded-md" />
+          </div>
+        </div>
+      </div>
+      <Separator className="bg-border-subtle my-1" />
+    </>
   );
 };
 

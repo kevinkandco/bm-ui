@@ -8,6 +8,7 @@ import {
   Users,
   CalendarCheck2,
 } from "lucide-react";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
@@ -93,7 +94,7 @@ const MeetingsList = () => {
 
   useEffect(() => {
     getCalendarData(pagination.currentPage);
-  }, [getCalendarData]);
+  }, [getCalendarData, pagination.currentPage]);
 
   const openMeetingDetails = (meeting: Meeting) => {
     const meetingWithDetails = {
@@ -115,12 +116,8 @@ const MeetingsList = () => {
   };
 
   return (
-    <DashboardLayout
-      currentPage="meetings"
-      sidebarOpen={sidebarOpen}
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
+    <AppLayout currentPage="meetings">
+      <div className="max-w-7xl mx-auto">
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -138,25 +135,25 @@ const MeetingsList = () => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
+        <div className="mb-6 md:mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary">Meetings</h1>
-            <p className="text-text-secondary mt-1">
-              Schedule and manage your meetings
-            </p>
+            <h1 className="text-xl md:text-3xl font-bold text-text-primary">Meetings</h1>
+            <p className="text-sm md:text-base text-text-secondary mt-1">Schedule and manage your meetings</p>
           </div>
-          <div className="flex gap-3 mt-4 md:mt-0">
-            <Button
+          <div className="flex flex-col md:flex-row gap-2 md:gap-3">
+            <Button 
               onClick={handleScheduleMeeting}
-              className="rounded-full shadow-subtle hover:shadow-glow transition-all"
+              className="rounded-full shadow-subtle hover:shadow-glow transition-all text-sm md:text-base"
+              size="sm"
             >
-              <Plus className="mr-2 h-5 w-5" /> Schedule Meeting
+              <Plus className="mr-2 h-4 w-4 md:h-5 md:w-5" /> Schedule Meeting
             </Button>
             <Button
               variant="outline"
-              className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle backdrop-blur-md"
+              className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle backdrop-blur-md text-sm md:text-base"
+              size="sm"
             >
-              <Calendar className="mr-2 h-5 w-5" /> Calendar View
+              <Calendar className="mr-2 h-4 w-4 md:h-5 md:w-5" /> Calendar View
             </Button>
             <Button
               onClick={() => setIsPast(!isPast)}
@@ -169,67 +166,42 @@ const MeetingsList = () => {
           </div>
         </div>
 
-        <div className="glass-card rounded-3xl overflow-hidden">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-text-primary mb-4">
-              {isPast ? "Past" : "Upcoming"} Meetings
-            </h2>
-
-            <div className="space-y-4">
+        <div className="glass-card rounded-xl md:rounded-3xl overflow-hidden">
+          <div className="p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-semibold text-text-primary mb-4">{isPast ? "Past" : "Upcoming"} Meetings</h2>
+            
+            <div className="space-y-3 md:space-y-4">
               {loading ? (
                 <MeetingsSkeleton />
               ) : (
                 meetings.map((meeting) => (
-                  <div
-                    key={meeting.id}
-                    className="p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex">
-                        <div className="h-10 w-10 rounded-xl bg-accent-primary/20 flex items-center justify-center mr-4">
-                          <Video className="h-5 w-5 text-accent-primary" />
+                  <div key={meeting.id} className="p-3 md:p-4 rounded-lg md:rounded-xl hover:bg-white/10 transition-all cursor-pointer">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                      <div className="flex gap-3">
+                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
+                          <Video className="h-4 w-4 md:h-5 md:w-5 text-accent-primary" />
                         </div>
-                        <div>
-                          <h3 className="font-medium text-text-primary text-lg">
-                            {meeting.title}
-                          </h3>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-medium text-text-primary text-base md:text-lg">{meeting.title}</h3>
                           <div className="mt-1 space-y-1">
-                            <div className="flex items-center text-sm text-text-secondary">
-                              <Calendar className="h-4 w-4 inline mr-1.5" />
-                              <span>
-                                {meeting.date}, {meeting.time}
-                              </span>
+                            <div className="flex items-center text-xs md:text-sm text-text-secondary">
+                              <Calendar className="h-3 w-3 md:h-4 md:w-4 inline mr-1.5 flex-shrink-0" /> 
+                              <span className="truncate">{meeting.date}, {meeting.time}</span>
                             </div>
-                            <div className="flex items-center text-sm text-text-secondary">
-                              <Users className="h-4 w-4 inline mr-1.5" />
-                              <span>
-                                {meeting.attendees.length} participants
-                              </span>
+                            <div className="flex items-center text-xs md:text-sm text-text-secondary">
+                              <Users className="h-3 w-3 md:h-4 md:w-4 inline mr-1.5 flex-shrink-0" /> 
+                              <span>{meeting.attendees.length} participants</span>
                             </div>
-                            {/* <div className="flex items-center text-sm text-text-secondary">
-                            <Clock className="h-4 w-4 inline mr-1.5" />
-                            <span>{meeting.location}</span>
-                          </div> */}
+                            {/* <div className="flex items-center text-xs md:text-sm text-text-secondary">
+                              <Clock className="h-3 w-3 md:h-4 md:w-4 inline mr-1.5 flex-shrink-0" /> 
+                              <span className="truncate">{meeting.location}</span>
+                            </div> */}
                           </div>
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Button
-                          disabled={isPast}
-                          size="sm"
-                          variant="default"
-                          className={cn("w-full", isPast ? "invisible" : "")}
-                        >
-                          Join
-                        </Button>
-                        <Button
-                          onClick={() => openMeetingDetails(meeting)}
-                          size="sm"
-                          variant="outline"
-                          className="w-full"
-                        >
-                          Details
-                        </Button>
+                      <div className="flex md:flex-col gap-2 md:space-y-2">
+                        <Button  size="sm" variant="default" className={cn("w-full", isPast ? "invisible" : "flex-1 md:flex-none text-xs md:text-sm")}>Join</Button>
+                        <Button size="sm" variant="outline" className="flex-1 md:w-full text-xs md:text-sm">Details</Button>
                       </div>
                     </div>
                   </div>
@@ -255,7 +227,7 @@ const MeetingsList = () => {
           }}
         />
       )}
-    </DashboardLayout>
+    </AppLayout>
   );
 };
 

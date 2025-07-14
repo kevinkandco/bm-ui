@@ -55,7 +55,8 @@ const TasksPage = () => {
         isVip: false, // Placeholder – set via business logic
         priorityPerson: undefined, // Set if needed by keyword/name detection
         triggerKeyword: undefined, // Set if keyword-based filtering is applied
-        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        urgency: item.priority as 'high' | 'medium' | 'low',
+        tag: item.tag as 'critical' | 'decision' | 'approval' | 'heads-up',
         isNew: !item.status,
         createdAt: item.created_at,
         threadUrl: item.redirect_link,
@@ -203,14 +204,14 @@ const TasksPage = () => {
     });
   }, [toast, actionItems, groupTaskIdsByPlatform, call, pagination, getActionItems]);
 
-  const handleUpdatePriority = useCallback(async (selectedItem: ActionItem, newUrgency: 'critical' | 'high' | 'medium' | 'low') => {
+  const handleUpdatePriority = useCallback(async (selectedItem: ActionItem, newUrgency: 'high' | 'medium' | 'low') => {
     const itemId = selectedItem?.id?.replace(`${selectedItem?.platform}-`, '') || '';
 
     const response = await call("post", `/action-item/update`, {
       body: {
         id: itemId,
         platform: selectedItem?.platform,
-        priority: newUrgency
+        priority: newUrgency,
       },
         showToast: true,
         toastTitle: "Failed to Mark Done",
@@ -232,6 +233,35 @@ const TasksPage = () => {
     });
   }, [toast, call]);
 
+  const handleUpdateTag = useCallback(async (selectedItem: ActionItem, newTag: 'critical' | 'decision' | 'approval' | 'heads-up') => {
+    const itemId = selectedItem?.id?.replace(`${selectedItem?.platform}-`, '') || '';
+
+    const response = await call("post", `/action-item/update`, {
+      body: {
+        id: itemId,
+        platform: selectedItem?.platform,
+        tag: newTag?.toLowerCase(),
+      },
+        showToast: true,
+        toastTitle: "Failed to Mark Done",
+        toastDescription: "Something went wrong. Please try again.",
+        returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
+    setActionItems(prev => 
+      prev.map(item => 
+        item.id === selectedItem?.id ? { ...item, tag: newTag } : item
+      )
+    );
+    
+    toast({
+      title: "Priority Updated",
+      description: `Priority set to ${newTag}`
+    });
+  }, [toast, call]);
+
   const getSourceIcon = (source: 'slack' | 'gmail') => {
     return source === 'slack' ? (
       <Slack className="w-4 h-4 text-purple-500" />
@@ -244,16 +274,15 @@ const TasksPage = () => {
     if (!urgency) return null;
     
     const urgencyConfig = {
-      'critical': { label: 'Critical', className: 'bg-red-500/20 text-red-400 hover:bg-red-500/30' },
       'high': { label: 'High', className: 'bg-orange-500/20 text-orange-400 hover:bg-orange-500/30' },
       'medium': { label: 'Medium', className: 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' },
       'low': { label: 'Low', className: 'bg-gray-500/20 text-gray-400 hover:bg-gray-500/30' }
     };
     
-    const config = urgencyConfig[urgency as keyof typeof urgencyConfig];
+    const config = urgencyConfig[urgency?.toLowerCase() as keyof typeof urgencyConfig];
     if (!config) return null;
     
-    const urgencyOptions = ['critical', 'high', 'medium', 'low'] as const;
+    const urgencyOptions = ['high', 'medium', 'low'] as const;
     
     return (
       <div className="relative group">
@@ -274,7 +303,52 @@ const TasksPage = () => {
                 if (selectedItem) handleUpdatePriority(selectedItem, option);
               }}
               className={`block w-full text-left px-3 py-2 text-xs capitalize hover:bg-white/10 first:rounded-t-lg last:rounded-b-lg ${
-                option === urgency ? 'bg-white/5 text-accent-primary' : 'text-text-secondary'
+                option?.toLowerCase() === urgency?.toLowerCase() ? 'bg-white/5 text-accent-primary' : 'text-text-secondary'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+    const getTagBadge = (urgency?: string, selectedItem?: ActionItem) => {
+    if (!urgency) return null;
+    const urgencyConfig = {
+      "critical" : { label: 'Critical', emoji: "🔴", className: 'bg-red-500/20 text-red-400 border-red-500/30' },
+      'decision': { label: 'Decision', emoji: "🔵", className: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+      'approval': { label: 'Approval', emoji: "🟠", className: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+      'heads-up': { label: 'Heads-Up', emoji: "⚫", className: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
+    };
+    
+    let config = urgencyConfig[urgency?.toLowerCase() as keyof typeof urgencyConfig];
+    config = config ? config : { label: urgency, emoji: "⚫", className: 'bg-gray-500/20 text-gray-400 border-gray-500/30' };
+    
+    const urgencyOptions = ['critical', 'decision', 'approval', 'heads-up'] as const;
+    
+    return (
+      <div className="relative group">
+        <Badge 
+          variant="secondary" 
+          className={`text-xs border flex items-center gap-1 capitalize ${config.className}`}
+        >
+          <span>{config.emoji}</span>
+          {config.label}
+        </Badge>
+        
+        {/* Dropdown menu on hover */}
+        <div className="absolute top-full left-0 mt-1 bg-surface-overlay border border-border-subtle rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 min-w-[100px]">
+          {urgencyOptions.map((option) => (
+            <button
+              key={option}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (selectedItem) handleUpdateTag(selectedItem, option);
+              }}
+              className={`block w-full text-left px-3 py-2 text-xs capitalize hover:bg-white/10 first:rounded-t-lg last:rounded-b-lg ${
+                option?.toLowerCase() === urgency?.toLowerCase() ? 'bg-white/5 text-accent-primary' : 'text-text-secondary'
               }`}
             >
               {option}
@@ -349,7 +423,7 @@ const TasksPage = () => {
             <div
               key={item.id}
               onClick={() => handleItemClick(item)}
-              className="group cursor-pointer bg-surface-overlay/30 border border-border-subtle rounded-xl p-4 hover:bg-surface-overlay/50 transition-colors"
+              className="group/item cursor-pointer bg-surface-overlay/30 border border-border-subtle rounded-xl p-4 hover:bg-surface-overlay/50 transition-colors"
             >
               <div className="flex items-start gap-3">
                 {/* Source Icon */}
@@ -368,7 +442,7 @@ const TasksPage = () => {
                 >
                   <Check className={cn(
                     "w-3 h-3 text-accent-primary transition-opacity",
-                    showCompleted ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    showCompleted ? "opacity-100" : "opacity-0 group-hover/item:opacity-100"
                   )} />
                 </button>
 
@@ -408,12 +482,15 @@ const TasksPage = () => {
                         {item.triggerKeyword}
                       </Badge>
                     )}
+
+                    {getTagBadge(item.tag, item)}
                     
                     {/* Urgency Tag - Clickable */}
                     {getUrgencyBadge(item.urgency, item)}
+
                     
                     {/* External link icon */}
-                    <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ExternalLink className="w-4 h-4 text-text-secondary opacity-0 group-hover/item:opacity-100 transition-opacity" />
                   </div>
                 </div>
               </div>

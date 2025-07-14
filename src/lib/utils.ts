@@ -38,9 +38,9 @@ export function getTimePeriod(time: string | undefined | null) {
   const totalMinutes = hours * 60 + minutes;
 
   return {
-    morning: totalMinutes >= 360 && totalMinutes < 720,   // 06:00 - 11:59
-    midday: totalMinutes >= 720 && totalMinutes < 1020,   // 12:00 - 16:59
-    evening: totalMinutes >= 1020 && totalMinutes < 1440, // 17:00 - 23:59
+    morning: totalMinutes >= 360 && totalMinutes <= 720, // 06:00–12:00
+    midday: totalMinutes >= 721 && totalMinutes <= 1020, // 12:01–17:00
+    evening: totalMinutes >= 1021 && totalMinutes <= 1320, // 17:01–22:00
   };
 }
 

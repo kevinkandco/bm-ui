@@ -35,7 +35,7 @@ export interface DailySchedule {
 }
 
 export interface SummaryMassage {
-  id: number;
+  id: number | string;
   platform?: string;
   message?: string;
   sender?: string;
@@ -44,6 +44,7 @@ export interface SummaryMassage {
   title?: string;
   redirectLink?: string;
   channel?: string;
+  tag: "Critical" | "Decision" | "Approval" | "Heads-Up";
 }
 
 export interface Stats {
@@ -101,6 +102,19 @@ export interface PriorityItems {
   };
 }
 
+interface TimeSavedBreakdown {
+  context_saved: number;
+  reading_saved: number;
+  processing_saved: number;
+}
+
+interface TimeSavedData {
+  breakdown: TimeSavedBreakdown;
+  brief_total: number;
+  baseline_total: number;
+  total_saved_minutes: number;
+}
+
 export interface Summary {
   id: number;
   user_id?: number;
@@ -111,8 +125,9 @@ export interface Summary {
   description?: string;
   duration?: string;
   timestamp?: string;
-  savedTime?: string;
-  messages?: SummaryMassage[];
+  savedTime?: TimeSavedData;
+  all_messages?: SummaryMassage[];
+  follow_ups?: SummaryMassage[];
   messagesCount?: number;
   taskCount?: number;
   summaryTime?: string;
@@ -167,7 +182,8 @@ export interface ActionItem {
   isVip?: boolean;
   priorityPerson?: string; // Name or initials of flagged person
   triggerKeyword?: string; // Matched trigger keyword
-  urgency?: "critical" | "high" | "medium" | "low";
+  urgency?: "high" | "medium" | "low";
+  tag?: "critical" | "decision" | "approval" | "heads-up";
   isNew?: boolean;
   createdAt?: string;
   threadUrl?: string;
@@ -221,3 +237,42 @@ export interface Meeting {
   preparationPoints?: string[];
   suggestedAgenda?: string[];
 }
+
+export type BackendIntegration = {
+  id: number;
+  provider: number;
+  provider_name: string;
+  email: string;
+  is_connected: boolean;
+  is_combined: number;
+  tag: {
+    id: number;
+    name: string;
+    color: string;
+    emoji: string;
+    send_at: string;
+    delivery_email: number;
+    delivery_audio: number;
+  } | null;
+  created_at: string;
+  updated_at: string;
+  workspace: string;
+};
+
+export type AccountStatus = 'active' | 'monitoring' | 'offline';
+
+export interface Integration {
+  id: string;
+  name: string;
+  icon: string;
+  accounts: Account[];
+  totalCount: number;
+  workspace?: string;
+}
+
+export interface Account {
+  email: string;
+  workspace: string;
+  status: AccountStatus;
+}
+

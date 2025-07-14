@@ -57,7 +57,8 @@ const ActionItemsPanel = ({
         isVip: false, // Placeholder – set via business logic
         priorityPerson: undefined, // Set if needed by keyword/name detection
         triggerKeyword: undefined, // Set if keyword-based filtering is applied
-        urgency: item.priority as 'critical' | 'high' | 'medium' | 'low',
+        urgency: item.priority as 'high' | 'medium' | 'low',
+        tag: item.tag as 'critical' | 'decision' | 'approval' | 'heads-up',
         isNew: !item.status,
         createdAt: item.created_at,
         threadUrl: item.redirect_link,
@@ -189,10 +190,6 @@ const ActionItemsPanel = ({
   const getUrgencyBadge = (urgency?: string) => {
     if (!urgency) return null;
     const urgencyConfig = {
-      'critical': {
-        label: 'Critical',
-        className: 'bg-red-500/20 text-red-400'
-      },
       'high': {
         label: 'High',
         className: 'bg-orange-500/20 text-orange-400'
@@ -216,9 +213,29 @@ const ActionItemsPanel = ({
       </Badge>;
   };
 
+    const getBadgeColor = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "bg-red-500/20 text-red-400 border-red-500/30";
+            case "decision": return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+            case "approval": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+            case "heads-Up": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+            default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        }
+    };
+
+    const getBadgeEmoji = (badge: string) => {
+        switch (badge?.toLowerCase()) {
+            case "critical": return "🔴";
+            case "decision": return "🔵";
+            case "approval": return "🟠";
+            case "heads-up": return "⚫";
+            default: return "⚫";
+        }
+    };
+
   // Empty state - collapsed single line
   if (openCount === 0) {
-    return <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4", className)}>
+    return <div className={cn("rounded-2xl bg-surface-overlay/30 shadow-sm p-4", className)}>
         <div className="flex items-center justify-center text-text-secondary">
           <span className="text-sm">All clear ✅</span>
         </div>
@@ -227,7 +244,7 @@ const ActionItemsPanel = ({
 
   return <>
       <div 
-        className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
+        className={cn("rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
         onMouseEnter={() => setIsSectionHovered(true)}
         onMouseLeave={() => setIsSectionHovered(false)}
       >
@@ -308,6 +325,11 @@ const ActionItemsPanel = ({
                         {item.triggerKeyword && <Badge variant="secondary" className={`bg-orange-500/20 text-orange-400 text-xs px-1.5 py-0 cursor-pointer hover:opacity-80 ${filter === 'trigger' ? 'bg-orange-500/30' : ''}`} onClick={e => handleTagClick('trigger', e)}>
                             {item.triggerKeyword}
                           </Badge>}
+
+                        {item.tag && <Badge className={`text-xs border ${getBadgeColor(item.tag)} flex items-center gap-1 capitalize`}>
+                            <span>{getBadgeEmoji(item.tag)}</span>
+                            {item.tag}
+                        </Badge>}
                         
                         {/* Urgency Tag */}
                         {getUrgencyBadge(item.urgency)}

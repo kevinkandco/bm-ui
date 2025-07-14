@@ -47,7 +47,7 @@ import { Summary, SummaryMassage } from "@/components/dashboard/types";
 import Audio from "@/components/dashboard/Audio";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import TranscriptView from "@/components/dashboard/TranscriptView";
-import { transformToStats } from "@/lib/utils";
+import { capitalizeFirstLetter, transformToStats } from "@/lib/utils";
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
 import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
@@ -61,13 +61,14 @@ const BriefDetail = () => {
   const { call } = useApi();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedActionItem, setExpandedActionItem] = useState<number | null>(null);
-  // const [allMessagesOpen, setAllMessagesOpen] = useState(false);
+  const [allMessagesOpen, setAllMessagesOpen] = useState(false);
+  const [messages, setMessages] = useState<SummaryMassage[]>([]);
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
   const [priorityModalOpen, setPriorityModalOpen] = useState(false);
   const [briefData, setBriefData] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState<'up' | 'down' | null>(null);
-  const [actionItems, setActionItems] = useState<SummaryMassage[]>([]);
+  const [followUps, setFollowUps] = useState<SummaryMassage[]>([]);
   const [transcriptOpen, setTranscriptOpen] = useState(false);
   const { handleActionRelevance } = useFeedbackTracking();
   const {
@@ -101,9 +102,12 @@ const BriefDetail = () => {
     });
 
     if (response) {
-      const stats = transformToStats(response?.data);
-      setBriefData({...response?.data, stats});
-      setActionItems(response?.data?.messages?.map((item: SummaryMassage, index: number) => ({...item, id: index})));
+    //   const stats = transformToStats(response?.data);
+      setBriefData({...response?.data, 
+        //stats
+    });
+      setFollowUps(response?.data?.follow_ups);
+      setMessages(response?.data?.all_messages);
       setSelectedFeedback(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : null);
     }
     setLoading(false);
@@ -153,19 +157,22 @@ const BriefDetail = () => {
     {
       icon: AlertCircle,
       label: "Interrupts Prevented",
-      value: briefData.stats.interruptsPrevented || 14,
+    //   value: briefData?.stats?.interruptsPrevented || 14,
+      value: 14,
       color: "text-blue-400"
     },
     {
       icon: Clock,
       label: "Focus Gained", 
-      value: briefData.stats.focusGained || 45,
+    //   value: briefData?.stats?.focusGained || 45,
+      value: 45,
       color: "text-green-400"
     },
     {
       icon: CheckSquare,
       label: "Follow-ups",
-      value: briefData.stats.followUps || 5,
+    //   value: briefData?.stats?.followUps || 5,
+      value: 5,
       color: "text-accent-primary"
     }
   ];
@@ -182,85 +189,6 @@ const BriefDetail = () => {
       setBriefData(null);
     };
   }, [briefId, getBriefData]);
-  
-  const followUps = [
-    {
-      id: 1,
-      source: "gmail",
-      badge: "Critical",
-      title: "Review launch materials for marketing team",
-      summary: "Marketing team needs approval for press release, social media assets, and landing page copy by 2 PM today.",
-      time: "7:45 AM",
-      sender: "Sarah Johnson",
-      subject: "Urgent: Launch Materials Review Needed",
-      originalMessage: "Hi Alex, I hope you're doing well. I wanted to follow up on the launch materials we discussed yesterday. The marketing team needs your review and approval by 2 PM today to stay on track with our product launch timeline. The materials include the press release, social media assets, and the updated landing page copy. Please let me know if you have any questions or need any changes. Thanks!",
-      justification: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-      originalLink: "https://mail.google.com/mail/u/0/#inbox/message123",
-      relevancy: "Critical - blocking marketing team progress",
-      triggerPhrase: "needs your review and approval by 2 PM today",
-      ruleHit: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-      priorityLogic: "Ranked as High priority due to same-day deadline (2 PM today) and potential to block team progress if delayed.",
-      confidence: "High",
-      messageId: "msg_123"
-    },
-    {
-      id: 2,
-      source: "gmail", 
-      badge: "Approval",
-      title: "Approve Q4 budget allocations for finance team",
-      summary: "Finance team requires approval to proceed with quarterly planning.",
-      time: "6:30 AM",
-      sender: "Finance Team <finance@company.com>",
-      subject: "Q4 Budget Approval Required",
-      originalMessage: "Please review and approve the Q4 budget allocations. The finance team needs your approval to proceed with the quarterly planning.",
-      justification: "Requires approval action from the recipient and involves budget decisions that impact quarterly planning.",
-      originalLink: "https://mail.google.com/mail/u/0/#inbox/message124",
-      relevancy: "Important - quarterly planning dependency",
-      triggerPhrase: "review and approve",
-      ruleHit: "Contains approval request with business impact",
-      priorityLogic: "Medium priority due to quarterly timeline and business planning impact.",
-      confidence: "Medium",
-      messageId: "msg_124"
-    },
-    {
-      id: 3,
-      source: "slack",
-      badge: "Decision", 
-      title: "Respond to Sarah about testing phase timeline concerns",
-      summary: "Need to discuss potential timeline extension for testing phase to ensure quality.",
-      time: "7:15 AM",
-      sender: "Sarah Johnson",
-      channel: "#product-dev",
-      originalMessage: "Hey @channel, I'm concerned about the testing phase timeline. We might need to extend it by a week to ensure quality. Can we discuss this in our next meeting?",
-      justification: "Direct mention requiring response about timeline concerns that could impact project delivery.",
-      originalLink: "https://app.slack.com/client/workspace/channel/message456",
-      relevancy: "Critical - project timeline impact",
-      triggerPhrase: "Can we discuss this",
-      ruleHit: "Direct mention with discussion request about project concerns",
-      priorityLogic: "High priority due to potential project timeline impact and quality concerns.",
-      confidence: "High",
-      messageId: "msg_456"
-    },
-    {
-      id: 4,
-      source: "slack",
-      badge: "Heads-Up",
-      title: "Schedule follow-up meeting with product team for next week",
-      summary: "Team wants to schedule a meeting to discuss roadmap updates.",
-      time: "5:30 AM",
-      sender: "Product Team",
-      channel: "#general",
-      originalMessage: "We should schedule a follow-up meeting to discuss the roadmap updates. Next week would work well for most of the team.",
-      justification: "Scheduling request that requires coordination but is not time-sensitive.",
-      originalLink: "https://app.slack.com/client/workspace/channel/message789",
-      relevancy: "Low - scheduling coordination",
-      triggerPhrase: "should schedule",
-      ruleHit: "Contains scheduling request without urgency",
-      priorityLogic: "Low priority due to flexible timeline and routine coordination.",
-      confidence: "Medium",
-      messageId: "msg_789"
-    }
-  ];
 
   const handleToggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -282,6 +210,7 @@ const BriefDetail = () => {
     );
 
   const handleActionClick = (action: string, item: any) => {
+    window.open(item.redirectLink, '_blank')
     toast({
       title: `${action}`,
       description: `Action "${action}" applied to: ${item.title}`
@@ -296,7 +225,7 @@ const BriefDetail = () => {
     });
   };
 
-  const toggleActionItem = (itemId: number) => {
+  const toggleActionItem = (itemId: number | string) => {
     setExpandedActionItem(expandedActionItem === itemId ? null : itemId);
   };
 
@@ -406,6 +335,18 @@ const BriefDetail = () => {
     }
   };
 
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "High": return "bg-red-500/20 text-red-400 border-red-500/30";
+      case "high": return "bg-red-500/20 text-red-400 border-red-500/30";
+      case "Medium": return "bg-green-500/20 text-green-400 border-green-500/30";
+      case "medium": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+      case "Low": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+      case "low": return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+      default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+    }
+  };
+
   const getSourceIcon = (source: string) => {
     console.log(source);
     switch (source) {
@@ -481,8 +422,8 @@ const BriefDetail = () => {
             <div className="flex items-center gap-3 mb-2">
               <CheckSquare className="h-6 w-6 text-accent-primary flex-shrink-0" />
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{briefData.title}</h1>
-                <p className="text-sm text-text-secondary">Here's your briefing for Thu, Jul 3, 2025 from {briefData.timeRange}:</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{briefData?.title}</h1>
+                <p className="text-sm text-text-secondary">Here's your briefing for {briefData?.delivery_at} from {briefData?.start_at} - {briefData?.ended_at} :</p>
               </div>
             </div>
           </div>
@@ -492,10 +433,10 @@ const BriefDetail = () => {
             {/* Stats Section */}
             <div className="glass-card rounded-2xl p-4 md:p-6">
               {/* Time Saved Banner */}
-              <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-4">
+              {briefData?.savedTime?.total_saved_minutes && <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 rounded-lg px-3 py-2 border border-green-400/20 mb-4">
                 <Clock className="h-4 w-4" />
-                <span>Time saved: {briefData?.savedTime}</span>
-              </div>
+                <span>Time saved: ~{Math.round(briefData?.savedTime?.breakdown?.context_saved + briefData?.savedTime?.breakdown?.reading_saved)}min reading + {Math.round(briefData?.savedTime?.breakdown?.processing_saved)}min processing = {Math.round(briefData?.savedTime?.total_saved_minutes)}min total</span>
+              </div>}
 
               {/* Horizontal Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -629,6 +570,19 @@ const BriefDetail = () => {
                     Subscribe to your brief podcast
                   </a>
                 </div>
+                <div className="flex gap-2">
+                    <Button onClick={handleDownload} variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </Button>
+                    <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:text-white">
+                      <Share className="mr-2 h-4 w-4" />
+                      Share
+                    </Button>
+                    <Button onClick={handleTranscriptOpen} variant="outline" size="sm" className="border-gray-600 text-primary-teal hover:text-primary-teal/80 ml-auto">
+                      View Transcript
+                    </Button>
+                  </div>
               </div>
             </div>
 
@@ -664,10 +618,13 @@ const BriefDetail = () => {
                                 <ChevronRight className="h-3 w-3" />
                               )}
                             </Button>
-                            <Badge className={`text-xs border ${getBadgeColor(item.badge)} flex items-center gap-1`}>
-                              <span>{getBadgeEmoji(item.badge)}</span>
-                              {item.badge}
-                            </Badge>
+                            {item.tag && <Badge className={`text-xs border ${getBadgeColor(capitalizeFirstLetter(item.tag))} flex items-center gap-1`}>
+                              <span>{getBadgeEmoji(capitalizeFirstLetter(item.tag))}</span>
+                              {capitalizeFirstLetter(item.tag)}
+                            </Badge>}
+                            {item.priority && <Badge className={`text-xs border ${getPriorityColor(item.priority)}`}>
+                                {item.priority}
+                            </Badge>}
                           </div>
                         </TableCell>
                         <TableCell className="px-1">
@@ -676,9 +633,9 @@ const BriefDetail = () => {
                               <div className="text-sm text-text-primary font-medium">
                                 {item.title}
                               </div>
-                              <div className="text-xs text-text-secondary mt-1">
-                                {item.summary}
-                              </div>
+                              {/* <div className="text-xs text-text-secondary mt-1">
+                                {item.message}
+                              </div> */}
                             </div>
 
                               {/* <div className="flex items-center gap-2">
@@ -704,13 +661,13 @@ const BriefDetail = () => {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                const channelName = item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Asana';
+                                const channelName = item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana';
                                 handleActionClick(`Open in ${channelName}`, item);
                               }}
                               className="text-xs px-2 py-1 h-auto"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
-                              Open in {item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Asana'}
+                              Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana'}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -745,18 +702,18 @@ const BriefDetail = () => {
                                  <Button
                                    variant="outline"
                                    size="sm"
-                                   onClick={() => window.open(item.originalLink, '_blank')}
+                                   onClick={() => window.open(item.redirectLink, '_blank')}
                                    className="text-xs flex items-center gap-1"
                                  >
                                    <Mail className="h-3 w-3" />
-                                   Open in {item.source === 'slack' ? 'Slack' : item.source === 'gmail' ? 'Email' : 'Channel'}
+                                   Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Channel'}
                                  </Button>
                               </div>
                               
                               <div>
                                 <div className="text-sm font-medium text-text-primary mb-2">Full Message:</div>
                                 <div className="text-sm text-text-secondary bg-white/5 rounded p-3 border border-white/10">
-                                  {item.message}
+                                  {item?.message}
                                 </div>
                               </div>
 
@@ -781,7 +738,7 @@ const BriefDetail = () => {
             </div>
 
             {/* All Messages & Items Section */}
-            {/* <div className="glass-card rounded-2xl p-4 md:p-6">
+            <div className="glass-card rounded-2xl p-4 md:p-6">
               <Collapsible open={allMessagesOpen} onOpenChange={setAllMessagesOpen}>
                 <div className="flex items-center justify-between mb-4">
                   <CollapsibleTrigger asChild>
@@ -813,18 +770,18 @@ const BriefDetail = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {recentMessages.map((message) => (
+                      {messages?.map((message) => (
                         <TableRow key={message.id} className="border-white/10 hover:bg-white/5">
                           <TableCell>
                             <div className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium">
                               {getPlatformIcon(message.platform)}
                             </div>
                           </TableCell>
-                          <TableCell className="text-text-primary">{message.message}</TableCell>
-                          <TableCell className="text-text-secondary">{message.sender}</TableCell>
-                          <TableCell className="text-text-secondary">{message.time}</TableCell>
+                          <TableCell className="text-text-primary break-all">{message.message}</TableCell>
+                          <TableCell className="text-text-secondary break-all">{message.sender}</TableCell>
+                          <TableCell className="text-text-secondary break-all">{message.time}</TableCell>
                           <TableCell>
-                            <Badge className={`text-xs border ${getBadgeColor(message.priority)}`}>
+                            <Badge className={`text-xs border capitalize ${getBadgeColor(message.priority)}`}>
                               {message.priority}
                             </Badge>
                           </TableCell>
@@ -834,7 +791,7 @@ const BriefDetail = () => {
                   </Table>
                 </CollapsibleContent>
               </Collapsible>
-            </div> */}
+            </div>
 
             {/* Add What's Missing Section */}
             {/* <div className="glass-card rounded-2xl p-4 md:p-6">
