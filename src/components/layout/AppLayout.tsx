@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,9 @@ import {
   Mail,
   Menu
 } from "lucide-react";
+import { AccountStatus, BackendIntegration, Integration } from "../dashboard/types";
+import { useApi } from "@/hooks/useApi";
+import useAuthStore from "@/store/useAuthStore";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -23,8 +26,62 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { call } = useApi();
+  const { user } = useAuthStore();
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [isProfileHovered, setIsProfileHovered] = useState(false);
+  const [connectedPlatforms, setConnectedPlatforms] = useState<Integration[]>([]);
+
+  const getProvider = useCallback(async (): Promise<void> => {
+      const response = await call("get", "/settings/system-integrations", {
+        showToast: false,
+        returnOnFailure: false,
+      });
+  
+      if (response?.data) {
+  
+        const grouped = response.data.reduce(
+          (acc: Record<string, Integration>, integration: BackendIntegration) => {
+            const provider = integration.provider_name;
+            const providerId = provider.toLowerCase();
+  
+            if (!acc[provider]) {
+              acc[provider] = {
+                name: provider,
+                id: providerId,
+                icon: provider.charAt(0).toUpperCase(),
+                accounts: [],
+                totalCount: 0,
+              };
+            }
+  
+            const status: AccountStatus = integration.is_connected
+              ? integration.is_combined
+                ? "active"
+                : "monitoring"
+              : "offline";
+  
+            acc[provider].accounts.push({
+              email: integration.email,
+              workspace: integration.workspace,
+              status,
+              error: integration.error ?? null,
+            });
+  
+            return acc;
+          },
+          {}
+        );
+  
+        const result: Integration[] = Object.values(grouped).map(
+          (provider: Integration) => ({
+            ...provider,
+            totalCount: provider.accounts.length,
+          })
+        );
+        setConnectedPlatforms(result);
+      }
+    }, [call]);
 
   // Auto-collapse nav at iPad breakpoint (768px)
   useEffect(() => {
@@ -33,11 +90,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
         setIsNavCollapsed(true);
       }
     };
-
+    getProvider();
     handleResize(); // Check on mount
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [getProvider]);
 
   const handleToggleNav = () => {
     setIsNavCollapsed(prev => !prev);
@@ -101,10 +158,18 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
           </button>
           <div className="flex items-center gap-2">
             <Avatar className="w-8 h-8">
-              <AvatarImage src="/placeholder.svg" />
-              <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
+              <AvatarImage src={
+                user?.profile_path
+                  ? user?.profile_path
+                  : "/images/default.png"
+              } alt={user.name}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display =
+                  "none";
+              }} />
+              <AvatarFallback className="bg-primary-teal text-white text-sm">{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className="text-white-text text-sm font-medium">Alex</span>
+            <span className="text-white-text text-sm font-medium">{user?.name}</span>
           </div>
         </div>
       </div>
@@ -127,12 +192,20 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
               onMouseLeave={() => setIsProfileHovered(false)}
             >
               <Avatar className={`${isNavCollapsed ? 'w-6 h-6' : 'w-8 h-8'}`}>
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback className="bg-primary-teal text-white text-sm">AK</AvatarFallback>
+                <AvatarImage src={
+                    user?.profile_path
+                      ? user?.profile_path
+                      : "/images/default.png"
+                  } alt={user.name}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display =
+                      "none";
+                  }} />
+                <AvatarFallback className="bg-primary-teal text-white text-sm">{user.name.charAt(0)}</AvatarFallback>
               </Avatar>
               {!isNavCollapsed && (
                 <div className="text-left">
-                  <p className="text-white-text text-sm font-medium">Alex</p>
+                  <p className="text-white-text text-sm font-medium">{user?.name}</p>
                 </div>
               )}
               {!isNavCollapsed && isProfileHovered && (
@@ -148,7 +221,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
             {/* Connected Integrations Status - Desktop only */}
             {!isNavCollapsed && (
               <div className="flex gap-2">
-                {connectedIntegrations.map((integration, i) => (
+                {connectedPlatforms.map((integration, i) => (
                   <div key={i} className="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 cursor-pointer hover:bg-white/15 transition-all duration-200 flex-1 justify-center">
                     <div className="flex items-center justify-center relative">
                       {integration.name === 'Slack' && <div className="w-3 h-3 text-primary-teal"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg></div>}
@@ -157,7 +230,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
                       <div className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-white/20 bg-green-400"></div>
                     </div>
                     <span className="text-xs font-medium text-white">
-                      {integration.channels || integration.emails || integration.events}
+                      {integration?.accounts?.length}
                     </span>
                   </div>
                 ))}
@@ -315,7 +388,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
                 <div className="pt-4 border-t border-border-subtle">
                   <h3 className="text-sm font-medium text-text-secondary mb-3">Connected</h3>
                   <div className="grid grid-cols-3 gap-2">
-                    {connectedIntegrations.map((integration, i) => (
+                    {connectedPlatforms.map((integration, i) => (
                       <div key={i} className="relative flex flex-col items-center gap-1 p-3 rounded-lg bg-white/5 border border-white/10">
                         <div className="relative">
                           {integration.name === 'Slack' && <div className="w-4 h-4 text-primary-teal"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg></div>}
@@ -323,7 +396,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage }) => {
                           {integration.name === 'Calendar' && <Calendar className="w-4 h-4 text-primary-teal" />}
                           <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-green-400"></div>
                         </div>
-                        <span className="text-xs font-medium text-white">{integration.channels || integration.emails || integration.events}</span>
+                        <span className="text-xs font-medium text-white">{integration?.accounts?.length}</span>
                       </div>
                     ))}
                   </div>
