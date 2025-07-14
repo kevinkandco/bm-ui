@@ -13,6 +13,10 @@ export function capitalizeFirstLetter(str: string) {
   return str?.charAt(0)?.toUpperCase() + str?.slice(1);
 }
 
+export function extractGmailNameOnly(from: string): string {
+  return from.replace(/<[^>]+>/g, "").trim();
+}
+
 export function getTimePeriod(time: string | undefined | null) {
   const periods = {
     morning: false,

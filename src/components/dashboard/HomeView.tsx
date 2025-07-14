@@ -197,7 +197,7 @@ const HomeView = ({
   );
 
   const handleViewAllTasks = useCallback(() => {
-    navigate("/dashboard/tasks");
+    navigate("/dashboard/follow-ups");
   }, [navigate]);
 
   const handleViewTranscript = useCallback(

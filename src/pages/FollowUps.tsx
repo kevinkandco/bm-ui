@@ -1,55 +1,121 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import { CheckSquare, Clock, User, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useApi } from "@/hooks/useApi";
+import { extractGmailNameOnly } from "@/lib/utils";
+import Pagination from "@/components/dashboard/Pagination";
+import { useToast } from "@/hooks/use-toast";
+
+interface IGmail_data {
+  id: number;
+  from: string;
+  received_at: string;
+  snippet: string;
+  subject: string;
+}
+
+interface ISlack_data {
+  id: number;
+  name: string | null;
+  email: string | null;
+  sender: string;
+  sent_at: string;
+  text: string;
+  created_at: string;
+}
+
+interface IFollowUps {
+  id: number;
+  title: string;
+  message: string;
+  platform: string;
+  status: boolean;
+  vote: boolean;
+  priority: string;
+  tag: string;
+  redirect_link: string;
+  gmail_data: IGmail_data | null;
+  slack_data: ISlack_data;
+  created_at: string;
+}
 
 const FollowUps = () => {
-  const [selectedFollowUp, setSelectedFollowUp] = useState<number | null>(1);
+  const { call } = useApi();
+  const { toast } = useToast();
+  const [followUps, setFollowUps] = useState<IFollowUps[]>([]);
+  const [selectedFollowUp, setSelectedFollowUp] = useState<number | null>(null);
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    itemsPerPage: 2,
+  });
 
-  const followUps = [
-    {
-      id: 1,
-      title: "Review Q2 Marketing Budget",
-      description: "Sarah requested feedback on the Q2 marketing budget proposal",
-      assignedBy: "Sarah Chen",
-      dueDate: "Today, 3:00 PM",
-      priority: "High",
-      status: "pending",
-      details: "Sarah has submitted the Q2 marketing budget proposal and needs your review by end of day. The proposal includes increased digital advertising spend and new campaign initiatives.",
-      originalMessage: "Hey, can you take a look at the Q2 marketing budget when you have a chance? I need your feedback before the board meeting tomorrow.",
-      context: "Sent via Slack in #marketing-planning"
-    },
-    {
-      id: 2,
-      title: "Schedule Team Performance Reviews",
-      description: "HR reminder to schedule quarterly performance reviews",
-      assignedBy: "HR System",
-      dueDate: "Tomorrow, 5:00 PM",
-      priority: "Medium",
-      status: "pending",
-      details: "Quarterly performance reviews are due for your direct reports: Alex, Jamie, and Morgan. Please schedule 1-hour sessions with each team member.",
-      originalMessage: "Reminder: Q1 performance reviews are due this week. Please schedule sessions with your direct reports.",
-      context: "Email from HR system"
-    },
-    {
-      id: 3,
-      title: "Client Presentation Feedback",
-      description: "John needs input on the client presentation for Friday",
-      assignedBy: "John Miller",
-      dueDate: "May 16, 2025",
-      priority: "Medium",
-      status: "completed",
-      details: "John has prepared the client presentation for the ABC Corp meeting and would like your input on the technical sections.",
-      originalMessage: "Could you review slides 15-25 of the client presentation? I want to make sure the technical details are accurate.",
-      context: "Sent via email"
-    }
-  ];
+  const getActionItems = useCallback(async (page = 1) => {
+    const response = await call("get", `/action-items?par_page=10&page=${page}`, {
+      showToast: true,
+      toastTitle: "Failed to Action Items",
+      toastDescription: "Something went wrong getting action items.",
+      returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: response?.meta?.current_page || 1,
+      totalPages: response?.meta?.last_page || 1,
+    }));
+    setFollowUps(response?.data || []);
+  }, [call]);
+  
+  useEffect(() => {
+    getActionItems();
+  }, [getActionItems]);
 
   const selectedItem = followUps.find(item => item.id === selectedFollowUp);
 
-  const handleMarkComplete = (id: number) => {
-    // This would typically update the item status
-    console.log(`Marking follow-up ${id} as complete`);
+  const handleMarkComplete = async (item: IFollowUps) => {
+    const response = await call("post", `/action-item/update`, {
+      body: {
+        id: selectedItem?.id,
+        platform: selectedItem?.platform,
+        status: true
+      },
+        showToast: true,
+        toastTitle: "Failed to Mark Done",
+        toastDescription: "Something went wrong. Please try again.",
+        returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+
+    setFollowUps(followUps.map(followUp => followUp.id === item.id ? {...followUp, status: true} : followUp));
+
+    toast({
+      title: "Action Item Completed",
+      description: `"${selectedItem?.title}" marked as done`,
+      action: <Button size="sm" variant="outline" onClick={async () => {
+            const response = await call("post", `/action-item/update`, {
+            body: {
+              id: selectedItem?.id,
+              platform: selectedItem?.platform,
+              status: false
+            },
+              showToast: true,
+              toastTitle: "Failed to Mark Done",
+              toastDescription: "Something went wrong. Please try again.",
+              returnOnFailure: false,
+          });
+
+          if (!response && !response.data) return;
+
+          setFollowUps(followUps.map(followUp => followUp.id === item.id ? {...followUp, status: false} : followUp));
+      }}>
+          Undo
+        </Button>
+    });
   };
 
   const handleSnooze = (id: number) => {
@@ -58,19 +124,36 @@ const FollowUps = () => {
   };
 
   const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'High': return 'text-red-400';
-      case 'Medium': return 'text-yellow-400';
-      case 'Low': return 'text-green-400';
+    switch (priority?.toLowerCase()) {
+      case 'high': return 'text-red-400';
+      case 'medium': return 'text-yellow-400';
+      case 'low': return 'text-green-400';
       default: return 'text-text-secondary';
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getBadgeColor = (priority: string) => {
+    switch (priority?.toLowerCase()) {
+      case 'critical': return 'text-red-400';
+      case 'decision': return 'text-yellow-400';
+      case 'approval': return 'text-green-400';
+      default: return 'text-text-secondary';
+    }
+  };
+
+
+  // const getStatusColor = (status: string) => {
+  //   switch (status) {
+  //     case 'completed': return 'text-green-400';
+  //     case 'pending': return 'text-yellow-400';
+  //     case 'overdue': return 'text-red-400';
+  //     default: return 'text-text-secondary';
+  //   }
+  // };
+  const getStatusColor = (status: boolean) => {
     switch (status) {
-      case 'completed': return 'text-green-400';
-      case 'pending': return 'text-yellow-400';
-      case 'overdue': return 'text-red-400';
+      case true: return 'text-green-400';
+      case false: return 'text-yellow-400';
       default: return 'text-text-secondary';
     }
   };
@@ -94,7 +177,7 @@ const FollowUps = () => {
           <div className="space-y-2">
             {followUps.map((item) => (
               <div
-                key={item.id}
+                key={item.platform + item.id}
                 onClick={() => setSelectedFollowUp(item.id)}
                 className={`p-3 md:p-4 rounded-lg cursor-pointer transition-all ${
                   selectedFollowUp === item.id
@@ -105,7 +188,7 @@ const FollowUps = () => {
                 <div className="flex items-start gap-2 md:gap-3">
                   <CheckSquare 
                     className={`w-4 h-4 mt-1 flex-shrink-0 ${
-                      item.status === 'completed' ? 'text-green-400' : 'text-text-secondary'
+                      item.status ? 'text-green-400' : 'text-text-secondary'
                     }`} 
                   />
                   <div className="flex-1 min-w-0">
@@ -113,15 +196,15 @@ const FollowUps = () => {
                       {item.title}
                     </h3>
                     <p className="text-text-secondary text-xs mt-1 line-clamp-2">
-                      {item.description}
+                      {item.message}
                     </p>
-                    <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    <div className="flex items-center gap-2 mt-2 flex-wrap capitalize">
                       <span className={`text-xs ${getPriorityColor(item.priority)}`}>
                         {item.priority}
                       </span>
-                      <span className="text-xs text-text-secondary">
-                        {item.dueDate}
-                      </span>
+                      {/* <span className="text-xs text-text-secondary">
+                        {item.}
+                      </span> */}
                     </div>
                   </div>
                 </div>
@@ -143,39 +226,39 @@ const FollowUps = () => {
                   <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-text-secondary">
                     <div className="flex items-center gap-1">
                       <User className="w-4 h-4" />
-                      <span>From {selectedItem.assignedBy}</span>
+                      <span>From {selectedItem?.platform === 'gmail' ? extractGmailNameOnly(selectedItem.gmail_data?.from) : selectedItem?.slack_data?.sender}</span>
                     </div>
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      <span>Due {selectedItem.dueDate}</span>
-                    </div>
+                      <span>Due {selectedItem?.status}</span>
+                    </div> */}
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
                       <span className={getStatusColor(selectedItem.status)}>
-                        {selectedItem.status.charAt(0).toUpperCase() + selectedItem.status.slice(1)}
+                        {selectedItem.status ? "Completed" : "Pending"}
                       </span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex flex-col md:flex-row gap-2">
-                  {selectedItem.status !== 'completed' && (
+                  {!selectedItem.status && (
                     <>
                       <Button
-                        onClick={() => handleMarkComplete(selectedItem.id)}
+                        onClick={() => handleMarkComplete(selectedItem)}
                         className="bg-primary-teal hover:bg-primary-teal/90 text-sm md:text-base"
                         size="sm"
                       >
                         Mark Complete
                       </Button>
-                      <Button
+                      {/* <Button
                         onClick={() => handleSnooze(selectedItem.id)}
                         variant="outline"
                         className="border-border-subtle text-sm md:text-base"
                         size="sm"
                       >
                         Snooze
-                      </Button>
+                      </Button> */}
                     </>
                   )}
                 </div>
@@ -187,13 +270,16 @@ const FollowUps = () => {
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(selectedItem.priority)} bg-white/10`}>
                   {selectedItem.priority}
                 </span>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getBadgeColor(selectedItem.tag)} bg-white/10`}>
+                  {selectedItem.tag}
+                </span>
               </div>
 
               {/* Description */}
               <div>
                 <h3 className="text-base md:text-lg font-medium text-text-primary mb-3">Details</h3>
                 <p className="text-text-secondary leading-relaxed text-sm md:text-base">
-                  {selectedItem.details}
+                  {selectedItem.message}
                 </p>
               </div>
 
@@ -202,16 +288,16 @@ const FollowUps = () => {
                 <h3 className="text-base md:text-lg font-medium text-text-primary mb-3">Original Message</h3>
                 <div className="bg-white/5 rounded-lg p-3 md:p-4 border-l-4 border-primary-teal">
                   <p className="text-text-secondary italic text-sm md:text-base">
-                    "{selectedItem.originalMessage}"
+                    "{selectedItem?.platform === "gmail" ? selectedItem.gmail_data?.snippet : selectedItem?.slack_data?.text}"
                   </p>
                   <p className="text-text-secondary text-xs md:text-sm mt-2">
-                    {selectedItem.context}
+                    Sent via {selectedItem?.platform} 
                   </p>
                 </div>
               </div>
 
               {/* Actions */}
-              {selectedItem.status !== 'completed' && (
+              {selectedItem.status && (
                 <div className="pt-4 border-t border-border-subtle">
                   <h3 className="text-base md:text-lg font-medium text-text-primary mb-3">Quick Actions</h3>
                   <div className="flex flex-col md:flex-row gap-2 md:gap-3">
@@ -243,6 +329,13 @@ const FollowUps = () => {
           )}
         </div>
       </div>
+      {pagination.totalPages > 1 && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={getActionItems}
+        />
+      )}
     </AppLayout>
   );
 };
