@@ -3,22 +3,26 @@ import { ConnectedAccount, Tag, SplitBriefSettings } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import { REDIRECT_URL } from "@/config";
+import useAuthStore from "@/store/useAuthStore";
 
 const AllowedProviders = [
   "slack",
   "google",
   'asana',
+  "outlook",
   'calendar'
 ]
 const redirectProvider = [
   "slack",
   "google",
   'asana',
+  "outlook",
 ]
 
 export const useIntegrationsState = () => {
   const { toast } = useToast();
   const { call } = useApi();
+  const { user } = useAuthStore();
   
   // Initialize with some sample data
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([
@@ -117,7 +121,7 @@ export const useIntegrationsState = () => {
         slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=dashboard/settings`,
         google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings`,
         calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${REDIRECT_URL}/outlook/auth`,
+        outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=dashboard/settings&user_id=${user?.id}`,  
       };
       window.open(urls[provider], "_self");
     };
