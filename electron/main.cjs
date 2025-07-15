@@ -6,7 +6,7 @@ const killSlack = require('./killSlack.cjs');
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
-    height: 500,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -16,7 +16,7 @@ function createWindow() {
   });
 
   // win.loadURL('http://localhost:8080');
-    const htmlPath = path.join(__dirname, '..', 'main.htm');
+    const htmlPath = path.join(__dirname, '..', 'main1.htm');
   win.loadFile(htmlPath);
 }
 

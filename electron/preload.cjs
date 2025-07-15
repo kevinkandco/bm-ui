@@ -7,4 +7,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
 contextBridge.exposeInMainWorld('focusEnv', {
   token: process.env.FOCUS_ACCESS_TOKEN || '',
+  user_id: process.env.USER_ID || '',
 });

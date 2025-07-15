@@ -19,7 +19,6 @@ focusModalStart.addEventListener("click", async () => {
   const focusModeDuration = document.getElementById("duration").value;
   const slackStatus = document.getElementById("slack-status").value;
 
-  /* build closeApps object with booleans */
   const closeApps = { slack: false, gmail: false, calendar: false };
   document.querySelectorAll(".app-card").forEach((card) => {
     const key = card.dataset.app; // "slack" | "gmail" | "calendar"
