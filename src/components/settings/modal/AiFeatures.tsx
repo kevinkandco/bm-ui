@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Mail, Archive, Tag, AlertCircle } from "lucide-react";
 import { SettingsTabProps } from "./types";
 import FancyLoader from "./FancyLoader";
+import { useEffect } from "react";
 
 const EmailAISettings = ({
   providerData,
@@ -14,6 +15,18 @@ const EmailAISettings = ({
   loadingProviderData,
   provider,
 }: SettingsTabProps) => {
+
+  useEffect(() => {
+    setProviderData((prev) => ({
+      ...prev,
+        aiFeatures: {
+          autoLabel: prev?.aiFeatures?.autoLabel ?? false,
+          autoSort: prev?.aiFeatures?.autoSort ?? false,
+          autoArchive: prev?.aiFeatures?.autoArchive ?? false,
+          priorityOnly: prev?.aiFeatures?.priorityOnly ?? false,
+      },
+    }))
+  }, [setProviderData])
 
   const handleSettingChange = (key: string, value: boolean) => {
     setProviderData((prev) => ({

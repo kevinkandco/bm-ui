@@ -1,23 +1,23 @@
 import { PriorityPerson } from "@/components/onboarding/priority-people/types";
 
 export interface ProviderData {
-  priorityPeople: PriorityPerson[];
-  priorityChannels: string[];
-  priorityTopics: string[];
-  ignoreChannels: string[];
-  ignoreKeywords: string[];
-  aiFeatures: {
+  priorityPeople?: PriorityPerson[];
+  priorityChannels?: string[];
+  priorityTopics?: string[];
+  ignoreChannels?: string[];
+  ignoreKeywords?: string[];
+  aiFeatures?: {
     autoLabel: boolean;
     autoSort: boolean;
     autoArchive: boolean;
     priorityOnly: boolean;
   };
-  interruptRules: {
+  interruptRules?: {
     contacts: { name: string; email: string }[];
     keywords: string[];
     systemAlerts: string[];
   }
-  includeIgnoredInSummary: boolean;
+  includeIgnoredInSummary?: boolean;
 }
 
 export interface SettingsTabProps {

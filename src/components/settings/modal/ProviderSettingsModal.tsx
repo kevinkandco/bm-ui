@@ -65,7 +65,7 @@ const ProviderSettingsModal = ({
   const priorityPeopleActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
   const priorityChannelsActive = useMemo(() => ['slack'], []);
   const priorityTopicsActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
-  const aiFeaturesActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
+  const aiFeaturesActive = useMemo(() => ['google'], []);
   // const interruptRulesActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
   const ignoreActive = useMemo(() => ['slack', 'google', 'outlook', 'calendar'], []);
 
@@ -125,12 +125,7 @@ const ProviderSettingsModal = ({
         priorityTopics: response?.priorityTopics ?? [],
         ignoreChannels: response?.ignoreChannels ?? [],
         ignoreKeywords: response?.ignoreKeywords ?? [],
-        aiFeatures: {
-          autoLabel: response?.autoLabel ?? false,
-          autoSort: response?.autoSort ?? false,
-          autoArchive: response?.autoArchive ?? false,
-          priorityOnly: response?.priorityOnly ?? false,
-        },
+        aiFeatures: response?.aiFeatures,
         interruptRules: {
           contacts: response?.interruptRules?.contacts ?? [],
           keywords: response?.interruptRules?.keywords ?? [],
