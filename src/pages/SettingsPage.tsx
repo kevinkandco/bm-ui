@@ -126,12 +126,6 @@ const SettingsPage = () => {
       active: activeSection === "voices"
     },
     {
-      id: "interrupt-rules",
-      icon: Shield,
-      name: "Interrupt Rules",
-      active: activeSection === "interrupt-rules"
-    },
-    {
       id: "privacy",
       icon: Shield,
       name: "Privacy & Security",
@@ -239,8 +233,6 @@ const SettingsPage = () => {
         return <FeedbackTrainingSection />;
       case "referral":
         return <ReferralProgramSection />;
-      case "interrupt-rules":
-        return <InterruptRulesSection />;
       case "profile":
         return (
           <>
