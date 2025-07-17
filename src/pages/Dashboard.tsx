@@ -14,6 +14,8 @@ import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import { enrichBriefsWithStats, transformToStats } from "@/lib/utils";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 import FancyLoader from "@/components/settings/modal/FancyLoader";
+import FocusMode from "@/components/dashboard/FocusMode";
+import { requestNotificationPermission } from "@/firebase/fcmService";
 
 type UserStatus = "active" | "away" | "focus" | "vacation";
 
@@ -202,18 +204,29 @@ const Dashboard = () => {
     }
   }, [call]);
 
+  const handleLoginSuccess = useCallback(async () => {
+    const token = await requestNotificationPermission();
+
+    if (token) {
+      await call("post", `/api/store-token`, {
+        body: { token },
+      });
+    }
+  }, [call]);
+
   useEffect(() => {
     const loadData = async () => {
         setLoading(true);
         const tokenFromUrl = searchParams.get("token");
 
         if (tokenFromUrl) {
-        localStorage.setItem("token", tokenFromUrl);
+          localStorage.setItem("token", tokenFromUrl);
 
-        const url = new URL(window.location.href);
-        url.searchParams.delete("token");
-        url.searchParams.delete("provider");
-        window.history.replaceState({}, document.title, url.pathname + url.search);
+          const url = new URL(window.location.href);
+          url.searchParams.delete("token");
+          url.searchParams.delete("provider");
+          handleLoginSuccess();
+          window.history.replaceState({}, document.title, url.pathname + url.search);
         }
 
         try {

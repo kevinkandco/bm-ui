@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSearchParams } from "react-router-dom";
 import { useTheme } from "@/hooks/use-theme";
 import { REDIRECT_URL } from "@/config";
+import { requestNotificationPermission } from "@/firebase/fcmService";
+import { useApi } from "@/hooks/useApi";
 
 interface SignInStepProps {
   onNext: () => void;
@@ -20,6 +22,7 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
   const [signingIn, setSigningIn] = useState(false);
   const isMobile = useIsMobile();
   const { theme } = useTheme();
+  const { call } = useApi();
 
   const handleSignIn = (provider: "google" | "slack") => {
     try {
@@ -29,6 +32,16 @@ const SignInStep = ({ onNext, updateUserData, userData }: SignInStepProps) => {
       console.log(error);
     }
   };
+
+  const handleLoginSuccess = useCallback(async () => {
+    const token = await requestNotificationPermission();
+
+    if (token) {
+      await call("post", `/api/store-token`, {
+        body: { token },
+      });
+    }
+  }, [call]);
 
 useEffect(() => {
   const tokenFromUrl = searchParams.get("token");
@@ -43,6 +56,7 @@ useEffect(() => {
     const url = new URL(window.location.href);
     url.searchParams.delete("token");
     url.searchParams.delete("provider");
+    handleLoginSuccess();
     window.history.replaceState({}, document.title, url.pathname + url.search);
 
     // Proceed with sign-in
@@ -65,7 +79,7 @@ useEffect(() => {
     console.log("Authentication required.");
     // Show sign-in page or stay on login
   }
-}, [searchParams, onNext, updateUserData]);
+}, [searchParams, onNext, updateUserData, handleLoginSuccess]);
 
 
   return (

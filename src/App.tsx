@@ -8,14 +8,22 @@ import { ThemeProvider } from "./hooks/use-theme";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ProtectedOnboardingRoute from "./components/auth/ProtectedOnboardingRoute";
 import { useIsMobile } from "./hooks/use-mobile";
-
+import { onMessageListener } from "./firebase/firebase";
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
-  return lazy(() => importFn().catch((error) => {
-    console.error("Error loading component:", error);
-    return { default: () => <div>Failed to load component</div> };
-  }));
+  return lazy(() =>
+    importFn().catch((error) => {
+      console.error("Error loading component:", error);
+      return { default: () => <div>Failed to load component</div> };
+    })
+  );
 };
+
+interface NotificationPayload {
+  title: string;
+  body: string;
+}
+
 
 // Lazy load pages with optimized chunks
 const Index = lazyImport(() => import("./pages/Index"));
@@ -40,8 +48,8 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       retry: 1,
       gcTime: 300 * 1000, // 5 minutes - improve garbage collection
-    }
-  }
+    },
+  },
 });
 
 // Better loading fallback with optimized re-renders
@@ -54,58 +62,79 @@ const LoadingFallback = memo(() => (
   </div>
 ));
 
-LoadingFallback.displayName = 'LoadingFallback';
+LoadingFallback.displayName = "LoadingFallback";
 
 // Mobile Mac Route Guard Component
 const MacRouteGuard = memo(() => {
   const isMobile = useIsMobile();
-  
+
   if (isMobile) {
     return <Navigate to="/dashboard" replace />;
   }
-  
+
   return <MacPage />;
 });
 
-MacRouteGuard.displayName = 'MacRouteGuard';
+MacRouteGuard.displayName = "MacRouteGuard";
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="dark">
-      <TooltipProvider>
-        <div className="min-h-screen flex flex-col justify-center">
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route element={<ProtectedRoute element="unprotected" />}>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                </Route>
-                <Route element={<ProtectedOnboardingRoute />}>
-                  <Route path="/onboarding" element={<Onboarding />} />
-                </Route>
-                <Route element={<ProtectedRoute element="protected" />}>
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/dashboard/briefs" element={<BriefsList />} />
-                      <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
-                      <Route path="/dashboard/follow-ups" element={<FollowUps />} />
-                      <Route path="/dashboard/tasks" element={<TasksPage />} />
-                      <Route path="/dashboard/meetings" element={<MeetingsList />} />
-                      <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
-                      <Route path="/dashboard/settings" element={<SettingsPage />} />
-                </Route>
-                <Route path="/mac" element={<MacRouteGuard />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
-        </div>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  useEffect(() => {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js")
+      .then((registration) => {
+        console.log("Service Worker registered:", registration);
+      })
+      .catch((err) => {
+        console.error("Service Worker registration failed:", err);
+      });
+      onMessageListener((payload: { notification: NotificationPayload }) => {
+        const { title, body } = payload.notification;
+        new Notification(title, {
+          body,
+          // icon: payload.data.icon,
+          tag: `${Date.now()}`,
+        });
+      });
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="dark">
+        <TooltipProvider>
+          <div className="min-h-screen flex flex-col justify-center">
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route element={<ProtectedRoute element="unprotected" />}>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                  </Route>
+                  <Route element={<ProtectedOnboardingRoute />}>
+                    <Route path="/onboarding" element={<Onboarding />} />
+                  </Route>
+                  <Route element={<ProtectedRoute element="protected" />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/dashboard/briefs" element={<BriefsList />} />
+                        <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
+                        <Route path="/dashboard/follow-ups" element={<FollowUps />} />
+                        <Route path="/dashboard/tasks" element={<TasksPage />} />
+                        <Route path="/dashboard/meetings" element={<MeetingsList />} />
+                        <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
+                        <Route path="/dashboard/settings" element={<SettingsPage />} />
+                  </Route>
+                  <Route path="/mac" element={<MacRouteGuard />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </div>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  )
+};
 
 export default App;
