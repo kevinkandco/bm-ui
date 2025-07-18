@@ -122,6 +122,7 @@ export const useIntegrationsState = () => {
         google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings`,
         calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
         outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=dashboard/settings&user_id=${user?.id}`,  
+        asana: `${REDIRECT_URL}/asana/auth?redirectURL=dashboard/settings`,
       };
       window.open(urls[provider], "_self");
     };

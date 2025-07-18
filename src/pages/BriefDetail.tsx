@@ -52,6 +52,8 @@ import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
 import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
 import { AUDIO_URL } from "@/config";
+import { BaseURL } from "@/config";
+import { title } from "process";
 
 
 const BriefDetail = () => {
@@ -209,8 +211,23 @@ const BriefDetail = () => {
       [toast, handlePlayPause, briefData?.audioPath]
     );
 
-  const handleActionClick = (action: string, item: any) => {
-    window.open(item.redirectLink, '_blank')
+  const handleActionClick = async (action: string, item: SummaryMassage) => {
+
+    const response = await call("post", `/tasks/asana`, {
+      body: {
+        title: item?.title,
+        notes: item?.message,
+      },
+      showToast: true,
+      toastTitle: "Action Failed",
+      toastDescription: `Failed to apply action "${action}" to: ${item.title}`,
+      returnOnFailure: false,
+
+    });
+
+    if (!response) return;
+
+
     toast({
       title: `${action}`,
       description: `Action "${action}" applied to: ${item.title}`
@@ -229,7 +246,7 @@ const BriefDetail = () => {
     setExpandedActionItem(expandedActionItem === itemId ? null : itemId);
   };
 
-  const handleInfoClick = (item: any) => {
+  const handleInfoClick = (item: SummaryMassage) => {
     setSelectedActionItem(item);
     setPriorityModalOpen(true);
   };
@@ -662,12 +679,14 @@ const BriefDetail = () => {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const channelName = item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana';
-                                handleActionClick(`Open in ${channelName}`, item);
+                                // handleActionClick(`Open in ${channelName}`, item);
+                                handleActionClick(`Open in asana`, item);
                               }}
                               className="text-xs px-2 py-1 h-auto"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
-                              Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana'}
+                              Open in asana
+                              {/* {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana'} */}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -822,22 +841,22 @@ const BriefDetail = () => {
                 setSelectedActionItem(null);
               }}
               actionItem={{
-                id: selectedActionItem.messageId,
-                text: selectedActionItem.title,
-                source: selectedActionItem.source,
-                priority: selectedActionItem.priority,
-                messageId: selectedActionItem.messageId,
-                reasoning: selectedActionItem.justification,
-                fullMessage: selectedActionItem.originalMessage,
-                time: selectedActionItem.time,
-                sender: selectedActionItem.sender,
-                subject: selectedActionItem.subject,
-                channel: selectedActionItem.channel,
-                relevancy: selectedActionItem.relevancy,
-                triggerPhrase: selectedActionItem.triggerPhrase,
-                ruleHit: selectedActionItem.ruleHit,
-                priorityLogic: selectedActionItem.priorityLogic,
-                confidence: selectedActionItem.confidence
+                id: selectedActionItem?.id,
+                text: selectedActionItem?.title,
+                source: selectedActionItem?.message,
+                priority: selectedActionItem?.priority,
+                messageId: selectedActionItem?.messageId,
+                reasoning: selectedActionItem?.justification,
+                fullMessage: selectedActionItem?.originalMessage,
+                time: selectedActionItem?.time,
+                sender: selectedActionItem?.sender,
+                subject: selectedActionItem?.subject,
+                channel: selectedActionItem?.channel,
+                relevancy: selectedActionItem?.relevancy,
+                triggerPhrase: selectedActionItem?.triggerPhrase,
+                ruleHit: selectedActionItem?.ruleHit,
+                priorityLogic: selectedActionItem?.priorityLogic,
+                confidence: selectedActionItem?.confidence
               }}
             />
           )}
