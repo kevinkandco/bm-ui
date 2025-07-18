@@ -32,8 +32,8 @@ ipcMain.handle('close-slack', async (event) => {
   });
 
   // 2 close the window that made the call
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (win && !win.isDestroyed()) win.close();
+  // const win = BrowserWindow.fromWebContents(event.sender);
+  // if (win && !win.isDestroyed()) win.close();
 
   // Returning a value is optional now because the renderer is about to vanish
   return msg;

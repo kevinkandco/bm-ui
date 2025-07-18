@@ -64,6 +64,7 @@ import CatchMeUpWithScheduling from "./CatchMeUpWithScheduling";
 import { AUDIO_URL } from "@/config";
 import ActionItemsPanel from "./ActionItemsPanel";
 import CalendarSection from "./HomeViewSections/CalendarSection";
+import { useApi } from "@/hooks/useApi";
 
 interface HomeViewProps {
   status: "active" | "away" | "focus" | "vacation";
@@ -105,6 +106,7 @@ const HomeView = ({
   fetchDashboardData,
 }: HomeViewProps) => {
   const { toast } = useToast();
+  const { call } = useApi();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user } = useAuthStore();
@@ -417,6 +419,10 @@ const HomeView = ({
   );
 
   const dotColors = ["bg-primary-teal", "bg-orange-400", "bg-purple-400"];
+
+  const handleOpenApp = async () => {
+    const response = await call("get", "/start-foucs-app");
+  }
 
   // Mobile View
   if (isMobile) {
@@ -989,6 +995,14 @@ const HomeView = ({
             >
               <Zap className="mr-2 h-4 w-4" />
               Brief Me
+            </Button>
+
+            <Button
+              onClick={handleOpenApp}
+              className="bg-accent-primary text-white rounded-xl px-6 py-3 shadow-sm hover:shadow-md transition-all"
+            >
+              <Headphones className="mr-2 h-4 w-4" />
+              Start App
             </Button>
 
             {/* Profile Dropdown */}

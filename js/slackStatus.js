@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function postSlackStatus(status) {
     if (status == "DND") {
-    //   await window.electronAPI.closeSlack();
+      await window.electronAPI.closeSlack();
       return
     }
     let payload = {
