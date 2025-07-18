@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Shield,
   Plus,
@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SettingsTabProps } from "./types";
 import FancyLoader from "./FancyLoader";
+import suggestedTopicsData from "@/data/suggestedTopics.json";
 
 const InterruptRules = ({
   providerData,
@@ -26,6 +27,14 @@ const InterruptRules = ({
 }: SettingsTabProps) => {
   const [newContact, setNewContact] = useState("");
   const [newKeyword, setNewKeyword] = useState("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [searchResults, setSearchResults] = useState<
+    string[]
+  >([]);
+  const [suggestedTopics] = useState(
+    suggestedTopicsData.map((topic) => topic.name)
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setProviderData((prev) => ({
@@ -132,6 +141,61 @@ const InterruptRules = ({
       };
     });
   };
+
+  const selectKeyword = (topic: string) => {
+    if (!topic.trim()) return;
+
+    setProviderData((prev) => {
+      const existingKeywords = prev?.interruptRules?.keywords ?? [];
+
+      return {
+        ...prev,
+        interruptRules: {
+          ...prev.interruptRules,
+          keywords: [...existingKeywords, topic.trim()],
+        },
+      };
+    });
+
+    setNewKeyword("");
+    setSearchResults([]);
+    setIsInputFocused(false);
+  };
+
+  useEffect(() => {
+    if (isInputFocused) {
+      const filtered = suggestedTopics
+      ?.filter((topic) =>
+        topic?.toLowerCase()?.includes(newKeyword.toLowerCase())
+      )
+      ?.filter(
+        (topic) =>
+          !providerData?.interruptRules?.keywords?.some(
+            (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
+          )
+      );
+      console.log(filtered, "filtered");
+    setSearchResults(filtered);
+    } else {
+      setSearchResults([]);
+    }
+  }, [newKeyword, isInputFocused, providerData, suggestedTopics]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setTimeout(() => setIsInputFocused(false), 200);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -274,13 +338,36 @@ const InterruptRules = ({
               </p>
 
               <div className="flex space-x-2">
-                <Input
-                  placeholder="Enter keyword"
-                  value={newKeyword}
-                  onChange={(e) => setNewKeyword(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addKeyword()}
-                  className="flex-1 bg-white/5 border-white/20"
-                />
+                <div className="relative flex-grow">
+                  <Input
+                    ref={inputRef}
+                    placeholder="Enter keyword"
+                    autoComplete="off"
+                    value={newKeyword}
+                    onChange={(e) => setNewKeyword(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && addKeyword()}
+                    className="flex-1 bg-white/5 border-white/20"
+                    onFocus={() => setIsInputFocused(true)}
+                  />
+                  {
+                  isInputFocused &&
+                    searchResults &&
+                    searchResults?.length > 0
+                     && (
+                      <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+                        {searchResults?.map((topic: string) => (
+                          <div
+                            key={topic}
+                            onClick={() => selectKeyword(topic)}
+                            className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
+                          >
+                            <Hash size={14} className="text-glass-blue/80" />
+                            <span className="text-off-white">{topic}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
                 <Button
                   onClick={addKeyword}
                   disabled={!newKeyword.trim()}
