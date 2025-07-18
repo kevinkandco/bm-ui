@@ -16,6 +16,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import { ConnectedAccount, Provider } from "../settings/types";
 import { REDIRECT_URL } from "@/config";
+import useAuthStore from "@/store/useAuthStore";
+
+const AllowedProviders = [
+  "slack",
+  "google",
+  "outlook",
+]
 
 interface IntegrationsStepProps {
   onNext: () => void;
@@ -44,6 +51,7 @@ const IntegrationsStep = ({
 }: IntegrationsStepProps) => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  const { user } = useAuthStore();
 
   const [integrations] = useState<IntegrationOption[]>([
     // V1 integrations - only Slack and Gmail are available now
@@ -68,9 +76,9 @@ const IntegrationsStep = ({
       id: "outlook",
       name: "Outlook",
       icon: "O",
-      available: false,
+      available: true,
       description: "Connect your Outlook email account (coming soon)",
-      version: "V2",
+      version: "V1",
     },
     {
       id: "calendar",
@@ -263,7 +271,7 @@ const IntegrationsStep = ({
         slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=onboarding`,
         google: `${REDIRECT_URL}/google/auth?redirectURL=onboarding`,
         calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${REDIRECT_URL}/outlook/auth`,
+        outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=dashboard/settings&user_id=${user?.id}`,
       };
       window.open(urls[provider], "_self");
     };
@@ -274,26 +282,29 @@ const IntegrationsStep = ({
 
     const isConnected = connected[lowerId];
 
-    if (id === "slack") {
-      if (isIntegrated || isConnected) {
-        // setConnected((prev) => ({
-        //   ...prev,
-        //   [id]: !prev[id],
-        // }));
-        return;
-      } else {
-        openAuthUrl("slack");
-      }
-    } else if (id === "google") {
-      if (isConnected || isIntegrated) {
-        // setConnected((prev) => ({
-        //   ...prev,
-        //   [id]: !prev[id],
-        // }));
-        return;
-      } else {
-        openAuthUrl("google");
-      }
+    // if (id === "slack") {
+    //   if (isIntegrated || isConnected) {
+    //     // setConnected((prev) => ({
+    //     //   ...prev,
+    //     //   [id]: !prev[id],
+    //     // }));
+    //     return;
+    //   } else {
+    //     openAuthUrl("slack");
+    //   }
+    // } else if (id === "google") {
+    //   if (isConnected || isIntegrated) {
+    //     // setConnected((prev) => ({
+    //     //   ...prev,
+    //     //   [id]: !prev[id],
+    //     // }));
+    //     return;
+    //   } else {
+    //     openAuthUrl("google");
+    //   }
+    // }
+    if (!(isConnected || isIntegrated) && AllowedProviders.includes(id)) {
+      openAuthUrl(id);
     } else {
       // for other providers like 'calendar', 'outlook'
       const available = integrations.find((i) => i.id === id)?.available;
