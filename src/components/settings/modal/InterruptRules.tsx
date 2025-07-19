@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Shield,
   Plus,
@@ -16,6 +16,9 @@ import { Separator } from "@/components/ui/separator";
 import { SettingsTabProps } from "./types";
 import FancyLoader from "./FancyLoader";
 import suggestedTopicsData from "@/data/suggestedTopics.json";
+import { Contact } from "@/components/onboarding/priority-people/types";
+import { useApi } from "@/hooks/useApi";
+import { Provider } from "../types";
 
 const InterruptRules = ({
   providerData,
@@ -24,17 +27,26 @@ const InterruptRules = ({
   syncData,
   loadingProviderData,
   provider,
+  shouldRefreshContacts,
+  setShouldRefreshContacts
 }: SettingsTabProps) => {
+  const { call } = useApi();
   const [newContact, setNewContact] = useState("");
   const [newKeyword, setNewKeyword] = useState("");
-  const [isInputFocused, setIsInputFocused] = useState(false);
-  const [searchResults, setSearchResults] = useState<
+  const [newKeywordIsInputFocused, setIsNewKeywordInputFocused] = useState(false);
+  const [newContactIsInputFocused, setIsNewContactInputFocused] = useState(false);
+  const [keywordSearchResults, setKeywordSearchResults] = useState<
     string[]
+  >([]);
+  const [contactSearchResults, setContactSearchResults] = useState<
+    Contact[]
   >([]);
   const [suggestedTopics] = useState(
     suggestedTopicsData.map((topic) => topic.name)
   );
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [suggestedContacts, setSuggestedContacts] = useState<Contact[]>([]);
+  const contactInputRef = useRef<HTMLInputElement>(null);
+  const keywordInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setProviderData((prev) => ({
@@ -46,6 +58,61 @@ const InterruptRules = ({
       },
     }));
   }, [setProviderData]);
+
+    const getContact = useCallback(async (): Promise<void> => {
+  
+      const cacheKey = `/${Provider[provider?.name]}/contacts/${provider?.id}`;
+      const CACHE_EXPIRY_HOURS = 24;
+  
+      const cache = await caches.open("contacts-cache");
+      const cachedResponse = await cache.match(cacheKey);
+  
+      if (cachedResponse) {
+        const cachedJson = await cachedResponse.json();
+  
+        const now = Date.now();
+        const cachedTime = cachedJson?.cachedAt ?? 0;
+        const isExpired = now - cachedTime > CACHE_EXPIRY_HOURS * 60 * 60 * 1000;
+  
+        if (!isExpired) {
+          setSuggestedContacts(cachedJson.contacts);
+          return;
+        } else {
+          // Optionally delete expired cache
+          await cache.delete(cacheKey);
+        }
+      }
+  
+      // If not cached or expired, fetch fresh
+      const response = await call("get", cacheKey);
+  
+      if (response) {
+        const now = Date.now();
+        setSuggestedContacts(response?.contacts);
+        const wrappedResponse = {
+          cachedAt: now,
+          contacts: response?.contacts,
+        };
+  
+        const cacheResponse = new Response(JSON.stringify(wrappedResponse), {
+          headers: { "Content-Type": "application/json" },
+        });
+        await cache.put(cacheKey, cacheResponse);
+      }
+    }, [call, provider]);
+  
+  
+    useEffect(() => {
+      getContact();
+    }, [getContact]);
+  
+    useEffect(() => {
+      if (shouldRefreshContacts) {
+        getContact().then(() => {
+          setShouldRefreshContacts?.(false);
+        });
+      }
+    }, [shouldRefreshContacts, getContact, setShouldRefreshContacts]);
 
   const systemAlertOptions = [
     "PagerDuty",
@@ -158,12 +225,32 @@ const InterruptRules = ({
     });
 
     setNewKeyword("");
-    setSearchResults([]);
-    setIsInputFocused(false);
+    setKeywordSearchResults([]);
+    setIsNewKeywordInputFocused(false);
+  };
+
+  const selectContact = (contact: Contact) => {
+    if (!contact) return;
+
+    setProviderData((prev) => {
+      const existingContacts = prev?.interruptRules?.contacts ?? [];
+
+      return {
+        ...prev,
+        interruptRules: {
+          ...prev.interruptRules,
+          contacts: [...existingContacts, contact],
+        },
+      };
+    });
+
+    setNewKeyword("");
+    setKeywordSearchResults([]);
+    setIsNewKeywordInputFocused(false);
   };
 
   useEffect(() => {
-    if (isInputFocused) {
+    if (newKeywordIsInputFocused) {
       const filtered = suggestedTopics
       ?.filter((topic) =>
         topic?.toLowerCase()?.includes(newKeyword.toLowerCase())
@@ -174,20 +261,49 @@ const InterruptRules = ({
             (ignore: string) => ignore.toLowerCase() === topic.toLowerCase()
           )
       );
-      console.log(filtered, "filtered");
-    setSearchResults(filtered);
+    setKeywordSearchResults(filtered);
+    } else if (newContactIsInputFocused) {
+      const filtered = suggestedContacts
+      ?.filter((contact) =>
+        contact?.email?.toLowerCase()?.includes(newContact.toLowerCase()) ||
+        contact?.name?.toLowerCase()?.includes(newContact.toLowerCase())
+      )
+      ?.filter(
+        (topic) =>
+          !providerData?.interruptRules?.contacts?.some(
+            (ignore) => ignore?.email?.toLowerCase() === topic?.email?.toLowerCase()
+          )
+      );
+      console.log(filtered);
+      setContactSearchResults(filtered);
     } else {
-      setSearchResults([]);
+      setKeywordSearchResults([]);
     }
-  }, [newKeyword, isInputFocused, providerData, suggestedTopics]);
+  }, [newKeyword, newKeywordIsInputFocused, providerData, suggestedTopics, newContactIsInputFocused, suggestedContacts, newContact]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
+        contactInputRef.current &&
+        !contactInputRef.current.contains(event.target as Node)
       ) {
-        setTimeout(() => setIsInputFocused(false), 200);
+        setTimeout(() => setIsNewContactInputFocused(false), 200);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        keywordInputRef.current &&
+        !keywordInputRef.current.contains(event.target as Node)
+      ) {
+        setTimeout(() => setIsNewKeywordInputFocused(false), 200);
       }
     };
 
@@ -270,13 +386,34 @@ const InterruptRules = ({
               </p>
 
               <div className="flex space-x-2">
-                <Input
-                  placeholder="Enter contact name"
-                  value={newContact}
-                  onChange={(e) => setNewContact(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addContact()}
-                  className="flex-1 bg-white/5 border-white/20"
-                />
+                <div className="relative flex-grow">
+                  <Input
+                    ref={contactInputRef}
+                    placeholder="Enter contact name"
+                    value={newContact}
+                    onChange={(e) => setNewContact(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && addContact()}
+                    className="flex-1 bg-white/5 border-white/20"
+                    onFocus={() => setIsNewContactInputFocused(true)}
+                  />
+                  {newContactIsInputFocused &&
+                    contactSearchResults &&
+                    contactSearchResults?.length > 0
+                     && (
+                      <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
+                        {contactSearchResults?.map((contact) => (
+                          <div
+                            key={contact.id}
+                            onClick={() => selectContact(contact)}
+                            className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
+                          >
+                            <Hash size={14} className="text-glass-blue/80" />
+                            <span className="text-off-white">{contact.name} <span className="text-sm text-text-secondary">({contact.email})</span></span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
                 <Button
                   onClick={addContact}
                   disabled={!newContact.trim()}
@@ -340,22 +477,21 @@ const InterruptRules = ({
               <div className="flex space-x-2">
                 <div className="relative flex-grow">
                   <Input
-                    ref={inputRef}
+                    ref={keywordInputRef}
                     placeholder="Enter keyword"
                     autoComplete="off"
                     value={newKeyword}
                     onChange={(e) => setNewKeyword(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && addKeyword()}
                     className="flex-1 bg-white/5 border-white/20"
-                    onFocus={() => setIsInputFocused(true)}
+                    onFocus={() => setIsNewKeywordInputFocused(true)}
                   />
-                  {
-                  isInputFocused &&
-                    searchResults &&
-                    searchResults?.length > 0
+                  {newKeywordIsInputFocused &&
+                    keywordSearchResults &&
+                    keywordSearchResults?.length > 0
                      && (
                       <div className="absolute z-10 mt-1 w-full bg-deep-plum/95 border border-white/20 rounded-md shadow-lg divide-y divide-white/10 max-h-60 overflow-y-auto">
-                        {searchResults?.map((topic: string) => (
+                        {keywordSearchResults?.map((topic: string) => (
                           <div
                             key={topic}
                             onClick={() => selectKeyword(topic)}

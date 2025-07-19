@@ -13,7 +13,7 @@ export interface ProviderData {
     priorityOnly: boolean;
   };
   interruptRules?: {
-    contacts: { name: string; email: string }[];
+    contacts: { id?:number | string; name: string; email: string, avatar?: string; }[];
     keywords: string[];
     systemAlerts: string[];
   }
