@@ -166,7 +166,7 @@ const SettingsPage = () => {
     setActiveSection(id)
 
     if (id === 'app') {
-      const response = await call("get", "/start-foucs-app");
+      const response = await call("get", "/start-app");
       setActiveSection('profile');
     }
     
