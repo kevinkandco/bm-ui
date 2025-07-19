@@ -13,7 +13,7 @@ export function capitalizeFirstLetter(str: string) {
   return str?.charAt(0)?.toUpperCase() + str?.slice(1);
 }
 
-export function getTimePeriod(time: string | undefined | null) {
+export function getTimePeriodInObject(time: string | undefined | null) {
   const periods = {
     morning: false,
     midday: false,
@@ -44,6 +44,30 @@ export function getTimePeriod(time: string | undefined | null) {
   };
 }
 
+export function getTimePeriod(time: string | undefined | null) {
+
+  if (!time || typeof time !== "string") return "morning";
+
+  const [hoursStr, minutesStr] = time.split(":");
+  const hours = Number(hoursStr);
+  const minutes = Number(minutesStr);
+
+  // Validate hours and minutes
+  if (
+    isNaN(hours) || isNaN(minutes) ||
+    hours < 0 || hours > 23 ||
+    minutes < 0 || minutes > 59
+  ) {
+    return "morning";
+  }
+
+  const totalMinutes = hours * 60 + minutes;
+
+  if (totalMinutes >= 360 && totalMinutes <= 720) return "morning";
+  if (totalMinutes >= 721 && totalMinutes <= 1020) return "midday";
+  if (totalMinutes >= 1021 && totalMinutes <= 1320) return "evening";
+  if (totalMinutes >= 1321 || totalMinutes <= 300) return "night";
+}
 
 export const transformToStats: (data: Summary) => Stats = (data: Summary) => {
   const priorityItems = data.priorityItems || {} as PriorityItems;

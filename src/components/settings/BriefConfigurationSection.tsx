@@ -22,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import SplitBriefControls from "./SplitBriefControls";
 import { useIntegrationsState } from "./useIntegrationsState";
 import { useApi } from "@/hooks/useApi";
-import { getTimePeriod } from "@/lib/utils";
+import { getTimePeriod, getTimePeriodInObject } from "@/lib/utils";
 import moment from "moment";
 import FancyLoader from "./modal/FancyLoader";
 import {
@@ -34,11 +34,13 @@ import {
 } from "@/components/ui/select";
 
 interface CustomBrief {
-  id: string;
+  id: number;
   name: string;
-  time: string;
+  briefTime: string;
   days: string[];
   enabled: boolean;
+  scheduleTime: string;
+  deliveryMethod: string;
 }
 
 interface WeekendBrief {
@@ -77,6 +79,7 @@ const BriefConfigurationSection = () => {
   });
 
   const [customBriefs, setCustomBriefs] = useState<CustomBrief[]>([]);
+  console.log("customBriefs", customBriefs);
   const [isAddingCustom, setIsAddingCustom] = useState(false);
   const [newCustomBrief, setNewCustomBrief] = useState({
     name: "",
@@ -138,9 +141,10 @@ const BriefConfigurationSection = () => {
 
       setDays(response.data?.brief_days);
       setEmailDigest(response?.data?.email_digest);
+      setCustomBriefs(response?.data?.custom_brief_schedules || []);
 
       const briefTime = response.data?.brief_time;
-      const timeFlags = getTimePeriod(briefTime);
+      const timeFlags = getTimePeriodInObject(briefTime);
 
       setTimes((prev) => {
         const updated = {
@@ -210,7 +214,7 @@ const BriefConfigurationSection = () => {
     if (!response) return;
 
     const backendTime = response.data?.brief_time;
-    const flags = getTimePeriod(backendTime);
+    const flags = getTimePeriodInObject(backendTime);
 
     setTimes((prev) => ({
       morning: { ...prev.morning, enabled: flags.morning },
@@ -268,7 +272,7 @@ const updateTimeValue = useCallback(
       if (!response) return;
 
       const backendTime = response.data?.brief_time;
-      const flags = getTimePeriod(backendTime);
+      const flags = getTimePeriodInObject(backendTime);
 
       setTimes((prev) => ({
         morning: { ...prev.morning, enabled: flags.morning },
@@ -280,33 +284,52 @@ const updateTimeValue = useCallback(
   [call, days, times, toast, isValidTimeForPeriod]
 );
 
-  const addCustomBrief = () => {
+  const addCustomBrief = async () => {
     if (!newCustomBrief.name.trim()) return;
 
+    const scheduleTime = getTimePeriod(newCustomBrief.time);
+    if (!scheduleTime) return;
+
     const customBrief: CustomBrief = {
-      id: Date.now().toString(),
+      id: customBriefs.length,
       name: newCustomBrief.name,
-      time: newCustomBrief.time,
+      briefTime: newCustomBrief.time,
       days: newCustomBrief.days,
+      scheduleTime,
+      deliveryMethod: "email",
       enabled: true,
     };
 
-    setCustomBriefs((prev) => [...prev, customBrief]);
+    const response = await call("post", "/settings/custom-brief-schedules", {
+      body: {
+        "customBriefSchedules": [...customBriefs, customBrief],
+      },
+      showToast: true,
+      toastTitle: "Failed to update data",
+      toastDescription: "Failed to update data",
+      returnOnFailure: false,
+      toastVariant: "destructive",
+    });
+
+    if (!response) return;
+
+    setCustomBriefs(response?.data);
     setNewCustomBrief({ name: "", time: "20:00", days: [] });
     setIsAddingCustom(false);
   };
 
-  const removeCustomBrief = (id: string) => {
+  const removeCustomBrief = (id: number) => {
     setCustomBriefs((prev) => prev.filter((b) => b.id !== id));
   };
 
-  const toggleCustomBrief = (id: string) => {
+  const toggleCustomBrief = (id: number) => {
     setCustomBriefs((prev) =>
       prev.map((b) => (b.id === id ? { ...b, enabled: !b.enabled } : b))
     );
   };
 
-  const toggleCustomBriefDay = (briefId: string, day: string) => {
+  const toggleCustomBriefDay = (briefId: number, day: string) => {
+    return;
     setCustomBriefs((prev) =>
       prev.map((b) => {
         if (b.id !== briefId) return b;
@@ -752,7 +775,7 @@ const updateTimeValue = useCallback(
                     </p>
                 </div>
 
-                {/* <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+                <div className="bg-white/5 rounded-lg border border-white/10 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-sm font-medium text-text-primary flex items-center">
                     <Plus className="h-4 w-4 mr-2" /> Custom Brief Schedules
@@ -762,7 +785,6 @@ const updateTimeValue = useCallback(
                     size="sm"
                     variant="outline"
                     className="h-7 px-3 text-xs"
-                    disabled={true}
                   >
                     <Plus className="h-3 w-3 mr-1" /> Add Custom
                   </Button>
@@ -841,7 +863,7 @@ const updateTimeValue = useCallback(
                         <div className="flex items-center gap-3 mb-2">
                           <span className="text-sm font-medium text-text-primary">{brief.name}</span>
                           <Badge variant="secondary" className="text-xs h-4 px-2">
-                            {brief.time}
+                            {brief.briefTime}
                           </Badge>
                         </div>
                         <div className="flex flex-wrap gap-1">
@@ -886,7 +908,7 @@ const updateTimeValue = useCallback(
                     </p>
                   )}
                 </div>
-              </div> */}
+              </div>
               </div>
             )}
           </div>
