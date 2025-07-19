@@ -439,7 +439,7 @@ const Dashboard = () => {
       {/* Focus Mode Timer Header */}
       {/* Away/Offline Timer Header */}
       {/* Vacation/Out of Office Timer Header */}
-      {userStatus === "focus" || userStatus === "vacation" || userStatus === "away" && (
+      {(userStatus === "focus" || userStatus === "vacation" || userStatus === "away") && (
         <StatusTimer 
           status={userStatus}
           onExitFocusMode={handleExitFocusMode}

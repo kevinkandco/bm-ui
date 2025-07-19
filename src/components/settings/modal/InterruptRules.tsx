@@ -274,7 +274,6 @@ const InterruptRules = ({
             (ignore) => ignore?.email?.toLowerCase() === topic?.email?.toLowerCase()
           )
       );
-      console.log(filtered);
       setContactSearchResults(filtered);
     } else {
       setKeywordSearchResults([]);
