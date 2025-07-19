@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift, Aperture } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
@@ -132,6 +132,11 @@ const SettingsPage = () => {
       active: activeSection === "privacy"
     },
     {
+      id: "app",
+      icon: Aperture,
+      name: "App Start",
+    },
+    {
       id: "logout",
       icon: LogOut,
       name: "Logout",
@@ -157,7 +162,14 @@ const SettingsPage = () => {
           return;
         }
     }
+
     setActiveSection(id)
+
+    if (id === 'app') {
+      const response = await call("get", "/start-foucs-app");
+      setActiveSection('profile');
+    }
+    
   }, [activeSection, call, gotoLogin, logout, toast]);
 
   useEffect(() => {
