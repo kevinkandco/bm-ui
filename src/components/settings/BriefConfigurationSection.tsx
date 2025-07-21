@@ -353,7 +353,17 @@ const updateTimeValue = useCallback(
     setUpdateBrief(null);
   };
 
-  const removeCustomBrief = (id: number) => {
+  const removeCustomBrief = async (id: number) => {
+    const response = await call("delete", "/settings/custom-brief-schedules/" + id, {
+      showToast: true,
+      toastTitle: "Failed to delete brief schedule",
+      toastDescription: "Failed to delete brief schedule",
+      returnOnFailure: false,
+      toastVariant: "destructive",
+    });
+
+    if (!response) return;
+
     setCustomBriefs((prev) => prev.filter((b) => b.id !== id));
   };
 
