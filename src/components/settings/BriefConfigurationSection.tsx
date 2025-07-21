@@ -9,6 +9,7 @@ import {
   Plus,
   Trash2,
   Edit2,
+  Pen,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -79,7 +80,7 @@ const BriefConfigurationSection = () => {
   });
 
   const [customBriefs, setCustomBriefs] = useState<CustomBrief[]>([]);
-  console.log("customBriefs", customBriefs);
+  const [updateBrief, setUpdateBrief] = useState<CustomBrief | null>(null);
   const [isAddingCustom, setIsAddingCustom] = useState(false);
   const [newCustomBrief, setNewCustomBrief] = useState({
     name: "",
@@ -318,8 +319,55 @@ const updateTimeValue = useCallback(
     setIsAddingCustom(false);
   };
 
+  const updateCustomBrief = async () => {
+    if (!updateBrief.name.trim()) return;
+    const scheduleTime = getTimePeriod(updateBrief?.briefTime);
+    if (!scheduleTime) return;
+
+    if (!updateBrief) return;
+
+    const customBrief: CustomBrief = {
+      id: updateBrief.id || 0,
+      name: updateBrief.name,
+      briefTime: updateBrief.briefTime,
+      days: updateBrief.days,
+      scheduleTime,
+      deliveryMethod: "email",
+      enabled: updateBrief.enabled,
+    };
+
+    const response = await call("post", "/settings/custom-brief-schedules", {
+      body: {
+        "customBriefSchedules": [customBrief],
+      },
+      showToast: true,
+      toastTitle: "Failed to update data",
+      toastDescription: "Failed to update data",
+      returnOnFailure: false,
+      toastVariant: "destructive",
+    });
+
+    if (!response) return;
+
+    setCustomBriefs(response?.data);
+    setUpdateBrief(null);
+  };
+
   const removeCustomBrief = (id: number) => {
     setCustomBriefs((prev) => prev.filter((b) => b.id !== id));
+  };
+
+  const setUpdateCustomBrief = (brief: CustomBrief) => {
+    setUpdateBrief(brief);
+  };
+
+  const toggleUpdateCustomDay = (day: string) => {
+    setUpdateBrief((prev) => ({
+      ...prev,
+      days: prev.days.includes(day)
+        ? prev.days.filter((d) => d !== day)
+        : [...prev.days, day],
+    }));
   };
 
   const toggleCustomBrief = (id: number) => {
@@ -854,53 +902,128 @@ const updateTimeValue = useCallback(
                 )}
 
                 <div className="space-y-3">
-                  {customBriefs.map((brief) => (
-                    <div
-                      key={brief.id}
-                      className="flex items-center justify-between p-3 bg-white/5 rounded border border-white/20"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="text-sm font-medium text-text-primary">{brief.name}</span>
-                          <Badge variant="secondary" className="text-xs h-4 px-2">
-                            {brief.briefTime}
-                          </Badge>
+                  {customBriefs.map((brief) => {
+                    if(updateBrief && brief?.id === updateBrief?.id) {
+                      return (
+                        <div key={brief.id} className="mb-4 p-3 bg-white/5 rounded border border-white/20">
+                          <div className="space-y-3">
+                            <div>
+                              <Label className="text-xs text-text-secondary">Brief Name</Label>
+                              <Input
+                                placeholder="e.g. Post‑dinner brief"
+                                value={updateBrief.name}
+                                onChange={(e) =>
+                                  setUpdateBrief((prev) => ({ ...prev, name: e.target.value }))
+                                }
+                                className="h-7 text-xs bg-white/5 border-white/20"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs text-text-secondary">Time</Label>
+                              <Input
+                                type="time"
+                                value={updateBrief.briefTime}
+                                onChange={(e) =>
+                                  setUpdateBrief((prev) => ({ ...prev, briefTime: e.target.value }))
+                                }
+                                className="w-24 h-7 text-xs bg-white/5 border-white/20"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs text-text-secondary">Days</Label>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {weekDayLabels.map((day, index) => (
+                                  <Button
+                                    key={day}
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className={`h-6 px-2 text-xs ${
+                                      updateBrief.days.includes(weekDays[index])
+                                        ? "bg-primary/20 text-primary border-primary/40"
+                                        : "bg-white/5 text-text-secondary border-white/20"
+                                    }`}
+                                    onClick={() => toggleUpdateCustomDay(weekDays[index])}
+                                  >
+                                    {day.slice(0, 3)}
+                                  </Button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button onClick={updateCustomBrief} size="sm" className="h-7 px-3 text-xs">
+                                Update
+                              </Button>
+                              <Button
+                                onClick={() => setUpdateBrief(null)}
+                                variant="outline"
+                                size="sm"
+                                className="h-7 px-3 text-xs"
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex flex-wrap gap-1">
-                          {weekDayLabels.map((day, index) => (
-                            <Button
-                              key={day}
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className={`h-5 px-1.5 text-xs ${
-                                brief.days.includes(weekDays[index])
-                                  ? "bg-primary/20 text-primary border-primary/40"
-                                  : "bg-white/5 text-text-secondary border-white/20 opacity-50"
-                              }`}
-                              onClick={() => toggleCustomBriefDay(brief.id, weekDays[index])}
-                            >
-                              {day.slice(0, 1)}
-                            </Button>
-                          ))}
+                      )
+                    }
+
+                    return (
+                      <div
+                        key={brief.id}
+                        className="flex items-center justify-between p-3 bg-white/5 rounded border border-white/20"
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="text-sm font-medium text-text-primary">{brief.name}</span>
+                            <Badge variant="secondary" className="text-xs h-4 px-2">
+                              {brief.briefTime}
+                            </Badge>
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {weekDayLabels.map((day, index) => (
+                              <Button
+                                key={day}
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className={`h-5 px-1.5 text-xs ${
+                                  brief.days.includes(weekDays[index])
+                                    ? "bg-primary/20 text-primary border-primary/40"
+                                    : "bg-white/5 text-text-secondary border-white/20 opacity-50"
+                                }`}
+                                onClick={() => toggleCustomBriefDay(brief.id, weekDays[index])}
+                              >
+                                {day.slice(0, 1)}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={brief.enabled}
+                            onCheckedChange={() => toggleCustomBrief(brief.id)}
+                          />
+                          <Button
+                            onClick={() => removeCustomBrief(brief.id)}
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0 text-text-secondary hover:text-red-400"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            onClick={() => setUpdateCustomBrief(brief)}
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0 text-text-secondary hover:text-red-400"
+                          >
+                            <Pen className="h-3 w-3" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={brief.enabled}
-                          onCheckedChange={() => toggleCustomBrief(brief.id)}
-                        />
-                        <Button
-                          onClick={() => removeCustomBrief(brief.id)}
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0 text-text-secondary hover:text-red-400"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+                    )}
+                  )}
 
                   {customBriefs.length === 0 && !isAddingCustom && (
                     <p className="text-xs text-text-secondary text-center py-3">
