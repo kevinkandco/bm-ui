@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let currentStatus = "Active";
+  let isCooldown = false; // 🔥 Cooldown state
 
   function updateStatusDisplay(newStatus) {
     currentStatus = newStatus;
@@ -50,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function postSlackStatus(status) {
     if (status == "DND") {
       await window.electronAPI.closeSlack();
-      return
+      return;
     }
     let payload = {
       status: status.toLowerCase(),
@@ -62,9 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // 👈 VERY IMPORTANT
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload), // 👈 convert to JSON string
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -78,11 +79,73 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function foucsMode(status) {
+    if (status === "Offline") {
+      try {
+        const response = await fetch(`${BASE_URL}/focus-mode`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ type: "app" }),
+        });
+
+        if (!response.ok) {
+          alert("Failed to update focus mode");
+        }
+
+        // 🔥 Disable "Active" button
+        const activeBtn = Array.from(statusButtons).find(
+          (btn) => btn.dataset.status === "Active"
+        );
+        if (activeBtn) {
+          activeBtn.disabled = true;
+          activeBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+          // 🔥 Re-enable after 1 minute
+          setTimeout(() => {
+            activeBtn.disabled = false;
+            activeBtn.classList.remove("opacity-50", "cursor-not-allowed");
+          }, 60000); // 1 minute = 60000 ms
+        }
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
+    }
+
+    if (status === "Active") {
+      try {
+        const response = await fetch(`${BASE_URL}/exit-focus-mode`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          alert("Failed to update active mode");
+        }
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
+    }
+  }
+
   statusButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const newStatus = btn.dataset.status;
+
+      // 🔥 Prevent switching to "Active" during cooldown
+      if (newStatus === "Active" && btn.disabled) {
+        alert("Please wait at least 1 minute before reactivating.");
+        return;
+      }
+
       updateStatusDisplay(newStatus);
       postSlackStatus(newStatus);
+      foucsMode(newStatus);
     });
   });
 
