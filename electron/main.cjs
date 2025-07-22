@@ -16,7 +16,7 @@ function createWindow() {
   });
 
   // win.loadURL('http://localhost:8080');
-    const htmlPath = path.join(__dirname, '..', 'main1.htm');
+    const htmlPath = path.join(__dirname, '..', 'main.htm');
   win.loadFile(htmlPath);
 }
 
