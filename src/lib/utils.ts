@@ -1,5 +1,6 @@
 import { CalendarEvent, Meeting, PriorityItems, Stats, Summary } from "@/components/dashboard/types";
 import { clsx, type ClassValue } from "clsx"
+import moment from "moment";
 import { twMerge } from "tailwind-merge"
 
 type Platform = "slack" | "gmail";
@@ -42,6 +43,14 @@ export function getTimePeriodInObject(time: string | undefined | null) {
     midday: totalMinutes >= 721 && totalMinutes <= 1020, // 12:01–17:00
     evening: totalMinutes >= 1021 && totalMinutes <= 1320, // 17:01–22:00
   };
+}
+
+export function convertTo12Hour(time24: string): string | null {
+  if (typeof time24 !== 'string') return null;
+
+  const parsed = moment(time24, 'HH:mm', true); // 'true' enables strict parsing
+
+  return parsed.isValid() ? parsed.format('hh:mm A') : null;
 }
 
 export function getTimePeriod(time: string | undefined | null) {

@@ -23,7 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import SplitBriefControls from "./SplitBriefControls";
 import { useIntegrationsState } from "./useIntegrationsState";
 import { useApi } from "@/hooks/useApi";
-import { getTimePeriod, getTimePeriodInObject } from "@/lib/utils";
+import { convertTo12Hour, getTimePeriod, getTimePeriodInObject } from "@/lib/utils";
 import moment from "moment";
 import FancyLoader from "./modal/FancyLoader";
 import {
@@ -987,7 +987,7 @@ const updateTimeValue = useCallback(
                           <div className="flex items-center gap-3 mb-2">
                             <span className="text-sm font-medium text-text-primary">{brief.name}</span>
                             <Badge variant="secondary" className="text-xs h-4 px-2">
-                              {brief.briefTime}
+                              {convertTo12Hour(brief.briefTime)}
                             </Badge>
                           </div>
                           <div className="flex flex-wrap gap-1">
