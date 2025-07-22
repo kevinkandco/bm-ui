@@ -286,10 +286,27 @@ const updateTimeValue = useCallback(
 );
 
   const addCustomBrief = async () => {
-    if (!newCustomBrief.name.trim()) return;
+    if (!newCustomBrief.name.trim()) {
+      toast({
+        title: "Name is required",
+        description: "Please enter a name for the custom brief.",
+        variant: "destructive",
+      })
+      return;
+    };
 
     const scheduleTime = getTimePeriod(newCustomBrief.time);
+
     if (!scheduleTime) return;
+
+    if (newCustomBrief.days.length === 0) {
+      toast({
+        title: "Days are required",
+        description: "Please select at least one day for the custom brief.",
+        variant: "destructive",
+      })
+      return;
+    }
 
     const customBrief: CustomBrief = {
       id: customBriefs.length,
@@ -320,11 +337,29 @@ const updateTimeValue = useCallback(
   };
 
   const updateCustomBrief = async () => {
-    if (!updateBrief.name.trim()) return;
+    if (!updateBrief.name.trim()) {
+      toast({
+        title: "Name is required",
+        description: "Please enter a name for the custom brief.",
+        variant: "destructive",
+      })
+      return;
+    };
+
     const scheduleTime = getTimePeriod(updateBrief?.briefTime);
+
     if (!scheduleTime) return;
 
     if (!updateBrief) return;
+
+    if (updateBrief.days.length === 0) {
+      toast({
+        title: "Days are required",
+        description: "Please select at least one day for the custom brief.",
+        variant: "destructive",
+      })
+      return;
+    }
 
     const customBrief: CustomBrief = {
       id: updateBrief.id || 0,
