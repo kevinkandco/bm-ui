@@ -51,6 +51,7 @@ import {
 import {
   CalendarEvent,
   CalenderData,
+  IStatus,
   Priorities,
   PriorityPeople,
   Summary,
@@ -66,7 +67,7 @@ import ActionItemsPanel from "./ActionItemsPanel";
 import CalendarSection from "./HomeViewSections/CalendarSection";
 
 interface HomeViewProps {
-  status: "active" | "away" | "focus" | "vacation";
+  status: IStatus;
   priorities: Priorities | null;
   recentBriefs: Summary[];
   totalBriefs: number;

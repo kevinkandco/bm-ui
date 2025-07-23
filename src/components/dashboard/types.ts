@@ -1,4 +1,4 @@
-import { LucideProps } from "lucide-react";
+export type IStatus = "active" | "away" | "focus" | "app focus" | "vacation";
 
 export interface BriefSchedules {
   id: string;

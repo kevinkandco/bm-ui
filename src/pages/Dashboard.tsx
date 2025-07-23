@@ -7,7 +7,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
@@ -16,8 +16,6 @@ import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 import FancyLoader from "@/components/settings/modal/FancyLoader";
 import FocusMode from "@/components/dashboard/FocusMode";
 import { requestNotificationPermission } from "@/firebase/fcmService";
-
-type UserStatus = "active" | "away" | "focus" | "vacation";
 
 export interface PendingData {
   id: number;
@@ -46,7 +44,9 @@ const Dashboard = () => {
   const { call } = useApi();
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<"home" | "listening">("home");
-  const [userStatus, setUserStatus] = useState<UserStatus>("active");
+  const [userStatus, setUserStatus] = useState<IStatus>("active");
+  const [focusModeAppType, setFocusModeAppType] = useState<"offline" | "DND" | null>(null);
+  console.log(focusModeAppType);
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [transcript, setTranscript] = useState<Transcript | null>(null);
@@ -78,7 +78,6 @@ const Dashboard = () => {
 
   const intervalIDsRef = useRef<NodeJS.Timeout[]>([]);
   const [searchParams] = useSearchParams();
-
   const fetchDashboardData = useCallback(async () => {
     const response = await call("get", "/dashboard", {
       showToast: true,
@@ -87,7 +86,14 @@ const Dashboard = () => {
     });
 
     if (response) {
-      setUserStatus(response?.mode === 'focus' ? 'focus' : response.sign_off ? 'away' : 'active');
+      setUserStatus(() => {
+				return response?.mode === "focus"
+					? response?.focusType === "App" ? "app focus" : "focus"
+					: response.sign_off
+					? "away"
+					: "active";
+			});
+      setFocusModeAppType(response?.focusType === "App" && response?.mode === "focus" ? response?.focusModeAppType : null); 
       setUserSchedule(response.userSchedule);
       SetBriefSchedules(response.briefSchedules);
       setUpcomingBrief(response.upComingBrief);
@@ -439,9 +445,10 @@ const Dashboard = () => {
       {/* Focus Mode Timer Header */}
       {/* Away/Offline Timer Header */}
       {/* Vacation/Out of Office Timer Header */}
-      {(userStatus === "focus" || userStatus === "vacation" || userStatus === "away") && (
+      {(userStatus === "focus" || userStatus === "app focus" || userStatus === "vacation" || userStatus === "away") && (
         <StatusTimer 
           status={userStatus}
+          focusModeAppType={focusModeAppType}
           onExitFocusMode={handleExitFocusMode}
           focusTime={focusTime}
           briefSchedules={briefSchedules}
