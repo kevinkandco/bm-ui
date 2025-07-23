@@ -88,7 +88,27 @@ document.addEventListener("DOMContentLoaded", () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json", // 👈 VERY IMPORTANT
           },
-          body: JSON.stringify({ type: "app" }), // 👈 convert to JSON string
+          body: JSON.stringify({ type: "App", foucsType: 'Offline' }), // 👈 convert to JSON string
+        });
+
+        if (!response.ok) {
+          alert("Failed to update focus mode");
+        }
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
+    }
+
+    // 👈 FOUCS MODE ON
+     if (status === "DND") {
+      try {
+        const response = await fetch(`${BASE_URL}/focus-mode`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", 
+          },
+          body: JSON.stringify({ type: "App", foucsType: 'DND' }), 
         });
 
         if (!response.ok) {

@@ -191,37 +191,11 @@
         </button>
     </div>
 
-    <!-- Toast Notification -->
-<div id="toast"
-    class="hidden fixed top-6 right-6 w-96 bg-gray-900 text-white rounded-xl shadow-lg z-50 animate-fade-in-down">
-    <div class="p-4 border-b border-gray-700 flex items-start gap-3">
-        <div class="flex-shrink-0 pt-1">
-            <span class="w-3 h-3 bg-red-500 rounded-full block"></span>
+    <div id="toast" class="hidden fixed top-6 right-6 w-96 bg-gray-900 text-white rounded-xl shadow-lg z-50 animate-fade-in-down ">
+        <div id="messageList"
+            class="flex flex-col gap-10 max-h-[27rem] overflow-scroll">
         </div>
-        <div class="flex-1">
-            <p class="text-sm font-semibold uppercase text-gray-400">Brief Me Interrupt</p>
-            <div class="mt-1 flex items-center gap-2 text-sm">
-                <span class="text-yellow-400">⚠️</span>
-                <span id="senderName" class="font-bold">Mike Rodriguez</span>
-                <span id="teamInfo" class="text-gray-400">• Teams • Engineering</span>
-            </div>
-            <p class="mt-1 text-sm leading-snug text-gray-100" id="messageText">
-                <span class="text-red-400 font-semibold">"CRITICAL:</span> Database connection failing, users can’t
-                login. Need help ASAP!"
-            </p>
-            <div class="mt-3 flex gap-2">
-                <button class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm">Reply</button>
-                <button class="bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded text-sm">View Thread</button>
-            </div>
-            <p class="mt-3 text-xs text-gray-500 border-t border-gray-700 pt-2" id="reasonText">
-                Why you saw this: Mike is in your priority contacts and message contains "CRITICAL" keyword
-            </p>
-        </div>
-        <button onclick="hideToast()" class="text-gray-400 hover:text-white ml-2">✖</button>
     </div>
-</div>
-
-
 
     <style>
         @keyframes fade-in-down {
@@ -313,27 +287,59 @@
             document.getElementById('toast').classList.add('hidden');
         }
 
-       document.addEventListener("DOMContentLoaded", async () => {
-        try {
-            const response = await fetch(`${BASE_URL}/emergency-messages`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (!response.ok) {
-                alert("Failed to fetch emergency messages. Status: " + response.status);
-                return;
-            }
-
-            const emergencyMessages = await response.json();
-            
-        } catch (err) {
-            alert("Error:\n" + JSON.stringify(err, null, 2));
+        function createMessageItem(message) {
+            return `
+            <div class="p-4 border-b-4 border-gray-700 flex items-start gap-3">
+                <div class="flex-shrink-0 pt-1">
+                      <span class="w-3 h-3 bg-red-500 rounded-full block"></span>
+                  </div>
+                  <div class="flex-1">
+                      <p class="text-sm font-semibold uppercase text-gray-400">Brief Me Interrupt <span class="text-red-400 font-semibold">(${message?.source})</span></p>
+                      <div class="mt-1 flex items-center gap-2 text-sm">
+                          <span id="senderName" class="font-bold">${message?.from}</span>
+                          <span id="teamInfo" class="text-gray-400">•  ${message?.subject ?? 'No message'}</span>
+                      </div>
+                      <p class="mt-1 text-sm leading-snug text-gray-100" id="messageText">
+                          ${message?.content}
+                      </p>
+                      <div class="mt-3 flex gap-2">
+                          <button class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm">Reply</button>
+                          <button class="bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded text-sm">View Thread</button>
+                      </div>
+                  </div>
+                  <button onclick="hideToast()" class="text-gray-400 hover:text-white ml-2">✖</button>
+            </div>
+                  `;
         }
-    });
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch(`${BASE_URL}/emergency-messages`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!response.ok) {
+                    alert("Failed to fetch emergency messages. Status: " + response.status);
+                    return;
+                }
+
+                const emergencyMessages = await response.json();
+
+                if (emergencyMessages?.data?.length > 0) {
+                    const messageList = document.getElementById("messageList");
+
+                    messageList.innerHTML = emergencyMessages?.data?.map(createMessageItem).join("");
+                    showToast();
+                }
+
+            } catch (err) {
+                alert("Error:\n" + JSON.stringify(err, null, 2));
+            }
+        });
 
 
     </script>
