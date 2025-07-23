@@ -46,7 +46,6 @@ const Dashboard = () => {
   const [currentView, setCurrentView] = useState<"home" | "listening">("home");
   const [userStatus, setUserStatus] = useState<IStatus>("active");
   const [focusModeAppType, setFocusModeAppType] = useState<"offline" | "DND" | null>(null);
-  console.log(focusModeAppType);
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [transcript, setTranscript] = useState<Transcript | null>(null);

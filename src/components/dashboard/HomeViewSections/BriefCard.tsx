@@ -142,7 +142,7 @@ const BriefCard = ({
   }, {
     icon: CheckSquare,
     label: "Follow-ups",
-    value: brief?.stats?.actionItems?.total,
+    value: brief?.actionCount || 0,
     color: "text-accent-primary"
   }];
   
@@ -445,17 +445,17 @@ const BriefCard = ({
               {/* Compact Stats Grid */}
               <div className="grid grid-cols-3 gap-1 mb-2">
                 {statsConfig.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return <div key={index} className="flex flex-col items-center p-1.5 rounded-md bg-surface-raised/20">
-                        <IconComponent className={`h-3 w-3 ${stat.color} mb-0.5`} />
-                        <div className="text-sm font-semibold text-text-primary">
-                          {stat.value}
-                        </div>
-                        <div className="text-[10px] text-text-secondary text-center leading-tight">
-                          {stat.label}
-                        </div>
-                      </div>;
-            })}
+                  const IconComponent = stat.icon;
+                  return <div key={index} className="flex flex-col items-center p-1.5 rounded-md bg-surface-raised/20">
+                            <IconComponent className={`h-3 w-3 ${stat.color} mb-0.5`} />
+                            <div className="text-sm font-semibold text-text-primary">
+                              {stat.value}
+                            </div>
+                            <div className="text-[10px] text-text-secondary text-center leading-tight">
+                              {stat.label}
+                            </div>
+                          </div>;
+                })}
               </div>
 
               {/* Follow-ups with Feedback */}
