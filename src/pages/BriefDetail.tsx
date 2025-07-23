@@ -1,7 +1,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info, ChevronDown, ChevronRight, SkipBack, SkipForward, Download, BarChart3, AlertCircle, CheckCircle, Users, Share } from "lucide-react";
+import { Play, Pause, MessageSquare, Mail, CheckSquare, Clock, ExternalLink, Calendar, Bell, Info, ChevronDown, ChevronRight, SkipBack, SkipForward, Download, BarChart3, AlertCircle, CheckCircle, Users, Share, Slack } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -685,8 +685,20 @@ const BriefDetail = () => {
                               className="text-xs px-2 py-1 h-auto"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
-                              Open in asana
+                              Add to asana
                               {/* {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana'} */}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(item.redirectLink, '_blank')
+                              }}
+                              className="text-xs px-2 py-1 h-auto ml-2"
+                            >
+                              {item.platform === 'slack' ? <Slack className="h-3 w-3" /> : <Mail className="h-3 w-3" />}
+                              open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Slack'}
                             </Button>
                             <Button 
                               variant="ghost" 
@@ -724,7 +736,7 @@ const BriefDetail = () => {
                                    onClick={() => window.open(item.redirectLink, '_blank')}
                                    className="text-xs flex items-center gap-1"
                                  >
-                                   <Mail className="h-3 w-3" />
+                                   {item.platform === 'slack' ? <Slack className="h-3 w-3" /> : <Mail className="h-3 w-3" />}
                                    Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Channel'}
                                  </Button>
                               </div>
