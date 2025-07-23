@@ -173,8 +173,7 @@ const BriefDetail = () => {
     {
       icon: CheckSquare,
       label: "Follow-ups",
-    //   value: briefData?.stats?.followUps || 5,
-      value: 5,
+      value: briefData?.actionCount || 5,
       color: "text-accent-primary"
     }
   ];
@@ -679,14 +678,12 @@ const BriefDetail = () => {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const channelName = item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana';
-                                // handleActionClick(`Open in ${channelName}`, item);
                                 handleActionClick(`Open in asana`, item);
                               }}
                               className="text-xs px-2 py-1 h-auto"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
-                              Add to asana
-                              {/* {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana'} */}
+                              Add to Asana
                             </Button>
                             <Button
                               variant="outline"
@@ -698,7 +695,7 @@ const BriefDetail = () => {
                               className="text-xs px-2 py-1 h-auto ml-2"
                             >
                               {item.platform === 'slack' ? <Slack className="h-3 w-3" /> : <Mail className="h-3 w-3" />}
-                              open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Slack'}
+                              Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Slack'}
                             </Button>
                             <Button 
                               variant="ghost" 
