@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function postSlackStatus(status) {
     if (status == "DND") {
       await window.electronAPI.closeSlack();
-      return
+      return;
     }
     let payload = {
       status: status.toLowerCase(),
@@ -78,11 +78,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function foucsMode(status) {
+   // 👈 FOUCS MODE ON
+     if (status === "Offline") {
+      try {
+        const response = await fetch(`${BASE_URL}/focus-mode`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // 👈 VERY IMPORTANT
+          },
+          body: JSON.stringify({ type: "app" }), // 👈 convert to JSON string
+        });
+
+        if (!response.ok) {
+          alert("Failed to update focus mode");
+        }
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
+    }
+
+   // 👈 ACTIVE MODE ON
+     if (status === "Active") {
+       try {
+         const response = await fetch(`${BASE_URL}/exit-focus-mode`, {
+           method: "GET",
+           headers: {
+             Authorization: `Bearer ${token}`,
+             "Content-Type": "application/json",
+           },
+         });
+
+         if (!response.ok) {
+           alert("please set status to offline.");
+         }
+       } catch (err) {
+         alert(JSON.stringify(err));
+       }
+     }
+    
+  }
+
   statusButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const newStatus = btn.dataset.status;
       updateStatusDisplay(newStatus);
       postSlackStatus(newStatus);
+      foucsMode(newStatus);
     });
   });
 
