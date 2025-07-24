@@ -1,14 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Clock,
   Mail,
-  Volume2,
   Calendar,
-  Bell,
   Save,
   Plus,
   Trash2,
-  Edit2,
   Pen,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -33,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import MuiTimePicker from "../ui/MuiTimePicker";
 
 interface CustomBrief {
   id: number;
@@ -577,14 +575,14 @@ const updateTimeValue = useCallback(
                             Morning Brief
                           </Label>
                           <div className="flex items-center gap-2 mt-1">
-                            <Input
-                              type="time"
+                            <MuiTimePicker
                               value={times.morning.time}
                               disabled={!times.morning.enabled}
-                              onChange={(e) =>
-                                updateTimeValue("morning", e.target.value)
-                              }
-                              className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  updateTimeValue("morning", newValue.format("HH:mm"));
+                                }
+                              }}
                             />
                           </div>
                         </div>
@@ -610,14 +608,14 @@ const updateTimeValue = useCallback(
                             Midday Brief
                           </Label>
                           <div className="flex items-center gap-2 mt-1">
-                            <Input
-                              type="time"
+                            <MuiTimePicker
                               value={times.midday.time}
                               disabled={!times.midday.enabled}
-                              onChange={(e) =>
-                                updateTimeValue("midday", e.target.value)
-                              }
-                              className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  updateTimeValue("midday", newValue.format("HH:mm"));
+                                }
+                              }}
                             />
                           </div>
                         </div>
@@ -643,14 +641,14 @@ const updateTimeValue = useCallback(
                             Evening Brief
                           </Label>
                           <div className="flex items-center gap-2 mt-1">
-                            <Input
-                              type="time"
+                            <MuiTimePicker
                               value={times.evening.time}
                               disabled={!times.evening.enabled}
-                              onChange={(e) =>
-                                updateTimeValue("evening", e.target.value)
-                              }
-                              className="w-28 h-8 text-sm rounded-md bg-white/5 border border-white/20 text-white"
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  updateTimeValue("evening", newValue.format("HH:mm"));
+                                }
+                              }}
                             />
                           </div>
                         </div>
@@ -711,15 +709,19 @@ const updateTimeValue = useCallback(
                           <Label className="text-xs text-text-secondary">
                             Delivery Time
                           </Label>
-                          <Input
-                            type="time"
+                          <MuiTimePicker
                             value={weekendBrief.deliveryTime}
-                            onChange={(e) =>
-                              updateWeekendBrief({
-                                deliveryTime: e.target.value,
-                              })
-                            }
-                            className="bg-white/5 border-white/20 text-text-primary h-8"
+                            width="100%"
+                            borderRadius="16px"
+                            height="32px"
+                            padding="6.5px"
+                            onChange={(newValue) => {
+                              if (newValue) {
+                                updateWeekendBrief({
+                                  deliveryTime: newValue.format("HH:mm"),
+                                })
+                              }
+                            }}
                           />
                         </div>
                       </div>
@@ -784,18 +786,22 @@ const updateTimeValue = useCallback(
                             <Label className="text-xs text-text-secondary">
                               From Time
                             </Label>
-                            <Input
-                              type="time"
+                            <MuiTimePicker
                               value={weekendBrief.coveragePeriod.startTime}
-                              onChange={(e) =>
-                                updateWeekendBrief({
-                                  coveragePeriod: {
-                                    ...weekendBrief.coveragePeriod,
-                                    startTime: e.target.value,
-                                  },
-                                })
-                              }
-                              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+                              width="100%"
+                              borderRadius="16px"
+                              height="32px"
+                              padding="1px"
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  updateWeekendBrief({
+                                    coveragePeriod: {
+                                      ...weekendBrief.coveragePeriod,
+                                      startTime: newValue.format("HH:mm"),
+                                    },
+                                  })
+                                }
+                              }}
                             />
                           </div>
                           <div>
@@ -829,18 +835,22 @@ const updateTimeValue = useCallback(
                             <Label className="text-xs text-text-secondary">
                               To Time
                             </Label>
-                            <Input
-                              type="time"
+                            <MuiTimePicker
                               value={weekendBrief.coveragePeriod.endTime}
-                              onChange={(e) =>
-                                updateWeekendBrief({
-                                  coveragePeriod: {
-                                    ...weekendBrief.coveragePeriod,
-                                    endTime: e.target.value,
-                                  },
-                                })
-                              }
-                              className="bg-white/5 border-white/20 text-text-primary h-7 text-xs"
+                              width="100%"
+                              borderRadius="16px"
+                              height="32px"
+                              padding="1px"
+                              onChange={(newValue) => {
+                                if (newValue) {
+                                  updateWeekendBrief({
+                                    coveragePeriod: {
+                                      ...weekendBrief.coveragePeriod,
+                                      endTime: newValue.format("HH:mm"),
+                                    },
+                                  })
+                                }
+                              }}
                             />
                           </div>
                         </div>
@@ -898,15 +908,17 @@ const updateTimeValue = useCallback(
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-text-secondary">Time</Label>
-                        <Input
-                          type="time"
-                          value={newCustomBrief.time}
-                          onChange={(e) =>
-                            setNewCustomBrief((prev) => ({ ...prev, time: e.target.value }))
-                          }
-                          className="w-24 h-7 text-xs bg-white/5 border-white/20"
-                        />
+                        <Label className="text-xs text-text-secondary block mb-1.5">Time</Label>
+                        <MuiTimePicker
+                            value={newCustomBrief.time}
+                            borderRadius="16px"
+                            height="32px"
+                            onChange={(newValue) => {
+                              if (newValue) {
+                                setNewCustomBrief((prev) => ({ ...prev, time: newValue.format("HH:mm") }));
+                              }
+                            }}
+                          />
                       </div>
                       <div>
                         <Label className="text-xs text-text-secondary">Days</Label>
@@ -964,14 +976,16 @@ const updateTimeValue = useCallback(
                               />
                             </div>
                             <div>
-                              <Label className="text-xs text-text-secondary">Time</Label>
-                              <Input
-                                type="time"
+                              <Label className="text-xs text-text-secondary block mb-1.5">Time</Label>
+                              <MuiTimePicker
                                 value={updateBrief.briefTime}
-                                onChange={(e) =>
-                                  setUpdateBrief((prev) => ({ ...prev, briefTime: e.target.value }))
-                                }
-                                className="w-24 h-7 text-xs bg-white/5 border-white/20"
+                                borderRadius="16px"
+                                height="32px"
+                                onChange={(newValue) => {
+                                  if (newValue) {
+                                    setUpdateBrief((prev) => ({ ...prev, briefTime: newValue.format("HH:mm") }));
+                                  }
+                                }}
                               />
                             </div>
                             <div>

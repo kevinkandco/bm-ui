@@ -9,6 +9,8 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ProtectedOnboardingRoute from "./components/auth/ProtectedOnboardingRoute";
 import { useIsMobile } from "./hooks/use-mobile";
 import { onMessageListener } from "./firebase/firebase";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
   return lazy(() =>
@@ -98,41 +100,43 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark">
-        <TooltipProvider>
-          <div className="min-h-screen flex flex-col justify-center">
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Suspense fallback={<LoadingFallback />}>
-                <Routes>
-                  <Route element={<ProtectedRoute element="unprotected" />}>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/login" element={<Login />} />
-                  </Route>
-                  <Route element={<ProtectedOnboardingRoute />}>
-                    <Route path="/onboarding" element={<Onboarding />} />
-                  </Route>
-                  <Route element={<ProtectedRoute element="protected" />}>
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/dashboard/briefs" element={<BriefsList />} />
-                        <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
-                        <Route path="/dashboard/tasks" element={<TasksPage />} />
-                        <Route path="/dashboard/meetings" element={<MeetingsList />} />
-                        <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
-                        <Route path="/dashboard/settings" element={<SettingsPage />} />
-                  </Route>
-                  <Route path="/mac" element={<MacRouteGuard />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
-          </div>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="dark">
+          <TooltipProvider>
+            <div className="min-h-screen flex flex-col justify-center">
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Suspense fallback={<LoadingFallback />}>
+                  <Routes>
+                    <Route element={<ProtectedRoute element="unprotected" />}>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/login" element={<Login />} />
+                    </Route>
+                    <Route element={<ProtectedOnboardingRoute />}>
+                      <Route path="/onboarding" element={<Onboarding />} />
+                    </Route>
+                    <Route element={<ProtectedRoute element="protected" />}>
+                          <Route path="/dashboard" element={<Dashboard />} />
+                          <Route path="/dashboard/briefs" element={<BriefsList />} />
+                          <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
+                          <Route path="/dashboard/tasks" element={<TasksPage />} />
+                          <Route path="/dashboard/meetings" element={<MeetingsList />} />
+                          <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
+                          <Route path="/dashboard/settings" element={<SettingsPage />} />
+                    </Route>
+                    <Route path="/mac" element={<MacRouteGuard />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </LocalizationProvider>
   )
 }
 
