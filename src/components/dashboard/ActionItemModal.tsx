@@ -11,7 +11,7 @@ interface ActionItemModalProps {
   actionItem: ActionItem | null;
   open: boolean;
   onClose: () => void;
-  onMarkDone: (selectedItem: ActionItem) => void;
+  onMarkDone?: (selectedItem: ActionItem) => void;
 }
 
 const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemModalProps) => {
@@ -159,13 +159,13 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
             <div className="flex justify-between text-sm">
               <span className="text-text-secondary">Created:</span>
               <span className="text-text-primary">
-                {new Date(actionItem.createdAt).toLocaleString()}
+                {actionItem?.time ? actionItem.time : new Date(actionItem.createdAt).toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-text-secondary">Last Activity:</span>
               <span className="text-text-primary">
-                {new Date(actionItem.lastActivity).toLocaleString()}
+                {actionItem?.time ? actionItem.time : new Date(actionItem.lastActivity).toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between text-sm">
@@ -184,10 +184,10 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
               <ExternalLink className="w-4 h-4 mr-2" />
               Open in {actionItem.platform === 'slack' ? 'Slack' : 'Gmail'}
             </Button>
-            <Button onClick={handleMarkDone} variant="outline" className="flex items-center gap-2">
+            {onMarkDone && <Button onClick={handleMarkDone} variant="outline" className="flex items-center gap-2">
               <Check className="w-4 h-4" />
               Mark Done
-            </Button>
+            </Button>}
           </div>
         </div>
       </DialogContent>

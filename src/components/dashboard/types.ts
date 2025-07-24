@@ -190,6 +190,7 @@ export interface ActionItem {
   completed?: boolean;
   lastActivity?: string;
   vote?: boolean;
+  time?: string;
 }
 
 export interface CalendarEvent {

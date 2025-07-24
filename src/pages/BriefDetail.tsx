@@ -54,6 +54,7 @@ import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking"
 import { AUDIO_URL } from "@/config";
 import { BaseURL } from "@/config";
 import { title } from "process";
+import ActionItemModal from "@/components/dashboard/ActionItemModal";
 
 
 const BriefDetail = () => {
@@ -842,7 +843,7 @@ const BriefDetail = () => {
           </div>
 
           {/* Priority Reasoning Modal */}
-          {selectedActionItem && (
+          {/* {selectedActionItem && (
             <PriorityReasoningModal
               open={priorityModalOpen}
               onClose={() => {
@@ -868,7 +869,15 @@ const BriefDetail = () => {
                 confidence: selectedActionItem?.confidence
               }}
             />
-          )}
+          )} */}
+              <ActionItemModal
+                actionItem={selectedActionItem}
+                open={priorityModalOpen}
+                onClose={() => {
+                    setPriorityModalOpen(false);
+                    setSelectedActionItem(null);
+                  }}
+              />
         </div>
       </DashboardLayout>
       <TranscriptView 
