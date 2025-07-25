@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Clock,
   Mail,
@@ -101,6 +101,33 @@ const BriefConfigurationSection = () => {
     }
   });
 
+  const [solidWeekendBrief, setSolidWeekendBrief] = useState<WeekendBrief>({
+    enabled: false,
+    deliveryMethod: "email",
+    deliveryTime: "09:00",
+    weekendDays: ["Monday"],
+    coveragePeriod: {
+      startDay: "Friday",
+      startTime: "17:00",
+      endDay: "Monday",
+      endTime: "09:00"
+    }
+  });
+  const weekendBriefChanged = useMemo(() => {
+    const daysChanged = weekendBrief.weekendDays.length !== solidWeekendBrief.weekendDays.length ||
+      weekendBrief.weekendDays.some((day, index) => day !== solidWeekendBrief.weekendDays[index]);
+
+    return (
+      weekendBrief.deliveryMethod !== solidWeekendBrief.deliveryMethod ||
+      weekendBrief.deliveryTime !== solidWeekendBrief.deliveryTime ||
+      daysChanged ||
+      weekendBrief.coveragePeriod.startDay !== solidWeekendBrief.coveragePeriod.startDay ||
+      weekendBrief.coveragePeriod.startTime !== solidWeekendBrief.coveragePeriod.startTime ||
+      weekendBrief.coveragePeriod.endDay !== solidWeekendBrief.coveragePeriod.endDay ||
+      weekendBrief.coveragePeriod.endTime !== solidWeekendBrief.coveragePeriod.endTime
+    );
+  }, [weekendBrief, solidWeekendBrief]);
+
   const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   const weekDays = [
@@ -141,6 +168,8 @@ const BriefConfigurationSection = () => {
       setDays(response.data?.brief_days);
       setEmailDigest(response?.data?.email_digest);
       setCustomBriefs(response?.data?.custom_brief_schedules || []);
+      setWeekendBrief(response?.data?.weekend_brief);
+      setSolidWeekendBrief(response?.data?.weekend_brief);
 
       const briefTime = response.data?.brief_time;
       const timeFlags = getTimePeriodInObject(briefTime);
@@ -453,6 +482,41 @@ const updateTimeValue = useCallback(
     setWeekendBrief(prev => ({ ...prev, ...updates }));
   };
 
+  const updateEnableWeekendBrief = async (enabled: boolean) => {
+    const response = await call("post", "/settings/brief-configuration/weekend-brief", { 
+        body: {weekendBrief: { ...weekendBrief, enabled }},
+        showToast: true,
+        toastTitle: "Failed to update email digest",
+        toastDescription: "Failed to update email digest setting",
+      });
+
+      if (!response) return;
+
+    setWeekendBrief(prev => ({ ...prev, enabled }));
+  };
+
+  const cancelUpdateWeekendBrief = () => {
+    setWeekendBrief(prev => ({ ...solidWeekendBrief, enabled: prev.enabled }));
+  };
+
+  const SaveUpdateWeekendBrief = async () => {
+    const response = await call("post", "/settings/brief-configuration/weekend-brief", { 
+        body: {weekendBrief},
+        showToast: true,
+        toastTitle: "Failed to update email digest",
+        toastDescription: "Failed to update email digest setting",
+      });
+
+      if (!response) return;
+
+      setSolidWeekendBrief(weekendBrief);
+
+      toast({
+        title: "Settings Saved",
+        description: "Your brief configuration has been updated successfully",
+      });
+  };
+
   const toggleWeekendDay = (day: string) => {
     const updatedDays = weekendBrief.weekendDays.includes(day)
       ? weekendBrief.weekendDays.filter(d => d !== day)
@@ -674,7 +738,7 @@ const updateTimeValue = useCallback(
                     <Switch
                       checked={weekendBrief.enabled}
                       onCheckedChange={(checked) =>
-                        updateWeekendBrief({ enabled: checked })
+                        updateEnableWeekendBrief(checked)
                       }
                     />
                   </div>
@@ -858,6 +922,19 @@ const updateTimeValue = useCallback(
                           Default: Friday 5:00 PM to Monday 9:00 AM
                         </p>
                       </div>
+                      {weekendBriefChanged && <>
+                        <Button onClick={SaveUpdateWeekendBrief} size="sm" className="h-7 px-3 text-xs">
+                            Update
+                          </Button>
+                          <Button
+                            onClick={cancelUpdateWeekendBrief}
+                            variant="outline"
+                            size="sm"
+                            className="h-7 px-3 ml-2 text-xs"
+                          >
+                            Cancel
+                          </Button>
+                        </>}
                     </div>
                   )}
                 </div>

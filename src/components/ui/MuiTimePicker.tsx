@@ -9,6 +9,7 @@ interface TimePickerProps {
 	height?: string;
 	borderRadius?: string;
 	padding?: string;
+	backgroundColor?: string;
 }
 export default function MuiTimePicker({
 	value,
@@ -18,6 +19,7 @@ export default function MuiTimePicker({
 	height = "32px",
 	borderRadius = "6px",
 	padding = "8.5px",
+	backgroundColor = "rgba(255,255,255,0.1)",
 }: TimePickerProps) {
 	return (
 		<TimePicker
@@ -32,7 +34,7 @@ export default function MuiTimePicker({
 						height: height,
 						"& .MuiPickersInputBase-root": {
 							fontSize: "0.875rem",
-							backgroundColor: "rgba(255,255,255,0.1)",
+							backgroundColor: backgroundColor,
 							borderRadius: borderRadius,
 							color: "#fff",
 							"&.Mui-disabled": {

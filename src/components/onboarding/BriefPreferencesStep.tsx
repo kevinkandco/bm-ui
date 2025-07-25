@@ -437,7 +437,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
               {/* Coverage Period */}
               <div className="space-y-3">
                 <Label className="text-ice-grey">Coverage period</Label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-canvas-black/50 rounded-lg">
+                <div className="grid grid-cols-2 gap-4 p-4 bg-canvas-black/50 rounded-lg">
                   <div>
                     <Label className="text-xs text-cool-slate">From day</Label>
                     <Select value={weekendBrief.coveragePeriod.startDay} onValueChange={(value) => 
@@ -457,13 +457,27 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   </div>
                   <div>
                     <Label className="text-xs text-cool-slate">From time</Label>
-                    <Input
+                    {/* <Input
                       type="time"
                       value={weekendBrief.coveragePeriod.startTime}
                       onChange={(e) => updateWeekendBrief({ 
                         coveragePeriod: { ...weekendBrief.coveragePeriod, startTime: e.target.value }
                       })}
                       className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey h-8"
+                    /> */}
+                    <MuiTimePicker
+                      value={weekendBrief.coveragePeriod.startTime}
+                      borderRadius="16px"
+                      padding="6px"
+                      width="100%"
+                      backgroundColor="rgba(26,26,28,0.8)"
+                      onChange={(newValue) => {
+                        if (newValue) {
+                          updateWeekendBrief({
+                            coveragePeriod: { ...weekendBrief.coveragePeriod, startTime: newValue.format("HH:mm") }
+                          });
+                        }
+                      }}
                     />
                   </div>
                   <div>
@@ -485,13 +499,27 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   </div>
                   <div>
                     <Label className="text-xs text-cool-slate">To time</Label>
-                    <Input
+                    {/* <Input
                       type="time"
                       value={weekendBrief.coveragePeriod.endTime}
                       onChange={(e) => updateWeekendBrief({ 
                         coveragePeriod: { ...weekendBrief.coveragePeriod, endTime: e.target.value }
                       })}
                       className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey h-8"
+                    /> */}
+                    <MuiTimePicker
+                      value={weekendBrief.coveragePeriod.endTime}
+                      borderRadius="16px"
+                      padding="6px"
+                      width="100%"
+                      backgroundColor="rgba(26,26,28,0.8)"
+                      onChange={(newValue) => {
+                        if (newValue) {
+                          updateWeekendBrief({
+                            coveragePeriod: { ...weekendBrief.coveragePeriod, endTime: newValue.format("HH:mm") }
+                          });
+                        }
+                      }}
                     />
                   </div>
                 </div>
