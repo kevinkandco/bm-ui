@@ -120,7 +120,6 @@ const OnboardingContent = memo(({
           onBack={handleBack}
           updateUserData={updateUserData}
           userData={userData}
-          connectedAccount={connectedAccount}
         />
       );
     case 8:
@@ -130,6 +129,7 @@ const OnboardingContent = memo(({
           onBack={handleBack}
           updateUserData={updateUserData}
           userData={userData}
+          connectedAccount={connectedAccount}
         />
       );
     case 9:
