@@ -34,6 +34,7 @@ import {
 import { useForm } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import MuiTimePicker from "../ui/MuiTimePicker";
 
 interface BriefSchedule {
   id: string;
@@ -242,14 +243,25 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                 <Sunrise size={18} className="text-electric-teal" />
                 <Label htmlFor="workdayStart" className="text-ice-grey">Workday Start</Label>
               </div>
-              <Input
+              {/* <Input
                 id="workdayStart"
                 type="time"
                 value={dailySchedule.workdayStart}
                 onChange={(e) => updateDailySchedule('workdayStart', e.target.value)}
                 className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey time-picker [&::-webkit-calendar-picker-indicator]:ml-[3.25rem]"
+              /> */}
+              <MuiTimePicker
+                value={dailySchedule.workdayStart}
+                borderRadius="16px"
+                padding="12px 16px"
+                width="100%"
+                onChange={(newValue) => {
+                  if (newValue) {
+                    updateDailySchedule("workdayStart", newValue.format("HH:mm"));
+                  }
+                }}
               />
-              <p className="text-xs text-cool-slate">When do you typically start your workday?</p>
+              <p className="pt-4 text-xs text-cool-slate">When do you typically start your workday?</p>
             </div>
             
             <div className="space-y-3">
@@ -257,14 +269,25 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                 <Sunset size={18} className="text-electric-teal" />
                 <Label htmlFor="workdayEnd" className="text-ice-grey">Workday End</Label>
               </div>
-              <Input
+              {/* <Input
                 id="workdayEnd"
                 type="time"
                 value={dailySchedule.workdayEnd}
                 onChange={(e) => updateDailySchedule('workdayEnd', e.target.value)}
                 className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey time-picker [&::-webkit-calendar-picker-indicator]:ml-[3.25rem]"
+              /> */}
+              <MuiTimePicker
+                value={dailySchedule.workdayEnd}
+                borderRadius="16px"
+                padding="12px 16px"
+                width="100%"
+                onChange={(newValue) => {
+                  if (newValue) {
+                    updateDailySchedule("workdayEnd", newValue.format("HH:mm"));
+                  }
+                }}
               />
-              <p className="text-xs text-cool-slate">When do you typically end your workday?</p>
+              <p className="pt-4 text-xs text-cool-slate">When do you typically end your workday?</p>
             </div>
           </div>
           
@@ -366,12 +389,23 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
                   <Label htmlFor="weekend-delivery-time" className="text-ice-grey">Delivery time</Label>
-                  <Input
+                  {/* <Input
                     id="weekend-delivery-time"
                     type="time"
                     value={weekendBrief.deliveryTime}
                     onChange={(e) => updateWeekendBrief({ deliveryTime: e.target.value })}
                     className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
+                  /> */}
+                  <MuiTimePicker
+                    value={weekendBrief.deliveryTime}
+                    borderRadius="16px"
+                    padding="12px 16px"
+                    width="100%"
+                    onChange={(newValue) => {
+                      if (newValue) {
+                        updateWeekendBrief({ deliveryTime: newValue.format("HH:mm") });
+                      }
+                    }}
                   />
                 </div>
 
@@ -625,14 +659,25 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   )}
                 </Label>
                 <div className="max-w-xs">
-                  <Input
+                  {/* <Input
                     id={`custom-time-${brief.id}`}
                     type="time"
                     value={brief.briefTime}
                     onChange={(e) => handleTimeChange(brief.id, e.target.value)}
                     className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal time-picker [&::-webkit-calendar-picker-indicator]:ml-52"
+                  /> */}
+                  <MuiTimePicker
+                    value={brief.briefTime}
+                    borderRadius="16px"
+                    padding="12px 16px"
+                    width="100%"
+                    onChange={(newValue) => {
+                      if (newValue) {
+                        handleTimeChange(brief.id, newValue.format("HH:mm"));
+                      }
+                    }}
                   />
-                  <p className="text-xs text-cool-slate mt-2">
+                  <p className="pt-3 text-xs text-cool-slate mt-2">
                     Your brief will be prepared and delivered at this time (in your local timezone)
                   </p>
                 </div>
