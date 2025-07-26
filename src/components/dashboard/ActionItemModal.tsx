@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slack, Mail, ExternalLink, Star, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ActionItem } from './types';
+import { useApi } from '@/hooks/useApi';
 
 interface ActionItemModalProps {
   actionItem: ActionItem | null;
@@ -16,6 +17,7 @@ interface ActionItemModalProps {
 
 const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemModalProps) => {
   const { toast } = useToast();
+  const { call } = useApi();
 
   if (!actionItem) return null;
   
@@ -23,10 +25,33 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
   const mockActionReason = "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.";
 
   const handleOpenThread = () => {
-    window.open(actionItem.threadUrl, '_blank');
+    window.open(actionItem?.redirectLink || actionItem.threadUrl, '_blank');
     toast({
       title: "Opening Thread",
       description: `Opening ${actionItem.platform === 'slack' ? 'Slack' : 'Gmail'} thread in new tab`
+    });
+  };
+
+  const handleActionClick = async (item: ActionItem) => {
+
+    const response = await call("post", `/tasks/asana`, {
+      body: {
+        title: item?.title,
+        notes: item?.message,
+      },
+      showToast: true,
+      toastTitle: "Add to Asana Failed",
+      toastDescription: `Failed to add ${item.title} to Asana`,
+      returnOnFailure: false,
+
+    });
+
+    if (!response) return;
+
+
+    toast({
+      title: `${item.title} Added to Asana`,
+      description: `${item.title} added to Asana`
     });
   };
 
@@ -87,7 +112,7 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="outline" className="text-xs">
+                <Button size="sm" variant="outline" className="text-xs" onClick={() => handleActionClick(actionItem)}>
                   <ExternalLink className="w-3 h-3 mr-1" />
                   Add to Asana
                 </Button>

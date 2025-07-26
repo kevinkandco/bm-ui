@@ -187,6 +187,7 @@ export interface ActionItem {
   isNew?: boolean;
   createdAt?: string;
   threadUrl?: string;
+  redirectLink?: string;
   completed?: boolean;
   lastActivity?: string;
   vote?: boolean;
