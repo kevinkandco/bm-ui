@@ -43,6 +43,7 @@ export interface SummaryMassage {
   priority?: string;
   title?: string;
   redirectLink?: string;
+  redirect_link?: string;
   channel?: string;
   tag: "Critical" | "Decision" | "Approval" | "Heads-Up";
 }

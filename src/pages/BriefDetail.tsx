@@ -802,7 +802,7 @@ const BriefDetail = () => {
                       {messages?.map((message) => (
                         <TableRow key={message.id} className="border-white/10 hover:bg-white/5">
                           <TableCell>
-                            <div className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium">
+                            <div onClick={() => message.redirect_link && window.open(message.redirect_link, '_blank')} className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium cursor-pointer">
                               {getPlatformIcon(message.platform)}
                             </div>
                           </TableCell>
