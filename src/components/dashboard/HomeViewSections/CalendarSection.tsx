@@ -76,8 +76,8 @@ const CalendarSection = ({
   );
 
   useEffect(() => {
-    if (!calendarData || calendarData?.today.length === 0) return;
-
+    if (!calendarData || (calendarData?.today.length === 0 && calendarData?.upcoming.length === 0)) return;
+    
     const meetingsToday = convertToMeetings(calendarData?.today);
     const upcomingMeetings = convertToMeetings(calendarData?.upcoming);
 
