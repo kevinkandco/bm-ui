@@ -18,23 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import MuiTimePicker from "../ui/MuiTimePicker";
+import { WeekendBrief } from "../dashboard/types";
 
 interface BriefSchedule {
   id: string;
@@ -44,19 +31,6 @@ interface BriefSchedule {
   briefTime: string;
   enabled: boolean;
   days: string[];
-}
-
-interface WeekendBrief {
-  enabled: boolean;
-  deliveryMethod: "email" | "audio" | "both";
-  deliveryTime: string;
-  weekendDays: string[];
-  coveragePeriod: {
-    startDay: string;
-    startTime: string;
-    endDay: string;
-    endTime: string;
-  };
 }
 
 interface DailySchedule {
@@ -79,7 +53,9 @@ interface BriefPreferencesStepProps {
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const WEEKEND = ["Saturday", "Sunday"];
-const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+// const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const WEEKEND_DAYS_FROM_DAYS = ["Saturday", "Sunday"];
+const WEEKEND_DAYS_TO_DAYS = ["Monday", "Saturday", "Sunday"];
 
 const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: BriefPreferencesStepProps) => {
   // Initialize brief schedules from userData or with defaults
@@ -115,9 +91,9 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
       enabled: false,
       deliveryMethod: "email",
       deliveryTime: "09:00",
-      weekendDays: ["Monday"],
+      weekendDays: "Monday",
       coveragePeriod: {
-        startDay: "Friday",
+        startDay: "Saturday",
         startTime: "17:00",
         endDay: "Monday",
         endTime: "09:00"
@@ -200,11 +176,9 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
   };
 
   const toggleWeekendDay = (day: string) => {
-    const updatedDays = weekendBrief.weekendDays.includes(day)
-      ? weekendBrief.weekendDays.filter(d => d !== day)
-      : [...weekendBrief.weekendDays, day];
+    if (weekendBrief.weekendDays === day) return;
     
-    updateWeekendBrief({ weekendDays: updatedDays });
+    updateWeekendBrief({ weekendDays: day });
   };
 
   const handleContinue = () => {
@@ -420,7 +394,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                         size="sm"
                         className={cn(
                           "border border-cool-slate/30",
-                          weekendBrief.weekendDays.includes(day)
+                          weekendBrief.weekendDays === day
                             ? "bg-electric-teal/20 text-electric-teal border-electric-teal/40"
                             : "bg-canvas-black/50 text-cool-slate"
                         )}
@@ -449,7 +423,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {ALL_DAYS.map(day => (
+                        {WEEKEND_DAYS_FROM_DAYS.map(day => (
                           <SelectItem key={day} value={day}>{day}</SelectItem>
                         ))}
                       </SelectContent>
@@ -491,7 +465,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {ALL_DAYS.map(day => (
+                        {WEEKEND_DAYS_TO_DAYS.map(day => (
                           <SelectItem key={day} value={day}>{day}</SelectItem>
                         ))}
                       </SelectContent>

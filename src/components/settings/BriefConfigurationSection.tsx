@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import MuiTimePicker from "../ui/MuiTimePicker";
+import { WeekendBrief } from "../dashboard/types";
 
 interface CustomBrief {
   id: number;
@@ -40,19 +41,6 @@ interface CustomBrief {
   enabled: boolean;
   scheduleTime: string;
   deliveryMethod: string;
-}
-
-interface WeekendBrief {
-  enabled: boolean;
-  deliveryMethod: "email" | "audio" | "both";
-  deliveryTime: string;
-  weekendDays: string[];
-  coveragePeriod: {
-    startDay: string;
-    startTime: string;
-    endDay: string;
-    endTime: string;
-  };
 }
 
 const BriefConfigurationSection = () => {
@@ -92,9 +80,9 @@ const BriefConfigurationSection = () => {
     enabled: false,
     deliveryMethod: "email",
     deliveryTime: "09:00",
-    weekendDays: ["Monday"],
+    weekendDays: "Monday",
     coveragePeriod: {
-      startDay: "Friday",
+      startDay: "Saturday",
       startTime: "17:00",
       endDay: "Monday",
       endTime: "09:00"
@@ -105,22 +93,20 @@ const BriefConfigurationSection = () => {
     enabled: false,
     deliveryMethod: "email",
     deliveryTime: "09:00",
-    weekendDays: ["Monday"],
+    weekendDays: "Monday",
     coveragePeriod: {
-      startDay: "Friday",
+      startDay: "Saturday",
       startTime: "17:00",
       endDay: "Monday",
       endTime: "09:00"
     }
   });
   const weekendBriefChanged = useMemo(() => {
-    const daysChanged = weekendBrief.weekendDays.length !== solidWeekendBrief.weekendDays.length ||
-      weekendBrief.weekendDays.some((day, index) => day !== solidWeekendBrief.weekendDays[index]);
 
     return (
       weekendBrief.deliveryMethod !== solidWeekendBrief.deliveryMethod ||
       weekendBrief.deliveryTime !== solidWeekendBrief.deliveryTime ||
-      daysChanged ||
+      weekendBrief.weekendDays !== solidWeekendBrief.weekendDays ||
       weekendBrief.coveragePeriod.startDay !== solidWeekendBrief.coveragePeriod.startDay ||
       weekendBrief.coveragePeriod.startTime !== solidWeekendBrief.coveragePeriod.startTime ||
       weekendBrief.coveragePeriod.endDay !== solidWeekendBrief.coveragePeriod.endDay ||
@@ -128,7 +114,9 @@ const BriefConfigurationSection = () => {
     );
   }, [weekendBrief, solidWeekendBrief]);
 
-  const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  // const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const WEEKEND_DAYS_FROM_DAYS = ["Saturday", "Sunday"];
+  const WEEKEND_DAYS_TO_DAYS = ["Monday", "Saturday", "Sunday"];
 
   const weekDays = [
     "monday",
@@ -518,11 +506,9 @@ const updateTimeValue = useCallback(
   };
 
   const toggleWeekendDay = (day: string) => {
-    const updatedDays = weekendBrief.weekendDays.includes(day)
-      ? weekendBrief.weekendDays.filter(d => d !== day)
-      : [...weekendBrief.weekendDays, day];
+    if (weekendBrief.weekendDays === day) return;
     
-    updateWeekendBrief({ weekendDays: updatedDays });
+    updateWeekendBrief({ weekendDays: day });
   };
 
   const handleUpdateEmailDigest = async (checked: boolean) => {
@@ -802,7 +788,7 @@ const updateTimeValue = useCallback(
                               variant="outline"
                               size="sm"
                               className={`h-6 px-2 text-xs ${
-                                weekendBrief.weekendDays.includes(day)
+                                weekendBrief.weekendDays === day
                                   ? "bg-primary/20 text-primary border-primary/40"
                                   : "bg-white/5 text-text-secondary border-white/20"
                               }`}
@@ -838,7 +824,7 @@ const updateTimeValue = useCallback(
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                {ALL_DAYS.map((day) => (
+                                {WEEKEND_DAYS_FROM_DAYS.map((day) => (
                                   <SelectItem key={day} value={day}>
                                     {day}
                                   </SelectItem>
@@ -887,7 +873,7 @@ const updateTimeValue = useCallback(
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                {ALL_DAYS.map((day) => (
+                                {WEEKEND_DAYS_TO_DAYS.map((day) => (
                                   <SelectItem key={day} value={day}>
                                     {day}
                                   </SelectItem>

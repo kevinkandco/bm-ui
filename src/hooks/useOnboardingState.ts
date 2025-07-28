@@ -89,9 +89,9 @@ export const defaultUserData: UserData = {
     enabled: false,
     deliveryMethod: "email",
     deliveryTime: "09:00",
-    weekendDays: ["Monday"],
+    weekendDays: "Monday",
     coveragePeriod: {
-      startDay: "Friday",
+      startDay: "Saturday",
       startTime: "17:00",
       endDay: "Monday",
       endTime: "09:00"

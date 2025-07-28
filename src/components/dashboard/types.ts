@@ -14,7 +14,7 @@ export interface WeekendBrief {
   enabled: boolean;
   deliveryMethod: "email" | "audio" | "both";
   deliveryTime: string;
-  weekendDays: string[];
+  weekendDays: string;
   coveragePeriod: {
     startDay: string;
     startTime: string;
