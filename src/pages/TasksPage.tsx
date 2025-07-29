@@ -165,6 +165,10 @@ const TasksPage = () => {
     setShowCompleted(!showCompleted);
   }
 
+  const updateAsanaLink = (task_id: number, platform: string, url: string) => {
+    setActionItems((prev) => prev.map((item) => item.id === `${selectedItem?.platform}-${task_id}` && item.platform === platform ? {...item, task_url: url} : item));
+  };
+
   const groupTaskIdsByPlatform = useCallback((data: ActionItem[]) => {
     const result = {
       slack_task: [] as number[],
@@ -522,6 +526,7 @@ const TasksPage = () => {
           setIsModalOpen(false);
           setSelectedItem(null);
         }}
+        updateAsanaLink={updateAsanaLink}
         onMarkDone={handleMarkDone}
       />
     </div>

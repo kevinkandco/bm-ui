@@ -44,6 +44,7 @@ export interface SummaryMassage {
   title?: string;
   redirectLink?: string;
   redirect_link?: string;
+  task_url?: string;
   channel?: string;
   tag: "Critical" | "Decision" | "Approval" | "Heads-Up";
 }
@@ -178,6 +179,7 @@ export interface ActionItem {
   id?: string;
   title?: string;
   platform?: "slack" | "gmail";
+  task_url?: string;
   message?: string;
   sender?: string;
   isVip?: boolean;

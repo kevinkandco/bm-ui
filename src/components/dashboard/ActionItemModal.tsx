@@ -13,9 +13,10 @@ interface ActionItemModalProps {
   open: boolean;
   onClose: () => void;
   onMarkDone?: (selectedItem: ActionItem) => void;
+  updateAsanaLink: (task_id: number, platform: string, url: string) => void
 }
 
-const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemModalProps) => {
+const ActionItemModal = ({ actionItem, open, onClose, onMarkDone, updateAsanaLink }: ActionItemModalProps) => {
   const { toast } = useToast();
   const { call } = useApi();
 
@@ -35,19 +36,21 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
   const handleActionClick = async (item: ActionItem) => {
 
     const response = await call("post", `/tasks/asana`, {
-      body: {
-        title: item?.title,
-        notes: item?.message,
-      },
-      showToast: true,
-      toastTitle: "Add to Asana Failed",
-      toastDescription: `Failed to add ${item.title} to Asana`,
-      returnOnFailure: false,
-
-    });
+			body: {
+				task_id: typeof item?.id == "string" ? Number(item?.id?.replace(`${item?.platform}-`, '')) : item?.id,
+				platform: item?.platform,
+				title: item?.title,
+				notes: item?.message,
+			},
+			showToast: true,
+			toastTitle: "Add to Asana Failed",
+			toastDescription: `Failed to add ${item.title} to Asana`,
+			returnOnFailure: false,
+		});
 
     if (!response) return;
 
+    updateAsanaLink(response.task_id, response.platform, response.task_url);
 
     toast({
       title: `${item.title} Added to Asana`,
@@ -112,9 +115,9 @@ const ActionItemModal = ({ actionItem, open, onClose, onMarkDone }: ActionItemMo
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="outline" className="text-xs" onClick={() => handleActionClick(actionItem)}>
+                <Button size="sm" variant="outline" className="text-xs" onClick={() =>actionItem?.task_url ? window.open(actionItem.task_url, '_blank') : handleActionClick(actionItem)}>
                   <ExternalLink className="w-3 h-3 mr-1" />
-                  Add to Asana
+                  {actionItem?.task_url ? 'Open in Asana' : "Add to Asana"}
                 </Button>
                 <Button size="sm" variant="outline" className="text-xs" onClick={handleOpenThread}>
                   Open in {actionItem.platform === 'slack' ? 'Slack' : 'Gmail'}

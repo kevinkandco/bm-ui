@@ -63,7 +63,7 @@ const BriefDetail = () => {
   const { toast } = useToast();
   const { call } = useApi();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [expandedActionItem, setExpandedActionItem] = useState<number | null>(null);
+  const [expandedActionItem, setExpandedActionItem] = useState<number | string | null>(null);
   const [allMessagesOpen, setAllMessagesOpen] = useState(false);
   const [messages, setMessages] = useState<SummaryMassage[]>([]);
   const [selectedActionItem, setSelectedActionItem] = useState<any>(null);
@@ -94,7 +94,7 @@ const BriefDetail = () => {
   );
 
 
-    const getBriefData = useCallback(async (): Promise<void> => {
+  const getBriefData = useCallback(async (): Promise<void> => {
     setLoading(true);
 
     const response = await call("get", `/summary/${briefId}/show`, {
@@ -215,6 +215,8 @@ const BriefDetail = () => {
 
     const response = await call("post", `/tasks/asana`, {
       body: {
+        task_id: item?.id,
+        platform: item?.platform,
         title: item?.title,
         notes: item?.message,
       },
@@ -222,16 +224,20 @@ const BriefDetail = () => {
       toastTitle: "Action Failed",
       toastDescription: `Failed to apply action "${action}" to: ${item.title}`,
       returnOnFailure: false,
-
     });
 
     if (!response) return;
 
+    setFollowUps((prev) => prev.map((item) => response.task_id === item.id && item?.platform === response?.platform ? {...item, task_url: response?.task_url} : item));
 
     toast({
       title: `${action}`,
       description: `Action "${action}" applied to: ${item.title}`
     });
+  };
+
+  const updateAsanaLink = (task_id: number, platform: string, url: string) => {
+    setFollowUps((prev) => prev.map((item) => item.id === task_id && item.platform === platform ? {...item, task_url: url} : item));
   };
 
   const handleFeedback = (type: 'up' | 'down', comment?: string) => {
@@ -678,13 +684,13 @@ const BriefDetail = () => {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                const channelName = item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Email' : 'Asana';
+                                if (item?.task_url) return window.open(item.task_url, '_blank');
                                 handleActionClick(`Open in asana`, item);
                               }}
                               className="text-xs px-2 py-1 h-auto"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
-                              Add to Asana
+                              {item?.task_url ? "Open in Asana" :"Add to Asana"}
                             </Button>
                             <Button
                               variant="outline"
@@ -877,6 +883,7 @@ const BriefDetail = () => {
                     setPriorityModalOpen(false);
                     setSelectedActionItem(null);
                   }}
+                updateAsanaLink={updateAsanaLink}
               />
         </div>
       </DashboardLayout>

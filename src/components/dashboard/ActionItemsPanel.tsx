@@ -174,6 +174,10 @@ const ActionItemsPanel = ({
     });
   }, [toast]);
 
+  const updateAsanaLink = (task_id: number, platform: string, url: string) => {
+    setActionItems((prev) => prev.map((item) => item.id === `${item?.platform}-${task_id}` && item.platform === platform ? {...item, task_url: url} : item));
+  };
+
   const handleTagClick = useCallback((tagType: string, event: React.MouseEvent) => {
     event.stopPropagation();
     setFilter(filter === tagType ? null : tagType);
@@ -349,7 +353,8 @@ const ActionItemsPanel = ({
       <ActionItemModal actionItem={selectedItem} open={isModalOpen} onClose={() => {
       setIsModalOpen(false);
       setSelectedItem(null);
-    }} onMarkDone={handleMarkDone} />
+    }} onMarkDone={handleMarkDone}
+    updateAsanaLink={updateAsanaLink} />
     </>;
 };
 
