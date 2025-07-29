@@ -225,8 +225,11 @@ export interface Meeting {
   attendees: Array<{
     name: string;
     email: string;
+    response_status: string;
+    self: boolean;
   }>;
   briefing: string;
+  description: string;
   aiSummary: string;
   hasProxy: boolean;
   hasNotes: boolean;

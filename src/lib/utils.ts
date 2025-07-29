@@ -206,8 +206,11 @@ export function convertToMeetings(calendarItems: CalendarEvent[] = []): Meeting[
       attendees: (item.attendees || []).map((a) => ({
         name: a.name || "Unknown",
         email: a.email || "",
+        response_status: a.response_status || "",
+        self: a.self || "",
       })),
-      briefing: item.description || "No briefing available.",
+      description: item.description || "No description available.",
+      briefing: "",
       aiSummary: item.description || "No AI summary available.",
       hasProxy: false,
       hasNotes: !!item.proxy_note,
