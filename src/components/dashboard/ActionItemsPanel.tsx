@@ -62,6 +62,7 @@ const ActionItemsPanel = ({
         isNew: !item.status,
         createdAt: item.created_at,
         threadUrl: item.redirect_link,
+        task_url: item.task_url,
         completed: item.status,
         lastActivity: platformData?.received_at || platformData?.sent_at || item.created_at,
       };
