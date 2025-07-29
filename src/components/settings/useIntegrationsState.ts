@@ -193,10 +193,10 @@ export const useIntegrationsState = () => {
       );
   }, [connectedAccounts, call]);
 
-  const disconnectAccount = useCallback(async (accountId: number) => {
+  const disconnectAccount = useCallback(async (accountId: number, integration_type: "input_integration" | "output_integration") => {
     const response = await call(
       "get",
-      `/settings/system-integrations/${accountId}/disconnect`,
+      `/settings/system-integrations/${accountId}/disconnect?integration_type=${integration_type}`,
       {
         showToast: true,
         toastTitle: "Failed to Disconnect",

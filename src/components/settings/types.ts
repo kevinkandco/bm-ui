@@ -7,6 +7,7 @@ export interface ConnectedAccount {
   id?: number;
   provider?: number;
   provider_name?: string;
+  integration_type?: "input_integration" | "output_integration";
   email?: string;
   name?: string;
   tagId?: number;
