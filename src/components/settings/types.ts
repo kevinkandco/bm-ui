@@ -1,6 +1,7 @@
 export const Provider = {
   slack: "slack",
   google: "email",
+  outlook: "outlook",
 }
 
 export interface ConnectedAccount {
