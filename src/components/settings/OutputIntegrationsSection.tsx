@@ -1,17 +1,27 @@
 
 import React from "react";
-import { Upload, CheckSquare, Trello, Calendar, MessageSquare, Mail } from "lucide-react";
+import { Upload, CheckSquare, Trello, Calendar, MessageSquare, Mail, LucideProps } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+
+interface OutputIntegration {
+  name: string;
+  provider: string;
+  available: boolean;
+  icon?: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
+  description: string;
+  outputs: string[];
+  connected: boolean;
+}
 
 interface OutputIntegrationsSectionProps {
   onConnect: (provider: string, type: 'input' | 'output') => void;
 }
 
 const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps) => {
-  const outputIntegrations = [
+  const outputIntegrations: OutputIntegration[] = [
     { 
       name: "Todoist", 
       provider: "todoist", 
@@ -25,7 +35,6 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
       name: "Asana", 
       provider: "asana", 
       available: true, 
-      icon: CheckSquare,
       description: "Push tasks and project updates to your Asana workspace",
       outputs: ["Tasks", "Project updates", "Team assignments"],
       connected: false
@@ -68,6 +77,22 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
     }
   ];
 
+  const renderIcon = (
+    integration: OutputIntegration,
+  ) => {
+    switch (integration.provider) {
+      case "asana": 
+        return <svg className="text-[#fff]" viewBox="-0.5 -0.5 16 16" fill="none" id="Asana--Streamline-Iconoir" height="16" width="16">
+          <path d="M7.5 7.1230625000000005c1.6653125 0 3.015375 -1.35 3.015375 -3.015375S9.1653125 1.0923125 7.5 1.0923125c-1.665375 0 -3.015375 1.35 -3.015375 3.015375s1.35 3.015375 3.015375 3.015375Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path>
+          <path d="M3.73075 13.907687500000002c1.665375 0 3.0154375 -1.3500625 3.0154375 -3.015375 0 -1.6653125 -1.3500625 -3.015375 -3.0154375 -3.015375s-3.015375 1.3500625 -3.015375 3.015375c0 1.6653125 1.3500625 3.015375 3.015375 3.015375Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path>
+          <path d="M11.26925 13.907687500000002c1.6653125 0 3.015375 -1.3500625 3.015375 -3.015375 0 -1.6653125 -1.3500625 -3.015375 -3.015375 -3.015375 -1.6653125 0 -3.015375 1.3500625 -3.015375 3.015375 0 1.6653125 1.3500625 3.015375 3.015375 3.015375Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path>
+        </svg>;
+      
+      default:
+        return <integration.icon />;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-3">
@@ -84,7 +109,6 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {outputIntegrations.map((integration) => {
-          const IconComponent = integration.icon;
           return (
             <div
               key={integration.provider}
@@ -93,7 +117,7 @@ const OutputIntegrationsSection = ({ onConnect }: OutputIntegrationsSectionProps
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-white/10 rounded-lg">
-                    <IconComponent className="h-5 w-5 text-text-primary" />
+                     {renderIcon(integration)}
                   </div>
                   <div>
                     <h4 className="font-medium text-text-primary">{integration.name}</h4>

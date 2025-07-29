@@ -1,4 +1,4 @@
-import { Download, Mail, MessageSquare, Calendar, FileText, Users } from "lucide-react";
+import { Download, Mail, MessageSquare, Calendar, FileText, Users, MailOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -28,7 +28,7 @@ const InputIntegrationsSection = ({ onConnect }: InputIntegrationsSectionProps) 
       name: "Outlook", 
       provider: "outlook", 
       available: true, 
-      icon: Mail,
+      icon: MailOpen,
       description: "Sync emails and calendar events for comprehensive briefings",
       features: ["Email processing", "Meeting summaries", "Task extraction"]
     },

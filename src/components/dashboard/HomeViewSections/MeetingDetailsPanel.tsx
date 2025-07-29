@@ -94,7 +94,7 @@ const MeetingDetailsPanel = ({
 					</div>
 					<p
 						dangerouslySetInnerHTML={{ __html: meeting.description }}
-						className="text-sm text-text-secondary leading-relaxed"
+						className="text-sm text-text-secondary leading-relaxed style-anchor"
 					>
 					</p>
 				</div>

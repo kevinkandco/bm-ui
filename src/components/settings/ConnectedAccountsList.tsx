@@ -10,6 +10,7 @@ import {
   Check,
   X,
   Settings as SettingsIcon,
+  MailOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -78,8 +79,9 @@ const ConnectedAccountsList = ({
   const getProviderIcon = (provider: string) => {
     switch (provider?.toLowerCase()) {
       case "google":
-      case "outlook":
         return <Mail className="h-4 w-4" />;
+      case "outlook":
+        return <MailOpen className="h-4 w-4" />;
       case "slack":
         return <Slack className="h-4 w-4" />;
       case "calendar":
