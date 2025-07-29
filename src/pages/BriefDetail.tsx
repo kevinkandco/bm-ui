@@ -689,7 +689,12 @@ const BriefDetail = () => {
                               }}
                               className="text-xs px-2 py-1 h-auto"
                             >
-                              <ExternalLink className="h-3 w-3 mr-1" />
+                              {item?.task_url ? <ExternalLink className="h-3 w-3 mr-1" /> :
+                              <svg className="text-[#fff]" viewBox="-0.5 -0.5 16 16" fill="none" id="Asana--Streamline-Iconoir" height="16" width="16">
+                                <path d="M7.5 7.1230625000000005c1.6653125 0 3.015375 -1.35 3.015375 -3.015375S9.1653125 1.0923125 7.5 1.0923125c-1.665375 0 -3.015375 1.35 -3.015375 3.015375s1.35 3.015375 3.015375 3.015375Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path>
+                                <path d="M3.73075 13.907687500000002c1.665375 0 3.0154375 -1.3500625 3.0154375 -3.015375 0 -1.6653125 -1.3500625 -3.015375 -3.0154375 -3.015375s-3.015375 1.3500625 -3.015375 3.015375c0 1.6653125 1.3500625 3.015375 3.015375 3.015375Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path>
+                                <path d="M11.26925 13.907687500000002c1.6653125 0 3.015375 -1.3500625 3.015375 -3.015375 0 -1.6653125 -1.3500625 -3.015375 -3.015375 -3.015375 -1.6653125 0 -3.015375 1.3500625 -3.015375 3.015375 0 1.6653125 1.3500625 3.015375 3.015375 3.015375Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"></path>
+                              </svg>}
                               {item?.task_url ? "Open in Asana" :"Add to Asana"}
                             </Button>
                             <Button
