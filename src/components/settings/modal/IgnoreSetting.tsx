@@ -22,7 +22,7 @@ const IgnoreSetting = ({
   setShouldRefreshContacts
 }: SettingsTabProps) => {
   const channelActive = useMemo(() => ['slack'], []);
-  const keywordActive = useMemo(() => ['slack', 'google'], []);
+  const keywordActive = useMemo(() => ['slack', 'google', 'outlook'], []);
   const hasChannelActive = channelActive.includes(provider?.name?.toLowerCase() || '');
   const hasKeywordActive = keywordActive.includes(provider?.name?.toLowerCase() || '');
 
