@@ -37,16 +37,12 @@ interface IntegrationsStepProps {
   connectedAccount: ConnectedAccount[];
 }
 
-interface UserData {
-  [key: string]: any;
-}
 const IntegrationsStep = ({
   onNext,
   onBack,
   onSkip,
   updateUserData,
   userData,
-  gotoLogin,
   connectedAccount,
 }: IntegrationsStepProps) => {
   const isMobile = useIsMobile();
@@ -77,7 +73,7 @@ const IntegrationsStep = ({
       name: "Outlook",
       icon: "O",
       available: true,
-      description: "Connect your Outlook email account (coming soon)",
+      description: "Connect your Outlook email account",
       version: "V1",
     },
     {
@@ -211,44 +207,6 @@ const IntegrationsStep = ({
     setLoader(false);
   }, [call, onNext, connectedAccount]);
 
-  // const fetchChannels = useCallback(async (): Promise<void> => {
-  //   setLoader(true);
-
-  //   try {
-  //     if (!connectedAccount || connectedAccount.length === 0) {
-  //       console.warn("No connected accounts found.");
-  //       setLoader(false);
-  //       return;
-  //     }
-
-  //     const requests = connectedAccount.map((account) =>{
-  //       const providerName = Provider[account.provider_name?.toLowerCase() || ''];
-  //       const id = account.id || '';
-  //       return call("get", `/${providerName}/fetch/${id}`, {
-  //         showToast: true,
-  //         toastTitle: `Failed to fetch ${account.provider_name} data`,
-  //         toastVariant: "destructive",
-  //         toastDescription: `Something went wrong. Failed to fetch ${account.provider_name} data.`,
-  //         returnOnFailure: false,
-  //       })}
-  //     );
-
-  //     const results = await Promise.all(requests);
-
-  //     const anySuccess = results.some((res) => res); // check if any API call succeeded
-
-  //     if (anySuccess) {
-  //       onNext();
-  //     } else {
-  //       console.error("All fetch attempts failed.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during fetchChannels:", error);
-  //   } finally {
-  //     setLoader(false);
-  //   }
-  // }, [call, onNext, connectedAccount]);
-
   const [connected, setConnected] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -270,8 +228,8 @@ const IntegrationsStep = ({
       const urls: Record<string, string> = {
         slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=onboarding`,
         google: `${REDIRECT_URL}/google/auth?redirectURL=onboarding`,
-        calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
-        outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=dashboard/settings&user_id=${user?.id}`,
+        calendar: `${REDIRECT_URL}/calendar/auth`,
+        outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=onboarding&user_id=${user?.id}`,
       };
       window.open(urls[provider], "_self");
     };
@@ -282,27 +240,6 @@ const IntegrationsStep = ({
 
     const isConnected = connected[lowerId];
 
-    // if (id === "slack") {
-    //   if (isIntegrated || isConnected) {
-    //     // setConnected((prev) => ({
-    //     //   ...prev,
-    //     //   [id]: !prev[id],
-    //     // }));
-    //     return;
-    //   } else {
-    //     openAuthUrl("slack");
-    //   }
-    // } else if (id === "google") {
-    //   if (isConnected || isIntegrated) {
-    //     // setConnected((prev) => ({
-    //     //   ...prev,
-    //     //   [id]: !prev[id],
-    //     // }));
-    //     return;
-    //   } else {
-    //     openAuthUrl("google");
-    //   }
-    // }
     if (!(isConnected || isIntegrated) && AllowedProviders.includes(id)) {
       openAuthUrl(id);
     } else {
