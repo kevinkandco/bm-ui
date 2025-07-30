@@ -258,7 +258,7 @@ const BriefDetail = () => {
   };
 
   const handleDownload = async () => {
-    const downloadUrl = `${AUDIO_URL}/summary/${briefData.id}/download-audio`;
+    const downloadUrl = `${BaseURL}/summary/${briefData.id}/download-audio`;
 
     try {
       const response = await fetch(downloadUrl, {
