@@ -13,6 +13,7 @@ import { UserData } from "@/hooks/useOnboardingState";
 import FancyLoader from "../settings/modal/FancyLoader";
 import { ConnectedAccount, Person, ValidationError } from "../settings/types";
 import AddEmailModal from "../settings/modal/AddEmailModal";
+import { useOutlookPriorityPeopleState } from "./priority-people/useOutlookPriorityPeopleState";
 
 interface PriorityPeopleStepProps {
   onNext: () => void;
@@ -22,13 +23,17 @@ interface PriorityPeopleStepProps {
   connectedAccount: ConnectedAccount[];
 }
 
+const AllowedPlatforms = ["slack", "google", "outlook"];
+
 const PriorityPeopleStep = memo(
   ({ onNext, onBack, updateUserData, userData, connectedAccount }: PriorityPeopleStepProps) => {
     // Get the state and functions from the custom hook
     const googleId = connectedAccount?.find(c => c?.provider_name?.toLowerCase() === "google")?.id;
     const slackId = connectedAccount?.find(c => c?.provider_name?.toLowerCase() === "slack")?.id;
+    const outlookId = connectedAccount?.find((c) => c?.provider_name?.toLowerCase() === "outlook")?.id;
     const slackState = useSlackPriorityPeopleState(slackId, userData.slackPriorityPeople || []);
     const gmailState = useGmailPriorityPeopleState(googleId, userData.googlePriorityPeople || []);
+    const outlookState = useOutlookPriorityPeopleState(outlookId, userData.outlookPriorityPeople || []);
     const [people, setPeople] = useState<Person[]>([{ name: "", email: "", label: "" }]);
     const [addEmailModalOpen, setAddEmailModalOpen] = useState(false);
     const [saveLoading, setSaveLoading] = useState(false);
@@ -37,23 +42,24 @@ const PriorityPeopleStep = memo(
 
     const [platformIndex, setPlatformIndex] = useState(0);
     const allowedPlatforms = useMemo(() => 
-      (userData?.integrations || []).filter(p => p === "slack" || p === "google"), 
+      (userData?.integrations || []).filter(p => AllowedPlatforms.includes(p)), 
       [userData?.integrations]
     );
-    const currentPlatform: "slack" | "google" = allowedPlatforms?.[platformIndex]; // "slack" or "google"
+    const currentPlatform: (typeof allowedPlatforms)[number] = allowedPlatforms?.[platformIndex];
 
     const platformState = useMemo(() => {
       switch (currentPlatform) {
         case 'slack': return slackState;
         case 'google': return gmailState;
+        case 'outlook': return outlookState;
         default: return slackState;
       }
-    }, [currentPlatform, slackState, gmailState]);
+    }, [currentPlatform, slackState, gmailState, outlookState]);
 
     const handleContinue = () => {
       const platformKey = `${currentPlatform}PriorityPeople` as keyof UserData;
 
-      if (currentPlatform === "slack" || currentPlatform === "google") {
+      if (AllowedPlatforms.includes(currentPlatform)) {
         updateUserData({ [platformKey]: platformState.priorityPeople });
       }
 

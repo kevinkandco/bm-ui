@@ -13,6 +13,7 @@ export interface UserData {
   // User preferences
   slackPriorityPeople: PriorityPerson[];
   googlePriorityPeople: PriorityPerson[];
+  outlookPriorityPeople: PriorityPerson[];
   priorityChannels: string[];
   priorityTopics: string[];
 
@@ -56,6 +57,7 @@ export const defaultUserData: UserData = {
   // User preferences
   slackPriorityPeople: [],
   googlePriorityPeople: [],
+  outlookPriorityPeople: [],
   priorityChannels: [],
   priorityTopics: [],
 
