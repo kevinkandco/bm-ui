@@ -15,6 +15,7 @@ module.exports = {
           // maintainer: "Octal infotech",
           // homepage: "https://octalinfotech.com",
           description: "Smart summaries. Focused updates. Less noise.",
+          icon: "public/assets/icon.png",
         },
       },
     },

@@ -12,6 +12,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl",
         primary: "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
+        skyBlue: "bg-gradient-to-r from-[#5865f2] to-[#5865f2] text-white hover:from-[#505bd1] hover:to-[#505bd1] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
         "podia-primary": "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
         "podia-chip": "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl font-normal text-chip rounded-lg",
         "podia-chip-outline": "bg-transparent text-light-gray-text border border-light-gray-text/40 hover:border-light-gray-text/60 transition-all duration-200 font-normal text-chip rounded-lg",

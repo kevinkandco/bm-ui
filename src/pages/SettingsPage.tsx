@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift, Aperture } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Voices from "@/components/settings/modal/Voices";
+import DownloadApp from "@/components/settings/modal/DownloadApp";
 import { useApi } from "@/hooks/useApi";
 import useAuthStore from "@/store/useAuthStore";
 import IntegrationsSection from "@/components/settings/IntegrationsSection";
@@ -132,9 +133,9 @@ const SettingsPage = () => {
       active: activeSection === "privacy"
     },
     {
-      id: "app",
-      icon: Aperture,
-      name: "App Start",
+      id: "download-app",
+      icon: Download,
+      name: "Download App",
     },
     {
       id: "logout",
@@ -163,12 +164,7 @@ const SettingsPage = () => {
         }
     }
 
-    setActiveSection(id)
-
-    if (id === 'app') {
-      const response = await call("get", "/start-app");
-      setActiveSection('profile');
-    }
+    setActiveSection(id);
     
   }, [activeSection, call, gotoLogin, logout, toast]);
 
@@ -376,10 +372,14 @@ const SettingsPage = () => {
         );
       case "voices":
         return <Voices />;
+
+      case "download-app":
+        return <DownloadApp />;
+        
       default:
         return (
           <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-text-primary mb-2">{settingCategories.find(cat => cat.id === activeSection)?.name}</h2>
+            <h2 className="text-xl font-semibold text-text-primary mb-2">{settingCategories?.find(cat => cat?.id === activeSection)?.name}</h2>
             <p className="text-text-secondary">This section is coming soon.</p>
           </div>
         );
