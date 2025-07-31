@@ -16,8 +16,9 @@ function createWindow() {
   });
 
   // win.loadURL('http://localhost:8080');
-    const htmlPath = path.join(__dirname, '..', 'main.htm');
-  win.loadFile(htmlPath);
+    const htmlPath = path.join(__dirname, '..', 'app.html');
+    win.loadFile(htmlPath);
+  // win.webContents.openDevTools();
 }
 
 app.setName("Focus Mode");
