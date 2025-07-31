@@ -11,15 +11,28 @@ module.exports = {
       name: "@electron-forge/maker-deb",
       config: {
         options: {
-          maintainer: "Octal infotech",
-          homepage: "https://octalinfotech.com",
-          description: "A modern Electron app built with React and Vite.",
+          name: "Brief Me",
+          // maintainer: "Octal infotech",
+          // homepage: "https://octalinfotech.com",
+          description: "Smart summaries. Focused updates. Less noise.",
         },
       },
     },
     {
       name: "@electron-forge/maker-squirrel",
       config: {},
+    },
+    {
+      name: "@electron-forge/maker-dmg",
+      config: {
+        name: "Brief Me",
+        title: "Brief Me Installer",
+        description: "Smart summaries. Focused updates. Less noise.",
+        icon: "public/lovable-uploads/logo_resize.ico", // optional: provide .icns icon for mac
+        // background:
+        //   "public/lovable-uploads/10c02016-8844-4312-a961-c0bfeb309800.png", // optional: background image for the DMG
+        overwrite: true,
+      },
     },
     // {
     //   name: "@electron-forge/maker-zip",
