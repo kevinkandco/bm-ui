@@ -226,9 +226,9 @@ const IntegrationsStep = ({
 
     const openAuthUrl = (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=onboarding`,
-        google: `${REDIRECT_URL}/google/auth?redirectURL=onboarding`,
-        calendar: `${REDIRECT_URL}/calendar/auth`,
+        slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=onboarding&user_id=${user?.id}`,
+        google: `${REDIRECT_URL}/google/auth?redirectURL=onboarding&user_id=${user?.id}`,
+        calendar: `${REDIRECT_URL}/calendar/auth&user_id=${user?.id}`,
         outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=onboarding&user_id=${user?.id}`,
       };
       window.open(urls[provider], "_self");

@@ -118,11 +118,11 @@ export const useIntegrationsState = () => {
   const addAccount = useCallback(async (provider: string, type: 'input' | 'output' = 'input') => {
     const openAuthUrl = async (provider: string) => {
       const urls: Record<string, string> = {
-        slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=dashboard/settings`,
-        google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings`,
-        calendar: `${REDIRECT_URL}/calendar/auth`, // Add correct URLs as needed
+        slack: `${REDIRECT_URL}/auth/redirect/slack?redirectURL=dashboard/settings&user_id=${user?.id}`,
+        google: `${REDIRECT_URL}/google/auth?redirectURL=dashboard/settings&user_id=${user?.id}`,
+        calendar: `${REDIRECT_URL}/calendar/auth&user_id=${user?.id}`, // Add correct URLs as needed
         outlook: `${REDIRECT_URL}/auth/redirect/outlook?redirectURL=dashboard/settings&user_id=${user?.id}`,  
-        asana: `${REDIRECT_URL}/asana/auth?redirectURL=dashboard/settings`,
+        asana: `${REDIRECT_URL}/asana/auth?redirectURL=dashboard/settings&user_id=${user?.id}`,
       };
       window.open(urls[provider], "_self");
     };
