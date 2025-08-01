@@ -382,7 +382,8 @@ const BriefDetail = () => {
   const getPlatformIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case "gmail": return "G";
-      default: return platform.charAt(0);
+      case "slack": return "S";
+      default: return platform.charAt(0).toUpperCase();
     }
   };
 
@@ -803,28 +804,52 @@ const BriefDetail = () => {
                     <TableHeader>
                       <TableRow className="border-white/10">
                         <TableHead className="text-text-secondary">Platform</TableHead>
+                        <TableHead className="text-text-secondary">Priority</TableHead>
                         <TableHead className="text-text-secondary">Message</TableHead>
                         <TableHead className="text-text-secondary">Sender</TableHead>
                         <TableHead className="text-text-secondary">Time</TableHead>
-                        <TableHead className="text-text-secondary">Priority</TableHead>
+                        <TableHead className="text-text-secondary">Action Menu</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {messages?.map((message) => (
                         <TableRow key={message.id} className="border-white/10 hover:bg-white/5">
                           <TableCell>
-                            <div onClick={() => message.redirect_link && window.open(message.redirect_link, '_blank')} className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium cursor-pointer">
-                              {getPlatformIcon(message.platform)}
-                            </div>
+                            <TooltipProvider> 
+                              <Tooltip delayDuration={100}>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center justify-center w-8 h-8 rounded bg-white/10 text-sm font-medium">
+                                    {getPlatformIcon(message.platform)}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent side="right" className="capitalize">
+                                  {message.platform}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </TableCell>
-                          <TableCell className="text-text-primary break-all">{message.message}</TableCell>
-                          <TableCell className="text-text-secondary break-all">{message.sender}</TableCell>
-                          <TableCell className="text-text-secondary break-all">{message.time}</TableCell>
                           <TableCell>
                             <Badge className={`text-xs border capitalize ${getBadgeColor(message.priority)}`}>
                               {message.priority}
                             </Badge>
                           </TableCell>
+                          <TableCell className="text-text-primary break-all">{message.message}</TableCell>
+                          <TableCell className="text-text-secondary break-all">{message.sender}</TableCell>
+                          <TableCell className="text-text-secondary break-all">{message.time}</TableCell>
+                          <TableCell className="px-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(message.redirect_link, '_blank')
+                              }}
+                              className="text-xs px-2 py-1 h-auto ml-2"
+                            >
+                              {message.platform === 'slack' ? <Slack className="h-3 w-3" /> : <Mail className="h-3 w-3" />}
+                              Open in {message.platform === 'slack' ? 'Slack' : message.platform === 'gmail' ? 'Email' : 'Slack'}
+                            </Button>
+                        </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
