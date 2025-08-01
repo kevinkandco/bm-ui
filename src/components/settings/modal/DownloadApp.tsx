@@ -66,17 +66,18 @@ const DownloadApp = () => {
 				Download Desktop App
 			</h2>
 			<div className="w-full flex flex-col justify-center items-center">
-				<div className="w-[470px] flex flex-col items-center mt-10">
+				<div className="w-[500px] flex flex-col items-center mt-10">
 					<img
 						src="/lovable-uploads/10c02016-8844-4312-a961-c0bfeb309800.png"
 						className="w-36 rounded-3xl mb-4"
 					/>
 					<h1 className="text-5xl font-semibold text-text-primary my-3">
-						Brief Me desktop app
+						Brief Me Desktop App
 					</h1>
 					<h4 className="mt-3 text-lg font-medium text-text-secondary text-center">
-						Get the ultimate Framer experience, including powerful features like
-						image exporting, by downloading the Framer desktop app.
+						Get intelligent briefings, meeting summaries, and productivity tools
+						— all in one place. Download the Brief Me desktop app for a faster,
+						smarter workflow.
 					</h4>
 
 					<div className="w-full mt-4 flex flex-col items-center gap-5 md:flex-row md:justify-center md:gap-3">
@@ -137,16 +138,15 @@ const DownloadApp = () => {
 				</div>
 			</div>
 			<div className="py-6">
-				<h3 className="text-lg font-semibold text-text-primary">Login Info</h3>
+				<h3 className="text-lg font-semibold text-text-primary">
+					Your Login Info
+				</h3>
 				<div className="mt-4">
 					<p>Email: {user?.email}</p>
 				</div>
 				<div className="mt-4">
-					<label
-						htmlFor="email"
-						className="block text-sm font-medium mb-1"
-					>
-						password
+					<label htmlFor="email" className="block text-sm font-medium mb-1">
+						Password
 					</label>
 					<div className="flex items-center gap-2">
 						<div className="relative w-full">
@@ -162,7 +162,7 @@ const DownloadApp = () => {
 								name="password"
 								value={password}
 								disabled={!password}
-								className={`w-full pl-10 pr-10 p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent ${
+								className={`w-full pl-10 pr-10 p-1.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent ${
 									!password && "opacity-50 cursor-not-allowed"
 								}`}
 								placeholder="Your password will show here"
@@ -201,11 +201,11 @@ const DownloadApp = () => {
 						</div>
 						<Button
 							variant="outline"
-							className="py-5 px-4 flex items-center gap-2"
+							className="py-1.5 px-4 flex items-center gap-2"
 							onClick={handleGeneratePassword}
 						>
 							{loading ? (
-							<Loader className="animate-spin text-white" />
+								<Loader className="animate-spin text-white" />
 							) : password ? (
 								<RefreshCcw className="h-5 w-5 text-accent-primary" />
 							) : (
