@@ -1,7 +1,28 @@
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { useApi } from "@/hooks/useApi";
+import useAuthStore from "@/store/useAuthStore";
+import {
+	Check,
+	Copy,
+	Eye,
+	EyeOff,
+	KeyRound,
+	Loader,
+	Lock,
+	Mail,
+	RefreshCcw,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const DownloadApp = () => {
+	const user = useAuthStore((state) => state.user);
+	const { call } = useApi();
+	const [loading, setLoading] = useState(false);
+	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
+	const [copied, setCopied] = useState(false);
+
 	const handleDownload = (filePath: string) => {
 		const link = document.createElement("a");
 		link.href = filePath;
@@ -14,26 +35,51 @@ const DownloadApp = () => {
 		document.body.removeChild(link);
 	};
 
+	const handleGeneratePassword = async () => {
+		try {
+			setLoading(true);
+
+			const response = await call("get", "/settings/generate-password");
+			if (!response) {
+				setLoading(false);
+				return;
+			}
+
+			setPassword(response.data);
+			setLoading(false);
+		} catch (err) {
+			setLoading(false);
+			console.log(err);
+			toast.error(err.data.message || "Failed to generate password");
+		}
+	};
+
+	const handleCopy = () => {
+		navigator.clipboard.writeText(password);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	};
+
 	return (
 		<div className="p-6 md:col-span-3">
 			<h2 className="mb-6 text-xl font-semibold text-text-primary">
-				Download Your App
+				Download Desktop App
 			</h2>
-			<div className="w-full flex flex-col justify-center items-center mt-3">
-				<div className="w-[410px] flex flex-col items-center mt-10">
+			<div className="w-full flex flex-col justify-center items-center">
+				<div className="w-[470px] flex flex-col items-center mt-10">
 					<img
 						src="/lovable-uploads/10c02016-8844-4312-a961-c0bfeb309800.png"
 						className="w-36 rounded-3xl mb-4"
 					/>
 					<h1 className="text-5xl font-semibold text-text-primary my-3">
-						Brief desktop app
+						Brief Me desktop app
 					</h1>
 					<h4 className="mt-3 text-lg font-medium text-text-secondary text-center">
 						Get the ultimate Framer experience, including powerful features like
 						image exporting, by downloading the Framer desktop app.
 					</h4>
 
-					<div className="w-full mt-3 flex flex-col items-center gap-5 md:flex-row md:justify-between md:gap-0">
+					<div className="w-full mt-4 flex flex-col items-center gap-5 md:flex-row md:justify-center md:gap-3">
 						<Button
 							variant="default"
 							className="px-6 py-3 text-white transition-all rounded-xl shadow-sm hover:shadow-md"
@@ -86,6 +132,86 @@ const DownloadApp = () => {
 								</svg>
 							</div>
 							Download for Linux
+						</Button>
+					</div>
+				</div>
+			</div>
+			<div className="py-6">
+				<h3 className="text-lg font-semibold text-text-primary">Login Info</h3>
+				<div className="mt-4">
+					<p>Email: {user?.email}</p>
+				</div>
+				<div className="mt-4">
+					<label
+						htmlFor="email"
+						className="block text-sm font-medium mb-1"
+					>
+						password
+					</label>
+					<div className="flex items-center gap-2">
+						<div className="relative w-full">
+							<span
+								className={`absolute left-3 top-1/2 -translate-y-1/2 text-text-primary ${
+									!password && "opacity-50"
+								}`}
+							>
+								<Lock size={18} />
+							</span>
+							<input
+								type={showPassword ? "text" : "password"}
+								name="password"
+								value={password}
+								disabled={!password}
+								className={`w-full pl-10 pr-10 p-2.5 rounded-lg bg-white/10 border border-white/20 text-text-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent ${
+									!password && "opacity-50 cursor-not-allowed"
+								}`}
+								placeholder="Your password will show here"
+							/>
+							{password && (
+								<button
+									type="button"
+									onClick={() => setShowPassword((prev) => !prev)}
+									className="absolute right-10 top-1/2 -translate-y-1/2 text-text-primary hover:text-accent-primary"
+								>
+									{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+								</button>
+							)}
+
+							{password && (
+								<button
+									type="button"
+									onClick={handleCopy}
+									className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5"
+									aria-label={copied ? "Copied" : "Copy to clipboard"}
+								>
+									<span className="sr-only">{copied ? "Copied" : "Copy"}</span>
+
+									<Copy
+										className={`h-5 w-5 transition-all duration-300 text-text-primary ${
+											copied ? "scale-0" : "scale-100"
+										}`}
+									/>
+									<Check
+										className={`absolute inset-0 m-auto h-5 w-5 transition-all duration-300 text-green-400 ${
+											copied ? "scale-100" : "scale-0"
+										}`}
+									/>
+								</button>
+							)}
+						</div>
+						<Button
+							variant="outline"
+							className="py-5 px-4 flex items-center gap-2"
+							onClick={handleGeneratePassword}
+						>
+							{loading ? (
+							<Loader className="animate-spin text-white" />
+							) : password ? (
+								<RefreshCcw className="h-5 w-5 text-accent-primary" />
+							) : (
+								<KeyRound className="h-5 w-5 text-accent-primary" />
+							)}
+							{password ? "Re-generate" : "Generate"} Password
 						</Button>
 					</div>
 				</div>
