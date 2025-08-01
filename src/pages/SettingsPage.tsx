@@ -97,6 +97,12 @@ const SettingsPage = () => {
       active: activeSection === "brief-config"
     },
     {
+      id: "download-app",
+      icon: Download,
+      name: "Download App",
+      active: activeSection === "download-app"
+    },
+    {
       id: "feedback",
       icon: Brain,
       name: "Feedback & Training",
@@ -131,11 +137,6 @@ const SettingsPage = () => {
       icon: Shield,
       name: "Privacy & Security",
       active: activeSection === "privacy"
-    },
-    {
-      id: "download-app",
-      icon: Download,
-      name: "Download App",
     },
     {
       id: "logout",
