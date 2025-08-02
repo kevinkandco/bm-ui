@@ -11,6 +11,7 @@ import { useIsMobile } from "./hooks/use-mobile";
 import { onMessageListener } from "./firebase/firebase";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
   return lazy(() =>
@@ -40,6 +41,12 @@ const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
 const MacPage = lazyImport(() => import("./pages/MacPage"));
 const BriefDetail = lazyImport(() => import("./pages/BriefDetail"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
+// Admin Pages
+const AdminLogin = lazyImport(() => import("./pages/admin/Login"));
+const DashboardAdmin = lazyImport(() => import("./pages/admin/Dashboard"));
+const UsersAdmin = lazyImport(() => import("./pages/admin/Users"));
+const PlansAdmin = lazyImport(() => import("./pages/admin/Plans"));
+const InvoicesAdmin = lazyImport(() => import("./pages/admin/Invoices"));
 
 // Create QueryClient with optimized settings
 const queryClient = new QueryClient({
@@ -125,6 +132,18 @@ const App = () => {
                           <Route path="/dashboard/meetings" element={<MeetingsList />} />
                           <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
                           <Route path="/dashboard/settings" element={<SettingsPage />} />
+                    </Route>
+                    <Route element={<AdminProtectedRoute element="unprotected" />}>
+                      <Route path="/admin/login" element={<AdminLogin />} />
+                    </Route>
+                    <Route element={<AdminProtectedRoute element="protected" />}>
+                      <Route path="admin">
+                        <Route index element={<DashboardAdmin />} />
+                        <Route path="dashboard" element={<DashboardAdmin />} />
+                        <Route path="users" element={<UsersAdmin />} />
+                        <Route path="plans" element={<PlansAdmin />} />
+                        <Route path="invoices" element={<InvoicesAdmin />} />
+                      </Route>
                     </Route>
                     <Route path="/mac" element={<MacRouteGuard />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
