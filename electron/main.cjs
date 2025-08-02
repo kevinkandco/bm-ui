@@ -16,7 +16,7 @@ function createWindow() {
   });
 
   // win.loadURL('http://localhost:8080');
-    const htmlPath = path.join(__dirname, '..', 'app.html');
+    const htmlPath = path.join(__dirname, '..', 'appLogin.html');
     win.loadFile(htmlPath);
   // win.webContents.openDevTools();
 }

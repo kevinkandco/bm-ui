@@ -54,11 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     let payload = {
       status: status.toLowerCase(),
-      user_id: userId,
+      user_id: user?.id,
     };
 
     try {
-      const response = await fetch(`${BASE_URL}/slack-status/update`, {
+      const response = await fetch(`${BASE_URL}/electron/slack-status/update`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

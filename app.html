@@ -11,6 +11,13 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
     </style>
+
+    <script>
+        // Redirect to React login if not in Electron
+        if (!window.electronAPI) {
+            window.location.href = window.location.origin;
+        }
+    </script>
 </head>
 
 <body class="min-h-screen bg-gradient-to-br bg-[#6359af] text-white relative font-sans">
@@ -190,14 +197,19 @@
             Feedback
         </button>
     </div>
-    
-    <div id="toast" class="hidden fixed top-6 right-6 w-96 bg-gray-900 text-white rounded-xl shadow-lg z-50 animate-fade-in-down">
-       <div class="flex justify-end">
-         <button onclick="hideToast()" class="hover:text-white mr-5">✖</button>
-       </div>
-        <div id="messageList"
-            class="flex flex-col gap-10 max-h-[27rem] overflow-scroll">
-            
+
+    <div id="toast"
+        class="hidden fixed top-6 right-6 w-96 bg-gray-900 text-white rounded-xl shadow-lg z-50 animate-fade-in-down">
+        <div class="flex justify-end">
+            <button onclick="hideToast()" class="hover:text-white mr-5">✖</button>
+        </div>
+        <div id="messageList" class="flex flex-col gap-10 max-h-[27rem] overflow-scroll"> </div>
+        <div id="emptyState" class="hidden p-6 text-center">
+            <div class="text-gray-400 mb-2">
+                ⚡
+            </div>
+            <h3 class="font-medium text-gray-200">No emergency messages</h3>
+            <p class="text-sm text-gray-400 mt-1">You're all caught up!</p>
         </div>
     </div>
 
@@ -219,7 +231,15 @@
         }
     </style>
 
-    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token || token.length < 30) {
+                localStorage.removeItem('token');
+                window.location.href = 'AppLogin.html';
+            }
+        });
+    </script>
     <script src="js/helper.js"></script>
     <script src="js/slackStatus.js"></script>
 
@@ -317,7 +337,7 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             try {
-                const response = await fetch(`${BASE_URL}/emergency-messages`, {
+                const response = await fetch(`${BASE_URL}/electron/emergency-messages`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -331,16 +351,23 @@
                 }
 
                 const emergencyMessages = await response.json();
+                const messageList = document.getElementById("messageList");
+                const emptyState = document.getElementById("emptyState");
+
+                // Clear previous content
+                messageList.innerHTML = '';
+                emptyState.classList.add('hidden');
 
                 if (emergencyMessages?.data?.length > 0) {
-                    const messageList = document.getElementById("messageList");
-
-                    messageList.innerHTML = emergencyMessages?.data?.map(createMessageItem).join("");
-                    showToast();
+                    messageList.innerHTML = emergencyMessages.data.map(createMessageItem).join("");
+                } else {
+                    emptyState.classList.remove('hidden');
                 }
 
+                showToast();
+
             } catch (err) {
-                alert("Error:\n" + JSON.stringify(err, null, 2));
+                console.log("Error fetching emergency messages:", err);
             }
         });
 
