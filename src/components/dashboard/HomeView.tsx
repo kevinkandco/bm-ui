@@ -462,10 +462,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <Table>
                           <TableHeader>
                             <TableRow className="border-border-subtle hover:bg-transparent">
-                              <TableHead className="text-text-secondary font-medium text-xs">Platform</TableHead>
-                              <TableHead className="text-text-secondary font-medium text-xs">Priority</TableHead>
+                              <TableHead className="text-text-secondary font-medium text-xs w-20">Priority</TableHead>
                               <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
-                              <TableHead className="text-text-secondary font-medium text-xs">Time</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -484,21 +482,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           });
                           setRightPanelCollapsed(false);
                         }}>
-                                <TableCell className="w-8">
-                                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-raised/50 border border-border-subtle">
-                                    <span className="text-xs font-medium text-text-primary">{item.platform}</span>
-                                  </div>
-                                </TableCell>
-                                <TableCell className="w-16">
+                                <TableCell className="w-20">
                                   <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
                                 </TableCell>
-                                <TableCell className="max-w-32">
+                                <TableCell className="pr-4">
                                   <p className="text-xs text-text-primary line-clamp-2 leading-relaxed">
                                     {item.message}
                                   </p>
-                                </TableCell>
-                                <TableCell className="text-xs text-text-secondary">
-                                  {item.time}
                                 </TableCell>
                               </TableRow>)}
                           </TableBody>
