@@ -165,11 +165,13 @@ const HomeView = ({
       <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Left: Greeting */}
+            {/* Left: Brief Me Logo */}
             <div>
-              <h1 className="text-xl font-semibold text-text-primary">
-                Good morning, Alex
-              </h1>
+              <img 
+                src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" 
+                alt="Brief Me" 
+                className="h-8 w-auto"
+              />
             </div>
 
             {/* Center: Empty (reserved space) */}
@@ -223,7 +225,11 @@ const HomeView = ({
               {!leftPanelCollapsed ? <div className="h-full flex flex-col">
                   {/* Latest Brief Section */}
                   <div className="p-4">
-                    <h1 className="text-lg font-medium text-text-primary mb-4">Good morning, Alex</h1>
+                    <img 
+                      src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" 
+                      alt="Brief Me" 
+                      className="h-6 w-auto mb-4"
+                    />
                     <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                   </div>
                   
