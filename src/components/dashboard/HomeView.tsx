@@ -484,7 +484,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {!leftPanelCollapsed ? <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="h-full flex flex-col">
               {/* Header with collapse button */}
-              <div className="p-4 bg-surface-raised/20 rounded-lg border border-border-subtle/50">
+              <div className="p-4">
                 <div className="flex items-center justify-between mb-3 mt-[30px]">
                   <h2 className="text-lg font-medium text-text-primary">Latest Brief</h2>
                   <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
