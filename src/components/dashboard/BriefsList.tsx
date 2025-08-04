@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Settings, FileText } from 'lucide-react';
+import { Play, Settings, Rss } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -18,13 +18,13 @@ interface Brief {
 interface BriefsListProps {
   onPlayBrief: (briefId: number) => void;
   onSettingsClick: () => void;
-  onTranscriptClick?: () => void;
+  onRssClick?: () => void;
   playingBrief?: number | null;
   selectedBrief?: number | null;
   onBriefSelect: (briefId: number) => void;
 }
 
-const BriefsList = ({ onPlayBrief, onSettingsClick, onTranscriptClick, playingBrief, selectedBrief, onBriefSelect }: BriefsListProps) => {
+const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, selectedBrief, onBriefSelect }: BriefsListProps) => {
   const briefs: Brief[] = [
     {
       id: 1,
@@ -72,15 +72,15 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onTranscriptClick, playingBr
           <h2 className="text-lg font-medium text-text-secondary">Calendar</h2>
         </div>
         <div className="flex items-center gap-2">
-          {onTranscriptClick && (
+          {onRssClick && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={onTranscriptClick}
+              onClick={onRssClick}
               className="h-8 w-8 p-0"
-              title="View transcript"
+              title="Open podcast RSS feed"
             >
-              <FileText className="h-4 w-4" />
+              <Rss className="h-4 w-4" />
             </Button>
           )}
           <Button

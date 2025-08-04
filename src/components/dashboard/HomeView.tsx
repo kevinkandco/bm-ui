@@ -153,8 +153,9 @@ const HomeView = ({
       </Badge>;
   };
   
-  const handleTranscriptClick = useCallback(() => {
-    setShowTranscriptModal(true);
+  const handleRssClick = useCallback(() => {
+    // Open podcast RSS feed
+    window.open('https://feeds.example.com/briefme-podcast', '_blank');
   }, []);
   // Mobile fallback - return current mobile layout for now
   if (isMobile) {
@@ -238,7 +239,7 @@ const HomeView = ({
                     <BriefsList 
                       onPlayBrief={handlePlayBrief} 
                       onSettingsClick={() => navigate("/dashboard/settings")} 
-                      onTranscriptClick={handleTranscriptClick}
+                      onRssClick={handleRssClick}
                       playingBrief={playingBrief} 
                       selectedBrief={selectedBrief} 
                       onBriefSelect={handleBriefSelect} 
