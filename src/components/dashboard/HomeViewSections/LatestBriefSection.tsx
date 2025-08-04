@@ -57,31 +57,31 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
         </div>
 
         {isUpcomingExpanded && (
-          <div className="animate-fade-in p-4 rounded-lg border border-border-subtle bg-surface-raised/30">
+          <div className="animate-fade-in p-3 rounded-lg border border-border-subtle bg-surface-raised/30">
             <div className="mb-3">
-              <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-accent-primary/20 text-accent-primary mb-2">
+              <div className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-accent-primary/20 text-accent-primary mb-2">
                 Coming Soon
               </div>
-              <h3 className="text-lg font-semibold text-text-primary mb-1">Daily Brief</h3>
-              <p className="text-sm text-text-secondary">
+              <h4 className="text-sm font-semibold text-text-primary mb-1">Daily Brief</h4>
+              <p className="text-xs text-text-secondary">
                 Scheduled for Tomorrow at 7:30 AM
               </p>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Button 
                 variant="outline" 
                 size="sm"
-                className="flex items-center gap-2"
+                className="flex items-center gap-1 text-xs h-7 px-2"
               >
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-3 w-3" />
                 Update Schedule
               </Button>
               <Button 
                 size="sm"
-                className="flex items-center gap-2"
+                className="flex items-center gap-1 text-xs h-7 px-2"
               >
-                <Zap className="h-4 w-4" />
+                <Zap className="h-3 w-3" />
                 Get Briefed Now
               </Button>
             </div>
