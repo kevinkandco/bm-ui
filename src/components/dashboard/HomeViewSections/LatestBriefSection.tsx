@@ -21,8 +21,8 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
     },
     {
       id: 2,
-      title: "Weekly Summary",
-      scheduledTime: "Friday at 5:00 PM",
+      title: "Evening Summary",
+      scheduledTime: "Tomorrow at 6:00 PM",
       isComingSoon: true
     }
   ];
@@ -31,7 +31,7 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
     <div className="space-y-3">
       <div 
         className={cn(
-          "p-4 rounded-lg hover:bg-[hsl(190,28%,22%)]/40 transition-colors cursor-pointer",
+          "p-4 hover:bg-[hsl(190,28%,22%)]/40 transition-colors cursor-pointer",
           isSelected ? "bg-[hsl(190,28%,22%)]/30" : "bg-[hsl(190,28%,22%)]/20"
         )}
         onClick={onClick}
@@ -101,9 +101,9 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
                 <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-text-secondary/20 text-text-secondary/70 mb-1.5">
                   Coming Soon
                 </div>
-                <h4 className="text-xs font-medium text-text-secondary mb-0.5">Weekly Summary</h4>
+                <h4 className="text-xs font-medium text-text-secondary mb-0.5">Evening Summary</h4>
                 <p className="text-xs text-text-secondary/70">
-                  Scheduled for Friday at 5:00 PM
+                  Scheduled for Tomorrow at 6:00 PM
                 </p>
               </div>
               
