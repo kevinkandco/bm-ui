@@ -103,7 +103,7 @@ const ActionItemsPanel = ({
     return (
       <div className={cn("h-full flex flex-col", className)}>
         {/* Header */}
-        <div className="p-4 pb-3">
+        <div className="p-4 pb-3 mt-[30px]">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium text-text-primary">Follow-ups</h2>
             <div className="flex items-center gap-2">
@@ -135,7 +135,7 @@ const ActionItemsPanel = ({
   return (
     <div className={cn("h-full flex flex-col", className)}>
       {/* Header */}
-      <div className="p-4 pb-3">
+      <div className="p-4 pb-3 mt-[30px]">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-medium text-text-primary">Follow-ups</h2>
           <div className="flex items-center gap-2">
