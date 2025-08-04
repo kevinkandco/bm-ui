@@ -262,52 +262,74 @@ const HomeView = ({
                 <div className="p-6 h-full overflow-auto">
                   {selectedBrief && (
                     <div className="space-y-6">
+                      {/* Header */}
                       <div>
-                        <h2 className="text-2xl font-bold text-text-primary mb-2">Morning Brief</h2>
-                        <p className="text-sm text-text-secondary">Today, 8:00 AM • Summarizing: 5:00 PM - 7:00 AM</p>
+                        <div className="text-sm text-text-secondary mb-1">Scheduled | 8/4/2025 at 7:00 AM</div>
+                        <h2 className="text-2xl font-bold text-text-primary mb-1">Morning Brief</h2>
+                        <p className="text-sm text-text-secondary">Summarizing 5PM on 8/3/25 to 7AM 8/4/25</p>
                       </div>
 
-                      {/* Audio Header */}
+                      {/* Summary Section with Play Button and Stats */}
                       <div className="bg-surface-raised/50 rounded-lg p-4 border border-border-subtle">
-                        <div className="flex items-center gap-4">
-                          <button 
-                            onClick={() => handlePlayBrief(selectedBrief)}
-                            className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors"
-                          >
-                            {playingBrief === selectedBrief ? 
-                              <Pause className="h-6 w-6 text-accent-primary" /> : 
-                              <Play className="h-6 w-6 text-accent-primary" />
-                            }
-                          </button>
-                          <div>
-                            <h3 className="font-medium text-text-primary">Audio Brief</h3>
-                            <p className="text-sm text-text-secondary">5 minutes • Auto-generated summary</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <button 
+                              onClick={() => handlePlayBrief(selectedBrief)}
+                              className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors"
+                            >
+                              {playingBrief === selectedBrief ? 
+                                <Pause className="h-6 w-6 text-accent-primary" /> : 
+                                <Play className="h-6 w-6 text-accent-primary" />
+                              }
+                            </button>
+                            <div>
+                              <div className="text-sm text-text-secondary">3 mins summarizing: 3 Slack | 28 Emails | 4 Actions</div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-8">
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-text-primary">14</div>
+                              <div className="text-xs text-text-secondary">Interrupts Prevented</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-text-primary">2h 17m</div>
+                              <div className="text-xs text-text-secondary">Focus Gained</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-text-primary">~66</div>
+                              <div className="text-xs text-text-secondary">Time Saved</div>
+                            </div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Brief Content */}
-                      <div className="prose prose-invert max-w-none">
-                        <p className="text-text-secondary leading-relaxed">
-                          This morning's brief covers critical updates from your priority channels. 
-                          Sarah Chen requires urgent approval for the Q3 budget proposal, and there are 
-                          several high-priority items requiring your attention before the team standup at 10 AM.
-                        </p>
-                      </div>
-
-                      {/* Time Saved Stats */}
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-surface-raised/30 rounded-lg p-4">
-                          <div className="text-2xl font-bold text-text-primary">12</div>
-                          <div className="text-sm text-text-secondary">Slack messages</div>
-                        </div>
-                        <div className="bg-surface-raised/30 rounded-lg p-4">
-                          <div className="text-2xl font-bold text-text-primary">5</div>
-                          <div className="text-sm text-text-secondary">Emails</div>
-                        </div>
-                        <div className="bg-surface-raised/30 rounded-lg p-4">
-                          <div className="text-2xl font-bold text-text-primary">33m</div>
-                          <div className="text-sm text-text-secondary">Time saved</div>
+                      {/* Follow ups Section */}
+                      <div>
+                        <h3 className="text-lg font-medium text-text-primary mb-4">Follow ups (8)</h3>
+                        <div className="space-y-3">
+                          {[...Array(8)].map((_, index) => (
+                            <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg border border-border-subtle">
+                              <div className="w-16 text-center">
+                                <span className="text-sm font-medium text-text-primary">High</span>
+                              </div>
+                              <div className="w-20 text-center">
+                                <span className="text-sm text-text-secondary">Decision</span>
+                              </div>
+                              <div className="flex-1">
+                                <span className="text-sm text-text-primary">Review weekly performance report</span>
+                              </div>
+                              <div className="w-32 text-center">
+                                <span className="text-sm text-text-secondary">kevin@uprise.is</span>
+                              </div>
+                              <div className="w-24 text-center">
+                                <span className="text-sm text-accent-primary">add to Asana</span>
+                              </div>
+                              <div className="w-24 text-center">
+                                <span className="text-sm text-accent-primary">Open in Gmail</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
