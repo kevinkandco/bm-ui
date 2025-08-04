@@ -21,7 +21,6 @@ function createWindow() {
   // win.webContents.openDevTools();
 }
 
-app.setName("Focus Mode");
 app.whenReady().then(createWindow);
 
 ipcMain.handle('close-slack', async (event) => {
