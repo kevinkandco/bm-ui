@@ -345,6 +345,12 @@
                     },
                 });
 
+                if (response.status == 500) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = 'appLogin.html';
+                }
+
                 if (!response.ok) {
                     alert("Failed to fetch emergency messages. Status: " + response.status);
                     return;
@@ -363,8 +369,6 @@
                 } else {
                     emptyState.classList.remove('hidden');
                 }
-
-                showToast();
 
             } catch (err) {
                 console.log("Error fetching emergency messages:", err);

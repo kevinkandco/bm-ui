@@ -31,7 +31,7 @@ module.exports = {
         name: "Brief Me",
         title: "Brief Me Installer",
         description: "Smart summaries. Focused updates. Less noise.",
-        icon: "public/assets/icon.icns",
+        icon: "public/assets/mac-logo.icns",
         // background:
         //   "public/lovable-uploads/10c02016-8844-4312-a961-c0bfeb309800.png", // optional: background image for the DMG
         overwrite: true,
