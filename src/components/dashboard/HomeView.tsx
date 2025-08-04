@@ -247,13 +247,80 @@ const HomeView = ({
           </div>
         ) : (
           /* Collapsed Left Panel */
-          <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col items-center">
-            <div className="p-2 flex flex-col items-center mt-[30px]">
+          <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+            <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
+              {/* Expand Button */}
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setLeftPanelCollapsed(false)} 
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 mb-2"
+              >
+                <Calendar className="h-4 w-4" />
+              </Button>
+              
+              {/* Latest Brief Icon */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleBriefSelect(1);
+                  setLeftPanelCollapsed(false);
+                }}
+                className={cn(
+                  "h-8 w-8 p-0",
+                  selectedBrief === 1 ? "bg-accent-primary/20 text-accent-primary" : ""
+                )}
+              >
+                <CheckSquare className="h-4 w-4" />
+              </Button>
+              
+              {/* Recent Briefs Icons */}
+              {recentBriefs.slice(1).map((brief, index) => (
+                <Button
+                  key={brief.id}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    handleBriefSelect(brief.id);
+                    setLeftPanelCollapsed(false);
+                  }}
+                  className={cn(
+                    "h-8 w-8 p-0",
+                    selectedBrief === brief.id ? "bg-accent-primary/20 text-accent-primary" : ""
+                  )}
+                >
+                  <CheckSquare className="h-4 w-4" />
+                </Button>
+              ))}
+              
+              {/* Calendar Events Icons (sample) */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleCalendarSelect("meeting-1");
+                  setLeftPanelCollapsed(false);
+                }}
+                className={cn(
+                  "h-8 w-8 p-0",
+                  selectedCalendarItem === "meeting-1" ? "bg-accent-primary/20 text-accent-primary" : ""
+                )}
+              >
+                <Calendar className="h-4 w-4" />
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleCalendarSelect("meeting-2");
+                  setLeftPanelCollapsed(false);
+                }}
+                className={cn(
+                  "h-8 w-8 p-0",
+                  selectedCalendarItem === "meeting-2" ? "bg-accent-primary/20 text-accent-primary" : ""
+                )}
               >
                 <Calendar className="h-4 w-4" />
               </Button>
