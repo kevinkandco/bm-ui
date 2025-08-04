@@ -82,11 +82,16 @@ const HomeView = ({
 
   // Handlers
   const handlePlayBrief = useCallback((briefId: number) => {
+    console.log('handlePlayBrief called with briefId:', briefId);
+    console.log('current playingBrief:', playingBrief);
+    
     if (playingBrief === briefId) {
       setPlayingBrief(null);
+      console.log('Pausing brief');
       toast({ title: "Brief Paused", description: "Audio playback paused" });
     } else {
       setPlayingBrief(briefId);
+      console.log('Playing brief, new playingBrief should be:', briefId);
       toast({ title: "Playing Brief", description: "Audio playback started" });
     }
   }, [playingBrief, toast]);

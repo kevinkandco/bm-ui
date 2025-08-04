@@ -74,7 +74,12 @@ const AudioPlayer = ({
     window.open('https://feeds.example.com/briefme-podcast', '_blank');
   }, []);
 
-  if (!briefId) return null;
+  if (!briefId) {
+    console.log('AudioPlayer: briefId is null/undefined, not rendering');
+    return null;
+  }
+
+  console.log('AudioPlayer: rendering with briefId:', briefId, 'briefName:', briefName);
 
   return (
     <div className={cn(
