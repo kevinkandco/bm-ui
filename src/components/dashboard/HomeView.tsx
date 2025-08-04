@@ -96,6 +96,83 @@ const HomeView = ({
     scheduledTime: "Today at 12:30 PM"
   };
 
+
+  // Sample follow-ups data in same format as messages
+  const followUps = [
+    {
+      id: 1,
+      platform: "G",
+      priority: "High", 
+      message: "Review weekly performance report",
+      sender: "kevin@uprise.is",
+      time: "12:24 PM",
+      actionType: "Decision"
+    },
+    {
+      id: 2,
+      platform: "G",
+      priority: "High",
+      message: "Schedule follow up with Mike",
+      sender: "mike@company.com", 
+      time: "11:30 AM",
+      actionType: "Action"
+    },
+    {
+      id: 3,
+      platform: "S",
+      priority: "High",
+      message: "Decide on new logo design direction",
+      sender: "Sara Chen",
+      time: "10:15 AM", 
+      actionType: "Decision"
+    },
+    {
+      id: 4,
+      platform: "G",
+      priority: "Medium",
+      message: "Respond to confirm funding details",
+      sender: "investor@vc.com",
+      time: "9:45 AM",
+      actionType: "Decision"
+    },
+    {
+      id: 5,
+      platform: "S", 
+      priority: "Medium",
+      message: "Update project timeline for Q1",
+      sender: "Project Team",
+      time: "8:30 AM",
+      actionType: "Action"
+    },
+    {
+      id: 6,
+      platform: "G",
+      priority: "Low",
+      message: "Review contract terms and conditions",
+      sender: "legal@company.com",
+      time: "Yesterday",
+      actionType: "Deadline"
+    },
+    {
+      id: 7,
+      platform: "G", 
+      priority: "Low",
+      message: "Approve marketing budget allocation",
+      sender: "marketing@company.com",
+      time: "Yesterday",
+      actionType: "Decision"
+    },
+    {
+      id: 8,
+      platform: "S",
+      priority: "Medium",
+      message: "Finalize product roadmap priorities",
+      sender: "Product Team",
+      time: "Yesterday", 
+      actionType: "Action"
+    }
+  ];
+
   // Sample messages data from the brief
   const allMessages = [
     {
@@ -486,76 +563,101 @@ const HomeView = ({
                       </TabsList>
                       
                       <TabsContent value="followups" className="mt-4">
-                        <div className="space-y-3">
-                          {[...Array(8)].map((_, index) => (
-                            <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg">
-                              <div className="w-16 text-center">
-                                <Badge className="bg-transparent border border-orange-500 text-orange-400 text-xs px-2 py-1 rounded-full font-medium">
-                                  High
-                                </Badge>
-                              </div>
-                              <div className="w-20 text-center">
-                                <Badge className="bg-transparent border border-blue-500 text-blue-400 text-xs px-3 py-1 rounded-full font-medium">
-                                  Decision
-                                </Badge>
-                              </div>
-                              <div className="flex-1">
-                                <span className="text-sm text-text-primary">Review weekly performance report</span>
-                              </div>
-                              <div className="w-32 text-center">
-                                <span className="text-sm text-text-secondary">kevin@uprise.is</span>
-                              </div>
-                              <div className="w-28 text-center">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                                >
-                                  <Kanban className="h-3 w-3" />
-                                  Asana
-                                </Button>
-                              </div>
-                              <div className="w-28 text-center">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                                >
-                                  <Mail className="h-3 w-3" />
-                                  Gmail
-                                </Button>
-                              </div>
-                              <div className="flex items-center">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedFollowUp({
-                                      id: index,
-                                      title: "Domain Expiration",
-                                      priority: "High",
-                                      type: "Decision",
-                                      description: "Review weekly performance report",
-                                      sender: "kevin@uprise.is",
-                                      from: "Hover <help@hover.com>",
-                                      subject: "Urgent: Launch Materials Review Needed",
-                                      fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
-                                      relevancy: "Critical - blocking marketing team progress",
-                                      reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-                                      created: "12:24 PM",
-                                      lastActivity: "12:24 PM",
-                                      source: "Gmail",
-                                      due: "2 PM today"
-                                    });
-                                    setShowFollowUpModal(true);
-                                  }}
-                                  className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
-                                >
-                                  <Info className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                          ))}
+                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="border-border-subtle hover:bg-transparent">
+                                <TableHead className="text-text-secondary font-medium">Platform</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Priority</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Message</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Sender</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Time</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Action Menu</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {followUps.map((item) => (
+                                <TableRow key={item.id} className="border-border-subtle hover:bg-surface-raised/20">
+                                  <TableCell className="w-12">
+                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
+                                      <span className="text-xs font-medium text-text-primary">{item.platform}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="w-20">
+                                    <Badge className={cn(
+                                      "bg-transparent text-xs px-2 py-1 rounded-full font-medium border",
+                                      item.priority === "High" 
+                                        ? "border-orange-500 text-orange-400" 
+                                        : item.priority === "Medium"
+                                        ? "border-yellow-500 text-yellow-400"
+                                        : "border-green-500 text-green-400"
+                                    )}>
+                                      {item.priority}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="max-w-md">
+                                    <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
+                                      {item.message}
+                                    </p>
+                                  </TableCell>
+                                  <TableCell className="text-sm text-text-secondary">
+                                    {item.sender}
+                                  </TableCell>
+                                  <TableCell className="text-sm text-text-secondary">
+                                    {item.time}
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex items-center gap-2">
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                      >
+                                        {item.platform === "S" ? (
+                                          <>
+                                            <Calendar className="h-3 w-3" />
+                                            Slack
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Mail className="h-3 w-3" />
+                                            Email
+                                          </>
+                                        )}
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          setSelectedFollowUp({
+                                            id: item.id,
+                                            title: "Domain Expiration",
+                                            priority: item.priority,
+                                            type: item.actionType,
+                                            description: item.message,
+                                            sender: item.sender,
+                                            from: "Hover <help@hover.com>",
+                                            subject: "Urgent: Launch Materials Review Needed",
+                                            fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+                                            relevancy: "Critical - blocking marketing team progress",
+                                            reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+                                            created: "12:24 PM",
+                                            lastActivity: "12:24 PM",
+                                            source: "Gmail",
+                                            due: "2 PM today"
+                                          });
+                                          setShowFollowUpModal(true);
+                                        }}
+                                        className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                                      >
+                                        <Info className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
                         </div>
                       </TabsContent>
                       
