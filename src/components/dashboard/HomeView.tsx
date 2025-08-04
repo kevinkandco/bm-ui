@@ -122,32 +122,16 @@ const HomeView = ({
     setFollowUpsFilter('all');
   }, []);
   const getStatusChip = () => {
-    const configs = {
-      active: {
-        label: "Active",
-        color: "bg-green-500",
-        textColor: "text-green-100"
-      },
-      focus: {
-        label: "Focus",
-        color: "bg-primary-teal",
-        textColor: "text-white"
-      },
-      away: {
-        label: "Away",
-        color: "bg-orange-500",
-        textColor: "text-orange-100"
-      },
-      vacation: {
-        label: "Vacation",
-        color: "bg-purple-500",
-        textColor: "text-purple-100"
-      }
-    };
-    const config = configs[userStatus];
-    return <Badge className={cn("px-2 py-1 text-xs font-medium", config.color, config.textColor)} onClick={onToggleFocusMode}>
-        {config.label}
-      </Badge>;
+    return (
+      <Button 
+        variant="outline" 
+        onClick={onToggleFocusMode}
+        className="px-4 py-2 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-2"
+      >
+        <span>Update Status</span>
+        <ChevronDown className="h-4 w-4" />
+      </Button>
+    );
   };
 
   // Mobile fallback - return current mobile layout for now
