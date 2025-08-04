@@ -613,6 +613,14 @@ const HomeView = ({
                                         size="sm"
                                         className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
                                       >
+                                        <Kanban className="h-3 w-3" />
+                                        Asana
+                                      </Button>
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                      >
                                         {item.platform === "S" ? (
                                           <>
                                             <Calendar className="h-3 w-3" />
@@ -704,23 +712,33 @@ const HomeView = ({
                                     {message.time}
                                   </TableCell>
                                   <TableCell>
-                                    <Button 
-                                      variant="outline" 
-                                      size="sm"
-                                      className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                                    >
-                                      {message.platform === "S" ? (
-                                        <>
-                                          <Calendar className="h-3 w-3" />
-                                          Slack
-                                        </>
-                                      ) : (
-                                        <>
-                                          <Mail className="h-3 w-3" />
-                                          Email
-                                        </>
-                                      )}
-                                    </Button>
+                                    <div className="flex items-center gap-2">
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                      >
+                                        <Kanban className="h-3 w-3" />
+                                        Asana
+                                      </Button>
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                      >
+                                        {message.platform === "S" ? (
+                                          <>
+                                            <Calendar className="h-3 w-3" />
+                                            Slack
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Mail className="h-3 w-3" />
+                                            Email
+                                          </>
+                                        )}
+                                      </Button>
+                                    </div>
                                   </TableCell>
                                 </TableRow>
                               ))}
