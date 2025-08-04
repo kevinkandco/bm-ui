@@ -15,6 +15,14 @@ interface Brief {
   };
 }
 
+interface Meeting {
+  id: number;
+  title: string;
+  time: string;
+  duration: string;
+  isUpcoming?: boolean;
+}
+
 interface BriefsListProps {
   onPlayBrief: (briefId: number) => void;
   onSettingsClick: () => void;
@@ -65,6 +73,40 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, se
     }
   ];
 
+  const meetings: Meeting[] = [
+    {
+      id: 1,
+      title: "Meeting w/Mike",
+      time: "8AM to 9AM",
+      duration: "(1hr)",
+      isUpcoming: true
+    },
+    {
+      id: 2,
+      title: "Meeting w/Mike",
+      time: "8AM to 9AM",
+      duration: "(1hr)"
+    },
+    {
+      id: 3,
+      title: "Meeting w/Mike",
+      time: "8AM to 9AM",
+      duration: "(1hr)"
+    },
+    {
+      id: 4,
+      title: "Meeting w/Mike",
+      time: "8AM to 9AM",
+      duration: "(1hr)"
+    },
+    {
+      id: 5,
+      title: "Meeting w/Mike",
+      time: "8AM to 9AM",
+      duration: "(1hr)"
+    }
+  ];
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
@@ -112,58 +154,102 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, se
         </div>
       </div>
 
-      {/* Briefs List */}
+      {/* Content */}
       <div className="flex-1 overflow-auto">
-        {briefs.map((brief, index) => (
-          <div key={brief.id}>
-            <div 
-              className={cn(
-                "flex items-center gap-3 p-4 hover:bg-surface-raised/20 transition-colors cursor-pointer",
-                selectedBrief === brief.id && "bg-accent-primary/10 border-l-2 border-accent-primary"
-              )}
-              onClick={() => onBriefSelect(brief.id)}
-            >
-              {/* Play Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPlayBrief(brief.id);
-                }}
+        {activeTab === 'briefs' ? (
+          // Briefs List
+          briefs.map((brief, index) => (
+            <div key={brief.id}>
+              <div 
                 className={cn(
-                  "h-8 w-8 p-0 rounded-none bg-transparent hover:bg-surface-raised/20",
-                  playingBrief === brief.id && "text-accent-primary"
+                  "flex items-center gap-3 p-4 hover:bg-surface-raised/20 transition-colors cursor-pointer",
+                  selectedBrief === brief.id && "bg-accent-primary/10 border-l-2 border-accent-primary"
                 )}
+                onClick={() => onBriefSelect(brief.id)}
               >
-                <Play className="h-4 w-4 fill-current" />
-              </Button>
+                {/* Play Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPlayBrief(brief.id);
+                  }}
+                  className={cn(
+                    "h-8 w-8 p-0 rounded-none bg-transparent hover:bg-surface-raised/20",
+                    playingBrief === brief.id && "text-accent-primary"
+                  )}
+                >
+                  <Play className="h-4 w-4 fill-current" />
+                </Button>
 
-              {/* Brief Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-text-primary mb-1">
-                      {brief.title}
-                    </h3>
-                    <p className="text-xs text-text-secondary mb-2">
-                      {brief.scheduledTime}
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      {brief.stats.slack} Slack | {brief.stats.emails} Emails | {brief.stats.actions} Actions
-                    </p>
+                {/* Brief Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base font-semibold text-text-primary mb-1">
+                        {brief.title}
+                      </h3>
+                      <p className="text-xs text-text-secondary mb-2">
+                        {brief.scheduledTime}
+                      </p>
+                      <p className="text-xs text-text-secondary">
+                        {brief.stats.slack} Slack | {brief.stats.emails} Emails | {brief.stats.actions} Actions
+                      </p>
+                    </div>
+                    <span className="text-xs text-text-secondary ml-2 flex-shrink-0">
+                      {brief.timeAgo}
+                    </span>
                   </div>
-                  <span className="text-xs text-text-secondary ml-2 flex-shrink-0">
-                    {brief.timeAgo}
-                  </span>
                 </div>
               </div>
+              {index < briefs.length - 1 && (
+                <div className="mx-4 border-b border-border-subtle" />
+              )}
             </div>
-            {index < briefs.length - 1 && (
-              <div className="mx-4 border-b border-border-subtle" />
-            )}
-          </div>
-        ))}
+          ))
+        ) : (
+          // Calendar List
+          meetings.map((meeting, index) => (
+            <div key={meeting.id}>
+              <div className="p-4">
+                {meeting.isUpcoming && (
+                  <div className="text-xs text-text-secondary mb-2">Upcoming</div>
+                )}
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-text-primary mb-1">
+                      {meeting.title}
+                    </h3>
+                    <p className="text-sm text-text-secondary">
+                      {meeting.time} {meeting.duration}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-text-secondary hover:text-text-primary"
+                    >
+                      Record
+                    </Button>
+                    <span className="text-text-secondary">|</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-text-secondary hover:text-text-primary"
+                    >
+                      Join
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              {index < meetings.length - 1 && (
+                <div className="mx-4 border-b border-border-subtle" />
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
