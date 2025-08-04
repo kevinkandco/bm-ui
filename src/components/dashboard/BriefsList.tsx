@@ -45,29 +45,29 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, se
     },
     {
       id: 2,
-      title: "Morning Brief",
-      scheduledTime: "Scheduled for 8/3/2025 at 7:00 AM",
+      title: "Midday Brief",
+      scheduledTime: "Scheduled for 8/3/2025 at 12:00 PM",
       timeAgo: "1d",
       stats: { slack: 5, emails: 32, actions: 6 }
     },
     {
       id: 3,
-      title: "Morning Brief",
-      scheduledTime: "Scheduled for 8/2/2025 at 7:00 AM",
+      title: "Evening Brief",
+      scheduledTime: "Scheduled for 8/2/2025 at 6:00 PM",
       timeAgo: "2d",
       stats: { slack: 2, emails: 15, actions: 3 }
     },
     {
       id: 4,
-      title: "Morning Brief",
-      scheduledTime: "Scheduled for 8/1/2025 at 7:00 AM",
+      title: "Ad Hoc Brief",
+      scheduledTime: "Triggered by urgent messages",
       timeAgo: "3d",
       stats: { slack: 7, emails: 41, actions: 8 }
     },
     {
       id: 5,
-      title: "Morning Brief",
-      scheduledTime: "Scheduled for 7/31/2025 at 7:00 AM",
+      title: "Weekly Summary",
+      scheduledTime: "Scheduled for 7/31/2025 at 5:00 PM",
       timeAgo: "4d",
       stats: { slack: 4, emails: 23, actions: 5 }
     }
