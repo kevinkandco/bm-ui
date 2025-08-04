@@ -66,6 +66,7 @@ const HomeView = ({
   const [priorityChangeData, setPriorityChangeData] = useState<any>(null);
   const [snoozeReason, setSnoozeReason] = useState("message");
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
+  const [selectedTranscript, setSelectedTranscript] = useState<any>(null);
 
   // Sample data
   const recentBriefs = [{
@@ -243,8 +244,13 @@ const HomeView = ({
   const handlePlayBrief = useCallback((briefId: number) => {
     console.log('handlePlayBrief called with briefId:', briefId);
     console.log('current playingBrief:', playingBrief);
+    
+    // Clear any selected message when showing transcript
+    setSelectedMessage(null);
+    
     if (playingBrief === briefId) {
       setPlayingBrief(null);
+      setSelectedTranscript(null);
       console.log('Pausing brief');
       toast({
         title: "Brief Paused",
@@ -252,13 +258,52 @@ const HomeView = ({
       });
     } else {
       setPlayingBrief(briefId);
+      // Set transcript data
+      const brief = recentBriefs.find(b => b.id === briefId);
+      setSelectedTranscript({
+        id: briefId,
+        title: brief?.name || "Morning Brief",
+        timeRange: brief?.timeRange || "5:00 AM - 8:00 AM",
+        transcript: `Welcome to your Morning Brief for August 4th, 2025. I've analyzed your messages from 5:00 PM yesterday to 7:00 AM this morning.
+
+Here's what happened overnight:
+
+**Priority Messages:**
+• Betterment sent confirmation about your automatic $1,500 deposit scheduled for today
+• Hover notified you that your domain 'uprise.holdings' expired yesterday - renewal required
+• Vishaitsa Rakesh reached out about a venture studio generalist position
+
+**Team Updates:**
+• Sara Chen needs your input on the new logo design direction
+• Mike is waiting for follow-up scheduling after your last conversation
+• Project team requested timeline updates for Q1 planning
+
+**Action Items Requiring Your Attention:**
+1. Renew the expired domain (due today)
+2. Respond to funding confirmation request
+3. Review weekly performance report from Kevin
+4. Schedule follow-up with Mike
+
+**Focus Metrics:**
+• 14 interrupts prevented overnight
+• 2 hours 17 minutes of focus time preserved
+• Approximately 66 minutes saved through batching
+
+That's your brief for this morning. I've organized your follow-ups in priority order in the right panel.`,
+        summary: `3 mins summarizing: 3 Slack | 28 Emails | 4 Actions`,
+        stats: {
+          interrupts: 14,
+          focusTime: "2h 17m",
+          timeSaved: "~66"
+        }
+      });
       console.log('Playing brief, new playingBrief should be:', briefId);
       toast({
         title: "Playing Brief",
-        description: "Audio playback started"
+        description: "Audio playback started - transcript shown in right panel"
       });
     }
-  }, [playingBrief, toast]);
+  }, [playingBrief, toast, recentBriefs]);
   const handleBriefSelect = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
     setSelectedCalendarItem(null);
@@ -859,6 +904,11 @@ const HomeView = ({
                 onToggleCollapse={() => setRightPanelCollapsed(true)} 
                 selectedMessage={selectedMessage}
                 onCloseMessage={() => setSelectedMessage(null)}
+                selectedTranscript={selectedTranscript}
+                onCloseTranscript={() => {
+                  setSelectedTranscript(null);
+                  setPlayingBrief(null);
+                }}
               />
             </div>
           </div>
