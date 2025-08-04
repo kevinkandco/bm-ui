@@ -444,7 +444,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 
                 {/* Navigation Tabs */}
                 <Tabs value={leftRailTab} onValueChange={value => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-surface-raised/30 p-1 rounded-lg">
+                  <TabsList className="flex w-auto bg-surface-raised/30 p-1 rounded-lg">
                     <TabsTrigger value="briefs" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs">
                       Briefs
                     </TabsTrigger>
