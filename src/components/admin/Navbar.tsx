@@ -31,10 +31,10 @@ const Navbar = ({ currentPage }: { currentPage: NavItemId }) => {
 				</Link>
 
 				<div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-					<div className="flex text-sm bg-gray-800 rounded-full md:me-0">
+					<div className="flex text-sm bg-gray-800 rounded-full md:me-0 hover:bg-gray-700">
 						<img
 							className="w-8 h-8 rounded-full"
-							src="/lovable-uploads/8ea55fb5-fb6e-49d0-881c-5d96263e886d.png"
+							src="/images/default.png"
 							alt="user photo"
 						/>
 					</div>
