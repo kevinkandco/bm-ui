@@ -16,6 +16,7 @@ import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import CalendarSection from "./HomeViewSections/CalendarSection";
 import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
+import AudioPlayer from "./AudioPlayer";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -191,7 +192,7 @@ const HomeView = ({
       </header>
 
       {/* Resizable Three-Column Layout */}
-      <div className="flex-1">
+      <div className={cn("flex-1", playingBrief && "pb-20")}>
         <ResizablePanelGroup direction="horizontal" className="min-h-0">
           {/* Left Panel */}
           <ResizablePanel 
@@ -432,28 +433,12 @@ const HomeView = ({
       </div>
 
       {/* Fixed Audio Player */}
-      {playingBrief && (
-        <div className="fixed bottom-0 left-0 right-0 h-16 bg-surface-raised/90 backdrop-blur-md border-t border-border-subtle">
-          <div className="flex items-center gap-4 px-6 h-full">
-            <button 
-              onClick={() => handlePlayBrief(playingBrief)}
-              className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors"
-            >
-              <Pause className="h-5 w-5 text-accent-primary" />
-            </button>
-            <div className="flex-1">
-              <div className="text-sm font-medium text-text-primary">Morning Brief</div>
-              <div className="text-xs text-text-secondary">2:34 / 5:12</div>
-            </div>
-            <button 
-              onClick={() => setPlayingBrief(null)}
-              className="w-8 h-8 rounded-full hover:bg-surface-raised transition-colors flex items-center justify-center"
-            >
-              <X className="h-4 w-4 text-text-secondary" />
-            </button>
-          </div>
-        </div>
-      )}
+      <AudioPlayer
+        briefId={playingBrief}
+        briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined}
+        briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined}
+        onClose={() => setPlayingBrief(null)}
+      />
 
       {/* Mobile Right Drawer */}
       <Sheet open={showRightDrawer} onOpenChange={setShowRightDrawer}>
