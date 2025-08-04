@@ -37,7 +37,11 @@ interface Meeting {
   suggestedAgenda?: string[];
 }
 
-const CalendarSection = () => {
+interface CalendarSectionProps {
+  onMeetingClick?: (meeting: Meeting) => void;
+}
+
+const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
   const [meetings, setMeetings] = useState<Meeting[]>([
     {
       id: "0",
@@ -234,7 +238,7 @@ const CalendarSection = () => {
             style={{
               background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
             }}
-            onClick={() => openMeetingDetails(nextMeeting)}
+            onClick={() => onMeetingClick ? onMeetingClick(nextMeeting) : openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
               <div className="bg-surface-overlay/50 rounded-xl p-4">
@@ -403,7 +407,7 @@ const CalendarSection = () => {
                         className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
                           isNext ? 'opacity-100' : 'opacity-80'
                         }`}
-                        onClick={() => openMeetingDetails(meeting)}
+                        onClick={() => onMeetingClick ? onMeetingClick(meeting) : openMeetingDetails(meeting)}
                       >
                         {/* Time */}
                         <div className="text-sm text-text-secondary min-w-[100px] font-mono">

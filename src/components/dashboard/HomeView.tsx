@@ -64,6 +64,7 @@ const HomeView = ({
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
   const [selectedTranscript, setSelectedTranscript] = useState<any>(null);
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
+  const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
 
   // Sample data
   const recentBriefs = [{
@@ -313,6 +314,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setRightPanelCollapsed(false);
   }, []);
 
+  // Handler for calendar meeting clicks
+  const handleMeetingClick = useCallback((meeting: any) => {
+    // Show the calendar content in main area
+    setLeftRailTab('calendar');
+    setSelectedCalendarItem(meeting.id);
+    setSelectedBrief(null);
+    setSelectedMeeting(meeting);
+    
+    // Clear other selections
+    setSelectedFollowUpId(null);
+    setSelectedMessage(null);
+    setSelectedTranscript(null);
+    setRightPanelCollapsed(true);
+  }, []);
+
   // Priority change handler
   const handlePriorityChange = useCallback((itemId: number, newPriority: string, oldPriority: string, itemData: any) => {
     setPriorityChangeData({
@@ -480,7 +496,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </TabsContent>
                   
                   <TabsContent value="calendar" className="mt-4 flex-1 min-h-0">
-                    <CalendarSection />
+                    <CalendarSection onMeetingClick={handleMeetingClick} />
                   </TabsContent>
                   
                   <TabsContent value="followups" className="mt-4 flex-1 min-h-0">
@@ -570,6 +586,49 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             `
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
+              {selectedMeeting && <div className="space-y-6">
+                  {/* Meeting Header */}
+                  <div>
+                    <div className="text-sm text-text-secondary mb-1">Meeting | {selectedMeeting.time} • {selectedMeeting.duration}</div>
+                    <h2 className="text-2xl font-bold text-text-primary mb-1">{selectedMeeting.title}</h2>
+                    <p className="text-sm text-text-secondary">{selectedMeeting.aiSummary}</p>
+                  </div>
+
+                  {/* Meeting Details */}
+                  <div className="bg-surface-raised/50 rounded-lg p-4 border border-border-subtle">
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-lg font-medium text-text-primary mb-2">Attendees</h3>
+                        <div className="space-y-2">
+                          {selectedMeeting.attendees?.map((attendee: any, index: number) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-accent-primary/20 flex items-center justify-center">
+                                <span className="text-xs text-accent-primary">{attendee.name.charAt(0)}</span>
+                              </div>
+                              <div>
+                                <p className="text-sm text-text-primary">{attendee.name}</p>
+                                <p className="text-xs text-text-secondary">{attendee.email}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {selectedMeeting.hasProxy && (
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span className="text-sm font-medium text-text-primary">Proxy Enabled</span>
+                          </div>
+                          <p className="text-xs text-text-secondary">
+                            Summary & action items will appear here ≈ 10 min after the call
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>}
+              
               {selectedBrief && <div className="space-y-6">
                   {/* Header */}
                   <div>
