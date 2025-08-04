@@ -23,6 +23,7 @@ import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
 import BriefsList from "./BriefsList";
+import { MessageDetailPanel } from "./MessageDetailPanel";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -64,6 +65,7 @@ const HomeView = ({
   const [showPriorityConfirmModal, setShowPriorityConfirmModal] = useState(false);
   const [priorityChangeData, setPriorityChangeData] = useState<any>(null);
   const [snoozeReason, setSnoozeReason] = useState("message");
+  const [selectedMessage, setSelectedMessage] = useState<any>(null);
 
   // Sample data
   const recentBriefs = [{
@@ -638,7 +640,22 @@ const HomeView = ({
                             </TableHeader>
                             <TableBody>
                               {followUps.map((item) => (
-                                <TableRow key={item.id} className="border-border-subtle hover:bg-surface-raised/20">
+                                <TableRow 
+                                  key={item.id} 
+                                  className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer"
+                                  onClick={() => setSelectedMessage({
+                                    ...item,
+                                    subject: "Follow-up Required",
+                                    fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                                    from: item.sender,
+                                    relevancy: "Requires action from you",
+                                    reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                                    created: item.time,
+                                    lastActivity: item.time,
+                                    source: item.platform === "S" ? "Slack" : "Email",
+                                    due: "End of day"
+                                  })}
+                                >
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
                                       <span className="text-xs font-medium text-text-primary">{item.platform}</span>
@@ -736,7 +753,24 @@ const HomeView = ({
                             </TableHeader>
                             <TableBody>
                               {allMessages.map((message) => (
-                                <TableRow key={message.id} className="border-border-subtle hover:bg-surface-raised/20">
+                                <TableRow 
+                                  key={message.id} 
+                                  className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer"
+                                  onClick={() => setSelectedMessage({
+                                    ...message,
+                                    subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
+                                    fullMessage: message.id === 2 
+                                      ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team`
+                                      : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
+                                    from: message.sender,
+                                    relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
+                                    reasoning: "Flagged based on sender importance and content keywords.",
+                                    created: message.time,
+                                    lastActivity: message.time,
+                                    source: message.platform === "S" ? "Slack" : "Email",
+                                    due: message.priority === "High" ? "Today" : "This week"
+                                  })}
+                                >
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
                                       <span className="text-xs font-medium text-text-primary">{message.platform}</span>
@@ -1043,6 +1077,12 @@ const HomeView = ({
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Message Detail Panel */}
+      <MessageDetailPanel 
+        message={selectedMessage} 
+        onClose={() => setSelectedMessage(null)} 
+      />
     </div>;
 };
 export default React.memo(HomeView);
