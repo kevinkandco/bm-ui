@@ -23,7 +23,6 @@ import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
 import BriefsList from "./BriefsList";
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -105,149 +104,131 @@ const HomeView = ({
     scheduledTime: "Today at 12:30 PM"
   };
 
-
   // Sample follow-ups data in same format as messages
-  const followUps = [
-    {
-      id: 1,
-      platform: "G",
-      priority: "High", 
-      message: "Review weekly performance report",
-      sender: "kevin@uprise.is",
-      time: "12:24 PM",
-      actionType: "Decision"
-    },
-    {
-      id: 2,
-      platform: "G",
-      priority: "High",
-      message: "Schedule follow up with Mike",
-      sender: "mike@company.com", 
-      time: "11:30 AM",
-      actionType: "Action"
-    },
-    {
-      id: 3,
-      platform: "S",
-      priority: "High",
-      message: "Decide on new logo design direction",
-      sender: "Sara Chen",
-      time: "10:15 AM", 
-      actionType: "Decision"
-    },
-    {
-      id: 4,
-      platform: "G",
-      priority: "Medium",
-      message: "Respond to confirm funding details",
-      sender: "investor@vc.com",
-      time: "9:45 AM",
-      actionType: "Decision"
-    },
-    {
-      id: 5,
-      platform: "S", 
-      priority: "Medium",
-      message: "Update project timeline for Q1",
-      sender: "Project Team",
-      time: "8:30 AM",
-      actionType: "Action"
-    },
-    {
-      id: 6,
-      platform: "G",
-      priority: "Low",
-      message: "Review contract terms and conditions",
-      sender: "legal@company.com",
-      time: "Yesterday",
-      actionType: "Deadline"
-    },
-    {
-      id: 7,
-      platform: "G", 
-      priority: "Low",
-      message: "Approve marketing budget allocation",
-      sender: "marketing@company.com",
-      time: "Yesterday",
-      actionType: "Decision"
-    },
-    {
-      id: 8,
-      platform: "S",
-      priority: "Medium",
-      message: "Finalize product roadmap priorities",
-      sender: "Product Team",
-      time: "Yesterday", 
-      actionType: "Action"
-    }
-  ];
+  const followUps = [{
+    id: 1,
+    platform: "G",
+    priority: "High",
+    message: "Review weekly performance report",
+    sender: "kevin@uprise.is",
+    time: "12:24 PM",
+    actionType: "Decision"
+  }, {
+    id: 2,
+    platform: "G",
+    priority: "High",
+    message: "Schedule follow up with Mike",
+    sender: "mike@company.com",
+    time: "11:30 AM",
+    actionType: "Action"
+  }, {
+    id: 3,
+    platform: "S",
+    priority: "High",
+    message: "Decide on new logo design direction",
+    sender: "Sara Chen",
+    time: "10:15 AM",
+    actionType: "Decision"
+  }, {
+    id: 4,
+    platform: "G",
+    priority: "Medium",
+    message: "Respond to confirm funding details",
+    sender: "investor@vc.com",
+    time: "9:45 AM",
+    actionType: "Decision"
+  }, {
+    id: 5,
+    platform: "S",
+    priority: "Medium",
+    message: "Update project timeline for Q1",
+    sender: "Project Team",
+    time: "8:30 AM",
+    actionType: "Action"
+  }, {
+    id: 6,
+    platform: "G",
+    priority: "Low",
+    message: "Review contract terms and conditions",
+    sender: "legal@company.com",
+    time: "Yesterday",
+    actionType: "Deadline"
+  }, {
+    id: 7,
+    platform: "G",
+    priority: "Low",
+    message: "Approve marketing budget allocation",
+    sender: "marketing@company.com",
+    time: "Yesterday",
+    actionType: "Decision"
+  }, {
+    id: 8,
+    platform: "S",
+    priority: "Medium",
+    message: "Finalize product roadmap priorities",
+    sender: "Product Team",
+    time: "Yesterday",
+    actionType: "Action"
+  }];
 
   // Sample messages data from the brief
-  const allMessages = [
-    {
-      id: 1,
-      platform: "G",
-      priority: "High",
-      message: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
-      sender: "Hover <help@hover.com>",
-      time: "12:24 PM",
-      actionType: "Open in Email"
-    },
-    {
-      id: 2,
-      platform: "G", 
-      priority: "High",
-      message: "An automatic deposit of $1,500.00 is scheduled for August 5th, 2025, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.",
-      sender: "Betterment <support@betterment.com>",
-      time: "6:36 PM",
-      actionType: "Open in Email"
-    },
-    {
-      id: 3,
-      platform: "S",
-      priority: "High", 
-      message: "We're looking for a generalist for our venture studio to work as the founder's right-hand person. Please check the job description on LinkedIn and complete the video ask if you apply. Reach out to Vishaitsa Rakesh for any questions.",
-      sender: "Vishaitsa Rakesh",
-      time: "12:22 AM",
-      actionType: "Open in Slack"
-    },
-    {
-      id: 4,
-      platform: "G",
-      priority: "Medium",
-      message: "Your July 2026 statement is available on Betterment. Review updates to their client agreements effective September 1, 2026.",
-      sender: "Betterment Statements <support@betterment.com>",
-      time: "7:22 AM", 
-      actionType: "Open in Email"
-    },
-    {
-      id: 5,
-      platform: "G",
-      priority: "Medium",
-      message: "Lenny's Newsletter featured a tech founder and VC using AI to launch a brick-and-mortar business. This episode highlights innovative uses of AI in creating business plans and categorizing data.",
-      sender: '"Lenny\'s Newsletter" <lenny.how-i-ai@substack.com>',
-      time: "4:33 PM",
-      actionType: "Open in Email"
-    },
-    {
-      id: 6,
-      platform: "G",
-      priority: "Medium",
-      message: "Buffer sent a weekly performance report for your post. Review the details to analyze the post's performance metrics.",
-      sender: "The Buffer Team <hello@buffer.com>",
-      time: "4:43 PM",
-      actionType: "Open in Email"
-    }
-  ];
+  const allMessages = [{
+    id: 1,
+    platform: "G",
+    priority: "High",
+    message: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+    sender: "Hover <help@hover.com>",
+    time: "12:24 PM",
+    actionType: "Open in Email"
+  }, {
+    id: 2,
+    platform: "G",
+    priority: "High",
+    message: "An automatic deposit of $1,500.00 is scheduled for August 5th, 2025, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.",
+    sender: "Betterment <support@betterment.com>",
+    time: "6:36 PM",
+    actionType: "Open in Email"
+  }, {
+    id: 3,
+    platform: "S",
+    priority: "High",
+    message: "We're looking for a generalist for our venture studio to work as the founder's right-hand person. Please check the job description on LinkedIn and complete the video ask if you apply. Reach out to Vishaitsa Rakesh for any questions.",
+    sender: "Vishaitsa Rakesh",
+    time: "12:22 AM",
+    actionType: "Open in Slack"
+  }, {
+    id: 4,
+    platform: "G",
+    priority: "Medium",
+    message: "Your July 2026 statement is available on Betterment. Review updates to their client agreements effective September 1, 2026.",
+    sender: "Betterment Statements <support@betterment.com>",
+    time: "7:22 AM",
+    actionType: "Open in Email"
+  }, {
+    id: 5,
+    platform: "G",
+    priority: "Medium",
+    message: "Lenny's Newsletter featured a tech founder and VC using AI to launch a brick-and-mortar business. This episode highlights innovative uses of AI in creating business plans and categorizing data.",
+    sender: '"Lenny\'s Newsletter" <lenny.how-i-ai@substack.com>',
+    time: "4:33 PM",
+    actionType: "Open in Email"
+  }, {
+    id: 6,
+    platform: "G",
+    priority: "Medium",
+    message: "Buffer sent a weekly performance report for your post. Review the details to analyze the post's performance metrics.",
+    sender: "The Buffer Team <hello@buffer.com>",
+    time: "4:43 PM",
+    actionType: "Open in Email"
+  }];
 
   // Handlers
   const handlePlayBrief = useCallback((briefId: number) => {
     console.log('handlePlayBrief called with briefId:', briefId);
     console.log('current playingBrief:', playingBrief);
-    
+
     // Clear any selected message when showing transcript
     setSelectedMessage(null);
-    
     if (playingBrief === briefId) {
       setPlayingBrief(null);
       setSelectedTranscript(null);
@@ -329,47 +310,28 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   }, []);
 
   // Priority badge component
-  const PriorityBadge = ({ item, onPriorityChange }: { item: any, onPriorityChange: (itemId: number, newPriority: string, oldPriority: string, itemData: any) => void }) => {
-    return (
-      <Popover>
+  const PriorityBadge = ({
+    item,
+    onPriorityChange
+  }: {
+    item: any;
+    onPriorityChange: (itemId: number, newPriority: string, oldPriority: string, itemData: any) => void;
+  }) => {
+    return <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            className={cn(
-              "bg-transparent text-xs px-2 py-1 rounded-full font-medium border h-auto hover:bg-surface-raised/20",
-              item.priority === "High" 
-                ? "border-orange-500 text-orange-400" 
-                : item.priority === "Medium"
-                ? "border-yellow-500 text-yellow-400"
-                : "border-green-500 text-green-400"
-            )}
-          >
+          <Button variant="ghost" className={cn("bg-transparent text-xs px-2 py-1 rounded-full font-medium border h-auto hover:bg-surface-raised/20", item.priority === "High" ? "border-orange-500 text-orange-400" : item.priority === "Medium" ? "border-yellow-500 text-yellow-400" : "border-green-500 text-green-400")}>
             {item.priority}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-40 p-2 bg-surface border-border-subtle" align="start">
           <div className="space-y-1">
-            {["High", "Medium", "Low"].map((priority) => (
-              <Button
-                key={priority}
-                variant="ghost"
-                className={cn(
-                  "w-full justify-start text-xs rounded-full",
-                  priority === "High" && "text-orange-400 hover:bg-orange-500/20",
-                  priority === "Medium" && "text-yellow-400 hover:bg-yellow-500/20", 
-                  priority === "Low" && "text-green-400 hover:bg-green-500/20"
-                )}
-                onClick={() => onPriorityChange(item.id, priority, item.priority, item)}
-              >
+            {["High", "Medium", "Low"].map(priority => <Button key={priority} variant="ghost" className={cn("w-full justify-start text-xs rounded-full", priority === "High" && "text-orange-400 hover:bg-orange-500/20", priority === "Medium" && "text-yellow-400 hover:bg-yellow-500/20", priority === "Low" && "text-green-400 hover:bg-green-500/20")} onClick={() => onPriorityChange(item.id, priority, item.priority, item)}>
                 {priority}
-              </Button>
-            ))}
+              </Button>)}
           </div>
         </PopoverContent>
-      </Popover>
-    );
+      </Popover>;
   };
-
   const getStatusChip = () => {
     const getStatusIcon = () => {
       switch (userStatus) {
@@ -379,41 +341,30 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           return <Clock className="h-3 w-3" />;
         case 'vacation':
           return <X className="h-3 w-3" />;
-        default: // active
+        default:
+          // active
           return <Zap className="h-3 w-3" />;
       }
     };
-
-    return (
-      <DropdownMenu>
+    return <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
-            className="px-2 py-1 h-8 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-1.5 text-xs"
-          >
+          <Button variant="outline" className="px-2 py-1 h-8 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-1.5 text-xs">
             {getStatusIcon()}
             <span>Update Status</span>
             <ChevronDown className="h-3 w-3" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-surface border-border-subtle w-56 z-50" align="start">
-          <DropdownMenuItem 
-            onClick={onStartFocusMode} 
-            className="text-text-primary hover:bg-surface-raised/50 flex items-center gap-3 px-4 py-3"
-          >
+          <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-surface-raised/50 flex items-center gap-3 px-4 py-3">
             <Focus className="h-4 w-4" />
             Start Focus Mode
           </DropdownMenuItem>
-          <DropdownMenuItem 
-            onClick={onSignOffForDay} 
-            className="text-text-primary hover:bg-surface-raised/50 flex items-center gap-3 px-4 py-3"
-          >
+          <DropdownMenuItem onClick={onSignOffForDay} className="text-text-primary hover:bg-surface-raised/50 flex items-center gap-3 px-4 py-3">
             <Clock className="h-4 w-4" />
             Sign Off for the Day
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
-    );
+      </DropdownMenu>;
   };
 
   // Mobile fallback - return current mobile layout for now
@@ -423,9 +374,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         <p className="text-text-secondary">Mobile layout coming soon...</p>
       </div>;
   }
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       {/* Global Header */}
       <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="px-6 py-4">
@@ -479,42 +428,27 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? (
-          <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+        {!leftPanelCollapsed ? <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="h-full flex flex-col">
               {/* Header with collapse button */}
               <div className="p-4">
                 <div className="flex items-center justify-between mb-3 mt-[30px]">
-                  <h2 className="text-lg font-medium text-text-primary">Brief Me</h2>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => setLeftPanelCollapsed(true)} 
-                    className="h-6 w-6 p-0"
-                  >
+                  <h2 className="text-lg font-medium text-text-primary">Latest Brief</h2>
+                  <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
                     <PanelLeftClose className="h-4 w-4" />
                   </Button>
                 </div>
                 
                 {/* Navigation Tabs */}
-                <Tabs value={leftRailTab} onValueChange={(value) => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full">
+                <Tabs value={leftRailTab} onValueChange={value => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full">
                   <TabsList className="grid w-full grid-cols-3 bg-surface-raised/30 p-1 rounded-lg">
-                    <TabsTrigger 
-                      value="briefs" 
-                      className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs"
-                    >
+                    <TabsTrigger value="briefs" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs">
                       Briefs
                     </TabsTrigger>
-                    <TabsTrigger 
-                      value="calendar" 
-                      className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs"
-                    >
+                    <TabsTrigger value="calendar" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs">
                       Calendar
                     </TabsTrigger>
-                    <TabsTrigger 
-                      value="followups" 
-                      className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs"
-                    >
+                    <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs">
                       Follow ups
                     </TabsTrigger>
                   </TabsList>
@@ -525,13 +459,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     
                     {/* Briefs List */}
                     <div className="flex-1 min-h-0">
-                      <BriefsList 
-                        onPlayBrief={handlePlayBrief} 
-                        onSettingsClick={() => navigate("/dashboard/settings")} 
-                        playingBrief={playingBrief} 
-                        selectedBrief={selectedBrief} 
-                        onBriefSelect={handleBriefSelect} 
-                      />
+                      <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
                     </div>
                   </TabsContent>
                   
@@ -552,26 +480,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {followUps.map((item) => (
-                              <TableRow 
-                                key={item.id} 
-                                className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer"
-                                onClick={() => {
-                                  setSelectedMessage({
-                                    ...item,
-                                    subject: "Follow-up Required",
-                                    fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                                    from: item.sender,
-                                    relevancy: "Requires action from you",
-                                    reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                                    created: item.time,
-                                    lastActivity: item.time,
-                                    source: item.platform === "S" ? "Slack" : "Email",
-                                    due: "End of day"
-                                  });
-                                  setRightPanelCollapsed(false);
-                                }}
-                              >
+                            {followUps.map(item => <TableRow key={item.id} className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer" onClick={() => {
+                          setSelectedMessage({
+                            ...item,
+                            subject: "Follow-up Required",
+                            fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                            from: item.sender,
+                            relevancy: "Requires action from you",
+                            reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                            created: item.time,
+                            lastActivity: item.time,
+                            source: item.platform === "S" ? "Slack" : "Email",
+                            due: "End of day"
+                          });
+                          setRightPanelCollapsed(false);
+                        }}>
                                 <TableCell className="w-8">
                                   <div className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-raised/50 border border-border-subtle">
                                     <span className="text-xs font-medium text-text-primary">{item.platform}</span>
@@ -588,8 +511,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <TableCell className="text-xs text-text-secondary">
                                   {item.time}
                                 </TableCell>
-                              </TableRow>
-                            ))}
+                              </TableRow>)}
                           </TableBody>
                         </Table>
                       </div>
@@ -598,95 +520,52 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 </Tabs>
               </div>
             </div>
-          </div>
-        ) : (
-          /* Collapsed Left Panel */
-          <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+          </div> : (/* Collapsed Left Panel */
+      <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
               {/* Open Panel Button */}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setLeftPanelCollapsed(false)} 
-                className="h-8 w-8 p-0 mb-4"
-              >
+              <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(false)} className="h-8 w-8 p-0 mb-4">
                 <PanelLeftOpen className="h-4 w-4" />
               </Button>
               
               {/* Latest Brief Icon */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  handleBriefSelect(1);
-                  setLeftPanelCollapsed(false);
-                }}
-                className={cn(
-                  "h-8 w-8 p-0",
-                  selectedBrief === 1 ? "bg-accent-primary/20 text-accent-primary" : ""
-                )}
-              >
+              <Button variant="ghost" size="sm" onClick={() => {
+            handleBriefSelect(1);
+            setLeftPanelCollapsed(false);
+          }} className={cn("h-8 w-8 p-0", selectedBrief === 1 ? "bg-accent-primary/20 text-accent-primary" : "")}>
                 <CheckSquare className="h-4 w-4" />
               </Button>
               
               {/* Recent Briefs Icons */}
-              {recentBriefs.slice(1).map((brief, index) => (
-                <Button
-                  key={brief.id}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    handleBriefSelect(brief.id);
-                    setLeftPanelCollapsed(false);
-                  }}
-                  className={cn(
-                    "h-8 w-8 p-0",
-                    selectedBrief === brief.id ? "bg-accent-primary/20 text-accent-primary" : ""
-                  )}
-                >
+              {recentBriefs.slice(1).map((brief, index) => <Button key={brief.id} variant="ghost" size="sm" onClick={() => {
+            handleBriefSelect(brief.id);
+            setLeftPanelCollapsed(false);
+          }} className={cn("h-8 w-8 p-0", selectedBrief === brief.id ? "bg-accent-primary/20 text-accent-primary" : "")}>
                   <CheckSquare className="h-4 w-4" />
-                </Button>
-              ))}
+                </Button>)}
               
               {/* Calendar Events Icons (sample) */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  handleCalendarSelect("meeting-1");
-                  setLeftPanelCollapsed(false);
-                }}
-                className={cn(
-                  "h-8 w-8 p-0",
-                  selectedCalendarItem === "meeting-1" ? "bg-accent-primary/20 text-accent-primary" : ""
-                )}
-              >
+              <Button variant="ghost" size="sm" onClick={() => {
+            handleCalendarSelect("meeting-1");
+            setLeftPanelCollapsed(false);
+          }} className={cn("h-8 w-8 p-0", selectedCalendarItem === "meeting-1" ? "bg-accent-primary/20 text-accent-primary" : "")}>
                 <Calendar className="h-4 w-4" />
               </Button>
               
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  handleCalendarSelect("meeting-2");
-                  setLeftPanelCollapsed(false);
-                }}
-                className={cn(
-                  "h-8 w-8 p-0",
-                  selectedCalendarItem === "meeting-2" ? "bg-accent-primary/20 text-accent-primary" : ""
-                )}
-              >
+              <Button variant="ghost" size="sm" onClick={() => {
+            handleCalendarSelect("meeting-2");
+            setLeftPanelCollapsed(false);
+          }} className={cn("h-8 w-8 p-0", selectedCalendarItem === "meeting-2" ? "bg-accent-primary/20 text-accent-primary" : "")}>
                 <Calendar className="h-4 w-4" />
               </Button>
             </div>
-          </div>
-        )}
+          </div>)}
 
         {/* Main Content Panel */}
         <div className="flex-1 h-screen overflow-hidden">
           {/* Main Content Card */}
           <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden" style={{
-            background: `
+          background: `
               radial-gradient(
                 circle at top left,
                 #2A8A5F 0%,
@@ -695,10 +574,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               ),
               url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
             `
-          }}>
+        }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
-              {selectedBrief && (
-                <div className="space-y-6">
+              {selectedBrief && <div className="space-y-6">
                   {/* Header */}
                   <div>
                     <div className="text-sm text-text-secondary mb-1">Scheduled | 8/4/2025 at 7:00 AM</div>
@@ -710,15 +588,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <div className="bg-surface-raised/50 rounded-lg p-4 border border-border-subtle">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <button 
-                          onClick={() => handlePlayBrief(selectedBrief)} 
-                          className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors"
-                        >
-                          {playingBrief === selectedBrief ? (
-                            <Pause className="h-6 w-6 text-accent-primary" />
-                          ) : (
-                            <Play className="h-6 w-6 text-accent-primary" />
-                          )}
+                        <button onClick={() => handlePlayBrief(selectedBrief)} className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors">
+                          {playingBrief === selectedBrief ? <Pause className="h-6 w-6 text-accent-primary" /> : <Play className="h-6 w-6 text-accent-primary" />}
                         </button>
                         <div>
                           <div className="text-sm text-text-secondary">3 mins summarizing: 3 Slack | 28 Emails | 4 Actions</div>
@@ -746,16 +617,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <div>
                     <Tabs defaultValue="followups" className="w-full">
                       <TabsList className="grid w-fit grid-cols-2 bg-surface-raised/30 p-1 rounded-lg">
-                        <TabsTrigger 
-                          value="followups" 
-                          className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2"
-                        >
+                        <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2">
                           Follow ups (8)
                         </TabsTrigger>
-                        <TabsTrigger 
-                          value="allmessages" 
-                          className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2"
-                        >
+                        <TabsTrigger value="allmessages" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2">
                           All Messages & Items ({allMessages.length})
                         </TabsTrigger>
                       </TabsList>
@@ -774,23 +639,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {followUps.map((item) => (
-                                <TableRow 
-                                  key={item.id} 
-                                  className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer"
-                                  onClick={() => setSelectedMessage({
-                                    ...item,
-                                    subject: "Follow-up Required",
-                                    fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                                    from: item.sender,
-                                    relevancy: "Requires action from you",
-                                    reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                                    created: item.time,
-                                    lastActivity: item.time,
-                                    source: item.platform === "S" ? "Slack" : "Email",
-                                    due: "End of day"
-                                  })}
-                                >
+                              {followUps.map(item => <TableRow key={item.id} className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer" onClick={() => setSelectedMessage({
+                            ...item,
+                            subject: "Follow-up Required",
+                            fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                            from: item.sender,
+                            relevancy: "Requires action from you",
+                            reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                            created: item.time,
+                            lastActivity: item.time,
+                            source: item.platform === "S" ? "Slack" : "Email",
+                            due: "End of day"
+                          })}>
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
                                       <span className="text-xs font-medium text-text-primary">{item.platform}</span>
@@ -812,62 +672,44 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </TableCell>
                                   <TableCell>
                                     <div className="flex items-center gap-2">
-                                      <Button 
-                                        variant="outline" 
-                                        size="sm"
-                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                                      >
+                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
                                         <Kanban className="h-3 w-3" />
                                         Asana
                                       </Button>
-                                      <Button 
-                                        variant="outline" 
-                                        size="sm"
-                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                                      >
-                                        {item.platform === "S" ? (
-                                          <>
+                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
+                                        {item.platform === "S" ? <>
                                             <Calendar className="h-3 w-3" />
                                             Slack
-                                          </>
-                                        ) : (
-                                          <>
+                                          </> : <>
                                             <Mail className="h-3 w-3" />
                                             Email
-                                          </>
-                                        )}
+                                          </>}
                                       </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => {
-                                          setSelectedFollowUp({
-                                            id: item.id,
-                                            title: "Domain Expiration",
-                                            priority: item.priority,
-                                            type: item.actionType,
-                                            description: item.message,
-                                            sender: item.sender,
-                                            from: "Hover <help@hover.com>",
-                                            subject: "Urgent: Launch Materials Review Needed",
-                                            fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
-                                            relevancy: "Critical - blocking marketing team progress",
-                                            reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-                                            created: "12:24 PM",
-                                            lastActivity: "12:24 PM",
-                                            source: "Gmail",
-                                            due: "2 PM today"
-                                          });
-                                          setShowFollowUpModal(true);
-                                        }}
-                                        className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
-                                      >
+                                      <Button variant="ghost" size="sm" onClick={() => {
+                                  setSelectedFollowUp({
+                                    id: item.id,
+                                    title: "Domain Expiration",
+                                    priority: item.priority,
+                                    type: item.actionType,
+                                    description: item.message,
+                                    sender: item.sender,
+                                    from: "Hover <help@hover.com>",
+                                    subject: "Urgent: Launch Materials Review Needed",
+                                    fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+                                    relevancy: "Critical - blocking marketing team progress",
+                                    reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+                                    created: "12:24 PM",
+                                    lastActivity: "12:24 PM",
+                                    source: "Gmail",
+                                    due: "2 PM today"
+                                  });
+                                  setShowFollowUpModal(true);
+                                }} className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary">
                                         <Info className="h-4 w-4" />
                                       </Button>
                                     </div>
                                   </TableCell>
-                                </TableRow>
-                              ))}
+                                </TableRow>)}
                             </TableBody>
                           </Table>
                         </div>
@@ -887,28 +729,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {allMessages.map((message) => (
-                                <TableRow 
-                                  key={message.id} 
-                                  className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer"
-                  onClick={() => {
-                    setSelectedMessage({
-                      ...message,
-                      subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
-                      fullMessage: message.id === 2 
-                        ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team`
-                        : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
-                      from: message.sender,
-                      relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
-                      reasoning: "Flagged based on sender importance and content keywords.",
-                      created: message.time,
-                      lastActivity: message.time,
-                      source: message.platform === "S" ? "Slack" : "Email",
-                      due: message.priority === "High" ? "Today" : "This week"
-                    });
-                    setRightPanelCollapsed(false);
-                  }}
-                                >
+                              {allMessages.map(message => <TableRow key={message.id} className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer" onClick={() => {
+                            setSelectedMessage({
+                              ...message,
+                              subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
+                              fullMessage: message.id === 2 ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team` : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
+                              from: message.sender,
+                              relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
+                              reasoning: "Flagged based on sender importance and content keywords.",
+                              created: message.time,
+                              lastActivity: message.time,
+                              source: message.platform === "S" ? "Slack" : "Email",
+                              due: message.priority === "High" ? "Today" : "This week"
+                            });
+                            setRightPanelCollapsed(false);
+                          }}>
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
                                       <span className="text-xs font-medium text-text-primary">{message.platform}</span>
@@ -930,86 +765,60 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </TableCell>
                                   <TableCell>
                                     <div className="flex items-center gap-2">
-                                      <Button 
-                                        variant="outline" 
-                                        size="sm"
-                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                                      >
+                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
                                         <Kanban className="h-3 w-3" />
                                         Asana
                                       </Button>
-                                      <Button 
-                                        variant="outline" 
-                                        size="sm"
-                                        className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                                      >
-                                        {message.platform === "S" ? (
-                                          <>
+                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
+                                        {message.platform === "S" ? <>
                                             <Calendar className="h-3 w-3" />
                                             Slack
-                                          </>
-                                        ) : (
-                                          <>
+                                          </> : <>
                                             <Mail className="h-3 w-3" />
                                             Email
-                                          </>
-                                        )}
+                                          </>}
                                       </Button>
                                     </div>
                                   </TableCell>
-                                </TableRow>
-                              ))}
+                                </TableRow>)}
                             </TableBody>
                           </Table>
                         </div>
                       </TabsContent>
                     </Tabs>
                   </div>
-                </div>
-              )}
+                </div>}
 
-              {selectedCalendarItem && (
-                <div>
+              {selectedCalendarItem && <div>
                   <h2 className="text-2xl font-bold text-text-primary mb-4">Meeting Brief</h2>
                   <div className="bg-surface-raised/50 rounded-lg p-6 border border-border-subtle">
                     <p className="text-text-secondary">Meeting brief content would appear here...</p>
                   </div>
-                </div>
-              )}
+                </div>}
 
-              {!selectedBrief && !selectedCalendarItem && (
-                <div className="h-full flex items-center justify-center">
+              {!selectedBrief && !selectedCalendarItem && <div className="h-full flex items-center justify-center">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-text-primary mb-2">No upcoming meetings for today</h3>
                     <p className="text-text-secondary">Select a brief or calendar item from the left panel to view details</p>
                   </div>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
         </div>
 
         {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? (
-          <div className="w-80 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="w-80 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="flex-1 overflow-hidden">
-              <ActionItemsPanel 
-                onToggleCollapse={() => setRightPanelCollapsed(true)} 
-                selectedMessage={selectedMessage}
-                onCloseMessage={() => {
-                  setSelectedMessage(null);
-                  setRightPanelCollapsed(true);
-                }}
-                selectedTranscript={selectedTranscript}
-                onCloseTranscript={() => {
-                  setSelectedTranscript(null);
-                  setPlayingBrief(null);
-                  setRightPanelCollapsed(true);
-                }}
-              />
+              <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
+            setSelectedMessage(null);
+            setRightPanelCollapsed(true);
+          }} selectedTranscript={selectedTranscript} onCloseTranscript={() => {
+            setSelectedTranscript(null);
+            setPlayingBrief(null);
+            setRightPanelCollapsed(true);
+          }} />
             </div>
-          </div>
-        ) : null}
+          </div> : null}
       </div>
 
       {/* Fixed Audio Player */}
@@ -1028,8 +837,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Follow-up Details Modal */}
       <Dialog open={showFollowUpModal} onOpenChange={setShowFollowUpModal}>
         <DialogContent className="bg-surface border-border-subtle max-w-4xl max-h-[90vh] overflow-y-auto">
-          {selectedFollowUp && (
-            <div className="space-y-6">
+          {selectedFollowUp && <div className="space-y-6">
               {/* Header */}
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -1040,19 +848,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2"
-                  >
+                  <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2">
                     <Kanban className="h-4 w-4" />
                     Add to Asana
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2"
-                  >
+                  <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2">
                     <Mail className="h-4 w-4" />
                     Open in Gmail
                   </Button>
@@ -1116,32 +916,23 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
               {/* Bottom Action Button */}
               <div className="pt-4">
-                <Button 
-                  className="w-full bg-accent-primary hover:bg-accent-primary/90 text-white py-3 rounded-lg flex items-center justify-center gap-2"
-                >
+                <Button className="w-full bg-accent-primary hover:bg-accent-primary/90 text-white py-3 rounded-lg flex items-center justify-center gap-2">
                   <Mail className="h-4 w-4" />
                   Open in Gmail
                 </Button>
               </div>
-            </div>
-          )}
+            </div>}
         </DialogContent>
       </Dialog>
 
       {/* Priority Change Confirmation Modal */}
       <Dialog open={showPriorityConfirmModal} onOpenChange={setShowPriorityConfirmModal}>
         <DialogContent className="bg-surface border-border-subtle max-w-2xl">
-          {priorityChangeData && (
-            <div className="space-y-6">
+          {priorityChangeData && <div className="space-y-6">
               {/* Header */}
               <div className="flex items-start justify-between">
                 <h2 className="text-xl font-semibold text-text-primary">Why don't you want to see this?</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowPriorityConfirmModal(false)}
-                  className="h-6 w-6 p-0"
-                >
+                <Button variant="ghost" size="sm" onClick={() => setShowPriorityConfirmModal(false)} className="h-6 w-6 p-0">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -1199,33 +990,23 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">
-                <Button 
-                  variant="outline"
-                  onClick={() => setShowPriorityConfirmModal(false)}
-                  className="flex-1 bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised/30"
-                >
+                <Button variant="outline" onClick={() => setShowPriorityConfirmModal(false)} className="flex-1 bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised/30">
                   Cancel
                 </Button>
-                <Button 
-                  onClick={() => {
-                    toast({
-                      title: "Priority Updated",
-                      description: `Priority changed to ${priorityChangeData.newPriority}. We'll use this feedback to improve future suggestions.`
-                    });
-                    setShowPriorityConfirmModal(false);
-                  }}
-                  className="flex-1 bg-accent-primary hover:bg-accent-primary/90 text-white"
-                >
+                <Button onClick={() => {
+              toast({
+                title: "Priority Updated",
+                description: `Priority changed to ${priorityChangeData.newPriority}. We'll use this feedback to improve future suggestions.`
+              });
+              setShowPriorityConfirmModal(false);
+            }} className="flex-1 bg-accent-primary hover:bg-accent-primary/90 text-white">
                   Snooze Forever
                 </Button>
               </div>
-            </div>
-          )}
+            </div>}
         </DialogContent>
       </Dialog>
 
-    </div>
-  );
+    </div>;
 };
-
 export default React.memo(HomeView);
