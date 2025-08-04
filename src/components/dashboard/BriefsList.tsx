@@ -170,7 +170,7 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, se
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-text-primary mb-1">
+                    <h3 className="text-sm font-semibold text-text-primary mb-1">
                       {brief.title}
                     </h3>
                     <p className="text-xs text-text-secondary mb-2">
