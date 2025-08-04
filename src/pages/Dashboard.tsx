@@ -168,6 +168,8 @@ const Dashboard = () => {
             onOpenBriefModal={openBriefModal}
             onStartFocusMode={handleStartFocusMode}
             onSignOffForDay={handleSignOffForDay}
+            userStatus={userStatus}
+            focusConfig={focusConfig}
           />
         )}
         {currentView === "listening" && <ListeningScreen />}
