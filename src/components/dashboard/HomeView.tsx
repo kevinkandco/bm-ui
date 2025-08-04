@@ -445,13 +445,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 {/* Navigation Tabs */}
                 <Tabs value={leftRailTab} onValueChange={value => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full">
                   <TabsList className="flex w-auto bg-surface-raised/30 p-1 rounded-lg ml-2">
-                    <TabsTrigger value="briefs" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs">
+                    <TabsTrigger value="briefs" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-3 py-2 text-base text-left rounded-sm font-medium">
                       Briefs
                     </TabsTrigger>
-                    <TabsTrigger value="calendar" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs">
+                    <TabsTrigger value="calendar" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-3 py-2 text-base text-left rounded-sm">
                       Calendar
                     </TabsTrigger>
-                    <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs">
+                    <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-3 py-2 text-base text-left rounded-sm">
                       Follow ups
                     </TabsTrigger>
                   </TabsList>
