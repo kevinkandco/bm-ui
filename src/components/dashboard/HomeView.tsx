@@ -439,6 +439,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </Button>
                 </div>
                 
+                {/* Latest Brief Section */}
+                <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
+                
                 {/* Navigation Tabs */}
                 <Tabs value={leftRailTab} onValueChange={value => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full">
                   <TabsList className="grid w-full grid-cols-3 bg-surface-raised/30 p-1 rounded-lg">
@@ -454,9 +457,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </TabsList>
                   
                   <TabsContent value="briefs" className="mt-4 flex-1 min-h-0 space-y-4">
-                    {/* Latest Brief Section */}
-                    <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
-                    
                     {/* Briefs List */}
                     <div className="flex-1 min-h-0">
                       <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
