@@ -219,7 +219,10 @@ const HomeView = ({
                   {/* Latest Brief Section */}
                   <div className="p-4">
                     <h1 className="text-lg font-medium text-text-primary mb-4">Good morning, Alex</h1>
-                    <LatestBriefSection onClick={() => handleBriefSelect(1)} />
+                    <LatestBriefSection 
+                      onClick={() => handleBriefSelect(1)} 
+                      isSelected={selectedBrief === 1}
+                    />
                   </div>
                   
                   {/* Briefs List */}
@@ -228,6 +231,8 @@ const HomeView = ({
                       onPlayBrief={handlePlayBrief}
                       onSettingsClick={() => navigate("/dashboard/settings")}
                       playingBrief={playingBrief}
+                      selectedBrief={selectedBrief}
+                      onBriefSelect={handleBriefSelect}
                     />
                   </div>
                 </div>

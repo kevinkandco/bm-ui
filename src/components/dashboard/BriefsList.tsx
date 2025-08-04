@@ -19,9 +19,11 @@ interface BriefsListProps {
   onPlayBrief: (briefId: number) => void;
   onSettingsClick: () => void;
   playingBrief?: number | null;
+  selectedBrief?: number | null;
+  onBriefSelect: (briefId: number) => void;
 }
 
-const BriefsList = ({ onPlayBrief, onSettingsClick, playingBrief }: BriefsListProps) => {
+const BriefsList = ({ onPlayBrief, onSettingsClick, playingBrief, selectedBrief, onBriefSelect }: BriefsListProps) => {
   const briefs: Brief[] = [
     {
       id: 1,
@@ -82,12 +84,21 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, playingBrief }: BriefsListPr
       <div className="flex-1 overflow-auto">
         {briefs.map((brief, index) => (
           <div key={brief.id}>
-            <div className="flex items-center gap-3 p-4 hover:bg-surface-raised/20 transition-colors">
+            <div 
+              className={cn(
+                "flex items-center gap-3 p-4 hover:bg-surface-raised/20 transition-colors cursor-pointer",
+                selectedBrief === brief.id && "bg-accent-primary/10 border-l-2 border-accent-primary"
+              )}
+              onClick={() => onBriefSelect(brief.id)}
+            >
               {/* Play Button */}
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onPlayBrief(brief.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPlayBrief(brief.id);
+                }}
                 className={cn(
                   "h-8 w-8 p-0 rounded-none bg-transparent hover:bg-surface-raised/20",
                   playingBrief === brief.id && "text-accent-primary"

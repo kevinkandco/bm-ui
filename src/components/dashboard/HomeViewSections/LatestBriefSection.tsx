@@ -2,15 +2,20 @@
 import React from "react";
 import { Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface LatestBriefSectionProps {
   onClick: () => void;
+  isSelected?: boolean;
 }
 
-const LatestBriefSection = ({ onClick }: LatestBriefSectionProps) => {
+const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) => {
   return (
     <div 
-      className="p-4 rounded-lg bg-surface-raised/30 border border-border-subtle hover:bg-surface-raised/50 transition-colors cursor-pointer"
+      className={cn(
+        "p-4 rounded-lg border border-border-subtle hover:bg-surface-raised/50 transition-colors cursor-pointer",
+        isSelected ? "bg-accent-primary/10 border-accent-primary" : "bg-surface-raised/30"
+      )}
       onClick={onClick}
     >
       <h3 className="text-sm font-medium text-text-primary mb-1">Morning Scheduled Brief</h3>
