@@ -42,7 +42,7 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
       {/* Upcoming Briefs Section */}
       <div className="space-y-2">
         <div 
-          className="flex items-center justify-between cursor-pointer hover:bg-surface-raised/20 p-2 rounded-lg transition-colors"
+          className="flex items-center justify-between cursor-pointer hover:bg-surface-raised/20 rounded-lg transition-colors"
           onClick={() => setIsUpcomingExpanded(!isUpcomingExpanded)}
         >
           <div className="flex items-center gap-2">

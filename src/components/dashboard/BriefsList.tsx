@@ -110,7 +110,7 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, se
   return (
     <div className="h-full flex flex-col mt-4">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border-subtle">
+      <div className="flex items-center justify-between border-b border-border-subtle">
         <div className="flex items-center gap-6">
           <h2 className="text-lg font-semibold text-text-primary">
             Recent Briefs
