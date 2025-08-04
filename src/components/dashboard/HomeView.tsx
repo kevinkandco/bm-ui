@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -249,14 +249,14 @@ const HomeView = ({
           /* Collapsed Left Panel */
           <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
-              {/* Expand Button */}
+              {/* Open Panel Button */}
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setLeftPanelCollapsed(false)} 
-                className="h-8 w-8 p-0 mb-2"
+                className="h-8 w-8 p-0 mb-4"
               >
-                <Calendar className="h-4 w-4" />
+                <PanelLeftOpen className="h-4 w-4" />
               </Button>
               
               {/* Latest Brief Icon */}
