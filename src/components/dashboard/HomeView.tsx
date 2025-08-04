@@ -14,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
 // Import components
@@ -65,6 +66,7 @@ const HomeView = ({
   const [selectedTranscript, setSelectedTranscript] = useState<any>(null);
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
   const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
+  const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
 
   // Sample data
   const recentBriefs = [{
@@ -342,6 +344,24 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setShowPriorityConfirmModal(true);
   }, []);
 
+  const handleFollowUpCheck = (followUpId: number) => {
+    setCheckedFollowUps(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(followUpId)) {
+        newSet.delete(followUpId);
+      } else {
+        newSet.add(followUpId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleRemoveCheckedFollowUps = () => {
+    // In a real app, this would make an API call to remove the items
+    setCheckedFollowUps(new Set());
+    // You could also filter them out of the followUps array if needed
+  };
+
   // Priority badge component
   const PriorityBadge = ({
     item,
@@ -506,6 +526,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <Table>
                           <TableHeader>
                             <TableRow className="border-border-subtle hover:bg-transparent">
+                              <TableHead className="text-text-secondary font-medium text-xs w-8"></TableHead>
                               <TableHead className="text-text-secondary font-medium text-xs w-20">Priority</TableHead>
                               <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
                             </TableRow>
@@ -514,6 +535,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
                               selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
                             }`} onClick={() => handleFollowUpClick(item)}>
+                                <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
+                                  <Checkbox
+                                    checked={checkedFollowUps.has(item.id)}
+                                    onCheckedChange={() => handleFollowUpCheck(item.id)}
+                                    className="h-4 w-4"
+                                  />
+                                </TableCell>
                                 <TableCell className="w-20">
                                   <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
                                 </TableCell>
@@ -787,6 +815,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           <Table>
                             <TableHeader>
                               <TableRow className="border-border-subtle hover:bg-transparent">
+                                <TableHead className="text-text-secondary font-medium w-8"></TableHead>
                                 <TableHead className="text-text-secondary font-medium">Platform</TableHead>
                                 <TableHead className="text-text-secondary font-medium">Priority</TableHead>
                                 <TableHead className="text-text-secondary font-medium">Message</TableHead>
@@ -813,7 +842,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   due: "End of day"
                                 });
                                 setRightPanelCollapsed(false);
-                              }}>
+                               }}>
+                                  <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
+                                    <Checkbox
+                                      checked={checkedFollowUps.has(item.id)}
+                                      onCheckedChange={() => handleFollowUpCheck(item.id)}
+                                      className="h-4 w-4"
+                                    />
+                                  </TableCell>
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
                                       <span className="text-xs font-medium text-text-primary">{item.platform}</span>
