@@ -381,18 +381,9 @@ const HomeView = ({
             </div>
           </div>
         ) : (
-          /* Collapsed Right Panel */
-          <div className="w-12 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col items-center">
-            <div className="p-2 flex flex-col items-center mt-[30px]">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setRightPanelCollapsed(false)} 
-                className="h-8 w-8 p-0"
-              >
-                <CheckSquare className="h-4 w-4" />
-              </Button>
-            </div>
+          /* Collapsed Right Panel - Empty Space */
+          <div className="w-5 h-full">
+            {/* 20px empty space */}
           </div>
         )}
       </div>
