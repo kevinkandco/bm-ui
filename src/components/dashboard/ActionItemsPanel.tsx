@@ -100,7 +100,7 @@ const ActionItemsPanel = ({
       </div>;
   }
 
-  return <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}>
+  return <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm mt-8", className)}>
       {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-center justify-between">
