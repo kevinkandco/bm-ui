@@ -117,7 +117,7 @@ const InvoiceList = ({ invoices: invoices , pagination, getInvoice }: InvoiceLis
 							<TableRow>
 								<TableCell
 									className="text-text-primary text-center"
-									colSpan={5}
+									colSpan={6}
 								>
 									No invoices found.
 								</TableCell>
