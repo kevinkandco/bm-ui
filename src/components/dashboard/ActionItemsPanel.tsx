@@ -203,7 +203,7 @@ const ActionItemsPanel = ({
 
   // Empty state - collapsed single line
   if (openCount === 0) {
-    return <div className={cn("rounded-2xl bg-surface-overlay/30 shadow-sm p-4", className)}>
+    return <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4", className)}>
         <div className="flex items-center justify-center text-text-secondary">
           <span className="text-sm">All clear ✅</span>
         </div>
@@ -212,7 +212,7 @@ const ActionItemsPanel = ({
 
   return <>
       <div 
-        className={cn("rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
+        className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm", className)}
         onMouseEnter={() => setIsSectionHovered(true)}
         onMouseLeave={() => setIsSectionHovered(false)}
       >

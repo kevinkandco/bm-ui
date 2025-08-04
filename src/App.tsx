@@ -21,7 +21,6 @@ const Login = lazyImport(() => import("./pages/Login"));
 const Onboarding = lazyImport(() => import("./pages/Onboarding"));
 const Dashboard = lazyImport(() => import("./pages/Dashboard"));
 const BriefsList = lazyImport(() => import("./pages/BriefsList"));
-const FollowUps = lazyImport(() => import("./pages/FollowUps"));
 const TasksPage = lazyImport(() => import("./pages/TasksPage"));
 const MeetingsList = lazyImport(() => import("./pages/MeetingsList"));
 const CatchUpPage = lazyImport(() => import("./pages/CatchUpPage"));
@@ -83,7 +82,6 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/dashboard/briefs" element={<BriefsList />} />
                 <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
-                <Route path="/dashboard/follow-ups" element={<FollowUps />} />
                 <Route path="/dashboard/tasks" element={<TasksPage />} />
                 <Route path="/dashboard/meetings" element={<MeetingsList />} />
                 <Route path="/dashboard/catch-up" element={<CatchUpPage />} />

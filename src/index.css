@@ -242,25 +242,6 @@
     @apply shadow-lg;
     border-color: rgba(46, 226, 173, 0.2);
   }
-
-  .card-dark {
-    /* Geometry identical to light version */
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 8px;
-   
-    /* New dark fill */
-    background: linear-gradient(
-                  135deg,
-                  #102E34 0%,   /* deep teal */
-                  #071A20 100%  /* near-black */
-                );
-   
-    /* Updated soft shadow stack */
-    box-shadow:
-      0 0 0 1px rgba(0, 0, 0, 0.20),   /* crisp outline against glow */
-      0 2px 4px rgba(0, 0, 0, 0.25),   /* tiny offset */
-      0 6px 12px rgba(0, 0, 0, 0.18);  /* wider ambient */
-  }
 }
 
 /* Animation keyframes - keep existing ones and add voice ripple */
