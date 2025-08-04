@@ -9,6 +9,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -58,6 +61,9 @@ const HomeView = ({
   const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
   const [showFollowUpModal, setShowFollowUpModal] = useState(false);
   const [selectedFollowUp, setSelectedFollowUp] = useState<any>(null);
+  const [showPriorityConfirmModal, setShowPriorityConfirmModal] = useState(false);
+  const [priorityChangeData, setPriorityChangeData] = useState<any>(null);
+  const [snoozeReason, setSnoozeReason] = useState("message");
 
   // Sample data
   const recentBriefs = [{
@@ -261,6 +267,61 @@ const HomeView = ({
     setSelectedBrief(null);
     setFollowUpsFilter('all');
   }, []);
+
+  // Priority change handler
+  const handlePriorityChange = useCallback((itemId: number, newPriority: string, oldPriority: string, itemData: any) => {
+    setPriorityChangeData({
+      itemId,
+      newPriority,
+      oldPriority,
+      itemData,
+      title: itemData.message
+    });
+    setShowPriorityConfirmModal(true);
+  }, []);
+
+  // Priority badge component
+  const PriorityBadge = ({ item, onPriorityChange }: { item: any, onPriorityChange: (itemId: number, newPriority: string, oldPriority: string, itemData: any) => void }) => {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            className={cn(
+              "bg-transparent text-xs px-2 py-1 rounded-full font-medium border h-auto hover:bg-surface-raised/20",
+              item.priority === "High" 
+                ? "border-orange-500 text-orange-400" 
+                : item.priority === "Medium"
+                ? "border-yellow-500 text-yellow-400"
+                : "border-green-500 text-green-400"
+            )}
+          >
+            {item.priority}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-40 p-2 bg-surface border-border-subtle" align="start">
+          <div className="space-y-1">
+            {["High", "Medium", "Low"].map((priority) => (
+              <Button
+                key={priority}
+                variant="ghost"
+                className={cn(
+                  "w-full justify-start text-xs rounded-full",
+                  priority === "High" && "text-orange-400 hover:bg-orange-500/20",
+                  priority === "Medium" && "text-yellow-400 hover:bg-yellow-500/20", 
+                  priority === "Low" && "text-green-400 hover:bg-green-500/20"
+                )}
+                onClick={() => onPriorityChange(item.id, priority, item.priority, item)}
+              >
+                {priority}
+              </Button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  };
+
   const getStatusChip = () => {
     const getStatusIcon = () => {
       switch (userStatus) {
@@ -584,16 +645,7 @@ const HomeView = ({
                                     </div>
                                   </TableCell>
                                   <TableCell className="w-20">
-                                    <Badge className={cn(
-                                      "bg-transparent text-xs px-2 py-1 rounded-full font-medium border",
-                                      item.priority === "High" 
-                                        ? "border-orange-500 text-orange-400" 
-                                        : item.priority === "Medium"
-                                        ? "border-yellow-500 text-yellow-400"
-                                        : "border-green-500 text-green-400"
-                                    )}>
-                                      {item.priority}
-                                    </Badge>
+                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
                                   </TableCell>
                                   <TableCell className="max-w-md">
                                     <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
@@ -691,14 +743,7 @@ const HomeView = ({
                                     </div>
                                   </TableCell>
                                   <TableCell className="w-20">
-                                    <Badge className={cn(
-                                      "bg-transparent text-xs px-2 py-1 rounded-full font-medium border",
-                                      message.priority === "High" 
-                                        ? "border-orange-500 text-orange-400" 
-                                        : "border-yellow-500 text-yellow-400"
-                                    )}>
-                                      {message.priority}
-                                    </Badge>
+                                    <PriorityBadge item={message} onPriorityChange={handlePriorityChange} />
                                   </TableCell>
                                   <TableCell className="max-w-md">
                                     <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
@@ -896,6 +941,102 @@ const HomeView = ({
                 >
                   <Mail className="h-4 w-4" />
                   Open in Gmail
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Priority Change Confirmation Modal */}
+      <Dialog open={showPriorityConfirmModal} onOpenChange={setShowPriorityConfirmModal}>
+        <DialogContent className="bg-surface border-border-subtle max-w-2xl">
+          {priorityChangeData && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-start justify-between">
+                <h2 className="text-xl font-semibold text-text-primary">Why don't you want to see this?</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowPriorityConfirmModal(false)}
+                  className="h-6 w-6 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Priority Change Description */}
+              <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
+                <h3 className="text-lg font-medium text-text-primary mb-2">{priorityChangeData.title}</h3>
+                <p className="text-sm text-text-secondary">
+                  Priority changed from {priorityChangeData.oldPriority} to {priorityChangeData.newPriority}
+                </p>
+              </div>
+
+              {/* Radio Options */}
+              <RadioGroup value={snoozeReason} onValueChange={setSnoozeReason} className="space-y-4">
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                  <RadioGroupItem value="message" id="message" />
+                  <div className="flex-1">
+                    <Label htmlFor="message" className="text-text-primary font-medium cursor-pointer">
+                      Snooze this specific message
+                    </Label>
+                    <p className="text-sm text-text-secondary">Hide only this action item</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                  <RadioGroupItem value="sender" id="sender" />
+                  <div className="flex-1">
+                    <Label htmlFor="sender" className="text-text-primary font-medium cursor-pointer">
+                      Snooze messages from {priorityChangeData.itemData.sender}
+                    </Label>
+                    <p className="text-sm text-text-secondary">Hide future action items from this person</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                  <RadioGroupItem value="topic" id="topic" />
+                  <div className="flex-1">
+                    <Label htmlFor="topic" className="text-text-primary font-medium cursor-pointer">
+                      Mark this topic as unimportant
+                    </Label>
+                    <p className="text-sm text-text-secondary">Hide similar action items in the future</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                  <RadioGroupItem value="other" id="other" />
+                  <div className="flex-1">
+                    <Label htmlFor="other" className="text-text-primary font-medium cursor-pointer">
+                      Other reason
+                    </Label>
+                    <p className="text-sm text-text-secondary">Tell us why you don't want to see this</p>
+                  </div>
+                </div>
+              </RadioGroup>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowPriorityConfirmModal(false)}
+                  className="flex-1 bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised/30"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    toast({
+                      title: "Priority Updated",
+                      description: `Priority changed to ${priorityChangeData.newPriority}. We'll use this feedback to improve future suggestions.`
+                    });
+                    setShowPriorityConfirmModal(false);
+                  }}
+                  className="flex-1 bg-accent-primary hover:bg-accent-primary/90 text-white"
+                >
+                  Snooze Forever
                 </Button>
               </div>
             </div>
