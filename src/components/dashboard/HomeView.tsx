@@ -256,7 +256,7 @@ const HomeView = ({
 
           {/* Main Content Panel */}
           <ResizablePanel defaultSize={60} minSize={40}>
-            <div className="h-full overflow-auto">
+            <div className="h-screen overflow-hidden">
               {/* Main Content Card */}
               <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden">
                 <div className="p-6 h-full overflow-auto">
