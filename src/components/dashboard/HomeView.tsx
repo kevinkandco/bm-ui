@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Users } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -426,24 +426,24 @@ const HomeView = ({
                           <div className="w-32 text-center">
                             <span className="text-sm text-text-secondary">kevin@uprise.is</span>
                           </div>
-                          <div className="w-32 text-center">
+                          <div className="w-28 text-center">
                             <Button 
                               variant="outline" 
                               size="sm"
-                              className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-1 text-xs flex items-center gap-2"
+                              className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
                             >
-                              <Users className="h-3 w-3" />
-                              Add to Asana
+                              <Kanban className="h-3 w-3" />
+                              Asana
                             </Button>
                           </div>
-                          <div className="w-32 text-center">
+                          <div className="w-28 text-center">
                             <Button 
                               variant="outline" 
                               size="sm"
-                              className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-1 text-xs flex items-center gap-2"
+                              className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
                             >
                               <Mail className="h-3 w-3" />
-                              Open in Email
+                              Gmail
                             </Button>
                           </div>
                         </div>
