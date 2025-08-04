@@ -47,7 +47,7 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
         >
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-text-secondary">Upcoming</span>
-            <span className="text-xs text-text-secondary">Daily Brief • Tomorrow at 7:30 AM</span>
+            <span className="text-xs text-text-secondary">Tomorrow at 7AM</span>
           </div>
           {isUpcomingExpanded ? (
             <ChevronDown className="h-4 w-4 text-text-secondary" />
