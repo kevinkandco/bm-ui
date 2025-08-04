@@ -378,8 +378,8 @@ const HomeView = ({
       </div>;
   }
 
-  // New three-column desktop layout
-  return <div className="min-h-screen flex flex-col">
+  return (
+    <div className="min-h-screen flex flex-col">
       {/* Global Header */}
       <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="px-6 py-4">
