@@ -256,9 +256,9 @@ const HomeView = ({
 
           {/* Main Content Panel */}
           <ResizablePanel defaultSize={60} minSize={40}>
-            <div className="h-full p-6 overflow-auto">
+            <div className="h-full overflow-auto">
               {/* Main Content Card */}
-              <div className="h-full rounded-xl border border-border-subtle bg-surface-raised/30 backdrop-blur-sm overflow-hidden">
+              <div className="h-full bg-background border-0 shadow-lg overflow-hidden">
                 <div className="p-6 h-full overflow-auto">
                   {selectedBrief && (
                     <div className="space-y-6">
