@@ -7,6 +7,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -93,6 +95,64 @@ const HomeView = ({
     name: "Midday Brief",
     scheduledTime: "Today at 12:30 PM"
   };
+
+  // Sample messages data from the brief
+  const allMessages = [
+    {
+      id: 1,
+      platform: "G",
+      priority: "High",
+      message: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+      sender: "Hover <help@hover.com>",
+      time: "12:24 PM",
+      actionType: "Open in Email"
+    },
+    {
+      id: 2,
+      platform: "G", 
+      priority: "High",
+      message: "An automatic deposit of $1,500.00 is scheduled for August 5th, 2025, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.",
+      sender: "Betterment <support@betterment.com>",
+      time: "6:36 PM",
+      actionType: "Open in Email"
+    },
+    {
+      id: 3,
+      platform: "S",
+      priority: "High", 
+      message: "We're looking for a generalist for our venture studio to work as the founder's right-hand person. Please check the job description on LinkedIn and complete the video ask if you apply. Reach out to Vishaitsa Rakesh for any questions.",
+      sender: "Vishaitsa Rakesh",
+      time: "12:22 AM",
+      actionType: "Open in Slack"
+    },
+    {
+      id: 4,
+      platform: "G",
+      priority: "Medium",
+      message: "Your July 2026 statement is available on Betterment. Review updates to their client agreements effective September 1, 2026.",
+      sender: "Betterment Statements <support@betterment.com>",
+      time: "7:22 AM", 
+      actionType: "Open in Email"
+    },
+    {
+      id: 5,
+      platform: "G",
+      priority: "Medium",
+      message: "Lenny's Newsletter featured a tech founder and VC using AI to launch a brick-and-mortar business. This episode highlights innovative uses of AI in creating business plans and categorizing data.",
+      sender: '"Lenny\'s Newsletter" <lenny.how-i-ai@substack.com>',
+      time: "4:33 PM",
+      actionType: "Open in Email"
+    },
+    {
+      id: 6,
+      platform: "G",
+      priority: "Medium",
+      message: "Buffer sent a weekly performance report for your post. Review the details to analyze the post's performance metrics.",
+      sender: "The Buffer Team <hello@buffer.com>",
+      time: "4:43 PM",
+      actionType: "Open in Email"
+    }
+  ];
 
   // Handlers
   const handlePlayBrief = useCallback((briefId: number) => {
@@ -407,80 +467,166 @@ const HomeView = ({
                     </div>
                   </div>
 
-                  {/* Follow ups Section */}
+                  {/* Tabs Section */}
                   <div>
-                    <h3 className="text-lg font-medium text-text-primary mb-4">Follow ups (8)</h3>
-                    <div className="space-y-3">
-                      {[...Array(8)].map((_, index) => (
-                        <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg">
-                          <div className="w-16 text-center">
-                            <Badge className="bg-transparent border border-orange-500 text-orange-400 text-xs px-2 py-1 rounded-full font-medium">
-                              High
-                            </Badge>
-                          </div>
-                          <div className="w-20 text-center">
-                            <Badge className="bg-transparent border border-blue-500 text-blue-400 text-xs px-3 py-1 rounded-full font-medium">
-                              Decision
-                            </Badge>
-                          </div>
-                          <div className="flex-1">
-                            <span className="text-sm text-text-primary">Review weekly performance report</span>
-                          </div>
-                          <div className="w-32 text-center">
-                            <span className="text-sm text-text-secondary">kevin@uprise.is</span>
-                          </div>
-                          <div className="w-28 text-center">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                            >
-                              <Kanban className="h-3 w-3" />
-                              Asana
-                            </Button>
-                          </div>
-                          <div className="w-28 text-center">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
-                            >
-                              <Mail className="h-3 w-3" />
-                              Gmail
-                            </Button>
-                          </div>
-                          <div className="flex items-center">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                setSelectedFollowUp({
-                                  id: index,
-                                  title: "Domain Expiration",
-                                  priority: "High",
-                                  type: "Decision",
-                                  description: "Review weekly performance report",
-                                  sender: "kevin@uprise.is",
-                                  from: "Hover <help@hover.com>",
-                                  subject: "Urgent: Launch Materials Review Needed",
-                                  fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
-                                  relevancy: "Critical - blocking marketing team progress",
-                                  reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-                                  created: "12:24 PM",
-                                  lastActivity: "12:24 PM",
-                                  source: "Gmail",
-                                  due: "2 PM today"
-                                });
-                                setShowFollowUpModal(true);
-                              }}
-                              className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
-                            >
-                              <Info className="h-4 w-4" />
-                            </Button>
-                          </div>
+                    <Tabs defaultValue="followups" className="w-full">
+                      <TabsList className="grid w-fit grid-cols-2 bg-surface-raised/30 p-1 rounded-lg">
+                        <TabsTrigger 
+                          value="followups" 
+                          className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2"
+                        >
+                          Follow ups (8)
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="allmessages" 
+                          className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2"
+                        >
+                          All Messages & Items ({allMessages.length})
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="followups" className="mt-4">
+                        <div className="space-y-3">
+                          {[...Array(8)].map((_, index) => (
+                            <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg">
+                              <div className="w-16 text-center">
+                                <Badge className="bg-transparent border border-orange-500 text-orange-400 text-xs px-2 py-1 rounded-full font-medium">
+                                  High
+                                </Badge>
+                              </div>
+                              <div className="w-20 text-center">
+                                <Badge className="bg-transparent border border-blue-500 text-blue-400 text-xs px-3 py-1 rounded-full font-medium">
+                                  Decision
+                                </Badge>
+                              </div>
+                              <div className="flex-1">
+                                <span className="text-sm text-text-primary">Review weekly performance report</span>
+                              </div>
+                              <div className="w-32 text-center">
+                                <span className="text-sm text-text-secondary">kevin@uprise.is</span>
+                              </div>
+                              <div className="w-28 text-center">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                >
+                                  <Kanban className="h-3 w-3" />
+                                  Asana
+                                </Button>
+                              </div>
+                              <div className="w-28 text-center">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                >
+                                  <Mail className="h-3 w-3" />
+                                  Gmail
+                                </Button>
+                              </div>
+                              <div className="flex items-center">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedFollowUp({
+                                      id: index,
+                                      title: "Domain Expiration",
+                                      priority: "High",
+                                      type: "Decision",
+                                      description: "Review weekly performance report",
+                                      sender: "kevin@uprise.is",
+                                      from: "Hover <help@hover.com>",
+                                      subject: "Urgent: Launch Materials Review Needed",
+                                      fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+                                      relevancy: "Critical - blocking marketing team progress",
+                                      reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+                                      created: "12:24 PM",
+                                      lastActivity: "12:24 PM",
+                                      source: "Gmail",
+                                      due: "2 PM today"
+                                    });
+                                    setShowFollowUpModal(true);
+                                  }}
+                                  className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                                >
+                                  <Info className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </TabsContent>
+                      
+                      <TabsContent value="allmessages" className="mt-4">
+                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="border-border-subtle hover:bg-transparent">
+                                <TableHead className="text-text-secondary font-medium">Platform</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Priority</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Message</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Sender</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Time</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Action Menu</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {allMessages.map((message) => (
+                                <TableRow key={message.id} className="border-border-subtle hover:bg-surface-raised/20">
+                                  <TableCell className="w-12">
+                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
+                                      <span className="text-xs font-medium text-text-primary">{message.platform}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="w-20">
+                                    <Badge className={cn(
+                                      "bg-transparent text-xs px-2 py-1 rounded-full font-medium border",
+                                      message.priority === "High" 
+                                        ? "border-orange-500 text-orange-400" 
+                                        : "border-yellow-500 text-yellow-400"
+                                    )}>
+                                      {message.priority}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="max-w-md">
+                                    <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
+                                      {message.message}
+                                    </p>
+                                  </TableCell>
+                                  <TableCell className="text-sm text-text-secondary">
+                                    {message.sender}
+                                  </TableCell>
+                                  <TableCell className="text-sm text-text-secondary">
+                                    {message.time}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                    >
+                                      {message.platform === "S" ? (
+                                        <>
+                                          <Calendar className="h-3 w-3" />
+                                          Slack
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Mail className="h-3 w-3" />
+                                          Email
+                                        </>
+                                      )}
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
                   </div>
                 </div>
               )}
