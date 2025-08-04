@@ -296,6 +296,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     // Show the brief that this follow up came from in main content area
     setSelectedBrief(1); // All follow ups are from the morning brief
     setSelectedCalendarItem(null);
+    setSelectedMeeting(null); // Clear calendar selection
     setFollowUpsFilter('current');
     
     // Show detail view in right panel
