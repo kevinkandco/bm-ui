@@ -18,6 +18,12 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
       title: "Daily Brief",
       scheduledTime: "Tomorrow at 7:30 AM",
       isComingSoon: true
+    },
+    {
+      id: 2,
+      title: "Weekly Summary",
+      scheduledTime: "Friday at 5:00 PM",
+      isComingSoon: true
     }
   ];
 
@@ -57,35 +63,69 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
         </div>
 
         {isUpcomingExpanded && (
-          <div className="animate-fade-in p-2.5 rounded-lg border border-border-subtle bg-surface-raised/20 opacity-60">
-            <div className="mb-2.5">
-              <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-text-secondary/20 text-text-secondary/70 mb-1.5">
-                Coming Soon
+          <div className="animate-fade-in space-y-2">
+            <div className="p-2.5 rounded-lg border border-border-subtle bg-surface-raised/20 opacity-60">
+              <div className="mb-2.5">
+                <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-text-secondary/20 text-text-secondary/70 mb-1.5">
+                  Coming Soon
+                </div>
+                <h4 className="text-xs font-medium text-text-secondary mb-0.5">Daily Brief</h4>
+                <p className="text-xs text-text-secondary/70">
+                  Scheduled for Tomorrow at 7:30 AM
+                </p>
               </div>
-              <h4 className="text-xs font-medium text-text-secondary mb-0.5">Daily Brief</h4>
-              <p className="text-xs text-text-secondary/70">
-                Scheduled for Tomorrow at 7:30 AM
-              </p>
+              
+              <div className="flex gap-1.5">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  disabled
+                  className="flex items-center gap-1 text-xs h-6 px-2 opacity-50"
+                >
+                  <Calendar className="h-2.5 w-2.5" />
+                  Update Schedule
+                </Button>
+                <Button 
+                  size="sm"
+                  disabled
+                  className="flex items-center gap-1 text-xs h-6 px-2 opacity-50"
+                >
+                  <Zap className="h-2.5 w-2.5" />
+                  Get Briefed Now
+                </Button>
+              </div>
             </div>
             
-            <div className="flex gap-1.5">
-              <Button 
-                variant="outline" 
-                size="sm"
-                disabled
-                className="flex items-center gap-1 text-xs h-6 px-2 opacity-50"
-              >
-                <Calendar className="h-2.5 w-2.5" />
-                Update Schedule
-              </Button>
-              <Button 
-                size="sm"
-                disabled
-                className="flex items-center gap-1 text-xs h-6 px-2 opacity-50"
-              >
-                <Zap className="h-2.5 w-2.5" />
-                Get Briefed Now
-              </Button>
+            <div className="p-2.5 rounded-lg border border-border-subtle bg-surface-raised/20 opacity-60">
+              <div className="mb-2.5">
+                <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-text-secondary/20 text-text-secondary/70 mb-1.5">
+                  Coming Soon
+                </div>
+                <h4 className="text-xs font-medium text-text-secondary mb-0.5">Weekly Summary</h4>
+                <p className="text-xs text-text-secondary/70">
+                  Scheduled for Friday at 5:00 PM
+                </p>
+              </div>
+              
+              <div className="flex gap-1.5">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  disabled
+                  className="flex items-center gap-1 text-xs h-6 px-2 opacity-50"
+                >
+                  <Calendar className="h-2.5 w-2.5" />
+                  Update Schedule
+                </Button>
+                <Button 
+                  size="sm"
+                  disabled
+                  className="flex items-center gap-1 text-xs h-6 px-2 opacity-50"
+                >
+                  <Zap className="h-2.5 w-2.5" />
+                  Get Briefed Now
+                </Button>
+              </div>
             </div>
           </div>
         )}
