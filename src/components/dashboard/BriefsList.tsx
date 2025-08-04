@@ -66,7 +66,7 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, se
     },
     {
       id: 5,
-      title: "Weekly Summary",
+      title: "Weekend Brief",
       scheduledTime: "Scheduled for 7/31/2025 at 5:00 PM",
       timeAgo: "4d",
       stats: { slack: 4, emails: 23, actions: 5 }
