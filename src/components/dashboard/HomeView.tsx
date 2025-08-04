@@ -242,7 +242,9 @@ const HomeView = ({
                       onRssClick={handleRssClick}
                       playingBrief={playingBrief} 
                       selectedBrief={selectedBrief} 
-                      onBriefSelect={handleBriefSelect} 
+                      onBriefSelect={handleBriefSelect}
+                      activeTab={leftRailTab}
+                      onTabChange={setLeftRailTab}
                     />
                   </div>
                 </div> : (/* Collapsed State */

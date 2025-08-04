@@ -22,9 +22,11 @@ interface BriefsListProps {
   playingBrief?: number | null;
   selectedBrief?: number | null;
   onBriefSelect: (briefId: number) => void;
+  activeTab?: 'briefs' | 'calendar';
+  onTabChange?: (tab: 'briefs' | 'calendar') => void;
 }
 
-const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, selectedBrief, onBriefSelect }: BriefsListProps) => {
+const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, selectedBrief, onBriefSelect, activeTab = 'briefs', onTabChange }: BriefsListProps) => {
   const briefs: Brief[] = [
     {
       id: 1,
@@ -68,8 +70,24 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, onRssClick, playingBrief, se
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border-subtle">
         <div className="flex items-center gap-6">
-          <h2 className="text-lg font-semibold text-text-primary">Briefs</h2>
-          <h2 className="text-lg font-medium text-text-secondary">Calendar</h2>
+          <button 
+            onClick={() => onTabChange?.('briefs')}
+            className={cn(
+              "text-lg font-medium transition-colors hover:text-text-primary",
+              activeTab === 'briefs' ? "text-text-primary font-semibold" : "text-text-secondary"
+            )}
+          >
+            Briefs
+          </button>
+          <button 
+            onClick={() => onTabChange?.('calendar')}
+            className={cn(
+              "text-lg font-medium transition-colors hover:text-text-primary",
+              activeTab === 'calendar' ? "text-text-primary font-semibold" : "text-text-secondary"
+            )}
+          >
+            Calendar
+          </button>
         </div>
         <div className="flex items-center gap-2">
           {onRssClick && (
