@@ -44,9 +44,6 @@ const HomeView = ({
   onSignOffForDay,
   userStatus = "active"
 }: HomeViewProps) => {
-  const {
-    toast
-  } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -233,10 +230,6 @@ const HomeView = ({
       setPlayingBrief(null);
       setSelectedTranscript(null);
       console.log('Pausing brief');
-      toast({
-        title: "Brief Paused",
-        description: "Audio playback paused"
-      });
     } else {
       setPlayingBrief(briefId);
       // Set transcript data
@@ -280,12 +273,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       });
       setRightPanelCollapsed(false);
       console.log('Playing brief, new playingBrief should be:', briefId);
-      toast({
-        title: "Playing Brief",
-        description: "Audio playback started - transcript shown in right panel"
-      });
     }
-  }, [playingBrief, toast, recentBriefs]);
+  }, [playingBrief, recentBriefs]);
   const handleBriefSelect = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
     setSelectedCalendarItem(null);
@@ -994,10 +983,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   Cancel
                 </Button>
                 <Button onClick={() => {
-              toast({
-                title: "Priority Updated",
-                description: `Priority changed to ${priorityChangeData.newPriority}. We'll use this feedback to improve future suggestions.`
-              });
+              setShowPriorityConfirmModal(false);
+              setPriorityChangeData(null);
               setShowPriorityConfirmModal(false);
             }} className="flex-1 bg-accent-primary hover:bg-accent-primary/90 text-white">
                   Snooze Forever
