@@ -411,10 +411,14 @@ const HomeView = ({
                       {[...Array(8)].map((_, index) => (
                         <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg">
                           <div className="w-16 text-center">
-                            <span className="text-sm font-medium text-text-primary">High</span>
+                            <Badge className="bg-orange-500/90 text-white text-xs px-2 py-1 rounded-full font-medium">
+                              High
+                            </Badge>
                           </div>
                           <div className="w-20 text-center">
-                            <span className="text-sm text-text-secondary">Decision</span>
+                            <Badge className="bg-blue-600/90 text-white text-xs px-3 py-1 rounded-full font-medium">
+                              Decision
+                            </Badge>
                           </div>
                           <div className="flex-1">
                             <span className="text-sm text-text-primary">Review weekly performance report</span>
