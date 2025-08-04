@@ -125,26 +125,45 @@ const HomeView = ({
     const getStatusIcon = () => {
       switch (userStatus) {
         case 'focus':
-          return <Focus className="h-4 w-4" />;
+          return <Focus className="h-3 w-3" />;
         case 'away':
-          return <Clock className="h-4 w-4" />;
+          return <Clock className="h-3 w-3" />;
         case 'vacation':
-          return <X className="h-4 w-4" />;
+          return <X className="h-3 w-3" />;
         default: // active
-          return <Zap className="h-4 w-4" />;
+          return <Zap className="h-3 w-3" />;
       }
     };
 
     return (
-      <Button 
-        variant="outline" 
-        onClick={onToggleFocusMode}
-        className="px-3 py-1.5 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-2 text-sm"
-      >
-        {getStatusIcon()}
-        <span>Update Status</span>
-        <ChevronDown className="h-3 w-3" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="px-2 py-1 h-8 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-1.5 text-xs"
+          >
+            {getStatusIcon()}
+            <span>Update Status</span>
+            <ChevronDown className="h-3 w-3" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-surface border-border-subtle w-56 z-50" align="start">
+          <DropdownMenuItem 
+            onClick={onStartFocusMode} 
+            className="text-text-primary hover:bg-surface-raised/50 flex items-center gap-3 px-4 py-3"
+          >
+            <Focus className="h-4 w-4" />
+            Start Focus Mode
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={onSignOffForDay} 
+            className="text-text-primary hover:bg-surface-raised/50 flex items-center gap-3 px-4 py-3"
+          >
+            <Clock className="h-4 w-4" />
+            Sign Off for the Day
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   };
 
