@@ -774,7 +774,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <div>
                     <Tabs defaultValue="followups" className="w-full">
                       <TabsList className="grid w-fit grid-cols-2 bg-surface-raised/30 p-1 rounded-lg">
-                        <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2">
+                        <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2 text-left">
                           Follow ups (8)
                         </TabsTrigger>
                         <TabsTrigger value="allmessages" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2">
