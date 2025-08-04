@@ -25,8 +25,8 @@ const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) =>
     <div className="space-y-3">
       <div 
         className={cn(
-          "p-4 rounded-lg border border-border-subtle hover:bg-surface-raised/50 transition-colors cursor-pointer",
-          isSelected ? "bg-accent-primary/10 border-accent-primary" : "bg-surface-raised/30"
+          "p-4 rounded-lg hover:bg-[hsl(190,28%,22%)]/40 transition-colors cursor-pointer",
+          isSelected ? "bg-[hsl(190,28%,22%)]/30" : "bg-[hsl(190,28%,22%)]/20"
         )}
         onClick={onClick}
       >
