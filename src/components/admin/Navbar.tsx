@@ -1,17 +1,47 @@
-import { useState } from "react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useApi } from "@/hooks/useApi";
+import useAdminAuthStore from "@/store/useAdminAuthStore";
+import { LogOut } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Button } from "react-day-picker";
 import { Link } from "react-router-dom";
 
 const navItems = [
-  { id: "dashboard", label: "Dashboard", link: "/admin/dashboard" },
-  { id: "users", label: "Users", link: "/admin/users" },
-  { id: "plans", label: "Plans", link: "/admin/plans" },
-  { id: "invoice", label: "Invoices", link: "/admin/invoices" },
+	{ id: "dashboard", label: "Dashboard", link: "/admin/dashboard" },
+	{ id: "users", label: "Users", link: "/admin/users" },
+	{ id: "plans", label: "Plans", link: "/admin/plans" },
+	{ id: "invoice", label: "Invoices", link: "/admin/invoices" },
 ] as const;
 
-type NavItemId = typeof navItems[number]["id"];
+type NavItemId = (typeof navItems)[number]["id"];
 
 const Navbar = ({ currentPage }: { currentPage: NavItemId }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const logout = useAdminAuthStore((state) => state.logout);
+	const gotoLogin = useAdminAuthStore((state) => state.gotoLogin);
+
+	const { call } = useApi();
+
+	const handleLogout = useCallback(async () => {
+		const response = await call("post", `/admin/logout`, {
+			isAdmin: true,
+			toastTitle: "Failed to fetch dashboard data",
+			toastDescription: "Unable to load dashboard data. Please try again.",
+			returnOnFailure: false,
+		});
+
+		if (!response) {
+			return;
+		}
+
+		logout();
+		gotoLogin();
+	}, [call, logout, gotoLogin]);
 
 	return (
 		<nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -32,13 +62,28 @@ const Navbar = ({ currentPage }: { currentPage: NavItemId }) => {
 
 				<div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
 					<div className="flex text-sm bg-gray-800 rounded-full md:me-0 hover:bg-gray-700">
-						<img
-							className="w-8 h-8 rounded-full"
-							src="/images/default.png"
-							alt="user photo"
-						/>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<img
+									className="w-8 h-8 rounded-full cursor-pointer"
+									src="/images/default.png"
+									alt="user photo"
+								/>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								className="bg-surface border-border-subtle w-56"
+								align="start"
+							>
+								<DropdownMenuItem
+									onClick={handleLogout}
+									className="text-text-primary hover:bg-white/5"
+								>
+									<LogOut className="mr-2 h-4 w-4" />
+									Logout
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
-					{/* Hamburger */}
 					<button
 						onClick={() => setIsMenuOpen(!isMenuOpen)}
 						type="button"
@@ -72,7 +117,7 @@ const Navbar = ({ currentPage }: { currentPage: NavItemId }) => {
 						{navItems.map((page) => (
 							<li key={page.id}>
 								<Link
-                                    to={page.link}
+									to={page.link}
 									className={`block py-2 px-3 rounded-sm md:p-0 ${
 										currentPage === page.id
 											? "text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
