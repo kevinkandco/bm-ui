@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const briefStatusDot = document.getElementById("briefStatusDot");
   const statusDot = document.getElementById("statusDot");
   const briefStatusLabel = document.getElementById("briefStatusLabel");
-
   if (
     !statusButtons.length ||
     !briefStatusDot ||
@@ -79,8 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function foucsMode(status) {
-   // 👈 FOUCS MODE ON
-     if (status === "Offline") {
+    // 👈 FOUCS MODE ON
+    if (status === "Offline") {
       try {
         const response = await fetch(`${BASE_URL}/focus-mode`, {
           method: "POST",
@@ -88,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json", // 👈 VERY IMPORTANT
           },
-          body: JSON.stringify({ type: "App", foucsType: 'Offline' }), // 👈 convert to JSON string
+          body: JSON.stringify({ type: "App", foucsType: "Offline" }), // 👈 convert to JSON string
         });
 
         if (!response.ok) {
@@ -100,15 +99,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 👈 FOUCS MODE ON
-     if (status === "DND") {
+    if (status === "DND") {
       try {
         const response = await fetch(`${BASE_URL}/focus-mode`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ type: "App", foucsType: 'DND' }), 
+          body: JSON.stringify({ type: "App", foucsType: "DND" }),
         });
 
         if (!response.ok) {
@@ -119,25 +118,24 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-   // 👈 ACTIVE MODE ON
-     if (status === "Active") {
-       try {
-         const response = await fetch(`${BASE_URL}/exit-focus-mode`, {
-           method: "GET",
-           headers: {
-             Authorization: `Bearer ${token}`,
-             "Content-Type": "application/json",
-           },
-         });
+    // 👈 ACTIVE MODE ON
+    if (status === "Active") {
+      try {
+        const response = await fetch(`${BASE_URL}/exit-focus-mode`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-         if (!response.ok) {
-           alert("please set status to offline.");
-         }
-       } catch (err) {
-         alert(JSON.stringify(err));
-       }
-     }
-    
+        if (!response.ok) {
+          alert("please set status to offline.");
+        }
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
+    }
   }
 
   statusButtons.forEach((btn) => {
@@ -150,4 +148,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateStatusDisplay(currentStatus);
+
+  const statusChangeBtn = document.getElementById("statusChangeBtn");
+
+  statusChangeBtn.addEventListener("click", () => {
+    updateStatusDisplay(currentStatus);
+    if (currentStatus === "Active") {
+        updateStatusDisplay("Offline");
+        postSlackStatus("Offline");
+        foucsMode("Offline");
+    } else if (currentStatus === "Offline") {
+        updateStatusDisplay("DND");
+        postSlackStatus("DND");
+        foucsMode("DND");
+    } else {
+        updateStatusDisplay("Active");
+        postSlackStatus("Active");
+        foucsMode("Active");
+    }
+  });
 });
