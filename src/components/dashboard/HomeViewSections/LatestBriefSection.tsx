@@ -11,7 +11,7 @@ interface LatestBriefSectionProps {
 
 const LatestBriefSection = ({ onClick, isSelected }: LatestBriefSectionProps) => {
   return (
-    <div className="space-y-3 mt-8">
+    <div className="space-y-3">
       <h2 className="text-lg font-semibold text-text-primary">Latest Brief</h2>
       <div 
         className={cn(
