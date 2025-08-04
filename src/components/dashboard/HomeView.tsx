@@ -305,7 +305,7 @@ const HomeView = ({
                       <div>
                         <h3 className="text-lg font-medium text-text-primary mb-4">Follow ups (8)</h3>
                         <div className="space-y-3">
-                          {[...Array(8)].map((_, index) => <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg border border-border-subtle">
+                          {[...Array(8)].map((_, index) => <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg">
                               <div className="w-16 text-center">
                                 <span className="text-sm font-medium text-text-primary">High</span>
                               </div>
