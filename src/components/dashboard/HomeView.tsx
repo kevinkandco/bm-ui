@@ -63,6 +63,7 @@ const HomeView = ({
   const [snoozeReason, setSnoozeReason] = useState("message");
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
   const [selectedTranscript, setSelectedTranscript] = useState<any>(null);
+  const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
 
   // Sample data
   const recentBriefs = [{
@@ -286,6 +287,32 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setFollowUpsFilter('all');
   }, []);
 
+  // Handler for follow up clicks in left panel
+  const handleFollowUpClick = useCallback((item: any) => {
+    // Set the selected follow up for highlighting
+    setSelectedFollowUpId(item.id);
+    
+    // Show the brief that this follow up came from in main content area
+    setSelectedBrief(1); // All follow ups are from the morning brief
+    setSelectedCalendarItem(null);
+    setFollowUpsFilter('current');
+    
+    // Show detail view in right panel
+    setSelectedMessage({
+      ...item,
+      subject: "Follow-up Required",
+      fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+      from: item.sender,
+      relevancy: "Requires action from you",
+      reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+      created: item.time,
+      lastActivity: item.time,
+      source: item.platform === "S" ? "Slack" : "Email",
+      due: "End of day"
+    });
+    setRightPanelCollapsed(false);
+  }, []);
+
   // Priority change handler
   const handlePriorityChange = useCallback((itemId: number, newPriority: string, oldPriority: string, itemData: any) => {
     setPriorityChangeData({
@@ -467,21 +494,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {followUps.map(item => <TableRow key={item.id} className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer" onClick={() => {
-                          setSelectedMessage({
-                            ...item,
-                            subject: "Follow-up Required",
-                            fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                            from: item.sender,
-                            relevancy: "Requires action from you",
-                            reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                            created: item.time,
-                            lastActivity: item.time,
-                            source: item.platform === "S" ? "Slack" : "Email",
-                            due: "End of day"
-                          });
-                          setRightPanelCollapsed(false);
-                        }}>
+                            {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
+                              selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
+                            }`} onClick={() => handleFollowUpClick(item)}>
                                 <TableCell className="w-20">
                                   <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
                                 </TableCell>
@@ -618,18 +633,24 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer" onClick={() => setSelectedMessage({
-                            ...item,
-                            subject: "Follow-up Required",
-                            fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                            from: item.sender,
-                            relevancy: "Requires action from you",
-                            reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                            created: item.time,
-                            lastActivity: item.time,
-                            source: item.platform === "S" ? "Slack" : "Email",
-                            due: "End of day"
-                          })}>
+                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
+                                selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
+                              }`} onClick={() => {
+                                setSelectedFollowUpId(item.id);
+                                setSelectedMessage({
+                                  ...item,
+                                  subject: "Follow-up Required",
+                                  fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                                  from: item.sender,
+                                  relevancy: "Requires action from you",
+                                  reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                                  created: item.time,
+                                  lastActivity: item.time,
+                                  source: item.platform === "S" ? "Slack" : "Email",
+                                  due: "End of day"
+                                });
+                                setRightPanelCollapsed(false);
+                              }}>
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
                                       <span className="text-xs font-medium text-text-primary">{item.platform}</span>
