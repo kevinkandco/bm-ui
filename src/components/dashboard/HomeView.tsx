@@ -523,19 +523,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     {/* Latest Brief Section */}
                     <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                     
-                    {/* Navigation Tabs for Briefs */}
-                    <div className="grid w-full grid-cols-3 bg-surface-raised/30 p-1 rounded-lg">
-                      <button className="text-text-secondary bg-surface-raised/70 rounded-md px-3 py-2 text-xs font-medium">
-                        Recent Briefs
-                      </button>
-                      <button className="text-text-secondary rounded-md px-3 py-2 text-xs">
-                        Archived
-                      </button>
-                      <button className="text-text-secondary rounded-md px-3 py-2 text-xs">
-                        Scheduled
-                      </button>
-                    </div>
-                    
                     {/* Briefs List */}
                     <div className="flex-1 min-h-0">
                       <BriefsList 
