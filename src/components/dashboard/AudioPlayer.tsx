@@ -14,8 +14,8 @@ interface AudioPlayerProps {
 
 const AudioPlayer = ({ 
   briefId, 
-  briefName = "Morning Brief", 
-  briefTime = "Today, 8:00 AM",
+  briefName = "No audio selected", 
+  briefTime = "Select a brief to play",
   onClose,
   className 
 }: AudioPlayerProps) => {
@@ -74,11 +74,9 @@ const AudioPlayer = ({
     window.open('https://feeds.example.com/briefme-podcast', '_blank');
   }, []);
 
-  if (!briefId) {
-    console.log('AudioPlayer: briefId is null/undefined, not rendering');
-    return null;
-  }
-
+  // Show disabled state when no brief is selected
+  const isDisabled = !briefId;
+  
   console.log('AudioPlayer: rendering with briefId:', briefId, 'briefName:', briefName);
 
   return (
@@ -93,7 +91,8 @@ const AudioPlayer = ({
             variant="ghost"
             size="sm"
             onClick={handleSkipBack}
-            className="h-8 w-8 p-0 hover:bg-surface-raised"
+            disabled={isDisabled}
+            className="h-8 w-8 p-0 hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <SkipBack className="h-4 w-4 fill-current" />
           </Button>
@@ -102,7 +101,8 @@ const AudioPlayer = ({
             variant="ghost"
             size="sm"
             onClick={handlePlayPause}
-            className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30"
+            disabled={isDisabled}
+            className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPlaying ? (
               <Pause className="h-5 w-5 text-accent-primary" />
@@ -115,7 +115,8 @@ const AudioPlayer = ({
             variant="ghost"
             size="sm"
             onClick={handleSkipForward}
-            className="h-8 w-8 p-0 hover:bg-surface-raised"
+            disabled={isDisabled}
+            className="h-8 w-8 p-0 hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <SkipForward className="h-4 w-4 fill-current" />
           </Button>
@@ -143,6 +144,7 @@ const AudioPlayer = ({
               max={duration}
               step={1}
               onValueChange={handleTimelineChange}
+              disabled={isDisabled}
               className="w-full"
             />
           </div>
@@ -158,8 +160,9 @@ const AudioPlayer = ({
             variant="ghost"
             size="sm"
             onClick={() => setShowVolume(!showVolume)}
-            className="h-8 w-8 p-0 hover:bg-surface-raised"
-            onMouseEnter={() => setShowVolume(true)}
+            disabled={isDisabled}
+            className="h-8 w-8 p-0 hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed"
+            onMouseEnter={() => !isDisabled && setShowVolume(true)}
           >
             <Volume2 className="h-4 w-4" />
           </Button>
@@ -186,7 +189,8 @@ const AudioPlayer = ({
           variant="ghost"
           size="sm"
           onClick={handlePodcastFeed}
-          className="h-8 w-8 p-0 hover:bg-surface-raised"
+          disabled={isDisabled}
+          className="h-8 w-8 p-0 hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed"
           title="Open podcast RSS feed"
         >
           <Rss className="h-4 w-4" />

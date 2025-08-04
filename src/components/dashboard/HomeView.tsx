@@ -197,7 +197,7 @@ const HomeView = ({
       </header>
 
       {/* Resizable Three-Column Layout */}
-      <div className={cn("flex-1", playingBrief && "pb-20")}>
+      <div className="flex-1 pb-20">
         <ResizablePanelGroup direction="horizontal" className="min-h-0">
           {/* Left Panel */}
           <ResizablePanel 
