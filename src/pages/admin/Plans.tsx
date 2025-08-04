@@ -24,10 +24,6 @@ const Plans = () => {
 	});
 	const [loading, setLoading] = useState(false);
 	const [plans, setPlans] = useState([]);
-	const [viewIntegration, setViewIntegration] = useState({
-		user: null,
-		open: false,
-	});
 
 	const getPlans = useCallback(
 		async (page = 1) => {
@@ -62,6 +58,7 @@ const Plans = () => {
 	useEffect(() => {
 		getPlans();
 	}, [getPlans]);
+	
 	return (
 		<>
 			<div className="w-full h-screen">
