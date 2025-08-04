@@ -333,26 +333,18 @@ const HomeView = ({
           {/* Right Panel */}
           <ResizablePanel defaultSize={20} minSize={15} maxSize={35} collapsible={true} collapsedSize={4} onCollapse={() => setRightPanelCollapsed(true)} onExpand={() => setRightPanelCollapsed(false)}>
             <div className={cn("h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col", rightPanelCollapsed && "items-center")}>
-              {!rightPanelCollapsed ? <div className="p-4 flex-1 overflow-hidden">
-                  {/* Header with collapse button */}
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-semibold text-text-primary">Follow-ups</h2>
-                    <div className="flex items-center gap-2">
-                      {followUpsFilter === 'current'}
-                      <Button variant="ghost" size="sm" onClick={() => setRightPanelCollapsed(true)} className="h-6 w-6 p-0">
-                        <PanelRightClose className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="flex-1 overflow-auto">
-                    <ActionItemsPanel />
-                  </div>
-                </div> : (/* Collapsed State */
-            <div className="p-2 flex flex-col items-center">
+              {!rightPanelCollapsed ? (
+                <div className="flex-1 overflow-hidden">
+                  <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} />
+                </div>
+              ) : (
+                /* Collapsed State */
+                <div className="p-2 flex flex-col items-center">
                   <Button variant="ghost" size="sm" onClick={() => setRightPanelCollapsed(false)} className="h-8 w-8 p-0 mb-4">
                     <CheckSquare className="h-4 w-4" />
                   </Button>
-                </div>)}
+                </div>
+              )}
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
