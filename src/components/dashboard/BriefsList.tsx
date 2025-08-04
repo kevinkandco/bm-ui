@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Settings } from 'lucide-react';
+import { Play, Settings, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -18,12 +18,13 @@ interface Brief {
 interface BriefsListProps {
   onPlayBrief: (briefId: number) => void;
   onSettingsClick: () => void;
+  onTranscriptClick?: () => void;
   playingBrief?: number | null;
   selectedBrief?: number | null;
   onBriefSelect: (briefId: number) => void;
 }
 
-const BriefsList = ({ onPlayBrief, onSettingsClick, playingBrief, selectedBrief, onBriefSelect }: BriefsListProps) => {
+const BriefsList = ({ onPlayBrief, onSettingsClick, onTranscriptClick, playingBrief, selectedBrief, onBriefSelect }: BriefsListProps) => {
   const briefs: Brief[] = [
     {
       id: 1,
@@ -70,14 +71,27 @@ const BriefsList = ({ onPlayBrief, onSettingsClick, playingBrief, selectedBrief,
           <h2 className="text-lg font-semibold text-text-primary">Briefs</h2>
           <h2 className="text-lg font-medium text-text-secondary">Calendar</h2>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onSettingsClick}
-          className="h-8 w-8 p-0"
-        >
-          <Settings className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          {onTranscriptClick && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onTranscriptClick}
+              className="h-8 w-8 p-0"
+              title="View transcript"
+            >
+              <FileText className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onSettingsClick}
+            className="h-8 w-8 p-0"
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Briefs List */}

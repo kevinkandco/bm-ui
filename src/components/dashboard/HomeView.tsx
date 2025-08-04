@@ -18,6 +18,7 @@ import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
 import BriefsList from "./BriefsList";
+import TranscriptModal from "./TranscriptModal";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -54,6 +55,7 @@ const HomeView = ({
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
   const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
+  const [showTranscriptModal, setShowTranscriptModal] = useState(false);
 
   // Sample data
   const recentBriefs = [{
@@ -150,7 +152,10 @@ const HomeView = ({
         {config.label}
       </Badge>;
   };
-
+  
+  const handleTranscriptClick = useCallback(() => {
+    setShowTranscriptModal(true);
+  }, []);
   // Mobile fallback - return current mobile layout for now
   if (isMobile) {
     return <div className="p-4">
@@ -230,7 +235,14 @@ const HomeView = ({
                   
                   {/* Briefs List */}
                   <div className="flex-1 min-h-0">
-                    <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
+                    <BriefsList 
+                      onPlayBrief={handlePlayBrief} 
+                      onSettingsClick={() => navigate("/dashboard/settings")} 
+                      onTranscriptClick={handleTranscriptClick}
+                      playingBrief={playingBrief} 
+                      selectedBrief={selectedBrief} 
+                      onBriefSelect={handleBriefSelect} 
+                    />
                   </div>
                 </div> : (/* Collapsed State */
             <div className="p-2 flex flex-col items-center">
@@ -366,6 +378,13 @@ const HomeView = ({
 
       {/* Fixed Audio Player */}
       <AudioPlayer briefId={playingBrief} briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />
+
+      {/* Transcript Modal */}
+      <TranscriptModal
+        open={showTranscriptModal}
+        onClose={() => setShowTranscriptModal(false)}
+        briefId={selectedBrief || undefined}
+      />
 
       {/* Mobile Right Drawer */}
       <Sheet open={showRightDrawer} onOpenChange={setShowRightDrawer}>
