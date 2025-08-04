@@ -338,7 +338,7 @@ const HomeView = ({
             </div>
           </ResizablePanel>
 
-          <ResizableHandle />
+          
 
           {/* Right Panel */}
           <ResizablePanel defaultSize={20} minSize={15} maxSize={35} collapsible={true} collapsedSize={4} onCollapse={() => setRightPanelCollapsed(true)} onExpand={() => setRightPanelCollapsed(false)}>
