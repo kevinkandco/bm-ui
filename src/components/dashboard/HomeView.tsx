@@ -54,12 +54,12 @@ const HomeView = ({
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
   const [selectedCalendarItem, setSelectedCalendarItem] = useState<string | null>(null);
-  const [leftRailTab, setLeftRailTab] = useState<'briefs' | 'calendar'>('briefs');
+  const [leftRailTab, setLeftRailTab] = useState<'briefs' | 'calendar' | 'followups'>('briefs');
   const [followUpsFilter, setFollowUpsFilter] = useState<'all' | 'current'>('all');
   const [showRightDrawer, setShowRightDrawer] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
-  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(true); // Closed by default
   const [showFollowUpModal, setShowFollowUpModal] = useState(false);
   const [selectedFollowUp, setSelectedFollowUp] = useState<any>(null);
   const [showPriorityConfirmModal, setShowPriorityConfirmModal] = useState(false);
@@ -297,6 +297,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           timeSaved: "~66"
         }
       });
+      setRightPanelCollapsed(false);
       console.log('Playing brief, new playingBrief should be:', briefId);
       toast({
         title: "Playing Brief",
@@ -481,10 +482,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {!leftPanelCollapsed ? (
           <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="h-full flex flex-col">
-              {/* Latest Brief Section */}
+              {/* Header with collapse button */}
               <div className="p-4">
                 <div className="flex items-center justify-between mb-3 mt-[30px]">
-                  <h2 className="text-lg font-medium text-text-primary">Latest Brief</h2>
+                  <h2 className="text-lg font-medium text-text-primary">Brief Me</h2>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -494,18 +495,107 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     <PanelLeftClose className="h-4 w-4" />
                   </Button>
                 </div>
-                <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
-              </div>
-              
-              {/* Briefs List */}
-              <div className="flex-1 min-h-0">
-                <BriefsList 
-                  onPlayBrief={handlePlayBrief} 
-                  onSettingsClick={() => navigate("/dashboard/settings")} 
-                  playingBrief={playingBrief} 
-                  selectedBrief={selectedBrief} 
-                  onBriefSelect={handleBriefSelect} 
-                />
+                
+                {/* Navigation Tabs */}
+                <Tabs value={leftRailTab} onValueChange={(value) => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full">
+                  <TabsList className="grid w-full grid-cols-3 bg-surface-raised/30 p-1 rounded-lg">
+                    <TabsTrigger 
+                      value="briefs" 
+                      className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs"
+                    >
+                      Briefs
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="calendar" 
+                      className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs"
+                    >
+                      Calendar
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="followups" 
+                      className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-3 py-2 text-xs"
+                    >
+                      Follow ups
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="briefs" className="mt-4 flex-1 min-h-0 space-y-4">
+                    {/* Latest Brief Section */}
+                    <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
+                    
+                    {/* Briefs List */}
+                    <div className="flex-1 min-h-0">
+                      <BriefsList 
+                        onPlayBrief={handlePlayBrief} 
+                        onSettingsClick={() => navigate("/dashboard/settings")} 
+                        playingBrief={playingBrief} 
+                        selectedBrief={selectedBrief} 
+                        onBriefSelect={handleBriefSelect} 
+                      />
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="calendar" className="mt-4 flex-1 min-h-0">
+                    <CalendarSection />
+                  </TabsContent>
+                  
+                  <TabsContent value="followups" className="mt-4 flex-1 min-h-0">
+                    <div className="space-y-4">
+                      <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                        <Table>
+                          <TableHeader>
+                            <TableRow className="border-border-subtle hover:bg-transparent">
+                              <TableHead className="text-text-secondary font-medium text-xs">Platform</TableHead>
+                              <TableHead className="text-text-secondary font-medium text-xs">Priority</TableHead>
+                              <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
+                              <TableHead className="text-text-secondary font-medium text-xs">Time</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {followUps.map((item) => (
+                              <TableRow 
+                                key={item.id} 
+                                className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer"
+                                onClick={() => {
+                                  setSelectedMessage({
+                                    ...item,
+                                    subject: "Follow-up Required",
+                                    fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                                    from: item.sender,
+                                    relevancy: "Requires action from you",
+                                    reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                                    created: item.time,
+                                    lastActivity: item.time,
+                                    source: item.platform === "S" ? "Slack" : "Email",
+                                    due: "End of day"
+                                  });
+                                  setRightPanelCollapsed(false);
+                                }}
+                              >
+                                <TableCell className="w-8">
+                                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-raised/50 border border-border-subtle">
+                                    <span className="text-xs font-medium text-text-primary">{item.platform}</span>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="w-16">
+                                  <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                </TableCell>
+                                <TableCell className="max-w-32">
+                                  <p className="text-xs text-text-primary line-clamp-2 leading-relaxed">
+                                    {item.message}
+                                  </p>
+                                </TableCell>
+                                <TableCell className="text-xs text-text-secondary">
+                                  {item.time}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
           </div>
@@ -801,20 +891,23 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <TableRow 
                                   key={message.id} 
                                   className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer"
-                                  onClick={() => setSelectedMessage({
-                                    ...message,
-                                    subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
-                                    fullMessage: message.id === 2 
-                                      ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team`
-                                      : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
-                                    from: message.sender,
-                                    relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
-                                    reasoning: "Flagged based on sender importance and content keywords.",
-                                    created: message.time,
-                                    lastActivity: message.time,
-                                    source: message.platform === "S" ? "Slack" : "Email",
-                                    due: message.priority === "High" ? "Today" : "This week"
-                                  })}
+                  onClick={() => {
+                    setSelectedMessage({
+                      ...message,
+                      subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
+                      fullMessage: message.id === 2 
+                        ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team`
+                        : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
+                      from: message.sender,
+                      relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
+                      reasoning: "Flagged based on sender importance and content keywords.",
+                      created: message.time,
+                      lastActivity: message.time,
+                      source: message.platform === "S" ? "Slack" : "Email",
+                      due: message.priority === "High" ? "Today" : "This week"
+                    });
+                    setRightPanelCollapsed(false);
+                  }}
                                 >
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
@@ -896,28 +989,27 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>
         </div>
 
-        {/* Right Panel */}
-        {!rightPanelCollapsed ? (
+        {/* Right Panel - Only show when there's content */}
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? (
           <div className="w-80 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="flex-1 overflow-hidden">
               <ActionItemsPanel 
                 onToggleCollapse={() => setRightPanelCollapsed(true)} 
                 selectedMessage={selectedMessage}
-                onCloseMessage={() => setSelectedMessage(null)}
+                onCloseMessage={() => {
+                  setSelectedMessage(null);
+                  setRightPanelCollapsed(true);
+                }}
                 selectedTranscript={selectedTranscript}
                 onCloseTranscript={() => {
                   setSelectedTranscript(null);
                   setPlayingBrief(null);
+                  setRightPanelCollapsed(true);
                 }}
               />
             </div>
           </div>
-        ) : (
-          /* Collapsed Right Panel - Empty Space */
-          <div className="w-5 h-full">
-            {/* 20px empty space */}
-          </div>
-        )}
+        ) : null}
       </div>
 
       {/* Fixed Audio Player */}
