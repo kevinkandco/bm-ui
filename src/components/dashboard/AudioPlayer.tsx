@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Rss, Volume2, X } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Rss, Volume2, X, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
+import TranscriptModal from './TranscriptModal';
 
 interface AudioPlayerProps {
   briefId: number | null;
@@ -24,6 +25,7 @@ const AudioPlayer = ({
   const [duration, setDuration] = useState(312); // 5:12 in seconds
   const [volume, setVolume] = useState(80);
   const [showVolume, setShowVolume] = useState(false);
+  const [showTranscriptModal, setShowTranscriptModal] = useState(false);
 
   // Auto-play when briefId changes
   useEffect(() => {
@@ -72,6 +74,10 @@ const AudioPlayer = ({
   const handlePodcastFeed = useCallback(() => {
     // In a real app, this would open the RSS feed
     window.open('https://feeds.example.com/briefme-podcast', '_blank');
+  }, []);
+
+  const handleTranscriptClick = useCallback(() => {
+    setShowTranscriptModal(true);
   }, []);
 
   // Show disabled state when no brief is selected
@@ -154,6 +160,18 @@ const AudioPlayer = ({
           </span>
         </div>
 
+        {/* Transcript Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleTranscriptClick}
+          disabled={isDisabled}
+          className="h-8 w-8 p-0 hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed"
+          title="View transcript"
+        >
+          <FileText className="h-4 w-4" />
+        </Button>
+
         {/* Volume Control */}
         <div className="relative flex items-center gap-2">
           <Button
@@ -206,6 +224,13 @@ const AudioPlayer = ({
           <X className="h-4 w-4" />
         </Button>
       </div>
+
+      {/* Transcript Modal */}
+      <TranscriptModal
+        open={showTranscriptModal}
+        onClose={() => setShowTranscriptModal(false)}
+        briefId={briefId || undefined}
+      />
     </div>
   );
 };
