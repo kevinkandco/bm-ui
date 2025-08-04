@@ -221,7 +221,6 @@ const HomeView = ({
               {!leftPanelCollapsed ? <div className="h-full flex flex-col">
                   {/* Latest Brief Section */}
                   <div className="p-4">
-                    <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-6 w-auto mb-4" />
                     <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                   </div>
                   
