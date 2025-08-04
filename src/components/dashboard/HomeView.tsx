@@ -215,12 +215,22 @@ const HomeView = ({
               leftPanelCollapsed && "items-center"
             )}>
               {!leftPanelCollapsed ? (
-                <BriefsList
-                  onPlayBrief={handlePlayBrief}
-                  onSettingsClick={() => navigate("/dashboard/settings")}
-                  playingBrief={playingBrief}
-                />
-              
+                <div className="h-full flex flex-col">
+                  {/* Latest Brief Section */}
+                  <div className="p-4">
+                    <h1 className="text-lg font-medium text-text-primary mb-4">Good morning, Alex</h1>
+                    <LatestBriefSection onClick={() => handleBriefSelect(1)} />
+                  </div>
+                  
+                  {/* Briefs List */}
+                  <div className="flex-1 min-h-0">
+                    <BriefsList
+                      onPlayBrief={handlePlayBrief}
+                      onSettingsClick={() => navigate("/dashboard/settings")}
+                      playingBrief={playingBrief}
+                    />
+                  </div>
+                </div>
               ) : (
                 /* Collapsed State */
                 <div className="p-2 flex flex-col items-center">
