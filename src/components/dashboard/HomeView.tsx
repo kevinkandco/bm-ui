@@ -18,7 +18,6 @@ import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
 import BriefsList from "./BriefsList";
-import TranscriptModal from "./TranscriptModal";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -55,7 +54,6 @@ const HomeView = ({
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
   const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
-  const [showTranscriptModal, setShowTranscriptModal] = useState(false);
 
   // Sample data
   const recentBriefs = [{
@@ -152,11 +150,7 @@ const HomeView = ({
         {config.label}
       </Badge>;
   };
-  
-  const handleRssClick = useCallback(() => {
-    // Open podcast RSS feed
-    window.open('https://feeds.example.com/briefme-podcast', '_blank');
-  }, []);
+
   // Mobile fallback - return current mobile layout for now
   if (isMobile) {
     return <div className="p-4">
@@ -173,11 +167,7 @@ const HomeView = ({
           <div className="flex items-center justify-between">
             {/* Left: Brief Me Logo */}
             <div>
-              <img 
-                src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" 
-                alt="Brief Me" 
-                className="h-8 w-auto"
-              />
+              <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
             </div>
 
             {/* Center: Empty (reserved space) */}
@@ -231,21 +221,13 @@ const HomeView = ({
               {!leftPanelCollapsed ? <div className="h-full flex flex-col">
                   {/* Latest Brief Section */}
                   <div className="p-4">
+                    <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-6 w-auto mb-4" />
                     <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                   </div>
                   
                   {/* Briefs List */}
                   <div className="flex-1 min-h-0">
-                    <BriefsList 
-                      onPlayBrief={handlePlayBrief} 
-                      onSettingsClick={() => navigate("/dashboard/settings")} 
-                      onRssClick={handleRssClick}
-                      playingBrief={playingBrief} 
-                      selectedBrief={selectedBrief} 
-                      onBriefSelect={handleBriefSelect}
-                      activeTab={leftRailTab}
-                      onTabChange={setLeftRailTab}
-                    />
+                    <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
                   </div>
                 </div> : (/* Collapsed State */
             <div className="p-2 flex flex-col items-center">
@@ -273,7 +255,7 @@ const HomeView = ({
                       </div>
 
                       {/* Summary Section with Play Button and Stats */}
-                      <div className="bg-surface-raised/50 rounded-lg p-4">
+                      <div className="bg-surface-raised/50 rounded-lg p-4 border border-border-subtle">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <button onClick={() => handlePlayBrief(selectedBrief)} className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors">
@@ -305,7 +287,7 @@ const HomeView = ({
                       <div>
                         <h3 className="text-lg font-medium text-text-primary mb-4">Follow ups (8)</h3>
                         <div className="space-y-3">
-                          {[...Array(8)].map((_, index) => <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg">
+                          {[...Array(8)].map((_, index) => <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg border border-border-subtle">
                               <div className="w-16 text-center">
                                 <span className="text-sm font-medium text-text-primary">High</span>
                               </div>
@@ -353,20 +335,18 @@ const HomeView = ({
           <ResizablePanel defaultSize={20} minSize={15} maxSize={35} collapsible={true} collapsedSize={4} onCollapse={() => setRightPanelCollapsed(true)} onExpand={() => setRightPanelCollapsed(false)}>
             <div className={cn("h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col", rightPanelCollapsed && "items-center")}>
               {!rightPanelCollapsed ? <div className="p-4 flex-1 overflow-hidden">
-                  <div className="flex-1 overflow-auto mb-4">
-                    <ActionItemsPanel />
-                  </div>
                   {/* Header with collapse button */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-4">
                     <h2 className="font-semibold text-text-primary">Follow-ups</h2>
                     <div className="flex items-center gap-2">
-                      {followUpsFilter === 'current' && <button onClick={() => setFollowUpsFilter('all')} className="text-xs text-accent-primary hover:text-accent-primary/80">
-                          View All
-                        </button>}
+                      {followUpsFilter === 'current'}
                       <Button variant="ghost" size="sm" onClick={() => setRightPanelCollapsed(true)} className="h-6 w-6 p-0">
                         <PanelRightClose className="h-4 w-4" />
                       </Button>
                     </div>
+                  </div>
+                  <div className="flex-1 overflow-auto">
+                    <ActionItemsPanel />
                   </div>
                 </div> : (/* Collapsed State */
             <div className="p-2 flex flex-col items-center">
@@ -381,13 +361,6 @@ const HomeView = ({
 
       {/* Fixed Audio Player */}
       <AudioPlayer briefId={playingBrief} briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />
-
-      {/* Transcript Modal */}
-      <TranscriptModal
-        open={showTranscriptModal}
-        onClose={() => setShowTranscriptModal(false)}
-        briefId={selectedBrief || undefined}
-      />
 
       {/* Mobile Right Drawer */}
       <Sheet open={showRightDrawer} onOpenChange={setShowRightDrawer}>
