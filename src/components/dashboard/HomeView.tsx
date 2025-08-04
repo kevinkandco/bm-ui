@@ -411,12 +411,12 @@ const HomeView = ({
                       {[...Array(8)].map((_, index) => (
                         <div key={index} className="flex items-center gap-4 p-3 bg-surface-raised/30 rounded-lg">
                           <div className="w-16 text-center">
-                            <Badge className="bg-orange-500/90 text-white text-xs px-2 py-1 rounded-full font-medium">
+                            <Badge className="bg-transparent border border-orange-500 text-orange-400 text-xs px-2 py-1 rounded-full font-medium">
                               High
                             </Badge>
                           </div>
                           <div className="w-20 text-center">
-                            <Badge className="bg-blue-600/90 text-white text-xs px-3 py-1 rounded-full font-medium">
+                            <Badge className="bg-transparent border border-blue-500 text-blue-400 text-xs px-3 py-1 rounded-full font-medium">
                               Decision
                             </Badge>
                           </div>
