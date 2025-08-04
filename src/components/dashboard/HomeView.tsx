@@ -273,7 +273,7 @@ const HomeView = ({
                       </div>
 
                       {/* Summary Section with Play Button and Stats */}
-                      <div className="bg-surface-raised/50 rounded-lg p-4 border border-border-subtle">
+                      <div className="bg-surface-raised/50 rounded-lg p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <button onClick={() => handlePlayBrief(selectedBrief)} className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors">
