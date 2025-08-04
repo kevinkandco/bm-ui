@@ -23,7 +23,7 @@ import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
 import BriefsList from "./BriefsList";
-import { MessageDetailPanel } from "./MessageDetailPanel";
+
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -855,7 +855,11 @@ const HomeView = ({
         {!rightPanelCollapsed ? (
           <div className="w-80 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="flex-1 overflow-hidden">
-              <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} />
+              <ActionItemsPanel 
+                onToggleCollapse={() => setRightPanelCollapsed(true)} 
+                selectedMessage={selectedMessage}
+                onCloseMessage={() => setSelectedMessage(null)}
+              />
             </div>
           </div>
         ) : (
@@ -1078,11 +1082,8 @@ const HomeView = ({
         </DialogContent>
       </Dialog>
 
-      {/* Message Detail Panel */}
-      <MessageDetailPanel 
-        message={selectedMessage} 
-        onClose={() => setSelectedMessage(null)} 
-      />
-    </div>;
+    </div>
+  );
 };
+
 export default React.memo(HomeView);
