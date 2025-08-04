@@ -164,19 +164,18 @@ const HomeView = ({
       <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Left: Brief Me Logo */}
-            <div>
+            {/* Left: Brief Me Logo and Status */}
+            <div className="flex items-center gap-3">
               <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
+              {/* Status Chip */}
+              {getStatusChip()}
             </div>
 
             {/* Center: Empty (reserved space) */}
             <div className="flex-1" />
 
-            {/* Right: Status chip, Get Brief button, Avatar */}
+            {/* Right: Get Brief button, Avatar */}
             <div className="flex items-center gap-3">
-              {/* Status Chip */}
-              {getStatusChip()}
-
               {/* Get Brief Button */}
               <Button onClick={onToggleCatchMeUp} className="bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2">
                 <Zap className="mr-2 h-4 w-4" />
