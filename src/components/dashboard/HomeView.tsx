@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -53,6 +54,8 @@ const HomeView = ({
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
   const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
+  const [showFollowUpModal, setShowFollowUpModal] = useState(false);
+  const [selectedFollowUp, setSelectedFollowUp] = useState<any>(null);
 
   // Sample data
   const recentBriefs = [{
@@ -446,6 +449,35 @@ const HomeView = ({
                               Gmail
                             </Button>
                           </div>
+                          <div className="flex items-center">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedFollowUp({
+                                  id: index,
+                                  title: "Domain Expiration",
+                                  priority: "High",
+                                  type: "Decision",
+                                  description: "Review weekly performance report",
+                                  sender: "kevin@uprise.is",
+                                  from: "Hover <help@hover.com>",
+                                  subject: "Urgent: Launch Materials Review Needed",
+                                  fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+                                  relevancy: "Critical - blocking marketing team progress",
+                                  reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+                                  created: "12:24 PM",
+                                  lastActivity: "12:24 PM",
+                                  source: "Gmail",
+                                  due: "2 PM today"
+                                });
+                                setShowFollowUpModal(true);
+                              }}
+                              className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                            >
+                              <Info className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -501,6 +533,109 @@ const HomeView = ({
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Follow-up Details Modal */}
+      <Dialog open={showFollowUpModal} onOpenChange={setShowFollowUpModal}>
+        <DialogContent className="bg-surface border-border-subtle max-w-4xl max-h-[90vh] overflow-y-auto">
+          {selectedFollowUp && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-6 w-6 text-blue-400" />
+                  <div>
+                    <h2 className="text-xl font-semibold text-text-primary">{selectedFollowUp.title}</h2>
+                    <p className="text-sm text-text-secondary">7:45 AM</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2"
+                  >
+                    <Kanban className="h-4 w-4" />
+                    Add to Asana
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2"
+                  >
+                    <Mail className="h-4 w-4" />
+                    Open in Gmail
+                  </Button>
+                </div>
+              </div>
+
+              {/* From and Subject */}
+              <div className="space-y-2">
+                <div>
+                  <span className="text-text-secondary text-sm">From: </span>
+                  <span className="text-text-primary">{selectedFollowUp.from}</span>
+                </div>
+                <div>
+                  <span className="text-text-secondary text-sm">Subject: </span>
+                  <span className="text-text-primary">{selectedFollowUp.subject}</span>
+                </div>
+              </div>
+
+              {/* Full Message */}
+              <div className="space-y-3">
+                <h3 className="text-lg font-medium text-text-primary">Full Message:</h3>
+                <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
+                  <p className="text-text-primary leading-relaxed">{selectedFollowUp.fullMessage}</p>
+                </div>
+              </div>
+
+              {/* Two Column Layout */}
+              <div className="grid grid-cols-2 gap-6">
+                {/* Left Column - Relevancy */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium text-text-primary">Relevancy:</h3>
+                  <p className="text-text-primary">{selectedFollowUp.relevancy}</p>
+                </div>
+
+                {/* Right Column - Why this is an action item */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium text-text-primary">Why this is an action item:</h3>
+                  <p className="text-text-primary">{selectedFollowUp.reasoning}</p>
+                </div>
+              </div>
+
+              {/* Bottom Details */}
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Created:</span>
+                  <span className="text-text-primary">{selectedFollowUp.created}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Last Activity:</span>
+                  <span className="text-text-primary">{selectedFollowUp.lastActivity}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Source:</span>
+                  <span className="text-text-primary">{selectedFollowUp.source}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Due:</span>
+                  <span className="text-text-primary">{selectedFollowUp.due}</span>
+                </div>
+              </div>
+
+              {/* Bottom Action Button */}
+              <div className="pt-4">
+                <Button 
+                  className="w-full bg-accent-primary hover:bg-accent-primary/90 text-white py-3 rounded-lg flex items-center justify-center gap-2"
+                >
+                  <Mail className="h-4 w-4" />
+                  Open in Gmail
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>;
 };
 export default React.memo(HomeView);
