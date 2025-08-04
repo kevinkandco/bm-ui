@@ -17,6 +17,7 @@ import CalendarSection from "./HomeViewSections/CalendarSection";
 import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
+import BriefsList from "./BriefsList";
 
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
@@ -214,68 +215,12 @@ const HomeView = ({
               leftPanelCollapsed && "items-center"
             )}>
               {!leftPanelCollapsed ? (
-                <div className="p-4 flex-1 overflow-hidden">
-                  {/* Collapse Button */}
-                  <div className="flex justify-end mb-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setLeftPanelCollapsed(true)}
-                      className="h-6 w-6 p-0"
-                    >
-                      <PanelLeftClose className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  {/* Latest Brief Card */}
-                  <div className="mb-4">
-                    <LatestBriefSection onClick={() => handleBriefSelect(1)} />
-                  </div>
-
-                  {/* Tab Switcher */}
-                  <div className="flex rounded-lg bg-surface-raised/50 p-1 mb-4">
-                    <button
-                      onClick={() => setLeftRailTab('briefs')}
-                      className={cn(
-                        "flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                        leftRailTab === 'briefs' 
-                          ? "bg-accent-primary text-white" 
-                          : "text-text-secondary hover:text-text-primary"
-                      )}
-                    >
-                      Briefs
-                    </button>
-                    <button
-                      onClick={() => setLeftRailTab('calendar')}
-                      className={cn(
-                        "flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                        leftRailTab === 'calendar' 
-                          ? "bg-accent-primary text-white" 
-                          : "text-text-secondary hover:text-text-primary"
-                      )}
-                    >
-                      Calendar
-                    </button>
-                  </div>
-
-                  {/* Tab Content */}
-                  <div className="flex-1 overflow-auto">
-                    {leftRailTab === 'briefs' ? (
-                      <BriefsContainer
-                        briefs={recentBriefs}
-                        totalBriefs={47}
-                        onViewBrief={handleBriefSelect}
-                        onViewTranscript={onViewTranscript}
-                        onPlayBrief={handlePlayBrief}
-                        playingBrief={playingBrief}
-                        onViewAllBriefs={() => navigate("/dashboard/briefs")}
-                        upcomingBrief={upcomingBrief}
-                      />
-                    ) : (
-                      <CalendarSection />
-                    )}
-                  </div>
-                </div>
+                <BriefsList
+                  onPlayBrief={handlePlayBrief}
+                  onSettingsClick={() => navigate("/dashboard/settings")}
+                  playingBrief={playingBrief}
+                />
+              
               ) : (
                 /* Collapsed State */
                 <div className="p-2 flex flex-col items-center">
