@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -588,43 +588,146 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
               {selectedMeeting && <div className="space-y-6">
                   {/* Meeting Header */}
-                  <div>
-                    <div className="text-sm text-text-secondary mb-1">Meeting | {selectedMeeting.time} • {selectedMeeting.duration}</div>
-                    <h2 className="text-2xl font-bold text-text-primary mb-1">{selectedMeeting.title}</h2>
-                    <p className="text-sm text-text-secondary">{selectedMeeting.aiSummary}</p>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h2 className="text-2xl font-bold text-text-primary mb-2">{selectedMeeting.title}</h2>
+                      <div className="flex items-center gap-2 text-text-secondary">
+                        <Clock className="w-4 h-4" />
+                        <span>{selectedMeeting.time} • {selectedMeeting.duration}</span>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedMeeting(null);
+                        setSelectedCalendarItem(null);
+                      }}
+                      className="h-8 w-8 p-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
 
-                  {/* Meeting Details */}
-                  <div className="bg-surface-raised/50 rounded-lg p-4 border border-border-subtle">
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-lg font-medium text-text-primary mb-2">Attendees</h3>
-                        <div className="space-y-2">
-                          {selectedMeeting.attendees?.map((attendee: any, index: number) => (
-                            <div key={index} className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-accent-primary/20 flex items-center justify-center">
-                                <span className="text-xs text-accent-primary">{attendee.name.charAt(0)}</span>
-                              </div>
-                              <div>
-                                <p className="text-sm text-text-primary">{attendee.name}</p>
-                                <p className="text-xs text-text-secondary">{attendee.email}</p>
-                              </div>
+                  {/* Attendees Section */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Users className="w-5 h-5 text-text-secondary" />
+                      <h3 className="text-lg font-medium text-text-primary">Attendees</h3>
+                    </div>
+                    <div className="space-y-3">
+                      {selectedMeeting.attendees?.map((attendee: any, index: number) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center">
+                              <span className="text-sm font-medium text-accent-primary">
+                                {attendee.name.split(' ').map((n: string) => n.charAt(0)).join('').slice(0, 2)}
+                              </span>
                             </div>
-                          ))}
+                            <div>
+                              <p className="text-sm font-medium text-text-primary">{attendee.name}</p>
+                              <p className="text-xs text-text-secondary">{attendee.email}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Check className="w-4 h-4 text-green-400" />
+                            <Mail className="w-4 h-4 text-text-secondary" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Description Section */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <BookOpen className="w-5 h-5 text-text-secondary" />
+                      <h3 className="text-lg font-medium text-text-primary">Description</h3>
+                    </div>
+                    <p className="text-sm text-text-secondary">No description available.</p>
+                  </div>
+
+                  {/* Briefing Section */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Info className="w-5 h-5 text-text-secondary" />
+                      <h3 className="text-lg font-medium text-text-primary">Briefing</h3>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      {/* Relevant Context */}
+                      <div>
+                        <h4 className="text-base font-medium text-text-primary mb-3">Relevant Context:</h4>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <h5 className="text-sm font-medium text-text-primary mb-2">Parenting Schedule Emails:</h5>
+                            <p className="text-sm text-text-secondary leading-relaxed">
+                              Kevin Kirkpatrick has been actively using an AI assistant for daily parenting and nanny scheduling. 
+                              This suggests familiarity with AI-driven tools and a focus on practical, user-friendly solutions.
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <h5 className="text-sm font-medium text-text-primary mb-2">Tennis Newsletters:</h5>
+                            <p className="text-sm text-text-secondary leading-relaxed">
+                              Kevin also receives curated tennis updates, indicating an interest in personalized, well-structured 
+                              content delivery. This could be relevant if the demo involves content curation or user engagement.
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <h5 className="text-sm font-medium text-text-primary mb-2">Weekly Check-Ins:</h5>
+                            <p className="text-sm text-text-secondary leading-relaxed">
+                              Kevin has participated in numerous recurring "Weekly Check" meetings with sb.suico@gmail.com. 
+                              This demonstrates a routine of structured updates and collaboration.
+                            </p>
+                          </div>
                         </div>
                       </div>
-                      
-                      {selectedMeeting.hasProxy && (
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span className="text-sm font-medium text-text-primary">Proxy Enabled</span>
+
+                      {/* Preparation Points */}
+                      <div>
+                        <h4 className="text-base font-medium text-text-primary mb-3">Preparation Points:</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3">
+                            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-accent-primary/20 text-accent-primary text-sm font-medium flex-shrink-0 mt-0.5">1</span>
+                            <div>
+                              <p className="text-sm text-text-primary"><strong>Focus on Practicality:</strong> Highlight how the demo tool or feature can simplify tasks or improve efficiency, similar to the AI assistant's scheduling capabilities.</p>
+                            </div>
                           </div>
-                          <p className="text-xs text-text-secondary">
-                            Summary & action items will appear here ≈ 10 min after the call
-                          </p>
+                          
+                          <div className="flex items-start gap-3">
+                            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-accent-primary/20 text-accent-primary text-sm font-medium flex-shrink-0 mt-0.5">2</span>
+                            <div>
+                              <p className="text-sm text-text-primary"><strong>Personalization:</strong> If applicable, emphasize customization options or how the tool adapts to user preferences, drawing parallels to the curated tennis newsletters.</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3">
+                            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-accent-primary/20 text-accent-primary text-sm font-medium flex-shrink-0 mt-0.5">3</span>
+                            <div>
+                              <p className="text-sm text-text-primary"><strong>Clarity and Structure:</strong> Ensure the demo is well-organized, reflecting the structured approach Kevin is accustomed to in his weekly check-ins.</p>
+                            </div>
+                          </div>
                         </div>
-                      )}
+                      </div>
+
+                      {/* Suggested Agenda */}
+                      <div>
+                        <h4 className="text-base font-medium text-text-primary mb-3">Suggested Agenda:</h4>
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-accent-primary mt-2 flex-shrink-0"></div>
+                            <p className="text-sm text-text-primary"><strong>Introduction:</strong> Brief overview of the tool or feature being demonstrated.</p>
+                          </div>
+                          
+                          <div className="flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-accent-primary mt-2 flex-shrink-0"></div>
+                            <p className="text-sm text-text-primary"><strong>Key Features:</strong> Highlight functionalities that align with Kevin's known interests.</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>}
