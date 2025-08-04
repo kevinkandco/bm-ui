@@ -11,26 +11,23 @@ function useVerifyAdminAuth() {
 	useEffect(() => {
 		async function verifyAuth() {
 			const token = localStorage.getItem("admin-token");
-
+			
 			if (!token) {
 				gotoLogin();
 				setChecked(true);
 				return;
 			}
 
+			
 			const response = await call("get", "/admin/me", {
 				showToast: false,
 				returnOnFailure: false,
+				isAdmin: true
 			});
-
+			
 			if (response?.data) {
 				verify(response.data, true);
 				setValidSession(true);
-
-				if (response.data.is_onboard) {
-					localStorage.removeItem("onboardingUserData");
-					localStorage.removeItem("onboardingCurrentStep");
-				}
 			} else {
 				logout();
 				gotoLogin();

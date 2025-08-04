@@ -12,6 +12,7 @@ interface ApiCallOptions {
   body?: unknown;
   returnOnFailure?: boolean;
   headers?: Record<string, string>;
+  isAdmin?: boolean;
 }
 
 export function useApi() {
@@ -37,13 +38,28 @@ export function useApi() {
       }
 
       const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/");
-        return null;
+      const adminToken = localStorage.getItem("admin-token");
+
+      if (options.isAdmin) {
+        if (!adminToken) {
+          if (token) {
+            navigate("/dashboard");
+            return null;
+          }
+          navigate("/");
+          return null;
+        }
+      } else {
+        if (!token) {
+          navigate("/");
+          return null;
+        }
       }
 
+
       try {
-        Http.setBearerToken(token);
+        if (options.isAdmin) Http.setBearerToken(adminToken);
+        else Http.setBearerToken(token);
 
         const response = await Http.callApi(
           method,

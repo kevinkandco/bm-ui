@@ -6,28 +6,43 @@ import { useTheme } from "@/hooks/use-theme";
 import { ArrowLeft, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Input } from "@/components/admin/Input";
 import { useApi } from "@/hooks/useApi";
+import useAdminAuthStore from "@/store/useAdminAuthStore";
+import Http from "@/Http";
+import { BaseURL } from "@/config";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
 	const navigate = useNavigate();
 	const { theme } = useTheme();
-	const { call } = useApi();
+	const { toast } = useToast();
+	const { login } = useAdminAuthStore();
 	const [showPassword, setShowPassword] = useState(false);
 	const [loginData, setLoginData] = useState({
 		email: "",
 		password: "",
 	});
 
-	const handleSignIn = () => {
-		const response = call("post", "/admin/login", {
-			body: loginData,
-			showToast: true,
-			toastTitle: "Login Failed",
-			toastDescription: "Invalid credentials. Please try again.",
-		});
+	const handleSignIn = async () => {
+		try {
+			const response = await Http.callApi(
+				"post",
+				`${BaseURL}/admin/login`,
+				loginData
+			);
 
-		if (!response) return;
+			if (!response) return;
 
-		navigate("/admin/dashboard");
+			login(response.data.data.user, response.data.data.token);
+
+			navigate("/admin/dashboard");
+		} catch (error: any) {
+			console.log(error);
+			toast({
+				title: "Error",
+				description: error.message,
+				variant: "destructive",
+			});
+		}
 	};
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -157,7 +172,7 @@ const Login = () => {
 							</div>
 							<Button
 								className="w-full bg-surface-overlay hover:bg-surface-raised text-text-primary border border-border-subtle shadow-subtle flex items-center justify-center gap-2 sm:gap-3 rounded-xl py-2.5 sm:py-3 text-sm sm:text-base transition-all duration-400"
-								onClick={() => handleSignIn()}
+								type="submit"
 							>
 								Login
 							</Button>

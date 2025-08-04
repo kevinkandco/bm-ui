@@ -117,10 +117,12 @@ const App = () => {
               <BrowserRouter>
                 <Suspense fallback={<LoadingFallback />}>
                   <Routes>
+                    {/* PUBLIC ROUTES */}
                     <Route element={<ProtectedRoute element="unprotected" />}>
                       <Route path="/" element={<Index />} />
                       <Route path="/login" element={<Login />} />
                     </Route>
+                    {/* PROTECTED ROUTES */}
                     <Route element={<ProtectedOnboardingRoute />}>
                       <Route path="/onboarding" element={<Onboarding />} />
                     </Route>
@@ -133,18 +135,17 @@ const App = () => {
                           <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
                           <Route path="/dashboard/settings" element={<SettingsPage />} />
                     </Route>
+                    {/* ADMIN ROUTES */}
                     <Route element={<AdminProtectedRoute element="unprotected" />}>
                       <Route path="/admin/login" element={<AdminLogin />} />
                     </Route>
                     <Route element={<AdminProtectedRoute element="protected" />}>
-                      <Route path="admin">
-                        <Route index element={<DashboardAdmin />} />
-                        <Route path="dashboard" element={<DashboardAdmin />} />
-                        <Route path="users" element={<UsersAdmin />} />
-                        <Route path="plans" element={<PlansAdmin />} />
-                        <Route path="invoices" element={<InvoicesAdmin />} />
+                        <Route path="/admin" element={<DashboardAdmin />} />
+                        <Route path="/admin/dashboard" element={<DashboardAdmin />} />
+                        <Route path="/admin/users" element={<UsersAdmin />} />
+                        <Route path="/admin/plans" element={<PlansAdmin />} />
+                        <Route path="/admin/invoices" element={<InvoicesAdmin />} />
                       </Route>
-                    </Route>
                     <Route path="/mac" element={<MacRouteGuard />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
