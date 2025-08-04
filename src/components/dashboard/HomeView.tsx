@@ -122,14 +122,28 @@ const HomeView = ({
     setFollowUpsFilter('all');
   }, []);
   const getStatusChip = () => {
+    const getStatusIcon = () => {
+      switch (userStatus) {
+        case 'focus':
+          return <Focus className="h-4 w-4" />;
+        case 'away':
+          return <Clock className="h-4 w-4" />;
+        case 'vacation':
+          return <X className="h-4 w-4" />;
+        default: // active
+          return <Zap className="h-4 w-4" />;
+      }
+    };
+
     return (
       <Button 
         variant="outline" 
         onClick={onToggleFocusMode}
-        className="px-4 py-2 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-2"
+        className="px-3 py-1.5 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-2 text-sm"
       >
+        {getStatusIcon()}
         <span>Update Status</span>
-        <ChevronDown className="h-4 w-4" />
+        <ChevronDown className="h-3 w-3" />
       </Button>
     );
   };
