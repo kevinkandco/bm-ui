@@ -406,7 +406,6 @@ const InterruptRules = ({
                             onClick={() => selectContact(contact)}
                             className="px-3 py-3 flex items-center gap-2 hover:bg-white/10 cursor-pointer"
                           >
-                            <Hash size={14} className="text-glass-blue/80" />
                             <span className="text-off-white">{contact.name} <span className="text-sm text-text-secondary">({contact.email})</span></span>
                           </div>
                         ))}
