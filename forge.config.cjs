@@ -28,7 +28,7 @@ module.exports = {
     {
       name: "@electron-forge/maker-dmg",
       config: {
-        name: "Brief Me",
+        name: "Brief-me",
         title: "Brief Me Installer",
         description: "Smart summaries. Focused updates. Less noise.",
         icon: "public/assets/mac-logo.icns",
