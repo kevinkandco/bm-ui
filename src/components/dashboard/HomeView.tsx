@@ -427,9 +427,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         <p className="text-text-secondary">Mobile layout coming soon...</p>
       </div>;
   }
-  return <div className="min-h-screen flex flex-col">
+  return <div className="h-screen flex flex-col overflow-hidden">
       {/* Global Header */}
-      <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm flex-shrink-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Left: Brief Me Logo and Status */}
@@ -478,11 +478,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </div>
       </header>
 
-      {/* Three-Column Layout */}
-      <div className="flex-1 pb-20 flex">
+      {/* Three-Column Layout with Independent Scrolling */}
+      <div className="flex-1 flex overflow-hidden">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
-            <div className="h-full flex flex-col">
+        {!leftPanelCollapsed ? <div className="w-80 border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col overflow-hidden">
+            <div className="flex flex-col h-full">
               {/* Header with collapse button */}
               <div className="p-4">
                 <div className="flex items-center justify-between mb-3 mt-[30px]">
@@ -495,68 +495,72 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 {/* Latest Brief Section */}
                 <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                 
-                {/* Navigation Tabs */}
-                <Tabs value={leftRailTab} onValueChange={value => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full border-t border-border-subtle mt-8 pt-6">
-                  <TabsList className="flex w-auto bg-surface-raised/30 py-1 pr-1 pl-0 rounded-lg">
-                    <TabsTrigger value="briefs" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 pl-0 pr-2 py-1 text-sm text-left rounded-sm font-medium relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
-                      Briefs ({recentBriefs.length + 1})
-                    </TabsTrigger>
-                    <TabsTrigger value="calendar" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-2 py-1 text-sm text-left rounded-sm relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
-                      Calendar (5)
-                    </TabsTrigger>
-                    <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-2 py-1 text-sm text-left rounded-sm relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
-                      Follow ups ({followUps.length})
-                    </TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="briefs" className="mt-4 flex-1 min-h-0 space-y-4">
-                    {/* Briefs List */}
-                    <div className="flex-1 min-h-0">
-                      <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
+                {/* Navigation Tabs - Scrollable Content */}
+                <div className="flex-1 overflow-hidden">
+                  <Tabs value={leftRailTab} onValueChange={value => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full h-full flex flex-col border-t border-border-subtle">
+                    <div className="px-4 pt-6 pb-4 flex-shrink-0">
+                      <TabsList className="flex w-auto bg-surface-raised/30 py-1 pr-1 pl-0 rounded-lg">
+                        <TabsTrigger value="briefs" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 pl-0 pr-2 py-1 text-sm text-left rounded-sm font-medium relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
+                          Briefs ({recentBriefs.length + 1})
+                        </TabsTrigger>
+                        <TabsTrigger value="calendar" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-2 py-1 text-sm text-left rounded-sm relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
+                          Calendar (5)
+                        </TabsTrigger>
+                        <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-2 py-1 text-sm text-left rounded-sm relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
+                          Follow ups ({followUps.length})
+                        </TabsTrigger>
+                      </TabsList>
                     </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="calendar" className="mt-4 flex-1 min-h-0">
-                    <CalendarSection onMeetingClick={handleMeetingClick} />
-                  </TabsContent>
-                  
-                  <TabsContent value="followups" className="mt-4 flex-1 min-h-0">
-                    <div className="space-y-4">
-                      <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
-                        <Table>
-                          <TableHeader>
-                            <TableRow className="border-border-subtle hover:bg-transparent">
-                              <TableHead className="text-text-secondary font-medium text-xs w-8"></TableHead>
-                              <TableHead className="text-text-secondary font-medium text-xs w-20">Priority</TableHead>
-                              <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
-                              selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
-                            }`} onClick={() => handleFollowUpClick(item)}>
-                                <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
-                                  <Checkbox
-                                    checked={checkedFollowUps.has(item.id)}
-                                    onCheckedChange={() => handleFollowUpCheck(item.id)}
-                                    className="h-4 w-4"
-                                  />
-                                </TableCell>
-                                <TableCell className="w-20">
-                                  <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
-                                </TableCell>
-                                <TableCell className="pr-4">
-                                  <p className="text-xs text-text-primary line-clamp-2 leading-relaxed">
-                                    {item.message}
-                                  </p>
-                                </TableCell>
-                              </TableRow>)}
-                          </TableBody>
-                        </Table>
+                    
+                    <TabsContent value="briefs" className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+                      {/* Briefs List */}
+                      <div className="space-y-4">
+                        <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
                       </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                    </TabsContent>
+                    
+                    <TabsContent value="calendar" className="flex-1 overflow-y-auto px-4 pb-4">
+                      <CalendarSection onMeetingClick={handleMeetingClick} />
+                    </TabsContent>
+                    
+                    <TabsContent value="followups" className="flex-1 overflow-y-auto px-4 pb-4">
+                      <div className="space-y-4">
+                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="border-border-subtle hover:bg-transparent">
+                                <TableHead className="text-text-secondary font-medium text-xs w-8"></TableHead>
+                                <TableHead className="text-text-secondary font-medium text-xs w-20">Priority</TableHead>
+                                <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
+                                selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
+                              }`} onClick={() => handleFollowUpClick(item)}>
+                                  <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
+                                    <Checkbox
+                                      checked={checkedFollowUps.has(item.id)}
+                                      onCheckedChange={() => handleFollowUpCheck(item.id)}
+                                      className="h-4 w-4"
+                                    />
+                                  </TableCell>
+                                  <TableCell className="w-20">
+                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                  </TableCell>
+                                  <TableCell className="pr-4">
+                                    <p className="text-xs text-text-primary line-clamp-2 leading-relaxed">
+                                      {item.message}
+                                    </p>
+                                  </TableCell>
+                                </TableRow>)}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
               </div>
             </div>
           </div> : (/* Collapsed Left Panel */
@@ -600,8 +604,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             </div>
           </div>)}
 
-        {/* Main Content Panel */}
-        <div className="flex-1 h-screen overflow-hidden">
+        {/* Main Content Panel with Independent Scrolling */}
+        <div className="flex-1 overflow-hidden">
           {/* Main Content Card */}
           <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden" style={{
           background: `
@@ -614,7 +618,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
             `
         }}>
-            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
+            <div className="p-6 h-full overflow-y-auto bg-[#1f262c]/[0.47]">
               {selectedMeeting && <div className="space-y-6">
                   {/* Meeting Header */}
                   <div className="flex items-start justify-between">
@@ -1005,8 +1009,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>
         </div>
 
-        {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="w-80 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+        {/* Right Panel - Only show when there's content with Independent Scrolling */}
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="w-80 border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col overflow-hidden">
             <div className="flex-1 overflow-hidden">
               <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
             setSelectedMessage(null);
@@ -1021,7 +1025,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       </div>
 
       {/* Fixed Audio Player */}
-      <AudioPlayer briefId={playingBrief} briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />
+      <div className="absolute bottom-0 left-0 right-0 z-50">
+        <AudioPlayer briefId={playingBrief} briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />
+      </div>
 
       {/* Mobile Right Drawer */}
       <Sheet open={showRightDrawer} onOpenChange={setShowRightDrawer}>
