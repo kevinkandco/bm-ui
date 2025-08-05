@@ -512,18 +512,20 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </TabsList>
                     </div>
                     
-                    <TabsContent value="briefs" className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+                    <TabsContent value="briefs" className="mt-0 flex-1 overflow-y-auto px-4 pb-4">
                       {/* Briefs List */}
-                      <div className="space-y-4">
+                      <div className="space-y-4 py-4">
                         <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
                       </div>
                     </TabsContent>
                     
-                    <TabsContent value="calendar" className="flex-1 overflow-y-auto px-4 pb-4">
-                      <CalendarSection onMeetingClick={handleMeetingClick} />
+                    <TabsContent value="calendar" className="mt-0 flex-1 overflow-y-auto px-4 pb-4">
+                      <div className="py-4">
+                        <CalendarSection onMeetingClick={handleMeetingClick} />
+                      </div>
                     </TabsContent>
                     
-                    <TabsContent value="followups" className="flex-1 overflow-y-auto px-4 pb-4">
+                    <TabsContent value="followups" className="mt-0 flex-1 overflow-y-auto px-4 pb-4">
                       <div className="space-y-4">
                         <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
                           <Table>
