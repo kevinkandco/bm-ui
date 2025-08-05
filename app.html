@@ -166,7 +166,7 @@
                 <button id="cancelModalBtn" class="px-4 py-2 bg-gray-700 rounded-md text-sm hover:bg-gray-600">✖
                     Cancel</button>
                 <button class="px-4 py-2 bg-[#499185] text-white rounded-md text-sm hover:bg-[#337267]"
-                    onclick="handleCatchMeUp()">
+                    >
                     ⚡ Generate Summary
                 </button>
             </div>
@@ -346,11 +346,11 @@
                     },
                 });
 
-                if (response.status == 500) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = 'appLogin.html';
-                }
+                // if (response.status == 500) {
+                //     localStorage.removeItem('token');
+                //     localStorage.removeItem('user');
+                //     window.location.href = 'appLogin.html';
+                // }
 
                 if (!response.ok) {
                     alert("Failed to fetch emergency messages. Status: " + response.status);
@@ -376,40 +376,40 @@
             }
         });
 
-        const handleCatchMeUp = async () => {
-            let temStr = durationLabel.textContent;
+        // const handleCatchMeUp = async () => {
+        //     let temStr = durationLabel.textContent;
 
-            let payload = {
-                time_period: Number(temStr.slice(0, 2)),
-            }
+        //     let payload = {
+        //         time_period: Number(temStr.slice(0, 2)),
+        //     }
 
-            try {
-                const response = await fetch(`${BASE_URL}/catch-me`, {
-                    method: "POST",
-                    body: JSON.stringify(payload),
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+        //     try {
+        //         const response = await fetch(`${BASE_URL}/catch-me`, {
+        //             method: "POST",
+        //             body: JSON.stringify(payload),
+        //             headers: {
+        //                 Authorization: `Bearer ${token}`,
+        //                 "Content-Type": "application/json",
+        //             },
+        //         });
 
-                if (response.status == 500) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = 'appLogin.html';
-                }
+        //         if (response.status == 500) {
+        //             localStorage.removeItem('token');
+        //             localStorage.removeItem('user');
+        //             window.location.href = 'appLogin.html';
+        //         }
 
-                if (!response.ok) {
-                    alert("Failed to call catch-me up" + response.status);
-                    return;
-                } else {
-                    catchMeUpModal.classList.add('hidden');
-                }
+        //         if (!response.ok) {
+        //             alert("Failed to call catch-me up" + response.status);
+        //             return;
+        //         } else {
+        //             catchMeUpModal.classList.add('hidden');
+        //         }
 
-            } catch (err) {
-                console.log("Error catch-me up:", err);
-            }
-        }
+        //     } catch (err) {
+        //         console.log("Error catch-me up:", err);
+        //     }
+        // }
 
     </script>
 </body>

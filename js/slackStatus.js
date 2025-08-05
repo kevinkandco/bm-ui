@@ -149,22 +149,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateStatusDisplay(currentStatus);
 
-  const statusChangeBtn = document.getElementById("statusChangeBtn");
+  // const statusChangeBtn = document.getElementById("statusChangeBtn");
 
-  statusChangeBtn.addEventListener("click", () => {
-    updateStatusDisplay(currentStatus);
-    if (currentStatus === "Active") {
-        updateStatusDisplay("Offline");
-        postSlackStatus("Offline");
-        foucsMode("Offline");
-    } else if (currentStatus === "Offline") {
-        updateStatusDisplay("DND");
-        postSlackStatus("DND");
-        foucsMode("DND");
-    } else {
-        updateStatusDisplay("Active");
-        postSlackStatus("Active");
-        foucsMode("Active");
-    }
-  });
+  // statusChangeBtn.addEventListener("click", () => {
+  //   updateStatusDisplay(currentStatus);
+  //   if (currentStatus === "Active") {
+  //       updateStatusDisplay("Offline");
+  //       postSlackStatus("Offline");
+  //       foucsMode("Offline");
+  //   } else if (currentStatus === "Offline") {
+  //       updateStatusDisplay("DND");
+  //       postSlackStatus("DND");
+  //       foucsMode("DND");
+  //   } else {
+  //       updateStatusDisplay("Active");
+  //       postSlackStatus("Active");
+  //       foucsMode("Active");
+  //   }
+  // });
 });
