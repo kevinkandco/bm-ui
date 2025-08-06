@@ -84,7 +84,7 @@ const DownloadApp = () => {
             <Button
               variant="default"
               className="px-6 py-3 text-white transition-all rounded-xl shadow-sm hover:shadow-md"
-              onClick={() => handleDownload("/electron/Brief-me.zip")} // Add your Mac file path here
+              onClick={() => handleDownload("/electron/Brief-me.dmg")} // Add your Mac file path here
             >
               <div>
                 <svg
