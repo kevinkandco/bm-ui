@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width,initial-scale=1" />
+   <title>Floating Bar — Status Demo</title>
+   <style>
+      html,
+      body {
+         margin: 0;
+         padding: 0;
+         background: transparent;
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+         -webkit-user-select: none;
+         user-select: none;
+         overflow: hidden;
+      }
+
+      /* helper for clickable controls inside draggable bar */
+      .no-drag {
+         -webkit-app-region: no-drag;
+      }
+
+      /* BAR */
+      .bar-container {
+         background: #6A4BC3;
+         color: #fff;
+         display: flex;
+         align-items: center;
+         gap: 8px;
+         padding: 6px 14px;
+         border-radius: 25px;
+         -webkit-app-region: drag;
+         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+         position: fixed;
+         top: 20px;
+         left: 50%;
+         transform: translateX(-50%);
+         transition: all .32s cubic-bezier(.2, .9, .2, 1);
+         font-size: 14px;
+         z-index: 100;
+      }
+
+      .bar-container .icon {
+         font-size: 16px;
+         margin-right: 6px;
+         cursor: pointer;
+      }
+
+      .bar-container .text {}
+
+      .status-dot {
+         width: 8px;
+         height: 8px;
+         border-radius: 50%;
+         background: #4ade80;
+         margin: 0 6px;
+      }
+
+      .bar-divider {
+         width: 1px;
+         height: 16px;
+         background: rgba(255, 255, 255, .28);
+         margin: 0 8px;
+      }
+
+      #arrowBtn {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         padding: 8px;
+         border-radius: 8px;
+         cursor: pointer;
+      }
+
+      #arrowBtn:hover {
+         background: rgba(255, 255, 255, 0.06);
+      }
+
+      .arrow {
+         border: solid white;
+         border-width: 0 1.5px 1.5px 0;
+         display: inline-block;
+         padding: 3px;
+         transform: rotate(45deg);
+      }
+
+      /* collapsed (right small circle) */
+      .bar-container.collapsed {
+         width: 40px;
+         height: 40px;
+         padding: 0;
+         border-radius: 50%;
+         left: auto;
+         right: 10px;
+         transform: none;
+         justify-content: center;
+      }
+
+      .bar-container.collapsed .text,
+      .bar-container.collapsed .status-dot,
+      .bar-container.collapsed .bar-divider,
+      .bar-container.collapsed .arrow {
+         display: none;
+      }
+
+      .bar-container.collapsed .icon {
+         margin-left: 30px;
+      }
+
+      /* PANEL */
+      #briefMePanel {
+         display: none;
+         position: fixed;
+         top: 70px;
+         left: 50%;
+         transform: translateX(-50%);
+         width: 320px;
+         max-width: calc(100vw - 40px);
+         background: #fff;
+         color: #111;
+         border-radius: 14px;
+         padding: 16px;
+         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+         z-index: 90;
+         transition: opacity .22s, transform .22s;
+         overflow: auto;
+      }
+
+      #briefMePanel.show {
+         display: block;
+         animation: fadeIn .22s ease both;
+      }
+
+      @keyframes fadeIn {
+         from {
+            opacity: 0;
+            transform: translate(-50%, -6px)
+         }
+
+         to {
+            opacity: 1;
+            transform: translate(-50%, 0)
+         }
+      }
+
+      #briefMePanel h2 {
+         margin: 0 0 12px;
+         font-size: 1.05rem;
+         font-weight: 600;
+      }
+
+      /* status buttons */
+      #statusButtons {
+         display: flex;
+         gap: 8px;
+         justify-content: space-between;
+         margin-bottom: 12px;
+      }
+
+      .status-btn {
+         padding: 8px 12px;
+         border-radius: 9999px;
+         border: 1px solid #e6e6e6;
+         background: #f6f6f6;
+         color: #333;
+         cursor: pointer;
+         font-size: .88rem;
+         -webkit-app-region: no-drag;
+      }
+
+      .status-btn.selected {
+         background: #111;
+         color: #fff;
+         border-color: transparent;
+      }
+
+      /* primary buttons */
+      .btn-primary {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 8px;
+         width: 100%;
+         padding: 12px 14px;
+         border-radius: 12px;
+         border: none;
+         background: #478c87;
+         color: #fff;
+         font-weight: 600;
+         cursor: pointer;
+         margin-bottom: 12px;
+         -webkit-app-region: no-drag;
+      }
+
+      /* bottom controls */
+      .bottom-buttons {
+         display: flex;
+         gap: 12px;
+         justify-content: center;
+         margin-top: 8px;
+      }
+
+      .round-btn {
+         width: 40px;
+         height: 40px;
+         border-radius: 9999px;
+         border: none;
+         background: #111;
+         color: #fff;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         cursor: pointer;
+         -webkit-app-region: no-drag;
+      }
+
+      .status-dot-btn {
+         width: 12px;
+         height: 12px;
+         border-radius: 9999px;
+         background: #4ade80;
+      }
+
+      /* small helper for visibility debugging */
+      .hidden {
+         display: none !important;
+      }
+   </style>
+</head>
+
+<body>
+   <!-- floating bar -->
+   <div id="bar" class="bar-container" role="toolbar" aria-label="Brief Me toolbar">
+      <span id="toggleBtn" class="icon no-drag" title="Toggle bar">⚡</span>
+      <span id="barTitle" class="text">Brief Me</span>
+      <div id="barStatusDot" class="status-dot" title="status dot"></div>
+      <span id="barStatusLabel" class="text">Active</span>
+      <div class="bar-divider"></div>
+      <div id="arrowBtn" class="no-drag" title="Open menu"><span class="arrow" aria-hidden="true"></span></div>
+   </div>
+
+   <!-- panel -->
+   <div id="briefMePanel" role="dialog" aria-hidden="true" aria-label="Brief Me panel">
+      <h2>Brief Me</h2>
+
+      <div id="statusButtons" aria-label="status buttons">
+         <button class="status-btn" data-status="Active">Active</button>
+         <button class="status-btn" data-status="Offline">Offline</button>
+         <button class="status-btn" data-status="DND">DND</button>
+      </div>
+
+      <button id="getBriefedBtn" class="btn-primary no-drag">⚡ Get Briefed Now</button>
+      <button id="closeBtn" class="btn-primary no-drag" style="background:#666">Close window</button>
+
+      <div class="bottom-buttons">
+         <button id="toggleWindow" class="round-btn no-drag" title="Toggle window">⚡</button>
+         <button id="statusChangeBtn" class="round-btn no-drag" title="Cycle status">
+            <div id="statusDotSmall" class="status-dot-btn" aria-hidden="true"></div>
+         </button>
+      </div>
+   </div>
+
+   <script>
+      // ipc guard for electron
+      let ipcRenderer;
+      try { ipcRenderer = require('electron').ipcRenderer; } catch (e) { ipcRenderer = undefined; }
+
+      document.addEventListener('DOMContentLoaded', () => {
+         // DOM refs
+         const bar = document.getElementById('bar');
+         const toggleBtn = document.getElementById('toggleBtn');
+         const arrowBtn = document.getElementById('arrowBtn');
+         const briefMePanel = document.getElementById('briefMePanel');
+         const getBriefedBtn = document.getElementById('getBriefedBtn');
+         const closeBtn = document.getElementById('closeBtn');
+         const toggleWindow = document.getElementById('toggleWindow');
+         const statusChangeBtn = document.getElementById('statusChangeBtn');
+         const statusDotSmall = document.getElementById('statusDotSmall');
+         const barStatusDot = document.getElementById('barStatusDot');
+         const barStatusLabel = document.getElementById('barStatusLabel');
+         const statusButtons = Array.from(document.querySelectorAll('.status-btn'));
+
+         // statuses and mapping
+         const statuses = ['Active', 'Offline', 'DND'];
+         const colorMap = { Active: '#4ade80', Offline: '#d4d4d4', DND: '#f97316' };
+         let currentIndex = 0; // Active by default
+
+         // set status updates UI and notifies main
+         function setStatus(status) {
+            const idx = statuses.indexOf(status);
+            if (idx !== -1) currentIndex = idx;
+
+            // update label & dots
+            barStatusLabel.textContent = status;
+            const c = colorMap[status] || '#d4d4d4';
+            barStatusDot.style.background = c;
+            statusDotSmall.style.background = c;
+
+            // update button selection visual
+            statusButtons.forEach(btn => btn.classList.toggle('selected', btn.dataset.status === status));
+
+            // send to main if available
+            if (ipcRenderer) ipcRenderer.send('status-changed', status);
+         }
+
+         // cycle through statuses: Active -> Offline -> DND -> Active
+         function cycleStatus() {
+            currentIndex = (currentIndex + 1) % statuses.length;
+            setStatus(statuses[currentIndex]);
+         }
+
+         // toggle collapse of bar (and notify main)
+         let collapsed = false;
+         function toggleCollapsed(force) {
+            if (typeof force === 'boolean') collapsed = force;
+            else collapsed = !collapsed;
+            bar.classList.toggle('collapsed', collapsed);
+            if (ipcRenderer) ipcRenderer.send('toggle-bar', collapsed);
+         }
+
+         // event listeners
+         toggleBtn.addEventListener('click', e => { e.stopPropagation(); toggleCollapsed(); });
+         toggleWindow.addEventListener('click', e => { e.stopPropagation(); toggleCollapsed(); });
+
+         // arrow opens panel
+         arrowBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            const showing = briefMePanel.classList.toggle('show');
+            briefMePanel.setAttribute('aria-hidden', !showing);
+         });
+
+         // close panel when clicking outside
+         document.addEventListener('click', e => {
+            if (!briefMePanel.contains(e.target) && !bar.contains(e.target)) {
+               briefMePanel.classList.remove('show');
+               briefMePanel.setAttribute('aria-hidden', 'true');
+            }
+         });
+
+         // status button clicks: pick status
+         statusButtons.forEach(btn => {
+            btn.addEventListener('click', e => {
+               e.stopPropagation();
+               const s = btn.dataset.status;
+               setStatus(s);
+            });
+         });
+
+         // bottom round cycles status
+         statusChangeBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            cycleStatus();
+         });
+
+         // Get Briefed Now: hide panel + collapse bar
+         getBriefedBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            briefMePanel.classList.remove('show');
+            briefMePanel.setAttribute('aria-hidden', 'true');
+            toggleCollapsed(true);
+            if (ipcRenderer) ipcRenderer.send('get-briefed-now');
+         });
+
+         // close window
+         closeBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            if (window && window.close) window.close();
+         });
+
+         // init UI
+         setStatus(statuses[currentIndex]);
+      });
+   </script>
+</body>
+
+</html>
