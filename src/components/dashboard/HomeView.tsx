@@ -559,7 +559,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               {/* Header with collapse button */}
               <div className="px-6">
                 <div className="flex items-center justify-between mt-6 flex ">
-                  <h2 onClick={() => navigate('/dashboard')} className="text-text-primary cursor-pointer hover:text-accent-primary text-lg text-left font-medium mx-[10px]">Home</h2>
+                  <h2 onClick={handleNavigateToHome} className="text-text-primary cursor-pointer hover:text-accent-primary text-lg text-left font-medium mx-[10px]">Home</h2>
                   <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
                     <PanelLeftClose className="h-4 w-4" />
                   </Button>
