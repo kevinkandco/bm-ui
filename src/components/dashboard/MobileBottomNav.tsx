@@ -1,22 +1,23 @@
 import React from 'react';
-import { Home, FileText, Circle, Settings } from 'lucide-react';
+import { Home, FileText, Target, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 interface MobileBottomNavProps {
   className?: string;
+  onShowFocusModal?: () => void;
 }
 
-const MobileBottomNav = ({ className }: MobileBottomNavProps) => {
+const MobileBottomNav = ({ className, onShowFocusModal }: MobileBottomNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItems = [
-    { icon: Home, label: 'Home', path: '/dashboard' },
-    { icon: FileText, label: 'Briefs', path: '/briefs' },
-    { icon: Circle, label: 'Status', path: '/status' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    { icon: Home, label: 'Home', path: '/dashboard', onClick: () => navigate('/dashboard') },
+    { icon: FileText, label: 'Briefs', path: '/briefs', onClick: () => navigate('/briefs') },
+    { icon: Target, label: 'Focus', path: '/focus', onClick: () => onShowFocusModal?.() },
+    { icon: Settings, label: 'Settings', path: '/settings', onClick: () => navigate('/settings') },
   ];
 
   return (
@@ -28,14 +29,15 @@ const MobileBottomNav = ({ className }: MobileBottomNavProps) => {
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
-            (item.path === '/dashboard' && location.pathname === '/');
+            (item.path === '/dashboard' && location.pathname === '/') ||
+            (item.label === 'Focus' && location.pathname === '/status');
           
           return (
             <Button
-              key={item.path}
+              key={item.label}
               variant="ghost"
               size="sm"
-              onClick={() => navigate(item.path)}
+              onClick={item.onClick}
               className={cn(
                 "flex flex-col items-center gap-1 h-full py-2 px-3 hover:bg-surface-raised/50 rounded-lg",
                 isActive && "text-accent-primary"

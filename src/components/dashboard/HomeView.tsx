@@ -28,6 +28,7 @@ import BriefsList from "./BriefsList";
 import UpcomingBriefCard from "./HomeViewSections/UpcomingBriefCard";
 import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
+import MobileStatusModal from "./MobileStatusModal";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -74,6 +75,15 @@ const HomeView = ({
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
   const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState('active');
+
+  const handleStatusSelect = useCallback((status: 'active' | 'focus' | 'away') => {
+    setCurrentStatus(status);
+    if (status === 'focus') {
+      onStartFocusMode();
+    }
+  }, [onStartFocusMode]);
 
   // Sample data
   const recentBriefs = [{
@@ -453,7 +463,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         />
         
         {/* Mobile Bottom Navigation */}
-        <MobileBottomNav />
+        <MobileBottomNav onShowFocusModal={() => setShowStatusModal(true)} />
         
         {/* Mobile Audio Player - shows above bottom nav when active */}
         {playingBrief && (
@@ -464,6 +474,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             onClose={() => setPlayingBrief(null)}
           />
         )}
+
+        {/* Mobile Status Modal */}
+        <MobileStatusModal
+          isOpen={showStatusModal}
+          onClose={() => setShowStatusModal(false)}
+          onSelectStatus={handleStatusSelect}
+          currentStatus={currentStatus}
+        />
       </div>
     );
   }
