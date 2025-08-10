@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -77,6 +77,42 @@ const HomeView = ({
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState('active');
+
+  // Navigation handlers for collapsed panel
+  const handleNavigateToHome = useCallback(() => {
+    setIsHomeSelected(true);
+    setSelectedBrief(null);
+    setSelectedCalendarItem(null);
+    setSelectedMeeting(null);
+    setOpenSection(null);
+  }, []);
+
+  const handleNavigateToBriefs = useCallback(() => {
+    setIsHomeSelected(false);
+    setSelectedBrief(1);
+    setSelectedCalendarItem(null);
+    setSelectedMeeting(null);
+    setOpenSection('briefs');
+    setLeftRailTab('briefs');
+  }, []);
+
+  const handleNavigateToCalendar = useCallback(() => {
+    setIsHomeSelected(false);
+    setSelectedBrief(null);
+    setSelectedCalendarItem("meeting-1");
+    setSelectedMeeting(null);
+    setOpenSection('calendar');
+    setLeftRailTab('calendar');
+  }, []);
+
+  const handleNavigateToFollowUps = useCallback(() => {
+    setIsHomeSelected(false);
+    setSelectedBrief(null);
+    setSelectedCalendarItem(null);
+    setSelectedMeeting(null);
+    setOpenSection('followups');
+    setLeftRailTab('followups');
+  }, []);
 
   const handleStatusSelect = useCallback((status: 'active' | 'focus' | 'away') => {
     setCurrentStatus(status);
@@ -638,40 +674,29 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div> : (/* Collapsed Left Panel */
       <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
-              {/* Open Panel Button */}
+              {/* Open/Close Panel Button */}
               <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(false)} className="h-8 w-8 p-0 mb-4">
                 <PanelLeftOpen className="h-4 w-4" />
               </Button>
               
-              {/* Latest Brief Icon */}
-              <Button variant="ghost" size="sm" onClick={() => {
-            handleBriefSelect(1);
-            setLeftPanelCollapsed(false);
-          }} className={cn("h-8 w-8 p-0", selectedBrief === 1 ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                <CheckSquare className="h-4 w-4" />
+              {/* Home Icon */}
+              <Button variant="ghost" size="sm" onClick={handleNavigateToHome} className={cn("h-8 w-8 p-0", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                <Home className="h-4 w-4" />
               </Button>
               
-              {/* Recent Briefs Icons */}
-              {recentBriefs.slice(1).map((brief, index) => <Button key={brief.id} variant="ghost" size="sm" onClick={() => {
-            handleBriefSelect(brief.id);
-            setLeftPanelCollapsed(false);
-          }} className={cn("h-8 w-8 p-0", selectedBrief === brief.id ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                  <CheckSquare className="h-4 w-4" />
-                </Button>)}
+              {/* Briefs Icon */}
+              <Button variant="ghost" size="sm" onClick={handleNavigateToBriefs} className={cn("h-8 w-8 p-0", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                <FileText className="h-4 w-4" />
+              </Button>
               
-              {/* Calendar Events Icons (sample) */}
-              <Button variant="ghost" size="sm" onClick={() => {
-            handleCalendarSelect("meeting-1");
-            setLeftPanelCollapsed(false);
-          }} className={cn("h-8 w-8 p-0", selectedCalendarItem === "meeting-1" ? "bg-accent-primary/20 text-accent-primary" : "")}>
+              {/* Calendar Icon */}
+              <Button variant="ghost" size="sm" onClick={handleNavigateToCalendar} className={cn("h-8 w-8 p-0", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                 <Calendar className="h-4 w-4" />
               </Button>
               
-              <Button variant="ghost" size="sm" onClick={() => {
-            handleCalendarSelect("meeting-2");
-            setLeftPanelCollapsed(false);
-          }} className={cn("h-8 w-8 p-0", selectedCalendarItem === "meeting-2" ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                <Calendar className="h-4 w-4" />
+              {/* Follow Ups Icon */}
+              <Button variant="ghost" size="sm" onClick={handleNavigateToFollowUps} className={cn("h-8 w-8 p-0", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                <ClipboardCheck className="h-4 w-4" />
               </Button>
             </div>
           </div>)}
