@@ -241,7 +241,7 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
             onClick={() => onMeetingClick ? onMeetingClick(nextMeeting) : openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
-              <div className="bg-surface-overlay/50 rounded-xl p-4">
+              <div className="space-y-3">
                 {/* Header with time and chips */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
