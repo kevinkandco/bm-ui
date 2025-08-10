@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -510,6 +510,17 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </TabsList>
                   
                   <TabsContent value="briefs" className="mt-4 flex-1 min-h-0 space-y-4">
+                    {/* Home Button */}
+                    <div className="pb-4">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3"
+                      >
+                        <Home className="mr-3 h-5 w-5 text-accent-primary" />
+                        <span className="text-sm font-medium">Home</span>
+                      </Button>
+                    </div>
+                    
                     {/* Briefs List */}
                     <div className="flex-1 min-h-0">
                       <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
