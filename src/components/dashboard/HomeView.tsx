@@ -24,6 +24,7 @@ import ActionItemsPanel from "./ActionItemsPanel";
 import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
 import BriefsList from "./BriefsList";
+import UpcomingBriefCard from "./HomeViewSections/UpcomingBriefCard";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -653,75 +654,77 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
               {/* Default Home Content */}
               {(!selectedMeeting && !selectedBrief && isHomeSelected) && (
-                <div className="space-y-8">
-                  {/* Daily Brief(s) Section */}
-                  <div>
-                    <h2 className="text-xl font-semibold text-text-primary mb-6">Daily Brief(s)</h2>
-                    
-                    {/* Upcoming Brief */}
-                    <div className="mb-6">
-                      <h3 className="text-sm font-medium text-text-secondary mb-3">Upcoming</h3>
-                      <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-text-primary">Daily Brief • Tomorrow at 7:30 AM</p>
-                        </div>
-                        <ChevronDown className="h-4 w-4 text-text-secondary" />
-                      </div>
-                    </div>
-                    
-                    {/* Past Briefs */}
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-medium text-text-secondary">Past briefs</h3>
-                        <Button variant="ghost" size="sm" className="text-accent-primary hover:text-accent-primary/80 text-sm">
-                          View all →
-                        </Button>
-                      </div>
-                    </div>
+                <div className="space-y-6">
+                  {/* Date Header */}
+                  <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-text-primary">
+                      {new Date().toLocaleDateString('en-US', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </h1>
                   </div>
 
-                  {/* Calendar Section */}
-                  <div>
-                    <h2 className="text-xl font-semibold text-text-primary mb-6">Calendar</h2>
-                    
-                    <div className="mb-6">
-                      <h3 className="text-sm font-medium text-text-secondary mb-3">Upcoming</h3>
-                      <div className="bg-surface-raised/30 rounded-lg p-6 border border-border-subtle text-center">
-                        <p className="text-sm text-text-secondary">No upcoming meetings for today</p>
+                  {/* Main Layout Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Column */}
+                    <div className="space-y-8">
+                      {/* Daily Briefing Section */}
+                      <div>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Daily briefing</h2>
+                        <BriefsList
+                          onPlayBrief={handlePlayBrief}
+                          onBriefSelect={handleBriefSelect}
+                          onSettingsClick={() => navigate("/dashboard/settings")}
+                          selectedBrief={null}
+                          playingBrief={playingBrief}
+                        />
+                      </div>
+
+                      {/* Schedule Section */}
+                      <div>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Schedule</h2>
+                        <CalendarSection onMeetingClick={handleMeetingClick} />
                       </div>
                     </div>
-                  </div>
 
-                  {/* Schedule Section */}
-                  <div>
-                    <h2 className="text-xl font-semibold text-text-primary mb-6">Schedule</h2>
-                    
-                    {/* Today's Schedule */}
-                    <div className="mb-6">
-                      <h3 className="text-sm font-medium text-text-secondary mb-3">Today's Schedule</h3>
-                      <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-medium text-text-primary">12:00 AM</span>
-                          <span className="text-sm text-text-secondary">Theme: Life Admin + Side Projects</span>
+                    {/* Right Column */}
+                    <div className="space-y-8">
+                      {/* Tasks Section */}
+                      <div>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Tasks</h2>
+                        <div className="space-y-4">
+                          <div className="text-sm font-medium text-text-secondary mb-3">Overdue</div>
+                          <div className="space-y-3">
+                            <UpcomingBriefCard
+                              briefName="Use search with Ctrl+K or ⌘K"
+                              scheduledTime="Jun 28 • To do • Low"
+                            />
+                            <UpcomingBriefCard
+                              briefName="Invite your team members"  
+                              scheduledTime="Jun 28 • To do • High"
+                            />
+                            <UpcomingBriefCard
+                              briefName="Create a deal"
+                              scheduledTime="Jun 28 • To do • Medium"
+                            />
+                            <UpcomingBriefCard
+                              briefName="Download the Mac desktop app"
+                              scheduledTime="Jun 28 • To do • Low"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    {/* Upcoming Schedule */}
-                    <div className="mb-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <h3 className="text-sm font-medium text-text-secondary">Upcoming</h3>
-                        <ChevronDown className="h-4 w-4 text-text-secondary" />
-                      </div>
-                    </div>
-                    
-                    {/* Past Schedule */}
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-medium text-text-secondary">Past Schedule</h3>
-                        <Button variant="ghost" size="sm" className="text-accent-primary hover:text-accent-primary/80 text-sm">
-                          View all →
-                        </Button>
+
+                      {/* Recently Visited Section */}
+                      <div>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Recently visited</h2>
+                        <div className="border border-border-subtle rounded-lg p-8 text-center">
+                          <h3 className="font-medium text-text-primary mb-2">No recent items</h3>
+                          <p className="text-sm text-text-secondary">You haven't visited any items yet.</p>
+                        </div>
                       </div>
                     </div>
                   </div>
