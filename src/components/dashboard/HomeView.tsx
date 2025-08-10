@@ -87,7 +87,6 @@ const HomeView = ({
     setOpenSection(null);
     setLeftRailTab('briefs');
   }, []);
-
   const handleNavigateToAllBriefs = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null); // No specific brief selected to show "view all"
@@ -96,7 +95,6 @@ const HomeView = ({
     setOpenSection('briefs');
     setLeftRailTab('briefs');
   }, []);
-
   const handleNavigateToAllCalendar = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null);
@@ -105,7 +103,6 @@ const HomeView = ({
     setOpenSection('calendar');
     setLeftRailTab('calendar');
   }, []);
-
   const handleNavigateToAllFollowUps = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null);
@@ -114,7 +111,6 @@ const HomeView = ({
     setOpenSection('followups');
     setLeftRailTab('followups');
   }, []);
-
   const handleStatusSelect = useCallback((status: 'active' | 'focus' | 'away') => {
     setCurrentStatus(status);
     if (status === 'focus') {
@@ -490,37 +486,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
   // Mobile layout
   if (isMobile) {
-    return (
-      <div className="relative">
-        <MobileHomeView
-          onPlayBrief={handlePlayBrief}
-          playingBrief={playingBrief}
-          onOpenBrief={onOpenBrief}
-          onStartFocusMode={onStartFocusMode}
-        />
+    return <div className="relative">
+        <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={onOpenBrief} onStartFocusMode={onStartFocusMode} />
         
         {/* Mobile Bottom Navigation */}
         <MobileBottomNav onShowFocusModal={() => setShowStatusModal(true)} />
         
         {/* Mobile Audio Player - shows above bottom nav when active */}
-        {playingBrief && (
-          <AudioPlayer
-            briefId={playingBrief}
-            briefName={recentBriefs.find(b => b.id === playingBrief)?.name}
-            briefTime={recentBriefs.find(b => b.id === playingBrief)?.timeCreated}
-            onClose={() => setPlayingBrief(null)}
-          />
-        )}
+        {playingBrief && <AudioPlayer briefId={playingBrief} briefName={recentBriefs.find(b => b.id === playingBrief)?.name} briefTime={recentBriefs.find(b => b.id === playingBrief)?.timeCreated} onClose={() => setPlayingBrief(null)} />}
 
         {/* Mobile Status Modal */}
-        <MobileStatusModal
-          isOpen={showStatusModal}
-          onClose={() => setShowStatusModal(false)}
-          onSelectStatus={handleStatusSelect}
-          currentStatus={currentStatus}
-        />
-      </div>
-    );
+        <MobileStatusModal isOpen={showStatusModal} onClose={() => setShowStatusModal(false)} onSelectStatus={handleStatusSelect} currentStatus={currentStatus} />
+      </div>;
   }
   return <div className="min-h-screen flex flex-col">
       {/* Global Header */}
@@ -589,7 +566,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 
                 {/* Home Button */}
                 <div className="mb-4">
-                  <div className="w-full justify-start text-text-secondary py-3 flex items-center mx-0 px-[10px]">
+                  <div className="w-full justify-start text-text-secondary flex items-center mx-0 px-[10px] py-[8px]">
                     <BookOpen className="mr-3 h-5 w-5 text-text-secondary" />
                     <span className="text-sm font-medium">Latest Brief</span>
                   </div>
@@ -618,7 +595,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Calendar Section */}
                   <Collapsible open={openSection === 'calendar'} onOpenChange={() => setOpenSection(openSection === 'calendar' ? null : 'calendar')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'calendar' ? '' : '-rotate-90')} />
                         Calendar (5 events)
                       </Button>
@@ -633,7 +610,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Follow ups Section */}
                   <Collapsible open={openSection === 'followups'} onOpenChange={() => setOpenSection(openSection === 'followups' ? null : 'followups')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'followups' ? '' : '-rotate-90')} />
                         Follow ups ({followUps.length} follow ups)
                       </Button>

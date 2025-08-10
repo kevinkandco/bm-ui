@@ -24,18 +24,18 @@ const LatestBriefSection = ({
   }];
   return <div className="space-y-3">
       <div className={cn("py-4 hover:bg-[hsl(190,28%,22%)]/40 transition-colors cursor-pointer", isSelected ? "bg-[hsl(190,28%,22%)]/30" : "bg-[hsl(190,28%,22%)]/20")} onClick={onClick}>
-        <h3 className="text-sm font-medium text-text-primary mb-1">Morning Scheduled Brief</h3>
-        <p className="text-xs text-text-secondary">
+        <h3 className="text-sm font-medium text-text-primary mb-1 px-[10px]">Morning Scheduled Brief</h3>
+        <p className="text-xs text-text-secondary px-[10px]">
           Delivered at 7:00 AM on August 4, 2025
         </p>
-        <p className="text-xs text-text-secondary/80">
+        <p className="text-xs text-text-secondary/80 px-[10px]">
           (Summarizing: 5:00 PM - 7:00 AM)
         </p>
       </div>
 
       {/* Upcoming Briefs Section */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between cursor-pointer hover:bg-surface-raised/20 rounded-lg transition-colors" onClick={() => setIsUpcomingExpanded(!isUpcomingExpanded)}>
+        <div onClick={() => setIsUpcomingExpanded(!isUpcomingExpanded)} className="flex items-center justify-between cursor-pointer hover:bg-surface-raised/20 rounded-lg transition-colors my-0 py-[6px]">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-text-secondary mx-[10px]">Upcoming</span>
             <span className="text-xs text-text-secondary">2 scheduled briefs today</span>
