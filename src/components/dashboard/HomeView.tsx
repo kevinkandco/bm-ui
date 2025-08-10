@@ -48,6 +48,8 @@ const HomeView = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
+  console.log('HomeView rendering - debugging home button visibility');
+
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
   const [selectedCalendarItem, setSelectedCalendarItem] = useState<string | null>(null);
@@ -511,10 +513,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   
                   <TabsContent value="briefs" className="mt-4 flex-1 min-h-0 space-y-4">
                     {/* Home Button */}
-                    <div className="pb-4">
+                    <div className="pb-4 border-b border-border-subtle">
                       <Button
                         variant="ghost"
                         className="w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3"
+                        onClick={() => console.log('Home button clicked')}
                       >
                         <Home className="mr-3 h-5 w-5 text-accent-primary" />
                         <span className="text-sm font-medium">Home</span>
