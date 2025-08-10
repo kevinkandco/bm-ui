@@ -80,13 +80,14 @@ const HomeView = ({
 
   // Navigation handlers for collapsed panel
   const handleNavigateToHome = useCallback(() => {
+    navigate('/dashboard');
     setIsHomeSelected(true);
     setSelectedBrief(null);
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setOpenSection(null);
     setLeftRailTab('briefs');
-  }, []);
+  }, [navigate]);
   const handleNavigateToAllBriefs = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null); // No specific brief selected to show "view all"
