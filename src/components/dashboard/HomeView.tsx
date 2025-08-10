@@ -629,6 +629,83 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             `
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
+              {/* Default Home Content */}
+              {!selectedMeeting && !selectedBrief && (
+                <div className="space-y-8">
+                  {/* Daily Brief(s) Section */}
+                  <div>
+                    <h2 className="text-xl font-semibold text-text-primary mb-6">Daily Brief(s)</h2>
+                    
+                    {/* Upcoming Brief */}
+                    <div className="mb-6">
+                      <h3 className="text-sm font-medium text-text-secondary mb-3">Upcoming</h3>
+                      <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-text-primary">Daily Brief • Tomorrow at 7:30 AM</p>
+                        </div>
+                        <ChevronDown className="h-4 w-4 text-text-secondary" />
+                      </div>
+                    </div>
+                    
+                    {/* Past Briefs */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-medium text-text-secondary">Past briefs</h3>
+                        <Button variant="ghost" size="sm" className="text-accent-primary hover:text-accent-primary/80 text-sm">
+                          View all →
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Calendar Section */}
+                  <div>
+                    <h2 className="text-xl font-semibold text-text-primary mb-6">Calendar</h2>
+                    
+                    <div className="mb-6">
+                      <h3 className="text-sm font-medium text-text-secondary mb-3">Upcoming</h3>
+                      <div className="bg-surface-raised/30 rounded-lg p-6 border border-border-subtle text-center">
+                        <p className="text-sm text-text-secondary">No upcoming meetings for today</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Schedule Section */}
+                  <div>
+                    <h2 className="text-xl font-semibold text-text-primary mb-6">Schedule</h2>
+                    
+                    {/* Today's Schedule */}
+                    <div className="mb-6">
+                      <h3 className="text-sm font-medium text-text-secondary mb-3">Today's Schedule</h3>
+                      <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium text-text-primary">12:00 AM</span>
+                          <span className="text-sm text-text-secondary">Theme: Life Admin + Side Projects</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Upcoming Schedule */}
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <h3 className="text-sm font-medium text-text-secondary">Upcoming</h3>
+                        <ChevronDown className="h-4 w-4 text-text-secondary" />
+                      </div>
+                    </div>
+                    
+                    {/* Past Schedule */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-medium text-text-secondary">Past Schedule</h3>
+                        <Button variant="ghost" size="sm" className="text-accent-primary hover:text-accent-primary/80 text-sm">
+                          View all →
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               {selectedMeeting && <div className="space-y-6">
                   {/* Meeting Header */}
                   <div className="flex items-start justify-between">
