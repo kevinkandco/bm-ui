@@ -674,13 +674,58 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       {/* Daily Briefing Section */}
                       <div>
                         <h2 className="text-xl font-semibold text-text-primary mb-4">Daily briefing</h2>
-                        <BriefsList
-                          onPlayBrief={handlePlayBrief}
-                          onBriefSelect={handleBriefSelect}
-                          onSettingsClick={() => navigate("/dashboard/settings")}
-                          selectedBrief={null}
-                          playingBrief={playingBrief}
-                        />
+                        <div className="space-y-4">
+                          {/* Recent Briefs */}
+                          {recentBriefs.map((brief) => (
+                            <div 
+                              key={brief.id}
+                              className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer"
+                              onClick={() => handleBriefSelect(brief.id)}
+                            >
+                              <div className="flex items-center gap-3">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 hover:bg-accent-primary/20"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePlayBrief(brief.id);
+                                  }}
+                                >
+                                  {playingBrief === brief.id ? (
+                                    <Pause className="h-4 w-4 text-accent-primary" />
+                                  ) : (
+                                    <Play className="h-4 w-4 text-accent-primary" />
+                                  )}
+                                </Button>
+                                <div className="flex-1">
+                                  <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
+                                  <p className="text-xs text-text-secondary mb-1">{brief.timeCreated}</p>
+                                  <p className="text-xs text-text-secondary">
+                                    {brief.slackMessages.fromPriorityPeople} Slack | {brief.emails.fromPriorityPeople} Emails | {brief.actionItems} Actions
+                                  </p>
+                                </div>
+                                <div className="text-xs text-text-secondary">
+                                  {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : '2d'}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          {/* Upcoming Brief */}
+                          <div className="bg-surface-raised/20 rounded-lg p-4 border border-border-subtle opacity-60">
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded flex items-center justify-center bg-surface-overlay border border-border-subtle">
+                                <Clock className="h-4 w-4 text-text-secondary" />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-medium text-text-primary text-sm">Upcoming</h3>
+                                <p className="text-xs text-text-secondary">2 scheduled briefs today</p>
+                              </div>
+                              <ChevronDown className="h-4 w-4 text-text-secondary" />
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Schedule Section */}
@@ -692,38 +737,26 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
                     {/* Right Column */}
                     <div className="space-y-8">
-                      {/* Tasks Section */}
+                      {/* Follow ups Section */}
                       <div>
-                        <h2 className="text-xl font-semibold text-text-primary mb-4">Tasks</h2>
-                        <div className="space-y-4">
-                          <div className="text-sm font-medium text-text-secondary mb-3">Overdue</div>
-                          <div className="space-y-3">
-                            <UpcomingBriefCard
-                              briefName="Use search with Ctrl+K or ⌘K"
-                              scheduledTime="Jun 28 • To do • Low"
-                            />
-                            <UpcomingBriefCard
-                              briefName="Invite your team members"  
-                              scheduledTime="Jun 28 • To do • High"
-                            />
-                            <UpcomingBriefCard
-                              briefName="Create a deal"
-                              scheduledTime="Jun 28 • To do • Medium"
-                            />
-                            <UpcomingBriefCard
-                              briefName="Download the Mac desktop app"
-                              scheduledTime="Jun 28 • To do • Low"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Recently Visited Section */}
-                      <div>
-                        <h2 className="text-xl font-semibold text-text-primary mb-4">Recently visited</h2>
-                        <div className="border border-border-subtle rounded-lg p-8 text-center">
-                          <h3 className="font-medium text-text-primary mb-2">No recent items</h3>
-                          <p className="text-sm text-text-secondary">You haven't visited any items yet.</p>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Follow ups</h2>
+                        <div className="space-y-3">
+                          {followUps.filter(item => followUpsFilter === 'all' || item.priority === 'High').slice(0, 8).map((item) => (
+                            <div 
+                              key={item.id}
+                              className={cn(
+                                "flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors border border-border-subtle",
+                                selectedFollowUpId === item.id ? "bg-accent-primary/10" : "hover:bg-surface-raised/20"
+                              )}
+                              onClick={() => handleFollowUpClick(item)}
+                            >
+                              <div className="w-4 h-4 rounded-full border border-accent-primary" />
+                              <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-text-primary font-medium truncate">{item.message}</p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
