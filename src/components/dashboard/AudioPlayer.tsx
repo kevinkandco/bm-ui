@@ -3,6 +3,7 @@ import { Play, Pause, SkipBack, SkipForward, Rss, Volume2, X, FileText } from 'l
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import TranscriptModal from './TranscriptModal';
 
 interface AudioPlayerProps {
@@ -20,6 +21,7 @@ const AudioPlayer = ({
   onClose,
   className 
 }: AudioPlayerProps) => {
+  const isMobile = useIsMobile();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(312); // 5:12 in seconds
@@ -84,6 +86,50 @@ const AudioPlayer = ({
   const isDisabled = !briefId;
   
   console.log('AudioPlayer: rendering with briefId:', briefId, 'briefName:', briefName);
+
+  // Mobile version - simple player above bottom nav
+  if (isMobile) {
+    return (
+      <div className={cn(
+        "fixed bottom-20 left-0 right-0 bg-emerald-800/95 backdrop-blur-md border-t border-emerald-600/50 z-45",
+        className
+      )}>
+        <div className="flex items-center gap-3 px-4 py-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handlePlayPause}
+            disabled={isDisabled}
+            className="h-8 w-8 p-0 rounded-full bg-white/20 hover:bg-white/30 disabled:opacity-50"
+          >
+            {isPlaying ? (
+              <Pause className="h-4 w-4 text-white" />
+            ) : (
+              <Play className="h-4 w-4 text-white fill-current" />
+            )}
+          </Button>
+
+          <div className="flex-1 min-w-0">
+            <div className="text-white font-medium text-sm truncate">
+              {briefName}
+            </div>
+            <div className="text-emerald-200 text-xs">
+              Ready to play
+            </div>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-6 w-6 p-0 hover:bg-white/20 text-emerald-200"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn(

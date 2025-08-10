@@ -26,6 +26,8 @@ import LatestBriefSection from "./HomeViewSections/LatestBriefSection";
 import AudioPlayer from "./AudioPlayer";
 import BriefsList from "./BriefsList";
 import UpcomingBriefCard from "./HomeViewSections/UpcomingBriefCard";
+import MobileHomeView from "./MobileHomeView";
+import MobileBottomNav from "./MobileBottomNav";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -439,12 +441,30 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       </DropdownMenu>;
   };
 
-  // Mobile fallback - return current mobile layout for now
+  // Mobile layout
   if (isMobile) {
-    return <div className="p-4">
-        <h1 className="text-xl font-bold text-text-primary mb-4">Good morning, Alex</h1>
-        <p className="text-text-secondary">Mobile layout coming soon...</p>
-      </div>;
+    return (
+      <div className="relative">
+        <MobileHomeView
+          onPlayBrief={handlePlayBrief}
+          playingBrief={playingBrief}
+          onOpenBrief={onOpenBrief}
+        />
+        
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav />
+        
+        {/* Mobile Audio Player - shows above bottom nav when active */}
+        {playingBrief && (
+          <AudioPlayer
+            briefId={playingBrief}
+            briefName={recentBriefs.find(b => b.id === playingBrief)?.name}
+            briefTime={recentBriefs.find(b => b.id === playingBrief)?.timeCreated}
+            onClose={() => setPlayingBrief(null)}
+          />
+        )}
+      </div>
+    );
   }
   return <div className="min-h-screen flex flex-col">
       {/* Global Header */}
