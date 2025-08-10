@@ -695,7 +695,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
               {/* Default Home Content */}
-              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6">
+              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[10px]">
                   {/* Date Header */}
                   <div className="mb-6">
                     <h1 className="text-2xl font-bold text-text-primary">
