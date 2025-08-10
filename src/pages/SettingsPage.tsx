@@ -18,11 +18,14 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
 
 const SettingsPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   
   // Get activeSection from navigation state or default to "profile"
@@ -190,66 +193,71 @@ const SettingsPage = () => {
   };
 
   return (
-    <DashboardLayout 
-      currentPage="settings" 
-      sidebarOpen={sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
-        <Breadcrumb className="mb-4">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink 
-                onClick={() => navigate("/dashboard")} 
-                className="cursor-pointer"
-              >
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Settings</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <>
+      <DashboardLayout 
+        currentPage="settings" 
+        sidebarOpen={sidebarOpen} 
+        onToggleSidebar={handleToggleSidebar}
+      >
+        <div className={`container p-4 md:p-6 max-w-7xl mx-auto ${isMobile ? 'pb-24' : ''}`}>
+          <Breadcrumb className="mb-4">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink 
+                  onClick={() => navigate("/dashboard")} 
+                  className="cursor-pointer"
+                >
+                  Dashboard
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Settings</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary flex items-center">
-            <Settings className="mr-3 h-6 w-6" />
-            Settings
-          </h1>
-          <p className="text-text-secondary mt-1">Manage your account and preferences</p>
-        </div>
-        
-        <div className="glass-card rounded-3xl overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-4">
-            <div className="p-6 border-r border-border-subtle">
-              <h2 className="text-lg font-medium text-text-primary mb-4">Categories</h2>
-              <div className="space-y-1">
-                {settingCategories.map((category) => (
-                  <button 
-                    key={category.id}
-                    onClick={() => setActiveSection(category.id)}
-                    className={`w-full flex items-center p-3 rounded-xl transition-all ${
-                      category.active 
-                        ? 'bg-white/10 text-white' 
-                        : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
-                    }`}
-                  >
-                    <category.icon className="h-5 w-5 mr-3" />
-                    <span>{category.name}</span>
-                  </button>
-                ))}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-text-primary flex items-center">
+              <Settings className="mr-3 h-6 w-6" />
+              Settings
+            </h1>
+            <p className="text-text-secondary mt-1">Manage your account and preferences</p>
+          </div>
+          
+          <div className="glass-card rounded-3xl overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-4">
+              <div className="p-6 border-r border-border-subtle">
+                <h2 className="text-lg font-medium text-text-primary mb-4">Categories</h2>
+                <div className="space-y-1">
+                  {settingCategories.map((category) => (
+                    <button 
+                      key={category.id}
+                      onClick={() => setActiveSection(category.id)}
+                      className={`w-full flex items-center p-3 rounded-xl transition-all ${
+                        category.active 
+                          ? 'bg-white/10 text-white' 
+                          : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
+                      }`}
+                    >
+                      <category.icon className="h-5 w-5 mr-3" />
+                      <span>{category.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            
-            <div className="md:col-span-3 p-6">
-              {renderContent()}
+              
+              <div className="md:col-span-3 p-6">
+                {renderContent()}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+      </DashboardLayout>
+      
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
+    </>
   );
 };
 

@@ -44,11 +44,14 @@ import PriorityReasoningModal from "@/components/dashboard/PriorityReasoningModa
 import ActionItemFeedback from "@/components/dashboard/ActionItemFeedback";
 import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
 
 const BriefDetail = () => {
   const { briefId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [isPlaying, setIsPlaying] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedActionItem, setExpandedActionItem] = useState<number | null>(null);
@@ -327,7 +330,7 @@ const BriefDetail = () => {
         sidebarOpen={sidebarOpen} 
         onToggleSidebar={handleToggleSidebar}
       >
-        <div className="min-h-screen bg-surface px-4 py-6">
+        <div className={`min-h-screen bg-surface px-4 py-6 ${isMobile ? 'pb-24' : ''}`}>
           {/* Breadcrumb */}
           <Breadcrumb className="mb-4">
             <BreadcrumbList>
@@ -751,6 +754,9 @@ const BriefDetail = () => {
           )}
         </div>
       </DashboardLayout>
+      
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
     </TooltipProvider>
   );
 };
