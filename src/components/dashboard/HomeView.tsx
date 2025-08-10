@@ -517,22 +517,26 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 </div>
                 
                 {/* Home Button */}
-                <div className="mb-4">
-                  <Button
-                    variant="ghost"
-                    className={cn(
-                      "w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3",
-                      isHomeSelected && "bg-accent-primary/10 text-accent-primary"
-                    )}
-                    onClick={handleHomeSelect}
-                  >
-                    <Home className={cn("mr-3 h-5 w-5", isHomeSelected ? "text-accent-primary" : "text-accent-primary")} />
-                    <span className="text-sm font-medium">Home</span>
-                  </Button>
-                </div>
-                
-                {/* Latest Brief Section */}
-                <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
+                 <div className="mb-4">
+                   <Button
+                     variant="ghost"
+                     className={cn(
+                       "w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3",
+                       isHomeSelected && "bg-accent-primary/10 text-accent-primary"
+                     )}
+                     onClick={handleHomeSelect}
+                   >
+                     <Home className={cn("mr-3 h-5 w-5", isHomeSelected ? "text-accent-primary" : "text-accent-primary")} />
+                     <span className="text-sm font-medium">Home</span>
+                   </Button>
+                 </div>
+                 
+                 {/* Latest Brief Section - now just text */}
+                 <div className="px-4 pb-4">
+                   <div className="text-sm font-medium text-text-secondary">
+                     Latest Brief
+                   </div>
+                 </div>
                 
                 {/* Navigation sections - converted to collapsible */}
                 <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2">
