@@ -237,6 +237,7 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
             className="w-full rounded-xl border border-border-subtle cursor-pointer transition-all shadow-none" 
             style={{
               background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
+              boxShadow: 'none'
             }}
             onClick={() => onMeetingClick ? onMeetingClick(nextMeeting) : openMeetingDetails(nextMeeting)}
           >
