@@ -449,6 +449,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           onPlayBrief={handlePlayBrief}
           playingBrief={playingBrief}
           onOpenBrief={onOpenBrief}
+          onStartFocusMode={onStartFocusMode}
         />
         
         {/* Mobile Bottom Navigation */}
