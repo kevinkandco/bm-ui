@@ -7,6 +7,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -54,6 +55,7 @@ const HomeView = ({
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
   const [selectedCalendarItem, setSelectedCalendarItem] = useState<string | null>(null);
+  const [openSection, setOpenSection] = useState<'briefs' | 'calendar' | 'followups' | null>('briefs');
   const [leftRailTab, setLeftRailTab] = useState<'briefs' | 'calendar' | 'followups'>('briefs');
   const [isHomeSelected, setIsHomeSelected] = useState(false);
   const [followUpsFilter, setFollowUpsFilter] = useState<'all' | 'current'>('all');
@@ -341,7 +343,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   // Handler for calendar meeting clicks
   const handleMeetingClick = useCallback((meeting: any) => {
     // Show the calendar content in main area
-    setLeftRailTab('calendar');
+    setOpenSection('calendar');
     setSelectedCalendarItem(meeting.id);
     setSelectedBrief(null);
     setSelectedMeeting(meeting);
