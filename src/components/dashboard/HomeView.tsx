@@ -508,7 +508,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {!leftPanelCollapsed ? <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="h-full flex flex-col">
               {/* Header with collapse button */}
-              <div className="p-4">
+              <div className="px-6">
                 <div className="flex items-center justify-between mb-3 mt-[30px]">
                   <h2 className="text-lg font-medium text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => navigate('/dashboard')}>Home</h2>
                   <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
@@ -518,7 +518,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 
                 {/* Home Button */}
                 <div className="mb-4">
-                  <div className="w-full justify-start text-text-secondary px-4 py-3 flex items-center">
+                  <div className="w-full justify-start text-text-secondary py-3 flex items-center">
                     <BookOpen className="mr-3 h-5 w-5 text-text-secondary" />
                     <span className="text-sm font-medium">Latest Brief</span>
                   </div>
@@ -528,11 +528,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                 
                 {/* Navigation sections - converted to collapsible */}
-                <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2">
+                <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2 px-0">
                   {/* Briefs Section */}
                   <Collapsible open={openSection === 'briefs'} onOpenChange={() => setOpenSection(openSection === 'briefs' ? null : 'briefs')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'briefs' ? '' : '-rotate-90')} />
                         Briefs ({recentBriefs.length} unread)
                       </Button>
@@ -547,7 +547,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Calendar Section */}
                   <Collapsible open={openSection === 'calendar'} onOpenChange={() => setOpenSection(openSection === 'calendar' ? null : 'calendar')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'calendar' ? '' : '-rotate-90')} />
                         Calendar (5 events)
                       </Button>
@@ -562,7 +562,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Follow ups Section */}
                   <Collapsible open={openSection === 'followups'} onOpenChange={() => setOpenSection(openSection === 'followups' ? null : 'followups')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'followups' ? '' : '-rotate-90')} />
                         Follow ups ({followUps.length} follow ups)
                       </Button>
@@ -606,7 +606,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </Collapsible>
                 </div>
               </div>
-            </div>
+              </div>
           </div> : (/* Collapsed Left Panel */
       <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
