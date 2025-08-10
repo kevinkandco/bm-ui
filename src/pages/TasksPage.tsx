@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import ActionItemModal from '@/components/dashboard/ActionItemModal';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileBottomNav from '@/components/dashboard/MobileBottomNav';
 
 interface ActionItem {
   id: string;
@@ -27,6 +29,7 @@ interface ActionItem {
 const TasksPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ActionItem | null>(null);
@@ -239,7 +242,7 @@ const TasksPage = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-6">
+    <div className={`min-h-screen px-4 py-6 ${isMobile ? 'pb-24' : ''}`}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -381,6 +384,9 @@ const TasksPage = () => {
         }}
         onMarkDone={handleMarkDone}
       />
+
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
     </div>
   );
 };
