@@ -120,34 +120,6 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
         </div>
       </div>
 
-      {/* Meetings Section */}
-      <div className="px-6 mb-8">
-        <h2 className="text-text-primary font-semibold text-lg mb-4">Meetings</h2>
-        <div className="space-y-3">
-          {meetings.map((meeting) => (
-            <div
-              key={meeting.id}
-              className="bg-surface-raised/50 backdrop-blur-sm rounded-xl p-4 flex items-center justify-between border border-border-subtle"
-            >
-              <div className="flex items-center gap-3">
-                <div className={cn(
-                  "w-3 h-3 rounded-full",
-                  getMeetingDotColor(meeting.color)
-                )} />
-                <div>
-                  <div className="text-text-primary font-medium">
-                    {meeting.title}
-                  </div>
-                  <div className="text-text-secondary text-sm">
-                    {meeting.time}
-                  </div>
-                </div>
-              </div>
-              <ArrowRight className="h-5 w-5 text-text-secondary" />
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Briefs Section */}
       <div className="px-6">
