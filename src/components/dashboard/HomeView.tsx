@@ -510,7 +510,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               {/* Header with collapse button */}
               <div className="p-4">
                 <div className="flex items-center justify-between mb-3 mt-[30px]">
-                  <h2 className="text-lg font-medium text-text-primary">Latest Brief</h2>
+                  <h2 className="text-lg font-medium text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => navigate('/dashboard')}>Home</h2>
                   <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
                     <PanelLeftClose className="h-4 w-4" />
                   </Button>
@@ -518,17 +518,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 
                 {/* Home Button */}
                 <div className="mb-4">
-                  <Button
-                    variant="ghost"
-                    className={cn(
-                      "w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3",
-                      isHomeSelected && "bg-accent-primary/10 text-accent-primary"
-                    )}
-                    onClick={handleHomeSelect}
-                  >
-                    <Home className={cn("mr-3 h-5 w-5", isHomeSelected ? "text-accent-primary" : "text-accent-primary")} />
-                    <span className="text-sm font-medium">Home</span>
-                  </Button>
+                  <div className="w-full justify-start text-text-secondary px-4 py-3 flex items-center">
+                    <BookOpen className="mr-3 h-5 w-5 text-text-secondary" />
+                    <span className="text-sm font-medium">Latest Brief</span>
+                  </div>
                 </div>
                 
                 {/* Latest Brief Section */}
