@@ -234,7 +234,7 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
         {/* Next Meeting Card - Reverted to original version with outline */}
         {nextMeeting && (
           <Card 
-            className="w-full rounded-xl border border-border-subtle cursor-pointer transition-all" 
+            className="w-full rounded-xl border border-border-subtle cursor-pointer transition-all shadow-none" 
             style={{
               background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)',
             }}
