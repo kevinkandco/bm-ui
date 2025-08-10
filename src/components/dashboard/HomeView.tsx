@@ -534,68 +534,84 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 {/* Latest Brief Section */}
                 <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                 
-                {/* Navigation Tabs */}
-                <Tabs value={leftRailTab} onValueChange={value => setLeftRailTab(value as 'briefs' | 'calendar' | 'followups')} className="w-full border-t border-border-subtle mt-8 pt-6">
-                  <TabsList className="flex w-auto bg-surface-raised/30 py-1 pr-1 pl-0 rounded-lg">
-                    <TabsTrigger value="briefs" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 pl-0 pr-2 py-1 text-sm text-left rounded-sm font-medium relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
-                      Briefs ({recentBriefs.length + 1})
-                    </TabsTrigger>
-                    <TabsTrigger value="calendar" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-2 py-1 text-sm text-left rounded-sm relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
-                      Calendar (5)
-                    </TabsTrigger>
-                    <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 px-2 py-1 text-sm text-left rounded-sm relative data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-0.5 data-[state=active]:after:bg-[#6FDFB0] data-[state=active]:after:rounded-full">
-                      Follow ups ({followUps.length})
-                    </TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="briefs" className="mt-4 flex-1 min-h-0 space-y-4">
-                    {/* Briefs List */}
-                    <div className="flex-1 min-h-0">
-                      <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="calendar" className="mt-4 flex-1 min-h-0">
-                    <CalendarSection onMeetingClick={handleMeetingClick} />
-                  </TabsContent>
-                  
-                  <TabsContent value="followups" className="mt-4 flex-1 min-h-0">
-                    <div className="space-y-4">
-                      <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
-                        <Table>
-                          <TableHeader>
-                            <TableRow className="border-border-subtle hover:bg-transparent">
-                              <TableHead className="text-text-secondary font-medium text-xs w-8"></TableHead>
-                              <TableHead className="text-text-secondary font-medium text-xs w-20">Priority</TableHead>
-                              <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
-                              selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
-                            }`} onClick={() => handleFollowUpClick(item)}>
-                                <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
-                                  <Checkbox
-                                    checked={checkedFollowUps.has(item.id)}
-                                    onCheckedChange={() => handleFollowUpCheck(item.id)}
-                                    className="h-4 w-4"
-                                  />
-                                </TableCell>
-                                <TableCell className="w-20">
-                                  <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
-                                </TableCell>
-                                <TableCell className="pr-4">
-                                  <p className="text-xs text-text-primary line-clamp-2 leading-relaxed">
-                                    {item.message}
-                                  </p>
-                                </TableCell>
-                              </TableRow>)}
-                          </TableBody>
-                        </Table>
+                {/* Navigation sections - converted to collapsible */}
+                <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2">
+                  {/* Briefs Section */}
+                  <Collapsible open={openSection === 'briefs'} onOpenChange={() => setOpenSection(openSection === 'briefs' ? null : 'briefs')}>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                        <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'briefs' ? '' : '-rotate-90')} />
+                        Briefs ({recentBriefs.length} unread)
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-2">
+                      <div className="pl-6">
+                        <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
                       </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* Calendar Section */}
+                  <Collapsible open={openSection === 'calendar'} onOpenChange={() => setOpenSection(openSection === 'calendar' ? null : 'calendar')}>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                        <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'calendar' ? '' : '-rotate-90')} />
+                        Calendar (5 events)
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-2">
+                      <div className="pl-6">
+                        <CalendarSection onMeetingClick={handleMeetingClick} />
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* Follow ups Section */}
+                  <Collapsible open={openSection === 'followups'} onOpenChange={() => setOpenSection(openSection === 'followups' ? null : 'followups')}>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                        <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'followups' ? '' : '-rotate-90')} />
+                        Follow ups ({followUps.length} follow ups)
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-2">
+                      <div className="pl-6">
+                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="border-border-subtle hover:bg-transparent">
+                                <TableHead className="text-text-secondary font-medium text-xs w-8"></TableHead>
+                                <TableHead className="text-text-secondary font-medium text-xs w-20">Priority</TableHead>
+                                <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
+                                selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
+                              }`} onClick={() => handleFollowUpClick(item)}>
+                                  <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
+                                    <Checkbox
+                                      checked={checkedFollowUps.has(item.id)}
+                                      onCheckedChange={() => handleFollowUpCheck(item.id)}
+                                      className="h-4 w-4"
+                                    />
+                                  </TableCell>
+                                  <TableCell className="w-20">
+                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                  </TableCell>
+                                  <TableCell className="pr-4">
+                                    <p className="text-xs text-text-primary line-clamp-2 leading-relaxed">
+                                      {item.message}
+                                    </p>
+                                  </TableCell>
+                                </TableRow>)}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
               </div>
             </div>
           </div> : (/* Collapsed Left Panel */
