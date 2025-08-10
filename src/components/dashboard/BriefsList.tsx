@@ -139,7 +139,7 @@ const BriefsList = ({
       {/* Content */}
       <div className="flex-1 overflow-auto">
         {briefs.map((brief, index) => <div key={brief.id}>
-            <div className={cn("flex items-center gap-3 p-4 hover:bg-surface-raised/20 transition-colors cursor-pointer", selectedBrief === brief.id && "bg-accent-primary/10 border-l-2 border-accent-primary")} onClick={() => onBriefSelect(brief.id)}>
+            <div className={cn("flex items-center gap-3 pl-2 pr-4 py-4 hover:bg-surface-raised/20 transition-colors cursor-pointer", selectedBrief === brief.id && "bg-accent-primary/10 border-l-2 border-accent-primary")} onClick={() => onBriefSelect(brief.id)}>
               {/* Play Button */}
               <Button variant="ghost" size="sm" onClick={e => {
             e.stopPropagation();
