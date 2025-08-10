@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, ChevronLeft, ChevronRight, ArrowRight, Target } from 'lucide-react';
+import { Play, ChevronLeft, ChevronRight, ArrowRight, Target, Wifi, Plane, WifiOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import MobileStatusModal from './MobileStatusModal';
@@ -14,7 +14,7 @@ interface MobileHomeViewProps {
 const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMode }: MobileHomeViewProps) => {
   const [currentDate] = useState(new Date());
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState('active');
+  const [currentStatus, setCurrentStatus] = useState('online');
 
   // Sample data
   const meetings = [
@@ -54,10 +54,25 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
     }
   };
 
-  const handleStatusSelect = (status: 'active' | 'focus' | 'away') => {
+  const handleStatusSelect = (status: 'online' | 'focus' | 'vacation' | 'offline') => {
     setCurrentStatus(status);
     if (status === 'focus' && onStartFocusMode) {
       onStartFocusMode();
+    }
+  };
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case 'online':
+        return { label: 'Online', icon: Wifi, color: 'bg-emerald-500', textColor: 'text-emerald-400' };
+      case 'focus':
+        return { label: 'Focus Mode', icon: Target, color: 'bg-accent-primary', textColor: 'text-accent-primary' };
+      case 'vacation':
+        return { label: 'Vacation Mode', icon: Plane, color: 'bg-orange-500', textColor: 'text-orange-400' };
+      case 'offline':
+        return { label: 'Offline', icon: WifiOff, color: 'bg-gray-500', textColor: 'text-gray-400' };
+      default:
+        return { label: 'Online', icon: Wifi, color: 'bg-emerald-500', textColor: 'text-emerald-400' };
     }
   };
 
@@ -82,6 +97,34 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
           >
             <Target className="h-4 w-4 mr-2 text-accent-primary" />
             <span className="text-text-primary text-sm">Focus</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Status Section */}
+      <div className="px-6 mb-6">
+        <div className="bg-surface-raised/50 backdrop-blur-sm rounded-xl p-4 flex items-center justify-between border border-border-subtle">
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              "w-3 h-3 rounded-full",
+              getStatusConfig(currentStatus).color
+            )} />
+            <div>
+              <div className="text-text-primary font-medium">
+                {getStatusConfig(currentStatus).label}
+              </div>
+              <div className="text-text-secondary text-sm">
+                Current status
+              </div>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowStatusModal(true)}
+            className="h-8 px-3 bg-surface-overlay/50 hover:bg-surface-overlay/80 border border-border-subtle/50 rounded-lg"
+          >
+            <span className="text-text-secondary text-sm">Change</span>
           </Button>
         </div>
       </div>

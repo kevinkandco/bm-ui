@@ -1,23 +1,23 @@
 import React from 'react';
-import { Check, Target, Clock } from 'lucide-react';
+import { Wifi, Target, Plane, WifiOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface MobileStatusModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectStatus: (status: 'active' | 'focus' | 'away') => void;
+  onSelectStatus: (status: 'online' | 'focus' | 'vacation' | 'offline') => void;
   currentStatus?: string;
 }
 
-const MobileStatusModal = ({ isOpen, onClose, onSelectStatus, currentStatus = 'active' }: MobileStatusModalProps) => {
+const MobileStatusModal = ({ isOpen, onClose, onSelectStatus, currentStatus = 'online' }: MobileStatusModalProps) => {
   if (!isOpen) return null;
 
   const statusOptions = [
     {
-      id: 'active' as const,
-      label: 'Active',
-      icon: Check,
+      id: 'online' as const,
+      label: 'Online',
+      icon: Wifi,
       color: 'bg-emerald-500',
       description: 'Available for all notifications'
     },
@@ -29,15 +29,22 @@ const MobileStatusModal = ({ isOpen, onClose, onSelectStatus, currentStatus = 'a
       description: 'Limited notifications only'
     },
     {
-      id: 'away' as const,
-      label: 'Away',
-      icon: Clock,
+      id: 'vacation' as const,
+      label: 'Vacation Mode',
+      icon: Plane,
       color: 'bg-orange-500',
-      description: 'Temporarily unavailable'
+      description: 'Away on vacation'
+    },
+    {
+      id: 'offline' as const,
+      label: 'Offline',
+      icon: WifiOff,
+      color: 'bg-gray-500',
+      description: 'Not receiving notifications'
     }
   ];
 
-  const handleStatusSelect = (status: 'active' | 'focus' | 'away') => {
+  const handleStatusSelect = (status: 'online' | 'focus' | 'vacation' | 'offline') => {
     onSelectStatus(status);
     onClose();
   };

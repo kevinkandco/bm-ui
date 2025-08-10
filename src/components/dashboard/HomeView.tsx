@@ -76,7 +76,7 @@ const HomeView = ({
   const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState('active');
+  const [currentStatus, setCurrentStatus] = useState('online');
 
   // Navigation handlers for collapsed panel
   const handleNavigateToHome = useCallback(() => {
@@ -112,7 +112,7 @@ const HomeView = ({
     setOpenSection('followups');
     setLeftRailTab('followups');
   }, []);
-  const handleStatusSelect = useCallback((status: 'active' | 'focus' | 'away') => {
+  const handleStatusSelect = useCallback((status: 'online' | 'focus' | 'vacation' | 'offline') => {
     setCurrentStatus(status);
     if (status === 'focus') {
       onStartFocusMode();
