@@ -76,16 +76,39 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
     }
   };
 
+  const getTimeOfDayGreeting = () => {
+    const hour = currentDate.getHours();
+    if (hour < 12) return "Hope you're having a wonderful morning";
+    if (hour < 17) return "Hope your afternoon is going well";
+    return "Hope you're having a peaceful evening";
+  };
+
+  const getStatusReassurance = (status: string) => {
+    switch (status) {
+      case 'focus':
+        return "I'll keep distractions away";
+      case 'vacation':
+        return "Enjoy your time away";
+      case 'offline':
+        return "I'll be here when you're ready";
+      default:
+        return "I've got you covered";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-surface pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-surface via-surface-raised/10 to-surface pb-20">
       {/* Header */}
-      <div className="px-6 pt-16 pb-8">
-        <div className="flex items-center justify-between mb-4">
+      <div className="px-6 pt-16 pb-10">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-text-primary mb-2">
+            <h1 className="text-2xl font-bold text-text-primary mb-1">
               Good morning, Alex
             </h1>
-            <p className="text-text-secondary">
+            <p className="text-text-secondary/80 text-sm mb-2">
+              {getTimeOfDayGreeting()}
+            </p>
+            <p className="text-text-secondary/70">
               Ready to catch up or focus?
             </p>
           </div>
@@ -93,19 +116,25 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
       </div>
 
       {/* Status Section */}
-      <div className="px-6 mb-6">
-        <div className="bg-surface-raised/50 backdrop-blur-sm rounded-xl p-4 flex items-center justify-between border border-border-subtle">
-          <div className="flex items-center gap-3">
-            <div className={cn(
-              "w-3 h-3 rounded-full",
-              getStatusConfig(currentStatus).color
-            )} />
+      <div className="px-6 mb-10">
+        <div className="bg-surface-raised/40 backdrop-blur-sm rounded-2xl p-6 flex items-center justify-between border border-border-subtle/50 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className={cn(
+                "w-4 h-4 rounded-full relative z-10",
+                getStatusConfig(currentStatus).color
+              )} />
+              <div className={cn(
+                "absolute inset-0 w-4 h-4 rounded-full animate-pulse opacity-40",
+                getStatusConfig(currentStatus).color
+              )} />
+            </div>
             <div>
-              <div className="text-text-primary font-medium">
+              <div className="text-text-primary font-medium text-base">
                 {getStatusConfig(currentStatus).label}
               </div>
-              <div className="text-text-secondary text-sm">
-                Current status
+              <div className="text-text-secondary/70 text-sm">
+                {getStatusReassurance(currentStatus)}
               </div>
             </div>
           </div>
@@ -113,58 +142,55 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
             variant="ghost"
             size="sm"
             onClick={() => setShowStatusModal(true)}
-            className="h-8 px-3 bg-surface-overlay/50 hover:bg-surface-overlay/80 border border-border-subtle/50 rounded-lg"
+            className="h-8 px-3 bg-surface-overlay/30 hover:bg-surface-overlay/50 border border-border-subtle/30 rounded-xl text-text-secondary/80 hover:text-text-primary transition-all duration-200"
           >
-            <span className="text-text-secondary text-sm">Change</span>
+            <span className="text-sm">Change</span>
           </Button>
         </div>
       </div>
 
-
-      {/* Briefs Section */}
+      {/* Today's Updates Section */}
       <div className="px-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-text-primary font-semibold text-lg">Briefs</h2>
-          <div className="flex items-center gap-2 bg-surface-raised/50 rounded-full px-3 py-1 border border-border-subtle">
-            <ChevronLeft className="h-4 w-4 text-text-secondary" />
-            <span className="text-text-primary text-sm font-medium">Today</span>
-            <ChevronRight className="h-4 w-4 text-text-secondary" />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-text-primary font-medium text-lg">Today's Updates</h2>
+          <div className="flex items-center gap-2 bg-surface-raised/30 rounded-full px-4 py-2 border border-border-subtle/30">
+            <ChevronLeft className="h-4 w-4 text-text-secondary/60" />
+            <span className="text-text-primary/90 text-sm font-medium">Today</span>
+            <ChevronRight className="h-4 w-4 text-text-secondary/60" />
           </div>
         </div>
 
         {/* Brief Card */}
-        <div className="bg-surface-raised/50 backdrop-blur-sm rounded-xl p-4 border border-border-subtle">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="bg-surface-raised/30 backdrop-blur-sm rounded-2xl p-6 border border-border-subtle/40 shadow-sm">
+          <div className="flex items-center gap-4 mb-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onPlayBrief(briefData.id)}
-              className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30"
+              className="h-12 w-12 p-0 rounded-full bg-accent-primary/15 hover:bg-accent-primary/25 transition-all duration-200"
             >
-              <Play className="h-5 w-5 text-accent-primary fill-current" />
+              <Play className="h-6 w-6 text-accent-primary fill-current" />
             </Button>
             <div>
-              <div className="text-text-primary font-medium">
+              <div className="text-text-primary font-medium text-base">
                 {briefData.title}
               </div>
-              <div className="text-text-secondary text-sm">
+              <div className="text-text-secondary/70 text-sm">
                 {briefData.time}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-sm text-text-secondary">
+          <div className="flex items-center gap-6 text-sm text-text-secondary/70">
             <span>{briefData.slackCount} Slack</span>
             <span>{briefData.emailCount} Emails</span>
             <span>{briefData.actionCount} Actions</span>
           </div>
         </div>
 
-        {/* Upcoming Section */}
-        <div className="mt-8">
-          <div className="flex items-center justify-between">
-            <h3 className="text-text-primary font-medium">Upcoming</h3>
-            <ChevronRight className="h-5 w-5 text-text-secondary" />
-          </div>
+        {/* Empty State or Upcoming */}
+        <div className="mt-12 text-center">
+          <div className="text-text-primary/70 font-medium mb-2">That's it for now</div>
+          <div className="text-text-secondary/60 text-sm">Enjoy your day ✨</div>
         </div>
       </div>
 
