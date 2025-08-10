@@ -89,15 +89,6 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
               Ready to catch up or focus?
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowStatusModal(true)}
-            className="h-10 px-3 bg-surface-raised/50 hover:bg-surface-raised/80 border border-border-subtle rounded-xl"
-          >
-            <Target className="h-4 w-4 mr-2 text-accent-primary" />
-            <span className="text-text-primary text-sm">Focus</span>
-          </Button>
         </div>
       </div>
 
