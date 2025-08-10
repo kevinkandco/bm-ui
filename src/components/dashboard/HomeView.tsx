@@ -49,7 +49,6 @@ const HomeView = ({
 }: HomeViewProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-
   console.log('HomeView rendering - debugging home button visibility');
 
   // State for new layout
@@ -292,7 +291,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setIsHomeSelected(false);
     setFollowUpsFilter('current');
   }, []);
-  
   const handleCalendarSelect = useCallback((itemId: string) => {
     setSelectedCalendarItem(itemId);
     setSelectedBrief(null);
@@ -300,7 +298,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setIsHomeSelected(false);
     setFollowUpsFilter('all');
   }, []);
-
   const handleHomeSelect = useCallback(() => {
     setIsHomeSelected(true);
     setSelectedBrief(null);
@@ -316,14 +313,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const handleFollowUpClick = useCallback((item: any) => {
     // Set the selected follow up for highlighting
     setSelectedFollowUpId(item.id);
-    
+
     // Show the brief that this follow up came from in main content area
     setSelectedBrief(1); // All follow ups are from the morning brief
     setSelectedCalendarItem(null);
     setSelectedMeeting(null); // Clear calendar selection
     setIsHomeSelected(false);
     setFollowUpsFilter('current');
-    
+
     // Show detail view in right panel
     setSelectedMessage({
       ...item,
@@ -348,7 +345,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedBrief(null);
     setSelectedMeeting(meeting);
     setIsHomeSelected(false);
-    
+
     // Clear other selections
     setSelectedFollowUpId(null);
     setSelectedMessage(null);
@@ -367,7 +364,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     });
     setShowPriorityConfirmModal(true);
   }, []);
-
   const handleFollowUpCheck = (followUpId: number) => {
     setCheckedFollowUps(prev => {
       const newSet = new Set(prev);
@@ -379,7 +375,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       return newSet;
     });
   };
-
   const handleRemoveCheckedFollowUps = () => {
     // In a real app, this would make an API call to remove the items
     setCheckedFollowUps(new Set());
@@ -508,9 +503,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {!leftPanelCollapsed ? <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="h-full flex flex-col">
               {/* Header with collapse button */}
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-3 mt-[30px]">
-                  <h2 className="text-lg font-medium text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => navigate('/dashboard')}>Home</h2>
+              <div className="px-6">
+                <div className="flex items-center justify-between mb-3 flex ">
+                  <h2 onClick={() => navigate('/dashboard')} className="text-text-primary cursor-pointer hover:text-accent-primary text-lg text-left font-medium mx-[10px]">Home</h2>
                   <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
                     <PanelLeftClose className="h-4 w-4" />
                   </Button>
@@ -518,7 +513,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 
                 {/* Home Button */}
                 <div className="mb-4">
-                  <div className="w-full justify-start text-text-secondary px-4 py-3 flex items-center">
+                  <div className="w-full justify-start text-text-secondary py-3 flex items-center mx-0 px-[10px]">
                     <BookOpen className="mr-3 h-5 w-5 text-text-secondary" />
                     <span className="text-sm font-medium">Latest Brief</span>
                   </div>
@@ -528,11 +523,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                 
                 {/* Navigation sections - converted to collapsible */}
-                <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2">
+                <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2 px-0">
                   {/* Briefs Section */}
                   <Collapsible open={openSection === 'briefs'} onOpenChange={() => setOpenSection(openSection === 'briefs' ? null : 'briefs')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'briefs' ? '' : '-rotate-90')} />
                         Briefs ({recentBriefs.length} unread)
                       </Button>
@@ -547,7 +542,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Calendar Section */}
                   <Collapsible open={openSection === 'calendar'} onOpenChange={() => setOpenSection(openSection === 'calendar' ? null : 'calendar')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'calendar' ? '' : '-rotate-90')} />
                         Calendar (5 events)
                       </Button>
@@ -562,7 +557,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Follow ups Section */}
                   <Collapsible open={openSection === 'followups'} onOpenChange={() => setOpenSection(openSection === 'followups' ? null : 'followups')}>
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sm font-medium hover:bg-surface-raised/50">
+                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50">
                         <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'followups' ? '' : '-rotate-90')} />
                         Follow ups ({followUps.length} follow ups)
                       </Button>
@@ -579,15 +574,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
-                                selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
-                              }`} onClick={() => handleFollowUpClick(item)}>
-                                  <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
-                                    <Checkbox
-                                      checked={checkedFollowUps.has(item.id)}
-                                      onCheckedChange={() => handleFollowUpCheck(item.id)}
-                                      className="h-4 w-4"
-                                    />
+                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => handleFollowUpClick(item)}>
+                                  <TableCell className="w-8" onClick={e => e.stopPropagation()}>
+                                    <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
                                   </TableCell>
                                   <TableCell className="w-20">
                                     <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
@@ -606,7 +595,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </Collapsible>
                 </div>
               </div>
-            </div>
+              </div>
           </div> : (/* Collapsed Left Panel */
       <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
             <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
@@ -664,17 +653,16 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
               {/* Default Home Content */}
-              {(!selectedMeeting && !selectedBrief && isHomeSelected) && (
-                <div className="space-y-6">
+              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6">
                   {/* Date Header */}
                   <div className="mb-6">
                     <h1 className="text-2xl font-bold text-text-primary">
-                      {new Date().toLocaleDateString('en-US', { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      })}
+                      {new Date().toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
                     </h1>
                   </div>
 
@@ -687,27 +675,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <h2 className="text-xl font-semibold text-text-primary mb-4">Daily briefing</h2>
                         <div className="space-y-4">
                           {/* Recent Briefs */}
-                          {recentBriefs.map((brief) => (
-                            <div 
-                              key={brief.id}
-                              className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer"
-                              onClick={() => handleBriefSelect(brief.id)}
-                            >
+                          {recentBriefs.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer" onClick={() => handleBriefSelect(brief.id)}>
                               <div className="flex items-center gap-3">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-8 w-8 p-0 hover:bg-accent-primary/20"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handlePlayBrief(brief.id);
-                                  }}
-                                >
-                                  {playingBrief === brief.id ? (
-                                    <Pause className="h-4 w-4 text-accent-primary" />
-                                  ) : (
-                                    <Play className="h-4 w-4 text-accent-primary" />
-                                  )}
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
+                            e.stopPropagation();
+                            handlePlayBrief(brief.id);
+                          }}>
+                                  {playingBrief === brief.id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
                                 </Button>
                                 <div className="flex-1">
                                   <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
@@ -720,8 +694,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : '2d'}
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            </div>)}
                           
                           {/* Upcoming Brief */}
                           <div className="bg-surface-raised/20 rounded-lg p-4 border border-border-subtle opacity-60">
@@ -752,28 +725,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       <div>
                         <h2 className="text-xl font-semibold text-text-primary mb-4">Follow ups</h2>
                         <div className="space-y-3">
-                          {followUps.filter(item => followUpsFilter === 'all' || item.priority === 'High').slice(0, 8).map((item) => (
-                            <div 
-                              key={item.id}
-                              className={cn(
-                                "flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors border border-border-subtle",
-                                selectedFollowUpId === item.id ? "bg-accent-primary/10" : "hover:bg-surface-raised/20"
-                              )}
-                              onClick={() => handleFollowUpClick(item)}
-                            >
+                          {followUps.filter(item => followUpsFilter === 'all' || item.priority === 'High').slice(0, 8).map(item => <div key={item.id} className={cn("flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors border border-border-subtle", selectedFollowUpId === item.id ? "bg-accent-primary/10" : "hover:bg-surface-raised/20")} onClick={() => handleFollowUpClick(item)}>
                               <div className="w-4 h-4 rounded-full border border-accent-primary" />
                               <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm text-text-primary font-medium truncate">{item.message}</p>
                               </div>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                </div>}
               
               {selectedMeeting && <div className="space-y-6">
                   {/* Meeting Header */}
@@ -785,15 +748,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <span>{selectedMeeting.time} • {selectedMeeting.duration}</span>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedMeeting(null);
-                        setSelectedCalendarItem(null);
-                      }}
-                      className="h-8 w-8 p-0"
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => {
+                  setSelectedMeeting(null);
+                  setSelectedCalendarItem(null);
+                }} className="h-8 w-8 p-0">
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
@@ -805,8 +763,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       <h3 className="text-lg font-medium text-text-primary">Attendees</h3>
                     </div>
                     <div className="space-y-3">
-                      {selectedMeeting.attendees?.map((attendee: any, index: number) => (
-                        <div key={index} className="flex items-center justify-between">
+                      {selectedMeeting.attendees?.map((attendee: any, index: number) => <div key={index} className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-accent-primary/20 flex items-center justify-center">
                               <span className="text-sm font-medium text-accent-primary">
@@ -822,8 +779,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             <Check className="w-4 h-4 text-green-400" />
                             <Mail className="w-4 h-4 text-text-secondary" />
                           </div>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
                   </div>
 
@@ -985,30 +941,24 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${
-                                selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''
-                              }`} onClick={() => {
-                                setSelectedFollowUpId(item.id);
-                                setSelectedMessage({
-                                  ...item,
-                                  subject: "Follow-up Required",
-                                  fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                                  from: item.sender,
-                                  relevancy: "Requires action from you",
-                                  reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                                  created: item.time,
-                                  lastActivity: item.time,
-                                  source: item.platform === "S" ? "Slack" : "Email",
-                                  due: "End of day"
-                                });
-                                setRightPanelCollapsed(false);
-                               }}>
-                                  <TableCell className="w-8" onClick={(e) => e.stopPropagation()}>
-                                    <Checkbox
-                                      checked={checkedFollowUps.has(item.id)}
-                                      onCheckedChange={() => handleFollowUpCheck(item.id)}
-                                      className="h-4 w-4"
-                                    />
+                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
+                            setSelectedFollowUpId(item.id);
+                            setSelectedMessage({
+                              ...item,
+                              subject: "Follow-up Required",
+                              fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                              from: item.sender,
+                              relevancy: "Requires action from you",
+                              reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                              created: item.time,
+                              lastActivity: item.time,
+                              source: item.platform === "S" ? "Slack" : "Email",
+                              due: "End of day"
+                            });
+                            setRightPanelCollapsed(false);
+                          }}>
+                                  <TableCell className="w-8" onClick={e => e.stopPropagation()}>
+                                    <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
                                   </TableCell>
                                   <TableCell className="w-12">
                                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
