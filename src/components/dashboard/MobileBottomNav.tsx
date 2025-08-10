@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, FileText, CheckSquare, Settings } from 'lucide-react';
+import { Home, FileText, CheckSquare, Target, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -16,7 +16,8 @@ const MobileBottomNav = ({ className, onShowFocusModal }: MobileBottomNavProps) 
   const navItems = [
     { icon: Home, label: 'Home', path: '/dashboard', onClick: () => navigate('/dashboard') },
     { icon: FileText, label: 'Briefs', path: '/dashboard/briefs', onClick: () => navigate('/dashboard/briefs') },
-    { icon: CheckSquare, label: 'Follow ups', path: '/dashboard/tasks', onClick: () => navigate('/dashboard/tasks') },
+    { icon: Target, label: 'Focus', path: '/focus', onClick: () => onShowFocusModal?.() },
+    { icon: CheckSquare, label: 'Tasks', path: '/dashboard/tasks', onClick: () => navigate('/dashboard/tasks') },
     { icon: Settings, label: 'Settings', path: '/dashboard/settings', onClick: () => navigate('/dashboard/settings') },
   ];
 
@@ -29,7 +30,8 @@ const MobileBottomNav = ({ className, onShowFocusModal }: MobileBottomNavProps) 
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
-            (item.path === '/dashboard' && location.pathname === '/');
+            (item.path === '/dashboard' && location.pathname === '/') ||
+            (item.label === 'Focus' && location.pathname === '/status');
           
           return (
             <Button
