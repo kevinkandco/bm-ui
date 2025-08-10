@@ -85,27 +85,28 @@ const HomeView = ({
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setOpenSection(null);
+    setLeftRailTab('briefs');
   }, []);
 
-  const handleNavigateToBriefs = useCallback(() => {
+  const handleNavigateToAllBriefs = useCallback(() => {
     setIsHomeSelected(false);
-    setSelectedBrief(1);
+    setSelectedBrief(null); // No specific brief selected to show "view all"
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setOpenSection('briefs');
     setLeftRailTab('briefs');
   }, []);
 
-  const handleNavigateToCalendar = useCallback(() => {
+  const handleNavigateToAllCalendar = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null);
-    setSelectedCalendarItem("meeting-1");
+    setSelectedCalendarItem(null); // No specific event selected to show "view all"
     setSelectedMeeting(null);
     setOpenSection('calendar');
     setLeftRailTab('calendar');
   }, []);
 
-  const handleNavigateToFollowUps = useCallback(() => {
+  const handleNavigateToAllFollowUps = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null);
     setSelectedCalendarItem(null);
@@ -685,17 +686,17 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </Button>
               
               {/* Briefs Icon */}
-              <Button variant="ghost" size="sm" onClick={handleNavigateToBriefs} className={cn("h-8 w-8 p-0", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+              <Button variant="ghost" size="sm" onClick={handleNavigateToAllBriefs} className={cn("h-8 w-8 p-0", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                 <FileText className="h-4 w-4" />
               </Button>
               
               {/* Calendar Icon */}
-              <Button variant="ghost" size="sm" onClick={handleNavigateToCalendar} className={cn("h-8 w-8 p-0", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+              <Button variant="ghost" size="sm" onClick={handleNavigateToAllCalendar} className={cn("h-8 w-8 p-0", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                 <Calendar className="h-4 w-4" />
               </Button>
               
               {/* Follow Ups Icon */}
-              <Button variant="ghost" size="sm" onClick={handleNavigateToFollowUps} className={cn("h-8 w-8 p-0", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+              <Button variant="ghost" size="sm" onClick={handleNavigateToAllFollowUps} className={cn("h-8 w-8 p-0", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                 <ClipboardCheck className="h-4 w-4" />
               </Button>
             </div>
