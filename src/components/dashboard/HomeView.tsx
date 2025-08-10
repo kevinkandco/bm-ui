@@ -494,6 +494,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </Button>
                 </div>
                 
+                {/* Home Button */}
+                <div className="mb-4">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3"
+                    onClick={() => console.log('Home button clicked')}
+                  >
+                    <Home className="mr-3 h-5 w-5 text-accent-primary" />
+                    <span className="text-sm font-medium">Home</span>
+                  </Button>
+                </div>
+                
                 {/* Latest Brief Section */}
                 <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                 
@@ -512,18 +524,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </TabsList>
                   
                   <TabsContent value="briefs" className="mt-4 flex-1 min-h-0 space-y-4">
-                    {/* Home Button */}
-                    <div className="pb-4 border-b border-border-subtle">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3"
-                        onClick={() => console.log('Home button clicked')}
-                      >
-                        <Home className="mr-3 h-5 w-5 text-accent-primary" />
-                        <span className="text-sm font-medium">Home</span>
-                      </Button>
-                    </div>
-                    
                     {/* Briefs List */}
                     <div className="flex-1 min-h-0">
                       <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
