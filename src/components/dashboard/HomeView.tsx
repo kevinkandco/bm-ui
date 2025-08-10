@@ -54,6 +54,7 @@ const HomeView = ({
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
   const [selectedCalendarItem, setSelectedCalendarItem] = useState<string | null>(null);
   const [leftRailTab, setLeftRailTab] = useState<'briefs' | 'calendar' | 'followups'>('briefs');
+  const [isHomeSelected, setIsHomeSelected] = useState(false);
   const [followUpsFilter, setFollowUpsFilter] = useState<'all' | 'current'>('all');
   const [showRightDrawer, setShowRightDrawer] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
@@ -284,12 +285,28 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const handleBriefSelect = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
     setSelectedCalendarItem(null);
+    setSelectedMeeting(null);
+    setIsHomeSelected(false);
     setFollowUpsFilter('current');
   }, []);
+  
   const handleCalendarSelect = useCallback((itemId: string) => {
     setSelectedCalendarItem(itemId);
     setSelectedBrief(null);
+    setSelectedMeeting(null);
+    setIsHomeSelected(false);
     setFollowUpsFilter('all');
+  }, []);
+
+  const handleHomeSelect = useCallback(() => {
+    setIsHomeSelected(true);
+    setSelectedBrief(null);
+    setSelectedCalendarItem(null);
+    setSelectedMeeting(null);
+    setSelectedFollowUpId(null);
+    setSelectedMessage(null);
+    setSelectedTranscript(null);
+    setRightPanelCollapsed(true);
   }, []);
 
   // Handler for follow up clicks in left panel
@@ -301,6 +318,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedBrief(1); // All follow ups are from the morning brief
     setSelectedCalendarItem(null);
     setSelectedMeeting(null); // Clear calendar selection
+    setIsHomeSelected(false);
     setFollowUpsFilter('current');
     
     // Show detail view in right panel
@@ -326,6 +344,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedCalendarItem(meeting.id);
     setSelectedBrief(null);
     setSelectedMeeting(meeting);
+    setIsHomeSelected(false);
     
     // Clear other selections
     setSelectedFollowUpId(null);
@@ -498,10 +517,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 <div className="mb-4">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3"
-                    onClick={() => console.log('Home button clicked')}
+                    className={cn(
+                      "w-full justify-start text-text-primary hover:bg-surface-raised/20 px-4 py-3",
+                      isHomeSelected && "bg-accent-primary/10 text-accent-primary"
+                    )}
+                    onClick={handleHomeSelect}
                   >
-                    <Home className="mr-3 h-5 w-5 text-accent-primary" />
+                    <Home className={cn("mr-3 h-5 w-5", isHomeSelected ? "text-accent-primary" : "text-accent-primary")} />
                     <span className="text-sm font-medium">Home</span>
                   </Button>
                 </div>
@@ -630,7 +652,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
               {/* Default Home Content */}
-              {!selectedMeeting && !selectedBrief && (
+              {(!selectedMeeting && !selectedBrief && isHomeSelected) && (
                 <div className="space-y-8">
                   {/* Daily Brief(s) Section */}
                   <div>
