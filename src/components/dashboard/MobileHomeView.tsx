@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import BreathingNeuralOrb from '../visuals/BreathingNeuralOrb';
 
 interface MobileHomeViewProps {
   onPlayBrief: (briefId: number) => void;
@@ -111,6 +112,11 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
       </div>
 
       {/* Status indicator moved inline with header */}
+
+      {/* Orb */}
+      <div className="px-6 -mt-2 mb-4">
+        <BreathingNeuralOrb height={200} className="mx-auto" brandColors={["#1B5862", "#277F64", "#4FAF83"]} />
+      </div>
 
       {/* Today's Updates Section */}
       <div className="px-6">
