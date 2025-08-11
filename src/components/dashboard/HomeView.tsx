@@ -1376,7 +1376,101 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                 </div>}
 
-              {!selectedBrief && !selectedCalendarItem && <div className="h-full flex items-center justify-center">
+              {/* Follow ups view when leftRailTab is 'followups' */}
+              {leftRailTab === 'followups' && !selectedBrief && !selectedCalendarItem && !isHomeSelected && <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-text-primary mb-1">All Follow-ups</h2>
+                    <p className="text-sm text-text-secondary">Items requiring your attention</p>
+                  </div>
+
+                  {/* Tabs Section */}
+                  <div>
+                    <Tabs defaultValue="followups" className="w-full">
+                      <TabsList className="grid w-fit grid-cols-2 bg-surface-raised/30 p-1 rounded-lg">
+                        <TabsTrigger value="followups" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2 text-left">
+                          Follow ups ({followUps.length})
+                        </TabsTrigger>
+                        <TabsTrigger value="allmessages" className="text-text-secondary data-[state=active]:text-text-primary data-[state=active]:bg-surface-raised/70 rounded-md px-4 py-2">
+                          All Messages & Items ({allMessages.length})
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="followups" className="mt-4">
+                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="border-border-subtle hover:bg-transparent">
+                                <TableHead className="text-text-secondary font-medium w-8"></TableHead>
+                                <TableHead className="text-text-secondary font-medium">Platform</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Priority</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Message</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Sender</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Time</TableHead>
+                                <TableHead className="text-text-secondary font-medium">Action Menu</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
+                            setSelectedFollowUpId(item.id);
+                            setSelectedMessage({
+                              ...item,
+                              subject: "Follow-up Required",
+                              fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                              from: item.sender,
+                              relevancy: item.priority === "High" ? "Requires immediate attention" : "Review when convenient",
+                              reasoning: "Flagged based on sender importance and content keywords."
+                            });
+                          }}>
+                                  <TableCell className="w-8" onClick={e => e.stopPropagation()}>
+                                    <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold ${item.platform === 'S' ? 'bg-purple-600' : item.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                                      {item.platform}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                  </TableCell>
+                                  <TableCell className="pr-4">
+                                    <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
+                                      {item.message}
+                                    </p>
+                                  </TableCell>
+                                  <TableCell className="text-sm text-text-secondary">
+                                    {item.sender}
+                                  </TableCell>
+                                  <TableCell className="text-sm text-text-secondary">
+                                    {item.time}
+                                  </TableCell>
+                                  <TableCell>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                          <span className="sr-only">Actions</span>
+                                          <ChevronDown className="h-3 w-3" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={(e) => {
+                                      e.stopPropagation();
+                                      window.open(item.platform === 'S' ? 'https://slack.com' : 'https://gmail.com', '_blank');
+                                    }}>
+                                          {item.actionType || 'Open'}
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </TableCell>
+                                </TableRow>)}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                </div>}
+
+              {!selectedBrief && !selectedCalendarItem && !isHomeSelected && leftRailTab !== 'followups' && <div className="h-full flex items-center justify-center">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-text-primary mb-2">No upcoming meetings for today</h3>
                     <p className="text-text-secondary">Select a brief or calendar item from the left panel to view details</p>
