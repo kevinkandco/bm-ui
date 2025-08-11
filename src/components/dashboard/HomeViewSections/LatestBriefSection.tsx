@@ -24,7 +24,7 @@ const LatestBriefSection = ({
   }];
   return <div className="space-y-3">
       <div className={cn("py-4 rounded-lg hover:bg-[hsl(190,28%,22%)]/40 transition-colors cursor-pointer", isSelected ? "bg-[hsl(190,28%,22%)]/30" : "bg-[hsl(190,28%,22%)]/20")} onClick={onClick}>
-        <h3 className="text-sm font-medium text-text-primary mb-1 px-[10px]">Latest Brief</h3>
+        <h3 className="text-sm font-medium text-text-primary mb-1 px-[10px]">Latest brief - Monday @7:30am PT</h3>
         
         
       </div>
