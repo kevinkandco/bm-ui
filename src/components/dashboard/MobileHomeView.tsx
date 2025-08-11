@@ -97,7 +97,7 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
   };
 
   return (
-    <div className="h-screen max-h-[932px] overflow-y-auto bg-gradient-to-br from-surface via-surface-raised/10 to-surface relative">
+    <div className="h-screen max-h-[932px] overflow-y-auto bg-brand-900 relative">
       {/* Header */}
       <div className="px-6 pt-16 pb-10">
         <div className="flex items-center justify-between mb-6">
@@ -117,7 +117,7 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
 
       {/* Status Section */}
       <div className="px-6 mb-10">
-        <div className="bg-surface-raised/40 backdrop-blur-sm rounded-2xl p-6 flex items-center justify-between border border-border-subtle/50 shadow-sm">
+        <div className="bg-brand-600 rounded-xl p-5 flex items-center justify-between border border-border-subtle shadow-none">
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className={cn(
@@ -142,7 +142,7 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
             variant="ghost"
             size="sm"
             onClick={() => setShowStatusModal(true)}
-            className="h-8 px-3 bg-surface-overlay/30 hover:bg-surface-overlay/50 border border-border-subtle/30 rounded-xl text-text-secondary/80 hover:text-text-primary transition-all duration-200"
+            className="h-8 px-3 bg-brand-700 hover:bg-brand-500 border border-border-subtle rounded-xl text-text-secondary hover:text-text-primary transition-all duration-200"
           >
             <span className="text-sm">Change</span>
           </Button>
@@ -152,35 +152,35 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
       {/* Today's Updates Section */}
       <div className="px-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-text-primary font-medium text-lg">Today's Updates</h2>
-          <div className="flex items-center gap-2 bg-surface-raised/30 rounded-full px-4 py-2 border border-border-subtle/30">
-            <ChevronLeft className="h-4 w-4 text-text-secondary/60" />
-            <span className="text-text-primary/90 text-sm font-medium">Today</span>
-            <ChevronRight className="h-4 w-4 text-text-secondary/60" />
+          <h2 className="text-text-primary font-semibold text-lg tracking-tight">Today's Updates</h2>
+          <div className="flex items-center gap-2 bg-brand-700 rounded-full px-4 py-2 border border-border-subtle">
+            <ChevronLeft className="h-4 w-4 text-text-muted" />
+            <span className="text-text-primary text-sm font-medium tracking-tight">Today</span>
+            <ChevronRight className="h-4 w-4 text-text-muted" />
           </div>
         </div>
 
         {/* Brief Card */}
-        <div className="bg-surface-raised/30 backdrop-blur-sm rounded-2xl p-6 border border-border-subtle/40 shadow-sm">
+        <div className="bg-brand-600 rounded-xl p-5 border border-border-subtle shadow-none">
           <div className="flex items-center gap-4 mb-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onPlayBrief(briefData.id)}
-              className="h-12 w-12 p-0 rounded-full bg-accent-primary/15 hover:bg-accent-primary/25 transition-all duration-200"
+              className="h-12 w-12 p-0 rounded-full bg-brand-300/15 hover:bg-brand-300/25 transition-all duration-200"
             >
-              <Play className="h-6 w-6 text-accent-primary fill-current" />
+              <Play className="h-6 w-6 text-brand-300 fill-current" />
             </Button>
             <div>
-              <div className="text-text-primary font-medium text-base">
+              <div className="text-text-primary font-semibold text-base tracking-tight">
                 {briefData.title}
               </div>
-              <div className="text-text-secondary/70 text-sm">
+              <div className="text-text-secondary text-sm">
                 {briefData.time}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-6 text-sm text-text-secondary/70">
+          <div className="flex items-center gap-6 text-sm text-text-muted">
             <span>{briefData.slackCount} Slack</span>
             <span>{briefData.emailCount} Emails</span>
             <span>{briefData.actionCount} Actions</span>
@@ -189,8 +189,8 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
 
         {/* Empty State or Upcoming */}
         <div className="mt-12 text-center">
-          <div className="text-text-primary/70 font-medium mb-2">That's it for now</div>
-          <div className="text-text-secondary/60 text-sm">Enjoy your day ✨</div>
+          <div className="text-text-primary font-medium mb-2 tracking-tight">That's it for now</div>
+          <div className="text-text-muted text-sm">Enjoy your day ✨</div>
         </div>
       </div>
 

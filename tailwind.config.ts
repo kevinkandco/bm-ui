@@ -63,26 +63,26 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				
-				// New Podia Color Palette
-				'primary-teal': '#2EE2AD',
-				'accent-green': '#3DE48D',
-				'dark-navy': '#0A0F19',
-				'deep-blue': '#131B2B',
-				'light-gray-text': '#B3B8C1',
-				'white-text': '#FFFFFF',
-				
-				// Glass morphism design system colors - updated for new palette
-				'surface': 'var(--surface)',
-				'surface-raised': 'var(--surface-raised)',
-				'surface-overlay': 'var(--surface-overlay)',
-				'accent-primary': 'var(--accent-primary)',
-				'accent-secondary': 'var(--accent-secondary)',
+				// Brief Me Brand Colors - Style Guide
+				'brand': {
+					900: 'var(--brand-900)',
+					800: 'var(--brand-800)',
+					700: 'var(--brand-700)',
+					600: 'var(--brand-600)',
+					500: 'var(--brand-500)',
+					300: 'var(--brand-300)',
+					200: 'var(--brand-200)',
+				},
 				'text-primary': 'var(--text-primary)',
 				'text-secondary': 'var(--text-secondary)',
 				'text-muted': 'var(--text-muted)',
 				'border-subtle': 'var(--border-subtle)',
-				'glow-highlight': 'var(--glow-highlight)',
-				'glow-line': 'var(--glow-line)',
+				'accent-primary': 'var(--accent-primary)',
+				
+				// Legacy surface colors for compatibility
+				'surface': 'var(--surface)',
+				'surface-raised': 'var(--surface-raised)',
+				'surface-overlay': 'var(--surface-overlay)',
 				
 				// Keep legacy colors for compatibility
 				'canvas-black': '#1A1A1C',
@@ -113,8 +113,8 @@ export default {
 				},
 			},
 			fontFamily: {
-				'sans': ['Inter', 'system-ui', 'sans-serif'],
-				'inter': ['Inter', 'system-ui', 'sans-serif'],
+				'sans': ['Outfit', 'system-ui', 'sans-serif'],
+				'outfit': ['Outfit', 'system-ui', 'sans-serif'],
 			},
 			fontSize: {
 				// Podia Typography Scale
@@ -136,10 +136,8 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
-				xl: '16px',
-				'podia-button': '12px',
-				'podia-chip': '20px',
-				'podia-card': '16px',
+				xl: '12px',
+				'card': '12px',
 			},
 			boxShadow: {
 				'podia-button': '0 4px 8px rgba(46, 226, 173, 0.2)',

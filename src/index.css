@@ -3,25 +3,35 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* New Podia Color System */
-    --surface: #0A0F19;  /* Dark Navy */
-    --surface-raised: #131B2B;  /* Deep Blue */
-    --surface-overlay: rgba(19, 27, 43, 0.95);  /* Deep Blue with opacity */
-    --glow-highlight: rgba(46, 226, 173, 0.1);
-    --glow-line: rgba(46, 226, 173, 0.2);
-    --accent-primary: #2EE2AD;  /* Primary Teal */
-    --accent-secondary: #3DE48D;  /* Accent Green */
-    --text-primary: #FFFFFF;  /* White Text */
-    --text-secondary: #B3B8C1;  /* Light Gray Text */
-    --text-muted: rgba(179, 184, 193, 0.7);
-    --border-subtle: rgba(179, 184, 193, 0.2);
+    /* Brief Me Brand Colors - Style Guide */
+    --brand-900: #0E1214;  /* App background */
+    --brand-800: #10191E;  /* Sidebar bg */
+    --brand-700: #1C1E21;  /* Panels, cards */
+    --brand-600: #172D32;  /* Primary card bg */
+    --brand-500: #1E3E46;  /* Subtle accent bg */
+    --brand-300: #206C6B;  /* Primary accent (brand green-teal) */
+    --brand-200: #1B5862;  /* Buttons */
+
+    /* Text Colors */
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.78);
+    --text-muted: rgba(255, 255, 255, 0.56);
+
+    /* Border */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    
+    /* Legacy surface colors for compatibility */
+    --surface: var(--brand-900);
+    --surface-raised: var(--brand-700);
+    --surface-overlay: rgba(28, 30, 33, 0.95);
+    --accent-primary: var(--brand-300);
     
     /* Standard radius */
-    --radius: 16px;
+    --radius: 12px;
 
     /* Updated shadcn variables for Podia theme */
     --background: 218 42% 8%;     /* Dark Navy */
@@ -89,11 +99,12 @@
   }
 
   body {
-    @apply font-inter;
+    @apply font-outfit;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background: #1C1E21;
+    background: var(--brand-900);
     color: var(--text-primary);
     min-height: 100vh;
+    letter-spacing: -0.01em;
   }
 }
 
