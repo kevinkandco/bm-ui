@@ -106,7 +106,7 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
                     </Button>
                     <span className="text-text-secondary text-sm">{briefData.audioLength}</span>
                   </div>
-                  <Button variant="outline" size="sm">Download</Button>
+                  
                 </div>
                 
                 <div className="space-y-2 mt-6">
