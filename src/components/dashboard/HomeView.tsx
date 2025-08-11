@@ -563,9 +563,30 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Left: Brief Me Logo */}
+            {/* Left: Brief Me Logo and Status */}
             <div className="flex items-center gap-3">
               <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
+              {/* Status Indicator */}
+              <div 
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors"
+                onClick={() => {
+                  if (userStatus === "away" && onSignBackOn) {
+                    onSignBackOn();
+                  } else if (userStatus === "vacation" && onSignBackOn) {
+                    onSignBackOn();
+                  } else if (userStatus === "focus" && onExitFocusMode) {
+                    onExitFocusMode();
+                  }
+                }}
+              >
+                <div className={`w-2 h-2 rounded-full ${
+                  userStatus === "active" ? "bg-green-500" :
+                  userStatus === "away" ? "bg-yellow-500" :
+                  userStatus === "focus" ? "bg-blue-500" :
+                  userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"
+                }`} />
+                <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
+              </div>
             </div>
 
             {/* Center: Empty (reserved space) */}
@@ -576,7 +597,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               {/* Get Brief Button */}
               <Button onClick={onToggleCatchMeUp} className="bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2">
                 <Zap className="mr-2 h-4 w-4" />
-                Get Brief
+                Brief Me
               </Button>
 
               {/* Avatar with Dropdown */}
@@ -1448,15 +1469,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </DialogContent>
       </Dialog>
 
-      {/* MenuBar Icon - Fixed position */}
-      <MenuBarIcon 
-        onToggleMenu={() => {}}
-        onStatusChange={onStatusChange || (() => {})}
-        currentStatus={userStatus}
-        onGetBriefedNow={onToggleCatchMeUp}
-        onExitFocusMode={onExitFocusMode}
-        onSignBackOn={onSignBackOn}
-      />
     </div>;
 };
 export default React.memo(HomeView);
