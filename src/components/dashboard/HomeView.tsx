@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck } from "lucide-react";
 import MenuBarIcon from "./MenuBarIcon";
+import SignalSweepBar from "../visuals/SignalSweepBar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -60,6 +61,7 @@ const HomeView = ({
 }: HomeViewProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   console.log('HomeView rendering - debugging home button visibility');
 
   // State for new layout
@@ -87,6 +89,37 @@ const HomeView = ({
 const [showStatusModal, setShowStatusModal] = useState(false);
 const [currentStatus, setCurrentStatus] = useState('online');
 const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
+
+  // Status-aware messaging functions
+  const getStatusMessage = (status: string) => {
+    switch (status) {
+      case 'active':
+        return "I'm here with you — let's make the most of today.";
+      case 'away':
+        return "Step away and enjoy your day — I'll take care of the rest.";
+      case 'focus':
+        return "Stay in the flow — I'll handle what can wait.";
+      case 'vacation':
+        return "Switch off and make the most of your time away — I've got this.";
+      default:
+        return "I'm here with you — let's make the most of today.";
+    }
+  };
+
+  const getBriefButtonLabel = (status: string) => {
+    switch (status) {
+      case 'active':
+        return "Brief Me";
+      case 'away':
+        return "Get Catch-Up Brief";
+      case 'focus':
+        return "Get Brief Anyway";
+      case 'vacation':
+        return "Preview OOO Brief";
+      default:
+        return "Brief Me";
+    }
+  };
 
   // Navigation handlers for collapsed panel
   const handleNavigateToHome = useCallback(() => {
@@ -659,8 +692,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </DropdownMenu>
             </div>
 
-            {/* Center: Empty (reserved space) */}
-            <div className="flex-1" />
+            {/* Center: Status Message */}
+            <div className="flex-1 flex justify-center">
+              <p className="text-sm text-text-secondary/80">{getStatusMessage(userStatus)}</p>
+            </div>
 
             {/* Right: Integration Icons, Get Brief button, Avatar */}
             <div className="flex items-center gap-3">
@@ -755,7 +790,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               {/* Get Brief Button */}
               <Button onClick={onToggleCatchMeUp} className="bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2">
                 <Zap className="mr-2 h-4 w-4" />
-                Brief Me
+                {getBriefButtonLabel(userStatus)}
               </Button>
 
               {/* Avatar with Dropdown */}
@@ -785,6 +820,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>
         </div>
       </header>
+
+      {/* SignalSweepBar - Full width below header */}
+      <div className="w-full px-6">
+        <SignalSweepBar 
+          className="w-full" 
+          height={5} 
+          anchors={["#1B5862", "#277F64", "#4FAF83"]} 
+          background="transparent" 
+          thickness={2} 
+          status={userStatus === 'active' ? 'active' : userStatus === 'focus' ? 'focused' : userStatus === 'vacation' ? 'ooo' : userStatus === 'away' ? 'offline' : 'active'} 
+        />
+      </div>
 
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
