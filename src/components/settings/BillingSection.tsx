@@ -6,23 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-
 const BillingSection = () => {
   const [isAnnual, setIsAnnual] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
 
   // Mock data - in real app this would come from your backend/Stripe
   const currentPlan = {
@@ -31,20 +22,17 @@ const BillingSection = () => {
     trialDaysLeft: 8,
     nextBillingDate: '2024-02-15'
   };
-
   const usage = {
     used: 87,
     total: 150,
     resetDate: 'February 1st'
   };
-
-  const usagePercentage = (usage.used / usage.total) * 100;
+  const usagePercentage = usage.used / usage.total * 100;
   const getUsageColor = () => {
     if (usagePercentage < 70) return 'bg-accent-green-500';
     if (usagePercentage <= 100) return 'bg-warn-400';
     return 'bg-error-500';
   };
-
   const plans = {
     core: {
       name: 'Core',
@@ -72,27 +60,37 @@ const BillingSection = () => {
       isPerUser: true
     }
   };
-
-  const invoices = [
-    { id: 'inv_001', date: '2024-01-15', amount: '$15.00', status: 'Paid', downloadUrl: '#' },
-    { id: 'inv_002', date: '2023-12-15', amount: '$15.00', status: 'Paid', downloadUrl: '#' },
-    { id: 'inv_003', date: '2023-11-15', amount: '$15.00', status: 'Paid', downloadUrl: '#' },
-  ];
-
+  const invoices = [{
+    id: 'inv_001',
+    date: '2024-01-15',
+    amount: '$15.00',
+    status: 'Paid',
+    downloadUrl: '#'
+  }, {
+    id: 'inv_002',
+    date: '2023-12-15',
+    amount: '$15.00',
+    status: 'Paid',
+    downloadUrl: '#'
+  }, {
+    id: 'inv_003',
+    date: '2023-11-15',
+    amount: '$15.00',
+    status: 'Paid',
+    downloadUrl: '#'
+  }];
   const handleUpgradePlan = () => {
     toast({
       title: "Redirecting to checkout...",
-      description: "You'll be redirected to complete your upgrade.",
+      description: "You'll be redirected to complete your upgrade."
     });
   };
-
   const handleBuyBriefs = () => {
     toast({
       title: "Purchase successful!",
-      description: "25 additional briefs have been added to your account.",
+      description: "25 additional briefs have been added to your account."
     });
   };
-
   const handleCancelSubscription = () => {
     setShowCancelModal(false);
     toast({
@@ -101,9 +99,7 @@ const BillingSection = () => {
       variant: "destructive"
     });
   };
-
-  return (
-    <div className="space-y-8">
+  return <div className="space-y-8">
       <div>
         <h2 className="text-xl font-semibold text-text-primary mb-2">Billing & Usage</h2>
         <p className="text-text-secondary">Manage your subscription and monitor usage</p>
@@ -116,9 +112,7 @@ const BillingSection = () => {
             <span>Current Plan</span>
             <div className="flex items-center gap-2">
               <Badge variant="secondary">{currentPlan.name}</Badge>
-              {currentPlan.isTrialPlan && (
-                <Badge variant="outline">Trial - {currentPlan.trialDaysLeft} days left</Badge>
-              )}
+              {currentPlan.isTrialPlan && <Badge variant="outline">Trial - {currentPlan.trialDaysLeft} days left</Badge>}
             </div>
           </CardTitle>
         </CardHeader>
@@ -160,12 +154,7 @@ const BillingSection = () => {
             <div className="text-sm text-text-secondary">
               Your credits reset on {usage.resetDate}
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleBuyBriefs}
-              className="text-accent-green-500 border-accent-green-500 hover:bg-accent-green-500/10"
-            >
+            <Button variant="outline" size="sm" onClick={handleBuyBriefs} className="text-accent-green-500 border-accent-green-500 hover:bg-accent-green-500/10">
               Buy +25 Briefs for $5
             </Button>
           </div>
@@ -181,9 +170,7 @@ const BillingSection = () => {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Core</span>
-                {currentPlan.name === 'Core' && (
-                  <Badge className="bg-accent-green-500">Your Plan</Badge>
-                )}
+                {currentPlan.name === 'Core' && <Badge className="bg-accent-green-500">Your Plan</Badge>}
               </CardTitle>
               <CardDescription>
                 <span className="text-2xl font-bold text-text-primary">
@@ -194,16 +181,11 @@ const BillingSection = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm">
-                {plans.core.features.map((feature, index) => (
-                  <li key={index} className="flex items-center text-text-secondary">
+                {plans.core.features.map((feature, index) => <li key={index} className="flex items-center text-text-secondary">
                     <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
                     {feature}
-                  </li>
-                ))}
-                <li className="flex items-center text-text-secondary">
-                  <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
-                  ${plans.core.overagePrice} per +25 briefs
-                </li>
+                  </li>)}
+                
               </ul>
             </CardContent>
           </Card>
@@ -224,16 +206,11 @@ const BillingSection = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="space-y-2 text-sm">
-                {plans.pro.features.map((feature, index) => (
-                  <li key={index} className="flex items-center text-text-secondary">
+                {plans.pro.features.map((feature, index) => <li key={index} className="flex items-center text-text-secondary">
                     <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
                     {feature}
-                  </li>
-                ))}
-                <li className="flex items-center text-text-secondary">
-                  <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
-                  ${plans.pro.overagePrice} per +25 briefs
-                </li>
+                  </li>)}
+                
               </ul>
               <Button onClick={handleUpgradePlan} className="w-full">
                 Upgrade to Pro
@@ -260,12 +237,10 @@ const BillingSection = () => {
                 Everything in Pro plus:
               </div>
               <ul className="space-y-2 text-sm">
-                {plans.teams.features.map((feature, index) => (
-                  <li key={index} className="flex items-center text-text-secondary">
+                {plans.teams.features.map((feature, index) => <li key={index} className="flex items-center text-text-secondary">
                     <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
                     {feature}
-                  </li>
-                ))}
+                  </li>)}
                 <li className="flex items-center text-text-secondary">
                   <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
                   Same overage as Pro at team level
@@ -304,8 +279,7 @@ const BillingSection = () => {
           <div className="space-y-3">
             <h4 className="font-medium text-text-primary">Invoice History</h4>
             <div className="space-y-3">
-              {invoices.map((invoice) => (
-                <div key={invoice.id} className="flex items-center justify-between py-2">
+              {invoices.map(invoice => <div key={invoice.id} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-4">
                     <div>
                       <div className="text-sm font-medium text-text-primary">{invoice.date}</div>
@@ -321,8 +295,7 @@ const BillingSection = () => {
                       <Download className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </CardContent>
@@ -361,8 +334,6 @@ const BillingSection = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default BillingSection;
