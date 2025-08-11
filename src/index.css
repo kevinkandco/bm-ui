@@ -8,13 +8,13 @@
 @layer base {
   :root {
     /* Brief Me Brand Colors - Style Guide */
-    --brand-900: 198 38% 7%;   /* App background */
-    --brand-800: 199 42% 9%;   /* Sidebar bg */
-    --brand-700: 201 8% 13%;   /* Panels, cards */
-    --brand-600: 196 30% 15%;  /* Primary card bg */
-    --brand-500: 198 37% 20%;  /* Subtle accent bg */
-    --brand-300: 179 54% 29%;  /* Primary accent (brand green-teal) */
-    --brand-200: 191 57% 23%;  /* Buttons */
+    --brand-900: #0E1214;  /* App background */
+    --brand-800: #10191E;  /* Sidebar bg */
+    --brand-700: #1C1E21;  /* Panels, cards */
+    --brand-600: #172D32;  /* Primary card bg */
+    --brand-500: #1E3E46;  /* Subtle accent bg */
+    --brand-300: #206C6B;  /* Primary accent (brand green-teal) */
+    --brand-200: #1B5862;  /* Buttons */
 
     /* Text Colors */
     --text-primary: #FFFFFF;
@@ -57,13 +57,13 @@
 
   .dark {
     /* Same as root for dark mode */
-    --brand-900: 198 38% 7%;   /* App background */
-    --brand-800: 199 42% 9%;   /* Sidebar bg */
-    --brand-700: 201 8% 13%;   /* Panels, cards */
-    --brand-600: 196 30% 15%;  /* Primary card bg */
-    --brand-500: 198 37% 20%;  /* Subtle accent bg */
-    --brand-300: 179 54% 29%;  /* Primary accent (brand green-teal) */
-    --brand-200: 191 57% 23%;  /* Buttons */
+    --brand-900: #0E1214;
+    --brand-800: #10191E;
+    --brand-700: #1C1E21;
+    --brand-600: #172D32;
+    --brand-500: #1E3E46;
+    --brand-300: #206C6B;
+    --brand-200: #1B5862;
 
     --text-primary: #FFFFFF;
     --text-secondary: rgba(255, 255, 255, 0.78);

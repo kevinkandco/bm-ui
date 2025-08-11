@@ -65,13 +65,13 @@ export default {
 				
 				// Brief Me Brand Colors - Style Guide
 				'brand': {
-					900: 'hsl(var(--brand-900))',
-					800: 'hsl(var(--brand-800))',
-					700: 'hsl(var(--brand-700))',
-					600: 'hsl(var(--brand-600))',
-					500: 'hsl(var(--brand-500))',
-					300: 'hsl(var(--brand-300))',
-					200: 'hsl(var(--brand-200))',
+					900: 'var(--brand-900)',
+					800: 'var(--brand-800)',
+					700: 'var(--brand-700)',
+					600: 'var(--brand-600)',
+					500: 'var(--brand-500)',
+					300: 'var(--brand-300)',
+					200: 'var(--brand-200)',
 				},
 				'text-primary': 'var(--text-primary)',
 				'text-secondary': 'var(--text-secondary)',
