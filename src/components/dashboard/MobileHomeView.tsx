@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Play, ChevronLeft, ChevronRight, ArrowRight, Target, Wifi, Plane, WifiOff } from 'lucide-react';
+import { Play, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import MobileStatusModal from './MobileStatusModal';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface MobileHomeViewProps {
   onPlayBrief: (briefId: number) => void;
@@ -64,15 +65,15 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'online':
-        return { label: 'Online', icon: Wifi, color: 'bg-emerald-500', textColor: 'text-emerald-400' };
+        return { label: 'Online', color: 'bg-emerald-500', textColor: 'text-emerald-400' };
       case 'focus':
-        return { label: 'Focus Mode', icon: Target, color: 'bg-accent-primary', textColor: 'text-accent-primary' };
+        return { label: 'Focus', color: 'bg-accent-primary', textColor: 'text-accent-primary' };
       case 'vacation':
-        return { label: 'Vacation Mode', icon: Plane, color: 'bg-orange-500', textColor: 'text-orange-400' };
+        return { label: 'Vacation', color: 'bg-orange-500', textColor: 'text-orange-400' };
       case 'offline':
-        return { label: 'Offline', icon: WifiOff, color: 'bg-gray-500', textColor: 'text-gray-400' };
+        return { label: 'Offline', color: 'bg-gray-500', textColor: 'text-gray-400' };
       default:
-        return { label: 'Online', icon: Wifi, color: 'bg-emerald-500', textColor: 'text-emerald-400' };
+        return { label: 'Online', color: 'bg-emerald-500', textColor: 'text-emerald-400' };
     }
   };
 
@@ -115,38 +116,35 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
         </div>
       </div>
 
-      {/* Status Section */}
-      <div className="px-6 mb-10">
-        <div className="bg-brand-600 rounded-xl p-5 flex items-center justify-between border border-border-subtle shadow-none">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className={cn(
-                "w-4 h-4 rounded-full relative z-10",
-                getStatusConfig(currentStatus).color
-              )} />
-              <div className={cn(
-                "absolute inset-0 w-4 h-4 rounded-full animate-pulse opacity-40",
-                getStatusConfig(currentStatus).color
-              )} />
+      {/* Status Section - compact dropdown */}
+      <div className="px-6 mb-6">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-700/60 border border-border-subtle cursor-pointer hover:bg-brand-700/80 transition-colors">
+              <div className={cn("w-2 h-2 rounded-full", getStatusConfig(currentStatus).color)} />
+              <span className="text-sm text-text-secondary">{getStatusConfig(currentStatus).label}</span>
+              <ChevronDown className="w-3 h-3 text-text-secondary" />
             </div>
-            <div>
-              <div className="text-text-primary font-medium text-base">
-                {getStatusConfig(currentStatus).label}
-              </div>
-              <div className="text-text-secondary/70 text-sm">
-                {getStatusReassurance(currentStatus)}
-              </div>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowStatusModal(true)}
-            className="h-8 px-3 bg-brand-700 hover:bg-brand-500 border border-border-subtle rounded-xl text-text-secondary hover:text-text-primary transition-all duration-200"
-          >
-            <span className="text-sm">Change</span>
-          </Button>
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-44">
+            <DropdownMenuItem onClick={() => handleStatusSelect('online')} className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500" />
+              Online
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleStatusSelect('focus')} className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-accent-primary" />
+              Focus
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleStatusSelect('vacation')} className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-orange-500" />
+              Vacation
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleStatusSelect('offline')} className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-500" />
+              Offline
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Today's Updates Section */}
