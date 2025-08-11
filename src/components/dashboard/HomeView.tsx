@@ -847,90 +847,31 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </Button>
                 </div>
                 
-                {/* Latest Brief Section - Combined with Morning Brief */}
-                <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
-                
-                {/* Navigation sections - converted to collapsible */}
+                {/* Navigation sections - simplified */}
                 <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2 px-0">
-                  {/* Briefs Section */}
-                  <Collapsible open={openSection === 'briefs'} onOpenChange={() => setOpenSection(openSection === 'briefs' ? null : 'briefs')}>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]">
-                        <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'briefs' ? '' : '-rotate-90')} />
-                        Briefs ({recentBriefs.length} unread)
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2">
-                      <div className="pl-6">
-                        <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} onViewAll={handleNavigateToAllBriefs} />
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  {/* Home */}
+                  <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <Home className="h-4 w-4 mr-2" />
+                    Home
+                  </Button>
 
-                  {/* Calendar Section */}
-                  <Collapsible open={openSection === 'calendar'} onOpenChange={() => setOpenSection(openSection === 'calendar' ? null : 'calendar')}>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]">
-                        <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'calendar' ? '' : '-rotate-90')} />
-                        Calendar (5 events)
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2">
-                      <div className="pl-6">
-                        <CalendarSection onMeetingClick={handleMeetingClick} />
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  {/* Briefs */}
+                  <Button variant="ghost" onClick={handleNavigateToAllBriefs} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <FileText className="h-4 w-4 mr-2" />
+                    Briefs
+                  </Button>
 
-                  {/* Follow ups Section */}
-                  <Collapsible open={openSection === 'followups'} onOpenChange={() => setOpenSection(openSection === 'followups' ? null : 'followups')}>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]">
-                        <ChevronDown className={cn("h-4 w-4 mr-2 transition-transform", openSection === 'followups' ? '' : '-rotate-90')} />
-                        Follow ups ({followUps.length} follow ups)
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-2">
-                      <div className="pl-6">
-                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="border-border-subtle hover:bg-transparent">
-                                <TableHead className="text-text-secondary font-medium text-xs w-8"></TableHead>
-                                <TableHead className="text-text-secondary font-medium text-xs w-20">Priority</TableHead>
-                                <TableHead className="text-text-secondary font-medium text-xs">Message</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => handleFollowUpClick(item)}>
-                                  <TableCell className="w-8" onClick={e => e.stopPropagation()}>
-                                    <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
-                                  </TableCell>
-                                  <TableCell className="w-20">
-                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
-                                  </TableCell>
-                                  <TableCell className="pr-4">
-                                    <p className="text-xs text-text-primary line-clamp-2 leading-relaxed">
-                                      {item.message}
-                                    </p>
-                                  </TableCell>
-                                </TableRow>)}
-                             </TableBody>
-                           </Table>
-                           
-                           {/* View all link */}
-                           <div className="px-4 py-2 border-t border-border-subtle">
-                             <button
-                               onClick={handleNavigateToAllFollowUps}
-                               className="text-xs text-accent-primary hover:text-accent-primary/80 cursor-pointer"
-                             >
-                               View all
-                             </button>
-                           </div>
-                         </div>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  {/* Calendar */}
+                  <Button variant="ghost" onClick={handleNavigateToAllCalendar} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Calendar
+                  </Button>
+
+                  {/* Follow-ups */}
+                  <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <ClipboardCheck className="h-4 w-4 mr-2" />
+                    Follow-ups
+                  </Button>
                 </div>
               </div>
               </div>
