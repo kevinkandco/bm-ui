@@ -61,6 +61,15 @@ const BillingSection = () => {
       briefsLimit: 250,
       overagePrice: 1.5,
       features: ['250 briefs/month', 'Audio briefs', 'Advanced integrations', 'Priority support', 'Custom scheduling']
+    },
+    teams: {
+      name: 'Teams',
+      monthlyPrice: 20,
+      annualPrice: 18,
+      briefsLimit: 'Pooled across team',
+      overagePrice: 1.5,
+      features: ['Pooled briefs across team', 'Central admin dashboard', 'Role-based access controls', 'Shared team briefs & onboarding flows', 'Priority support & SLAs'],
+      isPerUser: true
     }
   };
 
@@ -166,7 +175,7 @@ const BillingSection = () => {
       {/* Plan Details Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium text-text-primary">Plan Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Core Plan */}
           <Card className={currentPlan.name === 'Core' ? 'ring-2 ring-accent-green-500' : ''}>
             <CardHeader>
@@ -228,6 +237,42 @@ const BillingSection = () => {
               </ul>
               <Button onClick={handleUpgradePlan} className="w-full">
                 Upgrade to Pro
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Teams Plan */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Teams</span>
+                <Badge variant="outline">Contact Sales</Badge>
+              </CardTitle>
+              <CardDescription>
+                <span className="text-2xl font-bold text-text-primary">
+                  ${isAnnual ? plans.teams.annualPrice : plans.teams.monthlyPrice}
+                </span>
+                <span className="text-text-secondary">/user/mo {isAnnual && '(billed annually)'}</span>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-sm text-text-secondary mb-3">
+                Everything in Pro plus:
+              </div>
+              <ul className="space-y-2 text-sm">
+                {plans.teams.features.map((feature, index) => (
+                  <li key={index} className="flex items-center text-text-secondary">
+                    <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
+                    {feature}
+                  </li>
+                ))}
+                <li className="flex items-center text-text-secondary">
+                  <div className="w-1.5 h-1.5 bg-accent-green-500 rounded-full mr-3"></div>
+                  Same overage as Pro at team level
+                </li>
+              </ul>
+              <Button onClick={handleUpgradePlan} className="w-full" variant="outline">
+                Contact Sales
               </Button>
             </CardContent>
           </Card>
