@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import HaloPulse from '../visuals/HaloPulse';
+import SignalSweepBar from '../visuals/SignalSweepBar';
 
 interface MobileHomeViewProps {
   onPlayBrief: (briefId: number) => void;
@@ -113,9 +113,9 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
 
       {/* Status indicator moved inline with header */}
 
-      {/* Halo Pulse */}
-      <div className="px-6 pt-3 pb-2">
-        <HaloPulse className="mx-auto" size={152} anchors={["#1B5862","#277F64","#4FAF83"]} background="transparent" fpsCap={48} intensity={1.0} />
+      {/* Signal Sweep Bar */}
+      <div className="px-6 pt-2 pb-3">
+        <SignalSweepBar className="mx-auto w-full max-w-[520px]" height={18} anchors={["#1B5862","#277F64","#4FAF83"]} background="transparent" speed={90} thickness={3} />
       </div>
 
       {/* Today's Updates Section */}
