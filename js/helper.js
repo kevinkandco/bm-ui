@@ -1,6 +1,6 @@
 
-// const BASE_URL = "https://brief-me-api.test/api";
-const BASE_URL = "https://api.brief-me.app/api";
+const BASE_URL = "https://brief-me-api.test/api";
+// const BASE_URL = "https://api.brief-me.app/api";
 const accessToken = localStorage.getItem("token");
 const token = JSON.parse(accessToken);
 

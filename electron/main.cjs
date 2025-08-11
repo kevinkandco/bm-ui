@@ -1,5 +1,5 @@
 // main.cjs
-const { app, BrowserWindow, ipcMain, screen } = require("electron");
+const { app, BrowserWindow, ipcMain, screen, shell } = require("electron");
 const path = require("path");
 const { exec } = require("child_process");
 const killSlack = require("./killSlack.cjs");
@@ -20,15 +20,16 @@ function createWindow() {
   });
 
   // Load HTML instead of URL if you want local file
-  const htmlPath = path.join(__dirname, "..", "appLogin.html");
+  const htmlPath = path.join(__dirname, "..", "login.html");
   mainWindow.loadFile(htmlPath);
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
 }
+
 
 function createBarWindow() {
   const { width } = screen.getPrimaryDisplay().workAreaSize;
@@ -57,8 +58,6 @@ function createBarWindow() {
     barWindow = null;
   });
 
-  // Optional: open devtools for debugging:
-  // barWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
@@ -122,3 +121,16 @@ ipcMain.on("status-changed", (event, status) => {
     mainWindow.webContents.send("status-updated", status);
   }
 });
+
+// Listen for login request from preload
+ipcMain.on("open-google-login", () => {
+  const appLoginToken = generateRandomToken(); 
+  const webLoginURL = `http://localhost:8080/app-login?appLoginToken=${appLoginToken}`;
+  shell.openExternal(webLoginURL);
+});
+
+function generateRandomToken() {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  return Array.from({ length: 40 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+}

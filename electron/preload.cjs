@@ -13,4 +13,16 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onStatusUpdated: (cb) => {
     ipcRenderer.on("status-updated", (event, status) => cb(status));
   },
+  openGoogleLogin: () => ipcRenderer.send('open-google-login'),
+});
+
+
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'auth-success') {
+    ipcRenderer.send('auth-success', event.data.token);
+  }
+});
+
+contextBridge.exposeInMainWorld('electron', {
+  sendMessage: (msg) => ipcRenderer.send('message', msg),
 });

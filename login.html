@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script>
+        // Redirect to React login if not in Electron
+        if (!window.electronAPI) {
+            window.location.href = window.location.origin;
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Login to MyApp</h1>
+    <button id="googleLogin">Login with Google</button>
+
+    <script>
+        document.getElementById("googleLogin").addEventListener("click", () => {
+            window.electronAPI.openGoogleLogin();
+        });
+    </script>
+</body>
+
+</html>
