@@ -7,11 +7,27 @@ import { cn } from '@/lib/utils';
 interface MobileBottomNavProps {
   className?: string;
   onShowStatusModal?: () => void;
+  userStatus?: 'active' | 'away' | 'focus' | 'vacation';
 }
 
-const MobileBottomNav = ({ className, onShowStatusModal }: MobileBottomNavProps) => {
+const MobileBottomNav = ({ className, onShowStatusModal, userStatus = 'active' }: MobileBottomNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const getUserStatusDotColor = (status: 'active' | 'away' | 'focus' | 'vacation') => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-500';
+      case 'away':
+        return 'bg-yellow-500';
+      case 'focus':
+        return 'bg-blue-500';
+      case 'vacation':
+        return 'bg-gray-500';
+      default:
+        return 'bg-green-500';
+    }
+  };
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/dashboard', onClick: () => navigate('/dashboard') },
@@ -44,10 +60,18 @@ const MobileBottomNav = ({ className, onShowStatusModal }: MobileBottomNavProps)
                 isActive && "text-accent-primary"
               )}
             >
-              <Icon className={cn(
-                "h-5 w-5",
-                isActive && "text-accent-primary"
-              )} />
+              <div className="relative">
+                <Icon className={cn(
+                  "h-5 w-5",
+                  isActive && "text-accent-primary"
+                )} />
+                {item.label === 'Status' && (
+                  <span className={cn(
+                    "absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full",
+                    getUserStatusDotColor(userStatus!)
+                  )} />
+                )}
+              </div>
               <span className={cn(
                 "text-xs font-medium",
                 isActive ? "text-accent-primary" : "text-text-secondary"
