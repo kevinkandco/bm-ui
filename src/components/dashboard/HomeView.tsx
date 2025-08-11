@@ -561,7 +561,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   // Mobile layout
   if (isMobile) {
     return <div className="relative">
-        <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={handleOpenMobileBrief} onStartFocusMode={onStartFocusMode} />
+        <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={handleOpenMobileBrief} onStartFocusMode={onStartFocusMode} userStatus={userStatus} />
         
         {/* Mobile Bottom Navigation */}
         <MobileBottomNav onShowStatusModal={() => setShowStatusModal(true)} />

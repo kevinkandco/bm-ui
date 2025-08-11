@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
-import { Play, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import MobileStatusModal from './MobileStatusModal';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface MobileHomeViewProps {
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
   onOpenBrief: (briefId: number) => void;
   onStartFocusMode?: () => void;
+  userStatus?: 'active' | 'away' | 'focus' | 'vacation';
 }
 
-const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMode }: MobileHomeViewProps) => {
+const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMode, userStatus = 'active' }: MobileHomeViewProps) => {
   const [currentDate] = useState(new Date());
-  const [showStatusModal, setShowStatusModal] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState('online');
 
   // Sample data
   const meetings = [
@@ -55,25 +51,18 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
     }
   };
 
-  const handleStatusSelect = (status: 'online' | 'focus' | 'vacation' | 'offline') => {
-    setCurrentStatus(status);
-    if (status === 'focus' && onStartFocusMode) {
-      onStartFocusMode();
-    }
-  };
-
-  const getStatusConfig = (status: string) => {
+  const getUserStatusDotColor = (status: 'active' | 'away' | 'focus' | 'vacation') => {
     switch (status) {
-      case 'online':
-        return { label: 'Online', color: 'bg-emerald-500', textColor: 'text-emerald-400' };
+      case 'active':
+        return 'bg-green-500';
+      case 'away':
+        return 'bg-yellow-500';
       case 'focus':
-        return { label: 'Focus', color: 'bg-accent-primary', textColor: 'text-accent-primary' };
+        return 'bg-blue-500';
       case 'vacation':
-        return { label: 'Vacation', color: 'bg-orange-500', textColor: 'text-orange-400' };
-      case 'offline':
-        return { label: 'Offline', color: 'bg-gray-500', textColor: 'text-gray-400' };
+        return 'bg-gray-500';
       default:
-        return { label: 'Online', color: 'bg-emerald-500', textColor: 'text-emerald-400' };
+        return 'bg-green-500';
     }
   };
 
@@ -112,40 +101,15 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
             <p className="text-text-secondary/70">
               Ready to catch up or focus?
             </p>
+            <div className="mt-2 inline-flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${getUserStatusDotColor(userStatus)}`} />
+              <span className="text-xs text-text-secondary capitalize">{userStatus}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Status Section - compact dropdown */}
-      <div className="px-6 mb-6">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-700/60 border border-border-subtle cursor-pointer hover:bg-brand-700/80 transition-colors">
-              <div className={cn("w-2 h-2 rounded-full", getStatusConfig(currentStatus).color)} />
-              <span className="text-sm text-text-secondary">{getStatusConfig(currentStatus).label}</span>
-              <ChevronDown className="w-3 h-3 text-text-secondary" />
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-44">
-            <DropdownMenuItem onClick={() => handleStatusSelect('online')} className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-              Online
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusSelect('focus')} className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent-primary" />
-              Focus
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusSelect('vacation')} className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-orange-500" />
-              Vacation
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusSelect('offline')} className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gray-500" />
-              Offline
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {/* Status indicator moved inline with header */}
 
       {/* Today's Updates Section */}
       <div className="px-6">
@@ -196,13 +160,6 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
       {/* Bottom navigation spacing */}
       <div className="h-20" />
 
-      {/* Status Modal */}
-      <MobileStatusModal
-        isOpen={showStatusModal}
-        onClose={() => setShowStatusModal(false)}
-        onSelectStatus={handleStatusSelect}
-        currentStatus={currentStatus}
-      />
     </div>
   );
 };
