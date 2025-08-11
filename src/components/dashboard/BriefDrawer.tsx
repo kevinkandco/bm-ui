@@ -205,6 +205,50 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
           </div>
         </div>
         
+        {/* Audio Player - Always Visible */}
+        <div className="px-4 mb-4 flex-shrink-0">
+          <div className="bg-surface-raised/20 rounded-xl p-4 border border-border-subtle">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <Button size="sm" variant="secondary" onClick={handlePlayPause} className="h-10 w-10 p-0 rounded-full">
+                  {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                </Button>
+                <div>
+                  <div className="text-sm font-medium text-text-primary">Audio Brief</div>
+                  <div className="text-xs text-text-secondary">{briefData.briefLength}</div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Waveform visualization */}
+            <div className="h-12 bg-surface/60 rounded-lg flex items-end px-2 mb-2">
+              {Array.from({ length: 60 }).map((_, i) => {
+                const height = Math.random();
+                const isActive = i < 15 && isPlaying; // Simulate progress
+                return (
+                  <div
+                    key={i}
+                    className={`flex-1 rounded-sm transition-all duration-200 mx-[1px] ${
+                      isActive 
+                        ? 'bg-accent-primary' 
+                        : 'bg-text-secondary/40'
+                    }`}
+                    style={{ 
+                      height: `${Math.max(8, height * 80)}%`,
+                      minHeight: '2px'
+                    }}
+                  />
+                );
+              })}
+            </div>
+            
+            <div className="flex justify-between text-xs text-text-secondary">
+              <span>0:00</span>
+              <span>{briefData.briefLength}</span>
+            </div>
+          </div>
+        </div>
+        
         <div className="px-4 pb-2 flex-1 overflow-hidden">
           <Tabs defaultValue="transcript" className="w-full h-full flex flex-col">
             <TabsList className="bg-surface-raised/20 border border-border-subtle w-full grid-cols-4 grid">
