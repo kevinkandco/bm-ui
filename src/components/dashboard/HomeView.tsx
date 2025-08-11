@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +29,7 @@ import UpcomingBriefCard from "./HomeViewSections/UpcomingBriefCard";
 import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
+import { attachTimeGradient } from "@/lib/timeGradient";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -53,6 +54,17 @@ const HomeView = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   console.log('HomeView rendering - debugging home button visibility');
+  
+  // Initialize time-of-day gradient for main content
+  useEffect(() => {
+    const cleanup = attachTimeGradient({
+      selector: '.main-content',
+      angle: '160deg',
+      tickMs: 30000 // Update every 30 seconds
+    });
+    
+    return cleanup;
+  }, []);
 
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief

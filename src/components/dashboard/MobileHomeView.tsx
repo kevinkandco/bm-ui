@@ -97,7 +97,7 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
   };
 
   return (
-    <div className="main-content h-screen max-h-[932px] overflow-y-auto relative">
+    <div className="h-screen max-h-[932px] overflow-y-auto bg-brand-900 relative">
       {/* Header */}
       <div className="px-6 pt-16 pb-10">
         <div className="flex items-center justify-between mb-6">

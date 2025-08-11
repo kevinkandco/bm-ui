@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./hooks/use-theme";
 import { useIsMobile } from "./hooks/use-mobile";
-import { attachTimeGradient } from "@/lib/timeGradient";
 
 // Improved lazy loading with better error handling
 const lazyImport = (importFn) => {
@@ -68,17 +67,6 @@ const MacRouteGuard = memo(() => {
 MacRouteGuard.displayName = 'MacRouteGuard';
 
 const App = () => {
-  useEffect(() => {
-    // Initialize time-of-day gradient background
-    const cleanup = attachTimeGradient({
-      selector: '.main-content',
-      angle: '160deg',
-      tickMs: 30000 // Update every 30 seconds
-    });
-    
-    return cleanup; // Cleanup interval on unmount
-  }, []);
-
   return (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark">
