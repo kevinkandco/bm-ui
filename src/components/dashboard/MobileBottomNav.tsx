@@ -1,22 +1,22 @@
 import React from 'react';
-import { Home, FileText, CheckSquare, Target, Settings } from 'lucide-react';
+import { Home, FileText, CheckSquare, User, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 interface MobileBottomNavProps {
   className?: string;
-  onShowFocusModal?: () => void;
+  onShowStatusModal?: () => void;
 }
 
-const MobileBottomNav = ({ className, onShowFocusModal }: MobileBottomNavProps) => {
+const MobileBottomNav = ({ className, onShowStatusModal }: MobileBottomNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/dashboard', onClick: () => navigate('/dashboard') },
     { icon: FileText, label: 'Briefs', path: '/dashboard/briefs', onClick: () => navigate('/dashboard/briefs') },
-    { icon: Target, label: 'Focus', path: '/focus', onClick: () => onShowFocusModal?.() },
+    { icon: User, label: 'Status', path: '/status', onClick: () => onShowStatusModal?.() },
     { icon: CheckSquare, label: 'Tasks', path: '/dashboard/tasks', onClick: () => navigate('/dashboard/tasks') },
     { icon: Settings, label: 'Settings', path: '/dashboard/settings', onClick: () => navigate('/dashboard/settings') },
   ];
@@ -31,7 +31,7 @@ const MobileBottomNav = ({ className, onShowFocusModal }: MobileBottomNavProps) 
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
             (item.path === '/dashboard' && location.pathname === '/') ||
-            (item.label === 'Focus' && location.pathname === '/status');
+            (item.label === 'Status' && location.pathname === '/status');
           
           return (
             <Button

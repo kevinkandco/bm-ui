@@ -491,7 +491,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={onOpenBrief} onStartFocusMode={onStartFocusMode} />
         
         {/* Mobile Bottom Navigation */}
-        <MobileBottomNav onShowFocusModal={() => setShowStatusModal(true)} />
+        <MobileBottomNav onShowStatusModal={() => setShowStatusModal(true)} />
         
         {/* Mobile Audio Player - shows above bottom nav when active */}
         {playingBrief && <AudioPlayer briefId={playingBrief} briefName={recentBriefs.find(b => b.id === playingBrief)?.name} briefTime={recentBriefs.find(b => b.id === playingBrief)?.timeCreated} onClose={() => setPlayingBrief(null)} />}
