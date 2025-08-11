@@ -96,15 +96,28 @@ const App = () => {
       .catch((err) => {
         console.error("Service Worker registration failed:", err);
       });
-      onMessageListener((payload: { notification: NotificationPayload }) => {
-        const { title, body } = payload.notification;
-        new Notification(title, {
-          body,
-          // icon: payload.data.icon,
-          tag: `${Date.now()}`,
-        });
+    onMessageListener((payload: { notification: NotificationPayload }) => {
+      const { title, body } = payload.notification;
+      new Notification(title, {
+        body,
+        // icon: payload.data.icon,
+        tag: `${Date.now()}`,
       });
+    });
+  
   }, []);
+
+  useEffect(() => {
+    
+    if (window?.electronAPI?.isElectron) {
+    console.log("this is for electron app :");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "appLogin";
+    }
+  }
+}, [window?.electronAPI?.isElectron]);
+
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -127,10 +140,10 @@ const App = () => {
                       <Route path="/onboarding" element={<Onboarding />} />
                     </Route>
                     <Route element={<ProtectedRoute element="protected" />}>
-                          <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
                           <Route path="/dashboard/briefs" element={<BriefsList />} />
                           <Route path="/dashboard/briefs/:briefId" element={<BriefDetail />} />
-                          <Route path="/dashboard/tasks" element={<TasksPage />} />
+                      <Route path="/dashboard/tasks" element={<TasksPage />} />
                           <Route path="/dashboard/meetings" element={<MeetingsList />} />
                           <Route path="/dashboard/catch-up" element={<CatchUpPage />} />
                           <Route path="/dashboard/settings" element={<SettingsPage />} />
@@ -140,12 +153,12 @@ const App = () => {
                       <Route path="/admin/login" element={<AdminLogin />} />
                     </Route>
                     <Route element={<AdminProtectedRoute element="protected" />}>
-                        <Route path="/admin" element={<DashboardAdmin />} />
+                      <Route path="/admin" element={<DashboardAdmin />} />
                         <Route path="/admin/dashboard" element={<DashboardAdmin />} />
-                        <Route path="/admin/users" element={<UsersAdmin />} />
-                        <Route path="/admin/plans" element={<PlansAdmin />} />
+                      <Route path="/admin/users" element={<UsersAdmin />} />
+                      <Route path="/admin/plans" element={<PlansAdmin />} />
                         <Route path="/admin/invoices" element={<InvoicesAdmin />} />
-                      </Route>
+                    </Route>
                     <Route path="/mac" element={<MacRouteGuard />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />

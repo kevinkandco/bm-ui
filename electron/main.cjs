@@ -19,14 +19,15 @@ function createWindow() {
     icon: path.join(__dirname, "assets", "icon.png"),
   });
 
-  mainWindow.loadURL("http://localhost:8080");
+  // Load HTML instead of URL if you want local file
+  const htmlPath = path.join(__dirname, "..", "appLogin.html");
+  mainWindow.loadFile(htmlPath);
+
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-
-  // Optional: open devtools for debugging:
-  // mainWindow.webContents.openDevTools();
 }
 
 function createBarWindow() {
