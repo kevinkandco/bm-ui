@@ -756,15 +756,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </Button>
                 </div>
                 
-                {/* Home Button */}
-                <div className="mb-4">
-                  <div className="w-full justify-start text-text-secondary flex items-center mx-0 px-[10px] py-[8px] mt-4">
-                    <BookOpen className="mr-3 h-5 w-5 text-text-secondary" />
-                    <span className="text-sm font-medium">Latest Brief</span>
-                  </div>
-                </div>
-                
-                {/* Latest Brief Section */}
+                {/* Latest Brief Section - Combined with Morning Brief */}
                 <LatestBriefSection onClick={() => handleBriefSelect(1)} isSelected={selectedBrief === 1} />
                 
                 {/* Navigation sections - converted to collapsible */}
