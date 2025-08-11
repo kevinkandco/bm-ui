@@ -135,8 +135,13 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
               <Play className="h-5 w-5 text-brand-300 fill-current" />
             </Button>
             <div>
-              <div className="text-text-primary font-semibold text-sm leading-tight tracking-tight">
-                {briefData.title}
+              <div className="flex items-center gap-2">
+                <div className="text-text-primary font-semibold text-sm leading-tight tracking-tight">
+                  {briefData.title}
+                </div>
+                {playingBrief === briefData.id && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-300/20 text-brand-300 border border-brand-300/30">Playing</span>
+                )}
               </div>
               <div className="text-text-secondary text-xs">
                 {briefData.time}

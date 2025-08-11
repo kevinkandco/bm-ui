@@ -155,9 +155,14 @@ const BriefsList = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-text-primary mb-1">
-                      {brief.title}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-semibold text-text-primary mb-1">
+                        {brief.title}
+                      </h3>
+                      {playingBrief === brief.id && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-300/20 text-brand-300 border border-brand-300/30">Playing</span>
+                      )}
+                    </div>
                   </div>
                   <span className="text-xs text-text-secondary ml-2 flex-shrink-0">
                     {brief.timeAgo}

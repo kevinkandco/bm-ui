@@ -275,6 +275,9 @@ const BriefCard = ({
                   <h3 className="text-white-text truncate font-normal text-sm">
                     {brief.name}
                   </h3>
+                  {playingBrief === brief.id && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-300/20 text-brand-300 border border-brand-300/30">Playing</span>
+                  )}
                   
                   {/* Feedback Controls - Show on hover, next to brief name */}
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
