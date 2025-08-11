@@ -161,12 +161,13 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
         </div>
 
         {/* Brief Card */}
-        <div className="bg-brand-600 rounded-xl p-5 border border-border-subtle shadow-none">
+        <div className="bg-brand-600 rounded-xl p-5 border border-border-subtle shadow-none hover:bg-white/5 transition-colors"
+             onClick={() => onOpenBrief(briefData.id)}>
           <div className="flex items-center gap-4 mb-4">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onPlayBrief(briefData.id)}
+              onClick={(e) => { e.stopPropagation(); onPlayBrief(briefData.id); }}
               className="h-12 w-12 p-0 rounded-full bg-brand-300/15 hover:bg-brand-300/25 transition-all duration-200"
             >
               <Play className="h-6 w-6 text-brand-300 fill-current" />

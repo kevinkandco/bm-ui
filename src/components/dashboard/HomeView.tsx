@@ -30,6 +30,7 @@ import UpcomingBriefCard from "./HomeViewSections/UpcomingBriefCard";
 import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
+import BriefDrawer from "./BriefDrawer";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -83,8 +84,9 @@ const HomeView = ({
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
   const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
-  const [showStatusModal, setShowStatusModal] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState('online');
+const [showStatusModal, setShowStatusModal] = useState(false);
+const [currentStatus, setCurrentStatus] = useState('online');
+const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
 
   // Navigation handlers for collapsed panel
   const handleNavigateToHome = useCallback(() => {
@@ -543,21 +545,42 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       </DropdownMenu>;
   };
 
+  const handleOpenMobileBrief = useCallback((briefId: number) => {
+    setSelectedBrief(briefId);
+    setShowMobileBriefDrawer(true);
+  }, []);
+
+  const handleOpenBriefFromAudioBar = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!playingBrief) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('button')) return; // ignore clicks on controls
+    setSelectedBrief(playingBrief);
+    setShowMobileBriefDrawer(true);
+  }, [playingBrief]);
+
   // Mobile layout
   if (isMobile) {
     return <div className="relative">
-        <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={onOpenBrief} onStartFocusMode={onStartFocusMode} />
+        <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={handleOpenMobileBrief} onStartFocusMode={onStartFocusMode} />
         
         {/* Mobile Bottom Navigation */}
         <MobileBottomNav onShowStatusModal={() => setShowStatusModal(true)} />
         
         {/* Mobile Audio Player - shows above bottom nav when active */}
-        {playingBrief && <AudioPlayer briefId={playingBrief} briefName={allBriefs.find(b => b.id === playingBrief)?.name} briefTime={allBriefs.find(b => b.id === playingBrief)?.timeCreated} onClose={() => setPlayingBrief(null)} />}
+        {playingBrief && (
+          <div onClick={handleOpenBriefFromAudioBar}>
+            <AudioPlayer briefId={playingBrief} briefName={allBriefs.find(b => b.id === playingBrief)?.name} briefTime={allBriefs.find(b => b.id === playingBrief)?.timeCreated} onClose={() => setPlayingBrief(null)} />
+          </div>
+        )}
 
         {/* Mobile Status Modal */}
         <MobileStatusModal isOpen={showStatusModal} onClose={() => setShowStatusModal(false)} onSelectStatus={handleStatusSelect} currentStatus={currentStatus} />
+
+        {/* Mobile Brief Drawer */}
+        <BriefDrawer open={showMobileBriefDrawer} briefId={selectedBrief} onClose={() => setShowMobileBriefDrawer(false)} />
       </div>;
-  }
+    }
+
   return <div className="min-h-screen flex flex-col">
       {/* Global Header */}
       <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
