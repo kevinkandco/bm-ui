@@ -566,27 +566,53 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             {/* Left: Brief Me Logo and Status */}
             <div className="flex items-center gap-3">
               <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
-              {/* Status Indicator */}
-              <div 
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors"
-                onClick={() => {
-                  if (userStatus === "away" && onSignBackOn) {
-                    onSignBackOn();
-                  } else if (userStatus === "vacation" && onSignBackOn) {
-                    onSignBackOn();
-                  } else if (userStatus === "focus" && onExitFocusMode) {
-                    onExitFocusMode();
-                  }
-                }}
-              >
-                <div className={`w-2 h-2 rounded-full ${
-                  userStatus === "active" ? "bg-green-500" :
-                  userStatus === "away" ? "bg-yellow-500" :
-                  userStatus === "focus" ? "bg-blue-500" :
-                  userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"
-                }`} />
-                <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
-              </div>
+              {/* Status Indicator with Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div 
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors"
+                  >
+                    <div className={`w-2 h-2 rounded-full ${
+                      userStatus === "active" ? "bg-green-500" :
+                      userStatus === "away" ? "bg-yellow-500" :
+                      userStatus === "focus" ? "bg-blue-500" :
+                      userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"
+                    }`} />
+                    <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
+                    <ChevronDown className="w-3 h-3 text-text-secondary" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("active")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-green-500" />
+                    Active
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("away")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                    Away
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("focus")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
+                    Focus
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("vacation")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-gray-500" />
+                    Vacation
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Center: Empty (reserved space) */}
