@@ -93,7 +93,7 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
               </TabsTrigger>
               <TabsTrigger value="tasks" className="flex-1 data-[state=active]:bg-surface-raised/30">
                 <CheckSquare className="mr-2 h-4 w-4" />
-                Tasks
+                Follow ups
               </TabsTrigger>
             </TabsList>
             
