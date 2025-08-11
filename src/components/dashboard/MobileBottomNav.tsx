@@ -17,7 +17,7 @@ const MobileBottomNav = ({ className, onShowStatusModal }: MobileBottomNavProps)
     { icon: Home, label: 'Home', path: '/dashboard', onClick: () => navigate('/dashboard') },
     { icon: FileText, label: 'Briefs', path: '/dashboard/briefs', onClick: () => navigate('/dashboard/briefs') },
     { icon: User, label: 'Status', path: '/status', onClick: () => onShowStatusModal?.() },
-    { icon: CheckSquare, label: 'Tasks', path: '/dashboard/tasks', onClick: () => navigate('/dashboard/tasks') },
+    { icon: CheckSquare, label: 'Follow ups', path: '/dashboard/tasks', onClick: () => navigate('/dashboard/tasks') },
     { icon: Settings, label: 'Settings', path: '/dashboard/settings', onClick: () => navigate('/dashboard/settings') },
   ];
 
