@@ -113,8 +113,19 @@ const AudioPlayer = ({
             <div className="text-text-primary font-medium text-sm truncate">
               {briefName}
             </div>
-            <div className="text-text-secondary text-xs">
-              Ready to play
+            <div className="mt-0.5 flex items-center gap-2">
+              <span className="text-[10px] text-text-secondary font-mono">{formatTime(currentTime)}</span>
+              <div className="flex-1">
+                <Slider
+                  value={[currentTime]}
+                  max={duration}
+                  step={1}
+                  onValueChange={handleTimelineChange}
+                  disabled={isDisabled}
+                  className="w-full"
+                />
+              </div>
+              <span className="text-[10px] text-text-secondary font-mono">{formatTime(duration)}</span>
             </div>
           </div>
 
