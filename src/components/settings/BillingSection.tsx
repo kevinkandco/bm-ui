@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 const BillingSection = () => {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [autoBillEnabled, setAutoBillEnabled] = useState(false);
   const { toast } = useToast();
 
   // Mock data - in real app this would come from your backend/Stripe
@@ -107,18 +108,30 @@ const BillingSection = () => {
       description: "You'll be redirected to complete your upgrade."
     });
   };
-  const handleBuyBriefs = () => {
-    toast({
-      title: "Purchase successful!",
-      description: "25 additional briefs have been added to your account."
-    });
-  };
   const handleCancelSubscription = () => {
     toast({
       title: "Subscription cancelled",
       description: "Your subscription will remain active until the end of your billing period.",
       variant: "destructive"
     });
+  };
+
+  const handleAutoBillToggle = (enabled: boolean) => {
+    setAutoBillEnabled(enabled);
+    const currentPlanKey = currentPlan.name.toLowerCase() as keyof typeof plans;
+    const overagePrice = plans[currentPlanKey]?.overagePrice || plans.core.overagePrice;
+    
+    if (enabled) {
+      toast({
+        title: "Auto-billing enabled",
+        description: `We'll automatically add +25 briefs for $${(overagePrice * 25).toFixed(2)} when you reach your limit.`
+      });
+    } else {
+      toast({
+        title: "Auto-billing disabled",
+        description: "Brief generation will pause when you reach your limit."
+      });
+    }
   };
   return <div className="space-y-8">
       <div>
@@ -268,10 +281,22 @@ const BillingSection = () => {
                 {isAnnual && <Badge variant="secondary" className="bg-accent-green-500/20 text-accent-green-500">Save 20%</Badge>}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleBuyBriefs} className="text-accent-green-500 border-accent-green-500 hover:bg-accent-green-500/10">
-                Buy +25 Briefs for $5
-              </Button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <span className="text-text-secondary">Auto-bill additional briefs:</span>
+                <Switch 
+                  checked={autoBillEnabled} 
+                  onCheckedChange={handleAutoBillToggle} 
+                />
+                <span className={autoBillEnabled ? 'text-text-primary font-medium' : 'text-text-secondary'}>
+                  {autoBillEnabled ? 'ON' : 'OFF'}
+                </span>
+                {autoBillEnabled && (
+                  <span className="text-sm text-text-secondary">
+                    ${(plans[currentPlan.name.toLowerCase() as keyof typeof plans]?.overagePrice * 25).toFixed(2)} per 25 briefs
+                  </span>
+                )}
+              </div>
               <Button onClick={handleUpgradePlan} size="sm">
                 {currentPlan.name === 'Core' ? 'Upgrade Plan' : 'Manage Plan'}
               </Button>
