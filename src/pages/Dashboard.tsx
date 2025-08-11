@@ -134,29 +134,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Status Timer Headers - Desktop Only */}
-      {!isMobile && userStatus === "focus" && (
-        <StatusTimer 
-          status={userStatus}
-          onExitFocusMode={handleExitFocusMode}
-        />
-      )}
-
-      {!isMobile && userStatus === "away" && (
-        <StatusTimer 
-          status={userStatus}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
-
-      {!isMobile && userStatus === "vacation" && (
-        <StatusTimer 
-          status={userStatus}
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
-
       {/* Main Content */}
       <div className="flex-1">
         {currentView === "home" && (
@@ -170,6 +147,9 @@ const Dashboard = () => {
             onSignOffForDay={handleSignOffForDay}
             userStatus={userStatus}
             focusConfig={focusConfig}
+            onStatusChange={setUserStatus}
+            onExitFocusMode={handleExitFocusMode}
+            onSignBackOn={handleSignBackOn}
           />
         )}
         {currentView === "listening" && <ListeningScreen />}

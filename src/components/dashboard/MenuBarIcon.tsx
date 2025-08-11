@@ -20,12 +20,14 @@ interface Integration {
 
 interface MenuBarIconProps {
   onToggleMenu: () => void;
-  onStatusChange: (status: "active" | "offline" | "dnd") => void;
-  currentStatus: "active" | "offline" | "dnd";
+  onStatusChange: (status: "active" | "away" | "focus" | "vacation") => void;
+  currentStatus: "active" | "away" | "focus" | "vacation";
   isMenuOpen?: boolean;
   onGetBriefedNow?: () => void;
   onUpdateSchedule?: () => void;
   onOpenDashboard?: () => void;
+  onExitFocusMode?: () => void;
+  onSignBackOn?: () => void;
   integrations?: Integration[];
 }
 
@@ -37,6 +39,8 @@ const MenuBarIcon = ({
   onGetBriefedNow,
   onUpdateSchedule,
   onOpenDashboard,
+  onExitFocusMode,
+  onSignBackOn,
   integrations = [
     { name: "Slack", count: 12, isConnected: true },
     { name: "Mail", count: 5, isConnected: false },
@@ -49,8 +53,9 @@ const MenuBarIcon = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active": return "bg-green-500";
-      case "offline": return "bg-gray-500";
-      case "dnd": return "bg-red-500";
+      case "away": return "bg-yellow-500";
+      case "focus": return "bg-blue-500";
+      case "vacation": return "bg-purple-500";
       default: return "bg-green-500";
     }
   };
@@ -58,18 +63,24 @@ const MenuBarIcon = ({
   const getStatusText = (status: string) => {
     switch (status) {
       case "active": return "Active";
-      case "offline": return "Offline";
-      case "dnd": return "Do Not Disturb";
+      case "away": return "Away";
+      case "focus": return "Focus Mode";
+      case "vacation": return "Vacation";
       default: return "Active";
     }
   };
 
   const handleStatusClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const statusOptions: ("active" | "offline" | "dnd")[] = ["active", "offline", "dnd"];
-    const currentIndex = statusOptions.indexOf(currentStatus);
-    const nextIndex = (currentIndex + 1) % statusOptions.length;
-    onStatusChange(statusOptions[nextIndex]);
+    if (currentStatus === "focus" && onExitFocusMode) {
+      onExitFocusMode();
+    } else if (currentStatus === "away" && onSignBackOn) {
+      onSignBackOn();
+    }
+  };
+
+  const handleStatusChange = (newStatus: "active" | "away" | "focus" | "vacation") => {
+    onStatusChange(newStatus);
   };
 
   const handleGetBriefedNow = () => {
@@ -123,22 +134,41 @@ const MenuBarIcon = ({
                   <h3 className="text-[17px] font-semibold text-gray-900">Brief Me</h3>
                 </div>
                 
-                {/* Status Control - Moved to top */}
-                <div className="grid grid-cols-3 gap-2 mb-4">
-                  {["active", "offline", "dnd"].map((statusOption) => (
+                {/* Status Control */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  {["active", "away", "focus", "vacation"].map((statusOption) => (
                     <button
                       key={statusOption}
-                      onClick={() => onStatusChange(statusOption as "active" | "offline" | "dnd")}
+                      onClick={() => handleStatusChange(statusOption as "active" | "away" | "focus" | "vacation")}
                       className={`px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-150 ease-in-out ${
                         currentStatus === statusOption
                           ? "bg-gray-900 text-white"
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {statusOption === "dnd" ? "DND" : statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
+                      {statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
                     </button>
                   ))}
                 </div>
+                
+                {/* Status-specific actions */}
+                {currentStatus === "away" && (
+                  <Button
+                    onClick={() => onSignBackOn?.()}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl py-2 text-[13px] font-medium mb-4"
+                  >
+                    Sign Back On
+                  </Button>
+                )}
+                
+                {currentStatus === "focus" && (
+                  <Button
+                    onClick={() => onExitFocusMode?.()}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 text-[13px] font-medium mb-4"
+                  >
+                    Exit Focus Mode
+                  </Button>
+                )}
 
                 {/* Primary Action - Moved to top */}
                 <Button

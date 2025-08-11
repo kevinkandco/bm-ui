@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck } from "lucide-react";
+import MenuBarIcon from "./MenuBarIcon";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +40,9 @@ interface HomeViewProps {
   onSignOffForDay: () => void;
   userStatus?: "active" | "away" | "focus" | "vacation";
   focusConfig?: any;
+  onStatusChange?: (status: "active" | "away" | "focus" | "vacation") => void;
+  onExitFocusMode?: () => void;
+  onSignBackOn?: () => void;
 }
 const HomeView = ({
   onOpenBrief,
@@ -48,7 +52,10 @@ const HomeView = ({
   onOpenBriefModal,
   onStartFocusMode,
   onSignOffForDay,
-  userStatus = "active"
+  userStatus = "active",
+  onStatusChange,
+  onExitFocusMode,
+  onSignBackOn
 }: HomeViewProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -556,11 +563,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Left: Brief Me Logo and Status */}
+            {/* Left: Brief Me Logo */}
             <div className="flex items-center gap-3">
               <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
-              {/* Status Chip */}
-              {getStatusChip()}
             </div>
 
             {/* Center: Empty (reserved space) */}
@@ -1443,6 +1448,15 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </DialogContent>
       </Dialog>
 
+      {/* MenuBar Icon - Fixed position */}
+      <MenuBarIcon 
+        onToggleMenu={() => {}}
+        onStatusChange={onStatusChange || (() => {})}
+        currentStatus={userStatus}
+        onGetBriefedNow={onToggleCatchMeUp}
+        onExitFocusMode={onExitFocusMode}
+        onSignBackOn={onSignBackOn}
+      />
     </div>;
 };
 export default React.memo(HomeView);

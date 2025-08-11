@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, X, Zap, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type StatusType = "active" | "offline" | "dnd";
+type StatusType = "active" | "away" | "focus" | "vacation";
 
 const MacPage = () => {
   const { toast } = useToast();
@@ -60,7 +60,7 @@ const MacPage = () => {
     setStatus(newStatus);
     toast({
       title: "Status Updated",
-      description: `Status changed to ${newStatus === "dnd" ? "Do Not Disturb" : newStatus}`
+      description: `Status changed to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`
     });
   };
 
