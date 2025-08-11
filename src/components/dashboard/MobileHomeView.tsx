@@ -97,7 +97,7 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-surface via-surface-raised/10 to-surface pb-20">
+    <div className="h-[932px] overflow-y-auto bg-gradient-to-br from-surface via-surface-raised/10 to-surface pb-20">
       {/* Header */}
       <div className="px-6 pt-16 pb-10">
         <div className="flex items-center justify-between mb-6">
