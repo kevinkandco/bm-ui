@@ -130,7 +130,7 @@ const ActionItemsPanel = ({
         
         {/* Empty State */}
         <div className="flex-1 flex items-center justify-center">
-          <div className="border border-border-subtle/20 rounded-2xl shadow-sm p-4 mx-4">
+          <div className="border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm p-4 mx-4">
             <div className="flex items-center justify-center text-text-secondary">
               <span className="text-sm">All clear ✅</span>
             </div>
@@ -208,7 +208,7 @@ const ActionItemsPanel = ({
             </div>
 
             {/* Message Content */}
-            <div className="bg-black/5 rounded-lg p-4 border border-border-subtle/20">
+            <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
               <h4 className="text-sm font-medium text-text-primary mb-2">Full Message:</h4>
               <div className="text-sm text-text-primary whitespace-pre-line leading-relaxed">
                 {selectedMessage.fullMessage}
@@ -314,7 +314,7 @@ const ActionItemsPanel = ({
 
             {/* Stats */}
             {selectedTranscript.stats && (
-              <div className="bg-black/5 rounded-lg p-3 border border-border-subtle/20">
+              <div className="bg-surface-raised/30 rounded-lg p-3 border border-border-subtle">
                 <h4 className="text-sm font-medium text-text-primary mb-2">Focus Metrics</h4>
                 <div className="grid grid-cols-1 gap-2 text-xs">
                   <div className="flex justify-between">
@@ -334,7 +334,7 @@ const ActionItemsPanel = ({
             )}
 
             {/* Transcript Content */}
-            <div className="bg-black/5 rounded-lg p-4 border border-border-subtle/20">
+            <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
               <h4 className="text-sm font-medium text-text-primary mb-3">Transcript:</h4>
               <div className="text-sm text-text-primary whitespace-pre-line leading-relaxed">
                 {selectedTranscript.transcript}
@@ -381,7 +381,7 @@ const ActionItemsPanel = ({
       
       {/* Content Container */}
       <div className="flex-1 overflow-auto">
-        <div className={cn("border border-border-subtle/20 rounded-2xl shadow-sm mx-4 mb-4")}>
+        <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm mx-4 mb-4")}>
           {/* Action Items List */}
           <div className="p-4">
             <div className="space-y-3">

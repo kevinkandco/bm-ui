@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -29,7 +29,6 @@ import UpcomingBriefCard from "./HomeViewSections/UpcomingBriefCard";
 import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
-import { attachTimeGradient } from "@/lib/timeGradient";
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -54,22 +53,6 @@ const HomeView = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   console.log('HomeView rendering - debugging home button visibility');
-  
-  // Initialize time-of-day gradient for main content
-  useEffect(() => {
-    // Add a small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      const cleanup = attachTimeGradient({
-        selector: '.main-content',
-        angle: '160deg',
-        tickMs: 30000 // Update every 30 seconds
-      });
-      
-      return cleanup;
-    }, 200);
-    
-    return () => clearTimeout(timer);
-  }, []);
 
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
@@ -698,10 +681,20 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>)}
 
         {/* Main Content Panel */}
-        <div className="main-content flex-1 h-screen overflow-hidden flex">
+        <div className="flex-1 h-screen overflow-hidden">
           {/* Main Content Card */}
-          <div className="flex-1 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden relative">
-            <div className="p-6 h-full overflow-auto bg-black/3 relative z-10">
+          <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden" style={{
+          background: `
+              radial-gradient(
+                circle at top left,
+                #2A8A5F 0%,
+                #1E646E 30%,
+                #000000 70%
+              ),
+              url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
+            `
+        }}>
+            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
               {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[100px]">
                   {/* Date Header */}
@@ -1166,9 +1159,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </div>
 
         {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) && (
-          <div className="w-80 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden relative">
-            <div className="flex-1 overflow-hidden bg-black/3 relative z-10">
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="w-80 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+            <div className="flex-1 overflow-hidden">
               <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
             setSelectedMessage(null);
             setRightPanelCollapsed(true);
@@ -1178,9 +1170,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             setRightPanelCollapsed(true);
           }} />
             </div>
-          </div>
-        )}
-        </div>
+          </div> : null}
+      </div>
 
       {/* Fixed Audio Player */}
       <AudioPlayer briefId={playingBrief} briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />

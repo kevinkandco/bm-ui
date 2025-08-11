@@ -66,8 +66,7 @@ const MacRouteGuard = memo(() => {
 
 MacRouteGuard.displayName = 'MacRouteGuard';
 
-const App = () => {
-  return (
+const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark">
       <TooltipProvider>
@@ -98,6 +97,5 @@ const App = () => {
     </ThemeProvider>
   </QueryClientProvider>
 );
-};
 
 export default App;

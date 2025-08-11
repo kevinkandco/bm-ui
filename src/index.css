@@ -152,34 +152,6 @@
   }
 }
 
-/* Time-of-day gradient background system */
-:root {
-  --bg-blur: 0px;         /* tweak if you want a soft blur over content */
-  --bg-angle: 160deg;     /* keep consistent with your brand angle */
-}
-
-.main-content {
-  position: relative;
-  background: var(--brand-900); /* Safe fallback */
-  /* backgroundImage will be set dynamically by JavaScript */
-  transition: filter 300ms ease;
-}
-
-/* Text contrast overlay for WCAG AA+ compliance */
-.main-content::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(80% 120% at 50% 0%,
-              rgba(0,0,0,0.10) 0%,
-              rgba(0,0,0,0.15) 45%,
-              rgba(0,0,0,0.20) 100%);
-  mix-blend-mode: multiply;
-  border-radius: inherit;
-  z-index: 1;
-}
-
 .animate-voice-ripple {
   animation: voice-ripple 1s ease-out infinite;
 }
