@@ -41,7 +41,7 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
       followUps: 7
     },
     audioUrl: "/path/to/audio.mp3",
-    transcript: "Good morning! Here's your briefing for Thursday, July 3rd, 2025 from 5:00 AM to 8:00 AM. I've found 7 action items that need your attention and prevented 14 potential interruptions to help you maintain focus. Let me walk you through the most important updates...",
+    transcript: "Good morning! Here's your briefing for Thursday, July 3rd, 2025 from 5:00 AM to 8:00 AM. I've found 7 action items that need your attention and prevented 14 potential interruptions to help you maintain focus. Let me walk you through the most important updates...\n\nFirst, we have several critical emails that came in this morning. Sarah from the marketing team needs your urgent review of the launch materials - they're waiting for your approval by 2 PM today to stay on schedule. This includes the press release, social media assets, and updated landing page copy. I've flagged this as high priority due to the tight deadline and potential to block team progress.\n\nNext, the finance team has submitted the Q4 budget allocations for your approval. While this isn't as time-sensitive as the marketing materials, it's important for quarterly planning and I recommend reviewing it by end of week.\n\nFrom Slack, there's an important discussion in the #product-dev channel. Sarah Johnson raised concerns about the testing phase timeline and is suggesting we might need to extend it by a week to ensure quality. This could impact our overall project timeline, so I'd recommend addressing this in your next team meeting.\n\nI've also processed 47 other messages from across your connected apps - Gmail, Slack, and your calendar. Most of these were routine updates, newsletters, and FYIs that don't require immediate action, but I've included summaries in case you want to review them.\n\nIn terms of meetings, you have your weekly standup at 10 AM today with 4 team members attending. I've prepared talking points based on the recent project discussions and timeline concerns mentioned in Slack.\n\nBy consolidating all of this into this 2-minute brief, I've saved you approximately 25 minutes of reading time and 8 minutes of processing time, for a total of 33 minutes. I've also prevented 14 potential interruptions by batching these updates instead of letting them come in throughout your focused work time.\n\nThat's your brief for this morning. Focus on the marketing materials first, then the budget review, and address the testing timeline concerns with your team. Have a productive day!",
     followUps: [
       {
         id: 1,
@@ -162,8 +162,8 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
 
   return (
     <Drawer open={open} onOpenChange={onClose}>
-      <DrawerContent className="max-h-[90vh] bg-surface/80 backdrop-blur-xl border-t border-border-subtle">
-        <DrawerHeader className="pb-2">
+      <DrawerContent className="max-h-[90vh] bg-surface/80 backdrop-blur-xl border-t border-border-subtle flex flex-col">
+        <DrawerHeader className="pb-2 flex-shrink-0">
           <DrawerTitle className="text-text-primary text-xl">{briefData.title}</DrawerTitle>
           <DrawerDescription className="text-text-secondary text-sm">
             {briefData.timestamp} • {briefData.timeRange} • {briefData.type}
@@ -171,7 +171,7 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
         </DrawerHeader>
         
         {/* Key Stats */}
-        <div className="px-4 mb-4">
+        <div className="px-4 mb-4 flex-shrink-0">
           <div className="grid grid-cols-2 gap-2 mb-3">
             <div className="bg-surface-raised/20 rounded-lg p-3 border border-border-subtle">
               <div className="flex items-center gap-2 mb-1">
