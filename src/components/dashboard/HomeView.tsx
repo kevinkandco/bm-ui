@@ -618,8 +618,96 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             {/* Center: Empty (reserved space) */}
             <div className="flex-1" />
 
-            {/* Right: Get Brief button, Avatar */}
+            {/* Right: Integration Icons, Get Brief button, Avatar */}
             <div className="flex items-center gap-3">
+              {/* Integration Status Icons */}
+              <div className="flex items-center gap-2">
+                {/* Slack Integration */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
+                      <div className="w-4 h-4 bg-purple-500 rounded-sm flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-white">#</span>
+                      </div>
+                      <span className="text-sm font-medium text-white">4</span>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="end">
+                    <div className="bg-gray-900 rounded-lg overflow-hidden">
+                      <div className="p-4 border-b border-gray-700">
+                        <h3 className="text-white font-semibold">Slack</h3>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">workspace@company.com</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">team@company.co</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                {/* Google Integration */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
+                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-white">G</span>
+                      </div>
+                      <span className="text-sm font-medium text-white">2</span>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="end">
+                    <div className="bg-gray-900 rounded-lg overflow-hidden">
+                      <div className="p-4 border-b border-gray-700">
+                        <h3 className="text-white font-semibold">Google</h3>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">kirkpatrick.kevin.j@gmail.com</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">me@kevink.co</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                {/* Calendar Integration */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
+                      <Calendar className="w-4 h-4 text-white" />
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="end">
+                    <div className="bg-gray-900 rounded-lg overflow-hidden">
+                      <div className="p-4 border-b border-gray-700">
+                        <h3 className="text-white font-semibold">Calendar</h3>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">Personal Calendar</span>
+                          <span className="text-gray-400 text-sm">• syncing</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
               {/* Get Brief Button */}
               <Button onClick={onToggleCatchMeUp} className="bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2">
                 <Zap className="mr-2 h-4 w-4" />
