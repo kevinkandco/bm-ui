@@ -25,12 +25,8 @@ const LatestBriefSection = ({
   return <div className="space-y-3">
       <div className={cn("py-4 rounded-lg hover:bg-[hsl(190,28%,22%)]/40 transition-colors cursor-pointer", isSelected ? "bg-[hsl(190,28%,22%)]/30" : "bg-[hsl(190,28%,22%)]/20")} onClick={onClick}>
         <h3 className="text-sm font-medium text-text-primary mb-1 px-[10px]">Morning Scheduled Brief</h3>
-        <p className="text-xs text-text-secondary px-[10px]">
-          Delivered at 7:00 AM on August 4, 2025
-        </p>
-        <p className="text-xs text-text-secondary/80 px-[10px]">
-          (Summarizing: 5:00 PM - 7:00 AM)
-        </p>
+        
+        
       </div>
 
       {/* Upcoming Briefs Section */}
