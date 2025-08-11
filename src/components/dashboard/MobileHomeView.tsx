@@ -97,7 +97,7 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
   };
 
   return (
-    <div className="h-[932px] overflow-y-auto bg-gradient-to-br from-surface via-surface-raised/10 to-surface pb-20">
+    <div className="h-screen max-h-[932px] overflow-y-auto bg-gradient-to-br from-surface via-surface-raised/10 to-surface relative">
       {/* Header */}
       <div className="px-6 pt-16 pb-10">
         <div className="flex items-center justify-between mb-6">
@@ -193,6 +193,9 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
           <div className="text-text-secondary/60 text-sm">Enjoy your day ✨</div>
         </div>
       </div>
+
+      {/* Bottom navigation spacing */}
+      <div className="h-20" />
 
       {/* Status Modal */}
       <MobileStatusModal
