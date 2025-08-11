@@ -123,30 +123,28 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
         </div>
 
         {/* Brief Card */}
-        <div className="bg-brand-600 rounded-xl p-5 border border-border-subtle shadow-none hover:bg-white/5 transition-colors"
+        <div className="bg-brand-600 rounded-xl p-3 border border-border-subtle shadow-none hover:bg-white/5 transition-colors"
              onClick={() => onOpenBrief(briefData.id)}>
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-3 mb-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={(e) => { e.stopPropagation(); onPlayBrief(briefData.id); }}
-              className="h-12 w-12 p-0 rounded-full bg-brand-300/15 hover:bg-brand-300/25 transition-all duration-200"
+              className="h-10 w-10 p-0 rounded-full bg-brand-300/15 hover:bg-brand-300/25 transition-all duration-200"
             >
-              <Play className="h-6 w-6 text-brand-300 fill-current" />
+              <Play className="h-5 w-5 text-brand-300 fill-current" />
             </Button>
             <div>
-              <div className="text-text-primary font-semibold text-base tracking-tight">
+              <div className="text-text-primary font-semibold text-sm leading-tight tracking-tight">
                 {briefData.title}
               </div>
-              <div className="text-text-secondary text-sm">
+              <div className="text-text-secondary text-xs">
                 {briefData.time}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-6 text-sm text-text-muted">
-            <span>{briefData.slackCount} Slack</span>
-            <span>{briefData.emailCount} Emails</span>
-            <span>{briefData.actionCount} Actions</span>
+          <div className="text-text-muted text-xs">
+            {briefData.slackCount} Slack • {briefData.emailCount} Emails • {briefData.actionCount} Actions
           </div>
         </div>
 
