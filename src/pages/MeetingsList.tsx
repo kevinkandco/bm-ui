@@ -110,30 +110,30 @@ const MeetingsList = () => {
             <div className="flex gap-3 mt-4 md:mt-0">
               <Button 
                 onClick={handleScheduleMeeting}
-                className="rounded-full shadow-subtle hover:shadow-glow transition-all"
+                className="rounded-full bg-brand-300 text-background hover:bg-brand-300/90"
               >
                 <Plus className="mr-2 h-5 w-5" /> Schedule Meeting
               </Button>
               <Button 
                 variant="outline"
-                className="rounded-full shadow-subtle hover:shadow-glow transition-all border-border-subtle backdrop-blur-md"
+                className="rounded-full border-white/12 text-text-primary hover:bg-white/8"
               >
                 <Calendar className="mr-2 h-5 w-5" /> Calendar View
               </Button>
             </div>
           </div>
 
-          <div className="glass-card rounded-3xl overflow-hidden">
+          <div className="bg-brand-600 border border-white/8 rounded-xl overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-semibold text-text-primary mb-4">Upcoming Meetings</h2>
               
               <div className="space-y-4">
                 {meetings.map((meeting) => (
-                  <div key={meeting.id} className="p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer">
+                  <div key={meeting.id} className="p-4 rounded-xl hover:bg-white/8 transition-all cursor-pointer">
                     <div className="flex items-start justify-between">
                       <div className="flex">
-                        <div className="h-10 w-10 rounded-xl bg-accent-primary/20 flex items-center justify-center mr-4">
-                          <Video className="h-5 w-5 text-accent-primary" />
+                        <div className="h-10 w-10 rounded-xl bg-brand-300/20 flex items-center justify-center mr-4">
+                           <Video className="h-5 w-5 text-brand-300" />
                         </div>
                         <div>
                           <h3 className="font-medium text-text-primary text-lg">{meeting.title}</h3>
@@ -154,9 +154,9 @@ const MeetingsList = () => {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Button size="sm" variant="default">Join</Button>
-                        <Button size="sm" variant="outline" className="w-full">Details</Button>
-                      </div>
+                         <Button size="sm" className="rounded-full bg-brand-300 text-background hover:bg-brand-300/90">Join</Button>
+                         <Button size="sm" variant="outline" className="w-full rounded-full border-white/12 hover:bg-white/8">Details</Button>
+                       </div>
                     </div>
                   </div>
                 ))}

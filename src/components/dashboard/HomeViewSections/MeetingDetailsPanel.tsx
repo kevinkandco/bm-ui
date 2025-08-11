@@ -30,7 +30,7 @@ interface MeetingDetailsPanelProps {
 
 const MeetingDetailsPanel = ({ meeting, onClose }: MeetingDetailsPanelProps) => {
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-surface border-l border-border-subtle shadow-xl z-50 overflow-y-auto">
+    <div className="fixed inset-y-0 right-0 w-96 bg-brand-600 border-l border-white/8 shadow-xl z-50 overflow-y-auto">
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -47,13 +47,13 @@ const MeetingDetailsPanel = ({ meeting, onClose }: MeetingDetailsPanelProps) => 
             onClick={onClose}
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0 hover:bg-white/10"
+            className="h-8 w-8 p-0 hover:bg-white/8"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        <Separator className="bg-border-subtle" />
+        <Separator className="bg-white/8" />
 
         {/* Attendees */}
         <div>
@@ -64,8 +64,8 @@ const MeetingDetailsPanel = ({ meeting, onClose }: MeetingDetailsPanelProps) => 
           <div className="space-y-2">
             {meeting.attendees.map((attendee, index) => (
               <div key={index} className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-accent-primary/20 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-medium text-accent-primary">
+                <div className="w-8 h-8 bg-brand-300/20 rounded-full flex items-center justify-center">
+                   <span className="text-xs font-medium text-brand-300">
                     {attendee.name.split(' ').map(n => n[0]).join('')}
                   </span>
                 </div>
@@ -85,7 +85,7 @@ const MeetingDetailsPanel = ({ meeting, onClose }: MeetingDetailsPanelProps) => 
           </div>
         </div>
 
-        <Separator className="bg-border-subtle" />
+        <Separator className="bg-white/8" />
 
         {/* Briefing */}
         <div>
@@ -142,21 +142,21 @@ const MeetingDetailsPanel = ({ meeting, onClose }: MeetingDetailsPanelProps) => 
             <h3 className="text-sm font-medium text-text-primary mb-3">Preparation Points:</h3>
             <div className="space-y-2">
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium text-accent-primary">1.</span>
+                 <span className="text-sm font-medium text-brand-300">1.</span>
                 <p className="text-sm text-text-secondary">
                   <span className="font-medium">Focus on Practicality:</span> Highlight how the demoed tool or feature can simplify 
                   tasks or improve efficiency, similar to the AI assistant's scheduling capabilities.
                 </p>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium text-accent-primary">2.</span>
+                 <span className="text-sm font-medium text-brand-300">2.</span>
                 <p className="text-sm text-text-secondary">
                   <span className="font-medium">Personalization:</span> If applicable, emphasize customization options or how the tool 
                   adapts to user preferences, drawing parallels to the curated tennis newsletters.
                 </p>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium text-accent-primary">3.</span>
+                 <span className="text-sm font-medium text-brand-300">3.</span>
                 <p className="text-sm text-text-secondary">
                   <span className="font-medium">Clarity and Structure:</span> Ensure the demo is well-organized, reflecting the 
                   structured approach Kevin is accustomed to in his weekly check-ins.
@@ -172,13 +172,13 @@ const MeetingDetailsPanel = ({ meeting, onClose }: MeetingDetailsPanelProps) => 
             <h3 className="text-sm font-medium text-text-primary mb-3">Suggested Agenda:</h3>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <div className="w-1 h-1 bg-accent-primary rounded-full"></div>
+                 <div className="w-1 h-1 bg-brand-300 rounded-full"></div>
                 <p className="text-sm text-text-secondary">
                   <span className="font-medium">Introduction:</span> Brief overview of the tool or feature being demonstrated.
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1 h-1 bg-accent-primary rounded-full"></div>
+                 <div className="w-1 h-1 bg-brand-300 rounded-full"></div>
                 <p className="text-sm text-text-secondary">
                   <span className="font-medium">Key Features:</span> Highlight functionalities that align with Kevin's known interests.
                 </p>
