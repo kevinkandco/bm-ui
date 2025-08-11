@@ -152,6 +152,33 @@
   }
 }
 
+/* Time-of-day gradient background system */
+:root {
+  --bg-blur: 0px;         /* tweak if you want a soft blur over content */
+  --bg-angle: 160deg;     /* keep consistent with your brand angle */
+}
+
+.main-content {
+  position: relative;
+  background: #0e1214; /* safe fallback */
+  /* we'll set backgroundImage from JS */
+  transition: filter 300ms ease; /* just in case you animate blur later */
+}
+
+/* Optional: a super subtle film to help text contrast on bright moments */
+.main-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(80% 120% at 50% 0%,
+              rgba(0,0,0,0.12) 0%,
+              rgba(0,0,0,0.18) 45%,
+              rgba(0,0,0,0.24) 100%);
+  mix-blend-mode: multiply;
+  border-radius: inherit;
+}
+
 .animate-voice-ripple {
   animation: voice-ripple 1s ease-out infinite;
 }
