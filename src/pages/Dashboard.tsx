@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
@@ -27,6 +28,7 @@ interface FocusConfig {
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [currentView, setCurrentView] = useState<"home" | "listening">("home");
   const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
@@ -132,24 +134,22 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Focus Mode Timer Header */}
-      {userStatus === "focus" && (
+      {/* Status Timer Headers - Desktop Only */}
+      {!isMobile && userStatus === "focus" && (
         <StatusTimer 
           status={userStatus}
           onExitFocusMode={handleExitFocusMode}
         />
       )}
 
-      {/* Away/Offline Timer Header */}
-      {userStatus === "away" && (
+      {!isMobile && userStatus === "away" && (
         <StatusTimer 
           status={userStatus}
           onSignBackOn={handleSignBackOn}
         />
       )}
 
-      {/* Vacation/Out of Office Timer Header */}
-      {userStatus === "vacation" && (
+      {!isMobile && userStatus === "vacation" && (
         <StatusTimer 
           status={userStatus}
           onToggleCatchMeUp={handleToggleCatchMeUp}
