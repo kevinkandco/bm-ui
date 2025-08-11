@@ -683,7 +683,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {/* Main Content Panel */}
         <div className="flex-1 h-screen overflow-hidden">
           {/* Main Content Card */}
-          <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden" style={{
+          <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl border border-border-subtle overflow-hidden" style={{
           background: `
               radial-gradient(
                 circle at top left,
