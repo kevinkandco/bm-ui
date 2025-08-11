@@ -824,9 +824,19 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     </p>
                                   </TableCell>
                                 </TableRow>)}
-                            </TableBody>
-                          </Table>
-                        </div>
+                             </TableBody>
+                           </Table>
+                           
+                           {/* View all link */}
+                           <div className="px-4 py-2 border-t border-border-subtle">
+                             <button
+                               onClick={handleNavigateToAllFollowUps}
+                               className="text-xs text-accent-primary hover:text-accent-primary/80 cursor-pointer"
+                             >
+                               View all
+                             </button>
+                           </div>
+                         </div>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
