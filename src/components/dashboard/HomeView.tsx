@@ -693,10 +693,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>)}
 
         {/* Main Content Panel */}
-        <div className="flex-1 h-screen overflow-hidden">
+        <div className="main-content flex-1 h-screen overflow-hidden flex">
           {/* Main Content Card */}
-          <div className="main-content h-full backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden">
-            <div className="p-6 h-full overflow-auto bg-black/10">
+          <div className="flex-1 h-full backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden">
+            <div className="p-6 h-full overflow-auto bg-black/5">
               {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[100px]">
                   {/* Date Header */}
@@ -1161,7 +1161,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </div>
 
         {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="main-content w-80 h-full border-l border-border-subtle backdrop-blur-sm flex flex-col">
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) && (
+          <div className="w-80 h-full backdrop-blur-sm flex flex-col">
             <div className="flex-1 overflow-hidden">
               <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
             setSelectedMessage(null);
@@ -1172,8 +1173,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             setRightPanelCollapsed(true);
           }} />
             </div>
-          </div> : null}
-      </div>
+          </div>
+        )}
+        </div>
 
       {/* Fixed Audio Player */}
       <AudioPlayer briefId={playingBrief} briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />
