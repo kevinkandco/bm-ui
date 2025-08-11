@@ -83,7 +83,7 @@ const App = () => {
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark">
       <TooltipProvider>
-        <div className="main-content min-h-screen flex flex-col justify-center">
+        <div className="min-h-screen flex flex-col justify-center">
           <Toaster />
           <Sonner />
           <BrowserRouter>

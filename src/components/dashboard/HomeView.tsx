@@ -683,18 +683,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {/* Main Content Panel */}
         <div className="flex-1 h-screen overflow-hidden">
           {/* Main Content Card */}
-          <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden" style={{
-          background: `
-              radial-gradient(
-                circle at top left,
-                #2A8A5F 0%,
-                #1E646E 30%,
-                #000000 70%
-              ),
-              url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
-            `
-        }}>
-            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47]">
+          <div className="main-content h-full backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden">
+            <div className="p-6 h-full overflow-auto bg-black/10">
               {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[100px]">
                   {/* Date Header */}
