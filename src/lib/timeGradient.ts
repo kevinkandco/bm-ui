@@ -20,33 +20,33 @@ export function attachTimeGradient({
   const el = document.querySelector(selector);
   if (!el) return;
 
-  // Brand green gradient anchors you already use in main content
+  // Brand green gradient anchors and new time-of-day colors
   const BRAND_DEEP = '#1B5862';
   const BRAND_MID  = '#277F64';
-  const BRAND_LIME = '#4FAF83';
+  const BRAND_DARK = '#0E1214'; // Bottom-right fade target
 
   // Day phases (24h) with color stops for a 3-stop gradient
-  // You can tweak hues here to taste.
+  // All gradients fade to #0E1214 in bottom-right corner
   const phases: GradientPhase[] = [
-    // Morning (warm & sunny)
+    // Morning (warm & sunny) - 6am to 11am
     {
       start: [6, 0],   // 06:00
-      stops: ['#FFD580', '#FFB347', BRAND_DEEP]
+      stops: ['#FFD580', '#FFB347', BRAND_DARK]
     },
-    // Afternoon (focused greens)
+    // Afternoon (focused brand greens) - 11am to 5pm
     {
       start: [11, 0],  // 11:00
-      stops: [BRAND_DEEP, BRAND_MID, BRAND_LIME]
+      stops: [BRAND_DEEP, BRAND_MID, BRAND_DARK]
     },
-    // Evening (calming purples)
+    // Evening (calming purples) - 5pm to 10pm
     {
       start: [17, 0],  // 17:00
-      stops: ['#4B3F72', '#6B5B95', '#A284D4']
+      stops: ['#4B3F72', '#6B5B95', BRAND_DARK]
     },
-    // Night (deep + low contrast)
+    // Night (deep + low contrast) - 10pm to 6am
     {
       start: [22, 0],  // 22:00
-      stops: ['#0E1214', '#1B1F28', '#2D2F48']
+      stops: [BRAND_DARK, '#1B1F28', BRAND_DARK]
     }
   ];
 
@@ -147,14 +147,16 @@ export function attachTimeGradient({
 // Export configuration for easy tweaking
 export const gradientConfig = {
   phases: [
-    { name: 'Morning', start: [6, 0], description: 'warm & sunny' },
-    { name: 'Afternoon', start: [11, 0], description: 'focused brand greens' },
-    { name: 'Evening', start: [17, 0], description: 'calming purples' },
-    { name: 'Night', start: [22, 0], description: 'deep, low-contrast' }
+    { name: 'Morning', start: [6, 0], description: 'warm & sunny (#FFD580 → #FFB347 → #0E1214)' },
+    { name: 'Afternoon', start: [11, 0], description: 'focused brand greens (#1B5862 → #277F64 → #0E1214)' },
+    { name: 'Evening', start: [17, 0], description: 'calming purples (#4B3F72 → #6B5B95 → #0E1214)' },
+    { name: 'Night', start: [22, 0], description: 'deep, low-contrast (#0E1214 → #1B1F28 → #0E1214)' }
   ],
   brandColors: {
     deep: '#1B5862',
     mid: '#277F64', 
-    lime: '#4FAF83'
-  }
+    dark: '#0E1214' // Always fades to this in bottom-right
+  },
+  direction: '160deg', // Top-left to bottom-right fade
+  updateInterval: 30000 // 30 seconds
 };

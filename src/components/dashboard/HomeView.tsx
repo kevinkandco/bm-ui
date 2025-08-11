@@ -700,8 +700,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {/* Main Content Panel */}
         <div className="main-content flex-1 h-screen overflow-hidden flex">
           {/* Main Content Card */}
-          <div className="flex-1 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden">
-            <div className="p-6 h-full overflow-auto bg-black/5">
+          <div className="flex-1 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden relative">
+            <div className="p-6 h-full overflow-auto bg-black/3 relative z-10">
               {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[100px]">
                   {/* Date Header */}
@@ -1167,8 +1167,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
         {/* Right Panel - Only show when there's content */}
         {!rightPanelCollapsed && (selectedMessage || selectedTranscript) && (
-          <div className="w-80 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden">
-            <div className="flex-1 overflow-hidden bg-black/5">
+          <div className="w-80 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden relative">
+            <div className="flex-1 overflow-hidden bg-black/3 relative z-10">
               <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
             setSelectedMessage(null);
             setRightPanelCollapsed(true);
