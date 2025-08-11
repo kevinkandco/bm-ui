@@ -79,15 +79,15 @@ const MobileHomeView = ({
   const getStatusMessage = (status: string) => {
     switch (status) {
       case 'active':
-        return "I'm here with you — nothing will slip by.";
+        return "I'm here with you — let's make the most of today.";
       case 'away':
-        return "Go do your thing. I'll keep an eye out.";
+        return "Step away and enjoy your day — I'll take care of the rest.";
       case 'focus':
-        return "Head down — I've got everything covered.";
+        return "Stay in the flow — I'll handle what can wait.";
       case 'vacation':
-        return "Enjoy your time away. I'll bundle the important stuff.";
+        return "Switch off and make the most of your time away — I've got this.";
       default:
-        return "I'm here with you — nothing will slip by.";
+        return "I'm here with you — let's make the most of today.";
     }
   };
 
