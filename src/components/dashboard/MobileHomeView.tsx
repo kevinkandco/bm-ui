@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LiquidLightCore from '../visuals/LiquidLightCore';
+import HaloPulse from '../visuals/HaloPulse';
 
 interface MobileHomeViewProps {
   onPlayBrief: (briefId: number) => void;
@@ -113,9 +113,9 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
 
       {/* Status indicator moved inline with header */}
 
-      {/* Liquid Light Core */}
-      <div className="px-6 -mt-2 mb-4">
-        <LiquidLightCore height={200} className="mx-auto w-full max-w-[480px]" anchors={["#1B5862","#277F64","#4FAF83"]} mode="auto" />
+      {/* Halo Pulse */}
+      <div className="px-6 pt-3 pb-2">
+        <HaloPulse className="mx-auto" size={152} anchors={["#1B5862","#277F64","#4FAF83"]} background="transparent" fpsCap={48} intensity={1.0} />
       </div>
 
       {/* Today's Updates Section */}
