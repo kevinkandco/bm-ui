@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface MobileHomeViewProps {
@@ -7,10 +7,11 @@ interface MobileHomeViewProps {
   playingBrief: number | null;
   onOpenBrief: (briefId: number) => void;
   onStartFocusMode?: () => void;
+  onBriefMe?: () => void;
   userStatus?: 'active' | 'away' | 'focus' | 'vacation';
 }
 
-const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMode, userStatus = 'active' }: MobileHomeViewProps) => {
+const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMode, onBriefMe, userStatus = 'active' }: MobileHomeViewProps) => {
   const [currentDate] = useState(new Date());
 
   // Sample data
@@ -115,11 +116,9 @@ const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMo
       <div className="px-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-text-primary font-semibold text-lg tracking-tight">Today's Updates</h2>
-          <div className="flex items-center gap-2 bg-brand-700 rounded-full px-4 py-2 border border-border-subtle">
-            <ChevronLeft className="h-4 w-4 text-text-muted" />
-            <span className="text-text-primary text-sm font-medium tracking-tight">Today</span>
-            <ChevronRight className="h-4 w-4 text-text-muted" />
-          </div>
+<Button size="sm" className="h-7 px-3 rounded-full" onClick={() => onBriefMe?.()}>
+  Brief Me
+</Button>
         </div>
 
         {/* Brief Card */}
