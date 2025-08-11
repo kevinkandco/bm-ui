@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SignalSweepBar from '../visuals/SignalSweepBar';
+import MobileHeader from './MobileHeader';
 interface MobileHomeViewProps {
   onPlayBrief: (briefId: number) => void;
   playingBrief: number | null;
@@ -87,8 +88,11 @@ const MobileHomeView = ({
     }
   };
   return <div className="h-screen max-h-[932px] overflow-y-auto bg-brand-900 relative">
-      {/* Header */}
-      <div className="px-6 pt-16 pb-10">
+      {/* Mobile Header with Logo */}
+      <MobileHeader />
+      
+      {/* User Greeting */}
+      <div className="px-6 pb-10">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-text-primary mb-1">

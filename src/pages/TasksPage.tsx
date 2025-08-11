@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import ActionItemModal from '@/components/dashboard/ActionItemModal';
 import { useIsMobile } from '@/hooks/use-mobile';
 import MobileBottomNav from '@/components/dashboard/MobileBottomNav';
+import MobileHeader from '@/components/dashboard/MobileHeader';
 
 interface ActionItem {
   id: string;
@@ -242,7 +243,9 @@ const TasksPage = () => {
   };
 
   return (
-    <div className={`min-h-screen px-4 py-6 ${isMobile ? 'pb-24' : ''}`}>
+    <div className={`min-h-screen ${isMobile ? 'pb-24' : 'px-4 py-6'}`}>
+      {isMobile && <MobileHeader />}
+      <div className={!isMobile ? 'px-4 py-6' : 'px-4 pb-6'}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -387,6 +390,7 @@ const TasksPage = () => {
 
       {/* Mobile Bottom Navigation */}
       {isMobile && <MobileBottomNav />}
+      </div>
     </div>
   );
 };

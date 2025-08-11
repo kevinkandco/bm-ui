@@ -46,6 +46,7 @@ import ActionItemControls from "@/components/dashboard/ActionItemControls";
 import { useFeedbackTracking } from "@/components/dashboard/useFeedbackTracking";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
+import MobileHeader from "@/components/dashboard/MobileHeader";
 
 const BriefDetail = () => {
   const { briefId } = useParams();
@@ -330,7 +331,9 @@ const BriefDetail = () => {
         sidebarOpen={sidebarOpen} 
         onToggleSidebar={handleToggleSidebar}
       >
-        <div className={`min-h-screen bg-surface px-4 py-6 ${isMobile ? 'pb-24' : ''}`}>
+        <div className={`min-h-screen bg-surface ${isMobile ? 'pb-24' : 'px-4 py-6'}`}>
+          {isMobile && <MobileHeader />}
+          <div className={!isMobile ? 'px-4 py-6' : 'px-4 pb-6'}>
           {/* Breadcrumb */}
           <Breadcrumb className="mb-4">
             <BreadcrumbList>
@@ -751,7 +754,8 @@ const BriefDetail = () => {
                 confidence: selectedActionItem.confidence
               }}
             />
-          )}
+           )}
+          </div>
         </div>
       </DashboardLayout>
       

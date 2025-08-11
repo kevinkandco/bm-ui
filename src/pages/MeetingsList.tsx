@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
+import MobileHeader from "@/components/dashboard/MobileHeader";
 
 const MeetingsList = () => {
   const { toast } = useToast();
@@ -84,7 +85,9 @@ const MeetingsList = () => {
         sidebarOpen={sidebarOpen} 
         onToggleSidebar={handleToggleSidebar}
       >
-        <div className={`container p-4 md:p-6 max-w-7xl mx-auto ${isMobile ? 'pb-24' : ''}`}>
+        <div className="min-h-screen bg-surface">
+          {isMobile && <MobileHeader />}
+          <div className={`container max-w-7xl mx-auto ${isMobile ? 'p-4 pb-24' : 'p-4 md:p-6'}`}>
           <Breadcrumb className="mb-4">
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -162,6 +165,7 @@ const MeetingsList = () => {
                 ))}
               </div>
             </div>
+          </div>
           </div>
         </div>
       </DashboardLayout>
