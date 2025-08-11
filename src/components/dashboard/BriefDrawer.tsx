@@ -74,49 +74,49 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
 
   return (
     <Drawer open={open} onOpenChange={onClose}>
-      <DrawerContent className="max-h-[85vh] bg-white/75 backdrop-blur-md border-t border-white/30">
+      <DrawerContent className="max-h-[85vh] bg-surface/80 backdrop-blur-xl border-t border-border-subtle">
         <DrawerHeader>
-          <DrawerTitle className="text-deep-teal text-2xl">{briefData.title}</DrawerTitle>
-          <DrawerDescription className="text-deep-teal/80">{briefData.date} · {briefData.summary}</DrawerDescription>
+          <DrawerTitle className="text-text-primary text-2xl">{briefData.title}</DrawerTitle>
+          <DrawerDescription className="text-text-secondary">{briefData.date} · {briefData.summary}</DrawerDescription>
         </DrawerHeader>
         
         <div className="px-4 pb-2">
           <Tabs defaultValue="audio" className="w-full">
-            <TabsList className="bg-white/30 border border-white/20 w-full">
-              <TabsTrigger value="audio" className="flex-1 data-[state=active]:bg-white/40">
+            <TabsList className="bg-surface-raised/20 border border-border-subtle w-full">
+              <TabsTrigger value="audio" className="flex-1 data-[state=active]:bg-surface-raised/30">
                 <Play className="mr-2 h-4 w-4" />
                 Audio Brief
               </TabsTrigger>
-              <TabsTrigger value="updates" className="flex-1 data-[state=active]:bg-white/40">
+              <TabsTrigger value="updates" className="flex-1 data-[state=active]:bg-surface-raised/30">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Updates
               </TabsTrigger>
-              <TabsTrigger value="tasks" className="flex-1 data-[state=active]:bg-white/40">
+              <TabsTrigger value="tasks" className="flex-1 data-[state=active]:bg-surface-raised/30">
                 <CheckSquare className="mr-2 h-4 w-4" />
                 Tasks
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="audio" className="mt-4">
-              <div className="bg-white/40 rounded-xl p-4 backdrop-blur-md border border-white/30">
+              <div className="bg-surface-raised/20 rounded-xl p-4 backdrop-blur-md border border-border-subtle">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
                     <Button size="sm" variant="secondary" className="mr-2">
                       <Play className="h-4 w-4" />
                     </Button>
-                    <span className="text-deep-teal/80 text-sm">{briefData.audioLength}</span>
+                    <span className="text-text-secondary text-sm">{briefData.audioLength}</span>
                   </div>
                   <Button variant="outline" size="sm">Download</Button>
                 </div>
                 
                 <div className="space-y-2 mt-6">
-                  <h4 className="text-sm font-medium text-deep-teal mb-2">Timestamps</h4>
+                  <h4 className="text-sm font-medium text-text-primary mb-2">Timestamps</h4>
                   {briefData.timestamps.map((timestamp, i) => (
-                    <div key={i} className="flex items-center py-2 border-b border-white/30 last:border-b-0">
+                    <div key={i} className="flex items-center py-2 border-b border-border-subtle last:border-b-0">
                       <Button variant="outline" size="sm" className="h-6 min-w-[50px] mr-3">
                         {timestamp.time}
                       </Button>
-                      <span className="text-sm text-deep-teal">{timestamp.description}</span>
+                      <span className="text-sm text-text-secondary">{timestamp.description}</span>
                     </div>
                   ))}
                 </div>
@@ -125,14 +125,14 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
             
             <TabsContent value="updates" className="mt-4 space-y-3">
               {briefData.updates.map((update, i) => (
-                <div key={i} className="bg-white/40 rounded-xl p-4 backdrop-blur-md border border-white/30">
+                <div key={i} className="bg-surface-raised/20 rounded-xl p-4 backdrop-blur-md border border-border-subtle">
                   <div className="flex items-center gap-3">
-                    {update.type === "email" && <Mail className="h-4 w-4 text-glass-blue" />}
-                    {update.type === "slack" && <MessageSquare className="h-4 w-4 text-glass-blue" />}
-                    {update.type === "calendar" && <Calendar className="h-4 w-4 text-glass-blue" />}
+                    {update.type === "email" && <Mail className="h-4 w-4 text-accent-primary" />}
+                    {update.type === "slack" && <MessageSquare className="h-4 w-4 text-accent-primary" />}
+                    {update.type === "calendar" && <Calendar className="h-4 w-4 text-accent-primary" />}
                     <div>
-                      <h4 className="font-medium text-deep-teal">{update.title}</h4>
-                      <p className="text-sm text-deep-teal/80">
+                      <h4 className="font-medium text-text-primary">{update.title}</h4>
+                      <p className="text-sm text-text-secondary">
                         <span className="font-medium">{update.source}</span>: {update.preview}
                       </p>
                     </div>
@@ -142,16 +142,16 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
             </TabsContent>
             
             <TabsContent value="tasks" className="mt-4">
-              <div className="bg-white/40 rounded-xl p-4 backdrop-blur-md border border-white/30">
+              <div className="bg-surface-raised/20 rounded-xl p-4 backdrop-blur-md border border-border-subtle">
                 <div className="space-y-2">
                   {briefData.todos.map((todo) => (
-                    <div key={todo.id} className="flex items-center py-2 border-b border-white/30 last:border-b-0">
+                    <div key={todo.id} className="flex items-center py-2 border-b border-border-subtle last:border-b-0">
                       <input 
                         type="checkbox" 
                         id={`todo-${todo.id}`}
-                        className="rounded mr-3 h-4 w-4 border-white/40 text-glass-blue focus:ring-glass-blue"
+                        className="rounded mr-3 h-4 w-4 border-border-subtle text-accent-primary focus:ring-accent-primary"
                       />
-                      <label htmlFor={`todo-${todo.id}`} className="text-sm text-deep-teal">
+                      <label htmlFor={`todo-${todo.id}`} className="text-sm text-text-primary">
                         {todo.text}
                       </label>
                     </div>
