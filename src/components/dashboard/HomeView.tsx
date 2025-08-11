@@ -124,11 +124,22 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
     setLeftRailTab('followups');
   }, []);
   const handleStatusSelect = useCallback((status: 'online' | 'focus' | 'vacation' | 'offline') => {
+    // Map mobile status to main status system
+    const statusMap: Record<string, 'active' | 'away' | 'focus' | 'vacation'> = {
+      'online': 'active',
+      'focus': 'focus', 
+      'vacation': 'vacation',
+      'offline': 'away'
+    };
+    
+    const newStatus = statusMap[status];
+    onStatusChange?.(newStatus);
     setCurrentStatus(status);
+    
     if (status === 'focus') {
       onStartFocusMode();
     }
-  }, [onStartFocusMode]);
+  }, [onStatusChange, onStartFocusMode]);
 
   // Sample data - expanded to include more briefs for "view all"
   const allBriefs = [{
@@ -561,7 +572,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   // Mobile layout
   if (isMobile) {
     return <div className="relative">
-        <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={handleOpenMobileBrief} onStartFocusMode={onStartFocusMode} onBriefMe={onToggleCatchMeUp} userStatus={userStatus} />
+        <MobileHomeView onPlayBrief={handlePlayBrief} playingBrief={playingBrief} onOpenBrief={handleOpenMobileBrief} onStartFocusMode={onStartFocusMode} onBriefMe={onToggleCatchMeUp} userStatus={userStatus} onStatusChange={onStatusChange} />
         
         {/* Mobile Bottom Navigation */}
         <MobileBottomNav onShowStatusModal={() => setShowStatusModal(true)} userStatus={userStatus} />
@@ -574,7 +585,17 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         )}
 
         {/* Mobile Status Modal */}
-        <MobileStatusModal isOpen={showStatusModal} onClose={() => setShowStatusModal(false)} onSelectStatus={handleStatusSelect} currentStatus={currentStatus} />
+        <MobileStatusModal 
+          isOpen={showStatusModal} 
+          onClose={() => setShowStatusModal(false)} 
+          onSelectStatus={handleStatusSelect} 
+          currentStatus={
+            userStatus === 'active' ? 'online' : 
+            userStatus === 'focus' ? 'focus' : 
+            userStatus === 'vacation' ? 'vacation' : 
+            userStatus === 'away' ? 'offline' : 'online'
+          } 
+        />
 
         {/* Mobile Brief Drawer */}
         <BriefDrawer open={showMobileBriefDrawer} briefId={selectedBrief} onClose={() => setShowMobileBriefDrawer(false)} />

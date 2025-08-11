@@ -10,9 +10,10 @@ interface MobileHomeViewProps {
   onStartFocusMode?: () => void;
   onBriefMe?: () => void;
   userStatus?: 'active' | 'away' | 'focus' | 'vacation';
+  onStatusChange?: (status: 'active' | 'away' | 'focus' | 'vacation') => void;
 }
 
-const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMode, onBriefMe, userStatus = 'active' }: MobileHomeViewProps) => {
+const MobileHomeView = ({ onPlayBrief, playingBrief, onOpenBrief, onStartFocusMode, onBriefMe, userStatus = 'active', onStatusChange }: MobileHomeViewProps) => {
   const [currentDate] = useState(new Date());
 
   // Sample data
