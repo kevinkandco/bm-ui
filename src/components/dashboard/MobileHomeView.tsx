@@ -199,7 +199,7 @@ const MobileHomeView = ({
         </div>
 
         {/* Brief Card */}
-        <div className="bg-brand-600 rounded-xl p-3 border border-subtle shadow-none hover:bg-white/5 transition-colors" onClick={() => onOpenBrief(briefData.id)}>
+        <div className="bg-brand-600 rounded-xl p-3 shadow-none hover:bg-white/5 transition-colors" onClick={() => onOpenBrief(briefData.id)}>
           <div className="flex items-center gap-3 mb-2">
             <Button variant="ghost" size="sm" onClick={e => {
             e.stopPropagation();
