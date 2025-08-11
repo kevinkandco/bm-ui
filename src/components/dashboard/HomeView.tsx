@@ -64,6 +64,9 @@ const HomeView = ({
   const { toast } = useToast();
   console.log('HomeView rendering - debugging home button visibility');
 
+  // Feature flag for minimal layout
+  const [home_minimal_v1] = useState(true);
+
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
   const [showAllBriefs, setShowAllBriefs] = useState(false);
@@ -635,70 +638,73 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       </div>;
     }
 
-  return <div className="min-h-screen flex flex-col">
-      {/* Global Header */}
-      <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Left: Brief Me Logo and Status */}
-            <div className="flex items-center gap-3">
-              <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
-              {/* Status Indicator with Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div 
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors"
-                  >
-                    <div className={`w-2 h-2 rounded-full ${
-                      userStatus === "active" ? "bg-green-500" :
-                      userStatus === "away" ? "bg-yellow-500" :
-                      userStatus === "focus" ? "bg-blue-500" :
-                      userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"
-                    }`} />
-                    <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
-                    <ChevronDown className="w-3 h-3 text-text-secondary" />
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("active")}
-                    className="flex items-center gap-2"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                    Active
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("away")}
-                    className="flex items-center gap-2"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                    Away
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("focus")}
-                    className="flex items-center gap-2"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    Focus
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("vacation")}
-                    className="flex items-center gap-2"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-gray-500" />
-                    Vacation
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+  // Choose layout based on feature flag
+  if (!home_minimal_v1) {
+    // Original layout (lines 641-end)
+    return <div className="min-h-screen flex flex-col">
+        {/* Global Header */}
+        <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              {/* Left: Brief Me Logo and Status */}
+              <div className="flex items-center gap-3">
+                <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
+                {/* Status Indicator with Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div 
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors"
+                    >
+                      <div className={`w-2 h-2 rounded-full ${
+                        userStatus === "active" ? "bg-green-500" :
+                        userStatus === "away" ? "bg-yellow-500" :
+                        userStatus === "focus" ? "bg-blue-500" :
+                        userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"
+                      }`} />
+                      <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
+                      <ChevronDown className="w-3 h-3 text-text-secondary" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem 
+                      onClick={() => onStatusChange?.("active")}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="w-2 h-2 rounded-full bg-green-500" />
+                      Active
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => onStatusChange?.("away")}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                      Away
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => onStatusChange?.("focus")}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      Focus
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => onStatusChange?.("vacation")}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="w-2 h-2 rounded-full bg-gray-500" />
+                      Vacation
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
-            {/* Center: Status Message */}
-            <div className="flex-1 flex justify-center">
-              <p className="text-sm text-text-secondary/80">{getStatusMessage(userStatus)}</p>
-            </div>
+              {/* Center: Status Message */}
+              <div className="flex-1 flex justify-center">
+                <p className="text-sm text-text-secondary/80">{getStatusMessage(userStatus)}</p>
+              </div>
 
-            {/* Right: Integration Icons, Get Brief button, Avatar */}
-            <div className="flex items-center gap-3">
+              {/* Right: Integration Icons, Get Brief button, Avatar */}
+              <div className="flex items-center gap-3">
               {/* Integration Status Icons */}
               <div className="flex items-center gap-2">
                 {/* Slack Integration */}
@@ -1770,6 +1776,451 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </DialogContent>
       </Dialog>
 
+    </div>;
+  }
+
+  // Minimal desktop layout (home_minimal_v1 = true)
+  const [leftNavCollapsed, setLeftNavCollapsed] = useState(true);
+  const [showLowPriority, setShowLowPriority] = useState(false);
+  const [showAllSchedule, setShowAllSchedule] = useState(false);
+  const [showRecentBriefs, setShowRecentBriefs] = useState(false);
+  
+  // Group follow-ups by priority for minimal layout
+  const highPriorityFollowUps = followUps.filter(item => item.priority === "High");
+  const mediumPriorityFollowUps = followUps.filter(item => item.priority === "Medium");
+  const lowPriorityFollowUps = followUps.filter(item => item.priority === "Low");
+  
+  // Sample schedule data
+  const todaySchedule = [
+    { id: 1, time: "10:00 AM", title: "Weekly Standup", action: "Join Live", participants: 4 },
+    { id: 2, time: "1:30 PM", title: "Product Review", action: "Join Live", participants: 6 },
+    { id: 3, time: "3:00 PM", title: "Client Call", action: "Send Proxy", participants: 2 },
+    { id: 4, time: "4:30 PM", title: "Team Sync", action: "Join Live", participants: 8 }
+  ];
+
+  return <div className="min-h-screen flex flex-col">
+      {/* Minimal Header */}
+      <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
+        <div className="px-6 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left: Brief Me Logo and Status */}
+            <div className="flex items-center gap-4">
+              <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-7 w-auto" />
+              
+              {/* Status Indicator with Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div 
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/8 transition-colors"
+                  >
+                    <div className={`w-2 h-2 rounded-full ${
+                      userStatus === "active" ? "bg-green-500" :
+                      userStatus === "away" ? "bg-yellow-500" :
+                      userStatus === "focus" ? "bg-blue-500" :
+                      userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"
+                    }`} />
+                    <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
+                    <ChevronDown className="w-3 h-3 text-text-secondary" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("active")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-green-500" />
+                    Active
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("away")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                    Away
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("focus")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
+                    Focus
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onStatusChange?.("vacation")}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-gray-500" />
+                    Vacation
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Center: Human Status Message */}
+            <div className="flex-1 flex justify-center">
+              <p className="text-sm text-text-secondary/70 font-normal overflow-hidden text-ellipsis whitespace-nowrap max-w-md">
+                {getStatusMessage(userStatus)}
+              </p>
+            </div>
+
+            {/* Right: Contextual CTA and Avatar */}
+            <div className="flex items-center gap-3">
+              {/* Get Brief Button - Contextual */}
+              <Button onClick={onToggleCatchMeUp} className="bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2 rounded-full">
+                <Zap className="mr-2 h-4 w-4" />
+                {getBriefButtonLabel(userStatus)}
+              </Button>
+
+              {/* Avatar with Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="p-0 h-auto">
+                    <Avatar className="h-8 w-8 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
+                      <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
+                      <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
+                        AJ
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
+                  <DropdownMenuItem onClick={() => navigate("/dashboard/settings")} className="text-text-primary hover:bg-white/5">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/dashboard/settings")} className="text-text-primary hover:bg-white/5">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* SignalSweepBar - Thin accent below header */}
+      <div className="w-full px-6">
+        <SignalSweepBar 
+          className="w-full" 
+          height={4} 
+          anchors={["#1B5862", "#277F64", "#4FAF83"]} 
+          background="transparent" 
+          thickness={2} 
+          status={userStatus === 'active' ? 'active' : userStatus === 'focus' ? 'focused' : userStatus === 'vacation' ? 'ooo' : userStatus === 'away' ? 'offline' : 'active'} 
+        />
+      </div>
+
+      {/* Main Layout - Three Columns */}
+      <div className="flex-1 flex">
+        {/* Left Nav - Collapsed by default */}
+        {!leftNavCollapsed ? (
+          <div className="w-60 border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-text-primary font-medium">Navigation</h2>
+                <Button variant="ghost" size="sm" onClick={() => setLeftNavCollapsed(true)} className="h-6 w-6 p-0">
+                  <PanelLeftClose className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {/* Primary nav items only */}
+              <div className="space-y-1">
+                <Button variant="ghost" className="w-full justify-start py-2" onClick={handleHomeSelect}>
+                  <Home className="mr-3 h-4 w-4" />
+                  Home
+                </Button>
+                <Button variant="ghost" className="w-full justify-start py-2" onClick={handleNavigateToAllBriefs}>
+                  <FileText className="mr-3 h-4 w-4" />
+                  Briefs
+                </Button>
+                <Button variant="ghost" className="w-full justify-start py-2" onClick={handleNavigateToAllCalendar}>
+                  <Calendar className="mr-3 h-4 w-4" />
+                  Calendar
+                </Button>
+                <Button variant="ghost" className="w-full justify-start py-2" onClick={handleNavigateToAllFollowUps}>
+                  <ClipboardCheck className="mr-3 h-4 w-4" />
+                  Follow-ups
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="w-14 border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+            <div className="p-2 flex flex-col items-center space-y-3 mt-4">
+              <Button variant="ghost" size="sm" onClick={() => setLeftNavCollapsed(false)} className="h-8 w-8 p-0">
+                <PanelLeftOpen className="h-4 w-4" />
+              </Button>
+              
+              <Button variant="ghost" size="sm" onClick={handleHomeSelect} className="h-8 w-8 p-0">
+                <Home className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleNavigateToAllBriefs} className="h-8 w-8 p-0">
+                <FileText className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleNavigateToAllCalendar} className="h-8 w-8 p-0">
+                <Calendar className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleNavigateToAllFollowUps} className="h-8 w-8 p-0">
+                <ClipboardCheck className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Center - Main Content */}
+        <div className="flex-1 p-6 overflow-auto">
+          {/* Daily Briefing Block */}
+          <div className="mb-8">
+            <p className="text-xs text-text-secondary/60 mb-2">Here's what's coming up.</p>
+            <div className="bg-surface-raised/30 border border-border-subtle rounded-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-medium text-text-primary">Morning Brief</h3>
+                  <p className="text-sm text-text-secondary">Today, 8:00 AM • 5:00 AM - 8:00 AM</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handlePlayBrief(1)}
+                  className="border-border-subtle text-text-primary hover:bg-surface-raised/20"
+                >
+                  {playingBrief === 1 ? (
+                    <>
+                      <Pause className="mr-2 h-4 w-4" />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <Play className="mr-2 h-4 w-4" />
+                      Play Brief
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <div className="flex items-center gap-6 text-sm text-text-secondary mb-4">
+                <span>12 Slack messages</span>
+                <span>5 emails</span>
+                <span>4 action items</span>
+              </div>
+
+              {/* Recent briefs - compact */}
+              {!showRecentBriefs ? (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setShowRecentBriefs(true)}
+                  className="text-xs text-accent-primary hover:bg-transparent p-0"
+                >
+                  Recent briefs →
+                </Button>
+              ) : (
+                <div className="border-t border-border-subtle pt-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium text-text-secondary">Recent briefs</span>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setShowRecentBriefs(false)}
+                      className="text-xs text-text-secondary hover:bg-transparent p-0"
+                    >
+                      Hide
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {recentBriefs.slice(1).map(brief => (
+                      <div key={brief.id} className="flex items-center justify-between py-1">
+                        <div>
+                          <span className="text-sm text-text-primary">{brief.name}</span>
+                          <span className="text-xs text-text-secondary ml-2">{brief.timeCreated}</span>
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => handlePlayBrief(brief.id)}
+                          className="h-6 px-2 text-xs"
+                        >
+                          {playingBrief === brief.id ? "Pause" : "Play"}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Today's Schedule */}
+          <div className="mb-8">
+            <p className="text-xs text-text-secondary/60 mb-2">Your day at a glance.</p>
+            <div className="bg-surface-raised/30 border border-border-subtle rounded-lg p-4">
+              <h3 className="text-lg font-medium text-text-primary mb-4">Today's Schedule</h3>
+              
+              {/* Next 1-2 events expanded */}
+              <div className="space-y-3">
+                {todaySchedule.slice(0, 2).map(event => (
+                  <div key={event.id} className="flex items-center justify-between py-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-text-primary">{event.title}</span>
+                        <span className="text-xs text-text-secondary">• {event.participants} attendees</span>
+                      </div>
+                      <span className="text-sm text-text-secondary">{event.time}</span>
+                    </div>
+                    <Button size="sm" className="bg-accent-primary hover:bg-accent-primary/90 text-white">
+                      {event.action}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Collapsed additional events */}
+              {!showAllSchedule && todaySchedule.length > 2 && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setShowAllSchedule(true)}
+                  className="text-xs text-accent-primary hover:bg-transparent p-0 mt-3"
+                >
+                  More today ({todaySchedule.length - 2} events) →
+                </Button>
+              )}
+
+              {showAllSchedule && (
+                <div className="border-t border-border-subtle mt-3 pt-3">
+                  <div className="space-y-2">
+                    {todaySchedule.slice(2).map(event => (
+                      <div key={event.id} className="flex items-center justify-between py-1">
+                        <div>
+                          <span className="text-sm text-text-primary">{event.title}</span>
+                          <span className="text-xs text-text-secondary ml-2">{event.time}</span>
+                        </div>
+                        <Button size="sm" variant="outline" className="h-6 px-2 text-xs">
+                          {event.action}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setShowAllSchedule(false)}
+                    className="text-xs text-text-secondary hover:bg-transparent p-0 mt-2"
+                  >
+                    Show less
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column - Follow-ups with Priority Grouping */}
+        {!rightPanelCollapsed && (
+          <div className="w-80 border-l border-border-subtle bg-surface/50 backdrop-blur-sm p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-medium text-text-primary">Follow-ups</h3>
+                <p className="text-xs text-text-secondary/60">These need your attention.</p>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setRightPanelCollapsed(true)} className="h-6 w-6 p-0">
+                <PanelRightClose className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="space-y-6">
+              {/* High Priority */}
+              {highPriorityFollowUps.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-text-primary mb-2">High Priority</h4>
+                  <div className="space-y-2">
+                    {highPriorityFollowUps.map(item => (
+                      <div key={item.id} className="p-3 bg-surface-raised/30 border border-border-subtle rounded-lg cursor-pointer hover:bg-surface-raised/50" onClick={() => handleFollowUpClick(item)}>
+                        <p className="text-sm text-text-primary line-clamp-2">{item.message}</p>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-xs text-text-secondary">{item.sender}</span>
+                          <span className="text-xs text-text-secondary">{item.time}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Medium Priority */}
+              {mediumPriorityFollowUps.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-text-primary mb-2">Medium Priority</h4>
+                  <div className="space-y-2">
+                    {mediumPriorityFollowUps.map(item => (
+                      <div key={item.id} className="p-3 bg-surface-raised/30 border border-border-subtle rounded-lg cursor-pointer hover:bg-surface-raised/50" onClick={() => handleFollowUpClick(item)}>
+                        <p className="text-sm text-text-primary line-clamp-2">{item.message}</p>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-xs text-text-secondary">{item.sender}</span>
+                          <span className="text-xs text-text-secondary">{item.time}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Low Priority - Collapsed by default */}
+              {lowPriorityFollowUps.length > 0 && (
+                <div>
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium text-text-primary">Low Priority ({lowPriorityFollowUps.length})</h4>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setShowLowPriority(!showLowPriority)}
+                      className="text-xs text-accent-primary hover:bg-transparent p-0"
+                    >
+                      {showLowPriority ? "Hide" : "Show all"}
+                    </Button>
+                  </div>
+                  
+                  {showLowPriority && (
+                    <div className="space-y-2 mt-2">
+                      {lowPriorityFollowUps.map(item => (
+                        <div key={item.id} className="p-3 bg-surface-raised/30 border border-border-subtle rounded-lg cursor-pointer hover:bg-surface-raised/50" onClick={() => handleFollowUpClick(item)}>
+                          <p className="text-sm text-text-primary line-clamp-2">{item.message}</p>
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="text-xs text-text-secondary">{item.sender}</span>
+                            <span className="text-xs text-text-secondary">{item.time}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed right panel */}
+        {rightPanelCollapsed && (
+          <div className="w-12 border-l border-border-subtle bg-surface/50 backdrop-blur-sm p-2">
+            <Button variant="ghost" size="sm" onClick={() => setRightPanelCollapsed(false)} className="h-8 w-8 p-0 mt-4">
+              <PanelRightClose className="h-4 w-4 rotate-180" />
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Audio Player - Global */}
+      {playingBrief && (
+        <div className="fixed bottom-0 left-0 right-0">
+          <AudioPlayer 
+            briefId={playingBrief} 
+            briefName={allBriefs.find(b => b.id === playingBrief)?.name} 
+            briefTime={allBriefs.find(b => b.id === playingBrief)?.timeCreated} 
+            onClose={() => setPlayingBrief(null)} 
+          />
+        </div>
+      )}
     </div>;
 };
 export default React.memo(HomeView);
