@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreditCard, Download, ExternalLink, AlertTriangle } from 'lucide-react';
+import { CreditCard, Download, ExternalLink, AlertTriangle, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -7,30 +7,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 const BillingSection = () => {
   const [isAnnual, setIsAnnual] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
 
   // Mock data - in real app this would come from your backend/Stripe
   const currentPlan = {
     name: 'Core',
     isTrialPlan: false,
     trialDaysLeft: 8,
-    nextBillingDate: '2024-02-15'
-  };
-  const usage = {
-    used: 87,
-    total: 150,
+    nextBillingDate: '2024-02-15',
+    briefsUsed: 87,
+    briefsLimit: 150,
     resetDate: 'February 1st'
   };
-  const usagePercentage = usage.used / usage.total * 100;
-  const getUsageColor = () => {
-    if (usagePercentage < 70) return 'bg-accent-green-500';
-    if (usagePercentage <= 100) return 'bg-warn-400';
+  
+  const usagePercentage = (currentPlan.briefsUsed / currentPlan.briefsLimit) * 100;
+
+  // Usage graph data
+  const dailyUsageData = [
+    { date: '1', briefs: 12 }, { date: '2', briefs: 8 }, { date: '3', briefs: 15 },
+    { date: '4', briefs: 6 }, { date: '5', briefs: 10 }, { date: '6', briefs: 0 },
+    { date: '7', briefs: 0 }, { date: '8', briefs: 14 }, { date: '9', briefs: 11 },
+    { date: '10', briefs: 9 }, { date: '11', briefs: 8 }, { date: '12', briefs: 7 }
+  ];
+
+  // Feature breakdown data
+  const featureBreakdown = [
+    { feature: 'Email Brief', isPro: false, creditsPerBrief: 1, usageCount: 35, totalCredits: 35 },
+    { feature: 'Slack Brief', isPro: false, creditsPerBrief: 1, usageCount: 28, totalCredits: 28 },
+    { feature: 'Meeting Proxy', isPro: true, creditsPerBrief: 2, usageCount: 12, totalCredits: 24 },
+    { feature: 'Audio Brief', isPro: true, creditsPerBrief: 1.5, usageCount: 0, totalCredits: 0 }
+  ];
+  const getUsageColor = (percentage: number) => {
+    if (percentage < 70) return 'text-accent-green-500';
+    if (percentage <= 100) return 'text-warn-400';
+    return 'text-error-500';
+  };
+
+  const getProgressColor = (percentage: number) => {
+    if (percentage < 70) return 'bg-accent-green-500';
+    if (percentage <= 100) return 'bg-warn-400';
     return 'bg-error-500';
   };
   const plans = {
@@ -92,7 +114,6 @@ const BillingSection = () => {
     });
   };
   const handleCancelSubscription = () => {
-    setShowCancelModal(false);
     toast({
       title: "Subscription cancelled",
       description: "Your subscription will remain active until the end of your billing period.",
@@ -104,6 +125,128 @@ const BillingSection = () => {
         <h2 className="text-xl font-semibold text-text-primary mb-2">Billing & Usage</h2>
         <p className="text-text-secondary">Manage your subscription and monitor usage</p>
       </div>
+
+      {/* Usage Summary Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Current Usage Overview
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className={cn("text-2xl font-bold", getUsageColor(usagePercentage))}>
+                {currentPlan.briefsUsed} / {currentPlan.briefsLimit}
+              </span>
+              <span className="text-sm text-text-secondary">briefs used this month</span>
+            </div>
+            <Progress 
+              value={Math.min(usagePercentage, 100)} 
+              className="h-3"
+            />
+            <div className="flex justify-between text-sm">
+              <span className={cn(getUsageColor(usagePercentage))}>
+                {usagePercentage >= 100 ? "Overage rates apply" 
+                 : usagePercentage >= 80 ? "You're almost at your limit" 
+                 : `${usagePercentage.toFixed(0)}% used`}
+              </span>
+              <span className="text-text-secondary">Resets {currentPlan.resetDate}</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Usage Graph */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Usage Over Time</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer
+            config={{
+              briefs: {
+                label: "Briefs",
+                color: "hsl(var(--brand-200))"
+              }
+            }}
+            className="h-[300px]"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dailyUsageData}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                <XAxis 
+                  dataKey="date" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: 'hsl(var(--text-secondary))' }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: 'hsl(var(--text-secondary))' }}
+                />
+                <Tooltip 
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-brand-700 p-3 rounded-lg border border-brand-600 shadow-lg">
+                          <p className="text-text-primary">{`Day ${label}: ${payload[0].value} briefs`}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar 
+                  dataKey="briefs" 
+                  fill="hsl(var(--brand-200))"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      {/* Feature Breakdown */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Feature Breakdown</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Feature Name</TableHead>
+                <TableHead>Credits per Brief</TableHead>
+                <TableHead>Usage Count</TableHead>
+                <TableHead>Total Credits</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {featureBreakdown.map((feature) => (
+                <TableRow key={feature.feature}>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <span>{feature.feature}</span>
+                      {feature.isPro && (
+                        <Badge variant="outline" className="bg-warn-400/20 text-warn-400 border-warn-400/40">
+                          Pro
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{feature.creditsPerBrief}</TableCell>
+                  <TableCell>{feature.usageCount}</TableCell>
+                  <TableCell>{feature.totalCredits}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       {/* Current Plan Section */}
       <Card>
@@ -127,9 +270,14 @@ const BillingSection = () => {
                 {isAnnual && <Badge variant="secondary" className="bg-accent-green-500/20 text-accent-green-500">Save 20%</Badge>}
               </div>
             </div>
-            <Button onClick={handleUpgradePlan} size="sm">
-              {currentPlan.name === 'Core' ? 'Upgrade Plan' : 'Manage Plan'}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleBuyBriefs} className="text-accent-green-500 border-accent-green-500 hover:bg-accent-green-500/10">
+                Buy +25 Briefs for $5
+              </Button>
+              <Button onClick={handleUpgradePlan} size="sm">
+                {currentPlan.name === 'Core' ? 'Upgrade Plan' : 'Manage Plan'}
+              </Button>
+            </div>
           </div>
           <div className="text-sm text-text-secondary">
             Next billing date: {currentPlan.nextBillingDate}
@@ -137,29 +285,6 @@ const BillingSection = () => {
         </CardContent>
       </Card>
 
-      {/* Usage Overview Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Usage Overview</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-text-secondary">Briefs used this month</span>
-              <span className="text-text-primary font-medium">{usage.used} / {usage.total}</span>
-            </div>
-            <Progress value={usagePercentage} className="h-3" />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-text-secondary">
-              Your credits reset on {usage.resetDate}
-            </div>
-            <Button variant="outline" size="sm" onClick={handleBuyBriefs} className="text-accent-green-500 border-accent-green-500 hover:bg-accent-green-500/10">
-              Buy +25 Briefs for $5
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Plan Details Section */}
       <div className="space-y-4">

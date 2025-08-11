@@ -10,7 +10,7 @@ import BriefConfigurationSection from "@/components/settings/BriefConfigurationS
 import ReferralProgramSection from "@/components/settings/ReferralProgramSection";
 import InterruptRulesSection from "@/components/settings/InterruptRulesSection";
 import BillingSection from "@/components/settings/BillingSection";
-import UsageSummarySection from "@/components/settings/UsageSummarySection";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -60,12 +60,6 @@ const SettingsPage = () => {
       active: activeSection === "integrations"
     },
     {
-      id: "usage",
-      icon: TrendingUp,
-      name: "Usage Summary",
-      active: activeSection === "usage"
-    },
-    {
       id: "billing",
       icon: CreditCard,
       name: "Billing & Usage",
@@ -107,8 +101,6 @@ const SettingsPage = () => {
     switch (activeSection) {
       case "integrations":
         return <IntegrationsSection />;
-      case "usage":
-        return <UsageSummarySection />;
       case "billing":
         return <BillingSection />;
       case "brief-config":
