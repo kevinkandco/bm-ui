@@ -160,7 +160,7 @@
 
 .main-content {
   position: relative;
-  background: #0e1214; /* safe fallback */
+  background: var(--brand-900); /* safe fallback */
   /* we'll set backgroundImage from JS */
   transition: filter 300ms ease; /* just in case you animate blur later */
 }

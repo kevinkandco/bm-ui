@@ -57,13 +57,18 @@ const HomeView = ({
   
   // Initialize time-of-day gradient for main content
   useEffect(() => {
-    const cleanup = attachTimeGradient({
-      selector: '.main-content',
-      angle: '160deg',
-      tickMs: 30000 // Update every 30 seconds
-    });
+    // Add a small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      const cleanup = attachTimeGradient({
+        selector: '.main-content',
+        angle: '160deg',
+        tickMs: 30000 // Update every 30 seconds
+      });
+      
+      return cleanup;
+    }, 200);
     
-    return cleanup;
+    return () => clearTimeout(timer);
   }, []);
 
   // State for new layout
@@ -695,7 +700,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {/* Main Content Panel */}
         <div className="main-content flex-1 h-screen overflow-hidden flex">
           {/* Main Content Card */}
-          <div className="flex-1 h-full backdrop-blur-sm shadow-xl rounded-xl border border-border-subtle overflow-hidden">
+          <div className="flex-1 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden">
             <div className="p-6 h-full overflow-auto bg-black/5">
               {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[100px]">
@@ -1162,8 +1167,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
         {/* Right Panel - Only show when there's content */}
         {!rightPanelCollapsed && (selectedMessage || selectedTranscript) && (
-          <div className="w-80 h-full backdrop-blur-sm flex flex-col">
-            <div className="flex-1 overflow-hidden">
+          <div className="w-80 h-full shadow-xl rounded-xl border border-border-subtle overflow-hidden">
+            <div className="flex-1 overflow-hidden bg-black/5">
               <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
             setSelectedMessage(null);
             setRightPanelCollapsed(true);
