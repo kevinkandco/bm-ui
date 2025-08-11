@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain, Calendar, Gift } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, Save, Brain, Calendar, Gift, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +9,7 @@ import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSecti
 import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
 import ReferralProgramSection from "@/components/settings/ReferralProgramSection";
 import InterruptRulesSection from "@/components/settings/InterruptRulesSection";
+import BillingSection from "@/components/settings/BillingSection";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -58,6 +59,12 @@ const SettingsPage = () => {
       active: activeSection === "integrations"
     },
     {
+      id: "billing",
+      icon: CreditCard,
+      name: "Billing & Usage",
+      active: activeSection === "billing"
+    },
+    {
       id: "brief-config",
       icon: Calendar,
       name: "Brief Configuration",
@@ -93,6 +100,8 @@ const SettingsPage = () => {
     switch (activeSection) {
       case "integrations":
         return <IntegrationsSection />;
+      case "billing":
+        return <BillingSection />;
       case "brief-config":
         return <BriefConfigurationSection />;
       case "feedback":
