@@ -29,6 +29,7 @@ interface BriefsListProps {
   onBriefSelect: (briefId: number) => void;
   activeTab?: 'briefs' | 'calendar';
   onTabChange?: (tab: 'briefs' | 'calendar') => void;
+  onViewAll?: () => void;
 }
 const BriefsList = ({
   onPlayBrief,
@@ -38,7 +39,8 @@ const BriefsList = ({
   selectedBrief,
   onBriefSelect,
   activeTab = 'briefs',
-  onTabChange
+  onTabChange,
+  onViewAll
 }: BriefsListProps) => {
   const briefs: Brief[] = [{
     id: 1,
@@ -138,13 +140,14 @@ const BriefsList = ({
 
       {/* Content */}
       <div className="flex-1 overflow-auto">
-        {briefs.map((brief, index) => <div key={brief.id}>
+        {briefs.slice(0, 3).map((brief, index) => (
+          <div key={brief.id}>
             <div className={cn("flex items-center gap-3 pl-2 pr-4 py-4 hover:bg-surface-raised/20 transition-colors cursor-pointer", selectedBrief === brief.id && "bg-accent-primary/10 border-l-2 border-accent-primary")} onClick={() => onBriefSelect(brief.id)}>
               {/* Play Button */}
-              <Button variant="ghost" size="sm" onClick={e => {
-            e.stopPropagation();
-            onPlayBrief(brief.id);
-          }} className={cn("h-8 w-8 p-0 rounded-none bg-transparent hover:bg-surface-raised/20", playingBrief === brief.id && "text-accent-primary")}>
+              <Button variant="ghost" size="sm" onClick={(e) => {
+                e.stopPropagation();
+                onPlayBrief(brief.id);
+              }} className={cn("h-8 w-8 p-0 rounded-none bg-transparent hover:bg-surface-raised/20", playingBrief === brief.id && "text-accent-primary")}>
                 <Play className="h-4 w-4 fill-current" />
               </Button>
 
@@ -155,12 +158,6 @@ const BriefsList = ({
                     <h3 className="text-sm font-semibold text-text-primary mb-1">
                       {brief.title}
                     </h3>
-                    <p className="text-xs text-text-secondary mb-2">
-                      {brief.scheduledTime}
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      {brief.stats.slack} Slack | {brief.stats.emails} Emails | {brief.stats.actions} Actions
-                    </p>
                   </div>
                   <span className="text-xs text-text-secondary ml-2 flex-shrink-0">
                     {brief.timeAgo}
@@ -168,8 +165,21 @@ const BriefsList = ({
                 </div>
               </div>
             </div>
-            {index < briefs.length - 1 && <div className="mx-4 border-b border-border-subtle" />}
-          </div>)}
+            {index < 2 && <div className="mx-4 border-b border-border-subtle" />}
+          </div>
+        ))}
+        
+        {/* View All Link */}
+        {onViewAll && (
+          <div className="px-2 py-3">
+            <button 
+              onClick={onViewAll}
+              className="text-xs text-accent-primary hover:text-accent-primary/80 transition-colors"
+            >
+              View all
+            </button>
+          </div>
+        )}
       </div>
     </div>;
 };

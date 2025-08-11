@@ -56,6 +56,7 @@ const HomeView = ({
 
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
+  const [showAllBriefs, setShowAllBriefs] = useState(false);
   const [selectedCalendarItem, setSelectedCalendarItem] = useState<string | null>(null);
   const [openSection, setOpenSection] = useState<'briefs' | 'calendar' | 'followups' | null>('briefs');
   const [leftRailTab, setLeftRailTab] = useState<'briefs' | 'calendar' | 'followups'>('briefs');
@@ -95,6 +96,7 @@ const HomeView = ({
     setSelectedMeeting(null);
     setOpenSection('briefs');
     setLeftRailTab('briefs');
+    setShowAllBriefs(true);
   }, []);
   const handleNavigateToAllCalendar = useCallback(() => {
     setIsHomeSelected(false);
@@ -119,8 +121,8 @@ const HomeView = ({
     }
   }, [onStartFocusMode]);
 
-  // Sample data
-  const recentBriefs = [{
+  // Sample data - expanded to include more briefs for "view all"
+  const allBriefs = [{
     id: 1,
     name: "Morning Brief",
     timeCreated: "Today, 8:00 AM",
@@ -150,7 +152,54 @@ const HomeView = ({
     },
     actionItems: 2,
     hasTranscript: true
+  }, {
+    id: 3,
+    name: "Midday Brief",
+    timeCreated: "Yesterday, 12:30 PM",
+    timeRange: "9:00 AM - 12:30 PM",
+    slackMessages: {
+      total: 15,
+      fromPriorityPeople: 4
+    },
+    emails: {
+      total: 7,
+      fromPriorityPeople: 3
+    },
+    actionItems: 6,
+    hasTranscript: true
+  }, {
+    id: 4,
+    name: "Weekend Brief",
+    timeCreated: "2 days ago, 6:00 PM",
+    timeRange: "12:00 PM - 6:00 PM",
+    slackMessages: {
+      total: 5,
+      fromPriorityPeople: 1
+    },
+    emails: {
+      total: 12,
+      fromPriorityPeople: 4
+    },
+    actionItems: 3,
+    hasTranscript: true
+  }, {
+    id: 5,
+    name: "Friday Brief",
+    timeCreated: "3 days ago, 5:00 PM",
+    timeRange: "1:00 PM - 5:00 PM",
+    slackMessages: {
+      total: 22,
+      fromPriorityPeople: 8
+    },
+    emails: {
+      total: 18,
+      fromPriorityPeople: 6
+    },
+    actionItems: 9,
+    hasTranscript: true
   }];
+  
+  const recentBriefs = allBriefs.slice(0, 3); // Only show first 3 in recent
   const upcomingBrief = {
     name: "Midday Brief",
     scheduledTime: "Today at 12:30 PM"
@@ -288,7 +337,7 @@ const HomeView = ({
     } else {
       setPlayingBrief(briefId);
       // Set transcript data
-      const brief = recentBriefs.find(b => b.id === briefId);
+      const brief = allBriefs.find(b => b.id === briefId);
       setSelectedTranscript({
         id: briefId,
         title: brief?.name || "Morning Brief",
@@ -336,6 +385,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedMeeting(null);
     setIsHomeSelected(false);
     setFollowUpsFilter('current');
+    setShowAllBriefs(false);
   }, []);
   const handleCalendarSelect = useCallback((itemId: string) => {
     setSelectedCalendarItem(itemId);
@@ -353,6 +403,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedMessage(null);
     setSelectedTranscript(null);
     setRightPanelCollapsed(true);
+    setShowAllBriefs(false);
   }, []);
 
   // Handler for follow up clicks in left panel
@@ -494,7 +545,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         <MobileBottomNav onShowStatusModal={() => setShowStatusModal(true)} />
         
         {/* Mobile Audio Player - shows above bottom nav when active */}
-        {playingBrief && <AudioPlayer briefId={playingBrief} briefName={recentBriefs.find(b => b.id === playingBrief)?.name} briefTime={recentBriefs.find(b => b.id === playingBrief)?.timeCreated} onClose={() => setPlayingBrief(null)} />}
+        {playingBrief && <AudioPlayer briefId={playingBrief} briefName={allBriefs.find(b => b.id === playingBrief)?.name} briefTime={allBriefs.find(b => b.id === playingBrief)?.timeCreated} onClose={() => setPlayingBrief(null)} />}
 
         {/* Mobile Status Modal */}
         <MobileStatusModal isOpen={showStatusModal} onClose={() => setShowStatusModal(false)} onSelectStatus={handleStatusSelect} currentStatus={currentStatus} />
@@ -588,7 +639,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     </CollapsibleTrigger>
                     <CollapsibleContent className="mt-2">
                       <div className="pl-6">
-                        <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} />
+                        <BriefsList onPlayBrief={handlePlayBrief} onSettingsClick={() => navigate("/dashboard/settings")} playingBrief={playingBrief} selectedBrief={selectedBrief} onBriefSelect={handleBriefSelect} onViewAll={handleNavigateToAllBriefs} />
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
@@ -920,6 +971,41 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                 </div>}
               
+              {/* All Briefs View */}
+              {showAllBriefs && <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-text-primary">All Briefs</h2>
+                    <Button variant="ghost" size="sm" onClick={() => setShowAllBriefs(false)} className="h-8 w-8 p-0">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {allBriefs.map(brief => 
+                      <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer" onClick={() => handleBriefSelect(brief.id)}>
+                        <div className="flex items-center gap-3">
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlayBrief(brief.id);
+                          }}>
+                            {playingBrief === brief.id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
+                          </Button>
+                          <div className="flex-1">
+                            <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
+                            <p className="text-xs text-text-secondary mb-1">{brief.timeCreated}</p>
+                            <p className="text-xs text-text-secondary">
+                              {brief.slackMessages.fromPriorityPeople} Slack | {brief.emails.fromPriorityPeople} Emails | {brief.actionItems} Actions
+                            </p>
+                          </div>
+                          <div className="text-xs text-text-secondary">
+                            {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : brief.id === 3 ? '1d' : brief.id === 4 ? '2d' : '3d'}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>}
+              
               {selectedBrief && <div className="space-y-6">
                   {/* Header */}
                   <div>
@@ -1174,7 +1260,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       </div>
 
       {/* Fixed Audio Player */}
-      <AudioPlayer briefId={playingBrief} briefName={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? recentBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />
+      <AudioPlayer briefId={playingBrief} briefName={playingBrief ? allBriefs.find(b => b.id === playingBrief)?.name : undefined} briefTime={playingBrief ? allBriefs.find(b => b.id === playingBrief)?.timeCreated : undefined} onClose={() => setPlayingBrief(null)} />
 
       {/* Mobile Right Drawer */}
       <Sheet open={showRightDrawer} onOpenChange={setShowRightDrawer}>
