@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck, Pencil, Mic, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck, Pencil, Mic, ThumbsUp, ThumbsDown, MoreVertical } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import MenuBarIcon from "./MenuBarIcon";
 import SignalSweepBar from "../visuals/SignalSweepBar";
@@ -1487,103 +1487,85 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           </Button>
                         </div>
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
-                        {(() => {
-                        // Group follow-ups by priority
-                        const groupedFollowUps = followUps.reduce((acc, item) => {
-                          if (!acc[item.priority]) acc[item.priority] = [];
-                          acc[item.priority].push(item);
-                          return acc;
-                        }, {} as Record<string, typeof followUps>);
-                        const highPriority = groupedFollowUps.High || [];
-                        const mediumPriority = groupedFollowUps.Medium || [];
-                        const lowPriority = groupedFollowUps.Low || [];
+                          {followUps.length === 0 ? (
+                            <div className="text-center py-6">
+                              <CheckSquare className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+                              <p className="text-sm text-text-secondary">All caught up!</p>
+                            </div>
+                          ) : (
+                            <div className="divide-y divide-border-subtle">
+                              {followUps.slice(0, 5).map((item, index) => (
+                                <div 
+                                  key={item.id} 
+                                  className={cn(
+                                    "flex items-center gap-4 py-3 px-4 hover:bg-surface-raised/20 cursor-pointer transition-colors",
+                                    selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary",
+                                    index === 0 && "pt-4"
+                                  )}
+                                  onClick={() => handleFollowUpClick(item)}
+                                >
+                                  {/* Checkbox */}
+                                  <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
+                                    <Checkbox 
+                                      checked={checkedFollowUps.has(item.id)} 
+                                      onCheckedChange={() => handleFollowUpCheck(item.id)} 
+                                      className="h-4 w-4" 
+                                    />
+                                  </div>
 
-                        // Show High + Medium by default (up to 5 total)
-                        const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
-                        const hasLowPriority = lowPriority.length > 0;
-                        const renderFollowUpItem = (item: any) => <div key={item.id} className={cn("flex items-center gap-3 p-2 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors", selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary")} onClick={() => {
-                          handleFollowUpClick(item);
-                        }}>
-                              <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
-                                <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
-                              </div>
+                                  {/* Platform Icon */}
+                                  <div className="w-6 h-6 rounded-full bg-surface-raised/50 flex items-center justify-center flex-shrink-0">
+                                    <span className="text-xs font-medium text-text-primary">{item.platform}</span>
+                                  </div>
 
-                              <div className="w-8 h-8 rounded-full bg-surface-raised/50 shadow-sm flex items-center justify-center flex-shrink-0">
-                                <span className="text-xs font-medium text-text-primary">{item.platform}</span>
-                              </div>
+                                  {/* Priority Badge */}
+                                  <div className="flex-shrink-0">
+                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                  </div>
 
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
-                                  <span className="text-xs text-text-secondary">{item.time}</span>
+                                  {/* Message Content */}
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold text-text-primary line-clamp-1 mb-1">
+                                      {item.message}
+                                    </p>
+                                    <p className="text-xs text-text-secondary truncate">
+                                      From {item.sender}
+                                    </p>
+                                  </div>
+
+                                  {/* Time */}
+                                  <div className="flex-shrink-0 text-right">
+                                    <span className="text-xs text-text-secondary">{item.time}</span>
+                                  </div>
+
+                                  {/* Action Menu */}
+                                  <div className="flex-shrink-0">
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                          <MoreVertical className="h-3 w-3" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuItem>
+                                          <Mail className="h-4 w-4 mr-2" />
+                                          Reply
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                          <Calendar className="h-4 w-4 mr-2" />
+                                          Schedule
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                          <Kanban className="h-4 w-4 mr-2" />
+                                          Add to Asana
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </div>
                                 </div>
-                                <p className="text-sm text-text-primary line-clamp-2 leading-relaxed mb-1">
-                                  {item.message}
-                                </p>
-                                <p className="text-xs text-text-secondary truncate">{item.sender}</p>
-                              </div>
-
-                              <div className="flex items-center gap-2 flex-shrink-0">
-                                <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
-                                  <Kanban className="h-3 w-3" />
-                                  Asana
-                                </Button>
-                                <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
-                                  {item.platform === "S" ? <>
-                                      <Calendar className="h-3 w-3" />
-                                      Schedule
-                                    </> : <>
-                                      <Mail className="h-3 w-3" />
-                                      Reply
-                                    </>}
-                                </Button>
-                              </div>
-                            </div>;
-                        return <div className="space-y-3">
-                              {/* High Priority Section */}
-                              {highPriority.length > 0 && <div className="space-y-2">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-orange-400"></div>
-                                    <h4 className="text-sm font-medium text-text-secondary">High</h4>
-                                  </div>
-                                  <div className="space-y-1">
-                                    {highPriority.map(renderFollowUpItem)}
-                                  </div>
-                                </div>}
-
-                              {/* Medium Priority Section */}
-                              {mediumPriority.length > 0 && <div className="space-y-2">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
-                                    <h4 className="text-sm font-medium text-text-secondary">Medium</h4>
-                                  </div>
-                                  <div className="space-y-1">
-                                    {mediumPriority.map(renderFollowUpItem)}
-                                  </div>
-                                </div>}
-
-                              {/* Low Priority Section (Toggle) */}
-                              {hasLowPriority && <div className="space-y-2">
-                                  <Button variant="ghost" onClick={() => setShowAllFollowUps(!showAllFollowUps)} className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
-                                    <div className="flex items-center gap-2">
-                                      <div className="w-2 h-2 rounded-full bg-gray-400"></div>
-                                      <span>Low ({lowPriority.length})</span>
-                                    </div>
-                                    <ChevronDown className={`w-4 h-4 transition-transform ${showAllFollowUps ? 'rotate-180' : ''}`} />
-                                  </Button>
-                                  
-                                  {showAllFollowUps && <div className="space-y-1">
-                                      {lowPriority.map(renderFollowUpItem)}
-                                    </div>}
-                                </div>}
-
-                              {/* Empty state */}
-                              {followUps.length === 0 && <div className="text-center py-6">
-                                  <CheckSquare className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
-                                  <p className="text-sm text-text-secondary">All caught up!</p>
-                                </div>}
-                            </div>;
-                      })()}
+                              ))}
+                            </div>
+                          )}
                         </DashboardCard>
                       </div>
                     </div>
