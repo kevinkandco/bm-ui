@@ -1842,158 +1842,185 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </TabsList>
                       
                       <TabsContent value="followups" className="mt-4">
-                        <div className="bg-surface-raised/30 rounded-lg shadow-sm">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="hover:bg-transparent">
-                                <TableHead className="text-text-secondary font-medium w-8"></TableHead>
-                                <TableHead className="text-text-secondary font-medium">Platform</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Priority</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Message</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Sender</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Time</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Action Menu</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
-                            handleFollowUpClick(item);
-                          }}>
-                                  <TableCell className="w-8" onClick={e => e.stopPropagation()}>
-                                    <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
-                                  </TableCell>
-                                  <TableCell className="w-12">
-                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 shadow-sm">
-                                      <span className="text-xs font-medium text-text-primary">{item.platform}</span>
+                        <div className="divide-y divide-border-subtle">
+                          {followUps.map((item, index) => (
+                            <div 
+                              key={item.id} 
+                              className={`py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04] ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`}
+                              onClick={() => handleFollowUpClick(item)}
+                            >
+                              <div className="flex items-center gap-4">
+                                {/* Checkbox */}
+                                <div onClick={e => e.stopPropagation()}>
+                                  <Checkbox 
+                                    checked={checkedFollowUps.has(item.id)} 
+                                    onCheckedChange={() => handleFollowUpCheck(item.id)} 
+                                    className="h-4 w-4" 
+                                  />
+                                </div>
+                                
+                                {/* Platform Icon */}
+                                <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${item.platform === 'S' ? 'bg-purple-600' : item.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                                  {item.platform}
+                                </div>
+                                
+                                {/* Main Content */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start justify-between gap-4">
+                                    {/* Message and Priority */}
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                      </div>
+                                      <h3 className="text-sm font-semibold text-text-primary mb-1 line-clamp-2 leading-relaxed">
+                                        {item.message}
+                                      </h3>
+                                      <p className="text-xs text-text-secondary font-light">
+                                        From: {item.sender}
+                                      </p>
                                     </div>
-                                  </TableCell>
-                                  <TableCell className="w-20">
-                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
-                                  </TableCell>
-                                  <TableCell className="max-w-md">
-                                    <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
-                                      {item.message}
-                                    </p>
-                                  </TableCell>
-                                  <TableCell className="text-sm text-text-secondary">
-                                    {item.sender}
-                                  </TableCell>
-                                  <TableCell className="text-sm text-text-secondary">
-                                    {item.time}
-                                  </TableCell>
-                                  <TableCell>
-                                    <div className="flex items-center gap-2">
-                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
-                                        <Kanban className="h-3 w-3" />
-                                        Asana
-                                      </Button>
-                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
-                                        {item.platform === "S" ? <>
-                                            <Calendar className="h-3 w-3" />
-                                            Slack
-                                          </> : <>
-                                            <Mail className="h-3 w-3" />
-                                            Email
-                                          </>}
-                                      </Button>
-                                      <Button variant="ghost" size="sm" onClick={() => {
-                                  setSelectedFollowUp({
-                                    id: item.id,
-                                    title: "Domain Expiration",
-                                    priority: item.priority,
-                                    type: item.actionType,
-                                    description: item.message,
-                                    sender: item.sender,
-                                    from: "Hover <help@hover.com>",
-                                    subject: "Urgent: Launch Materials Review Needed",
-                                    fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
-                                    relevancy: "Critical - blocking marketing team progress",
-                                    reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-                                    created: "12:24 PM",
-                                    lastActivity: "12:24 PM",
-                                    source: "Gmail",
-                                    due: "2 PM today"
-                                  });
-                                  setShowFollowUpModal(true);
-                                }} className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary">
-                                        <Info className="h-4 w-4" />
-                                      </Button>
+                                    
+                                    {/* Time and Actions */}
+                                    <div className="flex items-center gap-3 flex-shrink-0">
+                                      <span className="text-xs text-text-secondary">
+                                        {item.time}
+                                      </span>
+                                      
+                                      <div className="flex items-center gap-1">
+                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          <Kanban className="h-2.5 w-2.5" />
+                                          Add to Asana
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          {item.platform === "S" ? (
+                                            <>
+                                              <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
+                                                <span className="text-[8px] font-bold text-white">#</span>
+                                              </div>
+                                              Open in Slack
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Mail className="h-2.5 w-2.5" />
+                                              Open in Gmail
+                                            </>
+                                          )}
+                                        </Button>
+                                        <Button 
+                                          variant="ghost" 
+                                          size="sm" 
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSelectedFollowUp({
+                                              id: item.id,
+                                              title: "Domain Expiration",
+                                              priority: item.priority,
+                                              type: item.actionType,
+                                              description: item.message,
+                                              sender: item.sender,
+                                              from: "Hover <help@hover.com>",
+                                              subject: "Urgent: Launch Materials Review Needed",
+                                              fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+                                              relevancy: "Critical - blocking marketing team progress",
+                                              reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+                                              created: "12:24 PM",
+                                              lastActivity: "12:24 PM",
+                                              source: "Gmail",
+                                              due: "2 PM today"
+                                            });
+                                            setShowFollowUpModal(true);
+                                          }}
+                                          className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                                        >
+                                          <span className="text-xs">•••</span>
+                                        </Button>
+                                      </div>
                                     </div>
-                                  </TableCell>
-                                </TableRow>)}
-                            </TableBody>
-                          </Table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </TabsContent>
                       
                       <TabsContent value="allmessages" className="mt-4">
-                        <div className="bg-surface-raised/30 rounded-lg shadow-sm">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="hover:bg-transparent">
-                                <TableHead className="text-text-secondary font-medium">Platform</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Priority</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Message</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Sender</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Time</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Action Menu</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {allMessages.map(message => <TableRow key={message.id} className="hover:bg-surface-raised/20 cursor-pointer" onClick={() => {
-                            setSelectedMessage({
-                              ...message,
-                              subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
-                              fullMessage: message.id === 2 ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team` : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
-                              from: message.sender,
-                              relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
-                              reasoning: "Flagged based on sender importance and content keywords.",
-                              created: message.time,
-                              lastActivity: message.time,
-                              source: message.platform === "S" ? "Slack" : "Email",
-                              due: message.priority === "High" ? "Today" : "This week"
-                            });
-                            setRightPanelCollapsed(false);
-                          }}>
-                                  <TableCell className="w-12">
-                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 shadow-sm">
-                                      <span className="text-xs font-medium text-text-primary">{message.platform}</span>
+                        <div className="divide-y divide-border-subtle">
+                          {allMessages.map((message, index) => (
+                            <div 
+                              key={message.id} 
+                              className="py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04]"
+                              onClick={() => {
+                                setSelectedMessage({
+                                  ...message,
+                                  subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
+                                  fullMessage: message.id === 2 ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team` : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
+                                  from: message.sender,
+                                  relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
+                                  reasoning: "Flagged based on sender importance and content keywords.",
+                                  created: message.time,
+                                  lastActivity: message.time,
+                                  source: message.platform === "S" ? "Slack" : "Email",
+                                  due: message.priority === "High" ? "Today" : "This week"
+                                });
+                                setRightPanelCollapsed(false);
+                              }}
+                            >
+                              <div className="flex items-center gap-4">
+                                {/* Platform Icon */}
+                                <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${message.platform === 'S' ? 'bg-purple-600' : message.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                                  {message.platform}
+                                </div>
+                                
+                                {/* Main Content */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start justify-between gap-4">
+                                    {/* Message and Priority */}
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <PriorityBadge item={message} onPriorityChange={handlePriorityChange} />
+                                      </div>
+                                      <h3 className="text-sm font-semibold text-text-primary mb-1 line-clamp-2 leading-relaxed">
+                                        {message.message}
+                                      </h3>
+                                      <p className="text-xs text-text-secondary font-light">
+                                        From: {message.sender}
+                                      </p>
                                     </div>
-                                  </TableCell>
-                                  <TableCell className="w-20">
-                                    <PriorityBadge item={message} onPriorityChange={handlePriorityChange} />
-                                  </TableCell>
-                                  <TableCell className="max-w-md">
-                                    <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
-                                      {message.message}
-                                    </p>
-                                  </TableCell>
-                                  <TableCell className="text-sm text-text-secondary">
-                                    {message.sender}
-                                  </TableCell>
-                                  <TableCell className="text-sm text-text-secondary">
-                                    {message.time}
-                                  </TableCell>
-                                  <TableCell>
-                                    <div className="flex items-center gap-2">
-                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
-                                        <Kanban className="h-3 w-3" />
-                                        Asana
-                                      </Button>
-                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
-                                        {message.platform === "S" ? <>
-                                            <Calendar className="h-3 w-3" />
-                                            Slack
-                                          </> : <>
-                                            <Mail className="h-3 w-3" />
-                                            Email
-                                          </>}
-                                      </Button>
+                                    
+                                    {/* Time and Actions */}
+                                    <div className="flex items-center gap-3 flex-shrink-0">
+                                      <span className="text-xs text-text-secondary">
+                                        {message.time}
+                                      </span>
+                                      
+                                      <div className="flex items-center gap-1">
+                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          <Kanban className="h-2.5 w-2.5" />
+                                          Add to Asana
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          {message.platform === "S" ? (
+                                            <>
+                                              <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
+                                                <span className="text-[8px] font-bold text-white">#</span>
+                                              </div>
+                                              Open in Slack
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Mail className="h-2.5 w-2.5" />
+                                              Open in Gmail
+                                            </>
+                                          )}
+                                        </Button>
+                                      </div>
                                     </div>
-                                  </TableCell>
-                                </TableRow>)}
-                            </TableBody>
-                          </Table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </TabsContent>
                     </Tabs>
@@ -2027,66 +2054,102 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </TabsList>
                       
                       <TabsContent value="followups" className="mt-4">
-                        <div className="bg-surface-raised/30 rounded-lg shadow-sm">
-                          <Table>
-                            <TableHeader>
-                              <TableRow className="hover:bg-transparent">
-                                <TableHead className="text-text-secondary font-medium w-8"></TableHead>
-                                <TableHead className="text-text-secondary font-medium">Platform</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Priority</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Message</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Sender</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Time</TableHead>
-                                <TableHead className="text-text-secondary font-medium">Action Menu</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
-                            handleFollowUpClick(item);
-                          }}>
-                                  <TableCell className="w-8" onClick={e => e.stopPropagation()}>
-                                    <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
-                                  </TableCell>
-                                  <TableCell>
-                                    <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold ${item.platform === 'S' ? 'bg-purple-600' : item.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
-                                      {item.platform}
+                        <div className="divide-y divide-border-subtle">
+                          {followUps.map((item, index) => (
+                            <div 
+                              key={item.id} 
+                              className={`py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04] ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`}
+                              onClick={() => handleFollowUpClick(item)}
+                            >
+                              <div className="flex items-center gap-4">
+                                {/* Checkbox */}
+                                <div onClick={e => e.stopPropagation()}>
+                                  <Checkbox 
+                                    checked={checkedFollowUps.has(item.id)} 
+                                    onCheckedChange={() => handleFollowUpCheck(item.id)} 
+                                    className="h-4 w-4" 
+                                  />
+                                </div>
+                                
+                                {/* Platform Icon */}
+                                <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${item.platform === 'S' ? 'bg-purple-600' : item.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                                  {item.platform}
+                                </div>
+                                
+                                {/* Main Content */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start justify-between gap-4">
+                                    {/* Message and Priority */}
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                      </div>
+                                      <h3 className="text-sm font-semibold text-text-primary mb-1 line-clamp-2 leading-relaxed">
+                                        {item.message}
+                                      </h3>
+                                      <p className="text-xs text-text-secondary font-light">
+                                        From: {item.sender}
+                                      </p>
                                     </div>
-                                  </TableCell>
-                                  <TableCell>
-                                    <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
-                                  </TableCell>
-                                  <TableCell className="pr-4">
-                                    <p className="text-sm text-text-primary line-clamp-2 leading-relaxed">
-                                      {item.message}
-                                    </p>
-                                  </TableCell>
-                                  <TableCell className="text-sm text-text-secondary">
-                                    {item.sender}
-                                  </TableCell>
-                                  <TableCell className="text-sm text-text-secondary">
-                                    {item.time}
-                                  </TableCell>
-                                  <TableCell>
-                                    <DropdownMenu>
-                                      <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                                          <span className="sr-only">Actions</span>
-                                          <ChevronDown className="h-3 w-3" />
+                                    
+                                    {/* Time and Actions */}
+                                    <div className="flex items-center gap-3 flex-shrink-0">
+                                      <span className="text-xs text-text-secondary">
+                                        {item.time}
+                                      </span>
+                                      
+                                      <div className="flex items-center gap-1">
+                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          <Kanban className="h-2.5 w-2.5" />
+                                          Add to Asana
                                         </Button>
-                                      </DropdownMenuTrigger>
-                                      <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={e => {
-                                    e.stopPropagation();
-                                    window.open(item.platform === 'S' ? 'https://slack.com' : 'https://gmail.com', '_blank');
-                                  }}>
-                                          {item.actionType || 'Open'}
-                                        </DropdownMenuItem>
-                                      </DropdownMenuContent>
-                                    </DropdownMenu>
-                                  </TableCell>
-                                </TableRow>)}
-                            </TableBody>
-                          </Table>
+                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          {item.platform === "S" ? (
+                                            <>
+                                              <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
+                                                <span className="text-[8px] font-bold text-white">#</span>
+                                              </div>
+                                              Open in Slack
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Mail className="h-2.5 w-2.5" />
+                                              Open in Gmail
+                                            </>
+                                          )}
+                                        </Button>
+                                        <Button 
+                                          variant="ghost" 
+                                          size="sm" 
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            // Use DropdownMenu instead of direct modal opening
+                                          }}
+                                          className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                                        >
+                                          <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                                <ChevronDown className="h-3 w-3" />
+                                              </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                              <DropdownMenuItem onClick={e => {
+                                                e.stopPropagation();
+                                                window.open(item.platform === 'S' ? 'https://slack.com' : 'https://gmail.com', '_blank');
+                                              }}>
+                                                {item.actionType || 'Open'}
+                                              </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                          </DropdownMenu>
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </TabsContent>
                     </Tabs>
