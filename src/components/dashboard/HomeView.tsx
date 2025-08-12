@@ -1225,11 +1225,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   <span className="font-medium">Generating summary</span>
                                 </div>
                               </div>
-                              
-                              {/* Description Row */}
-                              <div className="pl-14 mt-1">
-                                <p className="text-sm text-light-gray-text">Stay updated with your latest briefs from combined sources</p>
-                              </div>
                             </div>
 
                             {/* Daily Combined Brief */}
@@ -1280,11 +1275,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   <Clock className="w-3 h-3 text-green-400" />
                                   <span className="text-green-400 font-medium">~62min saved</span>
                                 </div>
-                              </div>
-                              
-                              {/* Description Row */}
-                              <div className="pl-14 mt-1">
-                                <p className="text-sm text-light-gray-text">Automatically generated brief</p>
                               </div>
                             </div>
                             

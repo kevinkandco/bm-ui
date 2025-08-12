@@ -332,11 +332,6 @@ const BriefCard = ({
             )}
           </div>
           
-          {/* Description Row */}
-          <div className="pl-14 mt-1">
-            <p className="text-sm text-light-gray-text">Stay updated with your latest brief</p>
-          </div>
-          
           {/* Comment Input for downvote */}
           {showCommentInput && <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
               <Input placeholder="What did we miss?" value={comment} onChange={e => setComment(e.target.value)} onKeyPress={e => handleKeyPress(e, 'comment')} onBlur={handleCommentSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />
