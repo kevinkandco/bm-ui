@@ -1228,11 +1228,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     <span className="whitespace-nowrap">0 Slack</span>
                                     <span className="whitespace-nowrap">0 Email</span>
                                     <span className="whitespace-nowrap">0 Actions</span>
-                                    
-                                    {/* Chevron */}
-                                    <div className="ml-2">
-                                      <ChevronDown className="w-5 h-5 text-text-secondary" />
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -1282,11 +1277,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     <span className="whitespace-nowrap">{recentBriefs[0].slackMessages.total} Slack</span>
                                     <span className="whitespace-nowrap">{recentBriefs[0].emails.total} Email</span>
                                     <span className="whitespace-nowrap">{recentBriefs[0].actionItems} Actions</span>
-                                    
-                                    {/* Chevron */}
-                                    <div className="ml-2">
-                                      <ChevronDown className="w-5 h-5 text-text-secondary" />
-                                    </div>
                                   </div>
                                 </div>
                               </div>

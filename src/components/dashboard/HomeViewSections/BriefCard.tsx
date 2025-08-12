@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, ChevronDown, ChevronUp, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward, BarChart3, AlertCircle, CheckCircle } from "lucide-react";
+import { FileText, MessageSquare, Mail, CheckSquare, ExternalLink, Play, ThumbsUp, ThumbsDown, Clock, Pause, Volume2, VolumeX, RotateCcw, SkipBack, SkipForward, BarChart3, AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -304,11 +304,6 @@ const BriefCard = ({
                 <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
                 <span className="whitespace-nowrap">{brief.emails.total} Email</span>
                 <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
-                
-                {/* Chevron */}
-                <div className="ml-2">
-                  {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
-                </div>
               </div>
             </div>
           </div>
