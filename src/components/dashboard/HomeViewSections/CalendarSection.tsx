@@ -234,7 +234,7 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
         {/* Next Meeting Card - Reverted to original version with outline */}
         {nextMeeting && (
           <Card 
-            className="w-full rounded-xl bg-brand-600 border border-white/8 cursor-pointer transition-all shadow-none hover:bg-white/5"
+            className="w-full rounded-xl bg-brand-600 cursor-pointer transition-all shadow-none hover:bg-white/5"
             onClick={() => onMeetingClick ? onMeetingClick(nextMeeting) : openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
@@ -381,7 +381,7 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
         {/* Schedule section with header above */}
         <div className="space-y-3">
           <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
-          <Card className="w-full rounded-xl bg-brand-600 border border-white/8 shadow-none">
+          <Card className="w-full rounded-xl bg-brand-600 shadow-none">
             <CardContent className="p-4">
               <div className="space-y-0">
                 {allMeetings.map((meeting, index) => {
