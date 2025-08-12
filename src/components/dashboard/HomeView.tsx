@@ -790,8 +790,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
   // Breadcrumb rendering function
   const renderBreadcrumbs = () => {
-    // Don't show breadcrumbs on home page
-    if (isHomeSelected && !openSection && !selectedBrief && !selectedMeeting) {
+    // Show breadcrumbs for all non-home states
+    const shouldShowBreadcrumbs = !isHomeSelected || selectedBrief || selectedMeeting || openSection || showAllBriefs;
+    
+    if (!shouldShowBreadcrumbs) {
       return null;
     }
 
@@ -808,7 +810,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </BreadcrumbLink>
             </BreadcrumbItem>
             
-            {(openSection === 'briefs' || selectedBrief) && (
+            {/* Briefs section breadcrumbs */}
+            {(showAllBriefs || selectedBrief || openSection === 'briefs') && (
               <>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
@@ -826,6 +829,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </>
             )}
             
+            {/* Calendar section breadcrumbs */}
             {openSection === 'calendar' && (
               <>
                 <BreadcrumbSeparator />
@@ -844,6 +848,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </>
             )}
             
+            {/* Follow-ups section breadcrumbs */}
             {openSection === 'followups' && (
               <>
                 <BreadcrumbSeparator />
@@ -853,6 +858,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </>
             )}
             
+            {/* Selected brief breadcrumb */}
             {selectedBrief && (
               <>
                 <BreadcrumbSeparator />
@@ -864,6 +870,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </>
             )}
             
+            {/* Selected meeting breadcrumb */}
             {selectedMeeting && (
               <>
                 <BreadcrumbSeparator />
