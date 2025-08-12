@@ -15,7 +15,7 @@ const DashboardCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-2xl p-4 md:p-5 space-y-4 border border-white/8 backdrop-blur-sm",
+      "rounded-2xl p-4 md:p-5 space-y-4 backdrop-blur-sm",
       className
     )}
     {...props}
