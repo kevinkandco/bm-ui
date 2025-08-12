@@ -34,6 +34,7 @@ interface BriefsContainerProps {
   onViewAllBriefs: () => void;
   onGetBriefedNow?: () => void;
   onUpdateSchedule?: () => void;
+  onOpenBriefModal?: () => void;
   upcomingBrief?: {
     name: string;
     scheduledTime: string;
@@ -50,6 +51,7 @@ const BriefsContainer = ({
   onViewAllBriefs,
   onGetBriefedNow,
   onUpdateSchedule,
+  onOpenBriefModal,
   upcomingBrief
 }: BriefsContainerProps) => {
   const [upcomingOpen, setUpcomingOpen] = useState(false);
