@@ -376,7 +376,8 @@ const HomeView = ({
     },
     actionItems: 4,
     hasTranscript: true,
-    rating: "up", // "up", "down", or null
+    rating: "up",
+    // "up", "down", or null
     minutesSaved: 17,
     briefType: "structured" // "structured" or "ad-hoc"
   }, {
@@ -813,7 +814,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const renderBreadcrumbs = () => {
     // Show breadcrumbs for all non-home states
     const shouldShowBreadcrumbs = !isHomeSelected || selectedBrief || selectedMeeting || openSection || showAllBriefs;
-    
     console.log('Breadcrumb Debug:', {
       isHomeSelected,
       selectedBrief,
@@ -822,99 +822,68 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       showAllBriefs,
       shouldShowBreadcrumbs
     });
-    
     if (!shouldShowBreadcrumbs) {
       return null;
     }
-
-    return (
-      <div className="mb-6">
+    return <div className="mb-6">
         <Breadcrumb>
           <BreadcrumbList className="text-text-secondary">
             <BreadcrumbItem>
-              <BreadcrumbLink 
-                onClick={handleNavigateToHome} 
-                className="text-text-secondary hover:text-text-primary cursor-pointer"
-              >
+              <BreadcrumbLink onClick={handleNavigateToHome} className="text-text-secondary hover:text-text-primary cursor-pointer">
                 Dashboard
               </BreadcrumbLink>
             </BreadcrumbItem>
             
             {/* Briefs section breadcrumbs */}
-            {(showAllBriefs || selectedBrief || openSection === 'briefs') && (
-              <>
+            {(showAllBriefs || selectedBrief || openSection === 'briefs') && <>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  {selectedBrief ? (
-                    <BreadcrumbLink 
-                      onClick={handleNavigateToAllBriefs}
-                      className="text-text-secondary hover:text-text-primary cursor-pointer"
-                    >
+                  {selectedBrief ? <BreadcrumbLink onClick={handleNavigateToAllBriefs} className="text-text-secondary hover:text-text-primary cursor-pointer">
                       Briefs
-                    </BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage className="text-text-primary">Briefs</BreadcrumbPage>
-                  )}
+                    </BreadcrumbLink> : <BreadcrumbPage className="text-text-primary">Briefs</BreadcrumbPage>}
                 </BreadcrumbItem>
-              </>
-            )}
+              </>}
             
             {/* Calendar section breadcrumbs */}
-            {openSection === 'calendar' && (
-              <>
+            {openSection === 'calendar' && <>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  {selectedMeeting ? (
-                    <BreadcrumbLink 
-                      onClick={handleNavigateToAllCalendar}
-                      className="text-text-secondary hover:text-text-primary cursor-pointer"
-                    >
+                  {selectedMeeting ? <BreadcrumbLink onClick={handleNavigateToAllCalendar} className="text-text-secondary hover:text-text-primary cursor-pointer">
                       Calendar
-                    </BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage className="text-text-primary">Calendar</BreadcrumbPage>
-                  )}
+                    </BreadcrumbLink> : <BreadcrumbPage className="text-text-primary">Calendar</BreadcrumbPage>}
                 </BreadcrumbItem>
-              </>
-            )}
+              </>}
             
             {/* Follow-ups section breadcrumbs */}
-            {openSection === 'followups' && (
-              <>
+            {openSection === 'followups' && <>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage className="text-text-primary">Follow-ups</BreadcrumbPage>
                 </BreadcrumbItem>
-              </>
-            )}
+              </>}
             
             {/* Selected brief breadcrumb */}
-            {selectedBrief && (
-              <>
+            {selectedBrief && <>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage className="text-text-primary">
                     {allBriefs.find(b => b.id === selectedBrief)?.name || 'Brief'}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
-              </>
-            )}
+              </>}
             
             {/* Selected meeting breadcrumb */}
-            {selectedMeeting && (
-              <>
+            {selectedMeeting && <>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage className="text-text-primary">
                     {selectedMeeting.title || 'Meeting'}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
-              </>
-            )}
+              </>}
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
-    );
+      </div>;
   };
 
   // Mobile layout
@@ -1228,9 +1197,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               <div className="flex items-center gap-4">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
-                                  e.stopPropagation();
-                                  // Handle catch-up brief play
-                                }}>
+                              e.stopPropagation();
+                              // Handle catch-up brief play
+                            }}>
                                   <Play className="h-6 w-6 text-accent-primary" />
                                 </Button>
                                 
@@ -1250,7 +1219,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     <span>0 Emails</span>
                                     <span>0 Actions</span>
                                   </div>
-                                  <div className="px-3 py-1 rounded-full border-2 text-sm font-medium" style={{ borderColor: '#FACC14', color: '#FACC14' }}>
+                                  <div className="px-3 py-1 rounded-full border-2 text-sm font-medium" style={{
+                                borderColor: '#FACC14',
+                                color: '#FACC14'
+                              }}>
                                     Generating summary
                                   </div>
                                 </div>
@@ -1265,9 +1237,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               <div className="flex items-center gap-4">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
-                                  e.stopPropagation();
-                                  handlePlayBrief(recentBriefs[0].id);
-                                }}>
+                              e.stopPropagation();
+                              handlePlayBrief(recentBriefs[0].id);
+                            }}>
                                   {playingBrief === recentBriefs[0].id ? <Pause className="h-6 w-6 text-accent-primary" /> : <Play className="h-6 w-6 text-accent-primary" />}
                                 </Button>
                                 
@@ -1275,11 +1247,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <div className="flex-1">
                                   <h3 className="text-base font-semibold text-text-primary mb-1">Daily Combined Brief</h3>
                                   <p className="text-sm text-text-secondary mb-2">
-                                    Delivered at 7 AM on {new Date().toLocaleDateString('en-US', { 
-                                      month: 'long', 
-                                      day: 'numeric', 
-                                      year: 'numeric' 
-                                    })} (Summarizing: 5:00 PM - 7:00 AM)
+                                    Delivered at 7 AM on {new Date().toLocaleDateString('en-US', {
+                                  month: 'long',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                })} (Summarizing: 5:00 PM - 7:00 AM)
                                   </p>
                                   <p className="text-xs text-text-secondary">Automatically generated brief</p>
                                 </div>
@@ -1310,18 +1282,15 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={() => setShowUpcomingBriefs(!showUpcomingBriefs)}>
                                 <div className="flex items-center gap-3">
                                   <h4 className="text-base font-medium text-text-primary">Upcoming</h4>
-                                  {upcomingBriefs.length > 0 && !showUpcomingBriefs && (
-                                    <span className="text-sm text-text-secondary">
+                                  {upcomingBriefs.length > 0 && !showUpcomingBriefs && <span className="text-sm text-text-secondary">
                                       Daily Brief • Tomorrow at 7:30 AM
-                                    </span>
-                                  )}
+                                    </span>}
                                 </div>
                                 <ChevronDown className={`w-5 h-5 text-text-secondary transition-transform ${showUpcomingBriefs ? 'rotate-180' : ''}`} />
                               </div>
                               
                               {/* Expanded Upcoming Content */}
-                              {showUpcomingBriefs && (
-                                <div className="px-4 py-4 space-y-4">
+                              {showUpcomingBriefs && <div className="px-4 py-4 space-y-4">
                                   <div className="w-fit">
                                     <span className="px-3 py-1 rounded-full bg-accent-primary/20 text-accent-primary text-sm font-medium">
                                       Coming Soon
@@ -1349,8 +1318,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                       </Button>
                                     </div>
                                   </div>
-                                </div>
-                              )}
+                                </div>}
                             </div>
                             
                             {/* Separator */}
@@ -1730,9 +1698,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-text-primary">All Briefs</h2>
-                    <Button variant="ghost" size="sm" onClick={() => setShowAllBriefs(false)} className="h-8 w-8 p-0">
-                      <X className="h-4 w-4" />
-                    </Button>
+                    
                   </div>
                   
                   <div className="space-y-4">
@@ -1766,15 +1732,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <span className="text-xs text-text-muted">
                                   {brief.briefType === 'structured' ? 'Automatically generated brief' : 'Ad-hoc brief'}
                                 </span>
-                                {brief.rating && (
-                                  <div className="flex items-center">
-                                    {brief.rating === "up" ? (
-                                      <ThumbsUp className="h-3 w-3 text-green-500" />
-                                    ) : (
-                                      <ThumbsDown className="h-3 w-3 text-red-500" />
-                                    )}
-                                  </div>
-                                )}
+                                {brief.rating && <div className="flex items-center">
+                                    {brief.rating === "up" ? <ThumbsUp className="h-3 w-3 text-green-500" /> : <ThumbsDown className="h-3 w-3 text-red-500" />}
+                                  </div>}
                               </div>
                               
                               <div className="flex items-center gap-1 text-sm font-medium text-green-400">
