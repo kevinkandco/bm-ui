@@ -1198,7 +1198,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                           <div className="space-y-4">
                             {/* Multiple Briefs Available Today - Show Catch Up Brief if available */}
-                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => navigate('/dashboard/briefs/catch-up')}>
+                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
                               <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
