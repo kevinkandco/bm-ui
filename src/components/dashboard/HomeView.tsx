@@ -679,26 +679,15 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     // Open the detail panel
     setSelectedFollowUpDetail(item);
     setShowFollowUpDetailPanel(true);
+    // Navigate to followups section
+    setOpenSection('followups');
     // Clear other selections
     setSelectedBrief(null);
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
+    setSelectedMessage(null);
     setIsHomeSelected(false);
     setFollowUpsFilter('current');
-
-    // Show detail view in right panel
-    setSelectedMessage({
-      ...item,
-      subject: "Follow-up Required",
-      fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-      from: item.sender,
-      relevancy: "Requires action from you",
-      reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-      created: item.time,
-      lastActivity: item.time,
-      source: item.platform === "S" ? "Slack" : "Email",
-      due: "End of day"
-    });
     setRightPanelCollapsed(false);
   }, []);
 

@@ -2,6 +2,7 @@ import React from "react";
 import { X, ExternalLink, Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 
 interface FollowUpDetailPanelProps {
@@ -77,31 +78,37 @@ const FollowUpDetailPanel = ({ followUp, open, onClose, onMarkDone }: FollowUpDe
   };
 
   return (
-    <div className="fixed top-[80px] bottom-0 right-0 w-96 bg-background border-l border-border-subtle z-50 flex flex-col shadow-lg">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border-subtle">
-        <div className="flex items-center gap-2">
-          {getSourceIcon(followUp.platform)}
+    <div className="fixed inset-y-0 right-0 w-96 bg-brand-600 border-l border-white/8 shadow-xl z-50 overflow-y-auto">
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-start justify-between">
           <div>
-            <h2 className="font-medium text-text-primary">{mockDetails.title}</h2>
+            <div className="flex items-center gap-2 mb-1">
+              {getSourceIcon(followUp.platform)}
+              <h2 className="text-xl font-semibold text-text-primary">{mockDetails.title}</h2>
+            </div>
             <p className="text-sm text-text-secondary">{mockDetails.timestamp}</p>
           </div>
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 hover:bg-white/8"
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-auto p-4 space-y-6">
+        <Separator className="bg-white/8" />
+
         {/* Message Header */}
-        <div className="space-y-2">
+        <div className="space-y-4">
           <div className="flex items-center justify-end gap-2">
             <Button 
               variant="outline" 
               size="sm" 
               onClick={handleAddToAsana}
-              className="text-sm"
+              className="text-sm hover:bg-white/8"
             >
               <Plus className="h-4 w-4 mr-1" />
               Add to Asana
@@ -110,14 +117,14 @@ const FollowUpDetailPanel = ({ followUp, open, onClose, onMarkDone }: FollowUpDe
               variant="outline" 
               size="sm" 
               onClick={handleOpenInPlatform}
-              className="text-sm"
+              className="text-sm hover:bg-white/8"
             >
               Open in {mockDetails.source}
               <ExternalLink className="h-4 w-4 ml-1" />
             </Button>
           </div>
           
-          <div className="space-y-1">
+          <div className="space-y-2">
             <div className="text-sm text-text-secondary">
               <span className="font-medium">From:</span> {mockDetails.from}
             </div>
@@ -127,6 +134,8 @@ const FollowUpDetailPanel = ({ followUp, open, onClose, onMarkDone }: FollowUpDe
           </div>
         </div>
 
+        <Separator className="bg-white/8" />
+
         {/* Tags */}
         <div className="flex gap-2">
           {getPriorityBadge(followUp.priority)}
@@ -134,31 +143,31 @@ const FollowUpDetailPanel = ({ followUp, open, onClose, onMarkDone }: FollowUpDe
         </div>
 
         {/* Full Message */}
-        <div className="space-y-2">
-          <h3 className="font-medium text-text-primary">Full Message:</h3>
-          <div className="text-sm text-text-secondary leading-relaxed p-3 bg-muted rounded-md">
+        <div>
+          <h3 className="text-sm font-medium text-text-primary mb-3">Full Message:</h3>
+          <div className="text-sm text-text-secondary leading-relaxed p-3 bg-brand-500/20 rounded-md">
             {mockDetails.fullMessage}
           </div>
         </div>
 
         {/* Relevancy */}
-        <div className="space-y-2">
-          <h3 className="font-medium text-text-primary">Relevancy:</h3>
+        <div>
+          <h3 className="text-sm font-medium text-text-primary mb-3">Relevancy:</h3>
           <div className="text-sm text-text-secondary">
             {mockDetails.relevancy}
           </div>
         </div>
 
         {/* Why this is an action item */}
-        <div className="space-y-2">
-          <h3 className="font-medium text-text-primary">Why this is an action item:</h3>
+        <div>
+          <h3 className="text-sm font-medium text-text-primary mb-3">Why this is an action item:</h3>
           <div className="text-sm text-text-secondary">
             {mockDetails.actionReason}
           </div>
         </div>
 
         {/* Metadata */}
-        <div className="space-y-3 pt-4 border-t border-border-subtle">
+        <div className="space-y-3 pt-4 border-t border-white/8">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="font-medium text-text-primary">Created:</span>
@@ -181,25 +190,25 @@ const FollowUpDetailPanel = ({ followUp, open, onClose, onMarkDone }: FollowUpDe
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Action Buttons */}
-      <div className="p-4 border-t border-border-subtle space-y-2">
-        <Button 
-          onClick={handleOpenInPlatform}
-          className="w-full"
-          variant="outline"
-        >
-          <ExternalLink className="h-4 w-4 mr-2" />
-          Open in {mockDetails.source}
-        </Button>
-        <Button 
-          onClick={handleMarkDone}
-          className="w-full"
-        >
-          <Check className="h-4 w-4 mr-2" />
-          Mark Done
-        </Button>
+        {/* Action Buttons */}
+        <div className="space-y-2 pt-4 border-t border-white/8">
+          <Button 
+            onClick={handleOpenInPlatform}
+            className="w-full"
+            variant="outline"
+          >
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Open in {mockDetails.source}
+          </Button>
+          <Button 
+            onClick={handleMarkDone}
+            className="w-full"
+          >
+            <Check className="h-4 w-4 mr-2" />
+            Mark Done
+          </Button>
+        </div>
       </div>
     </div>
   );
