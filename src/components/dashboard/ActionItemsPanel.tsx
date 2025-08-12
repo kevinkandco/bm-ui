@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X, ArrowUpRight, PanelRightClose, Calendar, AlertTriangle, Clock, User, Tag, Play, Pause } from 'lucide-react';
+import { CheckSquare, Slack, Mail, ExternalLink, Check, Star, X, ArrowUpRight, PanelRightClose, Calendar, AlertTriangle, Clock, User, Tag, Play, Pause, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -26,6 +26,8 @@ interface ActionItemsPanelProps {
   onCloseMessage?: () => void;
   selectedTranscript?: any;
   onCloseTranscript?: () => void;
+  selectedFollowUp?: any;
+  onCloseFollowUp?: () => void;
 }
 
 const ActionItemsPanel = ({
@@ -34,7 +36,9 @@ const ActionItemsPanel = ({
   selectedMessage,
   onCloseMessage,
   selectedTranscript,
-  onCloseTranscript
+  onCloseTranscript,
+  selectedFollowUp,
+  onCloseFollowUp
 }: ActionItemsPanelProps) => {
   const { toast } = useToast();
   const [filter, setFilter] = useState<string | null>(null);
@@ -388,6 +392,210 @@ const ActionItemsPanel = ({
               </Button>
               <Button variant="ghost" className="w-full text-text-secondary" size="sm">
                 View Previous Briefs
+              </Button>
+            </div>
+          </div>
+        </ScrollArea>
+      </div>
+    );
+  }
+
+  // If a follow-up is selected, show follow-up details instead
+  if (selectedFollowUp) {
+    const getSourceIcon = (platform: string) => {
+      if (platform === 'G') {
+        return (
+          <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-medium">
+            G
+          </div>
+        );
+      }
+      return (
+        <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-medium">
+          S
+        </div>
+      );
+    };
+
+    const getPriorityBadge = (priority: string) => {
+      const variant = priority === 'High' ? 'destructive' : priority === 'Medium' ? 'secondary' : 'outline';
+      return <Badge variant={variant}>{priority}</Badge>;
+    };
+
+    // Mock detailed data - in a real app this would come from the API
+    const mockDetails = {
+      title: selectedFollowUp.platform === 'G' ? "Workspace cancellation" : selectedFollowUp.message,
+      timestamp: selectedFollowUp.time,
+      from: selectedFollowUp.platform === 'G' ? "The Google Workspace Team" : selectedFollowUp.sender,
+      subject: selectedFollowUp.platform === 'G' ? "Urgent: Launch Materials Review Needed" : selectedFollowUp.message,
+      fullMessage: selectedFollowUp.platform === 'G' 
+        ? "Your Google Workspace Business Starter subscription was suspended on Jul 28, 2025 and will be canceled on or after Sep 26, 2025 unless you reactivate. Sign in to the Admin console (Billing > Subscriptions) before Sep 26 to keep service; you'll receive a confirmation email within 48 hours after reactivation. Account: kevin@pathnine.co (domain: pathnine.co)."
+        : "Hi team, I wanted to follow up on the project timeline we discussed yesterday. We need to finalize the design mockups by end of week to stay on track.",
+      relevancy: selectedFollowUp.platform === 'G' ? "Critical – blocking marketing team progress" : "High – time-sensitive project milestone",
+      actionReason: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+      created: "8/12/2025, 1:34:19 PM",
+      lastActivity: "8/13/2025, 1:32:39 AM",
+      source: selectedFollowUp.platform === 'G' ? "Gmail" : "Slack",
+      due: "2 PM today"
+    };
+
+    const handleOpenInPlatform = () => {
+      const platform = selectedFollowUp.platform === 'G' ? 'Gmail' : 'Slack';
+      toast({
+        description: `Opening ${platform} in new tab`
+      });
+    };
+
+    const handleAddToAsana = () => {
+      toast({
+        description: "Added to Asana",
+        variant: "default"
+      });
+    };
+
+    const handleMarkDone = () => {
+      toast({
+        description: "Marked as done"
+      });
+      onCloseFollowUp?.();
+    };
+
+    return (
+      <div className={cn("h-full flex flex-col", className)}>
+        {/* Header */}
+        <div className="p-4 pb-3 mt-[30px]">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-medium text-text-primary">Follow-up Details</h2>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onCloseFollowUp}
+                className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              {onToggleCollapse && (
+                <Button variant="ghost" size="sm" onClick={onToggleCollapse} className="h-6 w-6 p-0">
+                  <PanelRightClose className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <ScrollArea className="flex-1">
+          <div className="p-4 space-y-4">
+            {/* Header */}
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                {getSourceIcon(selectedFollowUp.platform)}
+                <h3 className="text-base font-medium text-text-primary">{mockDetails.title}</h3>
+              </div>
+              <p className="text-sm text-text-secondary">{mockDetails.timestamp}</p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleAddToAsana}
+                className="text-sm"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Add to Asana
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleOpenInPlatform}
+                className="text-sm"
+              >
+                Open in {mockDetails.source}
+                <ExternalLink className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="text-sm text-text-secondary">
+                <span className="font-medium">From:</span> {mockDetails.from}
+              </div>
+              <div className="text-sm text-text-secondary">
+                <span className="font-medium">Subject:</span> {mockDetails.subject}
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="flex gap-2">
+              {getPriorityBadge(selectedFollowUp.priority)}
+              <Badge variant="secondary">new</Badge>
+            </div>
+
+            {/* Full Message */}
+            <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
+              <h4 className="text-sm font-medium text-text-primary mb-3">Full Message:</h4>
+              <div className="text-sm text-text-primary leading-relaxed">
+                {mockDetails.fullMessage}
+              </div>
+            </div>
+
+            {/* Relevancy */}
+            <div>
+              <h4 className="text-sm font-medium text-text-primary mb-3">Relevancy:</h4>
+              <div className="text-sm text-text-secondary">
+                {mockDetails.relevancy}
+              </div>
+            </div>
+
+            {/* Why this is an action item */}
+            <div>
+              <h4 className="text-sm font-medium text-text-primary mb-3">Why this is an action item:</h4>
+              <div className="text-sm text-text-secondary">
+                {mockDetails.actionReason}
+              </div>
+            </div>
+
+            {/* Metadata */}
+            <div className="space-y-3 pt-4 border-t border-border-subtle">
+              <div className="grid grid-cols-1 gap-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="font-medium text-text-primary">Created:</span>
+                  <span className="text-text-secondary">{mockDetails.created}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-text-primary">Last Activity:</span>
+                  <span className="text-text-secondary">{mockDetails.lastActivity}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-text-primary">Source:</span>
+                  <span className="text-text-secondary capitalize">{mockDetails.source}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-text-primary">Due:</span>
+                  <span className="text-text-secondary">{mockDetails.due}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2 pt-4 border-t border-border-subtle">
+              <Button 
+                onClick={handleOpenInPlatform}
+                className="w-full"
+                variant="outline"
+                size="sm"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Open in {mockDetails.source}
+              </Button>
+              <Button 
+                onClick={handleMarkDone}
+                className="w-full"
+                size="sm"
+              >
+                <Check className="h-4 w-4 mr-2" />
+                Mark Done
               </Button>
             </div>
           </div>

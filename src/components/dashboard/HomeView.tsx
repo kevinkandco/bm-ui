@@ -37,7 +37,7 @@ import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
-import FollowUpDetailPanel from "./FollowUpDetailPanel";
+
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -122,8 +122,6 @@ const HomeView = ({
   const [showMoreToday, setShowMoreToday] = useState(false);
   const [showAllFollowUps, setShowAllFollowUps] = useState(false);
   const [showUpcomingBriefs, setShowUpcomingBriefs] = useState(false);
-  const [selectedFollowUpDetail, setSelectedFollowUpDetail] = useState<any>(null);
-  const [showFollowUpDetailPanel, setShowFollowUpDetailPanel] = useState(false);
 
   // Schedule state (from CalendarSection)
   const [meetings, setMeetings] = useState<Meeting[]>([{
@@ -677,8 +675,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     // Set the selected follow up for highlighting
     setSelectedFollowUpId(item.id);
     // Open the detail panel
-    setSelectedFollowUpDetail(item);
-    setShowFollowUpDetailPanel(true);
+    setSelectedFollowUp(item);
+    setRightPanelCollapsed(false);
     // Navigate to followups section
     setOpenSection('followups');
     // Clear other selections
@@ -2362,20 +2360,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </DrawerContent>
       </Drawer>
 
-      {/* Follow Up Detail Panel */}
-      <FollowUpDetailPanel 
-        followUp={selectedFollowUpDetail}
-        open={showFollowUpDetailPanel}
-        onClose={() => {
-          setShowFollowUpDetailPanel(false);
-          setSelectedFollowUpDetail(null);
-          setSelectedFollowUpId(null);
-        }}
-        onMarkDone={(id) => {
-          // Handle mark done logic here
-          console.log('Marking follow up as done:', id);
-        }}
-      />
 
     </div>;
 };
