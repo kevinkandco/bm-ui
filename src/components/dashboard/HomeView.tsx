@@ -312,6 +312,7 @@ const HomeView = ({
     setSelectedMeeting(null);
     setOpenSection(null);
     setLeftRailTab('briefs');
+    setShowAllBriefs(false);
   }, [navigate]);
   const handleNavigateToAllBriefs = useCallback(() => {
     setIsHomeSelected(false);
@@ -329,6 +330,7 @@ const HomeView = ({
     setSelectedMeeting(null);
     setOpenSection('calendar');
     setLeftRailTab('calendar');
+    setShowAllBriefs(false);
   }, []);
   const handleNavigateToAllFollowUps = useCallback(() => {
     setIsHomeSelected(false);
@@ -337,6 +339,7 @@ const HomeView = ({
     setSelectedMeeting(null);
     setOpenSection('followups');
     setLeftRailTab('followups');
+    setShowAllBriefs(false);
   }, []);
   const handleStatusSelect = useCallback((status: 'online' | 'focus' | 'vacation' | 'offline') => {
     // Map mobile status to main status system
