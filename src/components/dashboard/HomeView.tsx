@@ -1549,7 +1549,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                         <DropdownMenuContent align="end">
                                          <DropdownMenuItem>
                                            <Mail className="h-4 w-4 mr-2" />
-                                           Reply
+                                           Open in {item.platform === 'S' ? 'Slack' : item.platform === 'E' ? 'Email' : item.platform === 'T' ? 'Teams' : item.platform === 'D' ? 'Discord' : 'App'}
                                          </DropdownMenuItem>
                                          <DropdownMenuItem>
                                            <Kanban className="h-4 w-4 mr-2" />
