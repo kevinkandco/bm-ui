@@ -1486,7 +1486,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             View all
                           </Button>
                         </div>
-                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
+                        <DashboardCard className="bg-surface-raised/20 shadow-sm hover:bg-surface-raised/20">
                           {followUps.length === 0 ? (
                             <div className="text-center py-6">
                               <CheckSquare className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
