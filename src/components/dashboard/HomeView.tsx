@@ -37,6 +37,7 @@ import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
+import CalendarPage from "../../pages/CalendarPage";
 
 
 // Meeting interface from CalendarSection
@@ -1982,6 +1983,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     <p className="text-text-secondary">Meeting brief content would appear here...</p>
                   </div>
                 </div>}
+
+              
+              {/* Calendar page view when leftRailTab is 'calendar' */}
+              {leftRailTab === 'calendar' && !selectedBrief && !selectedCalendarItem && !isHomeSelected && 
+                <CalendarPage 
+                  meetings={meetings}
+                  onToggleProxy={toggleProxy}
+                  onOpenInstructionsDrawer={openInstructionsDrawer}
+                  onOpenMeetingDetails={openMeetingDetails}
+                  getAttendanceText={getAttendanceText}
+                />
+              }
 
               {/* Follow ups view when leftRailTab is 'followups' */}
               {leftRailTab === 'followups' && !selectedBrief && !selectedCalendarItem && !isHomeSelected && <div className="space-y-6">
