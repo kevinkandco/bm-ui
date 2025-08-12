@@ -1199,83 +1199,111 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           <div className="space-y-4">
                             {/* Multiple Briefs Available Today - Show Catch Up Brief if available */}
                             <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate('/dashboard/briefs/catch-up')}>
-                              <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
-                                <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
+                                <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
                               e.stopPropagation();
                               // Handle catch-up brief play
                             }}>
-                                  <Play className="h-6 w-6 text-accent-primary" />
+                                  <Play className="h-5 w-5 text-accent-primary" />
                                 </Button>
                                 
-                                {/* Brief Details */}
-                                <div className="flex-1">
-                                  <h3 className="text-base font-semibold text-text-primary mb-1">Combined Catch Up Brief</h3>
-                                  <p className="text-sm text-text-secondary mb-2">
-                                    Delivered at (Summarizing: 10:30 AM - 1:30 PM)
-                                  </p>
-                                  <p className="text-xs text-text-secondary">Stay updated with your latest briefs from combined sources</p>
-                                </div>
-                                
-                                {/* Stats and Status */}
-                                <div className="text-right">
-                                  <div className="flex items-center gap-4 text-sm text-text-secondary mb-2">
-                                    <span>0 Slack</span>
-                                    <span>0 Emails</span>
-                                    <span>0 Actions</span>
+                                {/* Title Row: Brief title, status badge, counts */}
+                                <div className="flex items-center justify-between flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <h3 className="text-white-text truncate font-semibold text-base">
+                                      Combined Catch Up Brief
+                                    </h3>
                                   </div>
-                                  <div className="px-3 py-1 rounded-full border-2 text-sm font-medium" style={{
-                                borderColor: '#FACC14',
-                                color: '#FACC14'
-                              }}>
-                                    Generating summary
+                                  
+                                  {/* Counts on the right side of title row */}
+                                  <div className="flex items-center gap-4 text-sm text-light-gray-text flex-shrink-0">
+                                    <span className="whitespace-nowrap">0 Slack</span>
+                                    <span className="whitespace-nowrap">0 Email</span>
+                                    <span className="whitespace-nowrap">0 Actions</span>
+                                    
+                                    {/* Chevron */}
+                                    <div className="ml-2">
+                                      <ChevronDown className="w-5 h-5 text-text-secondary" />
+                                    </div>
                                   </div>
                                 </div>
+                              </div>
+                              
+                              {/* Meta Row: Delivery text and generating pill */}
+                              <div className="flex items-center justify-between pl-14">
+                                <p className="text-xs text-light-gray-text font-light">
+                                  Delivered at (Summarizing: 10:30 AM - 1:30 PM)
+                                </p>
                                 
-                                {/* Expand Arrow */}
-                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                                {/* Generating pill aligned right with meta row */}
+                                <div className="flex items-center gap-1 text-xs bg-blue-400/10 rounded-full py-1 px-2" style={{
+                                  borderColor: '#FACC14',
+                                  color: '#FACC14'
+                                }}>
+                                  <span className="font-medium">Generating summary</span>
+                                </div>
+                              </div>
+                              
+                              {/* Description Row */}
+                              <div className="pl-14 mt-1">
+                                <p className="text-sm text-light-gray-text">Stay updated with your latest briefs from combined sources</p>
                               </div>
                             </div>
 
                             {/* Daily Combined Brief */}
                             <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
-                              <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
-                                <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
+                                <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
                               e.stopPropagation();
                               handlePlayBrief(recentBriefs[0].id);
                             }}>
-                                  {playingBrief === recentBriefs[0].id ? <Pause className="h-6 w-6 text-accent-primary" /> : <Play className="h-6 w-6 text-accent-primary" />}
+                                  {playingBrief === recentBriefs[0].id ? <Pause className="h-5 w-5 text-accent-primary" /> : <Play className="h-5 w-5 text-accent-primary" />}
                                 </Button>
                                 
-                                {/* Brief Details */}
-                                <div className="flex-1">
-                                  <h3 className="text-base font-semibold text-text-primary mb-1">Daily Combined Brief</h3>
-                                  <p className="text-sm text-text-secondary mb-2">
-                                    Delivered at 7 AM on {new Date().toLocaleDateString('en-US', {
-                                  month: 'long',
-                                  day: 'numeric',
-                                  year: 'numeric'
-                                })} (Summarizing: 5:00 PM - 7:00 AM)
-                                  </p>
-                                  <p className="text-xs text-text-secondary">Automatically generated brief</p>
-                                </div>
-                                
-                                {/* Stats and Time Saved */}
-                                <div className="text-right">
-                                  <div className="flex items-center gap-4 text-sm text-text-secondary mb-2">
-                                    <span>{recentBriefs[0].slackMessages.total} Slack</span>
-                                    <span>{recentBriefs[0].emails.total} Emails</span>
-                                    <span>{recentBriefs[0].actionItems} Actions</span>
+                                {/* Title Row: Brief title, status badge, counts */}
+                                <div className="flex items-center justify-between flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <h3 className="text-white-text truncate font-semibold text-base">
+                                      Daily Combined Brief
+                                    </h3>
                                   </div>
-                                  <div className="flex items-center gap-1 text-sm text-success">
-                                    <Clock className="w-4 h-4" />
-                                    <span>~62min saved</span>
+                                  
+                                  {/* Counts on the right side of title row */}
+                                  <div className="flex items-center gap-4 text-sm text-light-gray-text flex-shrink-0">
+                                    <span className="whitespace-nowrap">{recentBriefs[0].slackMessages.total} Slack</span>
+                                    <span className="whitespace-nowrap">{recentBriefs[0].emails.total} Email</span>
+                                    <span className="whitespace-nowrap">{recentBriefs[0].actionItems} Actions</span>
+                                    
+                                    {/* Chevron */}
+                                    <div className="ml-2">
+                                      <ChevronDown className="w-5 h-5 text-text-secondary" />
+                                    </div>
                                   </div>
                                 </div>
+                              </div>
+                              
+                              {/* Meta Row: Delivery text and time saved */}
+                              <div className="flex items-center justify-between pl-14">
+                                <p className="text-xs text-light-gray-text font-light">
+                                  Delivered at 7 AM on {new Date().toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })} (Summarizing: 5:00 PM - 7:00 AM)
+                                </p>
                                 
-                                {/* Expand Arrow */}
-                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                                {/* Time saved badge aligned right with meta row */}
+                                <div className="flex items-center gap-1 text-xs bg-green-400/10 rounded-full py-1 px-2">
+                                  <Clock className="w-3 h-3 text-green-400" />
+                                  <span className="text-green-400 font-medium">~62min saved</span>
+                                </div>
+                              </div>
+                              
+                              {/* Description Row */}
+                              <div className="pl-14 mt-1">
+                                <p className="text-sm text-light-gray-text">Automatically generated brief</p>
                               </div>
                             </div>
                             
