@@ -16,7 +16,7 @@ const AppLogin = () => {
 
   const handleSignIn = () => {
     try {
-      const url = `${REDIRECT_URL}/google/auth?redirectURL=app-login`;
+      const url = `${REDIRECT_URL}/google/auth?appLoginToken=${appLoginToken}`;
       window.open(url, "_self");
     } catch (error) {
       console.log(error);

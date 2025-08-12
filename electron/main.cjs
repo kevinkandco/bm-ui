@@ -7,6 +7,11 @@ const killSlack = require("./killSlack.cjs");
 let mainWindow = null;
 let barWindow = null;
 
+
+if (!app.isDefaultProtocolClient("briefme")) {
+  app.setAsDefaultProtocolClient("briefme");
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
@@ -29,7 +34,6 @@ function createWindow() {
     mainWindow = null;
   });
 }
-
 
 function createBarWindow() {
   const { width } = screen.getPrimaryDisplay().workAreaSize;
@@ -57,10 +61,43 @@ function createBarWindow() {
   barWindow.on("closed", () => {
     barWindow = null;
   });
-
 }
 
+
+// Single instance lock to handle multiple app launches
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+
+  // Called when second instance launched (Windows/Linux)
+  app.on("second-instance", (event, argv) => {
+    const protocolUrl = argv.find(arg => arg.startsWith("briefme://"));
+    if (protocolUrl) {
+      handleProtocolUrl(protocolUrl);
+    }
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
+  // macOS: called when app is opened via protocol while running
+  app.on("open-url", (event, url) => {
+    event.preventDefault();
+    handleProtocolUrl(url);
+  });
+
+
 app.whenReady().then(() => {
+
+    const protocolUrl = process.argv.find(arg => arg.startsWith('briefme://'));
+    if (protocolUrl) {
+      handleProtocolUrl(protocolUrl);
+    }
+
   createWindow();
   createBarWindow();
 
@@ -68,6 +105,16 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
+
+
+function handleProtocolUrl(url) {
+  const parsed = new URL(url);
+  if (parsed.pathname === '/loginSuces.html') {
+    if (mainWindow) {
+      mainWindow.loadFile(path.join(__dirname, '..', 'loginSuces.html'));
+    }
+  }
+}
 
 app.on("window-all-closed", () => {
   // on macOS apps usually stay active until Cmd+Q, but adapt as needed
@@ -124,7 +171,7 @@ ipcMain.on("status-changed", (event, status) => {
 
 // Listen for login request from preload
 ipcMain.on("open-google-login", () => {
-  const appLoginToken = generateRandomToken(); 
+  const appLoginToken = generateRandomToken();
   const webLoginURL = `http://localhost:8080/app-login?appLoginToken=${appLoginToken}`;
   shell.openExternal(webLoginURL);
 });
@@ -132,5 +179,9 @@ ipcMain.on("open-google-login", () => {
 function generateRandomToken() {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  return Array.from({ length: 40 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  return Array.from(
+    { length: 40 },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
 }
+

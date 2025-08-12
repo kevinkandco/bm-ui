@@ -1,18 +1,16 @@
 // AppLoginSuccessful.jsx
 import React, { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+// import { useSearchParams } from "react-router-dom";
 
 const AppLoginSuccessful = () => {
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  // const [searchParams] = useSearchParams();
+  // const token = searchParams.get("token");
 
-  useEffect(() => {
-    console.log(window.electron, 'window.electron');
-    
-    if (window.electron && token) {
-      window.electron.send("store-token", token); // Send token to main process
-    }
-  }, [token]);
+useEffect(() => {
+  setTimeout(() => {
+    window.location.href = `briefme://loginSuces.html`;
+  }, 300);
+}, []);
 
   return <h1>App Login Successfully!</h1>;
 };
