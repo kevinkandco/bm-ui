@@ -56,7 +56,6 @@ interface Meeting {
   isRecording: boolean;
   minutesUntil: number;
 }
-
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -87,8 +86,10 @@ const HomeView = ({
   // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY CONDITIONAL LOGIC OR EARLY RETURNS
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const { toast } = useToast();
-  
+  const {
+    toast
+  } = useToast();
+
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
   const [showAllBriefs, setShowAllBriefs] = useState(false);
@@ -120,124 +121,116 @@ const HomeView = ({
   const [showAllFollowUps, setShowAllFollowUps] = useState(false);
 
   // Schedule state (from CalendarSection)
-  const [meetings, setMeetings] = useState<Meeting[]>([
-    {
-      id: "0",
-      title: "internal project meeting",
-      time: "9:00 AM",
-      duration: "2 hours",
-      attendees: [
-        { name: "Project Team", email: "team@company.com" }
-      ],
-      briefing: "Internal project meeting with the team",
-      aiSummary: "Regular project sync to discuss progress and next steps.",
-      hasProxy: false,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: -180 // Past event
-    },
-    {
-      id: "1.5",
-      title: "demo with steve",
-      time: "1:00 PM",
-      duration: "1 hour",
-      attendees: [
-        { name: "Steve Wilson", email: "steve@company.com" }
-      ],
-      briefing: "Product demo with Steve Wilson",
-      aiSummary: "Demo session to showcase new features and gather feedback.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: -60 // Past event
-    },
-    {
-      id: "1",
-      title: "Test demo",
-      time: "2:00 PM",
-      duration: "1 hour",
-      attendees: [
-        { name: "Kevin Kirkpatrick", email: "kirkpatrick.kevin.j@gmail.com" },
-        { name: "Kevin Kirkpatrick", email: "kevin@uprise.is" }
-      ],
-      briefing: "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
-      aiSummary: "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
-      hasProxy: true,
-      hasNotes: true,
-      proxyNotes: "Focus on practicality and personalization features",
-      summaryReady: false,
-      isRecording: true,
-      minutesUntil: 45
-    },
-    {
-      id: "2", 
-      title: "external demo",
-      time: "3:00 PM",
-      duration: "30 min",
-      attendees: [
-        { name: "External Client", email: "client@company.com" }
-      ],
-      briefing: "External client demonstration meeting",
-      aiSummary: "Client demonstration focusing on key product features and capabilities.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 105
-    },
-    {
-      id: "3",
-      title: "design review",
-      time: "3:30 PM", 
-      duration: "45 min",
-      attendees: [
-        { name: "Design Team", email: "design@company.com" }
-      ],
-      briefing: "Design review session with the design team",
-      aiSummary: "Review of latest design mockups and user interface updates.",
-      hasProxy: true,
-      hasNotes: false,
-      summaryReady: false,
-      isRecording: false,
-      minutesUntil: 135
-    }
-  ]);
-
+  const [meetings, setMeetings] = useState<Meeting[]>([{
+    id: "0",
+    title: "internal project meeting",
+    time: "9:00 AM",
+    duration: "2 hours",
+    attendees: [{
+      name: "Project Team",
+      email: "team@company.com"
+    }],
+    briefing: "Internal project meeting with the team",
+    aiSummary: "Regular project sync to discuss progress and next steps.",
+    hasProxy: false,
+    hasNotes: false,
+    summaryReady: false,
+    isRecording: false,
+    minutesUntil: -180 // Past event
+  }, {
+    id: "1.5",
+    title: "demo with steve",
+    time: "1:00 PM",
+    duration: "1 hour",
+    attendees: [{
+      name: "Steve Wilson",
+      email: "steve@company.com"
+    }],
+    briefing: "Product demo with Steve Wilson",
+    aiSummary: "Demo session to showcase new features and gather feedback.",
+    hasProxy: true,
+    hasNotes: false,
+    summaryReady: false,
+    isRecording: false,
+    minutesUntil: -60 // Past event
+  }, {
+    id: "1",
+    title: "Test demo",
+    time: "2:00 PM",
+    duration: "1 hour",
+    attendees: [{
+      name: "Kevin Kirkpatrick",
+      email: "kirkpatrick.kevin.j@gmail.com"
+    }, {
+      name: "Kevin Kirkpatrick",
+      email: "kevin@uprise.is"
+    }],
+    briefing: "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
+    aiSummary: "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
+    hasProxy: true,
+    hasNotes: true,
+    proxyNotes: "Focus on practicality and personalization features",
+    summaryReady: false,
+    isRecording: true,
+    minutesUntil: 45
+  }, {
+    id: "2",
+    title: "external demo",
+    time: "3:00 PM",
+    duration: "30 min",
+    attendees: [{
+      name: "External Client",
+      email: "client@company.com"
+    }],
+    briefing: "External client demonstration meeting",
+    aiSummary: "Client demonstration focusing on key product features and capabilities.",
+    hasProxy: true,
+    hasNotes: false,
+    summaryReady: false,
+    isRecording: false,
+    minutesUntil: 105
+  }, {
+    id: "3",
+    title: "design review",
+    time: "3:30 PM",
+    duration: "45 min",
+    attendees: [{
+      name: "Design Team",
+      email: "design@company.com"
+    }],
+    briefing: "Design review session with the design team",
+    aiSummary: "Review of latest design mockups and user interface updates.",
+    hasProxy: true,
+    hasNotes: false,
+    summaryReady: false,
+    isRecording: false,
+    minutesUntil: 135
+  }]);
 
   // Meeting handlers (from CalendarSection)
   const toggleProxy = useCallback((meetingId: string) => {
-    setMeetings(prev => prev.map(meeting => 
-      meeting.id === meetingId 
-        ? { ...meeting, hasProxy: !meeting.hasProxy }
-        : meeting
-    ));
+    setMeetings(prev => prev.map(meeting => meeting.id === meetingId ? {
+      ...meeting,
+      hasProxy: !meeting.hasProxy
+    } : meeting));
   }, []);
-
   const openInstructionsDrawer = useCallback((meeting: Meeting) => {
     setSelectedMeeting(meeting);
     setTempNotes(meeting.proxyNotes || "");
     setShowInstructionsDrawer(true);
   }, []);
-
   const saveNotes = useCallback(() => {
     if (selectedMeeting) {
-      setMeetings(prev => prev.map(meeting => 
-        meeting.id === selectedMeeting.id 
-          ? { 
-              ...meeting, 
-              proxyNotes: tempNotes,
-              hasNotes: tempNotes.trim().length > 0
-            }
-          : meeting
-      ));
+      setMeetings(prev => prev.map(meeting => meeting.id === selectedMeeting.id ? {
+        ...meeting,
+        proxyNotes: tempNotes,
+        hasNotes: tempNotes.trim().length > 0
+      } : meeting));
     }
     setShowInstructionsDrawer(false);
     setSelectedMeeting(null);
     setTempNotes("");
   }, [selectedMeeting, tempNotes]);
-
   const openMeetingDetails = useCallback((meeting: Meeting) => {
     const meetingWithDetails = {
       ...meeting,
@@ -246,20 +239,12 @@ const HomeView = ({
         interests: ["Tennis Newsletters"],
         weeklyCheckIns: ["Weekly Check-Ins"]
       },
-      preparationPoints: [
-        "Focus on Practicality",
-        "Personalization",
-        "Clarity and Structure"
-      ],
-      suggestedAgenda: [
-        "Introduction",
-        "Key Features"
-      ]
+      preparationPoints: ["Focus on Practicality", "Personalization", "Clarity and Structure"],
+      suggestedAgenda: ["Introduction", "Key Features"]
     };
     // Use existing handleMeetingClick
     handleMeetingClick(meetingWithDetails);
   }, []);
-
   const getAttendanceText = useCallback((meeting: Meeting, userJoining: boolean = false) => {
     if (meeting.hasProxy && userJoining) {
       return "1 + Proxy attending";
@@ -282,10 +267,9 @@ const HomeView = ({
     const timeToMinutes = (timeStr: string) => {
       const [time, period] = timeStr.split(' ');
       const [hours, minutes] = time.split(':').map(Number);
-      const hours24 = period === 'PM' && hours !== 12 ? hours + 12 : (period === 'AM' && hours === 12 ? 0 : hours);
+      const hours24 = period === 'PM' && hours !== 12 ? hours + 12 : period === 'AM' && hours === 12 ? 0 : hours;
       return hours24 * 60 + (minutes || 0);
     };
-    
     return timeToMinutes(a.time) - timeToMinutes(b.time);
   });
 
@@ -304,7 +288,6 @@ const HomeView = ({
         return "I'm here with you — let's make the most of today.";
     }
   };
-
   const getBriefButtonLabel = (status: string) => {
     switch (status) {
       case 'active':
@@ -359,15 +342,13 @@ const HomeView = ({
     // Map mobile status to main status system
     const statusMap: Record<string, 'active' | 'away' | 'focus' | 'vacation'> = {
       'online': 'active',
-      'focus': 'focus', 
+      'focus': 'focus',
       'vacation': 'vacation',
       'offline': 'away'
     };
-    
     const newStatus = statusMap[status];
     onStatusChange?.(newStatus);
     setCurrentStatus(status);
-    
     if (status === 'focus') {
       onStartFocusMode();
     }
@@ -450,20 +431,16 @@ const HomeView = ({
     actionItems: 9,
     hasTranscript: true
   }];
-  
   const recentBriefs = allBriefs.slice(0, 3); // Only show first 3 in recent
-  const upcomingBriefs = [
-    {
-      id: 'upcoming-1',
-      name: "Midday Brief",
-      scheduledTime: "Today at 12:30 PM"
-    },
-    {
-      id: 'upcoming-2', 
-      name: "Evening Brief",
-      scheduledTime: "Today at 6:00 PM"
-    }
-  ];
+  const upcomingBriefs = [{
+    id: 'upcoming-1',
+    name: "Midday Brief",
+    scheduledTime: "Today at 12:30 PM"
+  }, {
+    id: 'upcoming-2',
+    name: "Evening Brief",
+    scheduledTime: "Today at 6:00 PM"
+  }];
 
   // Sample follow-ups data in same format as messages
   const followUps = [{
@@ -795,12 +772,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </DropdownMenuContent>
       </DropdownMenu>;
   };
-
   const handleOpenMobileBrief = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
     setShowMobileBriefDrawer(true);
   }, []);
-
   const handleOpenBriefFromAudioBar = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!playingBrief) return;
     const target = e.target as HTMLElement;
@@ -818,30 +793,17 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         <MobileBottomNav onShowStatusModal={() => setShowStatusModal(true)} userStatus={userStatus} />
         
         {/* Mobile Audio Player - shows above bottom nav when active */}
-        {playingBrief && (
-          <div onClick={handleOpenBriefFromAudioBar}>
+        {playingBrief && <div onClick={handleOpenBriefFromAudioBar}>
             <AudioPlayer briefId={playingBrief} briefName={allBriefs.find(b => b.id === playingBrief)?.name} briefTime={allBriefs.find(b => b.id === playingBrief)?.timeCreated} onClose={() => setPlayingBrief(null)} />
-          </div>
-        )}
+          </div>}
 
         {/* Mobile Status Modal */}
-        <MobileStatusModal 
-          isOpen={showStatusModal} 
-          onClose={() => setShowStatusModal(false)} 
-          onSelectStatus={handleStatusSelect} 
-          currentStatus={
-            userStatus === 'active' ? 'online' : 
-            userStatus === 'focus' ? 'focus' : 
-            userStatus === 'vacation' ? 'vacation' : 
-            userStatus === 'away' ? 'offline' : 'online'
-          } 
-        />
+        <MobileStatusModal isOpen={showStatusModal} onClose={() => setShowStatusModal(false)} onSelectStatus={handleStatusSelect} currentStatus={userStatus === 'active' ? 'online' : userStatus === 'focus' ? 'focus' : userStatus === 'vacation' ? 'vacation' : userStatus === 'away' ? 'offline' : 'online'} />
 
         {/* Mobile Brief Drawer */}
         <BriefDrawer open={showMobileBriefDrawer} briefId={selectedBrief} onClose={() => setShowMobileBriefDrawer(false)} />
       </div>;
-    }
-
+  }
   return <div className="min-h-screen flex flex-col">
       {/* Global Header */}
       <header className="bg-surface/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
@@ -853,45 +815,26 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               {/* Status Indicator with Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div 
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors"
-                  >
-                    <div className={`w-2 h-2 rounded-full ${
-                      userStatus === "active" ? "bg-green-500" :
-                      userStatus === "away" ? "bg-yellow-500" :
-                      userStatus === "focus" ? "bg-blue-500" :
-                      userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"
-                    }`} />
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors">
+                    <div className={`w-2 h-2 rounded-full ${userStatus === "active" ? "bg-green-500" : userStatus === "away" ? "bg-yellow-500" : userStatus === "focus" ? "bg-blue-500" : userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"}`} />
                     <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
                     <ChevronDown className="w-3 h-3 text-text-secondary" />
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("active")}
-                    className="flex items-center gap-2"
-                  >
+                  <DropdownMenuItem onClick={() => onStatusChange?.("active")} className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500" />
                     Active
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("away")}
-                    className="flex items-center gap-2"
-                  >
+                  <DropdownMenuItem onClick={() => onStatusChange?.("away")} className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-yellow-500" />
                     Away
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("focus")}
-                    className="flex items-center gap-2"
-                  >
+                  <DropdownMenuItem onClick={() => onStatusChange?.("focus")} className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-blue-500" />
                     Focus
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={() => onStatusChange?.("vacation")}
-                    className="flex items-center gap-2"
-                  >
+                  <DropdownMenuItem onClick={() => onStatusChange?.("vacation")} className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-gray-500" />
                     Vacation
                   </DropdownMenuItem>
@@ -1030,14 +973,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
       {/* SignalSweepBar - Full width below header */}
       <div className="w-full px-6">
-        <SignalSweepBar 
-          className="w-full" 
-          height={5} 
-          anchors={["#1B5862", "#277F64", "#4FAF83"]} 
-          background="transparent" 
-          thickness={2} 
-          status={userStatus === 'active' ? 'active' : userStatus === 'focus' ? 'focused' : userStatus === 'vacation' ? 'ooo' : userStatus === 'away' ? 'offline' : 'active'} 
-        />
+        <SignalSweepBar className="w-full" height={5} anchors={["#1B5862", "#277F64", "#4FAF83"]} background="transparent" thickness={2} status={userStatus === 'active' ? 'active' : userStatus === 'focus' ? 'focused' : userStatus === 'vacation' ? 'ooo' : userStatus === 'away' ? 'offline' : 'active'} />
       </div>
 
       {/* Three-Column Layout */}
@@ -1127,7 +1063,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             `
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
-{/* Default Home Content */}
+            {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
                   {/* Date Header */}
                   <div className="mb-8">
@@ -1145,28 +1081,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
                     <div className="space-y-16">
-{/* Latest Brief Section */}
+                  {/* Latest Brief Section */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <h2 className="text-lg font-semibold text-text-primary tracking-tight">Latest brief</h2>
-                          <Button 
-                            variant="ghost" 
-                            onClick={handleNavigateToAllBriefs}
-                            className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
-                          >
+                          <Button variant="ghost" onClick={handleNavigateToAllBriefs} className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
                             View all
                           </Button>
                         </div>
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
-                        <div 
-                          className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1"
-                          onClick={() => handleBriefSelect(recentBriefs[0].id)}
-                        >
+                        <div className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1" onClick={() => handleBriefSelect(recentBriefs[0].id)}>
                           <div className="flex items-center gap-3">
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
-                              e.stopPropagation();
-                              handlePlayBrief(recentBriefs[0].id);
-                            }}>
+                            e.stopPropagation();
+                            handlePlayBrief(recentBriefs[0].id);
+                          }}>
                               {playingBrief === recentBriefs[0].id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
                             </Button>
                             <div className="flex-1">
@@ -1188,19 +1117,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <h2 className="text-lg font-semibold text-text-primary tracking-tight">Upcoming briefs</h2>
-                          <Button 
-                            variant="ghost" 
-                            onClick={handleNavigateToAllBriefs}
-                            className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
-                          >
+                          <Button variant="ghost" onClick={handleNavigateToAllBriefs} className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
                             View all
                           </Button>
                         </div>
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
-                        {upcomingBriefs.length > 0 ? (
-                          <div className="space-y-3">
-                            {upcomingBriefs.slice(0, 2).map(brief => (
-                              <div key={brief.id} className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1" onClick={handleNavigateToAllBriefs}>
+                        {upcomingBriefs.length > 0 ? <div className="space-y-3">
+                            {upcomingBriefs.slice(0, 2).map(brief => <div key={brief.id} className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1" onClick={handleNavigateToAllBriefs}>
                                 <div className="flex items-center gap-3">
                                   <div className="h-8 w-8 rounded flex items-center justify-center bg-surface-overlay/50">
                                     <Clock className="h-4 w-4 text-text-secondary" />
@@ -1210,21 +1133,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     <p className="text-xs text-text-secondary">{brief.scheduledTime}</p>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-center py-4">
+                              </div>)}
+                          </div> : <div className="text-center py-4">
                             <p className="text-sm text-text-secondary mb-2">No briefs scheduled.</p>
-                            <Button 
-                              variant="ghost"
-                              onClick={handleNavigateToAllBriefs}
-                              className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
-                            >
+                            <Button variant="ghost" onClick={handleNavigateToAllBriefs} className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
                               Schedule one
                             </Button>
-                          </div>
-                        )}
+                          </div>}
                         </DashboardCard>
                       </div>
 
@@ -1233,20 +1148,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <h2 className="text-lg font-semibold text-text-primary tracking-tight">Today's schedule</h2>
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                         <TooltipProvider>
-                          {!hasUpcomingMeetings ? (
-                            <div className="text-center py-6">
+                          {!hasUpcomingMeetings ? <div className="text-center py-6">
                               <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
                               <p className="text-sm text-text-secondary">No meetings soon</p>
-                            </div>
-                          ) : (
-                            <div className="space-y-2">
+                            </div> : <div className="space-y-2">
                               {/* Next 2 meetings expanded */}
-                              {upcomingMeetings.map((meeting, index) => (
-                                <div key={meeting.id}>
-                                  <div 
-                                    className="py-2.5 cursor-pointer transition-colors hover:bg-surface-raised/20 rounded-lg"
-                                    onClick={() => openMeetingDetails(meeting)}
-                                  >
+                              {upcomingMeetings.map((meeting, index) => <div key={meeting.id}>
+                                  <div className="py-2.5 cursor-pointer transition-colors hover:bg-surface-raised/20 rounded-lg" onClick={() => openMeetingDetails(meeting)}>
                                     <div className="flex items-center justify-between gap-3">
                                       {/* Time column with fixed width */}
                                       <div className="min-w-[80px] flex-shrink-0">
@@ -1260,12 +1168,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                           <h4 className="text-sm font-medium text-text-primary truncate">
                                             {meeting.title}
                                           </h4>
-                                          {meeting.isRecording && (
-                                            <div className="flex items-center gap-1">
+                                          {meeting.isRecording && <div className="flex items-center gap-1">
                                               <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
                                               <span className="text-xs text-error">REC</span>
-                                            </div>
-                                          )}
+                                            </div>}
                                         </div>
                                         
                                         {/* Line 2: Meta info */}
@@ -1274,41 +1180,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                           <span>{getAttendanceText(meeting)}</span>
                                           <span>•</span>
                                           <span>{meeting.duration}</span>
-                                          {meeting.hasNotes && (
-                                            <>
+                                          {meeting.hasNotes && <>
                                               <span>•</span>
                                               <BookOpen className="w-3 h-3" />
-                                            </>
-                                          )}
+                                            </>}
                                         </div>
                                       </div>
                                       
                                       {/* Right actions */}
-                                      <div className="flex items-center gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                                      <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
                                         
-                                        <Button
-                                          size="sm"
-                                          className={`h-6 px-2 text-xs rounded-full ${
-                                            meeting.hasProxy 
-                                              ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
-                                              : "bg-brand-300 text-background hover:bg-brand-300/90"
-                                          }`}
-                                          disabled={meeting.hasProxy}
-                                        >
+                                        <Button size="sm" className={`h-6 px-2 text-xs rounded-full ${meeting.hasProxy ? "bg-brand-500 text-text-secondary hover:bg-brand-500" : "bg-brand-300 text-background hover:bg-brand-300/90"}`} disabled={meeting.hasProxy}>
                                           Join
                                         </Button>
                                         
-                                        <Button
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            openInstructionsDrawer(meeting);
-                                          }}
-                                          variant="ghost"
-                                          size="sm"
-                                          className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
-                                        >
-                                          <Pencil className="w-3 h-3" />
-                                        </Button>
+                                        
                                       </div>
                                     </div>
                                     
@@ -1318,52 +1204,29 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     </div>
                                     
                                     {/* Deliverables preview */}
-                                    {meeting.hasProxy && (
-                                      <div className="mt-1 pl-[80px] text-xs text-text-secondary">
-                                        {meeting.summaryReady ? (
-                                          <span className="text-accent-primary cursor-pointer hover:underline">
+                                    {meeting.hasProxy && <div className="mt-1 pl-[80px] text-xs text-text-secondary">
+                                        {meeting.summaryReady ? <span className="text-accent-primary cursor-pointer hover:underline">
                                             Summary & action items ready
-                                          </span>
-                                        ) : (
-                                          "Summary & action items will appear ≈ 10 min after call"
-                                        )}
-                                      </div>
-                                    )}
+                                          </span> : "Summary & action items will appear ≈ 10 min after call"}
+                                      </div>}
                                   </div>
                                   
                                    {/* Subtle separator between meetings */}
-                                  {index < upcomingMeetings.length - 1 && (
-                                    <div className="border-t border-white/4 my-3" />
-                                  )}
-                                </div>
-                              ))}
+                                  {index < upcomingMeetings.length - 1 && <div className="border-t border-white/4 my-3" />}
+                                </div>)}
 
                               {/* More today expander */}
-                              {remainingMeetings.length > 0 && (
-                                <div className="space-y-3 mt-6">
+                              {remainingMeetings.length > 0 && <div className="space-y-3 mt-6">
                                   <div className="border-t border-white/4 my-3" />
-                                  <Button
-                                    variant="ghost"
-                                    onClick={() => setShowMoreToday(!showMoreToday)}
-                                    className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
-                                  >
+                                  <Button variant="ghost" onClick={() => setShowMoreToday(!showMoreToday)} className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
                                     <span>More today ({remainingMeetings.length})</span>
                                     <ChevronDown className={`w-4 h-4 transition-transform ${showMoreToday ? 'rotate-180' : ''}`} />
                                   </Button>
                                   
-                                  {showMoreToday && (
-                                    <div className="space-y-1 mt-2">
+                                  {showMoreToday && <div className="space-y-1 mt-2">
                                       {allMeetings.filter(m => !upcomingMeetings.includes(m)).map((meeting, index) => {
-                                        const isPast = meeting.minutesUntil < 0;
-                                        
-                                        return (
-                                          <div 
-                                            key={meeting.id}
-                                            className={`flex items-center gap-3 py-1.5 px-2 cursor-pointer hover:bg-surface-raised/20 rounded transition-colors ${
-                                              isPast ? 'opacity-60' : 'opacity-100'
-                                            }`}
-                                            onClick={() => openMeetingDetails(meeting)}
-                                          >
+                                const isPast = meeting.minutesUntil < 0;
+                                return <div key={meeting.id} className={`flex items-center gap-3 py-1.5 px-2 cursor-pointer hover:bg-surface-raised/20 rounded transition-colors ${isPast ? 'opacity-60' : 'opacity-100'}`} onClick={() => openMeetingDetails(meeting)}>
                                             {/* Time */}
                                             <div className="text-xs text-text-secondary min-w-[80px] font-mono">
                                               {meeting.time}
@@ -1378,22 +1241,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                             
                                             {/* Status indicators */}
                                             <div className="flex items-center gap-1 flex-shrink-0">
-                                              {meeting.hasProxy && (
-                                                <div className="w-1.5 h-1.5 bg-success rounded-full" />
-                                              )}
-                                              {meeting.isRecording && (
-                                                <div className="w-1.5 h-1.5 bg-error rounded-full animate-pulse" />
-                                              )}
+                                              {meeting.hasProxy && <div className="w-1.5 h-1.5 bg-success rounded-full" />}
+                                              {meeting.isRecording && <div className="w-1.5 h-1.5 bg-error rounded-full animate-pulse" />}
                                             </div>
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          )}
+                                          </div>;
+                              })}
+                                    </div>}
+                                </div>}
+                            </div>}
                         </TooltipProvider>
                         </DashboardCard>
                       </div>
@@ -1405,64 +1260,43 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <h2 className="text-lg font-semibold text-text-primary tracking-tight">Follow ups</h2>
-                          <Button 
-                            variant="ghost" 
-                            onClick={handleNavigateToAllFollowUps}
-                            className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
-                          >
+                          <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
                             View all
                           </Button>
                         </div>
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                         {(() => {
-                          // Group follow-ups by priority
-                          const groupedFollowUps = followUps.reduce((acc, item) => {
-                            if (!acc[item.priority]) acc[item.priority] = [];
-                            acc[item.priority].push(item);
-                            return acc;
-                          }, {} as Record<string, typeof followUps>);
+                        // Group follow-ups by priority
+                        const groupedFollowUps = followUps.reduce((acc, item) => {
+                          if (!acc[item.priority]) acc[item.priority] = [];
+                          acc[item.priority].push(item);
+                          return acc;
+                        }, {} as Record<string, typeof followUps>);
+                        const highPriority = groupedFollowUps.High || [];
+                        const mediumPriority = groupedFollowUps.Medium || [];
+                        const lowPriority = groupedFollowUps.Low || [];
 
-                          const highPriority = groupedFollowUps.High || [];
-                          const mediumPriority = groupedFollowUps.Medium || [];
-                          const lowPriority = groupedFollowUps.Low || [];
-
-                          // Show High + Medium by default (up to 5 total)
-                          const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
-                          const hasLowPriority = lowPriority.length > 0;
-
-                          const renderFollowUpItem = (item: any) => (
-                            <div 
-                              key={item.id}
-                              className={cn(
-                                "flex items-center gap-3 p-2 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors",
-                                selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary"
-                              )}
-                              onClick={() => {
-                                setSelectedFollowUpId(item.id);
-                                setSelectedMessage({
-                                  ...item,
-                                  subject: "Follow-up Required",
-                                  fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                                  from: item.sender,
-                                  relevancy: "Requires action from you",
-                                  reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                                  created: item.time,
-                                  lastActivity: item.time,
-                                  source: item.platform === "S" ? "Slack" : "Email",
-                                  due: "End of day"
-                                });
-                                setRightPanelCollapsed(false);
-                              }}
-                            >
-                              <div 
-                                className="flex-shrink-0" 
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Checkbox 
-                                  checked={checkedFollowUps.has(item.id)} 
-                                  onCheckedChange={() => handleFollowUpCheck(item.id)} 
-                                  className="h-4 w-4" 
-                                />
+                        // Show High + Medium by default (up to 5 total)
+                        const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
+                        const hasLowPriority = lowPriority.length > 0;
+                        const renderFollowUpItem = (item: any) => <div key={item.id} className={cn("flex items-center gap-3 p-2 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors", selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary")} onClick={() => {
+                          setSelectedFollowUpId(item.id);
+                          setSelectedMessage({
+                            ...item,
+                            subject: "Follow-up Required",
+                            fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                            from: item.sender,
+                            relevancy: "Requires action from you",
+                            reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                            created: item.time,
+                            lastActivity: item.time,
+                            source: item.platform === "S" ? "Slack" : "Email",
+                            due: "End of day"
+                          });
+                          setRightPanelCollapsed(false);
+                        }}>
+                              <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
+                                <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
                               </div>
 
                               <div className="w-8 h-8 rounded-full bg-surface-raised/50 shadow-sm flex items-center justify-center flex-shrink-0">
@@ -1481,40 +1315,24 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </div>
 
                               <div className="flex items-center gap-2 flex-shrink-0">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm"
-                                >
+                                <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
                                   <Kanban className="h-3 w-3" />
                                   Asana
                                 </Button>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm"
-                                >
-                                  {item.platform === "S" ? (
-                                    <>
+                                <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
+                                  {item.platform === "S" ? <>
                                       <Calendar className="h-3 w-3" />
                                       Schedule
-                                    </>
-                                  ) : (
-                                    <>
+                                    </> : <>
                                       <Mail className="h-3 w-3" />
                                       Reply
-                                    </>
-                                  )}
+                                    </>}
                                 </Button>
                               </div>
-                            </div>
-                          );
-
-                          return (
-                            <div className="space-y-3">
+                            </div>;
+                        return <div className="space-y-3">
                               {/* High Priority Section */}
-                              {highPriority.length > 0 && (
-                                <div className="space-y-2">
+                              {highPriority.length > 0 && <div className="space-y-2">
                                   <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-orange-400"></div>
                                     <h4 className="text-sm font-medium text-text-secondary">High</h4>
@@ -1522,12 +1340,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   <div className="space-y-1">
                                     {highPriority.map(renderFollowUpItem)}
                                   </div>
-                                </div>
-                              )}
+                                </div>}
 
                               {/* Medium Priority Section */}
-                              {mediumPriority.length > 0 && (
-                                <div className="space-y-2">
+                              {mediumPriority.length > 0 && <div className="space-y-2">
                                   <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
                                     <h4 className="text-sm font-medium text-text-secondary">Medium</h4>
@@ -1535,17 +1351,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   <div className="space-y-1">
                                     {mediumPriority.map(renderFollowUpItem)}
                                   </div>
-                                </div>
-                              )}
+                                </div>}
 
                               {/* Low Priority Section (Toggle) */}
-                              {hasLowPriority && (
-                                <div className="space-y-2">
-                                  <Button
-                                    variant="ghost"
-                                    onClick={() => setShowAllFollowUps(!showAllFollowUps)}
-                                    className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
-                                  >
+                              {hasLowPriority && <div className="space-y-2">
+                                  <Button variant="ghost" onClick={() => setShowAllFollowUps(!showAllFollowUps)} className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
                                     <div className="flex items-center gap-2">
                                       <div className="w-2 h-2 rounded-full bg-gray-400"></div>
                                       <span>Low ({lowPriority.length})</span>
@@ -1553,24 +1363,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     <ChevronDown className={`w-4 h-4 transition-transform ${showAllFollowUps ? 'rotate-180' : ''}`} />
                                   </Button>
                                   
-                                  {showAllFollowUps && (
-                                    <div className="space-y-1">
+                                  {showAllFollowUps && <div className="space-y-1">
                                       {lowPriority.map(renderFollowUpItem)}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                                    </div>}
+                                </div>}
 
                               {/* Empty state */}
-                              {followUps.length === 0 && (
-                                <div className="text-center py-6">
+                              {followUps.length === 0 && <div className="text-center py-6">
                                   <CheckSquare className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
                                   <p className="text-sm text-text-secondary">All caught up!</p>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })()}
+                                </div>}
+                            </div>;
+                      })()}
                         </DashboardCard>
                       </div>
                     </div>
@@ -1726,13 +1530,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                   
                   <div className="space-y-4">
-                    {allBriefs.map(brief => 
-                      <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 hover:bg-surface-raised/40 transition-colors cursor-pointer shadow-sm" onClick={() => handleBriefSelect(brief.id)}>
+                    {allBriefs.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 hover:bg-surface-raised/40 transition-colors cursor-pointer shadow-sm" onClick={() => handleBriefSelect(brief.id)}>
                         <div className="flex items-center gap-3">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={(e) => {
-                            e.stopPropagation();
-                            handlePlayBrief(brief.id);
-                          }}>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
+                      e.stopPropagation();
+                      handlePlayBrief(brief.id);
+                    }}>
                             {playingBrief === brief.id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
                           </Button>
                           <div className="flex-1">
@@ -1746,8 +1549,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : brief.id === 3 ? '1d' : brief.id === 4 ? '2d' : '3d'}
                           </div>
                         </div>
-                      </div>
-                    )}
+                      </div>)}
                   </div>
                 </div>}
               
@@ -2055,10 +1857,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                         </Button>
                                       </DropdownMenuTrigger>
                                       <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={(e) => {
-                                      e.stopPropagation();
-                                      window.open(item.platform === 'S' ? 'https://slack.com' : 'https://gmail.com', '_blank');
-                                    }}>
+                                        <DropdownMenuItem onClick={e => {
+                                    e.stopPropagation();
+                                    window.open(item.platform === 'S' ? 'https://slack.com' : 'https://gmail.com', '_blank');
+                                  }}>
                                           {item.actionType || 'Open'}
                                         </DropdownMenuItem>
                                       </DropdownMenuContent>
@@ -2298,12 +2100,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               <Label className="text-sm font-medium text-text-primary mb-2 block">
                 Instructions for your proxy
               </Label>
-              <Input
-                value={tempNotes}
-                onChange={(e) => setTempNotes(e.target.value)}
-                placeholder="Add any specific instructions..."
-                className="bg-surface-raised text-text-primary shadow-sm"
-              />
+              <Input value={tempNotes} onChange={e => setTempNotes(e.target.value)} placeholder="Add any specific instructions..." className="bg-surface-raised text-text-primary shadow-sm" />
             </div>
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => setShowInstructionsDrawer(false)} className="flex-1">
