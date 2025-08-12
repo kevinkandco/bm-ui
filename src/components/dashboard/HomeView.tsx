@@ -1144,7 +1144,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Two-Column Grid Layout */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
-                    <div className="space-y-8">
+                    <div className="space-y-12">
                       {/* Latest Brief Section */}
                       <DashboardCard 
                         title="Latest brief"
@@ -1465,7 +1465,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     </div>
 
                     {/* Column 2 (Secondary): Follow ups */}
-                    <div className="space-y-8">
+                    <div className="space-y-12">
                       {/* Follow ups Section */}
                       <DashboardCard 
                         title="Follow ups"
@@ -1499,7 +1499,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             <div 
                               key={item.id}
                               className={cn(
-                                "flex items-center gap-3 p-3 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors",
+                                "flex items-center gap-3 p-2 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors",
                                 selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary"
                               )}
                               onClick={() => {
@@ -1576,7 +1576,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           );
 
                           return (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                               {/* High Priority Section */}
                               {highPriority.length > 0 && (
                                 <div className="space-y-2">
