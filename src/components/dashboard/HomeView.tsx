@@ -1277,7 +1277,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                                 className={`h-6 px-3 text-xs rounded-full ${
                                                   meeting.hasProxy 
                                                     ? "bg-success text-background hover:bg-success/90" 
-                                                    : "border-white/12 text-text-secondary hover:border-success hover:text-success"
+                                                    : "border-white/6 text-text-secondary hover:border-success hover:text-success"
                                                 }`}
                                               >
                                                 {meeting.hasProxy ? "Proxy On" : "Send Proxy"}
@@ -1367,7 +1367,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                                 <ChevronDown className="w-3 h-3" />
                                               </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="bg-brand-600 border-white/8">
+                                            <DropdownMenuContent align="end" className="bg-brand-600 border-white/4">
                                               <DropdownMenuItem 
                                                 onClick={() => toggleProxy(meeting.id)}
                                                 className="text-text-primary hover:bg-white/8"
@@ -1383,7 +1383,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   
                                   {/* Separator between expanded meetings */}
                                   {index < upcomingMeetings.length - 1 && (
-                                    <div className="border-t border-white/8" />
+                                   <div className="border-t border-white/4" />
                                   )}
                                 </div>
                               ))}
@@ -1391,7 +1391,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               {/* More today expander */}
                               {remainingMeetings.length > 0 && (
                                 <div className="space-y-3">
-                                  <div className="border-t border-white/8" />
+                                  <div className="border-t border-white/4" />
                                   <Button
                                     variant="ghost"
                                     onClick={() => setShowMoreToday(!showMoreToday)}
