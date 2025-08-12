@@ -112,8 +112,10 @@ const HomeView = ({
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
   const [selectedTranscript, setSelectedTranscript] = useState<any>(null);
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
+  const [selectedMessageId, setSelectedMessageId] = useState<number | null>(null);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
+  const [checkedMessages, setCheckedMessages] = useState<Set<number>>(new Set());
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState('online');
   const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
@@ -664,6 +666,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setSelectedFollowUpId(null);
+    setSelectedMessageId(null);
     setSelectedMessage(null);
     setSelectedTranscript(null);
     setRightPanelCollapsed(true);
@@ -694,6 +697,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
     // Clear other selections
     setSelectedFollowUpId(null);
+    setSelectedMessageId(null);
     setSelectedMessage(null);
     setSelectedTranscript(null);
     setRightPanelCollapsed(true);
@@ -717,6 +721,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         newSet.delete(followUpId);
       } else {
         newSet.add(followUpId);
+      }
+      return newSet;
+    });
+  };
+  
+  const handleMessageCheck = (messageId: number) => {
+    setCheckedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
       }
       return newSet;
     });
@@ -1878,7 +1894,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       
                       <TabsContent value="allmessages" className="mt-4">
                         <div className="divide-y divide-border-subtle">
-                          {allMessages.map((message, index) => <div key={message.id} className="py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04]" onClick={() => {
+                          {allMessages.map((message, index) => <div key={message.id} className={`py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04] ${selectedMessageId === message.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
+                        setSelectedMessageId(message.id);
                         setSelectedMessage({
                           ...message,
                           subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
@@ -1894,6 +1911,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         setRightPanelCollapsed(false);
                       }}>
                               <div className="flex items-center gap-4">
+                                {/* Checkbox */}
+                                <div onClick={e => e.stopPropagation()}>
+                                  <Checkbox checked={checkedMessages.has(message.id)} onCheckedChange={() => handleMessageCheck(message.id)} className="h-4 w-4" />
+                                </div>
+                                
                                 {/* Platform Icon */}
                                 <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${message.platform === 'S' ? 'bg-purple-600' : message.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
                                   {message.platform}
@@ -1936,6 +1958,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                               <Mail className="h-2.5 w-2.5" />
                                               Open in Gmail
                                             </>}
+                                        </Button>
+                                        <Button variant="ghost" size="sm" onClick={e => {
+                                    e.stopPropagation();
+                                    // Handle message options menu
+                                  }} className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary">
+                                          <span className="text-xs">•••</span>
                                         </Button>
                                       </div>
                                     </div>
