@@ -1093,19 +1093,20 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? <div className="w-80 min-h-screen bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
+        {!leftPanelCollapsed ? (
+          <div className="w-80 min-h-screen bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             {/* Scrollable Navigation Section */}
             <div className="flex-1 overflow-y-auto">
               {/* Header with collapse button */}
               <div className="px-6">
-                <div className="flex items-center justify-between mt-6 mb-4 flex ">
+                <div className="flex items-center justify-between mt-6 mb-4">
                   <h2 className="text-text-primary text-lg text-left font-medium mx-[10px]">Navigation</h2>
                   <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
                     <PanelLeftClose className="h-4 w-4" />
                   </Button>
                 </div>
                 
-                {/* Navigation sections - simplified */}
+                {/* Navigation sections */}
                 <div className="w-full mt-8 pt-6 space-y-2 px-0 pb-6">
                   {/* Home */}
                   <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
@@ -1135,9 +1136,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             </div>
             
             {/* Utility Block - Fixed at Bottom */}
-            <UtilityBlock collapsed={false} />
-          </div> : (/* Collapsed Left Panel */
-      <div className="w-12 min-h-screen bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
+            <div className="mt-auto pb-[calc(var(--player-h,_56px)_+_8px)]">
+              <UtilityBlock collapsed={false} />
+            </div>
+          </div>
+        ) : (
+          <div className="w-12 min-h-screen bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             {/* Scrollable Navigation Section */}
             <div className="flex-1 overflow-y-auto">
               <div className="p-2 flex flex-col items-center mt-[30px] space-y-3 pb-6">
@@ -1169,8 +1173,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             </div>
             
             {/* Utility Block - Fixed at Bottom */}
-            <UtilityBlock collapsed={true} />
-          </div>)}
+            <div className="mt-auto pb-[calc(var(--player-h,_56px)_+_8px)]">
+              <UtilityBlock collapsed={true} />
+            </div>
+          </div>
+        )}
 
         {/* Main Content Panel */}
         <div className="flex-1 h-screen overflow-hidden">
