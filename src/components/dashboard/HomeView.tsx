@@ -2126,16 +2126,27 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </div>
 
         {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript || selectedFollowUp) ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <div className="flex-1 overflow-hidden">
-              <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
-            setSelectedMessage(null);
-            setRightPanelCollapsed(true);
-          }} selectedTranscript={selectedTranscript} onCloseTranscript={() => {
-            setSelectedTranscript(null);
-            setPlayingBrief(null);
-            setRightPanelCollapsed(true);
-          }} />
+              <ActionItemsPanel 
+                onToggleCollapse={() => setRightPanelCollapsed(true)} 
+                selectedMessage={selectedMessage} 
+                onCloseMessage={() => {
+                  setSelectedMessage(null);
+                  setRightPanelCollapsed(true);
+                }} 
+                selectedTranscript={selectedTranscript} 
+                onCloseTranscript={() => {
+                  setSelectedTranscript(null);
+                  setPlayingBrief(null);
+                  setRightPanelCollapsed(true);
+                }}
+                selectedFollowUp={selectedFollowUp}
+                onCloseFollowUp={() => {
+                  setSelectedFollowUp(null);
+                  setRightPanelCollapsed(true);
+                }}
+              />
             </div>
           </div> : null}
       </div>
