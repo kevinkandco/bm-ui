@@ -1539,7 +1539,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </div>
 
                                   {/* Action Menu */}
-                                  <div className="flex-shrink-0">
+                                  <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
                                     <DropdownMenu>
                                       <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
