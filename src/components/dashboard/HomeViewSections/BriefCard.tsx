@@ -222,28 +222,51 @@ const BriefCard = ({
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
     // Parse the timeCreated string (e.g., "Today, 8:00 AM" or "December 8, 2024, 8:00 AM")
     const [datePart, timePart] = timeCreated.split(', ');
-    const time = timePart?.replace(':00 ', '').replace(':00', '') || '8am';
-    const formattedTimeRange = timeRange.replace(':00 ', '').replace(':00', '');
-
-    // Handle different date formats
-    let dateText = datePart;
-    if (datePart === 'Today') {
-      const today = new Date();
-      dateText = today.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    } else if (datePart === 'Yesterday') {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      dateText = yesterday.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
-    return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
+    
+    // Convert delivery time to HH:MM format
+    const deliveryTime = timePart ? timePart.replace(/(\d{1,2}):00\s*(AM|PM)/i, (match, hour, period) => {
+      let hourNum = parseInt(hour);
+      if (period.toUpperCase() === 'PM' && hourNum !== 12) hourNum += 12;
+      if (period.toUpperCase() === 'AM' && hourNum === 12) hourNum = 0;
+      return hourNum.toString().padStart(2, '0') + ':00';
+    }) : '08:00';
+    
+    // Parse time range and format as DD/MM HH:MM to DD/MM HH:MM
+    const formatRange = (range: string) => {
+      // Example range: "6:00 AM - 8:00 AM" or "December 8, 6:00 AM - December 8, 8:00 AM"
+      const parts = range.split(' - ');
+      if (parts.length !== 2) return range;
+      
+      const formatDateTime = (dateTimeStr: string) => {
+        const today = new Date();
+        let day = today.getDate().toString().padStart(2, '0');
+        let month = (today.getMonth() + 1).toString().padStart(2, '0');
+        
+        // Handle different date formats in range
+        if (datePart === 'Yesterday') {
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          day = yesterday.getDate().toString().padStart(2, '0');
+          month = (yesterday.getMonth() + 1).toString().padStart(2, '0');
+        }
+        
+        // Extract time and convert to HH:MM
+        const timeMatch = dateTimeStr.match(/(\d{1,2}):00\s*(AM|PM)/i);
+        if (timeMatch) {
+          let hourNum = parseInt(timeMatch[1]);
+          const period = timeMatch[2].toUpperCase();
+          if (period === 'PM' && hourNum !== 12) hourNum += 12;
+          if (period === 'AM' && hourNum === 12) hourNum = 0;
+          const time = hourNum.toString().padStart(2, '0') + ':00';
+          return `${day}/${month} ${time}`;
+        }
+        return `${day}/${month} 08:00`;
+      };
+      
+      return `${formatDateTime(parts[0])} to ${formatDateTime(parts[1])}`;
+    };
+    
+    return `${deliveryTime} Range: ${formatRange(timeRange)}`;
   };
   return <TooltipProvider>
       <div className="w-full transition-all duration-300 cursor-pointer rounded-xl overflow-hidden group" style={{

@@ -85,6 +85,52 @@ const HomeView = ({
   onExitFocusMode,
   onSignBackOn
 }: HomeViewProps) => {
+  // Format delivery text to condensed format: "HH:MM Range: DD/MM HH:MM to DD/MM HH:MM"
+  const formatDeliveryText = (timeCreated: string, timeRange: string) => {
+    // Parse delivery time
+    const [datePart, timePart] = timeCreated.split(', ');
+    const deliveryTime = timePart ? timePart.replace(/(\d{1,2}):00\s*(AM|PM)/i, (match, hour, period) => {
+      let hourNum = parseInt(hour);
+      if (period.toUpperCase() === 'PM' && hourNum !== 12) hourNum += 12;
+      if (period.toUpperCase() === 'AM' && hourNum === 12) hourNum = 0;
+      return hourNum.toString().padStart(2, '0') + ':00';
+    }) : '08:00';
+    
+    // Parse time range
+    const formatRange = (range: string) => {
+      const parts = range.split(' - ');
+      if (parts.length !== 2) return range;
+      
+      const formatDateTime = (dateTimeStr: string) => {
+        const today = new Date();
+        let day = today.getDate().toString().padStart(2, '0');
+        let month = (today.getMonth() + 1).toString().padStart(2, '0');
+        
+        if (datePart === 'Yesterday') {
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          day = yesterday.getDate().toString().padStart(2, '0');
+          month = (yesterday.getMonth() + 1).toString().padStart(2, '0');
+        }
+        
+        const timeMatch = dateTimeStr.match(/(\d{1,2}):00\s*(AM|PM)/i);
+        if (timeMatch) {
+          let hourNum = parseInt(timeMatch[1]);
+          const period = timeMatch[2].toUpperCase();
+          if (period === 'PM' && hourNum !== 12) hourNum += 12;
+          if (period === 'AM' && hourNum === 12) hourNum = 0;
+          const time = hourNum.toString().padStart(2, '0') + ':00';
+          return `${day}/${month} ${time}`;
+        }
+        return `${day}/${month} 08:00`;
+      };
+      
+      return `${formatDateTime(parts[0])} to ${formatDateTime(parts[1])}`;
+    };
+    
+    return `${deliveryTime} Range: ${formatRange(timeRange)}`;
+  };
+
   // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY CONDITIONAL LOGIC OR EARLY RETURNS
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -1235,7 +1281,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               {/* Meta Row: Delivery text and generating pill */}
                               <div className="flex items-center justify-between pl-14">
                                 <p className="text-xs text-light-gray-text font-light">
-                                  Delivered at (Summarizing: 10:30 AM - 1:30 PM)
+                                  13:00 Range: 09/12 10:30 to 09/12 13:30
                                 </p>
                                 
                                 {/* Generating pill aligned right with meta row */}
@@ -1284,11 +1330,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               {/* Meta Row: Delivery text and time saved */}
                               <div className="flex items-center justify-between pl-14">
                                 <p className="text-xs text-light-gray-text font-light">
-                                  Delivered at 7 AM on {new Date().toLocaleDateString('en-US', {
-                                month: 'long',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })} (Summarizing: 5:00 PM - 7:00 AM)
+                                  {formatDeliveryText("Today, 7:00 AM", "5:00 PM - 7:00 AM")}
                                 </p>
                                 
                                 {/* Time saved badge aligned right with meta row */}
@@ -1721,7 +1763,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             
                             <div className="mb-2">
                               <p className="text-sm text-text-secondary">
-                                Delivered at {brief.timeDelivered} on {brief.timeCreated.split(',')[0]} (Summarizing: {brief.timeRange})
+                                {formatDeliveryText(brief.timeCreated, brief.timeRange)}
                               </p>
                             </div>
                             
