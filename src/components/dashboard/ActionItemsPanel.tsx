@@ -14,6 +14,7 @@ interface ActionItem {
   source: 'slack' | 'gmail';
   sender: string;
   tag: 'Deadline' | 'Action' | 'Decision';
+  priority: 'high' | 'medium' | 'low';
   completed: boolean;
 }
 
@@ -41,6 +42,7 @@ const ActionItemsPanel = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isSectionHovered, setIsSectionHovered] = useState(false);
+  const [showAllPriorities, setShowAllPriorities] = useState(false);
 
   // Sample action items data matching the wireframe
   const [actionItems, setActionItems] = useState<ActionItem[]>([
@@ -50,6 +52,7 @@ const ActionItemsPanel = ({
       source: 'gmail',
       sender: 'Sara Chen',
       tag: 'Deadline',
+      priority: 'high',
       completed: false
     },
     {
@@ -58,6 +61,7 @@ const ActionItemsPanel = ({
       source: 'gmail',
       sender: 'Sara Chen',
       tag: 'Action',
+      priority: 'high',
       completed: false
     },
     {
@@ -66,6 +70,7 @@ const ActionItemsPanel = ({
       source: 'gmail',
       sender: 'Sara Chen',
       tag: 'Decision',
+      priority: 'medium',
       completed: false
     },
     {
@@ -74,13 +79,45 @@ const ActionItemsPanel = ({
       source: 'slack',
       sender: 'Sara Chen',
       tag: 'Decision',
+      priority: 'medium',
+      completed: false
+    },
+    {
+      id: '5',
+      title: 'Update project timeline',
+      source: 'slack',
+      sender: 'John Doe',
+      tag: 'Action',
+      priority: 'low',
+      completed: false
+    },
+    {
+      id: '6',
+      title: 'Plan team meeting',
+      source: 'gmail',
+      sender: 'Jane Smith',
+      tag: 'Action',
+      priority: 'low',
       completed: false
     }
   ]);
 
-  // Filter and sort action items
+  // Filter and sort action items by priority
   const openItems = actionItems.filter(item => !item.completed);
   const openCount = openItems.length;
+  
+  // Group by priority
+  const highItems = openItems.filter(item => item.priority === 'high');
+  const mediumItems = openItems.filter(item => item.priority === 'medium');
+  const lowItems = openItems.filter(item => item.priority === 'low');
+  
+  // Show high + medium by default, with max 5 items total
+  const visibleItems = showAllPriorities 
+    ? openItems 
+    : [...highItems, ...mediumItems].slice(0, 5);
+  
+  const hasLowPriorityItems = lowItems.length > 0;
+  const shouldShowExpandOption = !showAllPriorities && hasLowPriorityItems;
 
   const handleItemClick = useCallback((item: ActionItem) => {
     setSelectedItem(item);
@@ -381,43 +418,136 @@ const ActionItemsPanel = ({
       
       {/* Content Container */}
       <div className="flex-1 overflow-auto">
-        <div className={cn("border border-border-subtle rounded-2xl bg-surface-overlay/30 shadow-sm mx-4 mb-4")}>
-          {/* Action Items List */}
-          <div className="p-4">
-            <div className="space-y-3">
-              {openItems.map(item => (
-                <div key={item.id} className="flex items-center gap-3">
-                  {/* Source Icon */}
-                  <div className="flex-shrink-0">
-                    {getSourceIcon(item.source)}
-                  </div>
-
-                  {/* Checkbox */}
-                  <Checkbox 
-                    checked={item.completed}
-                    onCheckedChange={() => handleMarkDone(item.id)}
-                    className="flex-shrink-0"
-                  />
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-text-primary leading-tight">
-                      {item.title}
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      from {item.sender}
-                    </p>
-                  </div>
-
-                  {/* Tag */}
-                  <div className="flex-shrink-0">
-                    <span className="text-xs text-text-secondary">
-                      {item.tag}
-                    </span>
-                  </div>
+        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--brand-600)] mx-4 mb-4">
+          <div className="p-4 space-y-4">
+            
+            {/* High Priority Section */}
+            {highItems.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-medium" style={{color: 'var(--text-muted)'}}>
+                  HIGH PRIORITY
+                </h3>
+                <div className="space-y-3">
+                  {highItems.map(item => (
+                    <div key={item.id} className="flex items-start gap-3">
+                      <Checkbox 
+                        checked={item.completed}
+                        onCheckedChange={() => handleMarkDone(item.id)}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium leading-tight" style={{color: 'var(--text-secondary)'}}>
+                            {item.title}
+                          </p>
+                          <Badge variant="high">
+                            High
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-1">
+                            {getSourceIcon(item.source)}
+                            <span className="text-xs" style={{color: 'var(--text-muted)'}}>
+                              from {item.sender}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
+
+            {/* Medium Priority Section */}
+            {mediumItems.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-medium" style={{color: 'var(--text-muted)'}}>
+                  MEDIUM PRIORITY
+                </h3>
+                <div className="space-y-3">
+                  {mediumItems.map(item => (
+                    <div key={item.id} className="flex items-start gap-3">
+                      <Checkbox 
+                        checked={item.completed}
+                        onCheckedChange={() => handleMarkDone(item.id)}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium leading-tight" style={{color: 'var(--text-secondary)'}}>
+                            {item.title}
+                          </p>
+                          <Badge variant="medium">
+                            Medium
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-1">
+                            {getSourceIcon(item.source)}
+                            <span className="text-xs" style={{color: 'var(--text-muted)'}}>
+                              from {item.sender}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Low Priority Section - only show when expanded */}
+            {showAllPriorities && lowItems.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-medium" style={{color: 'var(--text-muted)'}}>
+                  LOW PRIORITY
+                </h3>
+                <div className="space-y-3">
+                  {lowItems.map(item => (
+                    <div key={item.id} className="flex items-start gap-3">
+                      <Checkbox 
+                        checked={item.completed}
+                        onCheckedChange={() => handleMarkDone(item.id)}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium leading-tight" style={{color: 'var(--text-secondary)'}}>
+                            {item.title}
+                          </p>
+                          <Badge variant="low">
+                            Low
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-1">
+                            {getSourceIcon(item.source)}
+                            <span className="text-xs" style={{color: 'var(--text-muted)'}}>
+                              from {item.sender}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Show all toggle */}
+            {shouldShowExpandOption && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowAllPriorities(true)}
+                className="w-full text-xs"
+                style={{color: 'var(--text-secondary)'}}
+              >
+                Show all ({lowItems.length} more)
+              </Button>
+            )}
+
           </div>
         </div>
       </div>

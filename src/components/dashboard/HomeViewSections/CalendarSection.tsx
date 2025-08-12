@@ -228,13 +228,16 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
   return (
     <TooltipProvider>
       <div className="w-full space-y-4">
-        {/* Upcoming header */}
-        <h3 className="text-sm font-medium text-text-primary">Upcoming</h3>
+        {/* Header with increased padding */}
+        <div className="pt-6 pb-4">
+          <h3 className="text-sm font-medium" style={{color: 'var(--text-primary)'}}>Today's Schedule</h3>
+          <p className="text-xs mt-1" style={{color: 'var(--text-secondary)'}}>Next 2 meetings</p>
+        </div>
         
-        {/* Next Meeting Card - Reverted to original version with outline */}
+        {/* Next Meeting Card - Updated to match style guide */}
         {nextMeeting && (
           <Card 
-            className="w-full rounded-xl bg-brand-600 cursor-pointer transition-all shadow-none hover:bg-white/5"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--brand-600)] cursor-pointer transition-all hover:bg-white/[0.04] shadow-none"
             onClick={() => onMeetingClick ? onMeetingClick(nextMeeting) : openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
@@ -242,10 +245,10 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
                 {/* Header with time and chips */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h4 className="text-sm font-medium text-text-primary mb-1">
+                    <h4 className="text-sm font-medium mb-1" style={{color: 'var(--text-primary)'}}>
                       {nextMeeting.title}
                     </h4>
-                    <div className="flex items-center gap-2 text-xs text-text-secondary">
+                    <div className="flex items-center gap-2 text-xs" style={{color: 'var(--text-muted)'}}>
                       <Clock className="w-3 h-3" />
                       {nextMeeting.time} • {nextMeeting.duration}
                     </div>
@@ -379,9 +382,14 @@ const CalendarSection = ({ onMeetingClick }: CalendarSectionProps = {}) => {
         )}
 
         {/* Schedule section with header above */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
-          <Card className="w-full rounded-xl bg-brand-600 shadow-none">
+        <div className="space-y-3 pt-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium" style={{color: 'var(--text-primary)'}}>More today</h3>
+            <Button variant="ghost" size="sm" className="text-xs" style={{color: 'var(--text-secondary)'}}>
+              View all ({allMeetings.length})
+            </Button>
+          </div>
+          <Card className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--brand-600)] shadow-none">
             <CardContent className="p-4">
               <div className="space-y-0">
                 {allMeetings.map((meeting, index) => {

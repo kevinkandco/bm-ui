@@ -15,7 +15,8 @@ const DashboardCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-2xl p-3 space-y-3 backdrop-blur-sm",
+      "rounded-xl p-4 space-y-3 transition-all duration-300 hover:bg-white/[0.04]",
+      "bg-[var(--brand-600)] border border-[var(--border-subtle)]",
       className
     )}
     {...props}
@@ -23,7 +24,7 @@ const DashboardCard = React.forwardRef<
     {(title || actions) && (
       <div className="flex items-center justify-between">
         {title && (
-          <h2 className="text-lg font-semibold text-text-primary tracking-tight">
+          <h2 className="text-lg font-semibold tracking-tight" style={{color: 'var(--text-primary)'}}>
             {title}
           </h2>
         )}

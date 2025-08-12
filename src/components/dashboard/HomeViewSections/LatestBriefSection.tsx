@@ -22,70 +22,59 @@ const LatestBriefSection = ({
     scheduledTime: "Tomorrow at 6:00 PM",
     isComingSoon: true
   }];
-  return <div className="space-y-3">
-      <div className={cn("py-4 rounded-lg hover:bg-[hsl(190,28%,22%)]/40 transition-colors cursor-pointer", isSelected ? "bg-[hsl(190,28%,22%)]/30" : "bg-[hsl(190,28%,22%)]/20")} onClick={onClick}>
-        <h3 className="text-sm font-medium text-text-primary mb-1 px-[10px]">Latest brief - Monday @7:30am PT</h3>
-        
-        
+  return <div className="space-y-4">
+      <div 
+        className={cn(
+          "p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--brand-600)] hover:bg-white/[0.04] transition-colors cursor-pointer",
+          isSelected && "bg-white/[0.04]"
+        )} 
+        onClick={onClick}
+      >
+        <div className="space-y-3">
+          <h2 className="text-xl font-semibold leading-7" style={{color: 'var(--text-primary)'}}>
+            Latest Brief
+          </h2>
+          <div className="flex items-center gap-1 text-xs" style={{color: 'var(--text-muted)'}}>
+            <span>Monday @7:30am PT</span>
+            <span>•</span>
+            <span>12 messages</span>
+            <span>•</span>
+            <span>3 actions</span>
+          </div>
+          <Button size="sm" className="bg-gradient-to-r from-[#1B5862] to-[#277F64] text-white">
+            View Brief
+          </Button>
+        </div>
       </div>
 
       {/* Upcoming Briefs Section */}
       <div className="space-y-2">
-        <div onClick={() => setIsUpcomingExpanded(!isUpcomingExpanded)} className="flex items-center justify-between cursor-pointer hover:bg-surface-raised/20 rounded-lg transition-colors my-0 py-[6px]">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-text-secondary mx-[10px]">Upcoming</span>
-            <span className="text-xs text-text-secondary">2 scheduled briefs today</span>
+        <div 
+          onClick={() => setIsUpcomingExpanded(!isUpcomingExpanded)} 
+          className="flex items-center justify-between cursor-pointer hover:bg-white/[0.04] rounded-xl p-3 transition-colors"
+        >
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium" style={{color: 'var(--text-primary)'}}>
+              Upcoming
+            </h3>
+            <div className="space-y-1">
+              <div className="flex items-center gap-1 text-xs" style={{color: 'var(--text-secondary)'}}>
+                <span>Tomorrow 7:30 AM</span>
+                <span>•</span>
+                <span>Daily Brief</span>
+              </div>
+              <div className="flex items-center gap-1 text-xs" style={{color: 'var(--text-secondary)'}}>
+                <span>Tomorrow 6:00 PM</span>
+                <span>•</span>
+                <span>Evening Summary</span>
+              </div>
+            </div>
           </div>
-          {isUpcomingExpanded ? <ChevronDown className="h-4 w-4 text-text-secondary" /> : <ChevronRight className="h-4 w-4 text-text-secondary" />}
+          <Button variant="ghost" size="sm" style={{color: 'var(--text-secondary)'}}>
+            View all
+          </Button>
         </div>
 
-        {isUpcomingExpanded && <div className="animate-fade-in space-y-2">
-            <div className="p-2.5 rounded-lg border border-border-subtle bg-surface-raised/20 opacity-60">
-              <div className="mb-2.5">
-                <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-text-secondary/20 text-text-secondary/70 mb-1.5">
-                  Coming Soon
-                </div>
-                <h4 className="text-xs font-medium text-text-secondary mb-0.5">Daily Brief</h4>
-                <p className="text-xs text-text-secondary/70">
-                  Scheduled for Tomorrow at 7:30 AM
-                </p>
-              </div>
-              
-              <div className="flex gap-1.5">
-                <Button variant="outline" size="sm" disabled className="flex items-center gap-1 text-xs h-6 px-2 opacity-50">
-                  <Calendar className="h-2.5 w-2.5" />
-                  Update Schedule
-                </Button>
-                <Button size="sm" disabled className="flex items-center gap-1 text-xs h-6 px-2 opacity-50">
-                  <Zap className="h-2.5 w-2.5" />
-                  Get Briefed Now
-                </Button>
-              </div>
-            </div>
-            
-            <div className="p-2.5 rounded-lg border border-border-subtle bg-surface-raised/20 opacity-60">
-              <div className="mb-2.5">
-                <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-text-secondary/20 text-text-secondary/70 mb-1.5">
-                  Coming Soon
-                </div>
-                <h4 className="text-xs font-medium text-text-secondary mb-0.5">Evening Summary</h4>
-                <p className="text-xs text-text-secondary/70">
-                  Scheduled for Tomorrow at 6:00 PM
-                </p>
-              </div>
-              
-              <div className="flex gap-1.5">
-                <Button variant="outline" size="sm" disabled className="flex items-center gap-1 text-xs h-6 px-2 opacity-50">
-                  <Calendar className="h-2.5 w-2.5" />
-                  Update Schedule
-                </Button>
-                <Button size="sm" disabled className="flex items-center gap-1 text-xs h-6 px-2 opacity-50">
-                  <Zap className="h-2.5 w-2.5" />
-                  Get Briefed Now
-                </Button>
-              </div>
-            </div>
-          </div>}
       </div>
     </div>;
 };
