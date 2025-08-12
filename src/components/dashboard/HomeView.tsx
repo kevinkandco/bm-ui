@@ -1737,20 +1737,35 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   
                   <div className="space-y-4">
                     {allBriefs.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 hover:bg-surface-raised/40 transition-colors cursor-pointer shadow-sm" onClick={() => handleBriefSelect(brief.id)}>
-                        <div className="flex items-center gap-3">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
+                        <div className="flex items-start gap-4">
+                          <Button variant="ghost" size="sm" className="h-12 w-12 p-0 hover:bg-accent-primary/20 rounded-full bg-accent-primary/10 mt-1" onClick={e => {
                       e.stopPropagation();
                       handlePlayBrief(brief.id);
                     }}>
-                            {playingBrief === brief.id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
+                            {playingBrief === brief.id ? <Pause className="h-5 w-5 text-accent-primary" /> : <Play className="h-5 w-5 text-accent-primary" />}
                           </Button>
+                          
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-1">
-                              <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
-                              <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="text-xs px-2 py-0.5 h-5">
-                                  {brief.briefType}
-                                </Badge>
+                              <h3 className="font-semibold text-text-primary text-base">{brief.name}</h3>
+                              <div className="flex items-center gap-4 text-sm text-text-secondary">
+                                <span>{brief.slackMessages.fromPriorityPeople} Slack</span>
+                                <span>{brief.emails.fromPriorityPeople} Emails</span>
+                                <span>{brief.actionItems} Actions</span>
+                              </div>
+                            </div>
+                            
+                            <div className="mb-2">
+                              <p className="text-sm text-text-secondary">
+                                Delivered at {brief.timeDelivered} on {brief.timeCreated.split(',')[0]} (Summarizing: {brief.timeRange})
+                              </p>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <span className="text-xs text-text-muted">
+                                  {brief.briefType === 'structured' ? 'Automatically generated brief' : 'Ad-hoc brief'}
+                                </span>
                                 {brief.rating && (
                                   <div className="flex items-center">
                                     {brief.rating === "up" ? (
@@ -1761,24 +1776,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </div>
                                 )}
                               </div>
-                            </div>
-                            <div className="flex items-center gap-2 text-xs text-text-secondary mb-1">
-                              <span>Delivered: {brief.timeDelivered}</span>
-                              <span>•</span>
-                              <span>{brief.timeRange}</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <p className="text-xs text-text-secondary">
-                                {brief.slackMessages.fromPriorityPeople} Slack | {brief.emails.fromPriorityPeople} Emails | {brief.actionItems} Actions
-                              </p>
-                              <div className="flex items-center gap-1 text-xs text-accent-primary">
-                                <Clock className="h-3 w-3" />
-                                <span>{brief.minutesSaved}m saved</span>
+                              
+                              <div className="flex items-center gap-1 text-sm font-medium text-green-400">
+                                <Clock className="h-4 w-4" />
+                                <span>~{brief.minutesSaved}min saved</span>
                               </div>
                             </div>
-                          </div>
-                          <div className="text-xs text-text-secondary">
-                            {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : brief.id === 3 ? '1d' : brief.id === 4 ? '2d' : '3d'}
                           </div>
                         </div>
                       </div>)}
