@@ -1267,65 +1267,40 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div> : <div className="space-y-2">
                               {/* Next 2 meetings expanded */}
                               {upcomingMeetings.map((meeting, index) => <div key={meeting.id}>
-                                  <div className="py-2.5 cursor-pointer transition-colors hover:bg-surface-raised/20 rounded-lg" onClick={() => openMeetingDetails(meeting)}>
+                                  <div className="py-1.5 px-2 cursor-pointer transition-colors hover:bg-surface-raised/10 rounded-md border-l-2 border-transparent hover:border-l-accent-primary/30" onClick={() => openMeetingDetails(meeting)}>
                                     <div className="flex items-center justify-between gap-3">
-                                      {/* Time column with fixed width */}
-                                      <div className="min-w-[80px] flex-shrink-0">
-                                        <div className="text-sm font-medium text-text-primary">{meeting.time}</div>
+                                      {/* Time column - more compact */}
+                                      <div className="min-w-[60px] flex-shrink-0">
+                                        <div className="text-xs font-medium text-text-primary">{meeting.time}</div>
                                       </div>
                                       
-                                      {/* Meeting details */}
+                                      {/* Meeting details - single line */}
                                       <div className="flex-1 min-w-0">
-                                        {/* Line 1: Title */}
-                                        <div className="flex items-center gap-2 mb-1">
-                                          <h4 className="text-sm font-medium text-text-primary truncate">
+                                        <div className="flex items-center gap-2">
+                                          <h4 className="text-xs font-medium text-text-primary truncate">
                                             {meeting.title}
                                           </h4>
+                                          <span className="text-xs text-text-secondary">•</span>
+                                          <span className="text-xs text-text-secondary">{meeting.duration}</span>
                                           {meeting.isRecording && <div className="flex items-center gap-1">
-                                              <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
-                                              <span className="text-xs text-error">REC</span>
+                                              <div className="w-1.5 h-1.5 bg-error rounded-full animate-pulse" />
+                                              <span className="text-[10px] text-error font-medium">REC</span>
                                             </div>}
-                                        </div>
-                                        
-                                        {/* Line 2: Meta info */}
-                                        <div className="flex items-center gap-2 text-xs text-text-secondary">
-                                          <Users className="w-3 h-3" />
-                                          <span>{getAttendanceText(meeting)}</span>
-                                          <span>•</span>
-                                          <span>{meeting.duration}</span>
-                                          {meeting.hasNotes && <>
-                                              <span>•</span>
-                                              <BookOpen className="w-3 h-3" />
-                                            </>}
+                                          {meeting.hasNotes && <BookOpen className="w-3 h-3 text-text-secondary" />}
                                         </div>
                                       </div>
                                       
-                                      {/* Right actions */}
-                                      <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                                        
-                                        <Button size="sm" className={`h-6 px-2 text-xs rounded-full ${meeting.hasProxy ? "bg-brand-500 text-text-secondary hover:bg-brand-500" : "bg-brand-300 text-background hover:bg-brand-300/90"}`} disabled={meeting.hasProxy}>
+                                      {/* Right actions - smaller */}
+                                      <div className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                                        <Button size="sm" className={`h-5 px-2 text-[10px] rounded-full ${meeting.hasProxy ? "bg-brand-500 text-text-secondary hover:bg-brand-500" : "bg-brand-300 text-background hover:bg-brand-300/90"}`} disabled={meeting.hasProxy}>
                                           Join
                                         </Button>
-                                        
-                                        
                                       </div>
                                     </div>
-                                    
-                                    {/* Expanded details shown on hover or toggle */}
-                                    <div className="mt-2 pl-[80px] text-xs text-text-secondary line-clamp-2">
-                                      {meeting.aiSummary}
-                                    </div>
-                                    
-                                    {/* Deliverables preview */}
-                                    {meeting.hasProxy && <div className="mt-1 pl-[80px] text-xs text-text-secondary">
-                                        {meeting.summaryReady ? <span className="text-accent-primary cursor-pointer hover:underline">
-                                            Summary & action items ready
-                                          </span> : "Summary & action items will appear ≈ 10 min after call"}
-                                      </div>}
                                   </div>
                                   
                                    {/* Subtle separator between meetings */}
-                                  {index < upcomingMeetings.length - 1 && <div className="border-t border-white/4 my-3" />}
+                                  {index < upcomingMeetings.length - 1 && <div className="border-t border-white/4 my-1.5" />}
                                 </div>)}
 
                               {/* More today expander */}
