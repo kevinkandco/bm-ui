@@ -1100,25 +1100,25 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 {/* Navigation sections - simplified */}
                 <div className="w-full mt-8 pt-6 space-y-2 px-0">
                   {/* Home */}
-                  <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                  <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                     <Home className="h-4 w-4 mr-2" />
                     Home
                   </Button>
 
                   {/* Briefs */}
-                  <Button variant="ghost" onClick={handleNavigateToAllBriefs} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                  <Button variant="ghost" onClick={handleNavigateToAllBriefs} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                     <FileText className="h-4 w-4 mr-2" />
                     Briefs
                   </Button>
 
                   {/* Calendar */}
-                  <Button variant="ghost" onClick={handleNavigateToAllCalendar} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                  <Button variant="ghost" onClick={handleNavigateToAllCalendar} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                     <Calendar className="h-4 w-4 mr-2" />
                     Calendar
                   </Button>
 
                   {/* Follow-ups */}
-                  <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                  <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                     <ClipboardCheck className="h-4 w-4 mr-2" />
                     Follow-ups
                   </Button>
@@ -1198,7 +1198,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                           <div className="space-y-4">
                             {/* Multiple Briefs Available Today - Show Catch Up Brief if available */}
-                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate('/dashboard/briefs/catch-up')}>
+                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => navigate('/dashboard/briefs/catch-up')}>
                               <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
@@ -1252,7 +1252,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div>
 
                             {/* Daily Combined Brief */}
-                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
+                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
                               <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
@@ -1312,7 +1312,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             
                             {/* Upcoming Section */}
                             <div>
-                              <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={() => setShowUpcomingBriefs(!showUpcomingBriefs)}>
+                              <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => setShowUpcomingBriefs(!showUpcomingBriefs)}>
                                 <div className="flex items-center gap-3">
                                   <h4 className="text-base font-medium text-text-primary">Upcoming</h4>
                                   {upcomingBriefs.length > 0 && !showUpcomingBriefs && <span className="text-sm text-text-secondary">
@@ -1379,7 +1379,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             <div className="border-t border-white/8" />
                             
                             {/* Past Briefs Section */}
-                            <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={() => navigate('/dashboard/briefs')}>
+                            <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => navigate('/dashboard/briefs')}>
                               <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
                               <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
                                 <span>View all</span>
@@ -1401,7 +1401,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div> : <div className="space-y-2">
                               {/* Next 2 meetings expanded */}
                               {upcomingMeetings.map((meeting, index) => <div key={meeting.id}>
-                                  <div className="py-1.5 px-2 cursor-pointer transition-colors hover:bg-surface-raised/10 rounded-md border-l-2 border-transparent hover:border-l-accent-primary/30" onClick={() => openMeetingDetails(meeting)}>
+                                  <div className="py-1.5 px-2 cursor-pointer transition-colors hover:bg-white/[0.04] rounded-md border-l-2 border-transparent hover:border-l-accent-primary/30" onClick={() => openMeetingDetails(meeting)}>
                                     <div className="flex items-center justify-between gap-3">
                                       {/* Time column - more compact */}
                                       <div className="min-w-[60px] flex-shrink-0">
@@ -1448,7 +1448,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   {showMoreToday && <div className="space-y-1 mt-2">
                                       {allMeetings.filter(m => !upcomingMeetings.includes(m)).map((meeting, index) => {
                                 const isPast = meeting.minutesUntil < 0;
-                                return <div key={meeting.id} className={`flex items-center gap-3 py-1.5 px-2 cursor-pointer hover:bg-surface-raised/20 rounded transition-colors ${isPast ? 'opacity-60' : 'opacity-100'}`} onClick={() => openMeetingDetails(meeting)}>
+                                return <div key={meeting.id} className={`flex items-center gap-3 py-1.5 px-2 cursor-pointer hover:bg-white/[0.04] rounded transition-colors ${isPast ? 'opacity-60' : 'opacity-100'}`} onClick={() => openMeetingDetails(meeting)}>
                                             {/* Time */}
                                             <div className="text-xs text-text-secondary min-w-[80px] font-mono">
                                               {meeting.time}
@@ -1498,7 +1498,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <div 
                                   key={item.id} 
                                   className={cn(
-                                    "flex items-center gap-4 py-3 px-4 hover:bg-surface-raised/20 cursor-pointer transition-colors",
+                                    "flex items-center gap-4 py-3 px-4 hover:bg-white/[0.04] cursor-pointer transition-colors",
                                     selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary",
                                     index === 0 && "pt-4"
                                   )}
