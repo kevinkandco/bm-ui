@@ -939,42 +939,39 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Left Column */}
                     <div className="space-y-8">
-                      {/* Daily Briefing Section */}
-                      <DashboardCard title="Daily briefing">
-                        <div className="space-y-4">
-                          {/* Recent Briefs */}
-                          {recentBriefs.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer" onClick={() => handleBriefSelect(brief.id)}>
-                              <div className="flex items-center gap-3">
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
-                            e.stopPropagation();
-                            handlePlayBrief(brief.id);
-                          }}>
-                                  {playingBrief === brief.id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
-                                </Button>
-                                <div className="flex-1">
-                                  <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
-                                  <p className="text-xs text-text-secondary mb-1">{brief.timeCreated}</p>
-                                  <p className="text-xs text-text-secondary">
-                                    {brief.slackMessages.fromPriorityPeople} Slack | {brief.emails.fromPriorityPeople} Emails | {brief.actionItems} Actions
-                                  </p>
-                                </div>
-                                <div className="text-xs text-text-secondary">
-                                  {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : '2d'}
-                                </div>
-                              </div>
-                            </div>)}
-                          
-                          {/* Upcoming Brief */}
-                          <div className="bg-surface-raised/20 rounded-lg p-4 border border-border-subtle opacity-60">
-                            <div className="flex items-center gap-3">
-                              <div className="h-8 w-8 rounded flex items-center justify-center bg-surface-overlay border border-border-subtle">
-                                <Clock className="h-4 w-4 text-text-secondary" />
-                              </div>
-                              <div className="flex-1">
-                                <h3 className="font-medium text-text-primary text-sm">Upcoming</h3>
-                                <p className="text-xs text-text-secondary">2 scheduled briefs today</p>
-                              </div>
-                              <ChevronDown className="h-4 w-4 text-text-secondary" />
+                      {/* Latest Brief Section */}
+                      <DashboardCard 
+                        title="Latest brief"
+                        actions={
+                          <Button 
+                            variant="ghost" 
+                            onClick={handleNavigateToAllBriefs}
+                            className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                          >
+                            View all
+                          </Button>
+                        }
+                      >
+                        <div 
+                          className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1"
+                          onClick={() => handleBriefSelect(recentBriefs[0].id)}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
+                              e.stopPropagation();
+                              handlePlayBrief(recentBriefs[0].id);
+                            }}>
+                              {playingBrief === recentBriefs[0].id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
+                            </Button>
+                            <div className="flex-1">
+                              <h3 className="font-medium text-text-primary text-sm mb-1">{recentBriefs[0].name}</h3>
+                              <p className="text-xs text-text-secondary mb-1">{recentBriefs[0].timeCreated}</p>
+                              <p className="text-xs text-text-secondary">
+                                {recentBriefs[0].slackMessages.fromPriorityPeople} Slack | {recentBriefs[0].emails.fromPriorityPeople} Emails | {recentBriefs[0].actionItems} Actions
+                              </p>
+                            </div>
+                            <div className="text-xs text-text-secondary">
+                              12hrs
                             </div>
                           </div>
                         </div>
