@@ -1235,163 +1235,133 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               <p className="text-sm text-text-secondary">No meetings soon</p>
                             </div>
                           ) : (
-                            <div className="space-y-4">
+                            <div className="space-y-2">
                               {/* Next 2 meetings expanded */}
                               {upcomingMeetings.map((meeting, index) => (
-                                <div key={meeting.id} className="space-y-3">
+                                <div key={meeting.id}>
                                   <div 
-                                    className="bg-brand-600 rounded-xl p-4 cursor-pointer transition-all hover:bg-white/5"
+                                    className="py-2.5 cursor-pointer transition-colors hover:bg-surface-raised/20 rounded-lg"
                                     onClick={() => openMeetingDetails(meeting)}
                                   >
-                                    <div className="space-y-3">
-                                      {/* Header with time and chips */}
-                                      <div className="flex items-start justify-between mb-3">
-                                        <div>
-                                          <h4 className="text-sm font-medium text-text-primary mb-1">
+                                    <div className="flex items-center justify-between gap-3">
+                                      {/* Time column with fixed width */}
+                                      <div className="min-w-[80px] flex-shrink-0">
+                                        <div className="text-sm font-medium text-text-primary">{meeting.time}</div>
+                                      </div>
+                                      
+                                      {/* Meeting details */}
+                                      <div className="flex-1 min-w-0">
+                                        {/* Line 1: Title */}
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <h4 className="text-sm font-medium text-text-primary truncate">
                                             {meeting.title}
                                           </h4>
-                                          <div className="flex items-center gap-2 text-xs text-text-secondary">
-                                            <Clock className="w-3 h-3" />
-                                            {meeting.time} • {meeting.duration}
-                                          </div>
-                                        </div>
-                                        
-                                        {/* Top-right chips */}
-                                        <div className="flex items-center gap-2">
                                           {meeting.isRecording && (
                                             <div className="flex items-center gap-1">
                                               <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
                                               <span className="text-xs text-error">REC</span>
                                             </div>
                                           )}
-                                          
-                                          <Tooltip>
-                                            <TooltipTrigger asChild>
-                                              <Button
-                                                onClick={(e) => {
-                                                  e.stopPropagation();
-                                                  toggleProxy(meeting.id);
-                                                }}
-                                                variant={meeting.hasProxy ? "default" : "outline"}
-                                                size="sm"
-                                                className={`h-6 px-3 text-xs rounded-full ${
-                                                  meeting.hasProxy 
-                                                    ? "bg-success text-background hover:bg-success/90" 
-                                                    : "border-white/6 text-text-secondary hover:border-success hover:text-success"
-                                                }`}
-                                              >
-                                                {meeting.hasProxy ? "Proxy On" : "Send Proxy"}
-                                              </Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                              <p className="text-xs max-w-xs">
-                                                Proxy will record, transcribe, and send a brief to you only.
-                                              </p>
-                                            </TooltipContent>
-                                          </Tooltip>
                                         </div>
-                                      </div>
-
-                                      {/* AI Summary */}
-                                      <div className="mb-3">
-                                        <div className="flex items-start gap-2">
-                                          <p className="text-xs text-text-secondary flex-1">
-                                            {meeting.aiSummary}
-                                          </p>
-                                          <Button
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              openInstructionsDrawer(meeting);
-                                            }}
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-5 w-5 p-0 text-text-secondary hover:text-text-primary"
-                                          >
-                                            {meeting.hasNotes ? (
+                                        
+                                        {/* Line 2: Meta info */}
+                                        <div className="flex items-center gap-2 text-xs text-text-secondary">
+                                          <Users className="w-3 h-3" />
+                                          <span>{getAttendanceText(meeting)}</span>
+                                          <span>•</span>
+                                          <span>{meeting.duration}</span>
+                                          {meeting.hasNotes && (
+                                            <>
+                                              <span>•</span>
                                               <BookOpen className="w-3 h-3" />
-                                            ) : (
-                                              <Pencil className="w-3 h-3" />
-                                            )}
-                                          </Button>
+                                            </>
+                                          )}
                                         </div>
                                       </div>
-
-                                      {/* Deliverables preview */}
-                                      {meeting.hasProxy && (
-                                        <div className="mb-3">
-                                          <p className="text-xs text-text-secondary">
-                                            {meeting.summaryReady ? (
-                                              <span className="text-accent-primary cursor-pointer hover:underline">
-                                                Summary & action items ready
-                                              </span>
-                                            ) : (
-                                              "Summary & action items will appear here ≈ 10 min after the call"
-                                            )}
-                                          </p>
-                                        </div>
-                                      )}
-
-                                      {/* Bottom section with attendance and CTA */}
-                                      <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                          <Users className="w-3 h-3 text-text-secondary" />
-                                          <span className="text-xs text-text-secondary">
-                                            {getAttendanceText(meeting)}
-                                          </span>
-                                        </div>
-
-                                        {/* Split button CTA */}
-                                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                                          <Button
-                                            size="sm"
-                                            className={`h-7 px-3 text-xs rounded-l-full ${
-                                              meeting.hasProxy 
-                                                ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
-                                                : "bg-brand-300 text-background hover:bg-brand-300/90"
-                                            }`}
-                                            disabled={meeting.hasProxy}
-                                          >
-                                            Join Live
-                                          </Button>
-                                          
-                                          <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                              <Button
-                                                size="sm"
-                                                className={`h-7 w-6 px-0 rounded-r-full border-l border-l-white/20 ${
-                                                  meeting.hasProxy 
-                                                    ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
-                                                    : "bg-brand-300 text-background hover:bg-brand-300/90"
-                                                }`}
-                                              >
-                                                <ChevronDown className="w-3 h-3" />
-                                              </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="bg-brand-600 border-white/4">
-                                              <DropdownMenuItem 
-                                                onClick={() => toggleProxy(meeting.id)}
-                                                className="text-text-primary hover:bg-white/8"
-                                              >
-                                                Send Proxy Instead
-                                              </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                          </DropdownMenu>
-                                        </div>
+                                      
+                                      {/* Right actions */}
+                                      <div className="flex items-center gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Button
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleProxy(meeting.id);
+                                              }}
+                                              variant={meeting.hasProxy ? "default" : "outline"}
+                                              size="sm"
+                                              className={`h-6 px-2 text-xs rounded-full ${
+                                                meeting.hasProxy 
+                                                  ? "bg-success text-background hover:bg-success/90" 
+                                                  : "border-white/6 text-text-secondary hover:border-success hover:text-success"
+                                              }`}
+                                            >
+                                              {meeting.hasProxy ? "Proxy" : "Send Proxy"}
+                                            </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p className="text-xs max-w-xs">
+                                              Proxy will record, transcribe, and send a brief to you only.
+                                            </p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                        
+                                        <Button
+                                          size="sm"
+                                          className={`h-6 px-2 text-xs rounded-full ${
+                                            meeting.hasProxy 
+                                              ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
+                                              : "bg-brand-300 text-background hover:bg-brand-300/90"
+                                          }`}
+                                          disabled={meeting.hasProxy}
+                                        >
+                                          Join
+                                        </Button>
+                                        
+                                        <Button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            openInstructionsDrawer(meeting);
+                                          }}
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                                        >
+                                          <Pencil className="w-3 h-3" />
+                                        </Button>
                                       </div>
                                     </div>
+                                    
+                                    {/* Expanded details shown on hover or toggle */}
+                                    <div className="mt-2 pl-[80px] text-xs text-text-secondary line-clamp-2">
+                                      {meeting.aiSummary}
+                                    </div>
+                                    
+                                    {/* Deliverables preview */}
+                                    {meeting.hasProxy && (
+                                      <div className="mt-1 pl-[80px] text-xs text-text-secondary">
+                                        {meeting.summaryReady ? (
+                                          <span className="text-accent-primary cursor-pointer hover:underline">
+                                            Summary & action items ready
+                                          </span>
+                                        ) : (
+                                          "Summary & action items will appear ≈ 10 min after call"
+                                        )}
+                                      </div>
+                                    )}
                                   </div>
                                   
-                                  {/* Separator between expanded meetings */}
+                                  {/* Subtle separator between meetings */}
                                   {index < upcomingMeetings.length - 1 && (
-                                   <div className="border-t border-white/4" />
+                                    <div className="border-t border-white/4 my-2" />
                                   )}
                                 </div>
                               ))}
 
                               {/* More today expander */}
                               {remainingMeetings.length > 0 && (
-                                <div className="space-y-3">
-                                  <div className="border-t border-white/4" />
+                                <div className="space-y-2">
+                                  <div className="border-t border-white/4 my-2" />
                                   <Button
                                     variant="ghost"
                                     onClick={() => setShowMoreToday(!showMoreToday)}
@@ -1402,55 +1372,39 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </Button>
                                   
                                   {showMoreToday && (
-                                    <div className="space-y-0 bg-brand-600 rounded-xl">
-                                      {allMeetings.map((meeting, index) => {
+                                    <div className="space-y-1 mt-2">
+                                      {allMeetings.filter(m => !upcomingMeetings.includes(m)).map((meeting, index) => {
                                         const isPast = meeting.minutesUntil < 0;
-                                        const isNext = meeting.id === nextMeeting?.id;
                                         
                                         return (
-                                          <div key={meeting.id} className="relative">
-                                            {/* Timeline connector */}
-                                            {index > 0 && (
-                                              <div className={`absolute left-16 top-0 w-0.5 h-4 ${
-                                                allMeetings[index - 1].minutesUntil < 0 ? 'bg-error' : 'bg-white/8'
-                                              }`} />
-                                            )}
-                                            
-                                            <div 
-                                              className={`flex items-center gap-4 py-3 px-4 cursor-pointer hover:bg-white/8 rounded-lg transition-colors ${
-                                                isNext ? 'opacity-100' : 'opacity-80'
-                                              }`}
-                                              onClick={() => openMeetingDetails(meeting)}
-                                            >
-                                              {/* Time */}
-                                              <div className="text-sm text-text-secondary min-w-[100px] font-mono">
-                                                {meeting.time}
-                                              </div>
-                                              
-                                              {/* Title */}
-                                              <div className="flex-1">
-                                                <span className={`text-sm ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
-                                                  {meeting.title}
-                                                </span>
-                                              </div>
-                                              
-                                              {/* Status indicator */}
-                                              <div className="flex items-center gap-2">
-                                                {meeting.hasProxy && (
-                                                  <div className="w-2 h-2 bg-success rounded-full" />
-                                                )}
-                                                {meeting.isRecording && (
-                                                  <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
-                                                )}
-                                              </div>
+                                          <div 
+                                            key={meeting.id}
+                                            className={`flex items-center gap-3 py-1.5 px-2 cursor-pointer hover:bg-surface-raised/20 rounded transition-colors ${
+                                              isPast ? 'opacity-60' : 'opacity-100'
+                                            }`}
+                                            onClick={() => openMeetingDetails(meeting)}
+                                          >
+                                            {/* Time */}
+                                            <div className="text-xs text-text-secondary min-w-[80px] font-mono">
+                                              {meeting.time}
                                             </div>
                                             
-                                            {/* Timeline indicator line - red line shows current time */}
-                                            {meeting.minutesUntil < 0 && allMeetings[index + 1]?.minutesUntil >= 0 && (
-                                              <div className="absolute left-0 right-0 top-full">
-                                                <div className="h-0.5 bg-error w-full" />
-                                              </div>
-                                            )}
+                                            {/* Title */}
+                                            <div className="flex-1 min-w-0">
+                                              <span className={`text-xs truncate ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
+                                                {meeting.title}
+                                              </span>
+                                            </div>
+                                            
+                                            {/* Status indicators */}
+                                            <div className="flex items-center gap-1 flex-shrink-0">
+                                              {meeting.hasProxy && (
+                                                <div className="w-1.5 h-1.5 bg-success rounded-full" />
+                                              )}
+                                              {meeting.isRecording && (
+                                                <div className="w-1.5 h-1.5 bg-error rounded-full animate-pulse" />
+                                              )}
+                                            </div>
                                           </div>
                                         );
                                       })}
