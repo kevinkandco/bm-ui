@@ -1162,7 +1162,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           background: `
               radial-gradient(
                 circle at top left,
-                #2A8A5F 0%,
+                #10191E 0%,
                 #1E646E 30%,
                 #000000 70%
               ),
