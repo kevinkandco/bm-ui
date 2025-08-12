@@ -18,9 +18,10 @@ interface BriefDrawerProps {
   open: boolean;
   briefId: number | null;
   onClose: () => void;
+  onFollowUpClick?: (item: any) => void;
 }
 
-const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
+const BriefDrawer = ({ open, briefId, onClose, onFollowUpClick }: BriefDrawerProps) => {
   const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -311,7 +312,14 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
               
               <TabsContent value="followups" className="mt-0 space-y-3">
                 {briefData.followUps.map((item) => (
-                  <div key={item.id} className="bg-surface-raised/20 rounded-xl p-4 border border-border-subtle">
+                  <div 
+                    key={item.id} 
+                    className="bg-surface-raised/20 rounded-xl p-4 border border-border-subtle cursor-pointer hover:bg-surface-raised/30 transition-colors"
+                    onClick={() => {
+                      onFollowUpClick?.(item);
+                      onClose();
+                    }}
+                  >
                     <div className="flex items-start gap-3">
                       {getSourceIcon(item.source)}
                       <div className="flex-1 min-w-0">
@@ -331,7 +339,10 @@ const BriefDrawer = ({ open, briefId, onClose }: BriefDrawerProps) => {
                             variant="ghost" 
                             size="sm" 
                             className="h-6 px-2 text-xs mt-2 text-accent-primary hover:text-accent-primary/80"
-                            onClick={() => window.open(item.originalLink, '_blank')}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(item.originalLink, '_blank');
+                            }}
                           >
                             <ExternalLink className="h-3 w-3 mr-1" />
                             View Original

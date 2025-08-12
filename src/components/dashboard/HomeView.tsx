@@ -684,9 +684,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setSelectedMessage(null);
+    setSelectedTranscript(null);
     setIsHomeSelected(false);
     setFollowUpsFilter('current');
-    setRightPanelCollapsed(false);
   }, []);
 
   // Handler for calendar meeting clicks
@@ -895,7 +895,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         <MobileStatusModal isOpen={showStatusModal} onClose={() => setShowStatusModal(false)} onSelectStatus={handleStatusSelect} currentStatus={userStatus === 'active' ? 'online' : userStatus === 'focus' ? 'focus' : userStatus === 'vacation' ? 'vacation' : userStatus === 'away' ? 'offline' : 'online'} />
 
         {/* Mobile Brief Drawer */}
-        <BriefDrawer open={showMobileBriefDrawer} briefId={selectedBrief} onClose={() => setShowMobileBriefDrawer(false)} />
+        <BriefDrawer open={showMobileBriefDrawer} briefId={selectedBrief} onClose={() => setShowMobileBriefDrawer(false)} onFollowUpClick={handleFollowUpClick} />
       </div>;
   }
   return <div className="min-h-screen flex flex-col">
