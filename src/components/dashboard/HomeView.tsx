@@ -1194,65 +1194,86 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
                     <div className="space-y-16">
-                  {/* Latest Brief Section */}
-                      <div className="space-y-3">
+                  {/* Today's Briefs Section */}
+                      <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h2 className="text-lg font-semibold text-text-primary tracking-tight">Latest brief</h2>
-                          <Button variant="ghost" onClick={handleNavigateToAllBriefs} className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
-                            View all
-                          </Button>
+                          <h2 className="text-lg font-semibold text-text-primary tracking-tight">Today's Briefs</h2>
                         </div>
+                        
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
-                        <div className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1" onClick={() => handleBriefSelect(recentBriefs[0].id)}>
-                          <div className="flex items-center gap-3">
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
-                            e.stopPropagation();
-                            handlePlayBrief(recentBriefs[0].id);
-                          }}>
-                              {playingBrief === recentBriefs[0].id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
-                            </Button>
-                            <div className="flex-1">
-                              <h3 className="font-medium text-text-primary text-sm mb-1">{recentBriefs[0].name}</h3>
-                              <p className="text-xs text-text-secondary mb-1">{recentBriefs[0].timeCreated}</p>
-                              <p className="text-xs text-text-secondary">
-                                {recentBriefs[0].slackMessages.fromPriorityPeople} Slack | {recentBriefs[0].emails.fromPriorityPeople} Emails | {recentBriefs[0].actionItems} Actions
-                              </p>
-                            </div>
-                            <div className="text-xs text-text-secondary">
-                              12hrs
-                            </div>
-                          </div>
-                        </div>
-                        </DashboardCard>
-                      </div>
-
-                      {/* Upcoming Briefs Section */}
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h2 className="text-lg font-semibold text-text-primary tracking-tight">Upcoming briefs</h2>
-                          <Button variant="ghost" onClick={handleNavigateToAllBriefs} className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
-                            View all
-                          </Button>
-                        </div>
-                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
-                        {upcomingBriefs.length > 0 ? <div className="space-y-3">
-                            {upcomingBriefs.slice(0, 2).map(brief => <div key={brief.id} className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1" onClick={handleNavigateToAllBriefs}>
-                                <div className="flex items-center gap-3">
-                                  <div className="h-8 w-8 rounded flex items-center justify-center bg-surface-overlay/50">
-                                    <Clock className="h-4 w-4 text-text-secondary" />
+                          <div className="space-y-4">
+                            {/* Daily Combined Brief */}
+                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => handleBriefSelect(recentBriefs[0].id)}>
+                              <div className="flex items-center gap-4">
+                                {/* Play Button */}
+                                <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
+                                  e.stopPropagation();
+                                  handlePlayBrief(recentBriefs[0].id);
+                                }}>
+                                  {playingBrief === recentBriefs[0].id ? <Pause className="h-6 w-6 text-accent-primary" /> : <Play className="h-6 w-6 text-accent-primary" />}
+                                </Button>
+                                
+                                {/* Brief Details */}
+                                <div className="flex-1">
+                                  <h3 className="text-base font-semibold text-text-primary mb-1">Daily Combined Brief</h3>
+                                  <p className="text-sm text-text-secondary mb-2">
+                                    Delivered at 7 AM on {new Date().toLocaleDateString('en-US', { 
+                                      month: 'long', 
+                                      day: 'numeric', 
+                                      year: 'numeric' 
+                                    })} (Summarizing: 5:00 PM - 7:00 AM)
+                                  </p>
+                                  <p className="text-xs text-text-secondary">Automatically generated brief</p>
+                                </div>
+                                
+                                {/* Stats and Time Saved */}
+                                <div className="text-right">
+                                  <div className="flex items-center gap-4 text-sm text-text-secondary mb-2">
+                                    <span>{recentBriefs[0].slackMessages.total} Slack</span>
+                                    <span>{recentBriefs[0].emails.total} Emails</span>
+                                    <span>{recentBriefs[0].actionItems} Actions</span>
                                   </div>
-                                  <div className="flex-1">
-                                    <h3 className="font-medium text-text-primary text-sm mb-1">{brief.name}</h3>
-                                    <p className="text-xs text-text-secondary">{brief.scheduledTime}</p>
+                                  <div className="flex items-center gap-1 text-sm text-success">
+                                    <Clock className="w-4 h-4" />
+                                    <span>~62min saved</span>
                                   </div>
                                 </div>
-                              </div>)}
-                          </div> : <div className="text-center py-4">
-                            <p className="text-sm text-text-secondary mb-2">No briefs scheduled.</p>
-                            <Button variant="ghost" onClick={handleNavigateToAllBriefs} className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
-                              Schedule one
-                            </Button>
-                          </div>}
+                                
+                                {/* Expand Arrow */}
+                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                              </div>
+                            </div>
+                            
+                            {/* Separator */}
+                            <div className="border-t border-white/8" />
+                            
+                            {/* Upcoming Section */}
+                            <div>
+                              <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={handleNavigateToAllBriefs}>
+                                <div className="flex items-center gap-3">
+                                  <h4 className="text-base font-medium text-text-primary">Upcoming</h4>
+                                  {upcomingBriefs.length > 0 && (
+                                    <span className="text-sm text-text-secondary">
+                                      Daily Brief • Tomorrow at 7:30 AM
+                                    </span>
+                                  )}
+                                </div>
+                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                              </div>
+                            </div>
+                            
+                            {/* Separator */}
+                            <div className="border-t border-white/8" />
+                            
+                            {/* Past Briefs Section */}
+                            <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={handleNavigateToAllBriefs}>
+                              <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
+                              <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
+                                <span>View all</span>
+                                <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                              </div>
+                            </div>
+                          </div>
                         </DashboardCard>
                       </div>
 
