@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 /**
  * HaloPulse
@@ -35,13 +35,23 @@ export default function HaloPulse({
   intensity = 1.0,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef<number>(0);
   const [dpr, setDpr] = useState(1);
+  const [isVisible, setIsVisible] = useState(true);
 
-  // Reduced motion
+  // Visibility and motion optimization
   const prefersReduced =
     typeof window !== "undefined" &&
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsVisible(!document.hidden);
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   // Fit canvas to CSS size * DPR
   useEffect(() => {
@@ -92,8 +102,8 @@ export default function HaloPulse({
     function frame(t: number) {
       if (!last) last = t;
       const dt = t - last;
-      if (dt < minDt) {
-        raf = requestAnimationFrame(frame);
+      if (dt < minDt || !isVisible) {
+        rafRef.current = requestAnimationFrame(frame);
         return;
       }
       last = t;
@@ -190,7 +200,7 @@ export default function HaloPulse({
       ctx.fill();
       ctx.restore();
 
-      raf = requestAnimationFrame(frame);
+      rafRef.current = requestAnimationFrame(frame);
     }
 
     if (prefersReduced) {
@@ -199,9 +209,11 @@ export default function HaloPulse({
       return;
     }
 
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
-  }, [dpr, background, anchors.join(","), fpsCap, intensity, prefersReduced]);
+    rafRef.current = requestAnimationFrame(frame);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [dpr, background, anchors.join(","), fpsCap, intensity, prefersReduced, isVisible]);
 
   return (
     <div className={className} style={{ width: size, height: size }}>

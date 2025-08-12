@@ -1,5 +1,5 @@
 // File: SignalSweepBar.tsx (status-aware)
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 type Status = "active" | "offline" | "focused" | "ooo";
 
@@ -26,7 +26,9 @@ export default function SignalSweepBar({
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const rafRef = useRef<number>(0);
   const [dpr, setDpr] = useState(1);
+  const [isVisible, setIsVisible] = useState(true);
 
   // Status theme (speed px/s @ DPR=1, trail/halo strength, pulse cadence)
   const THEME: Record<Status, { speed: number; glow: number; pulseEveryMs: [min:number, max:number]; lineAlpha: number; }> = {
@@ -40,6 +42,15 @@ export default function SignalSweepBar({
   const reduced =
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+  // Visibility optimization
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsVisible(!document.hidden);
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   // Size to parent
   useEffect(() => {
@@ -110,7 +121,10 @@ export default function SignalSweepBar({
     function frame(t: number) {
       if (!lastT) lastT = t;
       const dt = t - lastT;
-      if (dt < minDt) { requestAnimationFrame(frame); return; }
+      if (dt < minDt || !isVisible) { 
+        rafRef.current = requestAnimationFrame(frame); 
+        return; 
+      }
       lastT = t;
 
       ctx.clearRect(0, 0, W, H);
@@ -170,7 +184,7 @@ export default function SignalSweepBar({
         }
       }
 
-      requestAnimationFrame(frame);
+      rafRef.current = requestAnimationFrame(frame);
     }
 
     if (reduced) {
@@ -185,8 +199,12 @@ export default function SignalSweepBar({
       return;
     }
 
-    requestAnimationFrame(frame);
-  }, [anchors.join(","), dpr, background, fpsCap, thickness, cornerRadius, status]);
+    rafRef.current = requestAnimationFrame(frame);
+    
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [anchors.join(","), dpr, background, fpsCap, thickness, cornerRadius, status, isVisible]);
 
   return (
     <div
