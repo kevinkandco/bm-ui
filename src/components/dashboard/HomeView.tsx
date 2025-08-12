@@ -20,14 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
-// Import card components
-import GreetingCard from "./cards/GreetingCard";
-import LatestBriefCard from "./cards/LatestBriefCard";
-import UpcomingBriefsCard from "./cards/UpcomingBriefsCard";
-import ScheduleCard from "./cards/ScheduleCard";
-import FollowUpsCard from "./cards/FollowUpsCard";
-
-// Keep existing imports for compatibility
+// Import components
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
 import CalendarSection from "./HomeViewSections/CalendarSection";
 import ActionItemsPanel from "./ActionItemsPanel";
@@ -81,7 +74,7 @@ const HomeView = ({
   const [followUpsFilter, setFollowUpsFilter] = useState<'all' | 'current'>('all');
   const [showRightDrawer, setShowRightDrawer] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
-  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(true); // Collapsed by default for minimal design
+  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
   const [rightPanelCollapsed, setRightPanelCollapsed] = useState(true); // Closed by default
   const [showFollowUpModal, setShowFollowUpModal] = useState(false);
   const [selectedFollowUp, setSelectedFollowUp] = useState<any>(null);
@@ -259,26 +252,17 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
     hasTranscript: true
   }];
   
-  // Sample data for cards
-  const upcomingBriefs = [
-    { id: 2, name: "Midday Brief", scheduledTime: "Today at 12:30 PM" },
-    { id: 3, name: "Evening Brief", scheduledTime: "Today at 6:00 PM" }
-  ];
+  const recentBriefs = allBriefs.slice(0, 3); // Only show first 3 in recent
+  const upcomingBrief = {
+    name: "Midday Brief",
+    scheduledTime: "Today at 12:30 PM"
+  };
 
-  // Sample meeting data for schedule card
-  const todaysMeetings = [
-    { id: '1', title: 'Weekly Standup', time: 'Today at 10:00 AM', status: 'active' as const, attendeeCount: 4 },
-    { id: '2', title: 'Product Review', time: 'Today at 1:30 PM', status: 'scheduled' as const, attendeeCount: 6 },
-    { id: '3', title: 'Client Call', time: 'Today at 3:00 PM', status: 'scheduled' as const, attendeeCount: 2 },
-    { id: '4', title: 'Team Sync', time: 'Today at 4:00 PM', status: 'scheduled' as const, attendeeCount: 8 },
-    { id: '5', title: 'Project Review', time: 'Today at 5:00 PM', status: 'scheduled' as const, attendeeCount: 3 }
-  ];
-
-  // Sample follow-ups data with correct types
+  // Sample follow-ups data in same format as messages
   const followUps = [{
     id: 1,
     platform: "G",
-    priority: "High" as const,
+    priority: "High",
     message: "Review weekly performance report",
     sender: "kevin@uprise.is",
     time: "12:24 PM",
@@ -286,7 +270,7 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }, {
     id: 2,
     platform: "G",
-    priority: "High" as const,
+    priority: "High",
     message: "Schedule follow up with Mike",
     sender: "mike@company.com",
     time: "11:30 AM",
@@ -294,7 +278,7 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }, {
     id: 3,
     platform: "S",
-    priority: "High" as const,
+    priority: "High",
     message: "Decide on new logo design direction",
     sender: "Sara Chen",
     time: "10:15 AM",
@@ -302,7 +286,7 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }, {
     id: 4,
     platform: "G",
-    priority: "Medium" as const,
+    priority: "Medium",
     message: "Respond to confirm funding details",
     sender: "investor@vc.com",
     time: "9:45 AM",
@@ -310,7 +294,7 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }, {
     id: 5,
     platform: "S",
-    priority: "Medium" as const,
+    priority: "Medium",
     message: "Update project timeline for Q1",
     sender: "Project Team",
     time: "8:30 AM",
@@ -318,7 +302,7 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }, {
     id: 6,
     platform: "G",
-    priority: "Low" as const,
+    priority: "Low",
     message: "Review contract terms and conditions",
     sender: "legal@company.com",
     time: "Yesterday",
@@ -326,7 +310,7 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }, {
     id: 7,
     platform: "G",
-    priority: "Low" as const,
+    priority: "Low",
     message: "Approve marketing budget allocation",
     sender: "marketing@company.com",
     time: "Yesterday",
@@ -334,7 +318,7 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }, {
     id: 8,
     platform: "S",
-    priority: "Medium" as const,
+    priority: "Medium",
     message: "Finalize product roadmap priorities",
     sender: "Product Team",
     time: "Yesterday",
@@ -447,8 +431,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       setRightPanelCollapsed(false);
       console.log('Playing brief, new playingBrief should be:', briefId);
     }
-  }, [playingBrief, allBriefs]);
-
+  }, [playingBrief, recentBriefs]);
   const handleBriefSelect = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
     setSelectedCalendarItem(null);
@@ -936,52 +919,92 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
             `
         }}>
-            <div className="p-6 h-full overflow-auto">
-              {/* Default Home Content - New Card Layout */}
-              {!selectedMeeting && !selectedBrief && isHomeSelected && (
-                <div className="max-w-7xl mx-auto">
-                  {/* Full-width Greeting Card */}
-                  <GreetingCard 
-                    userStatus={userStatus}
-                    onBriefMe={onOpenBriefModal}
-                    onStatusChange={onStatusChange}
-                  />
+            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
+              {/* Default Home Content */}
+              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[100px]">
+                  {/* Date Header */}
+                  <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-text-primary">
+                      {new Date().toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                    </h1>
+                  </div>
 
-                  {/* Two Column Layout */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Column 1 - Primary */}
-                    <div className="space-y-6">
-                      <LatestBriefCard 
-                        brief={allBriefs[0]}
-                        playingBrief={playingBrief}
-                        onPlayBrief={handlePlayBrief}
-                        onBriefSelect={handleBriefSelect}
-                      />
-                      
-                      <UpcomingBriefsCard 
-                        upcomingBriefs={upcomingBriefs}
-                        onViewAll={handleNavigateToAllBriefs}
-                      />
-                      
-                      <ScheduleCard 
-                        meetings={todaysMeetings}
-                        onMeetingClick={handleMeetingClick}
-                        onViewAll={handleNavigateToAllCalendar}
-                      />
+                  {/* Main Layout Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Column */}
+                    <div className="space-y-8">
+                      {/* Daily Briefing Section */}
+                      <div>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Daily briefing</h2>
+                        <div className="space-y-4">
+                          {/* Recent Briefs */}
+                          {recentBriefs.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer" onClick={() => handleBriefSelect(brief.id)}>
+                              <div className="flex items-center gap-3">
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={e => {
+                            e.stopPropagation();
+                            handlePlayBrief(brief.id);
+                          }}>
+                                  {playingBrief === brief.id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
+                                </Button>
+                                <div className="flex-1">
+                                  <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
+                                  <p className="text-xs text-text-secondary mb-1">{brief.timeCreated}</p>
+                                  <p className="text-xs text-text-secondary">
+                                    {brief.slackMessages.fromPriorityPeople} Slack | {brief.emails.fromPriorityPeople} Emails | {brief.actionItems} Actions
+                                  </p>
+                                </div>
+                                <div className="text-xs text-text-secondary">
+                                  {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : '2d'}
+                                </div>
+                              </div>
+                            </div>)}
+                          
+                          {/* Upcoming Brief */}
+                          <div className="bg-surface-raised/20 rounded-lg p-4 border border-border-subtle opacity-60">
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded flex items-center justify-center bg-surface-overlay border border-border-subtle">
+                                <Clock className="h-4 w-4 text-text-secondary" />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-medium text-text-primary text-sm">Upcoming</h3>
+                                <p className="text-xs text-text-secondary">2 scheduled briefs today</p>
+                              </div>
+                              <ChevronDown className="h-4 w-4 text-text-secondary" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Schedule Section */}
+                      <div>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Schedule</h2>
+                        <CalendarSection onMeetingClick={handleMeetingClick} />
+                      </div>
                     </div>
 
-                    {/* Column 2 - Secondary */}
-                    <div className="space-y-6">
-                      <FollowUpsCard 
-                        followUps={followUps}
-                        onFollowUpClick={handleFollowUpClick}
-                        onViewAll={handleNavigateToAllFollowUps}
-                        selectedFollowUpId={selectedFollowUpId}
-                      />
+                    {/* Right Column */}
+                    <div className="space-y-8">
+                      {/* Follow ups Section */}
+                      <div>
+                        <h2 className="text-xl font-semibold text-text-primary mb-4">Follow ups</h2>
+                        <div className="space-y-3">
+                          {followUps.filter(item => followUpsFilter === 'all' || item.priority === 'High').slice(0, 8).map(item => <div key={item.id} className={cn("flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors border border-border-subtle", selectedFollowUpId === item.id ? "bg-accent-primary/10" : "hover:bg-surface-raised/20")} onClick={() => handleFollowUpClick(item)}>
+                              <div className="w-4 h-4 rounded-full border border-accent-primary" />
+                              <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm text-text-primary font-medium truncate">{item.message}</p>
+                              </div>
+                            </div>)}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                </div>}
               
               {selectedMeeting && <div className="space-y-6">
                   {/* Meeting Header */}
