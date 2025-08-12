@@ -793,6 +793,15 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     // Show breadcrumbs for all non-home states
     const shouldShowBreadcrumbs = !isHomeSelected || selectedBrief || selectedMeeting || openSection || showAllBriefs;
     
+    console.log('Breadcrumb Debug:', {
+      isHomeSelected,
+      selectedBrief,
+      selectedMeeting,
+      openSection,
+      showAllBriefs,
+      shouldShowBreadcrumbs
+    });
+    
     if (!shouldShowBreadcrumbs) {
       return null;
     }
@@ -1166,8 +1175,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             `
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
-            {/* Breadcrumb Navigation */}
-            {renderBreadcrumbs()}
             
             {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
@@ -1488,6 +1495,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 </div>}
               
               {selectedMeeting && <div className="space-y-6">
+                  {/* Breadcrumb Navigation */}
+                  {renderBreadcrumbs()}
+                  
                   {/* Meeting Header */}
                   <div className="flex items-start justify-between">
                     <div>
@@ -1628,6 +1638,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               
               {/* All Briefs View */}
               {showAllBriefs && <div className="space-y-6">
+                  {/* Breadcrumb Navigation */}
+                  {renderBreadcrumbs()}
+                  
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold text-text-primary">All Briefs</h2>
                     <Button variant="ghost" size="sm" onClick={() => setShowAllBriefs(false)} className="h-8 w-8 p-0">
@@ -1660,6 +1673,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 </div>}
               
               {selectedBrief && <div className="space-y-6">
+                  {/* Breadcrumb Navigation */}
+                  {renderBreadcrumbs()}
+                  
                   {/* Header */}
                   <div>
                     <div className="text-sm text-text-secondary mb-1">Scheduled | 8/4/2025 at 7:00 AM</div>
