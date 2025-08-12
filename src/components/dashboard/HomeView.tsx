@@ -674,19 +674,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const handleFollowUpClick = useCallback((item: any) => {
     // Set the selected follow up for highlighting
     setSelectedFollowUpId(item.id);
-    // Open the detail panel
+    // Open the detail panel - just set the follow-up and open the right panel
     setSelectedFollowUp(item);
     setRightPanelCollapsed(false);
-    // Navigate to followups section
-    setOpenSection('followups');
-    // Clear other selections
-    setSelectedBrief(null);
-    setSelectedCalendarItem(null);
-    setSelectedMeeting(null);
+    // Clear other right panel selections so only follow-up shows
     setSelectedMessage(null);
     setSelectedTranscript(null);
-    setIsHomeSelected(false);
-    setFollowUpsFilter('current');
+    // DON'T change navigation - stay on current view
   }, []);
 
   // Handler for calendar meeting clicks
