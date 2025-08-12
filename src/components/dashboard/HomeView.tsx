@@ -1170,32 +1170,69 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </div>
           </div> : (/* Collapsed Left Panel */
       <div className="w-12 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
-            <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
-              {/* Open/Close Panel Button */}
-              <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(false)} className="h-8 w-8 p-0 mb-4">
-                <PanelLeftOpen className="h-4 w-4" />
-              </Button>
-              
-              {/* Home Icon */}
-              <Button variant="ghost" size="sm" onClick={handleNavigateToHome} className={cn("h-8 w-8 p-0", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                <Home className="h-4 w-4" />
-              </Button>
-              
-              {/* Briefs Icon */}
-              <Button variant="ghost" size="sm" onClick={handleNavigateToAllBriefs} className={cn("h-8 w-8 p-0", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                <FileText className="h-4 w-4" />
-              </Button>
-              
-              {/* Calendar Icon */}
-              <Button variant="ghost" size="sm" onClick={handleNavigateToAllCalendar} className={cn("h-8 w-8 p-0", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                <Calendar className="h-4 w-4" />
-              </Button>
-              
-              {/* Follow Ups Icon */}
-              <Button variant="ghost" size="sm" onClick={handleNavigateToAllFollowUps} className={cn("h-8 w-8 p-0", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                <ClipboardCheck className="h-4 w-4" />
-              </Button>
-            </div>
+            <TooltipProvider>
+              <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
+                {/* Open/Close Panel Button */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(false)} className="h-8 w-8 p-0 mb-4">
+                      <PanelLeftOpen className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>Expand</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                {/* Home Icon */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" onClick={handleNavigateToHome} className={cn("h-8 w-8 p-0", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                      <Home className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>Home</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                {/* Briefs Icon */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" onClick={handleNavigateToAllBriefs} className={cn("h-8 w-8 p-0", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                      <FileText className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>Briefs</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                {/* Calendar Icon */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" onClick={handleNavigateToAllCalendar} className={cn("h-8 w-8 p-0", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                      <Calendar className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>Calendar</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                {/* Follow Ups Icon */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="sm" onClick={handleNavigateToAllFollowUps} className={cn("h-8 w-8 p-0", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                      <ClipboardCheck className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>Follow Ups</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
           </div>)}
 
         {/* Main Content Panel */}
