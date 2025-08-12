@@ -84,11 +84,11 @@ const HomeView = ({
   onExitFocusMode,
   onSignBackOn
 }: HomeViewProps) => {
+  // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY CONDITIONAL LOGIC OR EARLY RETURNS
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { toast } = useToast();
-  console.log('HomeView rendering - debugging home button visibility');
-
+  
   // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
   const [showAllBriefs, setShowAllBriefs] = useState(false);
@@ -111,9 +111,12 @@ const HomeView = ({
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
-const [showStatusModal, setShowStatusModal] = useState(false);
-const [currentStatus, setCurrentStatus] = useState('online');
-const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState('online');
+  const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
+  const [showInstructionsDrawer, setShowInstructionsDrawer] = useState(false);
+  const [tempNotes, setTempNotes] = useState("");
+  const [showMoreToday, setShowMoreToday] = useState(false);
 
   // Schedule state (from CalendarSection)
   const [meetings, setMeetings] = useState<Meeting[]>([
@@ -201,9 +204,6 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
     }
   ]);
 
-  const [showInstructionsDrawer, setShowInstructionsDrawer] = useState(false);
-  const [tempNotes, setTempNotes] = useState("");
-  const [showMoreToday, setShowMoreToday] = useState(false);
 
   // Meeting handlers (from CalendarSection)
   const toggleProxy = useCallback((meetingId: string) => {
