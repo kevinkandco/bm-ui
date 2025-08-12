@@ -117,6 +117,7 @@ const HomeView = ({
   const [showInstructionsDrawer, setShowInstructionsDrawer] = useState(false);
   const [tempNotes, setTempNotes] = useState("");
   const [showMoreToday, setShowMoreToday] = useState(false);
+  const [showAllFollowUps, setShowAllFollowUps] = useState(false);
 
   // Schedule state (from CalendarSection)
   const [meetings, setMeetings] = useState<Meeting[]>([
@@ -1483,7 +1484,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
                           const hasLowPriority = lowPriority.length > 0;
 
-                          const [showAllFollowUps, setShowAllFollowUps] = React.useState(false);
 
                           const renderFollowUpItem = (item: any) => (
                             <div 
