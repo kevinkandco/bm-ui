@@ -1127,11 +1127,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             `
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
-              {/* Default Home Content */}
-              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-6 px-[100px]">
+{/* Default Home Content */}
+              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
                   {/* Date Header */}
-                  <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-text-primary">
+                  <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-text-primary tracking-tight">
                       {new Date().toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -1142,22 +1142,22 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
 
                   {/* Two-Column Grid Layout */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
-                    <div className="space-y-12">
-                      {/* Latest Brief Section */}
-                      <DashboardCard 
-                        title="Latest brief"
-                        actions={
+                    <div className="space-y-16">
+{/* Latest Brief Section */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-lg font-semibold text-text-primary tracking-tight">Latest brief</h2>
                           <Button 
                             variant="ghost" 
                             onClick={handleNavigateToAllBriefs}
-                            className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                            className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
                           >
                             View all
                           </Button>
-                        }
-                      >
+                        </div>
+                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
                         <div 
                           className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1"
                           onClick={() => handleBriefSelect(recentBriefs[0].id)}
@@ -1181,21 +1181,22 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div>
                           </div>
                         </div>
-                      </DashboardCard>
+                        </DashboardCard>
+                      </div>
 
                       {/* Upcoming Briefs Section */}
-                      <DashboardCard 
-                        title="Upcoming briefs"
-                        actions={
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-lg font-semibold text-text-primary tracking-tight">Upcoming briefs</h2>
                           <Button 
                             variant="ghost" 
                             onClick={handleNavigateToAllBriefs}
-                            className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                            className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
                           >
                             View all
                           </Button>
-                        }
-                      >
+                        </div>
+                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
                         {upcomingBriefs.length > 0 ? (
                           <div className="space-y-3">
                             {upcomingBriefs.slice(0, 2).map(brief => (
@@ -1224,10 +1225,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </Button>
                           </div>
                         )}
-                      </DashboardCard>
+                        </DashboardCard>
+                      </div>
 
                       {/* Today's Schedule Section */}
-                      <DashboardCard title="Today's schedule">
+                      <div className="space-y-3">
+                        <h2 className="text-lg font-semibold text-text-primary tracking-tight">Today's schedule</h2>
+                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
                         <TooltipProvider>
                           {!hasUpcomingMeetings ? (
                             <div className="text-center py-6">
@@ -1351,17 +1355,17 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     )}
                                   </div>
                                   
-                                  {/* Subtle separator between meetings */}
+                                   {/* Subtle separator between meetings */}
                                   {index < upcomingMeetings.length - 1 && (
-                                    <div className="border-t border-white/4 my-2" />
+                                    <div className="border-t border-white/4 my-3" />
                                   )}
                                 </div>
                               ))}
 
                               {/* More today expander */}
                               {remainingMeetings.length > 0 && (
-                                <div className="space-y-2">
-                                  <div className="border-t border-white/4 my-2" />
+                                <div className="space-y-3 mt-6">
+                                  <div className="border-t border-white/4 my-3" />
                                   <Button
                                     variant="ghost"
                                     onClick={() => setShowMoreToday(!showMoreToday)}
@@ -1415,24 +1419,25 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div>
                           )}
                         </TooltipProvider>
-                      </DashboardCard>
+                        </DashboardCard>
+                      </div>
                     </div>
 
                     {/* Column 2 (Secondary): Follow ups */}
-                    <div className="space-y-12">
+                    <div className="space-y-16">
                       {/* Follow ups Section */}
-                      <DashboardCard 
-                        title="Follow ups"
-                        actions={
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-lg font-semibold text-text-primary tracking-tight">Follow ups</h2>
                           <Button 
                             variant="ghost" 
                             onClick={handleNavigateToAllFollowUps}
-                            className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                            className="text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
                           >
                             View all
                           </Button>
-                        }
-                      >
+                        </div>
+                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
                         {(() => {
                           // Group follow-ups by priority
                           const groupedFollowUps = followUps.reduce((acc, item) => {
@@ -1590,7 +1595,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div>
                           );
                         })()}
-                      </DashboardCard>
+                        </DashboardCard>
+                      </div>
                     </div>
                   </div>
                 </div>}
