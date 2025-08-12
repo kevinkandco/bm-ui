@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck, Pencil, Mic } from "lucide-react";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import MenuBarIcon from "./MenuBarIcon";
 import SignalSweepBar from "../visuals/SignalSweepBar";
 import { Button } from "@/components/ui/button";
@@ -787,6 +788,98 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setShowMobileBriefDrawer(true);
   }, [playingBrief]);
 
+  // Breadcrumb rendering function
+  const renderBreadcrumbs = () => {
+    // Don't show breadcrumbs on home page
+    if (isHomeSelected && !openSection && !selectedBrief && !selectedMeeting) {
+      return null;
+    }
+
+    return (
+      <div className="mb-6">
+        <Breadcrumb>
+          <BreadcrumbList className="text-text-secondary">
+            <BreadcrumbItem>
+              <BreadcrumbLink 
+                onClick={handleNavigateToHome} 
+                className="text-text-secondary hover:text-text-primary cursor-pointer"
+              >
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            
+            {(openSection === 'briefs' || selectedBrief) && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  {selectedBrief ? (
+                    <BreadcrumbLink 
+                      onClick={handleNavigateToAllBriefs}
+                      className="text-text-secondary hover:text-text-primary cursor-pointer"
+                    >
+                      Briefs
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage className="text-text-primary">Briefs</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </>
+            )}
+            
+            {openSection === 'calendar' && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  {selectedMeeting ? (
+                    <BreadcrumbLink 
+                      onClick={handleNavigateToAllCalendar}
+                      className="text-text-secondary hover:text-text-primary cursor-pointer"
+                    >
+                      Calendar
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage className="text-text-primary">Calendar</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </>
+            )}
+            
+            {openSection === 'followups' && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-text-primary">Follow-ups</BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
+            
+            {selectedBrief && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-text-primary">
+                    {allBriefs.find(b => b.id === selectedBrief)?.name || 'Brief'}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
+            
+            {selectedMeeting && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-text-primary">
+                    {selectedMeeting.title || 'Meeting'}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+    );
+  };
+
   // Mobile layout
   if (isMobile) {
     return <div className="relative">
@@ -1066,6 +1159,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             `
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
+            {/* Breadcrumb Navigation */}
+            {renderBreadcrumbs()}
+            
             {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
                   {/* Date Header */}
