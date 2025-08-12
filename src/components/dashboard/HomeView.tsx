@@ -1169,7 +1169,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
             `
         }}>
-            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
+            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg rounded-l-lg">
             
             {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
