@@ -1141,9 +1141,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     </h1>
                   </div>
 
-                  {/* Main Layout Grid */}
+                  {/* Two-Column Grid Layout */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Left Column */}
+                    {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
                     <div className="space-y-8">
                       {/* Latest Brief Section */}
                       <DashboardCard 
@@ -1464,10 +1464,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </DashboardCard>
                     </div>
 
-                    {/* Right Column */}
+                    {/* Column 2 (Secondary): Follow ups */}
                     <div className="space-y-8">
                       {/* Follow ups Section */}
-                      <DashboardCard title="Follow ups">
+                      <DashboardCard 
+                        title="Follow ups"
+                        actions={
+                          <Button 
+                            variant="ghost" 
+                            onClick={handleNavigateToAllFollowUps}
+                            className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                          >
+                            View all
+                          </Button>
+                        }
+                      >
                         {(() => {
                           // Group follow-ups by priority
                           const groupedFollowUps = followUps.reduce((acc, item) => {
@@ -1483,7 +1494,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           // Show High + Medium by default (up to 5 total)
                           const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
                           const hasLowPriority = lowPriority.length > 0;
-
 
                           const renderFollowUpItem = (item: any) => (
                             <div 
@@ -1572,7 +1582,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <div className="space-y-2">
                                   <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-orange-400"></div>
-                                    <h4 className="text-sm font-medium text-text-secondary">High Priority</h4>
+                                    <h4 className="text-sm font-medium text-text-secondary">High</h4>
                                   </div>
                                   <div className="space-y-1">
                                     {highPriority.map(renderFollowUpItem)}
@@ -1585,50 +1595,42 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <div className="space-y-2">
                                   <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
-                                    <h4 className="text-sm font-medium text-text-secondary">Medium Priority</h4>
+                                    <h4 className="text-sm font-medium text-text-secondary">Medium</h4>
                                   </div>
                                   <div className="space-y-1">
-                                    {mediumPriority.slice(0, Math.max(0, 5 - highPriority.length)).map(renderFollowUpItem)}
+                                    {mediumPriority.map(renderFollowUpItem)}
                                   </div>
                                 </div>
                               )}
 
-                              {/* Low Priority Section - Collapsible */}
+                              {/* Low Priority Section (Toggle) */}
                               {hasLowPriority && (
                                 <div className="space-y-2">
-                                  {showAllFollowUps && (
-                                    <>
-                                      <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                                        <h4 className="text-sm font-medium text-text-secondary">Low Priority</h4>
-                                      </div>
-                                      <div className="space-y-1">
-                                        {lowPriority.map(renderFollowUpItem)}
-                                      </div>
-                                    </>
-                                  )}
-
                                   <Button
                                     variant="ghost"
-                                    size="sm"
                                     onClick={() => setShowAllFollowUps(!showAllFollowUps)}
-                                    className="w-full justify-center text-text-secondary hover:text-text-primary text-sm"
+                                    className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
                                   >
-                                    {showAllFollowUps ? 'Show less' : `Show all (${lowPriority.length} more)`}
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                      <span>Low ({lowPriority.length})</span>
+                                    </div>
+                                    <ChevronDown className={`w-4 h-4 transition-transform ${showAllFollowUps ? 'rotate-180' : ''}`} />
                                   </Button>
+                                  
+                                  {showAllFollowUps && (
+                                    <div className="space-y-1">
+                                      {lowPriority.map(renderFollowUpItem)}
+                                    </div>
+                                  )}
                                 </div>
                               )}
 
-                              {checkedFollowUps.size > 0 && (
-                                <div className="pt-3 border-t border-border-subtle">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={handleRemoveCheckedFollowUps}
-                                    className="text-text-secondary hover:text-text-primary text-sm"
-                                  >
-                                    Remove {checkedFollowUps.size} completed
-                                  </Button>
+                              {/* Empty state */}
+                              {followUps.length === 0 && (
+                                <div className="text-center py-6">
+                                  <CheckSquare className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+                                  <p className="text-sm text-text-secondary">All caught up!</p>
                                 </div>
                               )}
                             </div>
