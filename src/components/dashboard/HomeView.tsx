@@ -254,10 +254,18 @@ const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
   }];
   
   const recentBriefs = allBriefs.slice(0, 3); // Only show first 3 in recent
-  const upcomingBrief = {
-    name: "Midday Brief",
-    scheduledTime: "Today at 12:30 PM"
-  };
+  const upcomingBriefs = [
+    {
+      id: 'upcoming-1',
+      name: "Midday Brief",
+      scheduledTime: "Today at 12:30 PM"
+    },
+    {
+      id: 'upcoming-2', 
+      name: "Evening Brief",
+      scheduledTime: "Today at 6:00 PM"
+    }
+  ];
 
   // Sample follow-ups data in same format as messages
   const followUps = [{
@@ -975,6 +983,49 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div>
                           </div>
                         </div>
+                      </DashboardCard>
+
+                      {/* Upcoming Briefs Section */}
+                      <DashboardCard 
+                        title="Upcoming briefs"
+                        actions={
+                          <Button 
+                            variant="ghost" 
+                            onClick={handleNavigateToAllBriefs}
+                            className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                          >
+                            View all
+                          </Button>
+                        }
+                      >
+                        {upcomingBriefs.length > 0 ? (
+                          <div className="space-y-3">
+                            {upcomingBriefs.slice(0, 2).map(brief => (
+                              <div key={brief.id} className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1" onClick={handleNavigateToAllBriefs}>
+                                <div className="flex items-center gap-3">
+                                  <div className="h-8 w-8 rounded flex items-center justify-center bg-surface-overlay/50">
+                                    <Clock className="h-4 w-4 text-text-secondary" />
+                                  </div>
+                                  <div className="flex-1">
+                                    <h3 className="font-medium text-text-primary text-sm mb-1">{brief.name}</h3>
+                                    <p className="text-xs text-text-secondary">{brief.scheduledTime}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-4">
+                            <p className="text-sm text-text-secondary mb-2">No briefs scheduled.</p>
+                            <Button 
+                              variant="ghost"
+                              onClick={handleNavigateToAllBriefs}
+                              className="text-xs text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                            >
+                              Schedule one
+                            </Button>
+                          </div>
+                        )}
                       </DashboardCard>
 
                       {/* Schedule Section */}
