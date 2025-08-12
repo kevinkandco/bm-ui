@@ -331,30 +331,14 @@ const HomeView = ({
     setLeftRailTab('briefs');
   }, [navigate]);
   const handleNavigateToAllBriefs = useCallback(() => {
-    setIsHomeSelected(false);
-    setSelectedBrief(null); // No specific brief selected to show "view all"
-    setSelectedCalendarItem(null);
-    setSelectedMeeting(null);
-    setOpenSection('briefs');
-    setLeftRailTab('briefs');
-    setShowAllBriefs(true);
-  }, []);
+    navigate('/briefs');
+  }, [navigate]);
   const handleNavigateToAllCalendar = useCallback(() => {
-    setIsHomeSelected(false);
-    setSelectedBrief(null);
-    setSelectedCalendarItem(null); // No specific event selected to show "view all"
-    setSelectedMeeting(null);
-    setOpenSection('calendar');
-    setLeftRailTab('calendar');
-  }, []);
+    navigate('/meetings');
+  }, [navigate]);
   const handleNavigateToAllFollowUps = useCallback(() => {
-    setIsHomeSelected(false);
-    setSelectedBrief(null);
-    setSelectedCalendarItem(null);
-    setSelectedMeeting(null);
-    setOpenSection('followups');
-    setLeftRailTab('followups');
-  }, []);
+    navigate('/tasks');
+  }, [navigate]);
   const handleStatusSelect = useCallback((status: 'online' | 'focus' | 'vacation' | 'offline') => {
     // Map mobile status to main status system
     const statusMap: Record<string, 'active' | 'away' | 'focus' | 'vacation'> = {
