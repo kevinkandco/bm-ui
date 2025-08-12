@@ -1285,30 +1285,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                       
                                       {/* Right actions */}
                                       <div className="flex items-center gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Button
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                toggleProxy(meeting.id);
-                                              }}
-                                              variant={meeting.hasProxy ? "default" : "outline"}
-                                              size="sm"
-                                              className={`h-6 px-2 text-xs rounded-full ${
-                                                meeting.hasProxy 
-                                                  ? "bg-success text-background hover:bg-success/90" 
-                                                  : "border-white/6 text-text-secondary hover:border-success hover:text-success"
-                                              }`}
-                                            >
-                                              {meeting.hasProxy ? "Proxy" : "Send Proxy"}
-                                            </Button>
-                                          </TooltipTrigger>
-                                          <TooltipContent>
-                                            <p className="text-xs max-w-xs">
-                                              Proxy will record, transcribe, and send a brief to you only.
-                                            </p>
-                                          </TooltipContent>
-                                        </Tooltip>
                                         
                                         <Button
                                           size="sm"
