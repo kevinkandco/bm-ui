@@ -1351,13 +1351,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                           </div>
                                           
                                           {/* Buttons on the right side */}
-                                          <div className="flex items-center gap-3 flex-shrink-0">
-                                            <Button variant="outline" className="border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60 hover:text-white-text rounded-lg px-3 py-1 text-xs bg-transparent">
-                                              <Calendar className="h-3 w-3 mr-1" />
+                                          <div className="flex items-center gap-2 flex-shrink-0">
+                                            <Button variant="outline" className="border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60 hover:text-white-text rounded-lg px-2 py-0.5 text-[10px] bg-transparent h-6">
+                                              <Calendar className="h-2.5 w-2.5 mr-1" />
                                               Update Schedule
                                             </Button>
-                                            <Button variant="outline" className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg px-3 py-1 text-xs bg-transparent">
-                                              <Zap className="h-3 w-3 mr-1" />
+                                            <Button variant="outline" className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg px-2 py-0.5 text-[10px] bg-transparent h-6">
+                                              <Zap className="h-2.5 w-2.5 mr-1" />
                                               Get Briefed Now
                                             </Button>
                                           </div>
