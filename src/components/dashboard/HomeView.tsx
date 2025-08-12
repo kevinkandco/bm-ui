@@ -1128,9 +1128,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
 {/* Default Home Content */}
-              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
+              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px] pt-8 md:pt-12">
                   {/* Date Header */}
-                  <div className="mb-8">
+                  <div className="mb-12 md:mb-16">
                     <h1 className="text-3xl font-bold text-text-primary tracking-tight">
                       {new Date().toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -1142,7 +1142,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
 
                   {/* Two-Column Grid Layout */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4">
                     {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
                     <div className="space-y-16">
 {/* Latest Brief Section */}
