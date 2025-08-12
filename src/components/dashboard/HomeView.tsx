@@ -102,7 +102,7 @@ const HomeView = ({
   const [followUpsFilter, setFollowUpsFilter] = useState<'all' | 'current'>('all');
   const [showRightDrawer, setShowRightDrawer] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
-  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
+  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(true);
   const [rightPanelCollapsed, setRightPanelCollapsed] = useState(true); // Closed by default
   const [showFollowUpModal, setShowFollowUpModal] = useState(false);
   const [selectedFollowUp, setSelectedFollowUp] = useState<any>(null);
@@ -1067,7 +1067,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
+        {!leftPanelCollapsed ? <div className="w-64 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <div className="h-full flex flex-col">
               {/* Header with collapse button */}
               <div className="px-6">
