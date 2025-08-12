@@ -748,11 +748,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   }) => {
     return <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" className={cn("bg-transparent text-xs px-2 py-1 rounded-full font-medium border h-auto hover:bg-surface-raised/20", item.priority === "High" ? "border-orange-500 text-orange-400" : item.priority === "Medium" ? "border-yellow-500 text-yellow-400" : "border-green-500 text-green-400")}>
+          <Button variant="ghost" className={cn("bg-transparent text-xs px-2 py-1 rounded-full font-medium h-auto hover:bg-surface-raised/20 shadow-sm", item.priority === "High" ? "bg-orange-500/20 text-orange-400" : item.priority === "Medium" ? "bg-yellow-500/20 text-yellow-400" : "bg-green-500/20 text-green-400")}>
             {item.priority}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-40 p-2 bg-surface border-border-subtle" align="start">
+        <PopoverContent className="w-40 p-2 bg-surface shadow-lg" align="start">
           <div className="space-y-1">
             {["High", "Medium", "Low"].map(priority => <Button key={priority} variant="ghost" className={cn("w-full justify-start text-xs rounded-full", priority === "High" && "text-orange-400 hover:bg-orange-500/20", priority === "Medium" && "text-yellow-400 hover:bg-yellow-500/20", priority === "Low" && "text-green-400 hover:bg-green-500/20")} onClick={() => onPriorityChange(item.id, priority, item.priority, item)}>
                 {priority}
@@ -777,13 +777,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     };
     return <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="px-2 py-1 h-8 rounded-full border-border-subtle bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-1.5 text-xs">
+          <Button variant="outline" className="px-2 py-1 h-8 rounded-full bg-surface-raised/50 hover:bg-surface-raised/70 text-text-primary flex items-center gap-1.5 text-xs shadow-sm">
             {getStatusIcon()}
             <span>Update Status</span>
             <ChevronDown className="h-3 w-3" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-surface border-border-subtle w-56 z-50" align="start">
+        <DropdownMenuContent className="bg-surface shadow-lg w-56 z-50" align="start">
           <DropdownMenuItem onClick={onStartFocusMode} className="text-text-primary hover:bg-surface-raised/50 flex items-center gap-3 px-4 py-3">
             <Focus className="h-4 w-4" />
             Start Focus Mode
@@ -844,7 +844,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
   return <div className="min-h-screen flex flex-col">
       {/* Global Header */}
-      <header className="border-b border-border-subtle bg-surface/95 backdrop-blur-sm sticky top-0 z-50">
+      <header className="bg-surface/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Left: Brief Me Logo and Status */}
@@ -1004,7 +1004,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="p-0 h-auto">
-                    <Avatar className="h-9 w-9 border-2 border-border-subtle hover:border-accent-primary transition-colors cursor-pointer">
+                    <Avatar className="h-9 w-9 hover:shadow-md transition-all cursor-pointer">
                       <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
                       <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
                         AJ
@@ -1012,7 +1012,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-surface border-border-subtle w-56" align="end">
+                <DropdownMenuContent className="bg-surface shadow-lg w-56" align="end">
                   <DropdownMenuItem onClick={() => navigate("/dashboard/settings")} className="text-text-primary hover:bg-white/5">
                     <User className="mr-2 h-4 w-4" />
                     Profile
@@ -1043,7 +1043,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? <div className="w-80 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+        {!leftPanelCollapsed ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <div className="h-full flex flex-col">
               {/* Header with collapse button */}
               <div className="px-6">
@@ -1055,7 +1055,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 </div>
                 
                 {/* Navigation sections - simplified */}
-                <div className="w-full border-t border-border-subtle mt-8 pt-6 space-y-2 px-0">
+                <div className="w-full mt-8 pt-6 space-y-2 px-0">
                   {/* Home */}
                   <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-surface-raised/50 px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
                     <Home className="h-4 w-4 mr-2" />
@@ -1083,7 +1083,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </div>
               </div>
           </div> : (/* Collapsed Left Panel */
-      <div className="w-12 h-full border-r border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+      <div className="w-12 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
               {/* Open/Close Panel Button */}
               <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(false)} className="h-8 w-8 p-0 mb-4">
@@ -1115,7 +1115,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {/* Main Content Panel */}
         <div className="flex-1 h-screen overflow-hidden">
           {/* Main Content Card */}
-          <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl border border-border-subtle overflow-hidden" style={{
+          <div className="h-full bg-background/80 backdrop-blur-sm shadow-xl overflow-hidden" style={{
           background: `
               radial-gradient(
                 circle at top left,
@@ -1157,7 +1157,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             View all
                           </Button>
                         </div>
-                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
+                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
                         <div 
                           className="p-4 rounded-lg hover:bg-surface-raised/20 transition-colors cursor-pointer -m-1"
                           onClick={() => handleBriefSelect(recentBriefs[0].id)}
@@ -1196,7 +1196,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             View all
                           </Button>
                         </div>
-                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
+                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
                         {upcomingBriefs.length > 0 ? (
                           <div className="space-y-3">
                             {upcomingBriefs.slice(0, 2).map(brief => (
@@ -1231,7 +1231,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       {/* Today's Schedule Section */}
                       <div className="space-y-3">
                         <h2 className="text-lg font-semibold text-text-primary tracking-tight">Today's schedule</h2>
-                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
+                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
                         <TooltipProvider>
                           {!hasUpcomingMeetings ? (
                             <div className="text-center py-6">
@@ -1437,7 +1437,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             View all
                           </Button>
                         </div>
-                        <DashboardCard className="bg-surface-raised/20 border border-white/6">
+                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
                         {(() => {
                           // Group follow-ups by priority
                           const groupedFollowUps = followUps.reduce((acc, item) => {
@@ -1489,7 +1489,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 />
                               </div>
 
-                              <div className="w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle flex items-center justify-center flex-shrink-0">
+                              <div className="w-8 h-8 rounded-full bg-surface-raised/50 shadow-sm flex items-center justify-center flex-shrink-0">
                                 <span className="text-xs font-medium text-text-primary">{item.platform}</span>
                               </div>
 
@@ -1508,7 +1508,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <Button 
                                   variant="outline" 
                                   size="sm" 
-                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                  className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm"
                                 >
                                   <Kanban className="h-3 w-3" />
                                   Asana
@@ -1516,7 +1516,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <Button 
                                   variant="outline" 
                                   size="sm" 
-                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                  className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm"
                                 >
                                   {item.platform === "S" ? (
                                     <>
@@ -1751,7 +1751,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   
                   <div className="space-y-4">
                     {allBriefs.map(brief => 
-                      <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer" onClick={() => handleBriefSelect(brief.id)}>
+                      <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 hover:bg-surface-raised/40 transition-colors cursor-pointer shadow-sm" onClick={() => handleBriefSelect(brief.id)}>
                         <div className="flex items-center gap-3">
                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent-primary/20" onClick={(e) => {
                             e.stopPropagation();
@@ -1784,7 +1784,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
 
                   {/* Summary Section with Play Button and Stats */}
-                  <div className="bg-surface-raised/50 rounded-lg p-4 border border-border-subtle">
+                  <div className="bg-surface-raised/50 rounded-lg p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <button onClick={() => handlePlayBrief(selectedBrief)} className="w-12 h-12 rounded-full bg-accent-primary/20 flex items-center justify-center hover:bg-accent-primary/30 transition-colors">
@@ -1825,10 +1825,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </TabsList>
                       
                       <TabsContent value="followups" className="mt-4">
-                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                        <div className="bg-surface-raised/30 rounded-lg shadow-sm">
                           <Table>
                             <TableHeader>
-                              <TableRow className="border-border-subtle hover:bg-transparent">
+                              <TableRow className="hover:bg-transparent">
                                 <TableHead className="text-text-secondary font-medium w-8"></TableHead>
                                 <TableHead className="text-text-secondary font-medium">Platform</TableHead>
                                 <TableHead className="text-text-secondary font-medium">Priority</TableHead>
@@ -1839,7 +1839,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
+                              {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
                             setSelectedFollowUpId(item.id);
                             setSelectedMessage({
                               ...item,
@@ -1859,7 +1859,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
                                   </TableCell>
                                   <TableCell className="w-12">
-                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
+                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 shadow-sm">
                                       <span className="text-xs font-medium text-text-primary">{item.platform}</span>
                                     </div>
                                   </TableCell>
@@ -1879,11 +1879,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </TableCell>
                                   <TableCell>
                                     <div className="flex items-center gap-2">
-                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
+                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
                                         <Kanban className="h-3 w-3" />
                                         Asana
                                       </Button>
-                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
+                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
                                         {item.platform === "S" ? <>
                                             <Calendar className="h-3 w-3" />
                                             Slack
@@ -1923,10 +1923,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </TabsContent>
                       
                       <TabsContent value="allmessages" className="mt-4">
-                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                        <div className="bg-surface-raised/30 rounded-lg shadow-sm">
                           <Table>
                             <TableHeader>
-                              <TableRow className="border-border-subtle hover:bg-transparent">
+                              <TableRow className="hover:bg-transparent">
                                 <TableHead className="text-text-secondary font-medium">Platform</TableHead>
                                 <TableHead className="text-text-secondary font-medium">Priority</TableHead>
                                 <TableHead className="text-text-secondary font-medium">Message</TableHead>
@@ -1936,7 +1936,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {allMessages.map(message => <TableRow key={message.id} className="border-border-subtle hover:bg-surface-raised/20 cursor-pointer" onClick={() => {
+                              {allMessages.map(message => <TableRow key={message.id} className="hover:bg-surface-raised/20 cursor-pointer" onClick={() => {
                             setSelectedMessage({
                               ...message,
                               subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
@@ -1952,7 +1952,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             setRightPanelCollapsed(false);
                           }}>
                                   <TableCell className="w-12">
-                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle">
+                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-raised/50 shadow-sm">
                                       <span className="text-xs font-medium text-text-primary">{message.platform}</span>
                                     </div>
                                   </TableCell>
@@ -1972,11 +1972,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </TableCell>
                                   <TableCell>
                                     <div className="flex items-center gap-2">
-                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
+                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
                                         <Kanban className="h-3 w-3" />
                                         Asana
                                       </Button>
-                                      <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7">
+                                      <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7 shadow-sm">
                                         {message.platform === "S" ? <>
                                             <Calendar className="h-3 w-3" />
                                             Slack
@@ -1998,7 +1998,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
               {selectedCalendarItem && <div>
                   <h2 className="text-2xl font-bold text-text-primary mb-4">Meeting Brief</h2>
-                  <div className="bg-surface-raised/50 rounded-lg p-6 border border-border-subtle">
+                  <div className="bg-surface-raised/50 rounded-lg p-6 shadow-sm">
                     <p className="text-text-secondary">Meeting brief content would appear here...</p>
                   </div>
                 </div>}
@@ -2023,10 +2023,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </TabsList>
                       
                       <TabsContent value="followups" className="mt-4">
-                        <div className="bg-surface-raised/30 rounded-lg border border-border-subtle">
+                        <div className="bg-surface-raised/30 rounded-lg shadow-sm">
                           <Table>
                             <TableHeader>
-                              <TableRow className="border-border-subtle hover:bg-transparent">
+                              <TableRow className="hover:bg-transparent">
                                 <TableHead className="text-text-secondary font-medium w-8"></TableHead>
                                 <TableHead className="text-text-secondary font-medium">Platform</TableHead>
                                 <TableHead className="text-text-secondary font-medium">Priority</TableHead>
@@ -2037,7 +2037,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {followUps.map(item => <TableRow key={item.id} className={`border-border-subtle hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
+                              {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
                             setSelectedFollowUpId(item.id);
                             setSelectedMessage({
                               ...item,
@@ -2108,7 +2108,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </div>
 
         {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="w-80 h-full border-l border-border-subtle bg-surface/50 backdrop-blur-sm flex flex-col">
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript) ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <div className="flex-1 overflow-hidden">
               <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
             setSelectedMessage(null);
@@ -2137,7 +2137,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
       {/* Follow-up Details Modal */}
       <Dialog open={showFollowUpModal} onOpenChange={setShowFollowUpModal}>
-        <DialogContent className="bg-surface border-border-subtle max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-surface shadow-lg max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedFollowUp && <div className="space-y-6">
               {/* Header */}
               <div className="flex items-start justify-between">
@@ -2149,11 +2149,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2">
+                  <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-3 py-2 text-sm flex items-center gap-2 shadow-sm">
                     <Kanban className="h-4 w-4" />
                     Add to Asana
                   </Button>
-                  <Button variant="outline" size="sm" className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-3 py-2 text-sm flex items-center gap-2">
+                  <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-3 py-2 text-sm flex items-center gap-2 shadow-sm">
                     <Mail className="h-4 w-4" />
                     Open in Gmail
                   </Button>
@@ -2175,7 +2175,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               {/* Full Message */}
               <div className="space-y-3">
                 <h3 className="text-lg font-medium text-text-primary">Full Message:</h3>
-                <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
+                <div className="bg-surface-raised/30 rounded-lg p-4 shadow-sm">
                   <p className="text-text-primary leading-relaxed">{selectedFollowUp.fullMessage}</p>
                 </div>
               </div>
@@ -2228,7 +2228,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
       {/* Priority Change Confirmation Modal */}
       <Dialog open={showPriorityConfirmModal} onOpenChange={setShowPriorityConfirmModal}>
-        <DialogContent className="bg-surface border-border-subtle max-w-2xl">
+        <DialogContent className="bg-surface shadow-lg max-w-2xl">
           {priorityChangeData && <div className="space-y-6">
               {/* Header */}
               <div className="flex items-start justify-between">
@@ -2239,7 +2239,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               </div>
 
               {/* Priority Change Description */}
-              <div className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle">
+              <div className="bg-surface-raised/30 rounded-lg p-4 shadow-sm">
                 <h3 className="text-lg font-medium text-text-primary mb-2">{priorityChangeData.title}</h3>
                 <p className="text-sm text-text-secondary">
                   Priority changed from {priorityChangeData.oldPriority} to {priorityChangeData.newPriority}
@@ -2248,7 +2248,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
               {/* Radio Options */}
               <RadioGroup value={snoozeReason} onValueChange={setSnoozeReason} className="space-y-4">
-                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg shadow-sm">
                   <RadioGroupItem value="message" id="message" />
                   <div className="flex-1">
                     <Label htmlFor="message" className="text-text-primary font-medium cursor-pointer">
@@ -2258,7 +2258,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg shadow-sm">
                   <RadioGroupItem value="sender" id="sender" />
                   <div className="flex-1">
                     <Label htmlFor="sender" className="text-text-primary font-medium cursor-pointer">
@@ -2268,7 +2268,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg shadow-sm">
                   <RadioGroupItem value="topic" id="topic" />
                   <div className="flex-1">
                     <Label htmlFor="topic" className="text-text-primary font-medium cursor-pointer">
@@ -2278,7 +2278,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg border border-border-subtle">
+                <div className="flex items-center space-x-3 p-4 bg-surface-raised/20 rounded-lg shadow-sm">
                   <RadioGroupItem value="other" id="other" />
                   <div className="flex-1">
                     <Label htmlFor="other" className="text-text-primary font-medium cursor-pointer">
@@ -2291,7 +2291,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">
-                <Button variant="outline" onClick={() => setShowPriorityConfirmModal(false)} className="flex-1 bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised/30">
+                <Button variant="outline" onClick={() => setShowPriorityConfirmModal(false)} className="flex-1 bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 shadow-sm">
                   Cancel
                 </Button>
                 <Button onClick={() => {
@@ -2308,7 +2308,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
       {/* Instructions Drawer */}
       <Drawer open={showInstructionsDrawer} onOpenChange={setShowInstructionsDrawer}>
-        <DrawerContent className="bg-surface border-border-subtle">
+        <DrawerContent className="bg-surface shadow-lg">
           <DrawerHeader className="flex flex-row items-center justify-between">
             <DrawerTitle className="text-text-primary">Meeting Instructions</DrawerTitle>
             <DrawerClose asChild>
@@ -2326,7 +2326,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 value={tempNotes}
                 onChange={(e) => setTempNotes(e.target.value)}
                 placeholder="Add any specific instructions..."
-                className="bg-surface-raised border-border-subtle text-text-primary"
+                className="bg-surface-raised text-text-primary shadow-sm"
               />
             </div>
             <div className="flex gap-3">
