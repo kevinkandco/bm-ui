@@ -1546,20 +1546,16 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                           <MoreVertical className="h-3 w-3" />
                                         </Button>
                                       </DropdownMenuTrigger>
-                                      <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>
-                                          <Mail className="h-4 w-4 mr-2" />
-                                          Reply
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                          <Calendar className="h-4 w-4 mr-2" />
-                                          Schedule
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                          <Kanban className="h-4 w-4 mr-2" />
-                                          Add to Asana
-                                        </DropdownMenuItem>
-                                      </DropdownMenuContent>
+                                        <DropdownMenuContent align="end">
+                                         <DropdownMenuItem>
+                                           <Mail className="h-4 w-4 mr-2" />
+                                           Reply
+                                         </DropdownMenuItem>
+                                         <DropdownMenuItem>
+                                           <Kanban className="h-4 w-4 mr-2" />
+                                           Add to Asana
+                                         </DropdownMenuItem>
+                                       </DropdownMenuContent>
                                     </DropdownMenu>
                                   </div>
                                 </div>
