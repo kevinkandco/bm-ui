@@ -120,6 +120,7 @@ const HomeView = ({
   const [tempNotes, setTempNotes] = useState("");
   const [showMoreToday, setShowMoreToday] = useState(false);
   const [showAllFollowUps, setShowAllFollowUps] = useState(false);
+  const [showUpcomingBriefs, setShowUpcomingBriefs] = useState(false);
 
   // Schedule state (from CalendarSection)
   const [meetings, setMeetings] = useState<Meeting[]>([{
@@ -1202,8 +1203,45 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                           <div className="space-y-4">
+                            {/* Multiple Briefs Available Today - Show Catch Up Brief if available */}
+                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate('/dashboard/briefs/catch-up')}>
+                              <div className="flex items-center gap-4">
+                                {/* Play Button */}
+                                <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
+                                  e.stopPropagation();
+                                  // Handle catch-up brief play
+                                }}>
+                                  <Play className="h-6 w-6 text-accent-primary" />
+                                </Button>
+                                
+                                {/* Brief Details */}
+                                <div className="flex-1">
+                                  <h3 className="text-base font-semibold text-text-primary mb-1">Combined Catch Up Brief</h3>
+                                  <p className="text-sm text-text-secondary mb-2">
+                                    Delivered at (Summarizing: 10:30 AM - 1:30 PM)
+                                  </p>
+                                  <p className="text-xs text-text-secondary">Stay updated with your latest briefs from combined sources</p>
+                                </div>
+                                
+                                {/* Stats and Status */}
+                                <div className="text-right">
+                                  <div className="flex items-center gap-4 text-sm text-text-secondary mb-2">
+                                    <span>0 Slack</span>
+                                    <span>0 Emails</span>
+                                    <span>0 Actions</span>
+                                  </div>
+                                  <div className="px-3 py-1 rounded-full border-2 text-sm font-medium" style={{ borderColor: '#FACC14', color: '#FACC14' }}>
+                                    Generating summary
+                                  </div>
+                                </div>
+                                
+                                {/* Expand Arrow */}
+                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                              </div>
+                            </div>
+
                             {/* Daily Combined Brief */}
-                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => handleBriefSelect(recentBriefs[0].id)}>
+                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
                               <div className="flex items-center gap-4">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
@@ -1249,24 +1287,57 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             
                             {/* Upcoming Section */}
                             <div>
-                              <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={handleNavigateToAllBriefs}>
+                              <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={() => setShowUpcomingBriefs(!showUpcomingBriefs)}>
                                 <div className="flex items-center gap-3">
                                   <h4 className="text-base font-medium text-text-primary">Upcoming</h4>
-                                  {upcomingBriefs.length > 0 && (
+                                  {upcomingBriefs.length > 0 && !showUpcomingBriefs && (
                                     <span className="text-sm text-text-secondary">
                                       Daily Brief • Tomorrow at 7:30 AM
                                     </span>
                                   )}
                                 </div>
-                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                                <ChevronDown className={`w-5 h-5 text-text-secondary transition-transform ${showUpcomingBriefs ? 'rotate-180' : ''}`} />
                               </div>
+                              
+                              {/* Expanded Upcoming Content */}
+                              {showUpcomingBriefs && (
+                                <div className="px-4 py-4 space-y-4">
+                                  <div className="w-fit">
+                                    <span className="px-3 py-1 rounded-full bg-accent-primary/20 text-accent-primary text-sm font-medium">
+                                      Coming Soon
+                                    </span>
+                                  </div>
+                                  
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-surface-raised/30 flex items-center justify-center">
+                                      <Clock className="w-6 h-6 text-text-secondary" />
+                                    </div>
+                                    
+                                    <div className="flex-1">
+                                      <h4 className="text-lg font-semibold text-text-primary mb-1">Daily Brief</h4>
+                                      <p className="text-sm text-text-secondary">Scheduled for Tomorrow at 7:30 AM</p>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-3">
+                                      <Button variant="outline" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-4 py-2 text-sm border border-white/10">
+                                        <Calendar className="w-4 h-4 mr-2" />
+                                        Update Schedule
+                                      </Button>
+                                      <Button className="bg-accent-primary hover:bg-accent-primary/90 text-white rounded-full px-4 py-2 text-sm">
+                                        <Zap className="w-4 h-4 mr-2" />
+                                        Get Briefed Now
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                             
                             {/* Separator */}
                             <div className="border-t border-white/8" />
                             
                             {/* Past Briefs Section */}
-                            <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={handleNavigateToAllBriefs}>
+                            <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={() => navigate('/dashboard/briefs')}>
                               <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
                               <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
                                 <span>View all</span>
