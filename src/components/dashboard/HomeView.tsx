@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck, Pencil, Mic } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck, Pencil, Mic, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import MenuBarIcon from "./MenuBarIcon";
 import SignalSweepBar from "../visuals/SignalSweepBar";
@@ -364,6 +364,7 @@ const HomeView = ({
     id: 1,
     name: "Morning Brief",
     timeCreated: "Today, 8:00 AM",
+    timeDelivered: "8:00 AM",
     timeRange: "5:00 AM - 8:00 AM",
     slackMessages: {
       total: 12,
@@ -374,11 +375,15 @@ const HomeView = ({
       fromPriorityPeople: 2
     },
     actionItems: 4,
-    hasTranscript: true
+    hasTranscript: true,
+    rating: "up", // "up", "down", or null
+    minutesSaved: 17,
+    briefType: "structured" // "structured" or "ad-hoc"
   }, {
     id: 2,
     name: "Evening Brief",
     timeCreated: "Yesterday, 8:00 PM",
+    timeDelivered: "8:00 PM",
     timeRange: "5:00 PM - 8:00 PM",
     slackMessages: {
       total: 8,
@@ -389,11 +394,15 @@ const HomeView = ({
       fromPriorityPeople: 0
     },
     actionItems: 2,
-    hasTranscript: true
+    hasTranscript: true,
+    rating: "up",
+    minutesSaved: 12,
+    briefType: "structured"
   }, {
     id: 3,
     name: "Midday Brief",
     timeCreated: "Yesterday, 12:30 PM",
+    timeDelivered: "12:30 PM",
     timeRange: "9:00 AM - 12:30 PM",
     slackMessages: {
       total: 15,
@@ -404,11 +413,15 @@ const HomeView = ({
       fromPriorityPeople: 3
     },
     actionItems: 6,
-    hasTranscript: true
+    hasTranscript: true,
+    rating: null,
+    minutesSaved: 25,
+    briefType: "ad-hoc"
   }, {
     id: 4,
     name: "Weekend Brief",
     timeCreated: "2 days ago, 6:00 PM",
+    timeDelivered: "6:00 PM",
     timeRange: "12:00 PM - 6:00 PM",
     slackMessages: {
       total: 5,
@@ -419,11 +432,15 @@ const HomeView = ({
       fromPriorityPeople: 4
     },
     actionItems: 3,
-    hasTranscript: true
+    hasTranscript: true,
+    rating: "down",
+    minutesSaved: 8,
+    briefType: "structured"
   }, {
     id: 5,
     name: "Friday Brief",
     timeCreated: "3 days ago, 5:00 PM",
+    timeDelivered: "5:00 PM",
     timeRange: "1:00 PM - 5:00 PM",
     slackMessages: {
       total: 22,
@@ -434,7 +451,10 @@ const HomeView = ({
       fromPriorityPeople: 6
     },
     actionItems: 9,
-    hasTranscript: true
+    hasTranscript: true,
+    rating: "up",
+    minutesSaved: 32,
+    briefType: "structured"
   }];
   const recentBriefs = allBriefs.slice(0, 3); // Only show first 3 in recent
   const upcomingBriefs = [{
@@ -1725,11 +1745,37 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             {playingBrief === brief.id ? <Pause className="h-4 w-4 text-accent-primary" /> : <Play className="h-4 w-4 text-accent-primary" />}
                           </Button>
                           <div className="flex-1">
-                            <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
-                            <p className="text-xs text-text-secondary mb-1">{brief.timeCreated}</p>
-                            <p className="text-xs text-text-secondary">
-                              {brief.slackMessages.fromPriorityPeople} Slack | {brief.emails.fromPriorityPeople} Emails | {brief.actionItems} Actions
-                            </p>
+                            <div className="flex items-center justify-between mb-1">
+                              <h3 className="font-medium text-text-primary text-sm">{brief.name}</h3>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="text-xs px-2 py-0.5 h-5">
+                                  {brief.briefType}
+                                </Badge>
+                                {brief.rating && (
+                                  <div className="flex items-center">
+                                    {brief.rating === "up" ? (
+                                      <ThumbsUp className="h-3 w-3 text-green-500" />
+                                    ) : (
+                                      <ThumbsDown className="h-3 w-3 text-red-500" />
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-text-secondary mb-1">
+                              <span>Delivered: {brief.timeDelivered}</span>
+                              <span>•</span>
+                              <span>{brief.timeRange}</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <p className="text-xs text-text-secondary">
+                                {brief.slackMessages.fromPriorityPeople} Slack | {brief.emails.fromPriorityPeople} Emails | {brief.actionItems} Actions
+                              </p>
+                              <div className="flex items-center gap-1 text-xs text-accent-primary">
+                                <Clock className="h-3 w-3" />
+                                <span>{brief.minutesSaved}m saved</span>
+                              </div>
+                            </div>
                           </div>
                           <div className="text-xs text-text-secondary">
                             {brief.id === 1 ? '12hrs' : brief.id === 2 ? '1d' : brief.id === 3 ? '1d' : brief.id === 4 ? '2d' : '3d'}
