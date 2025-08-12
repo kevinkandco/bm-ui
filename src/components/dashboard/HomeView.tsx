@@ -1189,9 +1189,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
                               e.stopPropagation();
-                              // Handle catch-up brief play
+                              handlePlayBrief(recentBriefs[0].id);
                             }}>
-                                  <Play className="h-5 w-5 text-accent-primary" />
+                                  {playingBrief === recentBriefs[0].id ? <Pause className="h-5 w-5 text-accent-primary" /> : <Play className="h-5 w-5 text-accent-primary" />}
                                 </Button>
                                 
                                 {/* Title Row: Brief title, status badge, counts */}
@@ -1200,6 +1200,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     <h3 className="text-white-text truncate font-semibold text-base">
                                       Combined Catch Up Brief
                                     </h3>
+                                    {playingBrief === recentBriefs[0].id && (
+                                      <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary border-accent-primary/40 text-xs px-2 py-0.5 font-medium">
+                                        Playing
+                                      </Badge>
+                                    )}
                                   </div>
                                   
                                   {/* Counts on the right side of title row */}
