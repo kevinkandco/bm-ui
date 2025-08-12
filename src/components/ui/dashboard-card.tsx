@@ -15,7 +15,7 @@ const DashboardCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-2xl p-4 space-y-4 backdrop-blur-sm",
+      "rounded-2xl p-3 space-y-3 backdrop-blur-sm",
       className
     )}
     {...props}
@@ -30,7 +30,7 @@ const DashboardCard = React.forwardRef<
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
     )}
-    <div className="space-y-4">
+    <div className="space-y-2">
       {children}
     </div>
   </div>
