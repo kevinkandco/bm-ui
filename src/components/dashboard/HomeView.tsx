@@ -91,12 +91,12 @@ const HomeView = ({
   } = useToast();
 
   // State for new layout
-  const [selectedBrief, setSelectedBrief] = useState<number | null>(1); // Default to latest brief
+  const [selectedBrief, setSelectedBrief] = useState<number | null>(null);
   const [showAllBriefs, setShowAllBriefs] = useState(false);
   const [selectedCalendarItem, setSelectedCalendarItem] = useState<string | null>(null);
-  const [openSection, setOpenSection] = useState<'briefs' | 'calendar' | 'followups' | null>('briefs');
+  const [openSection, setOpenSection] = useState<'briefs' | 'calendar' | 'followups' | null>(null);
   const [leftRailTab, setLeftRailTab] = useState<'briefs' | 'calendar' | 'followups'>('briefs');
-  const [isHomeSelected, setIsHomeSelected] = useState(false);
+  const [isHomeSelected, setIsHomeSelected] = useState(true);
   const [followUpsFilter, setFollowUpsFilter] = useState<'all' | 'current'>('all');
   const [showRightDrawer, setShowRightDrawer] = useState(false);
   const [playingBrief, setPlayingBrief] = useState<number | null>(null);
