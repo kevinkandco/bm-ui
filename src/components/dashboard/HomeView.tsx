@@ -1324,31 +1324,52 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               
                               {/* Expanded Upcoming Content */}
                               {showUpcomingBriefs && <div className="px-4 py-4 space-y-4">
-                                  <div className="w-fit">
-                                    <span className="px-3 py-1 rounded-full bg-accent-primary/20 text-accent-primary text-sm font-medium">
-                                      Coming Soon
-                                    </span>
-                                  </div>
-                                  
-                                  <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-surface-raised/30 flex items-center justify-center">
-                                      <Clock className="w-6 h-6 text-text-secondary" />
+                                  {/* Upcoming Brief Card with ghosted styling */}
+                                  <div className="w-full transition-all duration-300 rounded-xl overflow-hidden opacity-60 relative p-4" style={{
+                                    background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.3) 0%, rgba(43, 49, 54, 0.3) 100%)'
+                                  }}>
+                                    {/* Coming Soon Badge */}
+                                    <div className="absolute top-3 left-3 z-10">
+                                      <div className="bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded-full border border-blue-500/40">
+                                        Coming Soon
+                                      </div>
                                     </div>
-                                    
-                                    <div className="flex-1">
-                                      <h4 className="text-lg font-semibold text-text-primary mb-1">Daily Brief</h4>
-                                      <p className="text-sm text-text-secondary">Scheduled for Tomorrow at 7:30 AM</p>
-                                    </div>
-                                    
-                                    <div className="flex items-center gap-3">
-                                      <Button variant="outline" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-4 py-2 text-sm border border-white/10">
-                                        <Calendar className="w-4 h-4 mr-2" />
-                                        Update Schedule
-                                      </Button>
-                                      <Button className="bg-accent-primary hover:bg-accent-primary/90 text-white rounded-full px-4 py-2 text-sm">
-                                        <Zap className="w-4 h-4 mr-2" />
-                                        Get Briefed Now
-                                      </Button>
+
+                                    <div className="pt-8">
+                                      <div className="flex items-center gap-4 mb-2">
+                                        {/* Clock icon */}
+                                        <div className="w-10 h-10 rounded-full bg-primary-teal/10 flex items-center justify-center opacity-50 flex-shrink-0">
+                                          <Clock className="h-5 w-5 text-primary-teal" />
+                                        </div>
+                                        
+                                        {/* Title Row: Brief title and buttons */}
+                                        <div className="flex items-center justify-between flex-1 min-w-0">
+                                          <div className="flex items-center gap-2 min-w-0">
+                                            <h3 className="text-white-text/70 truncate font-semibold text-base">
+                                              Daily Brief
+                                            </h3>
+                                          </div>
+                                          
+                                          {/* Buttons on the right side */}
+                                          <div className="flex items-center gap-3 flex-shrink-0">
+                                            <Button variant="outline" className="border-light-gray-text/40 text-light-gray-text hover:border-light-gray-text/60 hover:text-white-text rounded-lg px-3 py-1 text-xs bg-transparent">
+                                              <Calendar className="h-3 w-3 mr-1" />
+                                              Update Schedule
+                                            </Button>
+                                            <Button variant="outline" className="border-blue-500/60 text-blue-400 hover:border-blue-400 hover:text-blue-300 rounded-lg px-3 py-1 text-xs bg-transparent">
+                                              <Zap className="h-3 w-3 mr-1" />
+                                              Get Briefed Now
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      
+                                      {/* Meta Row: Scheduled text */}
+                                      <div className="flex items-center justify-between pl-14">
+                                        <p className="text-xs text-light-gray-text/70 font-light">
+                                          Scheduled for Tomorrow at 7:30 AM
+                                        </p>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>}
