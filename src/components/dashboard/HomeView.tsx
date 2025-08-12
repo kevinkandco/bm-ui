@@ -1228,7 +1228,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div>
 
                             {/* Daily Combined Brief */}
-                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
+                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => {
+                              setLeftRailTab('briefs');
+                              setLeftPanelCollapsed(false);
+                              setSelectedBrief(recentBriefs[0].id);
+                              setIsHomeSelected(false);
+                            }}>
                               <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
