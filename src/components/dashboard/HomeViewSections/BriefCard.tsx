@@ -25,6 +25,7 @@ interface BriefCardProps {
     };
     actionItems: number;
     hasTranscript: boolean;
+    isGenerating?: boolean;
   };
   onViewBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -250,84 +251,90 @@ const BriefCard = ({
     }} onClick={handleCardClick}>
         {/* Collapsed Header */}
         <div className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-              {/* Play button moved to the left, doc icon removed */}
-              <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
-                {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
-                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '0ms'
-                }} />
-                    <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '150ms'
-                }} />
-                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '300ms'
-                }} />
-                    <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '450ms'
-                }} />
-                  </div> : <Play className="h-5 w-5 text-primary-teal" />}
-              </button>
-              
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-white-text truncate font-normal text-sm">
-                    {brief.name}
-                  </h3>
-                  {playingBrief === brief.id && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-300/20 text-brand-300 border border-brand-300/30">Playing</span>
-                  )}
-                  
-                  {/* Feedback Controls - Show on hover, next to brief name */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
-                    <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
-                      <ThumbsUp className="h-3 w-3" />
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
-                      <ThumbsDown className="h-3 w-3" />
-                    </Button>
-                  </div>
-
-                  {/* Feedback Badge - Always visible when rated */}
-                  {feedbackState === 'up' && <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
-                      👍
-                    </Badge>}
-                  {feedbackState === 'down' && !showCommentInput && <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
-                      👎
-                    </Badge>}
-                </div>
-                
-                {/* Updated timestamp and range format with date */}
-                <p className="text-xs text-light-gray-text font-extralight">
-                  {formatDeliveryText(brief.timeCreated, brief.timeRange)}
-                </p>
-              </div>
-            </div>
+          <div className="flex items-center gap-4 mb-2">
+            {/* Play button moved to the left */}
+            <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
+              {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '0ms'
+              }} />
+                  <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '150ms'
+              }} />
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '300ms'
+              }} />
+                  <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '450ms'
+              }} />
+                </div> : <Play className="h-5 w-5 text-primary-teal" />}
+            </button>
             
-            {/* Right side items with new layout */}
-            <div className="flex items-center gap-6 flex-shrink-0">
-              {/* Stats and time saved section */}
-              <div className="flex flex-col items-end gap-2">
-                {/* Horizontally aligned stats */}
-                <div className="flex items-center gap-3 text-xs text-light-gray-text">
-                  <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
-                  <span className="whitespace-nowrap">{brief.emails.total} Emails</span>
-                  <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
-                </div>
+            {/* Title Row: Brief title, status badge, counts */}
+            <div className="flex items-center justify-between flex-1 min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <h3 className="text-white-text truncate font-semibold text-base">
+                  {brief.name}
+                </h3>
                 
-                {/* Time Saved below the stats */}
-                <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
-                  <Clock className="h-2.5 w-2.5 text-green-400" />
-                  <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+                {/* Status/emoji badge - Always visible when rated */}
+                {feedbackState === 'up' && (
+                  <span className="text-sm">👍</span>
+                )}
+                {feedbackState === 'down' && !showCommentInput && (
+                  <span className="text-sm">👎</span>
+                )}
+                {playingBrief === brief.id && (
+                  <span className="text-sm">▶️</span>
+                )}
+                
+                {/* Feedback Controls - Show on hover */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
+                    <ThumbsUp className="h-3 w-3" />
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
+                    <ThumbsDown className="h-3 w-3" />
+                  </Button>
                 </div>
               </div>
               
-              {/* Chevron */}
-              <div className="ml-2">
-                {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
+              {/* Counts on the right side of title row */}
+              <div className="flex items-center gap-4 text-sm text-light-gray-text flex-shrink-0">
+                <span className="whitespace-nowrap">{brief.slackMessages.total} Slack</span>
+                <span className="whitespace-nowrap">{brief.emails.total} Email</span>
+                <span className="whitespace-nowrap">{brief.actionItems} Actions</span>
+                
+                {/* Chevron */}
+                <div className="ml-2">
+                  {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
+                </div>
               </div>
             </div>
+          </div>
+          
+          {/* Meta Row: Delivery text and time saved */}
+          <div className="flex items-center justify-between pl-14">
+            <p className="text-xs text-light-gray-text font-light">
+              {formatDeliveryText(brief.timeCreated, brief.timeRange)}
+            </p>
+            
+            {/* Time saved badge or generating pill aligned right with meta row */}
+            {brief.isGenerating ? (
+              <div className="flex items-center gap-1 text-xs bg-blue-400/10 rounded-full py-1 px-2">
+                <span className="text-blue-400 font-medium">Generating summary</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-xs bg-green-400/10 rounded-full py-1 px-2">
+                <Clock className="h-3 w-3 text-green-400" />
+                <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+              </div>
+            )}
+          </div>
+          
+          {/* Description Row */}
+          <div className="pl-14 mt-1">
+            <p className="text-sm text-light-gray-text">Stay updated with your latest brief</p>
           </div>
           
           {/* Comment Input for downvote */}
