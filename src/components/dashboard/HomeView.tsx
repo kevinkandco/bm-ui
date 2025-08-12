@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { DashboardCard } from "@/components/ui/dashboard-card";
 
 // Import components
 import BriefsContainer from "./HomeViewSections/BriefsContainer";
@@ -939,8 +940,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     {/* Left Column */}
                     <div className="space-y-8">
                       {/* Daily Briefing Section */}
-                      <div>
-                        <h2 className="text-xl font-semibold text-text-primary mb-4">Daily briefing</h2>
+                      <DashboardCard title="Daily briefing">
                         <div className="space-y-4">
                           {/* Recent Briefs */}
                           {recentBriefs.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 border border-border-subtle hover:bg-surface-raised/40 transition-colors cursor-pointer" onClick={() => handleBriefSelect(brief.id)}>
@@ -978,20 +978,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </DashboardCard>
 
                       {/* Schedule Section */}
-                      <div>
-                        <h2 className="text-xl font-semibold text-text-primary mb-4">Schedule</h2>
+                      <DashboardCard title="Schedule">
                         <CalendarSection onMeetingClick={handleMeetingClick} />
-                      </div>
+                      </DashboardCard>
                     </div>
 
                     {/* Right Column */}
                     <div className="space-y-8">
                       {/* Follow ups Section */}
-                      <div>
-                        <h2 className="text-xl font-semibold text-text-primary mb-4">Follow ups</h2>
+                      <DashboardCard title="Follow ups">
                         <div className="space-y-3">
                           {followUps.filter(item => followUpsFilter === 'all' || item.priority === 'High').slice(0, 8).map(item => <div key={item.id} className={cn("flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors border border-border-subtle", selectedFollowUpId === item.id ? "bg-accent-primary/10" : "hover:bg-surface-raised/20")} onClick={() => handleFollowUpClick(item)}>
                               <div className="w-4 h-4 rounded-full border border-accent-primary" />
@@ -1001,7 +999,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               </div>
                             </div>)}
                         </div>
-                      </div>
+                      </DashboardCard>
                     </div>
                   </div>
                 </div>}
