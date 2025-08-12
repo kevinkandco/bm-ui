@@ -37,6 +37,7 @@ import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
+import FollowUpDetailPanel from "./FollowUpDetailPanel";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -121,6 +122,8 @@ const HomeView = ({
   const [showMoreToday, setShowMoreToday] = useState(false);
   const [showAllFollowUps, setShowAllFollowUps] = useState(false);
   const [showUpcomingBriefs, setShowUpcomingBriefs] = useState(false);
+  const [selectedFollowUpDetail, setSelectedFollowUpDetail] = useState<any>(null);
+  const [showFollowUpDetailPanel, setShowFollowUpDetailPanel] = useState(false);
 
   // Schedule state (from CalendarSection)
   const [meetings, setMeetings] = useState<Meeting[]>([{
@@ -673,11 +676,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const handleFollowUpClick = useCallback((item: any) => {
     // Set the selected follow up for highlighting
     setSelectedFollowUpId(item.id);
-
-    // Show the brief that this follow up came from in main content area
-    setSelectedBrief(1); // All follow ups are from the morning brief
+    // Open the detail panel
+    setSelectedFollowUpDetail(item);
+    setShowFollowUpDetailPanel(true);
+    // Clear other selections
+    setSelectedBrief(null);
     setSelectedCalendarItem(null);
-    setSelectedMeeting(null); // Clear calendar selection
+    setSelectedMeeting(null);
     setIsHomeSelected(false);
     setFollowUpsFilter('current');
 
@@ -1448,20 +1453,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
                         const hasLowPriority = lowPriority.length > 0;
                         const renderFollowUpItem = (item: any) => <div key={item.id} className={cn("flex items-center gap-3 p-2 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors", selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary")} onClick={() => {
-                          setSelectedFollowUpId(item.id);
-                          setSelectedMessage({
-                            ...item,
-                            subject: "Follow-up Required",
-                            fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                            from: item.sender,
-                            relevancy: "Requires action from you",
-                            reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                            created: item.time,
-                            lastActivity: item.time,
-                            source: item.platform === "S" ? "Slack" : "Email",
-                            due: "End of day"
-                          });
-                          setRightPanelCollapsed(false);
+                          handleFollowUpClick(item);
                         }}>
                               <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
                                 <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
@@ -1816,20 +1808,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </TableHeader>
                             <TableBody>
                               {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
-                            setSelectedFollowUpId(item.id);
-                            setSelectedMessage({
-                              ...item,
-                              subject: "Follow-up Required",
-                              fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                              from: item.sender,
-                              relevancy: "Requires action from you",
-                              reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                              created: item.time,
-                              lastActivity: item.time,
-                              source: item.platform === "S" ? "Slack" : "Email",
-                              due: "End of day"
-                            });
-                            setRightPanelCollapsed(false);
+                            handleFollowUpClick(item);
                           }}>
                                   <TableCell className="w-8" onClick={e => e.stopPropagation()}>
                                     <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
@@ -2014,15 +1993,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </TableHeader>
                             <TableBody>
                               {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
-                            setSelectedFollowUpId(item.id);
-                            setSelectedMessage({
-                              ...item,
-                              subject: "Follow-up Required",
-                              fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                              from: item.sender,
-                              relevancy: item.priority === "High" ? "Requires immediate attention" : "Review when convenient",
-                              reasoning: "Flagged based on sender importance and content keywords."
-                            });
+                            handleFollowUpClick(item);
                           }}>
                                   <TableCell className="w-8" onClick={e => e.stopPropagation()}>
                                     <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
@@ -2311,6 +2282,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* Follow Up Detail Panel */}
+      <FollowUpDetailPanel 
+        followUp={selectedFollowUpDetail}
+        open={showFollowUpDetailPanel}
+        onClose={() => {
+          setShowFollowUpDetailPanel(false);
+          setSelectedFollowUpDetail(null);
+          setSelectedFollowUpId(null);
+        }}
+        onMarkDone={(id) => {
+          // Handle mark done logic here
+          console.log('Marking follow up as done:', id);
+        }}
+      />
 
     </div>;
 };
