@@ -1467,15 +1467,173 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     <div className="space-y-8">
                       {/* Follow ups Section */}
                       <DashboardCard title="Follow ups">
-                        <div className="space-y-3">
-                          {followUps.filter(item => followUpsFilter === 'all' || item.priority === 'High').slice(0, 8).map(item => <div key={item.id} className={cn("flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors border border-border-subtle", selectedFollowUpId === item.id ? "bg-accent-primary/10" : "hover:bg-surface-raised/20")} onClick={() => handleFollowUpClick(item)}>
-                              <div className="w-4 h-4 rounded-full border border-accent-primary" />
-                              <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm text-text-primary font-medium truncate">{item.message}</p>
+                        {(() => {
+                          // Group follow-ups by priority
+                          const groupedFollowUps = followUps.reduce((acc, item) => {
+                            if (!acc[item.priority]) acc[item.priority] = [];
+                            acc[item.priority].push(item);
+                            return acc;
+                          }, {} as Record<string, typeof followUps>);
+
+                          const highPriority = groupedFollowUps.High || [];
+                          const mediumPriority = groupedFollowUps.Medium || [];
+                          const lowPriority = groupedFollowUps.Low || [];
+
+                          // Show High + Medium by default (up to 5 total)
+                          const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
+                          const hasLowPriority = lowPriority.length > 0;
+
+                          const [showAllFollowUps, setShowAllFollowUps] = React.useState(false);
+
+                          const renderFollowUpItem = (item: any) => (
+                            <div 
+                              key={item.id}
+                              className={cn(
+                                "flex items-center gap-3 p-3 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors",
+                                selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary"
+                              )}
+                              onClick={() => {
+                                setSelectedFollowUpId(item.id);
+                                setSelectedMessage({
+                                  ...item,
+                                  subject: "Follow-up Required",
+                                  fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
+                                  from: item.sender,
+                                  relevancy: "Requires action from you",
+                                  reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
+                                  created: item.time,
+                                  lastActivity: item.time,
+                                  source: item.platform === "S" ? "Slack" : "Email",
+                                  due: "End of day"
+                                });
+                                setRightPanelCollapsed(false);
+                              }}
+                            >
+                              <div 
+                                className="flex-shrink-0" 
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Checkbox 
+                                  checked={checkedFollowUps.has(item.id)} 
+                                  onCheckedChange={() => handleFollowUpCheck(item.id)} 
+                                  className="h-4 w-4" 
+                                />
                               </div>
-                            </div>)}
-                        </div>
+
+                              <div className="w-8 h-8 rounded-full bg-surface-raised/50 border border-border-subtle flex items-center justify-center flex-shrink-0">
+                                <span className="text-xs font-medium text-text-primary">{item.platform}</span>
+                              </div>
+
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <PriorityBadge item={item} onPriorityChange={handlePriorityChange} />
+                                  <span className="text-xs text-text-secondary">{item.time}</span>
+                                </div>
+                                <p className="text-sm text-text-primary line-clamp-2 leading-relaxed mb-1">
+                                  {item.message}
+                                </p>
+                                <p className="text-xs text-text-secondary truncate">{item.sender}</p>
+                              </div>
+
+                              <div className="flex items-center gap-2 flex-shrink-0">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                >
+                                  <Kanban className="h-3 w-3" />
+                                  Asana
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised/30 rounded-full px-2 py-1 text-xs flex items-center gap-1 h-7"
+                                >
+                                  {item.platform === "S" ? (
+                                    <>
+                                      <Calendar className="h-3 w-3" />
+                                      Schedule
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Mail className="h-3 w-3" />
+                                      Reply
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          );
+
+                          return (
+                            <div className="space-y-4">
+                              {/* High Priority Section */}
+                              {highPriority.length > 0 && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-orange-400"></div>
+                                    <h4 className="text-sm font-medium text-text-secondary">High Priority</h4>
+                                  </div>
+                                  <div className="space-y-1">
+                                    {highPriority.map(renderFollowUpItem)}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Medium Priority Section */}
+                              {mediumPriority.length > 0 && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+                                    <h4 className="text-sm font-medium text-text-secondary">Medium Priority</h4>
+                                  </div>
+                                  <div className="space-y-1">
+                                    {mediumPriority.slice(0, Math.max(0, 5 - highPriority.length)).map(renderFollowUpItem)}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Low Priority Section - Collapsible */}
+                              {hasLowPriority && (
+                                <div className="space-y-2">
+                                  {showAllFollowUps && (
+                                    <>
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                                        <h4 className="text-sm font-medium text-text-secondary">Low Priority</h4>
+                                      </div>
+                                      <div className="space-y-1">
+                                        {lowPriority.map(renderFollowUpItem)}
+                                      </div>
+                                    </>
+                                  )}
+
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setShowAllFollowUps(!showAllFollowUps)}
+                                    className="w-full justify-center text-text-secondary hover:text-text-primary text-sm"
+                                  >
+                                    {showAllFollowUps ? 'Show less' : `Show all (${lowPriority.length} more)`}
+                                  </Button>
+                                </div>
+                              )}
+
+                              {checkedFollowUps.size > 0 && (
+                                <div className="pt-3 border-t border-border-subtle">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleRemoveCheckedFollowUps}
+                                    className="text-text-secondary hover:text-text-primary text-sm"
+                                  >
+                                    Remove {checkedFollowUps.size} completed
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </DashboardCard>
                     </div>
                   </div>
