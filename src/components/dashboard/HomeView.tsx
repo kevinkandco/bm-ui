@@ -37,6 +37,7 @@ import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
+import FollowUpDetailPanel from "./FollowUpDetailPanel";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -121,6 +122,8 @@ const HomeView = ({
   const [showMoreToday, setShowMoreToday] = useState(false);
   const [showAllFollowUps, setShowAllFollowUps] = useState(false);
   const [showUpcomingBriefs, setShowUpcomingBriefs] = useState(false);
+  const [selectedFollowUpDetail, setSelectedFollowUpDetail] = useState<any>(null);
+  const [showFollowUpDetailPanel, setShowFollowUpDetailPanel] = useState(false);
 
   // Schedule state (from CalendarSection)
   const [meetings, setMeetings] = useState<Meeting[]>([{
@@ -673,11 +676,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const handleFollowUpClick = useCallback((item: any) => {
     // Set the selected follow up for highlighting
     setSelectedFollowUpId(item.id);
-
-    // Show the brief that this follow up came from in main content area
-    setSelectedBrief(1); // All follow ups are from the morning brief
+    // Open the detail panel
+    setSelectedFollowUpDetail(item);
+    setShowFollowUpDetailPanel(true);
+    // Clear other selections
+    setSelectedBrief(null);
     setSelectedCalendarItem(null);
-    setSelectedMeeting(null); // Clear calendar selection
+    setSelectedMeeting(null);
     setIsHomeSelected(false);
     setFollowUpsFilter('current');
 
@@ -1157,14 +1162,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           background: `
               radial-gradient(
                 circle at top left,
-                #2A8A5F 0%,
+                #10191E 0%,
                 #1E646E 30%,
                 #000000 70%
               ),
               url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"
             `
         }}>
-            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
+            <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg rounded-l-lg">
             
             {/* Default Home Content */}
               {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
@@ -1183,7 +1188,244 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Two-Column Grid Layout */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
-                    
+                    <div className="space-y-16">
+                  {/* Today's Briefs Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-lg font-semibold text-text-primary tracking-tight">Today's Briefs</h2>
+                        </div>
+                        
+                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
+                          <div className="space-y-4">
+                            {/* Multiple Briefs Available Today - Show Catch Up Brief if available */}
+                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate('/dashboard/briefs/catch-up')}>
+                              <div className="flex items-center gap-4">
+                                {/* Play Button */}
+                                <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
+                              e.stopPropagation();
+                              // Handle catch-up brief play
+                            }}>
+                                  <Play className="h-6 w-6 text-accent-primary" />
+                                </Button>
+                                
+                                {/* Brief Details */}
+                                <div className="flex-1">
+                                  <h3 className="text-base font-semibold text-text-primary mb-1">Combined Catch Up Brief</h3>
+                                  <p className="text-sm text-text-secondary mb-2">
+                                    Delivered at (Summarizing: 10:30 AM - 1:30 PM)
+                                  </p>
+                                  <p className="text-xs text-text-secondary">Stay updated with your latest briefs from combined sources</p>
+                                </div>
+                                
+                                {/* Stats and Status */}
+                                <div className="text-right">
+                                  <div className="flex items-center gap-4 text-sm text-text-secondary mb-2">
+                                    <span>0 Slack</span>
+                                    <span>0 Emails</span>
+                                    <span>0 Actions</span>
+                                  </div>
+                                  <div className="px-3 py-1 rounded-full border-2 text-sm font-medium" style={{
+                                borderColor: '#FACC14',
+                                color: '#FACC14'
+                              }}>
+                                    Generating summary
+                                  </div>
+                                </div>
+                                
+                                {/* Expand Arrow */}
+                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                              </div>
+                            </div>
+
+                            {/* Daily Combined Brief */}
+                            <div className="p-4 rounded-lg hover:bg-surface-raised/10 transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
+                              <div className="flex items-center gap-4">
+                                {/* Play Button */}
+                                <Button variant="ghost" size="sm" className="h-12 w-12 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
+                              e.stopPropagation();
+                              handlePlayBrief(recentBriefs[0].id);
+                            }}>
+                                  {playingBrief === recentBriefs[0].id ? <Pause className="h-6 w-6 text-accent-primary" /> : <Play className="h-6 w-6 text-accent-primary" />}
+                                </Button>
+                                
+                                {/* Brief Details */}
+                                <div className="flex-1">
+                                  <h3 className="text-base font-semibold text-text-primary mb-1">Daily Combined Brief</h3>
+                                  <p className="text-sm text-text-secondary mb-2">
+                                    Delivered at 7 AM on {new Date().toLocaleDateString('en-US', {
+                                  month: 'long',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                })} (Summarizing: 5:00 PM - 7:00 AM)
+                                  </p>
+                                  <p className="text-xs text-text-secondary">Automatically generated brief</p>
+                                </div>
+                                
+                                {/* Stats and Time Saved */}
+                                <div className="text-right">
+                                  <div className="flex items-center gap-4 text-sm text-text-secondary mb-2">
+                                    <span>{recentBriefs[0].slackMessages.total} Slack</span>
+                                    <span>{recentBriefs[0].emails.total} Emails</span>
+                                    <span>{recentBriefs[0].actionItems} Actions</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-sm text-success">
+                                    <Clock className="w-4 h-4" />
+                                    <span>~62min saved</span>
+                                  </div>
+                                </div>
+                                
+                                {/* Expand Arrow */}
+                                <ChevronDown className="w-5 h-5 text-text-secondary" />
+                              </div>
+                            </div>
+                            
+                            {/* Separator */}
+                            <div className="border-t border-white/8" />
+                            
+                            {/* Upcoming Section */}
+                            <div>
+                              <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={() => setShowUpcomingBriefs(!showUpcomingBriefs)}>
+                                <div className="flex items-center gap-3">
+                                  <h4 className="text-base font-medium text-text-primary">Upcoming</h4>
+                                  {upcomingBriefs.length > 0 && !showUpcomingBriefs && <span className="text-sm text-text-secondary">
+                                      Daily Brief • Tomorrow at 7:30 AM
+                                    </span>}
+                                </div>
+                                <ChevronDown className={`w-5 h-5 text-text-secondary transition-transform ${showUpcomingBriefs ? 'rotate-180' : ''}`} />
+                              </div>
+                              
+                              {/* Expanded Upcoming Content */}
+                              {showUpcomingBriefs && <div className="px-4 py-4 space-y-4">
+                                  <div className="w-fit">
+                                    <span className="px-3 py-1 rounded-full bg-accent-primary/20 text-accent-primary text-sm font-medium">
+                                      Coming Soon
+                                    </span>
+                                  </div>
+                                  
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-surface-raised/30 flex items-center justify-center">
+                                      <Clock className="w-6 h-6 text-text-secondary" />
+                                    </div>
+                                    
+                                    <div className="flex-1">
+                                      <h4 className="text-lg font-semibold text-text-primary mb-1">Daily Brief</h4>
+                                      <p className="text-sm text-text-secondary">Scheduled for Tomorrow at 7:30 AM</p>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-3">
+                                      <Button variant="outline" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-full px-4 py-2 text-sm border border-white/10">
+                                        <Calendar className="w-4 h-4 mr-2" />
+                                        Update Schedule
+                                      </Button>
+                                      <Button className="bg-accent-primary hover:bg-accent-primary/90 text-white rounded-full px-4 py-2 text-sm">
+                                        <Zap className="w-4 h-4 mr-2" />
+                                        Get Briefed Now
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>}
+                            </div>
+                            
+                            {/* Separator */}
+                            <div className="border-t border-white/8" />
+                            
+                            {/* Past Briefs Section */}
+                            <div className="flex items-center justify-between px-4 py-2 hover:bg-surface-raised/10 transition-colors cursor-pointer" onClick={() => navigate('/dashboard/briefs')}>
+                              <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
+                              <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
+                                <span>View all</span>
+                                <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                              </div>
+                            </div>
+                          </div>
+                        </DashboardCard>
+                      </div>
+
+                      {/* Today's Schedule Section */}
+                      <div className="space-y-3">
+                        <h2 className="text-lg font-semibold text-text-primary tracking-tight">Today's schedule</h2>
+                        <DashboardCard className="bg-surface-raised/20 shadow-sm">
+                        <TooltipProvider>
+                          {!hasUpcomingMeetings ? <div className="text-center py-6">
+                              <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+                              <p className="text-sm text-text-secondary">No meetings soon</p>
+                            </div> : <div className="space-y-2">
+                              {/* Next 2 meetings expanded */}
+                              {upcomingMeetings.map((meeting, index) => <div key={meeting.id}>
+                                  <div className="py-1.5 px-2 cursor-pointer transition-colors hover:bg-surface-raised/10 rounded-md border-l-2 border-transparent hover:border-l-accent-primary/30" onClick={() => openMeetingDetails(meeting)}>
+                                    <div className="flex items-center justify-between gap-3">
+                                      {/* Time column - more compact */}
+                                      <div className="min-w-[60px] flex-shrink-0">
+                                        <div className="text-xs font-medium text-text-primary">{meeting.time}</div>
+                                      </div>
+                                      
+                                      {/* Meeting details - single line */}
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                          <h4 className="text-xs font-medium text-text-primary truncate">
+                                            {meeting.title}
+                                          </h4>
+                                          <span className="text-xs text-text-secondary">•</span>
+                                          <span className="text-xs text-text-secondary">{meeting.duration}</span>
+                                          {meeting.isRecording && <div className="flex items-center gap-1">
+                                              <div className="w-1.5 h-1.5 bg-error rounded-full animate-pulse" />
+                                              <span className="text-[10px] text-error font-medium">REC</span>
+                                            </div>}
+                                          {meeting.hasNotes && <BookOpen className="w-3 h-3 text-text-secondary" />}
+                                        </div>
+                                      </div>
+                                      
+                                      {/* Right actions - smaller */}
+                                      <div className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                                        <Button size="sm" className={`h-5 px-2 text-[10px] rounded-full ${meeting.hasProxy ? "bg-brand-500 text-text-secondary hover:bg-brand-500" : "bg-brand-300 text-background hover:bg-brand-300/90"}`} disabled={meeting.hasProxy}>
+                                          Join
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                   {/* Subtle separator between meetings */}
+                                  {index < upcomingMeetings.length - 1 && <div className="border-t border-white/4 my-1.5" />}
+                                </div>)}
+
+                              {/* More today expander */}
+                              {remainingMeetings.length > 0 && <div className="space-y-3 mt-6">
+                                  <div className="border-t border-white/4 my-3" />
+                                  <Button variant="ghost" onClick={() => setShowMoreToday(!showMoreToday)} className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal">
+                                    <span>More today ({remainingMeetings.length})</span>
+                                    <ChevronDown className={`w-4 h-4 transition-transform ${showMoreToday ? 'rotate-180' : ''}`} />
+                                  </Button>
+                                  
+                                  {showMoreToday && <div className="space-y-1 mt-2">
+                                      {allMeetings.filter(m => !upcomingMeetings.includes(m)).map((meeting, index) => {
+                                const isPast = meeting.minutesUntil < 0;
+                                return <div key={meeting.id} className={`flex items-center gap-3 py-1.5 px-2 cursor-pointer hover:bg-surface-raised/20 rounded transition-colors ${isPast ? 'opacity-60' : 'opacity-100'}`} onClick={() => openMeetingDetails(meeting)}>
+                                            {/* Time */}
+                                            <div className="text-xs text-text-secondary min-w-[80px] font-mono">
+                                              {meeting.time}
+                                            </div>
+                                            
+                                            {/* Title */}
+                                            <div className="flex-1 min-w-0">
+                                              <span className={`text-xs truncate ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
+                                                {meeting.title}
+                                              </span>
+                                            </div>
+                                            
+                                            {/* Status indicators */}
+                                            <div className="flex items-center gap-1 flex-shrink-0">
+                                              {meeting.hasProxy && <div className="w-1.5 h-1.5 bg-success rounded-full" />}
+                                              {meeting.isRecording && <div className="w-1.5 h-1.5 bg-error rounded-full animate-pulse" />}
+                                            </div>
+                                          </div>;
+                              })}
+                                    </div>}
+                                </div>}
+                            </div>}
+                        </TooltipProvider>
+                        </DashboardCard>
+                      </div>
+                    </div>
 
                     {/* Column 2 (Secondary): Follow ups */}
                     <div className="space-y-16">
@@ -1211,20 +1453,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         const defaultItems = [...highPriority, ...mediumPriority].slice(0, 5);
                         const hasLowPriority = lowPriority.length > 0;
                         const renderFollowUpItem = (item: any) => <div key={item.id} className={cn("flex items-center gap-3 p-2 rounded-lg hover:bg-surface-raised/20 cursor-pointer transition-colors", selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary")} onClick={() => {
-                          setSelectedFollowUpId(item.id);
-                          setSelectedMessage({
-                            ...item,
-                            subject: "Follow-up Required",
-                            fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                            from: item.sender,
-                            relevancy: "Requires action from you",
-                            reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                            created: item.time,
-                            lastActivity: item.time,
-                            source: item.platform === "S" ? "Slack" : "Email",
-                            due: "End of day"
-                          });
-                          setRightPanelCollapsed(false);
+                          handleFollowUpClick(item);
                         }}>
                               <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
                                 <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
@@ -1579,20 +1808,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </TableHeader>
                             <TableBody>
                               {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
-                            setSelectedFollowUpId(item.id);
-                            setSelectedMessage({
-                              ...item,
-                              subject: "Follow-up Required",
-                              fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                              from: item.sender,
-                              relevancy: "Requires action from you",
-                              reasoning: "Marked as follow-up because it contains a task or decision that needs your input.",
-                              created: item.time,
-                              lastActivity: item.time,
-                              source: item.platform === "S" ? "Slack" : "Email",
-                              due: "End of day"
-                            });
-                            setRightPanelCollapsed(false);
+                            handleFollowUpClick(item);
                           }}>
                                   <TableCell className="w-8" onClick={e => e.stopPropagation()}>
                                     <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
@@ -1777,15 +1993,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             </TableHeader>
                             <TableBody>
                               {followUps.map(item => <TableRow key={item.id} className={`hover:bg-surface-raised/20 cursor-pointer ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => {
-                            setSelectedFollowUpId(item.id);
-                            setSelectedMessage({
-                              ...item,
-                              subject: "Follow-up Required",
-                              fullMessage: `This is a follow-up item requiring your attention.\n\n${item.message}`,
-                              from: item.sender,
-                              relevancy: item.priority === "High" ? "Requires immediate attention" : "Review when convenient",
-                              reasoning: "Flagged based on sender importance and content keywords."
-                            });
+                            handleFollowUpClick(item);
                           }}>
                                   <TableCell className="w-8" onClick={e => e.stopPropagation()}>
                                     <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
@@ -2074,6 +2282,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* Follow Up Detail Panel */}
+      <FollowUpDetailPanel 
+        followUp={selectedFollowUpDetail}
+        open={showFollowUpDetailPanel}
+        onClose={() => {
+          setShowFollowUpDetailPanel(false);
+          setSelectedFollowUpDetail(null);
+          setSelectedFollowUpId(null);
+        }}
+        onMarkDone={(id) => {
+          // Handle mark done logic here
+          console.log('Marking follow up as done:', id);
+        }}
+      />
 
     </div>;
 };
