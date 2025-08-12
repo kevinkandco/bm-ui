@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck } from "lucide-react";
+import { Zap, Focus, Clock, X, Play, Pause, ChevronDown, Calendar, User, Settings, PanelLeftClose, PanelRightClose, CheckSquare, PanelLeftOpen, Mail, Kanban, Info, Users, Check, BookOpen, Home, FileText, ClipboardCheck, Pencil, Mic } from "lucide-react";
 import MenuBarIcon from "./MenuBarIcon";
 import SignalSweepBar from "../visuals/SignalSweepBar";
 import { Button } from "@/components/ui/button";
@@ -7,12 +7,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,6 +36,27 @@ import MobileHomeView from "./MobileHomeView";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
+
+// Meeting interface from CalendarSection
+interface Meeting {
+  id: string;
+  title: string;
+  time: string;
+  duration: string;
+  attendees: Array<{
+    name: string;
+    email: string;
+  }>;
+  briefing: string;
+  aiSummary: string;
+  hasProxy: boolean;
+  hasNotes: boolean;
+  proxyNotes?: string;
+  summaryReady: boolean;
+  isRecording: boolean;
+  minutesUntil: number;
+}
+
 interface HomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (briefId: number) => void;
@@ -85,11 +109,184 @@ const HomeView = ({
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
   const [selectedTranscript, setSelectedTranscript] = useState<any>(null);
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
-  const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
 const [showStatusModal, setShowStatusModal] = useState(false);
 const [currentStatus, setCurrentStatus] = useState('online');
 const [showMobileBriefDrawer, setShowMobileBriefDrawer] = useState(false);
+
+  // Schedule state (from CalendarSection)
+  const [meetings, setMeetings] = useState<Meeting[]>([
+    {
+      id: "0",
+      title: "internal project meeting",
+      time: "9:00 AM",
+      duration: "2 hours",
+      attendees: [
+        { name: "Project Team", email: "team@company.com" }
+      ],
+      briefing: "Internal project meeting with the team",
+      aiSummary: "Regular project sync to discuss progress and next steps.",
+      hasProxy: false,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: -180 // Past event
+    },
+    {
+      id: "1.5",
+      title: "demo with steve",
+      time: "1:00 PM",
+      duration: "1 hour",
+      attendees: [
+        { name: "Steve Wilson", email: "steve@company.com" }
+      ],
+      briefing: "Product demo with Steve Wilson",
+      aiSummary: "Demo session to showcase new features and gather feedback.",
+      hasProxy: true,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: -60 // Past event
+    },
+    {
+      id: "1",
+      title: "Test demo",
+      time: "2:00 PM",
+      duration: "1 hour",
+      attendees: [
+        { name: "Kevin Kirkpatrick", email: "kirkpatrick.kevin.j@gmail.com" },
+        { name: "Kevin Kirkpatrick", email: "kevin@uprise.is" }
+      ],
+      briefing: "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
+      aiSummary: "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
+      hasProxy: true,
+      hasNotes: true,
+      proxyNotes: "Focus on practicality and personalization features",
+      summaryReady: false,
+      isRecording: true,
+      minutesUntil: 45
+    },
+    {
+      id: "2", 
+      title: "external demo",
+      time: "3:00 PM",
+      duration: "30 min",
+      attendees: [
+        { name: "External Client", email: "client@company.com" }
+      ],
+      briefing: "External client demonstration meeting",
+      aiSummary: "Client demonstration focusing on key product features and capabilities.",
+      hasProxy: true,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: 105
+    },
+    {
+      id: "3",
+      title: "design review",
+      time: "3:30 PM", 
+      duration: "45 min",
+      attendees: [
+        { name: "Design Team", email: "design@company.com" }
+      ],
+      briefing: "Design review session with the design team",
+      aiSummary: "Review of latest design mockups and user interface updates.",
+      hasProxy: true,
+      hasNotes: false,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: 135
+    }
+  ]);
+
+  const [showInstructionsDrawer, setShowInstructionsDrawer] = useState(false);
+  const [tempNotes, setTempNotes] = useState("");
+  const [showMoreToday, setShowMoreToday] = useState(false);
+
+  // Meeting handlers (from CalendarSection)
+  const toggleProxy = useCallback((meetingId: string) => {
+    setMeetings(prev => prev.map(meeting => 
+      meeting.id === meetingId 
+        ? { ...meeting, hasProxy: !meeting.hasProxy }
+        : meeting
+    ));
+  }, []);
+
+  const openInstructionsDrawer = useCallback((meeting: Meeting) => {
+    setSelectedMeeting(meeting);
+    setTempNotes(meeting.proxyNotes || "");
+    setShowInstructionsDrawer(true);
+  }, []);
+
+  const saveNotes = useCallback(() => {
+    if (selectedMeeting) {
+      setMeetings(prev => prev.map(meeting => 
+        meeting.id === selectedMeeting.id 
+          ? { 
+              ...meeting, 
+              proxyNotes: tempNotes,
+              hasNotes: tempNotes.trim().length > 0
+            }
+          : meeting
+      ));
+    }
+    setShowInstructionsDrawer(false);
+    setSelectedMeeting(null);
+    setTempNotes("");
+  }, [selectedMeeting, tempNotes]);
+
+  const openMeetingDetails = useCallback((meeting: Meeting) => {
+    const meetingWithDetails = {
+      ...meeting,
+      context: {
+        relevantEmails: ["Parenting Schedule Emails"],
+        interests: ["Tennis Newsletters"],
+        weeklyCheckIns: ["Weekly Check-Ins"]
+      },
+      preparationPoints: [
+        "Focus on Practicality",
+        "Personalization",
+        "Clarity and Structure"
+      ],
+      suggestedAgenda: [
+        "Introduction",
+        "Key Features"
+      ]
+    };
+    // Use existing handleMeetingClick
+    handleMeetingClick(meetingWithDetails);
+  }, []);
+
+  const getAttendanceText = useCallback((meeting: Meeting, userJoining: boolean = false) => {
+    if (meeting.hasProxy && userJoining) {
+      return "1 + Proxy attending";
+    } else if (meeting.hasProxy) {
+      return "Proxy attending";
+    } else {
+      return `${meeting.attendees.length} attending`;
+    }
+  }, []);
+
+  // Process meetings for display
+  const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 120);
+  const nextMeeting = meetings.find(m => m.minutesUntil < 120);
+  const upcomingMeetings = meetings.filter(m => m.minutesUntil < 120).slice(0, 2);
+  const remainingMeetings = meetings.filter(m => m.minutesUntil < 120).slice(2);
+
+  // Get all meetings for schedule (sorted by time)
+  const allMeetings = [...meetings].sort((a, b) => {
+    // Convert time to minutes for sorting
+    const timeToMinutes = (timeStr: string) => {
+      const [time, period] = timeStr.split(' ');
+      const [hours, minutes] = time.split(':').map(Number);
+      const hours24 = period === 'PM' && hours !== 12 ? hours + 12 : (period === 'AM' && hours === 12 ? 0 : hours);
+      return hours24 * 60 + (minutes || 0);
+    };
+    
+    return timeToMinutes(a.time) - timeToMinutes(b.time);
+  });
 
   // Status-aware messaging functions
   const getStatusMessage = (status: string) => {
@@ -1028,9 +1225,241 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         )}
                       </DashboardCard>
 
-                      {/* Schedule Section */}
-                      <DashboardCard title="Schedule">
-                        <CalendarSection onMeetingClick={handleMeetingClick} />
+                      {/* Today's Schedule Section */}
+                      <DashboardCard title="Today's schedule">
+                        <TooltipProvider>
+                          {!hasUpcomingMeetings ? (
+                            <div className="text-center py-6">
+                              <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+                              <p className="text-sm text-text-secondary">No meetings soon</p>
+                            </div>
+                          ) : (
+                            <div className="space-y-4">
+                              {/* Next 2 meetings expanded */}
+                              {upcomingMeetings.map((meeting, index) => (
+                                <div key={meeting.id} className="space-y-3">
+                                  <div 
+                                    className="bg-brand-600 rounded-xl p-4 cursor-pointer transition-all hover:bg-white/5"
+                                    onClick={() => openMeetingDetails(meeting)}
+                                  >
+                                    <div className="space-y-3">
+                                      {/* Header with time and chips */}
+                                      <div className="flex items-start justify-between mb-3">
+                                        <div>
+                                          <h4 className="text-sm font-medium text-text-primary mb-1">
+                                            {meeting.title}
+                                          </h4>
+                                          <div className="flex items-center gap-2 text-xs text-text-secondary">
+                                            <Clock className="w-3 h-3" />
+                                            {meeting.time} • {meeting.duration}
+                                          </div>
+                                        </div>
+                                        
+                                        {/* Top-right chips */}
+                                        <div className="flex items-center gap-2">
+                                          {meeting.isRecording && (
+                                            <div className="flex items-center gap-1">
+                                              <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
+                                              <span className="text-xs text-error">REC</span>
+                                            </div>
+                                          )}
+                                          
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <Button
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  toggleProxy(meeting.id);
+                                                }}
+                                                variant={meeting.hasProxy ? "default" : "outline"}
+                                                size="sm"
+                                                className={`h-6 px-3 text-xs rounded-full ${
+                                                  meeting.hasProxy 
+                                                    ? "bg-success text-background hover:bg-success/90" 
+                                                    : "border-white/12 text-text-secondary hover:border-success hover:text-success"
+                                                }`}
+                                              >
+                                                {meeting.hasProxy ? "Proxy On" : "Send Proxy"}
+                                              </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                              <p className="text-xs max-w-xs">
+                                                Proxy will record, transcribe, and send a brief to you only.
+                                              </p>
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        </div>
+                                      </div>
+
+                                      {/* AI Summary */}
+                                      <div className="mb-3">
+                                        <div className="flex items-start gap-2">
+                                          <p className="text-xs text-text-secondary flex-1">
+                                            {meeting.aiSummary}
+                                          </p>
+                                          <Button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              openInstructionsDrawer(meeting);
+                                            }}
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-5 w-5 p-0 text-text-secondary hover:text-text-primary"
+                                          >
+                                            {meeting.hasNotes ? (
+                                              <BookOpen className="w-3 h-3" />
+                                            ) : (
+                                              <Pencil className="w-3 h-3" />
+                                            )}
+                                          </Button>
+                                        </div>
+                                      </div>
+
+                                      {/* Deliverables preview */}
+                                      {meeting.hasProxy && (
+                                        <div className="mb-3">
+                                          <p className="text-xs text-text-secondary">
+                                            {meeting.summaryReady ? (
+                                              <span className="text-accent-primary cursor-pointer hover:underline">
+                                                Summary & action items ready
+                                              </span>
+                                            ) : (
+                                              "Summary & action items will appear here ≈ 10 min after the call"
+                                            )}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {/* Bottom section with attendance and CTA */}
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          <Users className="w-3 h-3 text-text-secondary" />
+                                          <span className="text-xs text-text-secondary">
+                                            {getAttendanceText(meeting)}
+                                          </span>
+                                        </div>
+
+                                        {/* Split button CTA */}
+                                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                          <Button
+                                            size="sm"
+                                            className={`h-7 px-3 text-xs rounded-l-full ${
+                                              meeting.hasProxy 
+                                                ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
+                                                : "bg-brand-300 text-background hover:bg-brand-300/90"
+                                            }`}
+                                            disabled={meeting.hasProxy}
+                                          >
+                                            Join Live
+                                          </Button>
+                                          
+                                          <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                              <Button
+                                                size="sm"
+                                                className={`h-7 w-6 px-0 rounded-r-full border-l border-l-white/20 ${
+                                                  meeting.hasProxy 
+                                                    ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
+                                                    : "bg-brand-300 text-background hover:bg-brand-300/90"
+                                                }`}
+                                              >
+                                                <ChevronDown className="w-3 h-3" />
+                                              </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="bg-brand-600 border-white/8">
+                                              <DropdownMenuItem 
+                                                onClick={() => toggleProxy(meeting.id)}
+                                                className="text-text-primary hover:bg-white/8"
+                                              >
+                                                Send Proxy Instead
+                                              </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                          </DropdownMenu>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Separator between expanded meetings */}
+                                  {index < upcomingMeetings.length - 1 && (
+                                    <div className="border-t border-white/8" />
+                                  )}
+                                </div>
+                              ))}
+
+                              {/* More today expander */}
+                              {remainingMeetings.length > 0 && (
+                                <div className="space-y-3">
+                                  <div className="border-t border-white/8" />
+                                  <Button
+                                    variant="ghost"
+                                    onClick={() => setShowMoreToday(!showMoreToday)}
+                                    className="w-full justify-between text-sm text-text-secondary hover:text-text-primary p-0 h-auto font-normal"
+                                  >
+                                    <span>More today ({remainingMeetings.length})</span>
+                                    <ChevronDown className={`w-4 h-4 transition-transform ${showMoreToday ? 'rotate-180' : ''}`} />
+                                  </Button>
+                                  
+                                  {showMoreToday && (
+                                    <div className="space-y-0 bg-brand-600 rounded-xl">
+                                      {allMeetings.map((meeting, index) => {
+                                        const isPast = meeting.minutesUntil < 0;
+                                        const isNext = meeting.id === nextMeeting?.id;
+                                        
+                                        return (
+                                          <div key={meeting.id} className="relative">
+                                            {/* Timeline connector */}
+                                            {index > 0 && (
+                                              <div className={`absolute left-16 top-0 w-0.5 h-4 ${
+                                                allMeetings[index - 1].minutesUntil < 0 ? 'bg-error' : 'bg-white/8'
+                                              }`} />
+                                            )}
+                                            
+                                            <div 
+                                              className={`flex items-center gap-4 py-3 px-4 cursor-pointer hover:bg-white/8 rounded-lg transition-colors ${
+                                                isNext ? 'opacity-100' : 'opacity-80'
+                                              }`}
+                                              onClick={() => openMeetingDetails(meeting)}
+                                            >
+                                              {/* Time */}
+                                              <div className="text-sm text-text-secondary min-w-[100px] font-mono">
+                                                {meeting.time}
+                                              </div>
+                                              
+                                              {/* Title */}
+                                              <div className="flex-1">
+                                                <span className={`text-sm ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
+                                                  {meeting.title}
+                                                </span>
+                                              </div>
+                                              
+                                              {/* Status indicator */}
+                                              <div className="flex items-center gap-2">
+                                                {meeting.hasProxy && (
+                                                  <div className="w-2 h-2 bg-success rounded-full" />
+                                                )}
+                                                {meeting.isRecording && (
+                                                  <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
+                                                )}
+                                              </div>
+                                            </div>
+                                            
+                                            {/* Timeline indicator line - red line shows current time */}
+                                            {meeting.minutesUntil < 0 && allMeetings[index + 1]?.minutesUntil >= 0 && (
+                                              <div className="absolute left-0 right-0 top-full">
+                                                <div className="h-0.5 bg-error w-full" />
+                                              </div>
+                                            )}
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </TooltipProvider>
                       </DashboardCard>
                     </div>
 
@@ -1756,6 +2185,41 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             </div>}
         </DialogContent>
       </Dialog>
+
+      {/* Instructions Drawer */}
+      <Drawer open={showInstructionsDrawer} onOpenChange={setShowInstructionsDrawer}>
+        <DrawerContent className="bg-surface border-border-subtle">
+          <DrawerHeader className="flex flex-row items-center justify-between">
+            <DrawerTitle className="text-text-primary">Meeting Instructions</DrawerTitle>
+            <DrawerClose asChild>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <X className="h-4 w-4" />
+              </Button>
+            </DrawerClose>
+          </DrawerHeader>
+          <div className="p-6 space-y-4">
+            <div>
+              <Label className="text-sm font-medium text-text-primary mb-2 block">
+                Instructions for your proxy
+              </Label>
+              <Input
+                value={tempNotes}
+                onChange={(e) => setTempNotes(e.target.value)}
+                placeholder="Add any specific instructions..."
+                className="bg-surface-raised border-border-subtle text-text-primary"
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setShowInstructionsDrawer(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={saveNotes} className="flex-1 bg-accent-primary hover:bg-accent-primary/90">
+                Save
+              </Button>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
 
     </div>;
 };
