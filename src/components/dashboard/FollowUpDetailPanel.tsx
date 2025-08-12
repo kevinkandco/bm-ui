@@ -77,7 +77,7 @@ const FollowUpDetailPanel = ({ followUp, open, onClose, onMarkDone }: FollowUpDe
   };
 
   return (
-    <div className="fixed top-[120px] bottom-0 right-0 w-96 bg-background border-l border-border-subtle z-50 flex flex-col shadow-lg">
+    <div className="fixed top-[80px] bottom-0 right-0 w-96 bg-background border-l border-border-subtle z-50 flex flex-col shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border-subtle">
         <div className="flex items-center gap-2">
