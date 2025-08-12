@@ -39,7 +39,6 @@ import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
 import CalendarPage from "../../pages/CalendarPage";
 
-
 // Meeting interface from CalendarSection
 interface Meeting {
   id: string;
@@ -1220,9 +1219,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 
                                 {/* Generating pill aligned right with meta row */}
                                 <div className="flex items-center gap-1 text-xs bg-blue-400/10 rounded-full py-1 px-2" style={{
-                                  borderColor: '#FACC14',
-                                  color: '#FACC14'
-                                }}>
+                              borderColor: '#FACC14',
+                              color: '#FACC14'
+                            }}>
                                   <span className="font-medium">Generating summary</span>
                                 </div>
                               </div>
@@ -1298,8 +1297,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               {showUpcomingBriefs && <div className="px-4 py-4 space-y-4">
                                   {/* Upcoming Brief Card with ghosted styling */}
                                   <div className="w-full transition-all duration-300 rounded-xl overflow-hidden opacity-60 relative p-4" style={{
-                                    background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.3) 0%, rgba(43, 49, 54, 0.3) 100%)'
-                                  }}>
+                              background: 'linear-gradient(135deg, rgba(31, 36, 40, 0.3) 0%, rgba(43, 49, 54, 0.3) 100%)'
+                            }}>
                                     {/* Coming Soon Badge */}
                                     <div className="absolute top-3 left-3 z-10">
                                       <div className="bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded-full border border-blue-500/40">
@@ -1459,30 +1458,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           </Button>
                         </div>
                         <DashboardCard className="bg-surface-raised/20 shadow-sm hover:bg-surface-raised/20">
-                          {followUps.length === 0 ? (
-                            <div className="text-center py-6">
+                          {followUps.length === 0 ? <div className="text-center py-6">
                               <CheckSquare className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
                               <p className="text-sm text-text-secondary">All caught up!</p>
-                            </div>
-                          ) : (
-                            <div className="divide-y divide-border-subtle">
-                              {followUps.slice(0, 5).map((item, index) => (
-                                <div 
-                                  key={item.id} 
-                                  className={cn(
-                                    "flex items-center gap-4 py-3 px-4 hover:bg-white/[0.04] cursor-pointer transition-colors",
-                                    selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary",
-                                    index === 0 && "pt-4"
-                                  )}
-                                  onClick={() => handleFollowUpClick(item)}
-                                >
+                            </div> : <div className="divide-y divide-border-subtle">
+                              {followUps.slice(0, 5).map((item, index) => <div key={item.id} className={cn("flex items-center gap-4 py-3 px-4 hover:bg-white/[0.04] cursor-pointer transition-colors", selectedFollowUpId === item.id && "bg-accent-primary/10 border-l-4 border-l-accent-primary", index === 0 && "pt-4")} onClick={() => handleFollowUpClick(item)}>
                                   {/* Checkbox */}
                                   <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
-                                    <Checkbox 
-                                      checked={checkedFollowUps.has(item.id)} 
-                                      onCheckedChange={() => handleFollowUpCheck(item.id)} 
-                                      className="h-4 w-4" 
-                                    />
+                                    <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
                                   </div>
 
                                   {/* Platform Icon */}
@@ -1530,10 +1513,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                        </DropdownMenuContent>
                                     </DropdownMenu>
                                   </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
+                                </div>)}
+                            </div>}
                         </DashboardCard>
                       </div>
                     </div>
@@ -1793,20 +1774,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       
                       <TabsContent value="followups" className="mt-4">
                         <div className="divide-y divide-border-subtle">
-                          {followUps.map((item, index) => (
-                            <div 
-                              key={item.id} 
-                              className={`py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04] ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`}
-                              onClick={() => handleFollowUpClick(item)}
-                            >
+                          {followUps.map((item, index) => <div key={item.id} className={`py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04] ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => handleFollowUpClick(item)}>
                               <div className="flex items-center gap-4">
                                 {/* Checkbox */}
                                 <div onClick={e => e.stopPropagation()}>
-                                  <Checkbox 
-                                    checked={checkedFollowUps.has(item.id)} 
-                                    onCheckedChange={() => handleFollowUpCheck(item.id)} 
-                                    className="h-4 w-4" 
-                                  />
+                                  <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
                                 </div>
                                 
                                 {/* Platform Icon */}
@@ -1842,46 +1814,37 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                           Add to Asana
                                         </Button>
                                         <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
-                                          {item.platform === "S" ? (
-                                            <>
+                                          {item.platform === "S" ? <>
                                               <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
                                                 <span className="text-[8px] font-bold text-white">#</span>
                                               </div>
                                               Open in Slack
-                                            </>
-                                          ) : (
-                                            <>
+                                            </> : <>
                                               <Mail className="h-2.5 w-2.5" />
                                               Open in Gmail
-                                            </>
-                                          )}
+                                            </>}
                                         </Button>
-                                        <Button 
-                                          variant="ghost" 
-                                          size="sm" 
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setSelectedFollowUp({
-                                              id: item.id,
-                                              title: "Domain Expiration",
-                                              priority: item.priority,
-                                              type: item.actionType,
-                                              description: item.message,
-                                              sender: item.sender,
-                                              from: "Hover <help@hover.com>",
-                                              subject: "Urgent: Launch Materials Review Needed",
-                                              fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
-                                              relevancy: "Critical - blocking marketing team progress",
-                                              reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
-                                              created: "12:24 PM",
-                                              lastActivity: "12:24 PM",
-                                              source: "Gmail",
-                                              due: "2 PM today"
-                                            });
-                                            setShowFollowUpModal(true);
-                                          }}
-                                          className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
-                                        >
+                                        <Button variant="ghost" size="sm" onClick={e => {
+                                    e.stopPropagation();
+                                    setSelectedFollowUp({
+                                      id: item.id,
+                                      title: "Domain Expiration",
+                                      priority: item.priority,
+                                      type: item.actionType,
+                                      description: item.message,
+                                      sender: item.sender,
+                                      from: "Hover <help@hover.com>",
+                                      subject: "Urgent: Launch Materials Review Needed",
+                                      fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",
+                                      relevancy: "Critical - blocking marketing team progress",
+                                      reasoning: "Marked as an Action Item because it contains an explicit request directed at you with a specific deadline.",
+                                      created: "12:24 PM",
+                                      lastActivity: "12:24 PM",
+                                      source: "Gmail",
+                                      due: "2 PM today"
+                                    });
+                                    setShowFollowUpModal(true);
+                                  }} className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary">
                                           <span className="text-xs">•••</span>
                                         </Button>
                                       </div>
@@ -1889,33 +1852,27 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </TabsContent>
                       
                       <TabsContent value="allmessages" className="mt-4">
                         <div className="divide-y divide-border-subtle">
-                          {allMessages.map((message, index) => (
-                            <div 
-                              key={message.id} 
-                              className="py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04]"
-                              onClick={() => {
-                                setSelectedMessage({
-                                  ...message,
-                                  subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
-                                  fullMessage: message.id === 2 ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team` : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
-                                  from: message.sender,
-                                  relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
-                                  reasoning: "Flagged based on sender importance and content keywords.",
-                                  created: message.time,
-                                  lastActivity: message.time,
-                                  source: message.platform === "S" ? "Slack" : "Email",
-                                  due: message.priority === "High" ? "Today" : "This week"
-                                });
-                                setRightPanelCollapsed(false);
-                              }}
-                            >
+                          {allMessages.map((message, index) => <div key={message.id} className="py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04]" onClick={() => {
+                        setSelectedMessage({
+                          ...message,
+                          subject: message.id === 2 ? "Upcoming Automatic Deposit" : "Important Message",
+                          fullMessage: message.id === 2 ? `From: ${message.sender}\nSubject: Upcoming Automatic Deposit\n\nFull Message:\n\nAn automatic deposit of $1,500.00 is scheduled for August 5th, 2026, from your Mercury Uprise Checking account to your Retirement account. You can skip this deposit by 4:00 PM ET on the deposit initiation date if needed.\n\n${message.message}\n\nBest regards,\nBetterment Team` : `From: ${message.sender}\nSubject: Important Message\n\nFull Message:\n\n${message.message}`,
+                          from: message.sender,
+                          relevancy: message.priority === "High" ? "Requires immediate attention" : "Review when convenient",
+                          reasoning: "Flagged based on sender importance and content keywords.",
+                          created: message.time,
+                          lastActivity: message.time,
+                          source: message.platform === "S" ? "Slack" : "Email",
+                          due: message.priority === "High" ? "Today" : "This week"
+                        });
+                        setRightPanelCollapsed(false);
+                      }}>
                               <div className="flex items-center gap-4">
                                 {/* Platform Icon */}
                                 <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${message.platform === 'S' ? 'bg-purple-600' : message.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
@@ -1950,27 +1907,22 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                           Add to Asana
                                         </Button>
                                         <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
-                                          {message.platform === "S" ? (
-                                            <>
+                                          {message.platform === "S" ? <>
                                               <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
                                                 <span className="text-[8px] font-bold text-white">#</span>
                                               </div>
                                               Open in Slack
-                                            </>
-                                          ) : (
-                                            <>
+                                            </> : <>
                                               <Mail className="h-2.5 w-2.5" />
                                               Open in Gmail
-                                            </>
-                                          )}
+                                            </>}
                                         </Button>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </TabsContent>
                     </Tabs>
@@ -1986,15 +1938,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
               
               {/* Calendar page view when leftRailTab is 'calendar' */}
-              {leftRailTab === 'calendar' && !selectedBrief && !selectedCalendarItem && !isHomeSelected && 
-                <CalendarPage 
-                  meetings={meetings}
-                  onToggleProxy={toggleProxy}
-                  onOpenInstructionsDrawer={openInstructionsDrawer}
-                  onOpenMeetingDetails={openMeetingDetails}
-                  getAttendanceText={getAttendanceText}
-                />
-              }
+              {leftRailTab === 'calendar' && !selectedBrief && !selectedCalendarItem && !isHomeSelected && <CalendarPage meetings={meetings} onToggleProxy={toggleProxy} onOpenInstructionsDrawer={openInstructionsDrawer} onOpenMeetingDetails={openMeetingDetails} getAttendanceText={getAttendanceText} />}
 
               {/* Follow ups view when leftRailTab is 'followups' */}
               {leftRailTab === 'followups' && !selectedBrief && !selectedCalendarItem && !isHomeSelected && <div className="space-y-6">
@@ -2017,20 +1961,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       
                       <TabsContent value="followups" className="mt-4">
                         <div className="divide-y divide-border-subtle">
-                          {followUps.map((item, index) => (
-                            <div 
-                              key={item.id} 
-                              className={`py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04] ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`}
-                              onClick={() => handleFollowUpClick(item)}
-                            >
+                          {followUps.map((item, index) => <div key={item.id} className={`py-4 px-4 transition-colors cursor-pointer hover:bg-white/[0.04] ${selectedFollowUpId === item.id ? 'bg-accent-primary/10 border-l-4 border-l-accent-primary' : ''}`} onClick={() => handleFollowUpClick(item)}>
                               <div className="flex items-center gap-4">
                                 {/* Checkbox */}
                                 <div onClick={e => e.stopPropagation()}>
-                                  <Checkbox 
-                                    checked={checkedFollowUps.has(item.id)} 
-                                    onCheckedChange={() => handleFollowUpCheck(item.id)} 
-                                    className="h-4 w-4" 
-                                  />
+                                  <Checkbox checked={checkedFollowUps.has(item.id)} onCheckedChange={() => handleFollowUpCheck(item.id)} className="h-4 w-4" />
                                 </div>
                                 
                                 {/* Platform Icon */}
@@ -2066,29 +2001,20 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                           Add to Asana
                                         </Button>
                                         <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
-                                          {item.platform === "S" ? (
-                                            <>
+                                          {item.platform === "S" ? <>
                                               <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
                                                 <span className="text-[8px] font-bold text-white">#</span>
                                               </div>
                                               Open in Slack
-                                            </>
-                                          ) : (
-                                            <>
+                                            </> : <>
                                               <Mail className="h-2.5 w-2.5" />
                                               Open in Gmail
-                                            </>
-                                          )}
+                                            </>}
                                         </Button>
-                                        <Button 
-                                          variant="ghost" 
-                                          size="sm" 
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            // Use DropdownMenu instead of direct modal opening
-                                          }}
-                                          className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
-                                        >
+                                        <Button variant="ghost" size="sm" onClick={e => {
+                                    e.stopPropagation();
+                                    // Use DropdownMenu instead of direct modal opening
+                                  }} className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary">
                                           <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                               <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
@@ -2097,9 +2023,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                               <DropdownMenuItem onClick={e => {
-                                                e.stopPropagation();
-                                                window.open(item.platform === 'S' ? 'https://slack.com' : 'https://gmail.com', '_blank');
-                                              }}>
+                                          e.stopPropagation();
+                                          window.open(item.platform === 'S' ? 'https://slack.com' : 'https://gmail.com', '_blank');
+                                        }}>
                                                 {item.actionType || 'Open'}
                                               </DropdownMenuItem>
                                             </DropdownMenuContent>
@@ -2110,20 +2036,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            </div>)}
                         </div>
                       </TabsContent>
                     </Tabs>
                   </div>
                 </div>}
 
-              {!selectedBrief && !selectedCalendarItem && !isHomeSelected && leftRailTab !== 'followups' && <div className="h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <h3 className="text-lg font-medium text-text-primary mb-2">No upcoming meetings for today</h3>
-                    <p className="text-text-secondary">Select a brief or calendar item from the left panel to view details</p>
-                  </div>
-                </div>}
+              {!selectedBrief && !selectedCalendarItem && !isHomeSelected && leftRailTab !== 'followups'}
             </div>
           </div>
         </div>
@@ -2131,25 +2051,17 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         {/* Right Panel - Only show when there's content */}
         {!rightPanelCollapsed && (selectedMessage || selectedTranscript || selectedFollowUp) ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <div className="flex-1 overflow-hidden">
-              <ActionItemsPanel 
-                onToggleCollapse={() => setRightPanelCollapsed(true)} 
-                selectedMessage={selectedMessage} 
-                onCloseMessage={() => {
-                  setSelectedMessage(null);
-                  setRightPanelCollapsed(true);
-                }} 
-                selectedTranscript={selectedTranscript} 
-                onCloseTranscript={() => {
-                  setSelectedTranscript(null);
-                  setPlayingBrief(null);
-                  setRightPanelCollapsed(true);
-                }}
-                selectedFollowUp={selectedFollowUp}
-                onCloseFollowUp={() => {
-                  setSelectedFollowUp(null);
-                  setRightPanelCollapsed(true);
-                }}
-              />
+              <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
+            setSelectedMessage(null);
+            setRightPanelCollapsed(true);
+          }} selectedTranscript={selectedTranscript} onCloseTranscript={() => {
+            setSelectedTranscript(null);
+            setPlayingBrief(null);
+            setRightPanelCollapsed(true);
+          }} selectedFollowUp={selectedFollowUp} onCloseFollowUp={() => {
+            setSelectedFollowUp(null);
+            setRightPanelCollapsed(true);
+          }} />
             </div>
           </div> : null}
       </div>
