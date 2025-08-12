@@ -1179,7 +1179,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                           <div className="space-y-4">
                             {/* Multiple Briefs Available Today - Show Catch Up Brief if available */}
-                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => navigate(`/dashboard/briefs/${recentBriefs[0].id}`)}>
+                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => {
+                              setLeftRailTab('briefs');
+                              setLeftPanelCollapsed(false);
+                              setSelectedBrief(recentBriefs[0].id);
+                              setIsHomeSelected(false);
+                            }}>
                               <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
@@ -1355,7 +1360,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             <div className="border-t border-white/8" />
                             
                             {/* Past Briefs Section */}
-                            <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => navigate('/dashboard/briefs')}>
+                            <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => {
+                              setLeftRailTab('briefs');
+                              setLeftPanelCollapsed(false);
+                              setSelectedBrief(null);
+                              setIsHomeSelected(false);
+                            }}>
                               <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
                               <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
                                 <span>View all</span>
