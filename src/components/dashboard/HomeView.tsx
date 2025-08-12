@@ -331,14 +331,30 @@ const HomeView = ({
     setLeftRailTab('briefs');
   }, [navigate]);
   const handleNavigateToAllBriefs = useCallback(() => {
-    navigate('/briefs');
-  }, [navigate]);
+    setIsHomeSelected(false);
+    setSelectedBrief(null); // No specific brief selected to show "view all"
+    setSelectedCalendarItem(null);
+    setSelectedMeeting(null);
+    setOpenSection('briefs');
+    setLeftRailTab('briefs');
+    setShowAllBriefs(true);
+  }, []);
   const handleNavigateToAllCalendar = useCallback(() => {
-    navigate('/meetings');
-  }, [navigate]);
+    setIsHomeSelected(false);
+    setSelectedBrief(null);
+    setSelectedCalendarItem(null); // No specific event selected to show "view all"
+    setSelectedMeeting(null);
+    setOpenSection('calendar');
+    setLeftRailTab('calendar');
+  }, []);
   const handleNavigateToAllFollowUps = useCallback(() => {
-    navigate('/tasks');
-  }, [navigate]);
+    setIsHomeSelected(false);
+    setSelectedBrief(null);
+    setSelectedCalendarItem(null);
+    setSelectedMeeting(null);
+    setOpenSection('followups');
+    setLeftRailTab('followups');
+  }, []);
   const handleStatusSelect = useCallback((status: 'online' | 'focus' | 'vacation' | 'offline') => {
     // Map mobile status to main status system
     const statusMap: Record<string, 'active' | 'away' | 'focus' | 'vacation'> = {
@@ -1112,9 +1128,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         }}>
             <div className="p-6 h-full overflow-auto bg-[#1f262c]/[0.47] shadow-lg">
 {/* Default Home Content */}
-              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px] pt-8 md:pt-12">
+              {!selectedMeeting && !selectedBrief && isHomeSelected && <div className="space-y-8 px-[100px]">
                   {/* Date Header */}
-                  <div className="mb-12 md:mb-16">
+                  <div className="mb-8">
                     <h1 className="text-3xl font-bold text-text-primary tracking-tight">
                       {new Date().toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -1126,7 +1142,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
 
                   {/* Two-Column Grid Layout */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Column 1 (Primary): Latest Brief, Upcoming Briefs, Today's Schedule */}
                     <div className="space-y-16">
 {/* Latest Brief Section */}

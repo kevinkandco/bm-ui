@@ -5,18 +5,10 @@ import { cn } from "@/lib/utils";
 interface LatestBriefSectionProps {
   onClick: () => void;
   isSelected?: boolean;
-  onViewBrief?: (briefId: number) => void;
-  onViewTranscript?: (briefId: number) => void;
-  onPlayBrief?: (briefId: number) => void;
-  playingBrief?: number | null;
 }
 const LatestBriefSection = ({
   onClick,
-  isSelected,
-  onViewBrief,
-  onViewTranscript,
-  onPlayBrief,
-  playingBrief
+  isSelected
 }: LatestBriefSectionProps) => {
   const [isUpcomingExpanded, setIsUpcomingExpanded] = useState(false);
   const upcomingBriefs = [{
