@@ -393,7 +393,13 @@ const HomeView = ({
     setShowAllBriefs(false);
   }, []);
   const handleStatusSelect = useCallback((status: 'online' | 'focus' | 'vacation' | 'offline') => {
-    // Map mobile status to main status system
+    // Handle focus mode specially - show config modal instead of direct status change
+    if (status === 'focus') {
+      onStartFocusMode();
+      return;
+    }
+    
+    // Map mobile status to main status system for other statuses
     const statusMap: Record<string, 'active' | 'away' | 'focus' | 'vacation'> = {
       'online': 'active',
       'focus': 'focus',
@@ -403,9 +409,6 @@ const HomeView = ({
     const newStatus = statusMap[status];
     onStatusChange?.(newStatus);
     setCurrentStatus(status);
-    if (status === 'focus') {
-      onStartFocusMode();
-    }
   }, [onStatusChange, onStartFocusMode]);
 
   // Sample data - expanded to include more briefs for "view all"
@@ -980,7 +983,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     <div className="w-2 h-2 rounded-full bg-yellow-500" />
                     Away
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onStatusChange?.("focus")} className="flex items-center gap-2">
+                  <DropdownMenuItem onClick={() => onStartFocusMode()} className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-blue-500" />
                     Focus
                   </DropdownMenuItem>

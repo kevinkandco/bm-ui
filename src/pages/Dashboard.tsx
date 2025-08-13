@@ -108,6 +108,7 @@ const Dashboard = () => {
   }, [toast]);
   
   const handleStartFocusMode = useCallback(() => {
+    console.log("Focus mode triggered - opening config modal");
     setShowFocusConfig(true);
   }, []);
   
