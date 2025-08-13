@@ -201,7 +201,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                 type="time"
                 value={brief.briefTime}
                 onChange={(e) => updateBrief({ briefTime: e.target.value, scheduleTime: "custom" })}
-                className="bg-brand-700/30 border-border-subtle text-text-primary h-12 text-sm"
+                className="bg-brand-600/30 border-border-subtle text-text-primary h-12 text-sm [color-scheme:dark]"
               />
             </div>
             
