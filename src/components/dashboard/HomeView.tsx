@@ -1044,62 +1044,62 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? <div className="left-nav w-64 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm" style={{ paddingBottom: 'calc(var(--player-height) + 16px)' }}>
-            {/* Header with collapse button */}
-            <div className="px-6">
-              <div className="flex items-center justify-between mt-6 mb-4 flex ">
-                <h2 className="text-text-primary text-lg text-left font-medium mx-[10px]">Navigation</h2>
-                <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
-                  <PanelLeftClose className="h-4 w-4" />
-                </Button>
+        {!leftPanelCollapsed ? <div className="left-nav w-64 h-full bg-surface/50 backdrop-blur-sm shadow-sm" style={{ display: 'flex', flexDirection: 'column', height: '100%', paddingBottom: 'calc(var(--player-height) + 16px)' }}>
+             {/* Header with collapse button */}
+             <div className="px-6">
+               <div className="flex items-center justify-between mt-6 mb-4 flex ">
+                 <h2 className="text-text-primary text-lg text-left font-medium mx-[10px]">Navigation</h2>
+                 <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
+                   <PanelLeftClose className="h-4 w-4" />
+                 </Button>
+               </div>
+               
+               {/* Navigation sections - simplified */}
+               <div className="w-full mt-8 pt-6 space-y-2 px-0">
+                 {/* Home */}
+                 <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                   <Home className="h-4 w-4 mr-2" />
+                   Home
+                 </Button>
+
+                 {/* Briefs */}
+                 <Button variant="ghost" onClick={handleNavigateToAllBriefs} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                   <FileText className="h-4 w-4 mr-2" />
+                   Briefs
+                 </Button>
+
+                 {/* Calendar */}
+                 <Button variant="ghost" onClick={handleNavigateToAllCalendar} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                   <Calendar className="h-4 w-4 mr-2" />
+                   Calendar
+                 </Button>
+
+                 {/* Follow-ups */}
+                 <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                   <ClipboardCheck className="h-4 w-4 mr-2" />
+                   Follow-ups
+                 </Button>
+                </div>
               </div>
               
-              {/* Navigation sections - simplified */}
-              <div className="w-full mt-8 pt-6 space-y-2 px-0">
-                {/* Home */}
-                <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                  <Home className="h-4 w-4 mr-2" />
-                  Home
-                </Button>
-
-                {/* Briefs */}
-                <Button variant="ghost" onClick={handleNavigateToAllBriefs} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                  <FileText className="h-4 w-4 mr-2" />
-                  Briefs
-                </Button>
-
-                {/* Calendar */}
-                <Button variant="ghost" onClick={handleNavigateToAllCalendar} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Calendar
-                </Button>
-
-                {/* Follow-ups */}
-                <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                  <ClipboardCheck className="h-4 w-4 mr-2" />
-                  Follow-ups
-                </Button>
-               </div>
-             </div>
-             
-             {/* Quick Actions - pushed to bottom */}
-             <div className="nav-quick-actions px-6" style={{ marginTop: 'auto', display: 'flex', gap: '8px' }}>
-               <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                 <span>#</span>
-                 <span>4</span>
-               </div>
-               <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                 <span>G</span>
-                 <span>2</span>
-               </div>
-               <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
-                 <Calendar className="h-3.5 w-3.5" />
-               </div>
-             </div>
+              {/* Quick Actions - pinned to bottom */}
+              <div className="nav-quick-actions px-6" style={{ marginTop: 'auto', paddingBottom: '16px', display: 'flex', gap: '8px' }}>
+                <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                  <span>#</span>
+                  <span>4</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                  <span>G</span>
+                  <span>2</span>
+                </div>
+                <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
+                  <Calendar className="h-3.5 w-3.5" />
+                </div>
+              </div>
           </div> : (/* Collapsed Left Panel */
-      <div className="left-nav w-12 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm" style={{ paddingBottom: 'calc(var(--player-height) + 16px)' }}>
+      <div className="left-nav w-12 h-full bg-surface/50 backdrop-blur-sm shadow-sm" style={{ display: 'flex', flexDirection: 'column', height: '100%', paddingBottom: 'calc(var(--player-height) + 16px)' }}>
             <TooltipProvider>
-              <div className="p-2 flex flex-col items-center mt-[30px] space-y-3 flex-1">
+              <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
                 {/* Open/Close Panel Button */}
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -1161,8 +1161,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                  </Tooltip>
                </div>
 
-               {/* Quick Actions - Collapsed view */}
-               <div className="nav-quick-actions px-2" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+               {/* Quick Actions - Collapsed view, pinned to bottom */}
+               <div className="nav-quick-actions px-2" style={{ marginTop: 'auto', paddingBottom: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                  <div className="flex items-center justify-center bg-purple-500/20 text-purple-300 w-7 h-5 rounded-full text-xs font-medium">
                    4
                  </div>
