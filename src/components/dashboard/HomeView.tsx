@@ -1082,9 +1082,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </Button>
                  </div>
                </div>
-
+               
+               {/* Spacer to push indicators to bottom */}
+               <div className="flex-1"></div>
+               
                {/* Bottom Indicators - Always visible above audio player */}
-               <div className="mt-auto mb-4 px-6">
+               <div className="mb-4 px-6">
+                 <div className="border-t border-border-subtle mb-4"></div>
                  <div className="flex items-center gap-2 flex-wrap">
                    <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
                      <span>#</span>
@@ -1164,9 +1168,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </TooltipContent>
                  </Tooltip>
                </div>
+               
+               {/* Spacer to push indicators to bottom */}
+               <div className="flex-1"></div>
 
                {/* Bottom Indicators - Collapsed view */}
-               <div className="mt-auto mb-4 px-2">
+               <div className="mb-4 px-2">
+                 <div className="border-t border-border-subtle mb-4"></div>
                  <div className="flex flex-col items-center gap-2">
                    <div className="flex items-center justify-center bg-purple-500/20 text-purple-300 w-7 h-5 rounded-full text-xs font-medium">
                      4
