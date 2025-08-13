@@ -237,7 +237,7 @@ const AudioPlayer = ({
               max={100}
               step={1}
               onValueChange={handleVolumeChange}
-              className="flex-1"
+              className="flex-1 [&>*]:h-1 [&_[role=slider]]:h-3 [&_[role=slider]]:w-3 [&_*[data-orientation=horizontal]]:h-1 [&_*[data-orientation=horizontal]]:bg-white/20 [&_*[data-orientation=horizontal]_*]:bg-accent-primary"
             />
           </div>
         </div>
