@@ -219,9 +219,9 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                       key={day}
                       onClick={() => toggleDay(day)}
                       className={cn(
-                        "px-2 py-2 rounded-lg text-xs font-medium transition-colors flex-1",
+                        "px-1 py-1 rounded text-xs font-medium transition-colors flex-1 min-w-0",
                         isSelected
-                          ? "bg-brand-300 text-brand-900 border-brand-300"
+                          ? "bg-brand-300 text-brand-900"
                           : "bg-brand-700/30 text-text-secondary border border-border-subtle hover:bg-brand-600/30"
                       )}
                     >
