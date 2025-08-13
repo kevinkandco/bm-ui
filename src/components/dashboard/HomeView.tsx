@@ -524,8 +524,8 @@ const HomeView = ({
     scheduledTime: "Today at 6:00 PM"
   }];
 
-  // Sample follow-ups data in same format as messages
-  const followUps = [{
+  // Follow-ups state management
+  const [followUps, setFollowUps] = useState([{
     id: 1,
     platform: "G",
     priority: "High",
@@ -589,7 +589,7 @@ const HomeView = ({
     sender: "Product Team",
     time: "Yesterday",
     actionType: "Action"
-  }];
+  }]);
 
   // Sample messages data from the brief
   const allMessages = [{
@@ -778,6 +778,16 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       return newSet;
     });
   };
+
+  // Handle marking follow-up as done (removes it from the list)
+  const handleMarkFollowUpDone = useCallback((followUpId: number) => {
+    setFollowUps(prev => prev.filter(item => item.id !== followUpId));
+    // Close the panel if the current item was removed
+    if (selectedFollowUp && selectedFollowUp.id === followUpId) {
+      setSelectedFollowUp(null);
+      setRightPanelCollapsed(true);
+    }
+  }, [selectedFollowUp]);
   
   const handleMessageCheck = (messageId: number) => {
     setCheckedMessages(prev => {
@@ -2225,7 +2235,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   onCloseFollowUp={() => {
                     setSelectedFollowUp(null);
                     setRightPanelCollapsed(true);
-                  }} 
+                  }}
+                  onMarkFollowUpDone={handleMarkFollowUpDone}
                 />
               </div>
             </div>

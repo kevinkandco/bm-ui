@@ -151,30 +151,12 @@ const TasksPage = () => {
   }, []);
 
   const handleMarkDone = useCallback((itemId: string) => {
-    const item = actionItems.find(i => i.id === itemId);
-    
-    setActionItems(prev => 
-      prev.map(item => 
-        item.id === itemId ? { ...item, completed: true } : item
-      )
-    );
-    
-    toast({
-      title: "Action Item Completed",
-      description: `"${item?.title}" marked as done`
-    });
-  }, [actionItems, toast]);
+    setActionItems(prev => prev.filter(item => item.id !== itemId));
+  }, []);
 
   const handleMarkAllDone = useCallback(() => {
-    setActionItems(prev => 
-      prev.map(item => ({ ...item, completed: true }))
-    );
-    
-    toast({
-      title: "All Items Completed",
-      description: "All action items marked as done"
-    });
-  }, [toast]);
+    setActionItems([]);
+  }, []);
 
   const handleUpdatePriority = useCallback((itemId: string, newUrgency: 'critical' | 'high' | 'medium' | 'low') => {
     setActionItems(prev => 

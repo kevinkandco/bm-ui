@@ -28,6 +28,7 @@ interface ActionItemsPanelProps {
   onCloseTranscript?: () => void;
   selectedFollowUp?: any;
   onCloseFollowUp?: () => void;
+  onMarkFollowUpDone?: (followUpId: number) => void;
 }
 
 const ActionItemsPanel = ({
@@ -38,7 +39,8 @@ const ActionItemsPanel = ({
   selectedTranscript,
   onCloseTranscript,
   selectedFollowUp,
-  onCloseFollowUp
+  onCloseFollowUp,
+  onMarkFollowUpDone
 }: ActionItemsPanelProps) => {
   const { toast } = useToast();
   const [filter, setFilter] = useState<string | null>(null);
@@ -129,19 +131,12 @@ const ActionItemsPanel = ({
   }, []);
 
   const handleMarkDone = useCallback((itemId: string) => {
-    const item = actionItems.find(i => i.id === itemId);
-    setActionItems(prev => prev.map(item => 
-      item.id === itemId ? { ...item, completed: !item.completed } : item
-    ));
-  }, [actionItems]);
+    setActionItems(prev => prev.filter(item => item.id !== itemId));
+  }, []);
 
   const handleMarkAllDone = useCallback(() => {
-    setActionItems(prev => prev.map(item => ({ ...item, completed: true })));
-    toast({
-      title: "All Items Completed",
-      description: "All action items marked as done"
-    });
-  }, [toast]);
+    setActionItems([]);
+  }, []);
 
   const getSourceIcon = (source: 'slack' | 'gmail') => {
     return source === 'slack' ? <Slack className="w-4 h-4" /> : <Mail className="w-4 h-4" />;
@@ -448,10 +443,9 @@ const ActionItemsPanel = ({
     };
 
     const handleMarkDone = () => {
-      toast({
-        description: "Marked as done"
-      });
-      onCloseFollowUp?.();
+      if (onMarkFollowUpDone && selectedFollowUp) {
+        onMarkFollowUpDone(selectedFollowUp.id);
+      }
     };
 
     return (
