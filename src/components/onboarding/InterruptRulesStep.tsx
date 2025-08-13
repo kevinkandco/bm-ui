@@ -190,7 +190,7 @@ const InterruptRulesStep: React.FC<InterruptRulesStepProps> = ({
 
   return (
     <div className="space-y-6">
-      <ProgressIndicator currentStep={7} totalSteps={9} />
+      <ProgressIndicator currentStep={7} totalSteps={10} />
       
       <div className="text-center space-y-3">
         <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">

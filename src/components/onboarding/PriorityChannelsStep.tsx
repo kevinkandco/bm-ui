@@ -59,7 +59,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
 
   return (
     <div className="space-y-6">
-      <ProgressIndicator currentStep={5} totalSteps={9} />
+      <ProgressIndicator currentStep={5} totalSteps={10} />
       
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold text-text-primary tracking-tighter">Which channels are critical?</h2>

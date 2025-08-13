@@ -61,7 +61,7 @@ const PriorityPeopleStep = memo(({ onNext, onBack, updateUserData, userData }: P
 
   return (
     <div className="space-y-6">
-      <ProgressIndicator currentStep={4} totalSteps={9} />
+      <ProgressIndicator currentStep={4} totalSteps={10} />
       
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold text-foreground tracking-tighter">Who are your priority people?</h2>

@@ -126,7 +126,7 @@ export function useOnboardingState() {
   const [userData, setUserData] = useState<UserData>(defaultUserData);
   
   // Updated to include interrupt rules step
-  const totalSteps = 9;
+  const totalSteps = 10;
   
   // This function maps the UI step (1-based) to the actual progress step (0-based)
   // where step 1 is the FeaturesWalkthroughStep (after sign in)

@@ -217,7 +217,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
 
   return (
     <div className="space-y-8">
-      <ProgressIndicator currentStep={8} totalSteps={9} />
+      <ProgressIndicator currentStep={9} totalSteps={10} />
       
       {/* Clock visual element */}
       <div className="h-16 w-full flex items-center justify-center relative mb-4">

@@ -62,7 +62,7 @@ const PriorityTopicsStep = ({ onNext, onBack, updateUserData, userData }: Priori
 
   return (
     <div className="space-y-5 sm:space-y-8">
-      <ProgressIndicator currentStep={6} totalSteps={9} />
+      <ProgressIndicator currentStep={6} totalSteps={10} />
       
       <div className="space-y-2 sm:space-y-3">
         <h2 className="text-xl sm:text-2xl font-semibold text-off-white tracking-tighter">What topics matter most?</h2>
