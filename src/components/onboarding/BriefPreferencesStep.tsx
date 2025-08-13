@@ -303,7 +303,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   type="time"
                   value={workHours.workdayStart}
                   onChange={(e) => setWorkHours(prev => ({ ...prev, workdayStart: e.target.value }))}
-                  className="bg-brand-700/30 border-border-subtle text-text-primary h-10 text-sm"
+                  className="bg-white/15 border-white/20 text-off-white h-10 text-sm rounded-lg [color-scheme:dark]"
                 />
               </div>
               <div className="space-y-1">
@@ -312,7 +312,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   type="time"
                   value={workHours.workdayEnd}
                   onChange={(e) => setWorkHours(prev => ({ ...prev, workdayEnd: e.target.value }))}
-                  className="bg-brand-700/30 border-border-subtle text-text-primary h-10 text-sm"
+                  className="bg-white/15 border-white/20 text-off-white h-10 text-sm rounded-lg [color-scheme:dark]"
                 />
               </div>
             </div>
