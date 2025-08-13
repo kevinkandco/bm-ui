@@ -1014,7 +1014,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onOpenVacationModal?.()} className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-gray-500" />
-                      Schedule Vacation
+                      Vacation/OOO
                     </DropdownMenuItem>
                    </DropdownMenuContent>
                 </DropdownMenu>
