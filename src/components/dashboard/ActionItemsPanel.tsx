@@ -384,12 +384,6 @@ const ActionItemsPanel = ({
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-2">
-              <Button className="w-full" size="sm">
-                Export Transcript
-              </Button>
-              <Button variant="outline" className="w-full" size="sm">
-                Share Brief
-              </Button>
               <Button variant="ghost" className="w-full text-text-secondary" size="sm">
                 View Previous Briefs
               </Button>
