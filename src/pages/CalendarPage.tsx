@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Calendar, Clock, Video, User, Plus } from "l
 import { Button } from "@/components/ui/button";
 import { DashboardCard } from "@/components/ui/dashboard-card";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 interface Meeting {
@@ -71,15 +72,15 @@ const CalendarPage = ({
   const upcomingMeetings = meetings.filter(m => m.minutesUntil >= 0).slice(0, 3);
   const hasUpcomingMeetings = upcomingMeetings.length > 0;
 
-  // Generate timeline hours
-  const timeSlots = [];
-  for (let hour = 0; hour < 24; hour++) {
+  // Generate timeline hours - focused on business hours (7 AM to 7 PM)
+  const businessHours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+  const timeSlots = businessHours.map(hour => {
     const time12 = hour === 0 ? '12:00 AM' : 
                   hour < 12 ? `${hour}:00 AM` : 
                   hour === 12 ? '12:00 PM' : 
                   `${hour - 12}:00 PM`;
-    timeSlots.push({ hour, time12, time24: `${hour.toString().padStart(2, '0')}:00` });
-  }
+    return { hour, time12, time24: `${hour.toString().padStart(2, '0')}:00` };
+  });
 
   const getMeetingPosition = (time: string) => {
     const [timeStr, period] = time.split(' ');
@@ -212,98 +213,100 @@ const CalendarPage = ({
           <div className="p-6">
             <h2 className="text-lg font-semibold text-text-primary mb-6">Today's Schedule</h2>
             
-            <div className="relative">
-              {/* Timeline */}
-              <div className="absolute left-16 top-0 bottom-0 w-px bg-border-subtle"></div>
-              
-              {timeSlots.map((slot, index) => {
-                const meetingsAtThisHour = meetings.filter(meeting => {
-                  const meetingHour = Math.floor(getMeetingPosition(meeting.time));
-                  return meetingHour === slot.hour;
-                });
+            <ScrollArea className="h-[400px] w-full">
+              <div className="relative min-h-full">
+                {/* Timeline */}
+                <div className="absolute left-16 top-0 bottom-0 w-px bg-border-subtle"></div>
+                
+                {timeSlots.map((slot, index) => {
+                  const meetingsAtThisHour = meetings.filter(meeting => {
+                    const meetingHour = Math.floor(getMeetingPosition(meeting.time));
+                    return meetingHour === slot.hour;
+                  });
 
-                const isPast = slot.hour < new Date().getHours();
-                const isAMPMBoundary = slot.hour === 0 || slot.hour === 12;
+                  const isPast = slot.hour < new Date().getHours();
+                  const isAMPMBoundary = slot.hour === 12;
 
-                return (
-                  <div key={slot.hour} className="relative flex items-start min-h-[60px]">
-                    {/* Time label */}
-                    <div className={cn(
-                      "w-14 text-right pr-4 text-xs font-medium mt-1",
-                      isPast ? "text-text-secondary opacity-60" : "text-text-secondary",
-                      isAMPMBoundary && "text-text-primary font-semibold"
-                    )}>
-                      {slot.time12}
-                    </div>
+                  return (
+                    <div key={slot.hour} className="relative flex items-start min-h-[48px]">
+                      {/* Time label */}
+                      <div className={cn(
+                        "w-14 text-right pr-4 text-xs font-medium mt-1",
+                        isPast ? "text-text-secondary opacity-60" : "text-text-secondary",
+                        isAMPMBoundary && "text-text-primary font-semibold"
+                      )}>
+                        {slot.time12}
+                      </div>
 
-                    {/* Timeline dot */}
-                    <div className={cn(
-                      "absolute left-16 w-2 h-2 rounded-full -translate-x-1/2 mt-1.5",
-                      meetingsAtThisHour.length > 0 
-                        ? "bg-accent-primary" 
-                        : isPast 
-                          ? "bg-border-subtle opacity-60" 
-                          : "bg-border-subtle"
-                    )}></div>
+                      {/* Timeline dot */}
+                      <div className={cn(
+                        "absolute left-16 w-1.5 h-1.5 rounded-full -translate-x-1/2 mt-1.5",
+                        meetingsAtThisHour.length > 0 
+                          ? "bg-accent-primary" 
+                          : isPast 
+                            ? "bg-border-subtle opacity-60" 
+                            : "bg-border-subtle"
+                      )}></div>
 
-                    {/* Meeting content */}
-                    <div className="flex-1 pl-8">
-                      {meetingsAtThisHour.map((meeting) => (
-                        <div 
-                          key={meeting.id} 
-                          className={cn(
-                            "bg-surface-raised/40 rounded-lg p-4 mb-2 border border-border-subtle cursor-pointer hover:bg-surface-raised/60 transition-colors",
-                            isPast && "opacity-60"
-                          )}
-                          onClick={() => onOpenMeetingDetails(meeting)}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <h3 className={cn(
-                              "font-medium text-sm",
-                              isPast ? "text-text-secondary" : "text-text-primary"
-                            )}>
-                              {meeting.title}
-                            </h3>
-                            <div className="flex items-center gap-2">
-                              {meeting.hasProxy && (
-                                <Badge variant="secondary" className="text-xs">
-                                  Proxy
-                                </Badge>
-                              )}
-                              {meeting.isRecording && (
-                                <Badge variant="outline" className="text-xs text-red-400 border-red-400">
-                                  Recording
-                                </Badge>
-                              )}
+                      {/* Meeting content */}
+                      <div className="flex-1 pl-8">
+                        {meetingsAtThisHour.map((meeting) => (
+                          <div 
+                            key={meeting.id} 
+                            className={cn(
+                              "bg-surface-raised/40 rounded-lg p-3 mb-2 border border-border-subtle cursor-pointer hover:bg-surface-raised/60 transition-colors",
+                              isPast && "opacity-60"
+                            )}
+                            onClick={() => onOpenMeetingDetails(meeting)}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className={cn(
+                                "font-medium text-sm",
+                                isPast ? "text-text-secondary" : "text-text-primary"
+                              )}>
+                                {meeting.title}
+                              </h3>
+                              <div className="flex items-center gap-2">
+                                {meeting.hasProxy && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    Proxy
+                                  </Badge>
+                                )}
+                                {meeting.isRecording && (
+                                  <Badge variant="outline" className="text-xs text-red-400 border-red-400">
+                                    Recording
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
+                            
+                            <div className="flex items-center gap-4 text-xs text-text-secondary">
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                <span>{meeting.duration}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <User className="h-3 w-3" />
+                                <span>{getAttendanceText(meeting)}</span>
+                              </div>
+                            </div>
+
+                            {!isPast && (
+                              <div className="flex justify-end mt-2">
+                                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-7 text-xs">
+                                  <Video className="h-3 w-3 mr-1" />
+                                  Join
+                                </Button>
+                              </div>
+                            )}
                           </div>
-                          
-                          <div className="flex items-center gap-4 text-xs text-text-secondary">
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              <span>{meeting.duration}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <User className="h-3 w-3" />
-                              <span>{getAttendanceText(meeting)}</span>
-                            </div>
-                          </div>
-
-                          {!isPast && (
-                            <div className="flex justify-end mt-3">
-                              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white h-7 text-xs">
-                                <Video className="h-3 w-3 mr-1" />
-                                Join
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
           </div>
         </DashboardCard>
       </div>
