@@ -1,9 +1,5 @@
 
 @tailwind base;
-
-:root {
-  --player-height: 80px; /* set to actual player height */
-}
 @tailwind components;
 @tailwind utilities;
 

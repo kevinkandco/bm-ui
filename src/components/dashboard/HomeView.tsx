@@ -1002,6 +1002,94 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
             {/* Right: Integration Icons, Get Brief button, Avatar */}
             <div className="flex items-center gap-3">
+              {/* Integration Status Icons */}
+              <div className="flex items-center gap-2">
+                {/* Slack Integration */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
+                      <div className="w-4 h-4 bg-purple-500 rounded-sm flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-white">#</span>
+                      </div>
+                      <span className="text-sm font-medium text-white">4</span>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="end">
+                    <div className="bg-gray-900 rounded-lg overflow-hidden">
+                      <div className="p-4 border-b border-gray-700">
+                        <h3 className="text-white font-semibold">Slack</h3>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">workspace@company.com</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">team@company.co</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                {/* Google Integration */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
+                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-white">G</span>
+                      </div>
+                      <span className="text-sm font-medium text-white">2</span>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="end">
+                    <div className="bg-gray-900 rounded-lg overflow-hidden">
+                      <div className="p-4 border-b border-gray-700">
+                        <h3 className="text-white font-semibold">Google</h3>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">kirkpatrick.kevin.j@gmail.com</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">me@kevink.co</span>
+                          <span className="text-gray-400 text-sm">• active</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                {/* Calendar Integration */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
+                      <Calendar className="w-4 h-4 text-white" />
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0" align="end">
+                    <div className="bg-gray-900 rounded-lg overflow-hidden">
+                      <div className="p-4 border-b border-gray-700">
+                        <h3 className="text-white font-semibold">Calendar</h3>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-white text-sm">Personal Calendar</span>
+                          <span className="text-gray-400 text-sm">• syncing</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
               {/* Get Brief Button */}
               <Button onClick={onToggleCatchMeUp} className="bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2">
                 <Zap className="mr-2 h-4 w-4" />
@@ -1044,60 +1132,47 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? <div className="left-nav w-64 h-full bg-surface/50 backdrop-blur-sm shadow-sm" style={{ display: 'flex', flexDirection: 'column', height: '100%', paddingBottom: 'calc(var(--player-height) + 16px)' }}>
-             {/* Header with collapse button */}
-             <div className="px-6">
-               <div className="flex items-center justify-between mt-6 mb-4 flex ">
-                 <h2 className="text-text-primary text-lg text-left font-medium mx-[10px]">Navigation</h2>
-                 <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
-                   <PanelLeftClose className="h-4 w-4" />
-                 </Button>
-               </div>
-               
-               {/* Quick Actions - moved above nav */}
-               <div className="nav-quick-actions px-6" style={{ paddingBottom: '16px', display: 'flex', gap: '8px' }}>
-                 <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                   <span>#</span>
-                   <span>4</span>
-                 </div>
-                 <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                   <span>G</span>
-                   <span>2</span>
-                 </div>
-                 <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
-                   <Calendar className="h-3.5 w-3.5" />
-                 </div>
-               </div>
-               
-               {/* Navigation sections - simplified */}
-               <div className="w-full mt-8 pt-6 space-y-2 px-0">
-                 {/* Home */}
-                 <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                   <Home className="h-4 w-4 mr-2" />
-                   Home
-                 </Button>
+        {!leftPanelCollapsed ? <div className="w-64 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
+            <div className="h-full flex flex-col">
+              {/* Header with collapse button */}
+              <div className="px-6">
+                <div className="flex items-center justify-between mt-6 mb-4 flex ">
+                  <h2 className="text-text-primary text-lg text-left font-medium mx-[10px]">Navigation</h2>
+                  <Button variant="ghost" size="sm" onClick={() => setLeftPanelCollapsed(true)} className="h-6 w-6 p-0">
+                    <PanelLeftClose className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                {/* Navigation sections - simplified */}
+                <div className="w-full mt-8 pt-6 space-y-2 px-0">
+                  {/* Home */}
+                  <Button variant="ghost" onClick={handleNavigateToHome} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <Home className="h-4 w-4 mr-2" />
+                    Home
+                  </Button>
 
-                 {/* Briefs */}
-                 <Button variant="ghost" onClick={handleNavigateToAllBriefs} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                   <FileText className="h-4 w-4 mr-2" />
-                   Briefs
-                 </Button>
+                  {/* Briefs */}
+                  <Button variant="ghost" onClick={handleNavigateToAllBriefs} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'briefs' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <FileText className="h-4 w-4 mr-2" />
+                    Briefs
+                  </Button>
 
-                 {/* Calendar */}
-                 <Button variant="ghost" onClick={handleNavigateToAllCalendar} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                   <Calendar className="h-4 w-4 mr-2" />
-                   Calendar
-                 </Button>
+                  {/* Calendar */}
+                  <Button variant="ghost" onClick={handleNavigateToAllCalendar} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'calendar' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Calendar
+                  </Button>
 
-                 {/* Follow-ups */}
-                 <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
-                   <ClipboardCheck className="h-4 w-4 mr-2" />
-                   Follow-ups
-                 </Button>
+                  {/* Follow-ups */}
+                  <Button variant="ghost" onClick={handleNavigateToAllFollowUps} className={cn("w-full justify-start py-2 text-sm font-medium hover:bg-white/[0.04] px-[10px]", leftRailTab === 'followups' && !isHomeSelected ? "bg-accent-primary/20 text-accent-primary" : "")}>
+                    <ClipboardCheck className="h-4 w-4 mr-2" />
+                    Follow-ups
+                  </Button>
                 </div>
               </div>
+              </div>
           </div> : (/* Collapsed Left Panel */
-      <div className="left-nav w-12 h-full bg-surface/50 backdrop-blur-sm shadow-sm" style={{ display: 'flex', flexDirection: 'column', height: '100%', paddingBottom: 'calc(var(--player-height) + 16px)' }}>
+      <div className="w-12 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <TooltipProvider>
               <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
                 {/* Open/Close Panel Button */}
@@ -1158,23 +1233,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <TooltipContent side="right">
                     <p>Follow Ups</p>
                   </TooltipContent>
-                 </Tooltip>
-               </div>
-
-               {/* Quick Actions - Collapsed view, pinned to bottom */}
-               <div className="nav-quick-actions px-2" style={{ marginTop: 'auto', paddingBottom: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                 <div className="flex items-center justify-center bg-purple-500/20 text-purple-300 w-7 h-5 rounded-full text-xs font-medium">
-                   4
-                 </div>
-                 <div className="flex items-center justify-center bg-blue-500/20 text-blue-300 w-7 h-5 rounded-full text-xs font-medium">
-                   2
-                 </div>
-                 <div className="flex items-center justify-center bg-gray-500/20 text-gray-300 w-7 h-5 rounded-full">
-                   <Calendar className="h-3 w-3" />
-                 </div>
-               </div>
-             </TooltipProvider>
-           </div>)}
+                </Tooltip>
+              </div>
+            </TooltipProvider>
+          </div>)}
 
         {/* Main Content Panel */}
         <div className="flex-1 h-screen overflow-hidden">
