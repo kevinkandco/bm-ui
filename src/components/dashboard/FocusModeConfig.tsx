@@ -37,18 +37,9 @@ interface FocusConfig {
 }
 
 const FocusModeConfig = ({ isOpen, onClose, onStartFocus, connectedApps = [] }: FocusModeConfigProps) => {
+  console.log("FocusModeConfig rendered with connectedApps:", connectedApps);
   const { toast } = useToast();
   const [duration, setDuration] = useState(30);
-  
-  // Initialize closeApps state based on connected apps
-  const [closeApps, setCloseApps] = useState<Record<string, boolean>>(() => {
-    const initialState: Record<string, boolean> = {};
-    connectedApps.forEach(app => {
-      initialState[app.id] = false;
-    });
-    return initialState;
-  });
-  
   const [statusUpdates, setStatusUpdates] = useState({
     slack: "focused",
   });
@@ -61,15 +52,27 @@ const FocusModeConfig = ({ isOpen, onClose, onStartFocus, connectedApps = [] }: 
   ];
 
   const appsToShow = connectedApps.length > 0 ? connectedApps : defaultApps;
+  console.log("Apps to show in modal:", appsToShow);
 
-  // Update closeApps when connectedApps changes
-  useEffect(() => {
-    const newCloseApps: Record<string, boolean> = {};
+  // Initialize closeApps state based on apps to show
+  const [closeApps, setCloseApps] = useState<Record<string, boolean>>(() => {
+    const initialState: Record<string, boolean> = {};
     appsToShow.forEach(app => {
-      newCloseApps[app.id] = closeApps[app.id] || false;
+      initialState[app.id] = false;
     });
-    setCloseApps(newCloseApps);
-  }, [appsToShow.length]); // Only depend on the length to avoid infinite loops
+    return initialState;
+  });
+
+  // Reset closeApps when modal opens with potentially different connected apps
+  useEffect(() => {
+    if (isOpen) {
+      const newCloseApps: Record<string, boolean> = {};
+      appsToShow.forEach(app => {
+        newCloseApps[app.id] = false; // Reset all to false when modal opens
+      });
+      setCloseApps(newCloseApps);
+    }
+  }, [isOpen]); // Only depend on modal open state
 
   const handleAppToggle = (appId: string) => {
     setCloseApps(prev => ({ ...prev, [appId]: !prev[appId] }));

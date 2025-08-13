@@ -52,6 +52,8 @@ const Dashboard = () => {
     { id: "notion", name: "Notion", icon: FileText, color: "text-gray-400" },
     { id: "jira", name: "Jira", icon: Users, color: "text-blue-500" },
   ];
+  
+  console.log("Dashboard connectedApps:", connectedApps);
 
   const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
