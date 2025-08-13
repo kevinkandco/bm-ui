@@ -387,9 +387,9 @@ const InterruptRulesStep: React.FC<InterruptRulesStepProps> = ({
 
       <div className="flex justify-between pt-4">
         <Button 
-          variant="outline" 
+          variant="back"
+          size="none"
           onClick={onBack}
-          className="bg-white/5 border-white/20 text-text-primary hover:bg-white/10"
         >
           Back
         </Button>
