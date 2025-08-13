@@ -161,6 +161,7 @@ const GetStartedStep = ({
                 <div>
                   <span className="text-xs sm:text-sm text-text-primary">Mobile App (Coming soon)</span>
                   <p className="text-[10px] sm:text-xs text-text-secondary">Listen to briefs on the go</p>
+                  <div className="border-t border-white/10 my-2"></div>
                   <p className="text-[10px] sm:text-xs text-text-secondary">Add Brief Me to your iOS or Android home screen for quick access.</p>
                 </div>
               </div>
