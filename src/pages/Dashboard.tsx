@@ -91,12 +91,7 @@ const Dashboard = () => {
     setFocusConfig(null);
     setFocusStartTime(null);
     setShowCatchUpModal(true);
-    
-    toast({
-      title: "Focus Mode Ended",
-      description: "Generating your catch-up brief..."
-    });
-  }, [toast]);
+  }, []);
 
   const handleConfirmExitFocus = useCallback(() => {
     setUserStatus("active");
@@ -135,12 +130,7 @@ const Dashboard = () => {
         }
       }
     });
-    
-    toast({
-      title: "Focus Mode Started",
-      description: `${config.duration} minute focus session started. ${actionsText.length > 0 ? actionsText.join(', ') + '. ' : ''}Slack status updated.`
-    });
-  }, [toast, connectedApps]);
+  }, [connectedApps]);
   
   const handleStartFocusMode = useCallback(() => {
     console.log("Focus mode triggered - opening config modal");
