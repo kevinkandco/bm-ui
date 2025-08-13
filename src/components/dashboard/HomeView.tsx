@@ -2216,7 +2216,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             />
             
             {/* Right Panel - Fixed positioned within content area */}
-            <div className="fixed top-0 right-0 w-80 h-screen bg-surface/15 flex flex-col shadow-2xl rounded-l-xl z-50 transition-transform duration-300 ease-out border-l-2 border-l-brand-500/30">
+            <div className="fixed top-[64px] right-0 w-80 h-[calc(100vh-64px)] bg-surface/15 flex flex-col shadow-2xl rounded-l-xl z-50 transition-transform duration-300 ease-out border-l-2 border-l-brand-500/30">
               <div className="flex-1 overflow-hidden">
                 <ActionItemsPanel 
                   onToggleCollapse={() => setRightPanelCollapsed(true)} 
