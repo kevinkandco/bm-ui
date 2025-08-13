@@ -6,7 +6,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { Slack, Mail, Calendar } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-
 interface IntegrationOption {
   id: string;
   name: string;
@@ -205,7 +204,7 @@ const IntegrationsStep = ({
       
       <div className="space-y-1 sm:space-y-2">
         <h2 className="text-xl sm:text-2xl font-semibold text-text-primary tracking-tighter">Connect your tools</h2>
-        <p className="text-sm sm:text-base text-text-secondary">Brief.me will monitor these sources to create your personalized brief.</p>
+        <p className="text-sm sm:text-base text-text-secondary">Brief me will monitor these sources to create your personalized brief.</p>
       </div>
       
       {/* Combined integrations list */}
