@@ -107,7 +107,7 @@ const GetStartedStep = ({
   
   return (
     <div className="space-y-4 sm:space-y-6">
-      <ProgressIndicator currentStep={8} totalSteps={8} />
+      <ProgressIndicator currentStep={10} totalSteps={10} />
       
       {/* Visual element with reduced height */}
       <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
