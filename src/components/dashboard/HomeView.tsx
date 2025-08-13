@@ -978,7 +978,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           <div className="flex items-center justify-between">
             {/* Left: Brief Me Logo and Status */}
             <div className="flex items-center gap-3">
-              <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
+              <img src="/lovable-uploads/36831760-0deb-4010-9a3b-973f1f8decc3.png" alt="Brief Me" className="h-8 w-auto" />
               {/* Status Indicator with Dropdown and Timer */}
               <div className="flex items-center gap-3">
                 <DropdownMenu>
