@@ -150,7 +150,7 @@ const App = () => {
                         <Route path="/admin/invoices" element={<InvoicesAdmin />} />
                     </Route>
                     <Route path="/mac" element={<MacRouteGuard />} />
-                    <Route path="/app-login" element={<AppLogin />} />
+                    <Route path="/app-login-successfully" element={<AppLogin />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

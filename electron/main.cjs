@@ -32,6 +32,7 @@ function handleDeepLink(argv) {
 
     if (mainWindow) {
       mainWindow.webContents.send("auth-success", token);
+      mainWindow.loadURL(`http://localhost:8080?token=${token}`);
     }
   } catch (err) {
     console.error("❌ Invalid deep link:", err);

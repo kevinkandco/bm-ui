@@ -14,7 +14,7 @@
         console.log(123)
         window.electronAPI.onAuthSuccess((token) => {
         console.log("Token received:", token);
-        window.location.href = "http://localhost:8080"
+        // window.location.href = "http://localhost:8080"
         localStorage.setItem("token", token)
         });
     </script>
