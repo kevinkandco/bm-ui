@@ -108,7 +108,7 @@ const MacPage = () => {
     <div 
       className="min-h-screen w-full relative"
       style={{
-        backgroundImage: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`,
+        backgroundImage: `url('/lovable-uploads/34acfced-808f-41fa-8bee-98bb10df0ef5.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
