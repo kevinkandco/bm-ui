@@ -2196,7 +2196,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
         </div>
 
         {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript || selectedFollowUp) ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-lg rounded-l-xl">
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript || selectedFollowUp) ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-2xl rounded-l-xl">
             <div className="flex-1 overflow-hidden">
               <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
             setSelectedMessage(null);
