@@ -23,6 +23,19 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   const [searchQuery, setSearchQuery] = useState("");
   const [allChannelsJoined, setAllChannelsJoined] = useState(userData.allChannelsJoined || false);
   
+  // Handle "All channels joined" toggle
+  const handleAllChannelsToggle = (checked: boolean) => {
+    setAllChannelsJoined(checked);
+    if (checked) {
+      // Select all available channels when toggled on
+      const allAvailableChannels = [...new Set([...priorityChannels, ...slackChannels])];
+      updateUserData({ 
+        priorityChannels: allAvailableChannels,
+        allChannelsJoined: true 
+      });
+    }
+  };
+  
   // Memoize filtered channels to prevent unnecessary recalculation
   const filteredChannels = useMemo(() => 
     searchQuery 
@@ -54,30 +67,12 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
       </div>
       
       <div className="space-y-5">
-        <div className="space-y-2">
-          <Label htmlFor="priority-channel" className="text-text-primary">Add important channels</Label>
-          
-          <ChannelInput 
-            onAddChannel={addChannel}
-            onSelectChannel={selectChannel}
-            existingChannels={priorityChannels}
-            availableChannels={slackChannels}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-          
-          <SelectedChannels 
-            channels={priorityChannels} 
-            onRemoveChannel={removeChannel} 
-          />
-        </div>
-        
         {/* All channels toggle */}
         <div className="flex items-center space-x-3 p-4 rounded-lg bg-brand-600/50 border border-border-subtle">
           <Checkbox 
             id="all-channels"
             checked={allChannelsJoined}
-            onCheckedChange={(checked) => setAllChannelsJoined(!!checked)}
+            onCheckedChange={(checked) => handleAllChannelsToggle(!!checked)}
             className="border-border-subtle data-[state=checked]:bg-accent-primary data-[state=checked]:border-accent-primary"
           />
           <Label 
@@ -88,21 +83,54 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
           </Label>
         </div>
         
-        {/* Slack channels section */}
-        {(hasSlackIntegration || true) && (
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium text-text-primary">
-              <span className="flex items-center gap-2">
-                <MessageSquare size={18} className="text-accent-primary" />
-                Your Slack Channels
-              </span>
-            </h3>
+        {/* Manual channel selection - only show when "All channels" is not selected */}
+        {!allChannelsJoined && (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="priority-channel" className="text-text-primary">Add important channels</Label>
+              
+              <ChannelInput 
+                onAddChannel={addChannel}
+                onSelectChannel={selectChannel}
+                existingChannels={priorityChannels}
+                availableChannels={slackChannels}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
+              
+              <SelectedChannels 
+                channels={priorityChannels} 
+                onRemoveChannel={removeChannel} 
+              />
+            </div>
             
-            <SlackChannelsList
-              slackChannels={filteredChannels}
-              priorityChannels={priorityChannels}
-              onSelectChannel={selectChannel}
-            />
+            {/* Slack channels section */}
+            {(hasSlackIntegration || true) && (
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium text-text-primary">
+                  <span className="flex items-center gap-2">
+                    <MessageSquare size={18} className="text-accent-primary" />
+                    Your Slack Channels
+                  </span>
+                </h3>
+                
+                <SlackChannelsList
+                  slackChannels={filteredChannels}
+                  priorityChannels={priorityChannels}
+                  onSelectChannel={selectChannel}
+                />
+              </div>
+            )}
+          </>
+        )}
+        
+        {/* Show selected channels summary when "All channels" is selected */}
+        {allChannelsJoined && (
+          <div className="p-4 rounded-lg bg-accent-primary/10 border border-accent-primary/20">
+            <p className="text-text-primary font-medium">All channels selected</p>
+            <p className="text-text-secondary text-sm mt-1">
+              You'll receive updates from all {slackChannels.length + priorityChannels.length} channels you've joined.
+            </p>
           </div>
         )}
       </div>
