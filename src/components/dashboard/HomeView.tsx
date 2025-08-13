@@ -1450,12 +1450,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             <div className="border-t border-white/8" />
                             
                             {/* Past Briefs Section */}
-                            <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => {
-                              setLeftRailTab('briefs');
-                              setLeftPanelCollapsed(false);
-                              setSelectedBrief(null);
-                              setIsHomeSelected(false);
-                            }}>
+            <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => {
+              navigate('/briefs');
+            }}>
                               <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
                               <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
                                 <span>View all</span>
