@@ -47,6 +47,7 @@ const Dashboard = () => {
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
   const [showCatchUpModal, setShowCatchUpModal] = useState(false);
   const [focusStartTime, setFocusStartTime] = useState<number | null>(null);
+  const [awayStartTime, setAwayStartTime] = useState<number | null>(null);
 
   // Mock connected apps - in real app this would come from user's integrations
   const connectedApps: ConnectedApp[] = [
@@ -139,6 +140,7 @@ const Dashboard = () => {
   
   const handleSignOffForDay = useCallback(() => {
     setUserStatus("away");
+    setAwayStartTime(Date.now());
     toast({
       title: "Signing Off",
       description: "You've signed off for today"
@@ -147,11 +149,21 @@ const Dashboard = () => {
 
   const handleSignBackOn = useCallback(() => {
     setUserStatus("active");
+    setAwayStartTime(null);
     toast({
       title: "Welcome Back",
       description: "You're now back online and monitoring"
     });
   }, [toast]);
+
+  const handleStatusChange = useCallback((newStatus: "active" | "away" | "focus" | "vacation") => {
+    if (newStatus === "away" && userStatus !== "away") {
+      setAwayStartTime(Date.now());
+    } else if (newStatus !== "away" && userStatus === "away") {
+      setAwayStartTime(null);
+    }
+    setUserStatus(newStatus);
+  }, [userStatus]);
 
   const handleGenerateBrief = useCallback(() => {
     // This would typically trigger the creation of a new brief
@@ -184,7 +196,8 @@ const Dashboard = () => {
             userStatus={userStatus}
             focusConfig={focusConfig}
             focusStartTime={focusStartTime}
-            onStatusChange={setUserStatus}
+            awayStartTime={awayStartTime}
+            onStatusChange={handleStatusChange}
             onExitFocusMode={handleExitFocusMode}
             onSignBackOn={handleSignBackOn}
           />

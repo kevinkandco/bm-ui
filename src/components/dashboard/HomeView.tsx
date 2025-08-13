@@ -39,6 +39,7 @@ import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
 import CalendarPage from "../../pages/CalendarPage";
 import FocusTimer from "./FocusTimer";
+import AwayTimer from "./AwayTimer";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -70,6 +71,7 @@ interface HomeViewProps {
   userStatus?: "active" | "away" | "focus" | "vacation";
   focusConfig?: any;
   focusStartTime?: number | null;
+  awayStartTime?: number | null;
   onStatusChange?: (status: "active" | "away" | "focus" | "vacation") => void;
   onExitFocusMode?: () => void;
   onSignBackOn?: () => void;
@@ -85,6 +87,7 @@ const HomeView = ({
   userStatus = "active",
   focusConfig,
   focusStartTime,
+  awayStartTime,
   onStatusChange,
   onExitFocusMode,
   onSignBackOn
@@ -1015,6 +1018,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     startTime={focusStartTime}
                     duration={focusConfig.duration}
                   />
+                )}
+                
+                {/* Away Timer */}
+                {userStatus === "away" && awayStartTime && (
+                  <AwayTimer startTime={awayStartTime} />
                 )}
               </div>
             </div>
