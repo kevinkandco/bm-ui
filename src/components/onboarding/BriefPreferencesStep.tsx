@@ -154,8 +154,8 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   className={cn(
                     "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all text-xs",
                     brief.deliveryMethod === method
-                      ? 'border-accent-primary bg-accent-primary/10 text-accent-primary'
-                      : 'border-border-subtle bg-brand-700/50 text-text-secondary hover:bg-brand-600/50'
+                      ? 'border-brand-300 bg-brand-500/20 text-brand-300'
+                      : 'border-border-subtle bg-brand-700/30 text-text-secondary hover:bg-brand-600/30'
                   )}
                 >
                   <Icon size={16} />
@@ -179,10 +179,10 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   key={time}
                   onClick={() => handleScheduleChange(time)}
                   className={cn(
-                    "flex flex-col items-center gap-1 p-2 rounded border transition-all text-xs",
+                    "flex flex-col items-center gap-1 p-2 rounded-lg border transition-all text-xs",
                     brief.scheduleTime === time
-                      ? 'border-accent-primary bg-accent-primary/10 text-accent-primary'
-                      : 'border-border-subtle bg-brand-700/50 text-text-secondary hover:bg-brand-600/50'
+                      ? 'border-brand-300 bg-brand-500/20 text-brand-300'
+                      : 'border-border-subtle bg-brand-700/30 text-text-secondary hover:bg-brand-600/30'
                   )}
                 >
                   <Icon size={14} />
@@ -201,7 +201,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                 type="time"
                 value={brief.briefTime}
                 onChange={(e) => updateBrief({ briefTime: e.target.value, scheduleTime: "custom" })}
-                className="bg-brand-700/50 border-border-subtle text-text-primary h-10"
+                className="bg-brand-700/30 border-border-subtle text-text-primary h-10"
               />
             </div>
             
@@ -219,10 +219,10 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                       key={day}
                       onClick={() => toggleDay(day)}
                       className={cn(
-                        "px-2 py-1 rounded text-xs font-medium transition-colors flex-1",
+                        "px-3 py-2 rounded-lg text-xs font-medium transition-colors flex-1",
                         isSelected
-                          ? "bg-accent-primary text-brand-900"
-                          : "bg-brand-700/50 text-text-secondary border border-border-subtle hover:bg-brand-600/50"
+                          ? "bg-brand-300 text-brand-900 border-brand-300"
+                          : "bg-brand-700/30 text-text-secondary border border-border-subtle hover:bg-brand-600/30"
                       )}
                     >
                       {day}
@@ -237,7 +237,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
 
       {/* Weekend Brief */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between p-3 rounded-lg bg-brand-600/20 border border-border-subtle">
+        <div className="flex items-center justify-between p-4 rounded-lg bg-brand-600/20 border border-border-subtle">
           <div>
             <h4 className="font-medium text-text-primary text-sm">Weekend Brief</h4>
             <p className="text-xs text-text-secondary">Get a Monday morning summary</p>
@@ -259,7 +259,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                     ...prev, 
                     deliveryMethod: e.target.value as "email" | "audio" | "both" 
                   }))}
-                  className="w-full px-2 py-1 text-xs rounded bg-brand-700/50 border border-border-subtle text-text-primary"
+                  className="w-full px-3 py-2 text-sm rounded-lg bg-brand-700/30 border border-border-subtle text-text-primary"
                 >
                   <option value="email">Email</option>
                   <option value="audio">Audio</option>
@@ -272,7 +272,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   type="time"
                   value={weekendBrief.deliveryTime}
                   onChange={(e) => setWeekendBrief(prev => ({ ...prev, deliveryTime: e.target.value }))}
-                  className="bg-brand-700/50 border-border-subtle text-text-primary h-7 text-xs"
+                  className="bg-brand-700/30 border-border-subtle text-text-primary h-9 text-sm"
                 />
               </div>
             </div>
@@ -295,7 +295,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
         </div>
 
         {showWorkHours && (
-          <div className="p-3 rounded-lg bg-brand-600/20 border border-border-subtle">
+          <div className="p-4 rounded-lg bg-brand-600/20 border border-border-subtle">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-text-primary text-xs">Start</Label>
@@ -303,7 +303,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   type="time"
                   value={workHours.workdayStart}
                   onChange={(e) => setWorkHours(prev => ({ ...prev, workdayStart: e.target.value }))}
-                  className="bg-brand-700/50 border-border-subtle text-text-primary h-8 text-sm"
+                  className="bg-brand-700/30 border-border-subtle text-text-primary h-10 text-sm"
                 />
               </div>
               <div className="space-y-1">
@@ -312,7 +312,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   type="time"
                   value={workHours.workdayEnd}
                   onChange={(e) => setWorkHours(prev => ({ ...prev, workdayEnd: e.target.value }))}
-                  className="bg-brand-700/50 border-border-subtle text-text-primary h-8 text-sm"
+                  className="bg-brand-700/30 border-border-subtle text-text-primary h-10 text-sm"
                 />
               </div>
             </div>
