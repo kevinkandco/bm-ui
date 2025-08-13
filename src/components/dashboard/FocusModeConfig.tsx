@@ -141,14 +141,19 @@ const FocusModeConfig = ({ isOpen, onClose, onStartFocus, connectedApps = [] }: 
                   return (
                     <div
                       key={app.id}
-                      className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-brand-600 border border-border-subtle"
+                      onClick={() => handleAppToggle(app.id)}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl cursor-pointer transition-all ${
+                        closeApps[app.id] 
+                          ? 'bg-brand-300/20 border border-brand-300' 
+                          : 'bg-brand-600 border border-border-subtle hover:bg-brand-600/80'
+                      }`}
                     >
-                      <IconComponent className={`h-8 w-8 ${app.color}`} />
-                      <span className="text-sm font-medium text-text-primary">{app.name}</span>
+                      <IconComponent className={`h-6 w-6 ${app.color}`} />
+                      <span className="text-xs font-medium text-text-primary">{app.name}</span>
                       <Switch
                         checked={closeApps[app.id] || false}
                         onCheckedChange={() => handleAppToggle(app.id)}
-                        className="data-[state=unchecked]:bg-gray-600"
+                        className="data-[state=unchecked]:bg-gray-600 pointer-events-none"
                       />
                     </div>
                   );
