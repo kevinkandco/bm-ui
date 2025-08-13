@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ProgressIndicator from "./ProgressIndicator";
-import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
+import { Download, Smartphone, ChevronsRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { useState } from "react";
@@ -106,7 +106,11 @@ const GetStartedStep = ({
       
       {/* Visual element with reduced height */}
       <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
-        <Sparkles size={32} className="text-accent-primary animate-float" />
+        <img 
+          src="/lovable-uploads/536fd68f-e663-4bf4-b871-d2fff3666770.png" 
+          alt="Brief Me Logo" 
+          className="h-8 sm:h-12 w-auto opacity-90"
+        />
       </div>
       
       <div className="space-y-1 sm:space-y-2">
