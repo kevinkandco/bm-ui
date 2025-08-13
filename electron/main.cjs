@@ -1,124 +1,105 @@
-// main.cjs
-const { app, BrowserWindow, ipcMain, screen } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron"); // Added shell
 const path = require("path");
-const { exec } = require("child_process");
-const killSlack = require("./killSlack.cjs");
+const { Deeplink } = require('electron-deeplink');
+const isDev = require('electron-is-dev');
 
-let mainWindow = null;
-let barWindow = null;
+let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
-      contextIsolation: true,
       nodeIntegration: false,
-    },
-    icon: path.join(__dirname, "assets", "icon.png"),
+      contextIsolation: true,
+    }
   });
 
-  // Load HTML instead of URL if you want local file
-  const htmlPath = path.join(__dirname, "..", "appLogin.html");
+  // First load your app's loading screen
+  const htmlPath = path.join(__dirname, "..", "loading.html");
   mainWindow.loadFile(htmlPath);
 
   mainWindow.webContents.openDevTools();
 
-  mainWindow.on("closed", () => {
-    mainWindow = null;
+  // Then check auth status
+  checkAuthStatus();
+
+  const protocol = isDev ? 'briefme' : 'prod-app';
+  const deeplink = new Deeplink({ app, mainWindow, protocol, isDev });
+
+
+  deeplink.on("received", (link) => {
+    console.log(link, "token");
+    
+    // do stuff here
   });
+  
 }
 
-function createBarWindow() {
-  const { width } = screen.getPrimaryDisplay().workAreaSize;
 
-  barWindow = new BrowserWindow({
-    x: Math.round(width / 2 - 275), // center for 550px width
-    y: 20,
-    width: 550,
-    height: 350,
-    frame: false,
-    transparent: true,
-    alwaysOnTop: true,
-    skipTaskbar: true,
-    resizable: false,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.cjs"),
-      contextIsolation: true,
-      nodeIntegration: false,
-    },
-  });
+function checkAuthStatus() {
+  if (hasValidToken()) {
+    mainWindow.loadURL("http://localhost:8080/app-login?appLogin=true");
+  } else {
+    const htmlPath = path.join(__dirname, "..", "appLogin.html");
+    mainWindow.loadFile(htmlPath);
+  }
+}
 
-  const htmlPath = path.join(__dirname, "..", "floatingBar.html");
-  barWindow.loadFile(htmlPath);
+function hasValidToken(isValid = false) {
+  return isValid;
+}
 
-  barWindow.on("closed", () => {
-    barWindow = null;
-  });
 
-  // Optional: open devtools for debugging:
-  // barWindow.webContents.openDevTools();
+ipcMain.on('redirect-to-web-login', () => {
+  hasValidToken(true)
+  shell.openExternal(`http://localhost:8080/app-login?appLogin=${true}`); 
+});
+  
+
+ipcMain.on('open-external', (event, url) => {
+  shell.openExternal(url);
+});
+
+if (!app.isDefaultProtocolClient('briefme')) {
+  app.setAsDefaultProtocolClient('briefme');
 }
 
 app.whenReady().then(() => {
   createWindow();
-  createBarWindow();
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
 });
 
-app.on("window-all-closed", () => {
-  // on macOS apps usually stay active until Cmd+Q, but adapt as needed
-  if (process.platform !== "darwin") app.quit();
-});
 
-// IPC handlers
-ipcMain.on("minimize-main", () => {
-  if (mainWindow) mainWindow.minimize();
-});
-
-ipcMain.on("close-main", () => {
-  if (mainWindow) mainWindow.close();
-});
-
-ipcMain.handle("close-slack", async () => {
-  const msg = await new Promise((res) => {
-    exec(killSlack(), (err, _out, stderr) => {
-      res(err ? `Failed: ${stderr || err.message}` : "Slack closed.");
-    });
-  });
-  return msg;
-});
-
-// toggle-bar: reposition barWindow (shrink/right vs center/large)
-ipcMain.on("toggle-bar", (event, collapsed) => {
-  if (!barWindow) return;
-  const { width } = screen.getPrimaryDisplay().workAreaSize;
-
-  if (collapsed) {
-    barWindow.setBounds({
-      x: width - 60,
-      y: 20,
-      width: 50,
-      height: 60,
-    });
-  } else {
-    barWindow.setBounds({
-      x: Math.round(width / 2 - 275),
-      y: 20,
-      width: 550,
-      height: 350,
-    });
+// macOS deep link handler
+app.on("open-url", (event, url) => {
+  event.preventDefault();
+  if (mainWindow) {
+    mainWindow.webContents.send("deeplink-received", url);
   }
 });
 
-// status-changed: log and forward to mainWindow if present
-ipcMain.on("status-changed", (event, status) => {
-  console.log("Status changed to:", status);
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.send("status-updated", status);
+// Windows/Linux deep link handler
+app.on("second-instance", (event, argv) => {
+  const deepLink = argv.find((arg) => arg.startsWith("briefme://"));
+  if (deepLink && mainWindow) {
+    mainWindow.webContents.send("deeplink-received", deepLink);
   }
 });
+
+// For Windows/Linux: prevent multiple app instances
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (event, argv) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+    const deepLink = argv.find((arg) => arg.startsWith("briefme://"));
+    if (deepLink) {
+      mainWindow.webContents.send("deeplink-received", deepLink);
+    }
+  });
+}

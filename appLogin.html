@@ -11,12 +11,6 @@
             background: linear-gradient(135deg, #6359af 0%, #478c87 100%);
         }
     </style>
-    <script>
-        // Redirect to React login if not in Electron
-        if (!window.electronAPI) {
-            window.location.href = window.location.origin;
-        }
-    </script>
 </head>
 
 <body class="min-h-screen flex items-center justify-center">
@@ -43,66 +37,36 @@
                 class="w-full py-2 px-4 bg-white text-[#6359af] rounded-lg font-medium hover:bg-white/90 transition">
                 Sign In
             </button>
+
+            <button id="redirectButton" type="button"
+                class="w-full py-2 px-4 bg-white text-[#6359af] rounded-lg font-medium hover:bg-white/90 transition">
+                Redirect To Web Login
+            </button>
         </form>
 
         <div id="errorMessage" class="mt-4 text-red-300 text-sm hidden"></div>
     </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            window.location.href = 'https://hey.brief-me.app/dashboard';
-        }
-    });
-</script>
-    <script src="./js/helper.js"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        document.getElementById('redirectButton').addEventListener('click', () => {
+            window.electron.send('redirect-to-web-login');
+        });
+    </script>
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const errorElement = document.getElementById('errorMessage');
+    <script>
+        console.log("Step started..");
 
-            if (!email || !password) {
-                errorElement.textContent = 'Please enter both email and password';
-                errorElement.classList.remove('hidden');
-                return;
-            }
+        window.deeplink.onReceived((link) => {
+            console.log("Received deep link:", link);
 
-            try {
-                const payload = {
-                    email: email,
-                    password: password,
-                };
+            // Parse URL
+            const parsedUrl = new URL(link);    
 
-                const response = await fetch(`${BASE_URL}/electron/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                });
+            // Get token param
+            const token = parsedUrl.searchParams.get("token");
 
-                const data = await response.json();
+            console.log(token);
 
-                if (!response.ok) {
-                    throw new Error(data.message || 'Login failed');
-                }
-
-                localStorage.setItem('token', data?.data?.token);
-                localStorage.setItem('user', JSON.stringify(data?.data?.user));
-
-                setTimeout(() => {
-                    window.location.href = 'https://hey.brief-me.app/dashboard'; 
-                }, 300);
-
-            } catch (err) {
-                errorElement.textContent = err.message || 'Login failed. Please try again.';
-                errorElement.classList.remove('hidden');
-                console.error('Login error:', err);
-            }
         });
     </script>
 </body>

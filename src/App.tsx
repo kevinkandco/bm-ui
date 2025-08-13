@@ -41,6 +41,7 @@ const SettingsPage = lazyImport(() => import("./pages/SettingsPage"));
 const MacPage = lazyImport(() => import("./pages/MacPage"));
 const BriefDetail = lazyImport(() => import("./pages/BriefDetail"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
+const AppLogin = lazyImport(() => import("./pages/AppLogin"));
 // Admin Pages
 const AdminLogin = lazyImport(() => import("./pages/admin/Login"));
 const DashboardAdmin = lazyImport(() => import("./pages/admin/Dashboard"));
@@ -107,17 +108,6 @@ const App = () => {
   
   }, []);
 
-  useEffect(() => {
-    
-    if (window?.electronAPI?.isElectron) {
-    console.log("this is for electron app :");
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "appLogin";
-    }
-  }
-}, [window?.electronAPI?.isElectron]);
-
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -160,6 +150,7 @@ const App = () => {
                         <Route path="/admin/invoices" element={<InvoicesAdmin />} />
                     </Route>
                     <Route path="/mac" element={<MacRouteGuard />} />
+                    <Route path="/app-login" element={<AppLogin />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

@@ -1,16 +1,43 @@
 // preload.cjs
-const { contextBridge, ipcRenderer } = require("electron");
+const { ipcRenderer, contextBridge } = require("electron");
 
-// Expose a small API to renderer processes
+// First API: "electron" (for legacy HTML files like appLogin.html)
+contextBridge.exposeInMainWorld("electron", {
+  send: (channel, data) => {
+    const validChannels = ["redirect-to-web-login"];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+  receive: (channel, func) => {
+    const validChannels = [];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
+  },
+});
+
+
+// Second API: "electronAPI" (for modern React/TSX code)
 contextBridge.exposeInMainWorld("electronAPI", {
   isElectron: true,
-  closeSlack: () => ipcRenderer.invoke("close-slack"),
-  minimizeMain: () => ipcRenderer.send("minimize-main"),
-  closeMain: () => ipcRenderer.send("close-main"),
-  toggleBar: (collapsed) => ipcRenderer.send("toggle-bar", !!collapsed),
-  sendStatus: (status) => ipcRenderer.send("status-changed", status),
-  // allow renderer to react to status updates from main
-  onStatusUpdated: (cb) => {
-    ipcRenderer.on("status-updated", (event, status) => cb(status));
+  setToken: (token) => {
+    console.log(1211212121);
+    console.log(token, "TOKEN");
+    
+    return ipcRenderer.invoke("set-token", token); 
   },
+  redirectToDashboard: () => {
+    ipcRenderer.send("redirect-to-dashboard");
+  },
+
+  openExternal: (url) => ipcRenderer.send('open-external', url)
+});
+
+contextBridge.exposeInMainWorld("deeplink", {
+  onReceived: (callback) => {
+    ipcRenderer.on("deeplink-received", (event, url) => {
+      callback(url);
+    });
+  }
 });
