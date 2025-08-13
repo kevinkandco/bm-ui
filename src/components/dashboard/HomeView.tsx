@@ -1107,8 +1107,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               {/* Get Brief Button / End Focus Mode Button */}
               <Button 
                 onClick={userStatus === "focus" ? onExitFocusMode : onToggleCatchMeUp} 
+                variant={userStatus === "focus" ? "outline" : "default"}
                 className={userStatus === "focus" 
-                  ? "bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised px-4 py-2" 
+                  ? "border-accent-primary text-accent-primary hover:bg-accent-primary/10 px-4 py-2" 
                   : "bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2"
                 }
               >
