@@ -161,14 +161,17 @@ const GetStartedStep = ({
                 </div>
               </div>
               <div className="border-t border-white/10"></div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setIsHomeScreenModalOpen(true)}
-                className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto self-start"
-              >
-                Add to Home Screen
-              </Button>
+              <div className="flex justify-between items-center">
+                <p className="text-[10px] sm:text-xs text-text-secondary">Add Brief Me to your iOS or Android home screen for quick access</p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setIsHomeScreenModalOpen(true)}
+                  className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto"
+                >
+                  Add to Home Screen
+                </Button>
+              </div>
             </div>
           </div>
           
