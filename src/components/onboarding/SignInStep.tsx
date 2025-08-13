@@ -70,7 +70,7 @@ const SignInStep = ({
       
       <div className="space-y-4 pt-2 sm:pt-4">
         <Button 
-          className="w-full bg-surface-overlay hover:bg-surface-raised text-text-primary border border-border-subtle shadow-subtle flex items-center justify-center gap-2 sm:gap-3 rounded-xl py-2.5 sm:py-3 text-sm sm:text-base transition-all duration-400" 
+          className="w-full bg-surface-overlay hover:bg-surface-raised text-text-primary border border-border-subtle shadow-subtle flex items-center justify-center gap-2 sm:gap-3 rounded-full py-2.5 sm:py-3 text-sm sm:text-base transition-all duration-400" 
           onClick={() => handleSignIn('google')} 
           disabled={signingIn}
         >

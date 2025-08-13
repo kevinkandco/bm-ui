@@ -44,7 +44,7 @@ const WelcomeStep = ({ onNext }: WelcomeStepProps) => {
       
       <div className="space-y-4 pt-4">
         <Button 
-          className="w-full bg-canvas-black hover:bg-deep-plum/30 text-ice-grey border border-cool-slate/20 shadow-subtle flex items-center justify-center gap-3 rounded-xl py-3 transition-all duration-400"
+          className="w-full bg-canvas-black hover:bg-deep-plum/30 text-ice-grey border border-cool-slate/20 shadow-subtle flex items-center justify-center gap-3 rounded-full py-3 transition-all duration-400"
           onClick={() => handleSignIn('google')}
           disabled={signingIn}
         >
@@ -70,7 +70,7 @@ const WelcomeStep = ({ onNext }: WelcomeStepProps) => {
         </Button>
         
         <Button 
-          className="w-full neon-button flex items-center justify-center gap-3 transform hover:scale-[1.01] active:translate-y-0.5"
+          className="w-full neon-button flex items-center justify-center gap-3 rounded-full transform hover:scale-[1.01] active:translate-y-0.5"
           onClick={() => handleSignIn('slack')}
           disabled={signingIn}
         >
