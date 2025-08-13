@@ -1168,9 +1168,26 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     <ClipboardCheck className="h-4 w-4 mr-2" />
                     Follow-ups
                   </Button>
-                </div>
-              </div>
-              </div>
+                 </div>
+               </div>
+
+               {/* Bottom Indicators - Always visible above audio player */}
+               <div className="mt-auto mb-4 px-6">
+                 <div className="flex items-center gap-2 flex-wrap">
+                   <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                     <span>#</span>
+                     <span>4</span>
+                   </div>
+                   <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                     <span>G</span>
+                     <span>2</span>
+                   </div>
+                   <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
+                     <Calendar className="h-3.5 w-3.5" />
+                   </div>
+                 </div>
+               </div>
+               </div>
           </div> : (/* Collapsed Left Panel */
       <div className="w-12 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
             <TooltipProvider>
@@ -1233,10 +1250,25 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <TooltipContent side="right">
                     <p>Follow Ups</p>
                   </TooltipContent>
-                </Tooltip>
-              </div>
-            </TooltipProvider>
-          </div>)}
+                 </Tooltip>
+               </div>
+
+               {/* Bottom Indicators - Collapsed view */}
+               <div className="mt-auto mb-4 px-2">
+                 <div className="flex flex-col items-center gap-2">
+                   <div className="flex items-center justify-center bg-purple-500/20 text-purple-300 w-7 h-5 rounded-full text-xs font-medium">
+                     4
+                   </div>
+                   <div className="flex items-center justify-center bg-blue-500/20 text-blue-300 w-7 h-5 rounded-full text-xs font-medium">
+                     2
+                   </div>
+                   <div className="flex items-center justify-center bg-gray-500/20 text-gray-300 w-7 h-5 rounded-full">
+                     <Calendar className="h-3 w-3" />
+                   </div>
+                 </div>
+               </div>
+             </TooltipProvider>
+           </div>)}
 
         {/* Main Content Panel */}
         <div className="flex-1 h-screen overflow-hidden">
