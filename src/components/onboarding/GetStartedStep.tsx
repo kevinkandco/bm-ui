@@ -107,7 +107,7 @@ const GetStartedStep = ({
       {/* Visual element with reduced height */}
       <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
         <img 
-          src="/lovable-uploads/536fd68f-e663-4bf4-b871-d2fff3666770.png" 
+          src="/lovable-uploads/186d4f46-7c88-4a5b-addc-eadef4f83802.png" 
           alt="Brief Me Logo" 
           className="h-8 sm:h-12 w-auto opacity-90"
         />
