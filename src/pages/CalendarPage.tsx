@@ -92,8 +92,17 @@ const CalendarPage = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
+      {/* Header with Breadcrumb */}
       <div className="p-6 pb-4">
+        {/* Breadcrumb Navigation */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-text-secondary hover:text-text-primary cursor-pointer">Dashboard</span>
+            <span className="text-text-secondary">›</span>
+            <span className="text-text-primary">Calendar</span>
+          </div>
+        </div>
+        
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-semibold text-text-primary">Your Calendar</h1>
           

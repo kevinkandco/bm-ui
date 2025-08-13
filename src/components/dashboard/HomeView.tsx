@@ -2080,6 +2080,15 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
               {/* Follow ups view when leftRailTab is 'followups' */}
               {leftRailTab === 'followups' && !selectedBrief && !selectedCalendarItem && !isHomeSelected && <div className="space-y-6">
+                  {/* Breadcrumb Navigation */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-text-secondary hover:text-text-primary cursor-pointer" onClick={handleNavigateToHome}>Dashboard</span>
+                      <span className="text-text-secondary">›</span>
+                      <span className="text-text-primary">Follow-ups</span>
+                    </div>
+                  </div>
+                  
                   <div>
                     <h2 className="text-2xl font-bold text-text-primary mb-1">All Follow-ups</h2>
                     <p className="text-sm text-text-secondary">Items requiring your attention</p>
