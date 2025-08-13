@@ -40,6 +40,7 @@ import BriefDrawer from "./BriefDrawer";
 import CalendarPage from "../../pages/CalendarPage";
 import FocusTimer from "./FocusTimer";
 import AwayTimer from "./AwayTimer";
+import VacationTimer from "./VacationTimer";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -72,9 +73,12 @@ interface HomeViewProps {
   focusConfig?: any;
   focusStartTime?: number | null;
   awayStartTime?: number | null;
+  vacationStartTime?: number | null;
   onStatusChange?: (status: "active" | "away" | "focus" | "vacation") => void;
   onExitFocusMode?: () => void;
   onSignBackOn?: () => void;
+  onOpenVacationModal?: () => void;
+  onEndVacationNow?: () => void;
 }
 const HomeView = ({
   onOpenBrief,
@@ -88,9 +92,12 @@ const HomeView = ({
   focusConfig,
   focusStartTime,
   awayStartTime,
+  vacationStartTime,
   onStatusChange,
   onExitFocusMode,
-  onSignBackOn
+  onSignBackOn,
+  onOpenVacationModal,
+  onEndVacationNow
 }: HomeViewProps) => {
   // Format delivery text to condensed format: "HH:MM Range: DD/MM HH:MM to DD/MM HH:MM"
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
@@ -1005,11 +1012,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       <div className="w-2 h-2 rounded-full bg-blue-500" />
                       Focus
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onStatusChange?.("vacation")} className="flex items-center gap-2">
+                    <DropdownMenuItem onClick={() => onOpenVacationModal?.()} className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-gray-500" />
-                      Vacation
+                      Schedule Vacation
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
+                   </DropdownMenuContent>
                 </DropdownMenu>
                 
                 {/* Focus Mode Timer */}
@@ -1023,6 +1030,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 {/* Away Timer */}
                 {userStatus === "away" && awayStartTime && (
                   <AwayTimer startTime={awayStartTime} />
+                )}
+                
+                {/* Vacation Timer */}
+                {userStatus === "vacation" && vacationStartTime && (
+                  <VacationTimer 
+                    startTime={vacationStartTime} 
+                    onEndVacation={onEndVacationNow || (() => {})}
+                  />
                 )}
               </div>
             </div>

@@ -14,6 +14,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
+import VacationStatusModal, { VacationSchedule } from "@/components/dashboard/VacationStatusModal";
 
 import { Slack, Mail, Calendar, FileText, Users, MessageSquare } from "lucide-react";
 
@@ -48,6 +49,9 @@ const Dashboard = () => {
   const [showCatchUpModal, setShowCatchUpModal] = useState(false);
   const [focusStartTime, setFocusStartTime] = useState<number | null>(null);
   const [awayStartTime, setAwayStartTime] = useState<number | null>(null);
+  const [vacationSchedule, setVacationSchedule] = useState<VacationSchedule | null>(null);
+  const [vacationStartTime, setVacationStartTime] = useState<number | null>(null);
+  const [showVacationModal, setShowVacationModal] = useState(false);
 
   // Mock connected apps - in real app this would come from user's integrations
   const connectedApps: ConnectedApp[] = [
@@ -162,8 +166,90 @@ const Dashboard = () => {
     } else if (newStatus !== "away" && userStatus === "away") {
       setAwayStartTime(null);
     }
+    
+    if (newStatus === "vacation" && userStatus !== "vacation") {
+      setVacationStartTime(Date.now());
+    } else if (newStatus !== "vacation" && userStatus === "vacation") {
+      setVacationStartTime(null);
+    }
+    
     setUserStatus(newStatus);
   }, [userStatus]);
+
+  const handleSaveVacationSchedule = useCallback((schedule: VacationSchedule) => {
+    setVacationSchedule(schedule);
+    
+    // If the vacation starts now or in the past, activate immediately
+    if (schedule.startDate <= new Date()) {
+      setUserStatus("vacation");
+      setVacationStartTime(schedule.startDate.getTime());
+    }
+    
+    toast({
+      title: "Vacation Scheduled",
+      description: `Vacation period set from ${schedule.startDate.toLocaleDateString()} to ${schedule.endDate.toLocaleDateString()}`
+    });
+  }, [toast]);
+
+  const handleEndVacationNow = useCallback(() => {
+    setUserStatus("active");
+    setVacationStartTime(null);
+    setVacationSchedule(null);
+    
+    toast({
+      title: "Vacation Ended",
+      description: "You're now back online and monitoring"
+    });
+  }, [toast]);
+
+  const handleOpenVacationModal = useCallback(() => {
+    setShowVacationModal(true);
+  }, []);
+
+  // Check if scheduled vacation should become active
+  React.useEffect(() => {
+    if (vacationSchedule && !vacationSchedule.isActive && userStatus !== "vacation") {
+      const now = new Date();
+      if (now >= vacationSchedule.startDate && now <= vacationSchedule.endDate) {
+        setUserStatus("vacation");
+        setVacationStartTime(vacationSchedule.startDate.getTime());
+        setVacationSchedule(prev => prev ? { ...prev, isActive: true } : null);
+      }
+    }
+    
+    // Check if active vacation should end
+    if (vacationSchedule && vacationSchedule.isActive && userStatus === "vacation") {
+      const now = new Date();
+      if (now > vacationSchedule.endDate) {
+        setUserStatus("active");
+        setVacationStartTime(null);
+        
+        // Show catch-up brief if enabled
+        if (vacationSchedule.deliverCatchUpBrief) {
+          setShowCatchUpModal(true);
+        }
+        
+        setVacationSchedule(null);
+        toast({
+          title: "Welcome Back",
+          description: "Your vacation has ended. You're now back online and monitoring"
+        });
+      }
+    }
+  }, [vacationSchedule, userStatus, toast, setShowCatchUpModal]);
+
+  // Polling to check vacation schedule every minute
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      // Force a re-render to check dates if vacation is scheduled
+      if (vacationSchedule) {
+        const now = new Date();
+        // The effect above will handle the actual logic
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [vacationSchedule]);
 
   const handleGenerateBrief = useCallback(() => {
     // This would typically trigger the creation of a new brief
@@ -197,9 +283,12 @@ const Dashboard = () => {
             focusConfig={focusConfig}
             focusStartTime={focusStartTime}
             awayStartTime={awayStartTime}
+            vacationStartTime={vacationStartTime}
             onStatusChange={handleStatusChange}
             onExitFocusMode={handleExitFocusMode}
             onSignBackOn={handleSignBackOn}
+            onOpenVacationModal={handleOpenVacationModal}
+            onEndVacationNow={handleEndVacationNow}
           />
         )}
         {currentView === "listening" && <ListeningScreen />}
@@ -245,6 +334,13 @@ const Dashboard = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <VacationStatusModal
+        isOpen={showVacationModal}
+        onClose={() => setShowVacationModal(false)}
+        onSave={handleSaveVacationSchedule}
+        currentVacation={vacationSchedule}
+      />
     </div>
   );
 };
