@@ -1054,6 +1054,21 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                  </Button>
                </div>
                
+               {/* Quick Actions - moved above nav */}
+               <div className="nav-quick-actions px-6" style={{ paddingBottom: '16px', display: 'flex', gap: '8px' }}>
+                 <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                   <span>#</span>
+                   <span>4</span>
+                 </div>
+                 <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                   <span>G</span>
+                   <span>2</span>
+                 </div>
+                 <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
+                   <Calendar className="h-3.5 w-3.5" />
+                 </div>
+               </div>
+               
                {/* Navigation sections - simplified */}
                <div className="w-full mt-8 pt-6 space-y-2 px-0">
                  {/* Home */}
@@ -1079,21 +1094,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                    <ClipboardCheck className="h-4 w-4 mr-2" />
                    Follow-ups
                  </Button>
-                </div>
-              </div>
-              
-              {/* Quick Actions - pinned to bottom */}
-              <div className="nav-quick-actions px-6" style={{ marginTop: 'auto', paddingBottom: '16px', display: 'flex', gap: '8px' }}>
-                <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                  <span>#</span>
-                  <span>4</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                  <span>G</span>
-                  <span>2</span>
-                </div>
-                <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
-                  <Calendar className="h-3.5 w-3.5" />
                 </div>
               </div>
           </div> : (/* Collapsed Left Panel */
