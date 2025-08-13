@@ -1006,7 +1006,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onStatusChange?.("away")} className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                      Away
+                      Offline
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onStartFocusMode()} className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-blue-500" />
