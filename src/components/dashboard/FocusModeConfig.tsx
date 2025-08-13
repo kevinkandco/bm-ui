@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,40 +12,67 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Headphones, Slack, Mail, Calendar } from "lucide-react";
+import { Headphones, Slack, Mail, Calendar, FileText, Users, MessageSquare } from "lucide-react";
+
+interface ConnectedApp {
+  id: string;
+  name: string;
+  icon: typeof Slack | typeof Mail | typeof Calendar | typeof FileText | typeof Users | typeof MessageSquare;
+  color: string;
+}
 
 interface FocusModeConfigProps {
   isOpen: boolean;
   onClose: () => void;
   onStartFocus: (config: FocusConfig) => void;
+  connectedApps?: ConnectedApp[];
 }
 
 interface FocusConfig {
   duration: number;
-  closeApps: {
-    slack: boolean;
-    gmail: boolean;
-    calendar: boolean;
-  };
+  closeApps: Record<string, boolean>;
   statusUpdates: {
     slack: string;
   };
 }
 
-const FocusModeConfig = ({ isOpen, onClose, onStartFocus }: FocusModeConfigProps) => {
+const FocusModeConfig = ({ isOpen, onClose, onStartFocus, connectedApps = [] }: FocusModeConfigProps) => {
   const { toast } = useToast();
   const [duration, setDuration] = useState(30);
-  const [closeApps, setCloseApps] = useState({
-    slack: false,
-    gmail: false,
-    calendar: false,
+  
+  // Initialize closeApps state based on connected apps
+  const [closeApps, setCloseApps] = useState<Record<string, boolean>>(() => {
+    const initialState: Record<string, boolean> = {};
+    connectedApps.forEach(app => {
+      initialState[app.id] = false;
+    });
+    return initialState;
   });
+  
   const [statusUpdates, setStatusUpdates] = useState({
     slack: "focused",
   });
 
-  const handleAppToggle = (app: keyof typeof closeApps) => {
-    setCloseApps(prev => ({ ...prev, [app]: !prev[app] }));
+  // Default apps if no connected apps provided (for backwards compatibility)
+  const defaultApps: ConnectedApp[] = [
+    { id: "slack", name: "Slack", icon: Slack, color: "text-purple-400" },
+    { id: "gmail", name: "Gmail", icon: Mail, color: "text-blue-400" },
+    { id: "calendar", name: "Calendar", icon: Calendar, color: "text-green-400" },
+  ];
+
+  const appsToShow = connectedApps.length > 0 ? connectedApps : defaultApps;
+
+  // Update closeApps when connectedApps changes
+  useEffect(() => {
+    const newCloseApps: Record<string, boolean> = {};
+    appsToShow.forEach(app => {
+      newCloseApps[app.id] = closeApps[app.id] || false;
+    });
+    setCloseApps(newCloseApps);
+  }, [appsToShow.length]); // Only depend on the length to avoid infinite loops
+
+  const handleAppToggle = (appId: string) => {
+    setCloseApps(prev => ({ ...prev, [appId]: !prev[appId] }));
   };
 
   const handleStartFocus = () => {
@@ -98,37 +125,37 @@ const FocusModeConfig = ({ isOpen, onClose, onStartFocus }: FocusModeConfigProps
           {/* Close Apps */}
           <div>
             <Label className="text-base font-medium mb-4 block text-text-secondary">Close Apps</Label>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-brand-600 border border-border-subtle">
-                <Slack className="h-8 w-8 text-purple-400" />
-                <span className="text-sm font-medium text-text-primary">Slack</span>
-                <Switch
-                  checked={closeApps.slack}
-                  onCheckedChange={() => handleAppToggle('slack')}
-                  className="data-[state=unchecked]:bg-gray-600"
-                />
+            {appsToShow.length > 0 ? (
+              <div className={`grid gap-4 ${
+                appsToShow.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' :
+                appsToShow.length === 2 ? 'grid-cols-2' :
+                appsToShow.length === 3 ? 'grid-cols-3' :
+                appsToShow.length === 4 ? 'grid-cols-2' :
+                'grid-cols-3'
+              }`}>
+                {appsToShow.map((app) => {
+                  const IconComponent = app.icon;
+                  return (
+                    <div
+                      key={app.id}
+                      className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-brand-600 border border-border-subtle"
+                    >
+                      <IconComponent className={`h-8 w-8 ${app.color}`} />
+                      <span className="text-sm font-medium text-text-primary">{app.name}</span>
+                      <Switch
+                        checked={closeApps[app.id] || false}
+                        onCheckedChange={() => handleAppToggle(app.id)}
+                        className="data-[state=unchecked]:bg-gray-600"
+                      />
+                    </div>
+                  );
+                })}
               </div>
-              
-              <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-brand-600 border border-border-subtle">
-                <Mail className="h-8 w-8 text-blue-400" />
-                <span className="text-sm font-medium text-text-primary">Gmail</span>
-                <Switch
-                  checked={closeApps.gmail}
-                  onCheckedChange={() => handleAppToggle('gmail')}
-                  className="data-[state=unchecked]:bg-gray-600"
-                />
+            ) : (
+              <div className="text-center py-8 text-text-secondary">
+                No apps available to close
               </div>
-
-              <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-brand-600 border border-border-subtle">
-                <Calendar className="h-8 w-8 text-green-400" />
-                <span className="text-sm font-medium text-text-primary">Calendar</span>
-                <Switch
-                  checked={closeApps.calendar}
-                  onCheckedChange={() => handleAppToggle('calendar')}
-                  className="data-[state=unchecked]:bg-gray-600"
-                />
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Slack Status */}

@@ -13,13 +13,18 @@ import StatusTimer from "@/components/dashboard/StatusTimer";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 
+import { Slack, Mail, Calendar, FileText, Users, MessageSquare } from "lucide-react";
+
+interface ConnectedApp {
+  id: string;
+  name: string;
+  icon: typeof Slack | typeof Mail | typeof Calendar | typeof FileText | typeof Users | typeof MessageSquare;
+  color: string;
+}
+
 interface FocusConfig {
   duration: number;
-  closeApps: {
-    slack: boolean;
-    gmail: boolean;
-    calendar: boolean;
-  };
+  closeApps: Record<string, boolean>;
   statusUpdates: {
     slack: string;
   };
@@ -38,6 +43,15 @@ const Dashboard = () => {
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
+
+  // Mock connected apps - in real app this would come from user's integrations
+  const connectedApps: ConnectedApp[] = [
+    { id: "slack", name: "Slack", icon: Slack, color: "text-purple-400" },
+    { id: "gmail", name: "Gmail", icon: Mail, color: "text-blue-400" },
+    { id: "calendar", name: "Calendar", icon: Calendar, color: "text-green-400" },
+    { id: "notion", name: "Notion", icon: FileText, color: "text-gray-400" },
+    { id: "jira", name: "Jira", icon: Users, color: "text-blue-500" },
+  ];
 
   const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
@@ -97,15 +111,20 @@ const Dashboard = () => {
     
     // Simulate closing apps and updating status
     const actionsText = [];
-    if (config.closeApps.slack) actionsText.push("Slack closed");
-    if (config.closeApps.gmail) actionsText.push("Gmail closed");
-    if (config.closeApps.calendar) actionsText.push("Calendar closed");
+    Object.entries(config.closeApps).forEach(([appId, shouldClose]) => {
+      if (shouldClose) {
+        const app = connectedApps.find(a => a.id === appId);
+        if (app) {
+          actionsText.push(`${app.name} closed`);
+        }
+      }
+    });
     
     toast({
       title: "Focus Mode Started",
       description: `${config.duration} minute focus session started. ${actionsText.length > 0 ? actionsText.join(', ') + '. ' : ''}Slack status updated.`
     });
-  }, [toast]);
+  }, [toast, connectedApps]);
   
   const handleStartFocusMode = useCallback(() => {
     console.log("Focus mode triggered - opening config modal");
@@ -174,6 +193,7 @@ const Dashboard = () => {
         isOpen={showFocusConfig}
         onClose={() => setShowFocusConfig(false)}
         onStartFocus={handleStartFocusModeWithConfig}
+        connectedApps={connectedApps}
       />
     </div>
   );
