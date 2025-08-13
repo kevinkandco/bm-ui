@@ -26,7 +26,6 @@ const AudioPlayer = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(312); // 5:12 in seconds
   const [volume, setVolume] = useState(80);
-  const [showVolume, setShowVolume] = useState(false);
   const [showTranscriptModal, setShowTranscriptModal] = useState(false);
 
   // Auto-play when briefId changes
@@ -229,43 +228,18 @@ const AudioPlayer = ({
           <FileText className="h-4 w-4" />
         </Button>
 
-        {/* Volume Control */}
-        <div className="relative flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowVolume(!showVolume)}
-            disabled={isDisabled}
-            className="h-8 w-8 p-0 hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Volume2 className="h-4 w-4" />
-          </Button>
-
-          {showVolume && (
-            <div 
-              className="absolute bottom-full mb-2 right-0 bg-surface-raised border border-border-subtle rounded-lg p-3 shadow-lg"
-              style={{ minHeight: '120px', width: '48px' }}
-            >
-              <div className="flex flex-col items-center h-full">
-                <span className="text-xs text-text-secondary mb-2">{volume}%</span>
-                <div className="flex-1 flex items-center justify-center">
-                  <Slider
-                    value={[volume]}
-                    max={100}
-                    step={1}
-                    onValueChange={handleVolumeChange}
-                    orientation="vertical"
-                    className="h-20 w-4"
-                  />
-                </div>
-                <div className="mt-2 flex flex-col gap-1">
-                  <div className="w-4 h-0.5 bg-text-secondary/20 rounded"></div>
-                  <div className="w-4 h-0.5 bg-text-secondary/20 rounded"></div>
-                  <div className="w-4 h-0.5 bg-text-secondary/20 rounded"></div>
-                </div>
-              </div>
-            </div>
-          )}
+        {/* Volume Control - Horizontal Slider */}
+        <div className="flex items-center gap-2 min-w-0">
+          <Volume2 className="h-4 w-4 text-text-secondary flex-shrink-0" />
+          <div className="w-20 flex items-center">
+            <Slider
+              value={[volume]}
+              max={100}
+              step={1}
+              onValueChange={handleVolumeChange}
+              className="flex-1"
+            />
+          </div>
         </div>
 
         {/* Podcast Feed */}
