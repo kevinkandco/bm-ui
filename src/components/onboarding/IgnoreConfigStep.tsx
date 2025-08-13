@@ -154,7 +154,7 @@ const IgnoreConfigStep = ({ onNext, onBack, updateUserData, userData }: IgnoreCo
 
   return (
     <div className="space-y-8">
-      <ProgressIndicator currentStep={5} totalSteps={7} />
+      <ProgressIndicator currentStep={8} totalSteps={10} />
       
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold text-off-white tracking-tighter">Configure what to ignore</h2>
