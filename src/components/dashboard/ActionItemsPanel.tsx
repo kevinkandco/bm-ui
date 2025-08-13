@@ -455,7 +455,7 @@ const ActionItemsPanel = ({
     };
 
     return (
-      <div className={cn("h-full flex flex-col shadow-2xl rounded-l-xl", className)}>
+      <div className={cn("h-full flex flex-col", className)}>
         {/* Header */}
         <div className="p-4 pb-3 mt-[30px]">
           <div className="flex items-center justify-between">

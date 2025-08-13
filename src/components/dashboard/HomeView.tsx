@@ -2195,22 +2195,42 @@ That's your brief for this morning. I've organized your follow-ups in priority o
           </div>
         </div>
 
-        {/* Right Panel - Only show when there's content */}
-        {!rightPanelCollapsed && (selectedMessage || selectedTranscript || selectedFollowUp) ? <div className="w-80 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-2xl rounded-l-xl">
-            <div className="flex-1 overflow-hidden">
-              <ActionItemsPanel onToggleCollapse={() => setRightPanelCollapsed(true)} selectedMessage={selectedMessage} onCloseMessage={() => {
-            setSelectedMessage(null);
-            setRightPanelCollapsed(true);
-          }} selectedTranscript={selectedTranscript} onCloseTranscript={() => {
-            setSelectedTranscript(null);
-            setPlayingBrief(null);
-            setRightPanelCollapsed(true);
-          }} selectedFollowUp={selectedFollowUp} onCloseFollowUp={() => {
-            setSelectedFollowUp(null);
-            setRightPanelCollapsed(true);
-          }} />
+
+        {/* Right Panel - Fixed Overlay */}
+        {!rightPanelCollapsed && (selectedMessage || selectedTranscript || selectedFollowUp) && (
+          <>
+            {/* Backdrop Overlay */}
+            <div 
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              onClick={() => setRightPanelCollapsed(true)}
+            />
+            
+            {/* Right Panel - Fixed positioned at right edge */}
+            <div className="fixed top-0 right-0 w-80 h-screen bg-surface/95 backdrop-blur-sm flex flex-col shadow-2xl z-50 transition-transform duration-300 ease-out">
+              <div className="flex-1 overflow-hidden">
+                <ActionItemsPanel 
+                  onToggleCollapse={() => setRightPanelCollapsed(true)} 
+                  selectedMessage={selectedMessage} 
+                  onCloseMessage={() => {
+                    setSelectedMessage(null);
+                    setRightPanelCollapsed(true);
+                  }} 
+                  selectedTranscript={selectedTranscript} 
+                  onCloseTranscript={() => {
+                    setSelectedTranscript(null);
+                    setPlayingBrief(null);
+                    setRightPanelCollapsed(true);
+                  }} 
+                  selectedFollowUp={selectedFollowUp} 
+                  onCloseFollowUp={() => {
+                    setSelectedFollowUp(null);
+                    setRightPanelCollapsed(true);
+                  }} 
+                />
+              </div>
             </div>
-          </div> : null}
+          </>
+        )}
       </div>
 
       {/* Fixed Audio Player */}
