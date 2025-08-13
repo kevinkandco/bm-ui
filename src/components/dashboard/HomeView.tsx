@@ -2205,8 +2205,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
               onClick={() => setRightPanelCollapsed(true)}
             />
             
-            {/* Right Panel - Fixed positioned at right edge */}
-            <div className="fixed top-0 right-0 w-80 h-screen bg-surface/95 backdrop-blur-sm flex flex-col shadow-2xl z-50 transition-transform duration-300 ease-out">
+            {/* Right Panel - Fixed positioned within content area */}
+            <div className="fixed top-[88px] right-0 w-80 h-[calc(100vh-88px)] bg-surface/95 backdrop-blur-sm flex flex-col shadow-2xl rounded-l-xl z-50 transition-transform duration-300 ease-out">
               <div className="flex-1 overflow-hidden">
                 <ActionItemsPanel 
                   onToggleCollapse={() => setRightPanelCollapsed(true)} 
