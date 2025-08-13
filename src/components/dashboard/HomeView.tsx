@@ -38,6 +38,7 @@ import MobileBottomNav from "./MobileBottomNav";
 import MobileStatusModal from "./MobileStatusModal";
 import BriefDrawer from "./BriefDrawer";
 import CalendarPage from "../../pages/CalendarPage";
+import FocusTimer from "./FocusTimer";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -68,6 +69,7 @@ interface HomeViewProps {
   onSignOffForDay: () => void;
   userStatus?: "active" | "away" | "focus" | "vacation";
   focusConfig?: any;
+  focusStartTime?: number | null;
   onStatusChange?: (status: "active" | "away" | "focus" | "vacation") => void;
   onExitFocusMode?: () => void;
   onSignBackOn?: () => void;
@@ -81,6 +83,8 @@ const HomeView = ({
   onStartFocusMode,
   onSignOffForDay,
   userStatus = "active",
+  focusConfig,
+  focusStartTime,
   onStatusChange,
   onExitFocusMode,
   onSignBackOn
@@ -346,7 +350,7 @@ const HomeView = ({
       case 'away':
         return "Get Catch-Up Brief";
       case 'focus':
-        return "Get Brief Anyway";
+        return "End Focus Mode";
       case 'vacation':
         return "Preview OOO Brief";
       default:
@@ -965,34 +969,44 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             {/* Left: Brief Me Logo and Status */}
             <div className="flex items-center gap-3">
               <img src="/lovable-uploads/e61a999f-f42f-4283-b55a-696ceeb36413.png" alt="Brief Me" className="h-8 w-auto" />
-              {/* Status Indicator with Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors">
-                    <div className={`w-2 h-2 rounded-full ${userStatus === "active" ? "bg-green-500" : userStatus === "away" ? "bg-yellow-500" : userStatus === "focus" ? "bg-blue-500" : userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"}`} />
-                    <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
-                    <ChevronDown className="w-3 h-3 text-text-secondary" />
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuItem onClick={() => onStatusChange?.("active")} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                    Active
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onStatusChange?.("away")} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                    Away
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onStartFocusMode()} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    Focus
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onStatusChange?.("vacation")} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-gray-500" />
-                    Vacation
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {/* Status Indicator with Dropdown and Timer */}
+              <div className="flex items-center gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors">
+                      <div className={`w-2 h-2 rounded-full ${userStatus === "active" ? "bg-green-500" : userStatus === "away" ? "bg-yellow-500" : userStatus === "focus" ? "bg-blue-500" : userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"}`} />
+                      <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
+                      <ChevronDown className="w-3 h-3 text-text-secondary" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem onClick={() => onStatusChange?.("active")} className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500" />
+                      Active
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onStatusChange?.("away")} className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                      Away
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onStartFocusMode()} className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      Focus
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onStatusChange?.("vacation")} className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-gray-500" />
+                      Vacation
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
+                {/* Focus Mode Timer */}
+                {userStatus === "focus" && focusConfig && focusStartTime && (
+                  <FocusTimer
+                    startTime={focusStartTime}
+                    duration={focusConfig.duration}
+                  />
+                )}
+              </div>
             </div>
 
             {/* Center: Status Message */}
@@ -1090,8 +1104,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 </Popover>
               </div>
 
-              {/* Get Brief Button */}
-              <Button onClick={onToggleCatchMeUp} className="bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2">
+              {/* Get Brief Button / End Focus Mode Button */}
+              <Button 
+                onClick={userStatus === "focus" ? onExitFocusMode : onToggleCatchMeUp} 
+                className={userStatus === "focus" 
+                  ? "bg-transparent border border-border-subtle text-text-primary hover:bg-surface-raised px-4 py-2" 
+                  : "bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2"
+                }
+              >
                 <Zap className="mr-2 h-4 w-4" />
                 {getBriefButtonLabel(userStatus)}
               </Button>

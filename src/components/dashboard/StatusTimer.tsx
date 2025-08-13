@@ -98,26 +98,8 @@ const StatusTimer = React.memo(({
   const renderContent = () => {
     switch (status) {
       case "focus":
-        return <div className="w-full bg-transparent py-4 px-6">
-            <div className="flex items-center justify-between max-w-7xl mx-auto">
-              <div className="flex items-center gap-3">
-                <div className="bg-accent-primary/20 text-accent-primary p-2 rounded-full">
-                  <Headphones className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-text-primary font-medium text-lg">Focus Mode</h3>
-                  <p className="text-text-secondary text-sm">{focusTimeRemaining} remaining</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <Button onClick={onExitFocusMode} variant="outline" size="default" className="bg-transparent border-border-subtle text-text-primary hover:bg-surface-raised rounded-full px-6">
-                  <X className="h-4 w-4 mr-2" /> 
-                  End focus mode
-                </Button>
-              </div>
-            </div>
-          </div>;
+        // Focus mode UI is now handled inline in the header
+        return null;
       case "away":
         return <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
             <div className="flex items-center">
@@ -187,9 +169,9 @@ const StatusTimer = React.memo(({
     }
   };
 
-  // Only show status timer for non-focus states, or show focus mode header for focus state
+  // Only show status timer for non-focus states
   if (status === "focus") {
-    return renderContent();
+    return null;
   }
   return <div className="py-2 px-3 sm:py-4 sm:px-6 border-b border-border-subtle">
       {renderContent()}

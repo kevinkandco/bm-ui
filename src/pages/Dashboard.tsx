@@ -3,6 +3,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
@@ -43,6 +45,8 @@ const Dashboard = () => {
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
+  const [showCatchUpModal, setShowCatchUpModal] = useState(false);
+  const [focusStartTime, setFocusStartTime] = useState<number | null>(null);
 
   // Mock connected apps - in real app this would come from user's integrations
   const connectedApps: ConnectedApp[] = [
@@ -82,8 +86,17 @@ const Dashboard = () => {
   }, [toast, userStatus]);
 
   const handleExitFocusMode = useCallback(() => {
-    setShowEndFocusModal(true);
-  }, []);
+    // Start generating brief and show catch-up modal
+    setUserStatus("active");
+    setFocusConfig(null);
+    setFocusStartTime(null);
+    setShowCatchUpModal(true);
+    
+    toast({
+      title: "Focus Mode Ended",
+      description: "Generating your catch-up brief..."
+    });
+  }, [toast]);
 
   const handleConfirmExitFocus = useCallback(() => {
     setUserStatus("active");
@@ -110,6 +123,7 @@ const Dashboard = () => {
   const handleStartFocusModeWithConfig = useCallback((config: FocusConfig) => {
     setFocusConfig(config);
     setUserStatus("focus");
+    setFocusStartTime(Date.now());
     
     // Simulate closing apps and updating status
     const actionsText = [];
@@ -154,6 +168,16 @@ const Dashboard = () => {
     console.log("Generating new brief...");
   }, []);
 
+  const handleGenerateCatchUpBrief = useCallback((timeDescription: string) => {
+    setShowCatchUpModal(false);
+    console.log("Generating catch-up brief for:", timeDescription);
+    
+    toast({
+      title: "Brief Generated",
+      description: "Your catch-up brief has been created successfully"
+    });
+  }, [toast]);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Main Content */}
@@ -169,6 +193,7 @@ const Dashboard = () => {
             onSignOffForDay={handleSignOffForDay}
             userStatus={userStatus}
             focusConfig={focusConfig}
+            focusStartTime={focusStartTime}
             onStatusChange={setUserStatus}
             onExitFocusMode={handleExitFocusMode}
             onSignBackOn={handleSignBackOn}
@@ -197,6 +222,26 @@ const Dashboard = () => {
         onStartFocus={handleStartFocusModeWithConfig}
         connectedApps={connectedApps}
       />
+      
+      {/* Import and add the CatchMeUp modal */}
+      <Dialog open={showCatchUpModal} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Generate Catch-Up Brief</DialogTitle>
+            <DialogDescription>
+              You've exited focus mode. Generate a brief to catch up on what you missed.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Button onClick={() => handleGenerateCatchUpBrief("focus session")} className="w-full">
+              Generate Catch-Up Brief
+            </Button>
+            <Button variant="outline" onClick={() => setShowCatchUpModal(false)} className="w-full">
+              Skip for Now
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
