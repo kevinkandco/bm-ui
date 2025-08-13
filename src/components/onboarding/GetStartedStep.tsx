@@ -3,6 +3,8 @@ import ProgressIndicator from "./ProgressIndicator";
 import { Download, Smartphone, ChevronsRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
+import { useState } from "react";
+import AddToHomeScreenModal from "./AddToHomeScreenModal";
 interface GetStartedStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -20,9 +22,8 @@ const GetStartedStep = ({
   onBack,
   userData
 }: GetStartedStepProps) => {
-  const {
-    theme
-  } = useTheme();
+  const { theme } = useTheme();
+  const [isHomeScreenModalOpen, setIsHomeScreenModalOpen] = useState(false);
 
   // Format time string to readable format (e.g., "09:00" to "9:00 AM")
   const formatTimeString = (timeStr: string) => {
@@ -101,7 +102,7 @@ const GetStartedStep = ({
   const cardBgClass = 'bg-black/40 border-white/10';
   const dividerClass = 'divide-white/10';
   return <div className="space-y-4 sm:space-y-6">
-      <ProgressIndicator currentStep={8} totalSteps={8} />
+      <ProgressIndicator currentStep={10} totalSteps={10} />
       
       {/* Visual element with reduced height */}
       <div className="relative h-12 sm:h-16 w-full flex items-center justify-center overflow-hidden mb-0 sm:mb-2">
@@ -160,7 +161,14 @@ const GetStartedStep = ({
                 </div>
               </div>
               <div className="border-t border-white/10"></div>
-              <p className="text-[10px] sm:text-xs text-text-secondary">Add Brief Me to your iOS or Android home screen for quick access</p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setIsHomeScreenModalOpen(true)}
+                className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto self-start"
+              >
+                Add to Home Screen
+              </Button>
             </div>
           </div>
           
@@ -178,6 +186,11 @@ const GetStartedStep = ({
           Go to Dashboard <ChevronsRight className="ml-1" size={16} />
         </Button>
       </div>
+
+      <AddToHomeScreenModal 
+        isOpen={isHomeScreenModalOpen} 
+        onClose={() => setIsHomeScreenModalOpen(false)} 
+      />
     </div>;
 };
 export default GetStartedStep;
