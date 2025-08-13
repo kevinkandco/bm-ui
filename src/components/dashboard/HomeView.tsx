@@ -1044,8 +1044,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       {/* Three-Column Layout */}
       <div className="flex-1 pb-20 flex">
         {/* Left Panel */}
-        {!leftPanelCollapsed ? <div className="w-64 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
-            <div className="h-full flex flex-col">
+        {!leftPanelCollapsed ? <div className="left-nav w-64 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm" style={{ paddingBottom: 'calc(var(--player-height) + 16px)' }}>
+            <div className="flex flex-col flex-1">
               {/* Header with collapse button */}
               <div className="px-6">
                 <div className="flex items-center justify-between mt-6 mb-4 flex ">
@@ -1083,31 +1083,25 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                  </div>
                </div>
                
-               {/* Spacer to push indicators to bottom */}
-               <div className="flex-1"></div>
-               
-               {/* Bottom Indicators - Always visible above audio player */}
-               <div className="mb-4 px-6">
-                 <div className="border-t border-border-subtle mb-4"></div>
-                 <div className="flex items-center gap-2 flex-wrap">
-                   <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                     <span>#</span>
-                     <span>4</span>
-                   </div>
-                   <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                     <span>G</span>
-                     <span>2</span>
-                   </div>
-                   <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
-                     <Calendar className="h-3.5 w-3.5" />
-                   </div>
+               {/* Quick Actions - pushed to bottom */}
+               <div className="nav-quick-actions px-6" style={{ marginTop: 'auto', display: 'flex', gap: '8px' }}>
+                 <div className="flex items-center gap-1.5 bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                   <span>#</span>
+                   <span>4</span>
+                 </div>
+                 <div className="flex items-center gap-1.5 bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                   <span>G</span>
+                   <span>2</span>
+                 </div>
+                 <div className="flex items-center bg-gray-500/20 text-gray-300 px-2 py-1 rounded-full">
+                   <Calendar className="h-3.5 w-3.5" />
                  </div>
                </div>
                </div>
           </div> : (/* Collapsed Left Panel */
-      <div className="w-12 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm">
+      <div className="left-nav w-12 h-full bg-surface/50 backdrop-blur-sm flex flex-col shadow-sm" style={{ paddingBottom: 'calc(var(--player-height) + 16px)' }}>
             <TooltipProvider>
-              <div className="p-2 flex flex-col items-center mt-[30px] space-y-3">
+              <div className="p-2 flex flex-col items-center mt-[30px] space-y-3 flex-1">
                 {/* Open/Close Panel Button */}
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -1168,23 +1162,17 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </TooltipContent>
                  </Tooltip>
                </div>
-               
-               {/* Spacer to push indicators to bottom */}
-               <div className="flex-1"></div>
 
-               {/* Bottom Indicators - Collapsed view */}
-               <div className="mb-4 px-2">
-                 <div className="border-t border-border-subtle mb-4"></div>
-                 <div className="flex flex-col items-center gap-2">
-                   <div className="flex items-center justify-center bg-purple-500/20 text-purple-300 w-7 h-5 rounded-full text-xs font-medium">
-                     4
-                   </div>
-                   <div className="flex items-center justify-center bg-blue-500/20 text-blue-300 w-7 h-5 rounded-full text-xs font-medium">
-                     2
-                   </div>
-                   <div className="flex items-center justify-center bg-gray-500/20 text-gray-300 w-7 h-5 rounded-full">
-                     <Calendar className="h-3 w-3" />
-                   </div>
+               {/* Quick Actions - Collapsed view */}
+               <div className="nav-quick-actions px-2" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                 <div className="flex items-center justify-center bg-purple-500/20 text-purple-300 w-7 h-5 rounded-full text-xs font-medium">
+                   4
+                 </div>
+                 <div className="flex items-center justify-center bg-blue-500/20 text-blue-300 w-7 h-5 rounded-full text-xs font-medium">
+                   2
+                 </div>
+                 <div className="flex items-center justify-center bg-gray-500/20 text-gray-300 w-7 h-5 rounded-full">
+                   <Calendar className="h-3 w-3" />
                  </div>
                </div>
              </TooltipProvider>
