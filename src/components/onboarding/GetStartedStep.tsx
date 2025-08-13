@@ -159,8 +159,9 @@ const GetStartedStep = ({
               <div className="flex items-center gap-2">
                 <Smartphone className="h-5 sm:h-6 w-5 sm:w-6 text-accent-primary" />
                 <div>
-                  <span className="text-xs sm:text-sm text-text-primary">Mobile App</span>
+                  <span className="text-xs sm:text-sm text-text-primary">Mobile App (Coming soon)</span>
                   <p className="text-[10px] sm:text-xs text-text-secondary">Listen to briefs on the go</p>
+                  <p className="text-[10px] sm:text-xs text-text-secondary">Add Brief Me to your iOS or Android home screen for quick access.</p>
                 </div>
               </div>
               <div className="flex gap-1 sm:gap-2">
