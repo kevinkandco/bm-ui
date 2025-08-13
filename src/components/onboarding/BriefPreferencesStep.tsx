@@ -259,7 +259,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                     ...prev, 
                     deliveryMethod: e.target.value as "email" | "audio" | "both" 
                   }))}
-                  className="w-full px-3 py-2 text-sm rounded-lg bg-brand-700/30 border border-border-subtle text-text-primary"
+                  className="w-full px-3 py-2 text-sm rounded-lg bg-white/15 border-white/20 text-off-white"
                 >
                   <option value="email">Email</option>
                   <option value="audio">Audio</option>
@@ -272,7 +272,7 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
                   type="time"
                   value={weekendBrief.deliveryTime}
                   onChange={(e) => setWeekendBrief(prev => ({ ...prev, deliveryTime: e.target.value }))}
-                  className="bg-brand-700/30 border-border-subtle text-text-primary h-9 text-sm"
+                  className="bg-white/15 border-white/20 text-off-white h-9 text-sm rounded-lg [color-scheme:dark]"
                 />
               </div>
             </div>
