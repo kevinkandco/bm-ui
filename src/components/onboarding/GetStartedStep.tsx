@@ -145,18 +145,22 @@ const GetStartedStep = ({
               </Button>
             </div>
             
-            <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
-              <div className="flex items-center gap-2">
-                <Smartphone className="h-5 sm:h-6 w-5 sm:w-6 text-accent-primary" />
-                <div>
-                  <span className="text-xs sm:text-sm text-text-primary">Mobile App</span>
-                  <p className="text-[10px] sm:text-xs text-text-secondary">Listen to briefs on the go</p>
+            <div className="px-3 sm:px-4 py-2 sm:py-3 space-y-3 sm:space-y-4">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <Smartphone className="h-5 sm:h-6 w-5 sm:w-6 text-accent-primary" />
+                  <div>
+                    <span className="text-xs sm:text-sm text-text-primary">Mobile App (Coming soon)</span>
+                    <p className="text-[10px] sm:text-xs text-text-secondary">Listen to briefs on the go</p>
+                  </div>
+                </div>
+                <div className="flex gap-1 sm:gap-2">
+                  <Button variant="outline" size="sm" className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">iOS</Button>
+                  <Button variant="outline" size="sm" className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">Android</Button>
                 </div>
               </div>
-              <div className="flex gap-1 sm:gap-2">
-                <Button variant="outline" size="sm" className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">iOS</Button>
-                <Button variant="outline" size="sm" className="text-[10px] sm:text-xs px-2 sm:px-3 py-1 h-auto">Android</Button>
-              </div>
+              <div className="border-t border-white/10"></div>
+              <p className="text-[10px] sm:text-xs text-text-secondary">Add Brief Me to your iOS or Android home screen for quick access</p>
             </div>
           </div>
           
