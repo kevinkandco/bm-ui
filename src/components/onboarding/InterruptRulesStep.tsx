@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import ProgressIndicator from "./ProgressIndicator";
 
 interface InterruptRulesStepProps {
   onNext: () => void;
@@ -189,6 +190,8 @@ const InterruptRulesStep: React.FC<InterruptRulesStepProps> = ({
 
   return (
     <div className="space-y-6">
+      <ProgressIndicator currentStep={7} totalSteps={9} />
+      
       <div className="text-center space-y-3">
         <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mx-auto">
           <Shield className="h-6 w-6 text-red-400" />
