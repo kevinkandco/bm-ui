@@ -166,71 +166,69 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
           </div>
 
           {/* Schedule Time */}
+          <div className="space-y-3">
+            <Label className="text-text-primary text-sm">Schedule</Label>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { time: "morning" as const, icon: Sun, label: "Morning", value: "8AM" },
+                { time: "midday" as const, icon: Coffee, label: "Midday", value: "12PM" },
+                { time: "evening" as const, icon: Moon, label: "Evening", value: "5PM" },
+                { time: "custom" as const, icon: Clock, label: "Custom", value: "" }
+              ].map(({ time, icon: Icon, label, value }) => (
+                <button
+                  key={time}
+                  onClick={() => handleScheduleChange(time)}
+                  className={cn(
+                    "flex flex-col items-center gap-1 p-2 rounded border transition-all text-xs",
+                    brief.scheduleTime === time
+                      ? 'border-accent-primary bg-accent-primary/10 text-accent-primary'
+                      : 'border-border-subtle bg-brand-700/50 text-text-secondary hover:bg-brand-600/50'
+                  )}
+                >
+                  <Icon size={14} />
+                  <span className="font-medium">{label}</span>
+                  {value && <span className="text-xs opacity-60">{value}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Time and Days in a row */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-text-primary text-sm">Schedule</Label>
-              <div className="grid grid-cols-2 gap-1">
-                {[
-                  { time: "morning" as const, icon: Sun, label: "Morning", value: "8AM" },
-                  { time: "midday" as const, icon: Coffee, label: "Midday", value: "12PM" },
-                  { time: "evening" as const, icon: Moon, label: "Evening", value: "5PM" },
-                  { time: "custom" as const, icon: Clock, label: "Custom", value: "" }
-                ].map(({ time, icon: Icon, label, value }) => (
-                  <button
-                    key={time}
-                    onClick={() => handleScheduleChange(time)}
-                    className={cn(
-                      "flex flex-col items-center gap-1 p-2 rounded border transition-all text-xs",
-                      brief.scheduleTime === time
-                        ? 'border-accent-primary bg-accent-primary/10 text-accent-primary'
-                        : 'border-border-subtle bg-brand-700/50 text-text-secondary hover:bg-brand-600/50'
-                    )}
-                  >
-                    <Icon size={14} />
-                    <span className="font-medium">{label}</span>
-                    {value && <span className="text-xs opacity-60">{value}</span>}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-text-primary text-sm">
-                {brief.scheduleTime === "custom" ? "Custom time" : "Time"}
-              </Label>
+              <Label className="text-text-primary text-sm">Time</Label>
               <Input
                 type="time"
                 value={brief.briefTime}
                 onChange={(e) => updateBrief({ briefTime: e.target.value, scheduleTime: "custom" })}
                 className="bg-brand-700/50 border-border-subtle text-text-primary h-10"
               />
-              
-              {/* Days */}
-              <div className="space-y-1">
-                <Label className="text-text-primary text-xs">Days</Label>
-                <div className="flex gap-1">
-                  {WEEKDAYS.map(day => {
-                    const isSelected = brief.days.includes({
-                      "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", 
-                      "Thu": "Thursday", "Fri": "Friday"
-                    }[day]);
-                    
-                    return (
-                      <button
-                        key={day}
-                        onClick={() => toggleDay(day)}
-                        className={cn(
-                          "px-2 py-1 rounded text-xs font-medium transition-colors",
-                          isSelected
-                            ? "bg-accent-primary text-brand-900"
-                            : "bg-brand-700/50 text-text-secondary border border-border-subtle hover:bg-brand-600/50"
-                        )}
-                      >
-                        {day}
-                      </button>
-                    );
-                  })}
-                </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-text-primary text-sm">Days</Label>
+              <div className="flex gap-1">
+                {WEEKDAYS.map(day => {
+                  const isSelected = brief.days.includes({
+                    "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", 
+                    "Thu": "Thursday", "Fri": "Friday"
+                  }[day]);
+                  
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => toggleDay(day)}
+                      className={cn(
+                        "px-2 py-1 rounded text-xs font-medium transition-colors flex-1",
+                        isSelected
+                          ? "bg-accent-primary text-brand-900"
+                          : "bg-brand-700/50 text-text-secondary border border-border-subtle hover:bg-brand-600/50"
+                      )}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
