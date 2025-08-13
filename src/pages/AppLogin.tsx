@@ -56,7 +56,8 @@ useEffect(() => {
     let token = localStorage.getItem("token");
     console.log(token);
     
-     window.location.href = `briefme://auth?token=${token}`;
+     window.location.href = `electron-fiddle://auth?access_token=${token}`;
+
   }
 
   return (

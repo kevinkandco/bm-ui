@@ -1,105 +1,64 @@
-const { app, BrowserWindow, ipcMain, shell } = require("electron"); // Added shell
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
-const { Deeplink } = require('electron-deeplink');
-const isDev = require('electron-is-dev');
 
 let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 800,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
-      nodeIntegration: false,
-      contextIsolation: true,
+      nodeIntegration: true,  // allow require in renderer
+    contextIsolation: false // disable isolation
     }
   });
-
-  // First load your app's loading screen
-  const htmlPath = path.join(__dirname, "..", "loading.html");
-  mainWindow.loadFile(htmlPath);
-
-  mainWindow.webContents.openDevTools();
-
-  // Then check auth status
-  checkAuthStatus();
-
-  const protocol = isDev ? 'briefme' : 'prod-app';
-  const deeplink = new Deeplink({ app, mainWindow, protocol, isDev });
-
-
-  deeplink.on("received", (link) => {
-    console.log(link, "token");
-    
-    // do stuff here
-  });
-  
+  mainWindow.loadFile(path.join(__dirname, '..' , "appLogin.html"));
 }
 
+if (!app.isDefaultProtocolClient("electron-fiddle")) {
+  app.setAsDefaultProtocolClient("electron-fiddle");
+}
 
-function checkAuthStatus() {
-  if (hasValidToken()) {
-    mainWindow.loadURL("http://localhost:8080/app-login?appLogin=true");
-  } else {
-    const htmlPath = path.join(__dirname, "..", "appLogin.html");
-    mainWindow.loadFile(htmlPath);
+// Deep link handler
+function handleDeepLink(argv) {
+  const deepLink = argv.find(arg => arg.startsWith("electron-fiddle://"));
+  if (!deepLink) return;
+
+  try {
+    const urlObj = new URL(deepLink);
+    const token = urlObj.searchParams.get("access_token");
+    console.log("✅ Received token:", token);
+
+    if (mainWindow) {
+      mainWindow.webContents.send("auth-success", token);
+    }
+  } catch (err) {
+    console.error("❌ Invalid deep link:", err);
   }
 }
 
-function hasValidToken(isValid = false) {
-  return isValid;
+// Prevent multiple instances (needed for second-instance to work)
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+  process.exit(0);
 }
 
-
-ipcMain.on('redirect-to-web-login', () => {
-  hasValidToken(true)
-  shell.openExternal(`http://localhost:8080/app-login?appLogin=${true}`); 
-});
-  
-
-ipcMain.on('open-external', (event, url) => {
-  shell.openExternal(url);
-});
-
-if (!app.isDefaultProtocolClient('briefme')) {
-  app.setAsDefaultProtocolClient('briefme');
-}
-
+// First instance — app startup
 app.whenReady().then(() => {
   createWindow();
+  console.log("🚀 Startup args:", process.argv);
+  handleDeepLink(process.argv);
 });
 
-
-// macOS deep link handler
-app.on("open-url", (event, url) => {
-  event.preventDefault();
-  if (mainWindow) {
-    mainWindow.webContents.send("deeplink-received", url);
-  }
-});
-
-// Windows/Linux deep link handler
+// Second instance — app already running
 app.on("second-instance", (event, argv) => {
-  const deepLink = argv.find((arg) => arg.startsWith("briefme://"));
-  if (deepLink && mainWindow) {
-    mainWindow.webContents.send("deeplink-received", deepLink);
+  console.log("🔄 Second instance args:", argv);
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
   }
+  handleDeepLink(argv);
 });
 
-// For Windows/Linux: prevent multiple app instances
-const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-  app.quit();
-} else {
-  app.on("second-instance", (event, argv) => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-    }
-    const deepLink = argv.find((arg) => arg.startsWith("briefme://"));
-    if (deepLink) {
-      mainWindow.webContents.send("deeplink-received", deepLink);
-    }
-  });
-}
+module.exports = { createWindow };

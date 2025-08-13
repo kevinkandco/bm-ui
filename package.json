@@ -5,6 +5,12 @@
   "type": "module",
   "main": "electron/main.cjs",
   "description": "A cross-platform desktop app built with Electron, React, and Vite.",
+  "protocols": [
+    {
+      "name": "Electron Fiddle Protocol",
+      "schemes": ["electron-fiddle"]
+    }
+  ],
   "scripts": {
     "dev": "vite",
     "electron": "electron --no-sandbox electron/main.cjs",
