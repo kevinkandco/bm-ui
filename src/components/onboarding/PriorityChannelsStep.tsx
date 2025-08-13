@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import ProgressIndicator from "./ProgressIndicator";
 import { MessageSquare } from "lucide-react";
 import { PriorityChannelsStepProps } from "./priority-channels/types";
@@ -20,6 +21,7 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   } = usePriorityChannelsState(userData.priorityChannels || []);
   
   const [searchQuery, setSearchQuery] = useState("");
+  const [allChannelsJoined, setAllChannelsJoined] = useState(userData.allChannelsJoined || false);
   
   // Memoize filtered channels to prevent unnecessary recalculation
   const filteredChannels = useMemo(() => 
@@ -35,9 +37,12 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
   );
   
   const handleContinue = useCallback(() => {
-    updateUserData({ priorityChannels });
+    updateUserData({ 
+      priorityChannels,
+      allChannelsJoined 
+    });
     onNext();
-  }, [priorityChannels, updateUserData, onNext]);
+  }, [priorityChannels, allChannelsJoined, updateUserData, onNext]);
 
   return (
     <div className="space-y-6">
@@ -65,6 +70,22 @@ const PriorityChannelsStep = ({ onNext, onBack, updateUserData, userData }: Prio
             channels={priorityChannels} 
             onRemoveChannel={removeChannel} 
           />
+        </div>
+        
+        {/* All channels toggle */}
+        <div className="flex items-center space-x-3 p-4 rounded-lg bg-brand-600/50 border border-border-subtle">
+          <Checkbox 
+            id="all-channels"
+            checked={allChannelsJoined}
+            onCheckedChange={(checked) => setAllChannelsJoined(!!checked)}
+            className="border-border-subtle data-[state=checked]:bg-accent-primary data-[state=checked]:border-accent-primary"
+          />
+          <Label 
+            htmlFor="all-channels" 
+            className="text-text-primary font-medium cursor-pointer"
+          >
+            All channels I've joined
+          </Label>
         </div>
         
         {/* Slack channels section */}
