@@ -1801,7 +1801,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <div className="flex items-center justify-between flex-1 min-w-0">
                                   <div className="flex items-center gap-2 min-w-0">
                                     <h3 className="text-white-text truncate font-semibold text-base">
-                                      Combined Catch Up Brief
+                                      Combined Catch Up Briefs
                                     </h3>
                                     {playingBrief === recentBriefs[0]?.id && (
                                       <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary border-accent-primary/40 text-xs px-2 py-0.5 font-medium">
@@ -1855,7 +1855,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 <div className="flex items-center justify-between flex-1 min-w-0">
                                   <div className="flex items-center gap-2 min-w-0">
                                     <h3 className="text-white-text truncate font-semibold text-base">
-                                      Daily Combined Brief
+                                      Daily Combined Briefs
                                     </h3>
                                   </div>
                                   
@@ -1890,8 +1890,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => setShowUpcomingBriefs(!showUpcomingBriefs)}>
                                 <div className="flex items-center gap-3">
                                   <h4 className="text-base font-medium text-text-primary">Upcoming</h4>
-                                  {upcomingBriefs.length > 0 && !showUpcomingBriefs && <span className="text-sm text-text-secondary">
-                                      Daily Brief • Tomorrow at 7:30 AM
+                                  {upcomingBrief && !showUpcomingBriefs && <span className="text-sm text-text-secondary">
+                                      {upcomingBrief?.title} • {upcomingBrief?.time}
                                     </span>}
                                 </div>
                                 <ChevronDown className={`w-5 h-5 text-text-secondary transition-transform ${showUpcomingBriefs ? 'rotate-180' : ''}`} />
@@ -1921,7 +1921,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                         <div className="flex items-center justify-between flex-1 min-w-0">
                                           <div className="flex items-center gap-2 min-w-0">
                                             <h3 className="text-white-text/70 truncate font-semibold text-base">
-                                              Daily Brief
+                                              {upcomingBrief?.title}
                                             </h3>
                                           </div>
                                           
@@ -1942,7 +1942,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                       {/* Meta Row: Scheduled text */}
                                       <div className="flex items-center justify-between pl-14">
                                         <p className="text-xs text-light-gray-text/70 font-light">
-                                          Scheduled for Tomorrow at 7:30 AM
+                                          Scheduled for {upcomingBrief?.time}
                                         </p>
                                       </div>
                                     </div>
