@@ -1,23 +1,14 @@
-
 import React, { useState } from "react";
 import { Zap, ChevronDown, Calendar, ExternalLink, Settings, X, CheckCircle, AlertCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import BriefMeModal from "./BriefMeModal";
 import { useToast } from "@/hooks/use-toast";
-
 interface Integration {
   name: string;
   count: number;
   isConnected?: boolean;
 }
-
 interface MenuBarIconProps {
   onToggleMenu: () => void;
   onStatusChange: (status: "active" | "away" | "focus" | "vacation") => void;
@@ -30,10 +21,9 @@ interface MenuBarIconProps {
   onSignBackOn?: () => void;
   integrations?: Integration[];
 }
-
-const MenuBarIcon = ({ 
-  onToggleMenu, 
-  onStatusChange, 
+const MenuBarIcon = ({
+  onToggleMenu,
+  onStatusChange,
   currentStatus,
   isMenuOpen = false,
   onGetBriefedNow,
@@ -41,35 +31,52 @@ const MenuBarIcon = ({
   onOpenDashboard,
   onExitFocusMode,
   onSignBackOn,
-  integrations = [
-    { name: "Slack", count: 12, isConnected: true },
-    { name: "Mail", count: 5, isConnected: false },
-    { name: "Actions", count: 4, isConnected: false }
-  ]
+  integrations = [{
+    name: "Slack",
+    count: 12,
+    isConnected: true
+  }, {
+    name: "Mail",
+    count: 5,
+    isConnected: false
+  }, {
+    name: "Actions",
+    count: 4,
+    isConnected: false
+  }]
 }: MenuBarIconProps) => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [showBriefMeModal, setShowBriefMeModal] = useState(false);
-
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-500";
-      case "away": return "bg-yellow-500";
-      case "focus": return "bg-blue-500";
-      case "vacation": return "bg-purple-500";
-      default: return "bg-green-500";
+      case "active":
+        return "bg-green-500";
+      case "away":
+        return "bg-yellow-500";
+      case "focus":
+        return "bg-blue-500";
+      case "vacation":
+        return "bg-purple-500";
+      default:
+        return "bg-green-500";
     }
   };
-
   const getStatusText = (status: string) => {
     switch (status) {
-      case "active": return "Active";
-      case "away": return "Away";
-      case "focus": return "Focus Mode";
-      case "vacation": return "Vacation";
-      default: return "Active";
+      case "active":
+        return "Active";
+      case "away":
+        return "Away";
+      case "focus":
+        return "Focus Mode";
+      case "vacation":
+        return "Vacation";
+      default:
+        return "Active";
     }
   };
-
   const handleStatusClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (currentStatus === "focus" && onExitFocusMode) {
@@ -78,30 +85,22 @@ const MenuBarIcon = ({
       onSignBackOn();
     }
   };
-
   const handleStatusChange = (newStatus: "active" | "away" | "focus" | "vacation") => {
     onStatusChange(newStatus);
   };
-
   const handleGetBriefedNow = () => {
     setShowBriefMeModal(true);
   };
-
   const handleGenerateBrief = () => {
     if (onGetBriefedNow) {
       onGetBriefedNow();
     }
   };
-
-  return (
-    <>
+  return <>
       <div className="fixed top-4 right-4 z-50">
         <div className="flex items-center gap-0 rounded-full transition-all duration-200 ease-in-out backdrop-blur-md bg-white/10 text-white">
           {/* Status Indicator - Clickable outside dropdown */}
-          <div 
-            className="flex items-center gap-2 cursor-pointer hover:bg-white/10 rounded-l-full px-4 py-2.5 transition-all duration-150"
-            onClick={handleStatusClick}
-          >
+          <div className="flex items-center gap-2 cursor-pointer hover:bg-white/10 rounded-l-full px-4 py-2.5 transition-all duration-150" onClick={handleStatusClick}>
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4" strokeWidth={1.5} />
               <span className="text-sm font-medium">Brief Me</span>
@@ -116,18 +115,12 @@ const MenuBarIcon = ({
           {/* Dropdown Menu - Separate clickable area */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-auto px-3 py-2.5 rounded-r-full hover:bg-white/20 border-l border-white/20"
-              >
+              <Button variant="ghost" className="h-auto px-3 py-2.5 rounded-r-full hover:bg-white/20 border-l border-white/20">
                 <ChevronDown className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
             
-            <DropdownMenuContent 
-              align="end" 
-              className="w-80 bg-white/95 backdrop-blur-xl border border-gray-200/50 p-0 rounded-xl shadow-2xl"
-            >
+            <DropdownMenuContent align="end" className="w-80 bg-white/95 backdrop-blur-xl border border-gray-200/50 p-0 rounded-xl shadow-2xl">
               {/* Header with Close */}
               <div className="p-4 border-b border-gray-200/30">
                 <div className="flex items-center justify-between mb-3">
@@ -136,45 +129,22 @@ const MenuBarIcon = ({
                 
                 {/* Status Control */}
                 <div className="grid grid-cols-2 gap-2 mb-4">
-                  {["active", "away", "focus", "vacation"].map((statusOption) => (
-                    <button
-                      key={statusOption}
-                      onClick={() => handleStatusChange(statusOption as "active" | "away" | "focus" | "vacation")}
-                      className={`px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-150 ease-in-out ${
-                        currentStatus === statusOption
-                          ? "bg-gray-900 text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }`}
-                    >
+                  {["active", "away", "focus", "vacation"].map(statusOption => <button key={statusOption} onClick={() => handleStatusChange(statusOption as "active" | "away" | "focus" | "vacation")} className={`px-3 py-2 text-[13px] font-medium rounded-lg transition-all duration-150 ease-in-out ${currentStatus === statusOption ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
                       {statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
-                    </button>
-                  ))}
+                    </button>)}
                 </div>
                 
                 {/* Status-specific actions */}
-                {currentStatus === "away" && (
-                  <Button
-                    onClick={() => onSignBackOn?.()}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl py-2 text-[13px] font-medium mb-4"
-                  >
+                {currentStatus === "away" && <Button onClick={() => onSignBackOn?.()} className="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl py-2 text-[13px] font-medium mb-4">
                     Sign Back On
-                  </Button>
-                )}
+                  </Button>}
                 
-                {currentStatus === "focus" && (
-                  <Button
-                    onClick={() => onExitFocusMode?.()}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 text-[13px] font-medium mb-4"
-                  >
+                {currentStatus === "focus" && <Button onClick={() => onExitFocusMode?.()} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 text-[13px] font-medium mb-4">
                     Exit Focus Mode
-                  </Button>
-                )}
+                  </Button>}
 
                 {/* Primary Action - Moved to top */}
-                <Button
-                  onClick={handleGetBriefedNow}
-                  className="w-full bg-gradient-to-r from-[#458888] to-[#50A181] hover:from-[#3D7A7A] hover:to-[#489174] text-white rounded-xl py-3 text-[13px] font-medium transition-all duration-150 ease-in-out"
-                >
+                <Button onClick={handleGetBriefedNow} className="w-full bg-gradient-to-r from-[#458888] to-[#50A181] hover:from-[#3D7A7A] hover:to-[#489174] text-white rounded-xl py-3 text-[13px] font-medium transition-all duration-150 ease-in-out">
                   <Zap className="w-4 h-4 mr-2" />
                   Get Briefed Now
                 </Button>
@@ -215,53 +185,23 @@ const MenuBarIcon = ({
 
                 {/* Dynamic Integration Counts */}
                 <div className={`grid gap-4 py-2 ${integrations.length <= 3 ? 'grid-cols-3' : integrations.length <= 4 ? 'grid-cols-4' : 'grid-cols-2'}`}>
-                  {integrations.map((integration, index) => (
-                    <div key={integration.name} className="text-center">
+                  {integrations.map((integration, index) => <div key={integration.name} className="text-center">
                       <div className="text-2xl font-bold text-gray-900">{integration.count}</div>
                       <div className="text-[13px] text-gray-600">{integration.name}</div>
-                      {integration.isConnected && (
-                        <div className="w-2 h-2 rounded-full bg-green-500 mx-auto mt-1"></div>
-                      )}
-                    </div>
-                  ))}
+                      {integration.isConnected && <div className="w-2 h-2 rounded-full bg-green-500 mx-auto mt-1"></div>}
+                    </div>)}
                 </div>
               </div>
 
               {/* Footer - Updated to match the design */}
-              <div className="px-4 py-3 border-t border-gray-200/30 bg-gray-50/30">
-                <div className="flex justify-center gap-3">
-                  {/* Brief Me Button */}
-                  <button 
-                    onClick={handleGetBriefedNow}
-                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
-                    title="Brief Me"
-                  >
-                    <Zap className="w-5 h-5" />
-                  </button>
-                  
-                  {/* Status Button */}
-                  <button 
-                    onClick={handleStatusClick}
-                    className="w-12 h-12 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all duration-150 flex items-center justify-center shadow-sm"
-                    title="Toggle Status"
-                  >
-                    <div className={`w-3 h-3 rounded-full ${getStatusColor(currentStatus)}`} />
-                  </button>
-                </div>
-              </div>
+              
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
 
       {/* Brief Me Modal */}
-      <BriefMeModal
-        open={showBriefMeModal}
-        onClose={() => setShowBriefMeModal(false)}
-        onGenerateBrief={handleGenerateBrief}
-      />
-    </>
-  );
+      <BriefMeModal open={showBriefMeModal} onClose={() => setShowBriefMeModal(false)} onGenerateBrief={handleGenerateBrief} />
+    </>;
 };
-
 export default MenuBarIcon;
