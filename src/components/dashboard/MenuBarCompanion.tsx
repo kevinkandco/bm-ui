@@ -71,12 +71,10 @@ const MenuBarCompanion = ({
       {/* macOS-style popover */}
       <div className="relative">
         {/* Arrow */}
-        <div className="absolute -top-2 right-6 w-4 h-4 rotate-45 border-l border-t border-[var(--border-subtle)]" 
-             style={{ background: 'var(--gradient-menu-bar)' }} />
+        <div className="absolute -top-2 right-6 w-4 h-4 backdrop-blur-xl rotate-45 border-l border-t border-white/20 bg-white/10" />
         
         {/* Main popover */}
-        <div className="w-80 backdrop-blur-xl rounded-xl border border-[var(--border-subtle)] shadow-2xl overflow-hidden"
-             style={{ background: 'var(--gradient-menu-bar)' }}>
+        <div className="w-80 backdrop-blur-xl rounded-xl border border-white/20 shadow-2xl overflow-hidden bg-white/10">
           {/* Header with Greeting */}
           <div className="p-6 pb-4">
             <div className="flex items-center justify-between mb-4">
@@ -134,7 +132,7 @@ const MenuBarCompanion = ({
               </h2>
 
               {/* Brief Card */}
-              <div className="bg-[var(--brand-600)] rounded-xl p-3 hover:bg-white/[0.04] transition-colors border border-[var(--border-subtle)]">
+              <div className="bg-white/5 rounded-xl p-3 hover:bg-white/10 transition-colors border border-white/20">
                 <div className="flex items-center gap-3 mb-2">
                   <Button 
                     variant="ghost" 
@@ -160,7 +158,7 @@ const MenuBarCompanion = ({
 
             {/* Upcoming Brief */}
             <div>
-              <div className="bg-[var(--brand-600)] rounded-xl p-3 border border-[var(--border-subtle)]">
+              <div className="bg-white/5 rounded-xl p-3 border border-white/20">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-[var(--text-muted)]" />
@@ -183,7 +181,7 @@ const MenuBarCompanion = ({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-[var(--border-subtle)] bg-[var(--brand-700)]">
+          <div className="px-6 py-4 border-t border-white/20 bg-white/5">
             <div className="flex justify-between items-center text-xs">
               <button 
                 onClick={handleSettings}
