@@ -8,7 +8,9 @@
   "protocols": [
     {
       "name": "Electron Fiddle Protocol",
-      "schemes": ["electron-fiddle"]
+      "schemes": [
+        "electron-fiddle"
+      ]
     }
   ],
   "scripts": {
@@ -67,6 +69,7 @@
     "electron-deeplink": "^1.0.10",
     "electron-is-dev": "^3.0.1",
     "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.1.0",
     "embla-carousel-react": "^8.3.0",
     "firebase": "^11.9.1",
     "input-otp": "^1.2.4",

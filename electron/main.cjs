@@ -1,7 +1,12 @@
 const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { default: Store } = require("electron-store");
 const path = require("path");
 
+let store = new Store();
 let mainWindow;
+
+// IPC handler for token
+ipcMain.handle("get-token", () => store.get("token"));
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -28,6 +33,8 @@ function handleDeepLink(argv) {
   try {
     const urlObj = new URL(deepLink);
     const token = urlObj.searchParams.get("access_token");
+
+    store.set("token", token)
     console.log("✅ Received token:", token);
 
     if (mainWindow) {
