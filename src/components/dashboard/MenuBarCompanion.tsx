@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Clock, Calendar, Zap, ChevronRight, Settings, ExternalLink, X, CheckCircle, AlertCircle } from "lucide-react";
+import { Clock, Calendar, Zap, ChevronRight, Settings, ExternalLink, X, CheckCircle, AlertCircle, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
@@ -42,80 +42,135 @@ const MenuBarCompanion = ({
 
   if (!isOpen) return null;
 
+  const getUserStatusDotColor = (status: StatusType) => {
+    switch (status) {
+      case "active":
+        return "bg-green-500";
+      case "offline":
+        return "bg-yellow-500";
+      case "dnd":
+        return "bg-red-500";
+      default:
+        return "bg-green-500";
+    }
+  };
+
+  const getStatusLabel = (status: StatusType) => {
+    switch (status) {
+      case "dnd":
+        return "Focus";
+      case "offline":
+        return "Away";
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  };
+
   return (
     <div className="fixed top-12 right-4 z-50">
       {/* macOS-style popover */}
       <div className="relative">
         {/* Arrow */}
-        <div className="absolute -top-2 right-6 w-4 h-4 bg-white/95 backdrop-blur-xl rotate-45 border-l border-t border-gray-200/50" />
+        <div className="absolute -top-2 right-6 w-4 h-4 bg-[var(--brand-800)] backdrop-blur-xl rotate-45 border-l border-t border-[var(--border-subtle)]" />
         
         {/* Main popover */}
-        <div className="w-80 bg-white/95 backdrop-blur-xl rounded-xl border border-gray-200/50 shadow-2xl overflow-hidden">
-          {/* Header with Status */}
-          <div className="p-4 border-b border-gray-200/30">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[17px] font-semibold text-gray-900">Brief Me</h3>
+        <div className="w-80 bg-[var(--brand-800)] backdrop-blur-xl rounded-xl border border-[var(--border-subtle)] shadow-2xl overflow-hidden">
+          {/* Header with Greeting */}
+          <div className="p-6 pb-4">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">
+                Good morning, Alex
+              </h1>
               <Button
                 onClick={onClose}
                 variant="ghost"
                 size="sm"
-                className="w-6 h-6 p-0 hover:bg-gray-100 rounded-full"
+                className="w-6 h-6 p-0 hover:bg-white/10 rounded-full text-[var(--text-muted)]"
               >
                 <X className="w-3 h-3" />
               </Button>
             </div>
             
-            {/* Status Control */}
-            <div className="bg-gray-100/80 rounded-lg p-1 grid grid-cols-3 gap-1">
-              {["active", "offline", "dnd"].map((statusOption) => (
-                <button
-                  key={statusOption}
-                  onClick={() => handleStatusChange(statusOption as StatusType)}
-                  className={`px-3 py-2 text-[13px] font-medium rounded-md transition-all duration-150 ease-in-out ${
-                    status === statusOption
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
+            <p className="text-[var(--text-secondary)] text-sm mb-4">
+              I'm here with you — let's make the most of today.
+            </p>
+            
+            {/* Status & Next Brief Info */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${getUserStatusDotColor(status)}`} />
+                <span className="text-xs text-[var(--text-secondary)] capitalize">
+                  {getStatusLabel(status)}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+                <span>Next brief at 2:15 PM</span>
+                <button 
+                  className="text-[var(--brand-300)] hover:text-[var(--brand-200)] underline ml-1"
+                  onClick={onGetBriefedNow}
                 >
-                  {statusOption === "dnd" ? "DND" : statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
+                  Get it now
                 </button>
-              ))}
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 space-y-4">
-            {/* Recent Brief */}
-            <div className="space-y-2">
-              <h4 className="text-[13px] font-medium text-gray-700">Recent Brief</h4>
-              <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-accent-primary" />
-                    <span className="text-[13px] font-medium text-gray-900">Morning Brief</span>
+          <div className="px-6 pb-6 space-y-6">
+            {/* Primary Action Button */}
+            <Button
+              onClick={onGetBriefedNow}
+              className="w-full h-8 px-4 rounded-full bg-gradient-to-r from-[var(--brand-200)] to-[#277F64] hover:opacity-90 text-white font-medium transition-all duration-150 ease-in-out"
+            >
+              Brief Me
+            </Button>
+
+            {/* Today's Updates Section */}
+            <div>
+              <h2 className="text-[var(--text-primary)] font-semibold text-lg tracking-tight mb-4">
+                Today's Updates
+              </h2>
+
+              {/* Brief Card */}
+              <div className="bg-[var(--brand-600)] rounded-xl p-3 hover:bg-white/[0.04] transition-colors border border-[var(--border-subtle)]">
+                <div className="flex items-center gap-3 mb-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-10 w-10 p-0 rounded-full bg-[var(--brand-300)]/15 hover:bg-[var(--brand-300)]/25 transition-all duration-200"
+                  >
+                    <Play className="h-5 w-5 text-[var(--brand-300)] fill-current" />
+                  </Button>
+                  <div>
+                    <div className="text-[var(--text-primary)] font-semibold text-sm leading-tight tracking-tight">
+                      Morning Brief
+                    </div>
+                    <div className="text-[var(--text-secondary)] text-xs">
+                      Today, 8:30 AM
+                    </div>
                   </div>
-                  <span className="text-[11px] text-gray-500">8:30 AM</span>
                 </div>
-                <p className="text-[11px] text-gray-600 mt-1">33 min saved</p>
+                <div className="text-[var(--text-muted)] text-xs">
+                  12 Slack • 5 Emails • 3 Actions
+                </div>
               </div>
             </div>
 
             {/* Upcoming Brief */}
-            <div className="space-y-2">
-              <h4 className="text-[13px] font-medium text-gray-700">Upcoming Brief</h4>
-              <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/30">
+            <div>
+              <div className="bg-[var(--brand-600)] rounded-xl p-3 border border-[var(--border-subtle)]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-500" />
-                    <span className="text-[13px] font-medium text-gray-900">Midday Brief</span>
+                    <Calendar className="w-4 h-4 text-[var(--text-muted)]" />
+                    <span className="text-sm font-medium text-[var(--text-primary)]">Midday Brief</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-gray-500">12:30 PM</span>
+                    <span className="text-xs text-[var(--text-secondary)]">12:30 PM</span>
                     <Button
                       onClick={onUpdateSchedule}
                       variant="ghost"
                       size="sm"
-                      className="h-5 px-1 text-[10px] text-gray-500 hover:text-gray-700"
+                      className="h-5 px-2 text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                     >
                       Edit
                     </Button>
@@ -123,60 +178,23 @@ const MenuBarCompanion = ({
                 </div>
               </div>
             </div>
-
-            {/* Integrations Status */}
-            <div className="space-y-2">
-              <h4 className="text-[13px] font-medium text-gray-700">Integrations</h4>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between py-1">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-500" />
-                    <span className="text-[12px] text-gray-900">Slack</span>
-                  </div>
-                  <span className="text-[11px] text-gray-500">12 messages</span>
-                </div>
-                <div className="flex items-center justify-between py-1">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3 text-green-500" />
-                    <span className="text-[12px] text-gray-900">Mail</span>
-                  </div>
-                  <span className="text-[11px] text-gray-500">5 emails</span>
-                </div>
-                <div className="flex items-center justify-between py-1">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="w-3 h-3 text-orange-500" />
-                    <span className="text-[12px] text-gray-900">Calendar</span>
-                  </div>
-                  <span className="text-[11px] text-gray-500">Needs setup</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Primary Action */}
-            <Button
-              onClick={onGetBriefedNow}
-              className="w-full bg-accent-primary hover:bg-accent-primary/90 text-white rounded-lg py-3 text-[13px] font-medium transition-all duration-150 ease-in-out"
-            >
-              <Zap className="w-4 h-4 mr-2" />
-              Get Briefed Now
-            </Button>
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-3 border-t border-gray-200/30 bg-gray-50/30">
-            <div className="flex justify-between items-center text-[11px]">
+          <div className="px-6 py-4 border-t border-[var(--border-subtle)] bg-[var(--brand-700)]">
+            <div className="flex justify-between items-center text-xs">
               <button 
                 onClick={handleSettings}
-                className="text-gray-500 hover:text-gray-700 transition-colors duration-150"
+                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors duration-150 flex items-center gap-1"
               >
-                <Settings className="w-3 h-3 inline mr-1" />
+                <Settings className="w-3 h-3" />
                 Settings
               </button>
               <button 
                 onClick={onOpenDashboard}
-                className="text-gray-500 hover:text-gray-700 transition-colors duration-150"
+                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors duration-150 flex items-center gap-1"
               >
-                <ExternalLink className="w-3 h-3 inline mr-1" />
+                <ExternalLink className="w-3 h-3" />
                 Open Dashboard
               </button>
             </div>

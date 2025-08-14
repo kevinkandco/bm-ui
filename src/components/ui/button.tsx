@@ -6,22 +6,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl",
-        primary: "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
-        skyBlue: "bg-gradient-to-r from-[#5865f2] to-[#5865f2] text-white hover:from-[#505bd1] hover:to-[#505bd1] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
+        default: "bg-gradient-to-r from-[#1B5862] to-[#277F64] text-white hover:brightness-105 active:brightness-95 transition-all duration-200",
+        primary: "bg-gradient-to-r from-[#1B5862] to-[#277F64] text-white hover:brightness-105 active:brightness-95 transition-all duration-200",
         "podia-primary": "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 font-medium text-button rounded-lg",
         "podia-chip": "bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] transition-all duration-300 shadow-lg hover:shadow-xl font-normal text-chip rounded-lg",
         "podia-chip-outline": "bg-transparent text-light-gray-text border border-light-gray-text/40 hover:border-light-gray-text/60 transition-all duration-200 font-normal text-chip rounded-lg",
         destructive:
           "bg-hot-coral text-white hover:bg-hot-coral/90 shadow-sm",
         outline:
-          "border bg-surface-overlay backdrop-blur-md hover:bg-white/15 text-text-primary hover:text-text-primary dark:border-white/40 light:border-black/20",
+          "border border-[var(--border-subtle)] bg-transparent text-white hover:bg-white/[0.04] transition-all duration-200",
         secondary:
-          "bg-white/25 backdrop-blur-md text-text-primary hover:bg-white/35 shadow-sm",
+          "border border-[var(--border-subtle)] bg-transparent text-white hover:bg-white/[0.04] transition-all duration-200",
         ghost: "hover:bg-white/15 hover:text-text-primary text-text-secondary",
         link: "text-text-secondary underline-offset-4 hover:text-accent-primary",
         plain: "bg-transparent text-text-primary hover:text-accent-primary p-0 border-none",
@@ -31,12 +30,13 @@ const buttonVariants = cva(
         voice: "w-12 h-12 rounded-full bg-gradient-to-r from-[#458888] to-[#50A181] text-white hover:from-[#3D7A7A] hover:to-[#489174] active:scale-95 shadow-lg hover:shadow-xl transition-all duration-300 p-0",
       },
       size: {
-        default: "h-10 px-4 py-2 rounded-lg",
-        sm: "h-9 rounded-lg px-3",
-        lg: "h-11 rounded-lg px-8",
-        icon: "h-10 w-10 rounded-lg",
+        default: "h-10 px-4 py-2",
+        sm: "h-9 px-3",
+        lg: "h-11 px-8",
+        icon: "h-10 w-10",
         none: "h-auto p-0",
-        pill: "h-10 px-6 py-2 rounded-full",
+        pill: "h-10 px-6 py-2",
+        chip: "h-6 px-3 text-xs",
         "podia-default": "px-4 py-2.5",
         "podia-chip": "px-3.5 py-1.5",
         "podia-voice": "w-12 h-12 p-0",

@@ -55,13 +55,17 @@ import { AUDIO_URL } from "@/config";
 import { BaseURL } from "@/config";
 import { title } from "process";
 import ActionItemModal from "@/components/dashboard/ActionItemModal";
-
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
+import MobileHeader from "@/components/dashboard/MobileHeader";
 
 const BriefDetail = () => {
   const { briefId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { call } = useApi();
+  const isMobile = useIsMobile();
+  // const [isPlaying, setIsPlaying] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [expandedActionItem, setExpandedActionItem] = useState<number | string | null>(null);
   const [allMessagesOpen, setAllMessagesOpen] = useState(false);
@@ -413,7 +417,9 @@ const BriefDetail = () => {
         sidebarOpen={sidebarOpen} 
         onToggleSidebar={handleToggleSidebar}
       >
-        <div className="min-h-screen bg-surface px-4 py-6">
+        <div className={`min-h-screen bg-surface ${isMobile ? 'pb-24' : 'px-4 py-6'}`}>
+          {isMobile && <MobileHeader />}
+          <div className={!isMobile ? 'px-4 py-6' : 'px-4 pb-6'}>
           {/* Breadcrumb */}
           <Breadcrumb className="mb-4">
             <BreadcrumbList>
@@ -906,7 +912,7 @@ const BriefDetail = () => {
               }}
             />
           )} */}
-              <ActionItemModal
+              {/* <ActionItemModal
                 actionItem={selectedActionItem}
                 open={priorityModalOpen}
                 onClose={() => {
@@ -923,7 +929,14 @@ const BriefDetail = () => {
         briefId={briefData?.id}
         transcript={briefData?.summary}
         title={briefData?.title}
-      />
+      /> */}
+           {/* )} */}
+          </div>
+        </div>
+      </DashboardLayout>
+      
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
     </TooltipProvider>
   );
 };

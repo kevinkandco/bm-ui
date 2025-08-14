@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ProgressIndicator from "./ProgressIndicator";
-import { Mail, Headphones, Clock, Sun, Coffee, Moon, Plus, Trash2, InfoIcon, AlarmClock, Sunrise, Sunset, Calendar } from "lucide-react";
+import { Mail, Headphones, Clock, Sun, Coffee, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 import { 
@@ -21,7 +21,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import MuiTimePicker from "../ui/MuiTimePicker";
-import { WeekendBrief } from "../dashboard/types";
+// import { WeekendBrief } from "../dashboard/types";
+// import { Switch } from "@/components/ui/switch";
 
 interface BriefSchedule {
   id: string;
@@ -33,10 +34,15 @@ interface BriefSchedule {
   days: string[];
 }
 
+interface WeekendBrief {
+  enabled: boolean;
+  deliveryMethod: "email" | "audio" | "both";
+  deliveryTime: string;
+}
+
 interface DailySchedule {
   workdayStart: string;
   workdayEnd: string;
-  weekendMode: boolean;
 }
 
 interface BriefPreferencesStepProps {
@@ -44,14 +50,14 @@ interface BriefPreferencesStepProps {
   onBack: () => void;
   updateUserData: (data: any) => void;
   userData: {
-    briefSchedules: BriefSchedule[];
+    briefSchedules?: BriefSchedule[];
     weekendBrief?: WeekendBrief;
     dailySchedule?: DailySchedule;
     [key: string]: any;
   };
 }
 
-const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const WEEKEND = ["Saturday", "Sunday"];
 // const ALL_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const WEEKEND_DAYS_FROM_DAYS = ["Saturday", "Sunday"];
@@ -77,63 +83,70 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
   );
 
   // Initialize daily schedule from userData or with defaults
-  const [dailySchedule, setDailySchedule] = useState<DailySchedule>(
-    userData.dailySchedule || {
-      workdayStart: "09:00",
-      workdayEnd: "17:00",
-      weekendMode: false
-    }
-  );
+  // const [dailySchedule, setDailySchedule] = useState<DailySchedule>(
+  //   userData.dailySchedule || {
+  //     workdayStart: "09:00",
+  //     workdayEnd: "17:00",
+  //     weekendMode: false
+  //   }
+  // );
 
   // Weekend brief state
-  const [weekendBrief, setWeekendBrief] = useState<WeekendBrief>(
-    userData.weekendBrief || {
-      enabled: false,
-      deliveryMethod: "email",
-      deliveryTime: "09:00",
-      weekendDays: "Monday",
-      coveragePeriod: {
-        startDay: "Saturday",
-        startTime: "17:00",
-        endDay: "Monday",
-        endTime: "09:00"
-      }
-    }
-  );
+  // const [weekendBrief, setWeekendBrief] = useState<WeekendBrief>(
+  //   userData.weekendBrief || {
+  //     enabled: false,
+  //     deliveryMethod: "email",
+  //     deliveryTime: "09:00",
+  //     weekendDays: "Monday",
+  //     coveragePeriod: {
+  //       startDay: "Saturday",
+  //       startTime: "17:00",
+  //       endDay: "Monday",
+  //       endTime: "09:00"
+  //     }
+  //   }
+  // );
 
-  const addNewBrief = () => {
-    const newBrief: BriefSchedule = {
-      id: uuidv4(),
-      name: `Brief ${briefSchedules.length + 1}`,
+  const [brief, setBrief] = useState<BriefSchedule>(
+    userData.briefSchedules?.[0] || {
+      id: "default",
+      name: "Daily Brief",
       deliveryMethod: "email",
       scheduleTime: "morning",
       briefTime: "08:00",
       enabled: true,
-      days: [...WEEKDAYS]
-    };
-    
-    setBriefSchedules([...briefSchedules, newBrief]);
+      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    }
+  );
+
+  const [weekendBrief, setWeekendBrief] = useState<WeekendBrief>(
+    userData.weekendBrief || {
+      enabled: false,
+      deliveryMethod: "email",
+      deliveryTime: "09:00"
+    }
+  );
+
+  const [workHours, setWorkHours] = useState<DailySchedule>(
+    userData.dailySchedule || {
+      workdayStart: "09:00",
+      workdayEnd: "17:00"
+    }
+  );
+
+  const [showWorkHours, setShowWorkHours] = useState(false);
+
+  const updateBrief = (updates: Partial<BriefSchedule>) => {
+    setBrief(prev => ({ ...prev, ...updates }));
   };
 
-  const removeBrief = (id: string) => {
-    if (briefSchedules.length <= 1) return; // Don't allow removing the last brief
-    setBriefSchedules(briefSchedules.filter(brief => brief.id !== id));
-  };
-
-  const updateBrief = (id: string, updates: Partial<BriefSchedule>) => {
-    setBriefSchedules(briefSchedules.map(brief => 
-      brief.id === id ? { ...brief, ...updates } : brief
-    ));
-  };
-
-  const handleMethodChange = (id: string, method: "email" | "audio" | "both") => {
-    updateBrief(id, { deliveryMethod: method });
+  const handleMethodChange = (method: "email" | "audio" | "both") => {
+    updateBrief({ deliveryMethod: method });
   };
   
-  const handleScheduleChange = (id: string, schedule: "morning" | "midday" | "evening" | "custom") => {
+  const handleScheduleChange = (schedule: "morning" | "midday" | "evening" | "custom") => {
     const updates: Partial<BriefSchedule> = { scheduleTime: schedule };
     
-    // Set default times based on selection
     if (schedule === "morning") {
       updates.briefTime = "08:00";
     } else if (schedule === "midday") {
@@ -142,632 +155,246 @@ const BriefPreferencesStep = ({ onNext, onBack, updateUserData, userData }: Brie
       updates.briefTime = "17:00";
     }
     
-    updateBrief(id, updates);
+    updateBrief(updates);
   };
 
-  const handleTimeChange = (id: string, time: string) => {
-    updateBrief(id, { 
-      briefTime: time,
-      scheduleTime: "custom"
-    });
-  };
-
-  const toggleDay = (briefId: string, day: string) => {
-    const brief = briefSchedules.find(b => b.id === briefId);
-    if (!brief) return;
+  const toggleDay = (dayShort: string) => {
+    const dayMap: Record<string, string> = {
+      "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", 
+      "Thu": "Thursday", "Fri": "Friday"
+    };
+    const fullDay = dayMap[dayShort];
     
-    const updatedDays = brief.days.includes(day)
-      ? brief.days.filter(d => d !== day)
-      : [...brief.days, day];
+    const updatedDays = brief.days.includes(fullDay)
+      ? brief.days.filter(d => d !== fullDay)
+      : [...brief.days, fullDay];
     
-    updateBrief(briefId, { days: updatedDays });
-  };
-
-  const updateDailySchedule = (field: keyof DailySchedule, value: any) => {
-    setDailySchedule({
-      ...dailySchedule,
-      [field]: value
-    });
-  };
-
-  // Weekend brief functions
-  const updateWeekendBrief = (updates: Partial<WeekendBrief>) => {
-    setWeekendBrief(prev => ({ ...prev, ...updates }));
-  };
-
-  const toggleWeekendDay = (day: string) => {
-    if (weekendBrief.weekendDays === day) return;
-    
-    updateWeekendBrief({ weekendDays: day });
+    updateBrief({ days: updatedDays });
   };
 
   const handleContinue = () => {
     updateUserData({ 
-      briefSchedules,
-      dailySchedule,
-      weekendBrief
+      briefSchedules: [brief],
+      weekendBrief,
+      dailySchedule: workHours
     });
     onNext();
   };
 
   return (
-    <div className="space-y-8">
-      <ProgressIndicator currentStep={8} totalSteps={9} />
+    <div className="space-y-6">
+      <ProgressIndicator currentStep={9} totalSteps={10} />
       
-      {/* Clock visual element */}
-      <div className="h-16 w-full flex items-center justify-center relative mb-4">
-        <Clock size={40} className="text-electric-teal opacity-70" />
-      </div>
-      
-      <div className="space-y-3">
-        <h2 className="text-2xl font-semibold text-ice-grey tracking-tighter">Customize your briefs</h2>
-        <p className="text-cool-slate">
-          Set up multiple briefs to receive at different times of day. You can always request an ad hoc "Catch Me Up" anytime.
-        </p>
-      </div>
-      
-      {/* Daily schedule section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-ice-grey">Your Daily Schedule</h3>
-        <div className="border border-cool-slate/20 rounded-lg p-4 space-y-6 bg-deep-plum/10">
-          {/* Workday start/end and weekend mode */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Sunrise size={18} className="text-electric-teal" />
-                <Label htmlFor="workdayStart" className="text-ice-grey">Workday Start</Label>
-              </div>
-              {/* <Input
-                id="workdayStart"
-                type="time"
-                value={dailySchedule.workdayStart}
-                onChange={(e) => updateDailySchedule('workdayStart', e.target.value)}
-                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey time-picker [&::-webkit-calendar-picker-indicator]:ml-[3.25rem]"
-              /> */}
-              <MuiTimePicker
-                value={dailySchedule.workdayStart}
-                borderRadius="16px"
-                padding="12px 16px"
-                width="100%"
-                onChange={(newValue) => {
-                  if (newValue) {
-                    updateDailySchedule("workdayStart", newValue.format("HH:mm"));
-                  }
-                }}
-              />
-              <p className="pt-4 text-xs text-cool-slate">When do you typically start your workday?</p>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Sunset size={18} className="text-electric-teal" />
-                <Label htmlFor="workdayEnd" className="text-ice-grey">Workday End</Label>
-              </div>
-              {/* <Input
-                id="workdayEnd"
-                type="time"
-                value={dailySchedule.workdayEnd}
-                onChange={(e) => updateDailySchedule('workdayEnd', e.target.value)}
-                className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey time-picker [&::-webkit-calendar-picker-indicator]:ml-[3.25rem]"
-              /> */}
-              <MuiTimePicker
-                value={dailySchedule.workdayEnd}
-                borderRadius="16px"
-                padding="12px 16px"
-                width="100%"
-                onChange={(newValue) => {
-                  if (newValue) {
-                    updateDailySchedule("workdayEnd", newValue.format("HH:mm"));
-                  }
-                }}
-              />
-              <p className="pt-4 text-xs text-cool-slate">When do you typically end your workday?</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Switch 
-              id="weekend-mode" 
-              checked={dailySchedule.weekendMode}
-              onCheckedChange={(checked) => updateDailySchedule('weekendMode', checked)}
-            />
-            <Label htmlFor="weekend-mode" className="text-ice-grey">Include weekend briefs</Label>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <InfoIcon 
-                  size={16} 
-                  className="text-cool-slate cursor-help ml-1"
-                />
-              </TooltipTrigger>
-              <TooltipContent>Enable to receive briefs on weekends too</TooltipContent>
-            </Tooltip>
-          </div>
+      <div className="text-center space-y-3">
+        <div className="w-12 h-12 bg-accent-primary/10 rounded-full flex items-center justify-center mx-auto">
+          <Clock className="h-6 w-6 text-accent-primary" />
         </div>
-      </div>
-
-      {/* Weekend Brief Configuration */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-ice-grey">Weekend Brief</h3>
-        <div className="border border-cool-slate/20 rounded-lg p-4 space-y-6 bg-deep-plum/10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-ice-grey">Enable Weekend Brief</h4>
-              <p className="text-sm text-cool-slate">Get a summary covering Friday evening to Monday morning</p>
-            </div>
-            <Switch 
-              checked={weekendBrief.enabled}
-              onCheckedChange={(checked) => updateWeekendBrief({ enabled: checked })}
-            />
-          </div>
-
-          {weekendBrief.enabled && (
-            <div className="space-y-6 pt-4 border-t border-cool-slate/20">
-              {/* Delivery Method */}
-              <div className="space-y-3">
-                <Label className="text-ice-grey">Delivery method</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      weekendBrief.deliveryMethod === 'email' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => updateWeekendBrief({ deliveryMethod: 'email' })}
-                  >
-                    <Mail size={24} className="text-electric-teal" />
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Email</div>
-                      <p className="text-xs text-cool-slate mt-1">Brief in email</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      weekendBrief.deliveryMethod === 'audio' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => updateWeekendBrief({ deliveryMethod: 'audio' })}
-                  >
-                    <Headphones size={24} className="text-electric-teal" />
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Audio</div>
-                      <p className="text-xs text-cool-slate mt-1">Listen to brief</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      weekendBrief.deliveryMethod === 'both' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => updateWeekendBrief({ deliveryMethod: 'both' })}
-                  >
-                    <div className="flex gap-1">
-                      <Mail size={24} className="text-electric-teal" />
-                      <Headphones size={24} className="text-electric-teal" />
-                    </div>
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Both</div>
-                      <p className="text-xs text-cool-slate mt-1">Email and audio</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Delivery Time and Days */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <Label htmlFor="weekend-delivery-time" className="text-ice-grey">Delivery time</Label>
-                  {/* <Input
-                    id="weekend-delivery-time"
-                    type="time"
-                    value={weekendBrief.deliveryTime}
-                    onChange={(e) => updateWeekendBrief({ deliveryTime: e.target.value })}
-                    className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey"
-                  /> */}
-                  <MuiTimePicker
-                    value={weekendBrief.deliveryTime}
-                    borderRadius="16px"
-                    padding="12px 16px"
-                    width="100%"
-                    onChange={(newValue) => {
-                      if (newValue) {
-                        updateWeekendBrief({ deliveryTime: newValue.format("HH:mm") });
-                      }
-                    }}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-ice-grey">Delivery day(s)</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {["Monday", "Saturday", "Sunday"].map(day => (
-                      <Button
-                        key={day}
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className={cn(
-                          "border border-cool-slate/30",
-                          weekendBrief.weekendDays === day
-                            ? "bg-electric-teal/20 text-electric-teal border-electric-teal/40"
-                            : "bg-canvas-black/50 text-cool-slate"
-                        )}
-                        onClick={() => toggleWeekendDay(day)}
-                      >
-                        {day.substring(0, 3)}
-                      </Button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-cool-slate">Select when to receive your weekend brief</p>
-                </div>
-              </div>
-
-              {/* Coverage Period */}
-              <div className="space-y-3">
-                <Label className="text-ice-grey">Coverage period</Label>
-                <div className="grid grid-cols-2 gap-4 p-4 bg-canvas-black/50 rounded-lg">
-                  <div>
-                    <Label className="text-xs text-cool-slate">From day</Label>
-                    <Select value={weekendBrief.coveragePeriod.startDay} onValueChange={(value) => 
-                      updateWeekendBrief({ 
-                        coveragePeriod: { ...weekendBrief.coveragePeriod, startDay: value }
-                      })
-                    }>
-                      <SelectTrigger className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey h-8">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {WEEKEND_DAYS_FROM_DAYS.map(day => (
-                          <SelectItem key={day} value={day}>{day}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-xs text-cool-slate">From time</Label>
-                    {/* <Input
-                      type="time"
-                      value={weekendBrief.coveragePeriod.startTime}
-                      onChange={(e) => updateWeekendBrief({ 
-                        coveragePeriod: { ...weekendBrief.coveragePeriod, startTime: e.target.value }
-                      })}
-                      className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey h-8"
-                    /> */}
-                    <MuiTimePicker
-                      value={weekendBrief.coveragePeriod.startTime}
-                      borderRadius="16px"
-                      padding="6px"
-                      width="100%"
-                      backgroundColor="rgba(26,26,28,0.8)"
-                      onChange={(newValue) => {
-                        if (newValue) {
-                          updateWeekendBrief({
-                            coveragePeriod: { ...weekendBrief.coveragePeriod, startTime: newValue.format("HH:mm") }
-                          });
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-cool-slate">To day</Label>
-                    <Select value={weekendBrief.coveragePeriod.endDay} onValueChange={(value) => 
-                      updateWeekendBrief({ 
-                        coveragePeriod: { ...weekendBrief.coveragePeriod, endDay: value }
-                      })
-                    }>
-                      <SelectTrigger className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey h-8">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {WEEKEND_DAYS_TO_DAYS.map(day => (
-                          <SelectItem key={day} value={day}>{day}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-xs text-cool-slate">To time</Label>
-                    {/* <Input
-                      type="time"
-                      value={weekendBrief.coveragePeriod.endTime}
-                      onChange={(e) => updateWeekendBrief({ 
-                        coveragePeriod: { ...weekendBrief.coveragePeriod, endTime: e.target.value }
-                      })}
-                      className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey h-8"
-                    /> */}
-                    <MuiTimePicker
-                      value={weekendBrief.coveragePeriod.endTime}
-                      borderRadius="16px"
-                      padding="6px"
-                      width="100%"
-                      backgroundColor="rgba(26,26,28,0.8)"
-                      onChange={(newValue) => {
-                        if (newValue) {
-                          updateWeekendBrief({
-                            coveragePeriod: { ...weekendBrief.coveragePeriod, endTime: newValue.format("HH:mm") }
-                          });
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <p className="text-xs text-cool-slate">
-                  Default covers Friday 5:00 PM to Monday 9:00 AM
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Brief schedule list */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-ice-grey">Your Brief Schedules</h3>
-        {briefSchedules.map((brief, index) => (
-          <Collapsible 
-            key={brief.id}
-            defaultOpen={index === 0}
-            className="border border-cool-slate/20 rounded-lg overflow-hidden"
-          >
-            <div className="bg-canvas-black/80 px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CollapsibleTrigger asChild>
-                  <Button variant="ghost" size="icon" className="hover:bg-deep-plum/30">
-                    <Clock size={18} className="text-electric-teal" />
-                  </Button>
-                </CollapsibleTrigger>
-                <Input
-                  value={brief.name}
-                  onChange={(e) => updateBrief(brief.id, { name: e.target.value })}
-                  className="max-w-[180px] bg-deep-plum/20 border-none text-ice-grey h-8"
-                />
-              </div>
-              
-              <div className="flex items-center gap-2">
-                {briefSchedules.length > 1 && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => removeBrief(brief.id)}
-                    className="text-cool-slate hover:text-hot-coral hover:bg-deep-plum/30"
-                  >
-                    <Trash2 size={18} />
-                  </Button>
-                )}
-              </div>
-            </div>
-            
-            <CollapsibleContent className="p-4 space-y-6 bg-deep-plum/10">
-              <div className="space-y-3">
-                <Label className="text-ice-grey">Delivery method</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      brief.deliveryMethod === 'email' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => handleMethodChange(brief.id, 'email')}
-                  >
-                    <Mail size={24} className="text-electric-teal" />
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Email</div>
-                      <p className="text-xs text-cool-slate mt-1">Brief in email</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      brief.deliveryMethod === 'audio' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => handleMethodChange(brief.id, 'audio')}
-                  >
-                    <Headphones size={24} className="text-electric-teal" />
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Audio</div>
-                      <p className="text-xs text-cool-slate mt-1">Listen to brief</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      brief.deliveryMethod === 'both' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => handleMethodChange(brief.id, 'both')}
-                  >
-                    <div className="flex gap-1">
-                      <Mail size={24} className="text-electric-teal" />
-                      <Headphones size={24} className="text-electric-teal" />
-                    </div>
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Both</div>
-                      <p className="text-xs text-cool-slate mt-1">Email and audio</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <Label className="text-ice-grey">Schedule</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      brief.scheduleTime === 'morning' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => handleScheduleChange(brief.id, 'morning')}
-                  >
-                    <Sun size={24} className="text-electric-teal" />
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Morning</div>
-                      <p className="text-xs text-cool-slate mt-1">8:00 AM</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      brief.scheduleTime === 'midday' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => handleScheduleChange(brief.id, 'midday')}
-                  >
-                    <Coffee size={24} className="text-electric-teal" />
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Midday</div>
-                      <p className="text-xs text-cool-slate mt-1">12:00 PM</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className={cn(
-                      "flex flex-col items-center gap-3 py-4 px-3 rounded-xl border cursor-pointer transition-all",
-                      brief.scheduleTime === 'evening' 
-                        ? 'border-electric-teal bg-deep-plum/30' 
-                        : 'border-cool-slate/20 bg-canvas-black/80 hover:bg-deep-plum/20'
-                    )}
-                    onClick={() => handleScheduleChange(brief.id, 'evening')}
-                  >
-                    <Moon size={24} className="text-electric-teal" />
-                    <div className="text-center">
-                      <div className="font-medium text-ice-grey">Evening</div>
-                      <p className="text-xs text-cool-slate mt-1">5:00 PM</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <Label htmlFor={`custom-time-${brief.id}`} className="text-ice-grey flex items-center gap-2">
-                  Custom time
-                  {brief.scheduleTime === 'custom' && (
-                    <span className="text-xs px-2 py-0.5 bg-electric-teal/10 rounded-full text-electric-teal">Selected</span>
-                  )}
-                </Label>
-                <div className="max-w-xs">
-                  {/* <Input
-                    id={`custom-time-${brief.id}`}
-                    type="time"
-                    value={brief.briefTime}
-                    onChange={(e) => handleTimeChange(brief.id, e.target.value)}
-                    className="bg-canvas-black/80 border-cool-slate/20 text-ice-grey focus-visible:ring-electric-teal time-picker [&::-webkit-calendar-picker-indicator]:ml-52"
-                  /> */}
-                  <MuiTimePicker
-                    value={brief.briefTime}
-                    borderRadius="16px"
-                    padding="12px 16px"
-                    width="100%"
-                    onChange={(newValue) => {
-                      if (newValue) {
-                        handleTimeChange(brief.id, newValue.format("HH:mm"));
-                      }
-                    }}
-                  />
-                  <p className="pt-3 text-xs text-cool-slate mt-2">
-                    Your brief will be prepared and delivered at this time (in your local timezone)
-                  </p>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <Label className="text-ice-grey">Days of the week</Label>
-                <div className="space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    {WEEKDAYS.map(day => (
-                      <Button
-                        key={`${brief.id}-${day}`}
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className={cn(
-                          "border border-cool-slate/30",
-                          brief.days.includes(day)
-                            ? "bg-electric-teal/20 text-electric-teal border-electric-teal/40"
-                            : "bg-canvas-black/50 text-cool-slate"
-                        )}
-                        onClick={() => toggleDay(brief.id, day)}
-                      >
-                        {day.substring(0, 3)}
-                      </Button>
-                    ))}
-                  </div>
-                  
-                  {dailySchedule.weekendMode && (
-                    <div className="flex flex-wrap gap-2">
-                      {WEEKEND.map(day => (
-                        <Button
-                          key={`${brief.id}-${day}`}
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className={cn(
-                            "border border-cool-slate/30",
-                            brief.days.includes(day)
-                              ? "bg-electric-teal/20 text-electric-teal border-electric-teal/40"
-                              : "bg-canvas-black/50 text-cool-slate"
-                          )}
-                          onClick={() => toggleDay(brief.id, day)}
-                        >
-                          {day.substring(0, 3)}
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <p className="text-xs text-cool-slate">
-                  Select which days of the week this brief should be delivered
-                </p>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        ))}
-        
-        {/* <Button 
-          onClick={addNewBrief}
-          variant="outline" 
-          className="w-full border-dashed border-cool-slate/40 bg-deep-plum/10 hover:bg-deep-plum/30 text-ice-grey mt-2"
-          disabled={true} 
-        >
-          <Plus size={16} className="mr-2" /> Add another brief schedule
-        </Button> */}
-        
-        <div className="bg-deep-plum/20 p-4 rounded-lg border border-electric-teal/20 flex gap-3 items-start mt-4">
-          <InfoIcon size={20} className="text-electric-teal shrink-0 mt-0.5" />
-          <p className="text-sm text-cool-slate">
-            <span className="text-ice-grey font-medium">Need a brief outside of your schedule? </span> 
-            You can always request a "Catch Me Up" at any time to get an ad hoc brief covering what you missed.
+        <div>
+          <h2 className="text-2xl font-semibold text-text-primary tracking-tighter">Customize your briefs</h2>
+          <p className="text-text-secondary">
+            Set up your daily brief schedule, which includes delivery method, schedule, time, and days of the week.
           </p>
         </div>
       </div>
       
+      {/* Daily Brief Settings */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-text-primary">Your Brief Schedule</h3>
+        <div className="border border-border-subtle rounded-lg p-4 space-y-4 bg-brand-600/20">
+          
+          {/* Delivery Method */}
+          <div className="space-y-2">
+            <Label className="text-text-primary text-sm">Delivery method</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { method: "email" as const, icon: Mail, label: "Email" },
+                { method: "audio" as const, icon: Headphones, label: "Audio" },
+                { method: "both" as const, icon: Mail, label: "Both" }
+              ].map(({ method, icon: Icon, label }) => (
+                <button
+                  key={method}
+                  onClick={() => handleMethodChange(method)}
+                  className={cn(
+                    "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all text-xs",
+                    brief.deliveryMethod === method
+                      ? 'border-brand-300 bg-brand-500/20 text-brand-300'
+                      : 'border-border-subtle bg-brand-700/30 text-text-secondary hover:bg-brand-600/30'
+                  )}
+                >
+                  <Icon size={16} />
+                  <span className="font-medium">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Schedule Time */}
+          <div className="space-y-3">
+            <Label className="text-text-primary text-sm">Schedule</Label>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { time: "morning" as const, icon: Sun, label: "Morning", value: "8AM" },
+                { time: "midday" as const, icon: Coffee, label: "Midday", value: "12PM" },
+                { time: "evening" as const, icon: Moon, label: "Evening", value: "5PM" },
+                { time: "custom" as const, icon: Clock, label: "Custom", value: "" }
+              ].map(({ time, icon: Icon, label, value }) => (
+                <button
+                  key={time}
+                  onClick={() => handleScheduleChange(time)}
+                  className={cn(
+                    "flex flex-col items-center gap-1 p-2 rounded-lg border transition-all text-xs",
+                    brief.scheduleTime === time
+                      ? 'border-brand-300 bg-brand-500/20 text-brand-300'
+                      : 'border-border-subtle bg-brand-700/30 text-text-secondary hover:bg-brand-600/30'
+                  )}
+                >
+                  <Icon size={14} />
+                  <span className="font-medium">{label}</span>
+                  {value && <span className="text-xs opacity-60">{value}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Time and Days in a row */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-text-primary text-sm">Time</Label>
+              <Input
+                type="time"
+                value={brief.briefTime}
+                onChange={(e) => updateBrief({ briefTime: e.target.value, scheduleTime: "custom" })}
+                className="bg-white/15 border-white/20 text-off-white h-12 text-sm rounded-lg [color-scheme:dark]"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-text-primary text-sm">Days</Label>
+              <div className="flex gap-1">
+                {WEEKDAYS.map(day => {
+                  const isSelected = brief.days.includes({
+                    "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", 
+                    "Thu": "Thursday", "Fri": "Friday"
+                  }[day]);
+                  
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => toggleDay(day)}
+                      className={cn(
+                        "px-1 py-1 rounded text-xs font-medium transition-colors flex-1 min-w-0",
+                        isSelected
+                          ? "bg-brand-300 text-brand-900"
+                          : "bg-brand-700/30 text-text-secondary border border-border-subtle hover:bg-brand-600/30"
+                      )}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Weekend Brief */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between p-4 rounded-lg bg-brand-600/20 border border-border-subtle">
+          <div>
+            <h4 className="font-medium text-text-primary text-sm">Weekend Brief</h4>
+            <p className="text-xs text-text-secondary">Get a Monday morning summary</p>
+          </div>
+          <Switch 
+            checked={weekendBrief.enabled}
+            onCheckedChange={(checked) => setWeekendBrief(prev => ({ ...prev, enabled: checked }))}
+          />
+        </div>
+
+        {weekendBrief.enabled && (
+          <div className="pl-4 space-y-2 border-l-2 border-accent-primary/20">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-text-primary text-xs">Method</Label>
+                <select
+                  value={weekendBrief.deliveryMethod}
+                  onChange={(e) => setWeekendBrief(prev => ({ 
+                    ...prev, 
+                    deliveryMethod: e.target.value as "email" | "audio" | "both" 
+                  }))}
+                  className="w-full px-3 py-2 text-sm rounded-lg bg-white/15 border-white/20 text-off-white"
+                >
+                  <option value="email">Email</option>
+                  <option value="audio">Audio</option>
+                  <option value="both">Both</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-text-primary text-xs">Time</Label>
+                <Input
+                  type="time"
+                  value={weekendBrief.deliveryTime}
+                  onChange={(e) => setWeekendBrief(prev => ({ ...prev, deliveryTime: e.target.value }))}
+                  className="bg-white/15 border-white/20 text-off-white h-9 text-sm rounded-lg [color-scheme:dark]"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Optional Work Hours */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h4 className="font-medium text-text-primary text-sm">Work Hours (Optional)</h4>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowWorkHours(!showWorkHours)}
+            className="text-xs text-text-secondary"
+          >
+            {showWorkHours ? "Hide" : "Set"}
+          </Button>
+        </div>
+
+        {showWorkHours && (
+          <div className="p-4 rounded-lg bg-brand-600/20 border border-border-subtle">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-text-primary text-xs">Start</Label>
+                <Input
+                  type="time"
+                  value={workHours.workdayStart}
+                  onChange={(e) => setWorkHours(prev => ({ ...prev, workdayStart: e.target.value }))}
+                  className="bg-white/15 border-white/20 text-off-white h-10 text-sm rounded-lg [color-scheme:dark]"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-text-primary text-xs">End</Label>
+                <Input
+                  type="time"
+                  value={workHours.workdayEnd}
+                  onChange={(e) => setWorkHours(prev => ({ ...prev, workdayEnd: e.target.value }))}
+                  className="bg-white/15 border-white/20 text-off-white h-10 text-sm rounded-lg [color-scheme:dark]"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="flex justify-between pt-4">
         <Button 
-          onClick={onBack} 
-          variant="plain"
+          variant="back"
           size="none"
-          className="text-sm"
+          onClick={onBack}
         >
           Back
         </Button>
         <Button 
           onClick={handleContinue}
-          className="neon-button"
+          variant="primary"
+          size="pill"
         >
           Continue
         </Button>

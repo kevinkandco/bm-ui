@@ -221,28 +221,51 @@ const BriefCard = ({
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
     // Parse the timeCreated string (e.g., "Today, 8:00 AM" or "December 8, 2024, 8:00 AM")
     const [datePart, timePart] = timeCreated.split(', ');
-    const time = timePart?.replace(':00 ', '').replace(':00', '') || '8am';
-    const formattedTimeRange = timeRange.replace(':00 ', '').replace(':00', '');
-
-    // Handle different date formats
-    let dateText = datePart;
-    if (datePart === 'Today') {
-      const today = new Date();
-      dateText = today.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    } else if (datePart === 'Yesterday') {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      dateText = yesterday.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
-    return `Delivered at ${time} on ${dateText} (Summarizing: ${formattedTimeRange})`;
+    
+    // Convert delivery time to HH:MM format
+    const deliveryTime = timePart ? timePart.replace(/(\d{1,2}):00\s*(AM|PM)/i, (match, hour, period) => {
+      let hourNum = parseInt(hour);
+      if (period.toUpperCase() === 'PM' && hourNum !== 12) hourNum += 12;
+      if (period.toUpperCase() === 'AM' && hourNum === 12) hourNum = 0;
+      return hourNum.toString().padStart(2, '0') + ':00';
+    }) : '08:00';
+    
+    // Parse time range and format as DD/MM HH:MM to DD/MM HH:MM
+    const formatRange = (range: string) => {
+      // Example range: "6:00 AM - 8:00 AM" or "December 8, 6:00 AM - December 8, 8:00 AM"
+      const parts = range.split(' - ');
+      if (parts.length !== 2) return range;
+      
+      const formatDateTime = (dateTimeStr: string) => {
+        const today = new Date();
+        let day = today.getDate().toString().padStart(2, '0');
+        let month = (today.getMonth() + 1).toString().padStart(2, '0');
+        
+        // Handle different date formats in range
+        if (datePart === 'Yesterday') {
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          day = yesterday.getDate().toString().padStart(2, '0');
+          month = (yesterday.getMonth() + 1).toString().padStart(2, '0');
+        }
+        
+        // Extract time and convert to HH:MM
+        const timeMatch = dateTimeStr.match(/(\d{1,2}):00\s*(AM|PM)/i);
+        if (timeMatch) {
+          let hourNum = parseInt(timeMatch[1]);
+          const period = timeMatch[2].toUpperCase();
+          if (period === 'PM' && hourNum !== 12) hourNum += 12;
+          if (period === 'AM' && hourNum === 12) hourNum = 0;
+          const time = hourNum.toString().padStart(2, '0') + ':00';
+          return `${day}/${month} ${time}`;
+        }
+        return `${day}/${month} 08:00`;
+      };
+      
+      return `${formatDateTime(parts[0])} to ${formatDateTime(parts[1])}`;
+    };
+    
+    return `${deliveryTime} Range: ${formatRange(timeRange)}`;
   };
 
       const getBadgeColor = (badge: string) => {
@@ -271,102 +294,82 @@ const BriefCard = ({
     }} onClick={handleCardClick}>
         {/* Collapsed Header */}
         <div className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-              {/* Play button moved to the left, doc icon removed */}
-              <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
-                {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
-                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '0ms'
-                }} />
-                    <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '150ms'
-                }} />
-                    <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '300ms'
-                }} />
-                    <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
-                  animationDelay: '450ms'
-                }} />
-                  </div> : <Play className="h-5 w-5 text-primary-teal" />}
-              </button>
-              
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-white-text truncate font-normal text-sm">
-                    {brief?.title}
-                  </h3>
-                  
-                  {/* Feedback Controls - Show on hover, next to brief name */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
-                    <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
-                      <ThumbsUp className="h-3 w-3" />
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
-                      <ThumbsDown className="h-3 w-3" />
-                    </Button>
-                  </div>
-
-                  {/* Feedback Badge - Always visible when rated */}
-                  {feedbackState === 'up' && <Badge variant="secondary" className="text-xs h-4 px-2 bg-green-500/20 text-green-400 border-green-500/40">
-                      👍
-                    </Badge>}
-                  {feedbackState === 'down' && !showCommentInput && <Badge variant="secondary" className="text-xs h-4 px-2 bg-red-500/20 text-red-400 border-red-500/40">
-                      👎
-                    </Badge>}
-                </div>
-                
-                {/* Updated timestamp and range format with date */}
-                <p className="text-xs text-light-gray-text font-extralight">
-                  Delivered at {brief?.delivery_at} (Summarizing: {timeRange})
-                  {/* {formatDeliveryText(brief?.timeCreated, brief?.timeRange)} */}
-                </p>
-              </div>
-            </div>
+          <div className="flex items-center gap-4 mb-2">
+            {/* Play button moved to the left */}
+            <button onClick={handlePlayClick} className="w-10 h-10 rounded-full bg-primary-teal/20 flex items-center justify-center hover:bg-primary-teal/30 transition-colors flex-shrink-0">
+              {playingBrief === brief.id ? <div className="flex items-center gap-0.5">
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '0ms'
+              }} />
+                  <div className="w-0.5 h-4 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '150ms'
+              }} />
+                  <div className="w-0.5 h-3 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '300ms'
+              }} />
+                  <div className="w-0.5 h-2 bg-primary-teal rounded-full animate-pulse" style={{
+                animationDelay: '450ms'
+              }} />
+                </div> : <Play className="h-5 w-5 text-primary-teal" />}
+            </button>
             
-            {/* Right side items with new layout */}
-            <div className="flex items-center gap-6 flex-shrink-0">
-              {/* Stats and time saved section */}
-              <div className="flex flex-col items-end gap-2">
-                {/* Horizontally aligned stats */}
-                <div className="flex items-center gap-3 text-xs text-light-gray-text">
+            {/* Title Row: Brief title, status badge, counts */}
+            <div className="flex items-center justify-between flex-1 min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <h3 className="text-white-text truncate font-semibold text-base">
+                  {brief?.title}
+                </h3>
+                
+                {/* Status/emoji badge - Always visible when rated */}
+                {feedbackState === 'up' && (
+                  <span className="text-sm">👍</span>
+                )}
+                {feedbackState === 'down' && !showCommentInput && (
+                  <span className="text-sm">👎</span>
+                )}
+                {playingBrief === brief.id && (
+                  <span className="text-sm">▶️</span>
+                )}
+                
+                {/* Feedback Controls - Show on hover */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1">
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('up', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'up' ? 'bg-green-500/20 text-green-400' : 'text-text-secondary hover:text-green-400'}`}>
+                    <ThumbsUp className="h-3 w-3" />
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={e => handleFeedback('down', e)} disabled={feedbackState !== 'none'} className={`h-6 w-6 p-0 transition-all ${feedbackState === 'down' ? 'bg-red-500/20 text-red-400' : 'text-text-secondary hover:text-red-400'}`}>
+                    <ThumbsDown className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Counts on the right side of title row */}
+              <div className="flex items-center gap-4 text-sm text-light-gray-text flex-shrink-0">
                   <span className="whitespace-nowrap">{brief.slackMessageCount} Slack</span>
                   <span className="whitespace-nowrap">{brief.emailCount} Emails</span>
                   <span className="whitespace-nowrap">{brief.actionCount} Actions</span>
-                </div>
-                
-                {/* Time Saved below the stats */}
-                {brief?.savedTime?.total_saved_minutes && <div className="flex items-center gap-1 text-xs text-light-gray-text bg-green-400/10 rounded py-px px-2">
-                  <Clock className="h-2.5 w-2.5 text-green-400" />
-                  <span className="text-green-400 font-medium">~{Math.round(brief?.savedTime?.total_saved_minutes)}min saved</span>
-                </div>}
-              </div>
-              
-              {/* Chevron */}
-              <div className="ml-2">
-                {isExpanded ? <ChevronUp className="h-4 w-4 text-light-gray-text" /> : <ChevronDown className="h-4 w-4 text-light-gray-text" />}
               </div>
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-3">
-					<div className="text-xs text-light-gray-text mt-2">
-						{brief?.description}
-					</div>
-					<div>
-						{(brief?.status !== "failed" && brief?.status !== "success")  && (
-							<span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
-								Generating summary
-							</span>
-						)}
-						{brief?.status === "failed" && (
-							<span title={brief?.error || ""} onClick={(e) => handleClick(brief?.error, e)} className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500">
-								Failed to generate the summary
-							</span>
-						)}
-					</div>
-				</div>
-
+          {/* Meta Row: Delivery text and time saved */}
+          <div className="flex items-center justify-between pl-14">
+            <p className="text-xs text-light-gray-text font-light">
+              {formatDeliveryText(brief.timeCreated, brief.timeRange)}
+            </p>
+            
+            {/* Time saved badge or generating pill aligned right with meta row */}
+            {brief.isGenerating ? (
+              <div className="flex items-center gap-1 text-xs bg-blue-400/10 rounded-full py-1 px-2">
+                <span className="text-blue-400 font-medium">Generating summary</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-xs bg-green-400/10 rounded-full py-1 px-2">
+                <Clock className="h-3 w-3 text-green-400" />
+                <span className="text-green-400 font-medium">~{timeSaved.total}min saved</span>
+              </div>
+            )}
+          </div>
+          
           {/* Comment Input for downvote */}
           {showCommentInput && <div className="mt-3 animate-fade-in" onClick={e => e.stopPropagation()}>
               <Input placeholder="What did we miss?" value={comment} onChange={e => setComment(e.target.value)} onKeyPress={e => handleKeyPress(e, 'comment')} onBlur={handleCommentSubmit} className="bg-white/5 border-white/20 text-text-primary h-7 text-xs" autoFocus />

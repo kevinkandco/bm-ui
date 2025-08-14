@@ -1,4 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import HomeView from "@/components/dashboard/HomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
 import NewBriefModal from "@/components/dashboard/NewBriefModal";
@@ -16,6 +19,17 @@ import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 import FancyLoader from "@/components/settings/modal/FancyLoader";
 import FocusMode from "@/components/dashboard/FocusMode";
 import { requestNotificationPermission } from "@/firebase/fcmService";
+import VacationStatusModal, { VacationSchedule } from "@/components/dashboard/VacationStatusModal";
+import { OfflineStatusModal } from "@/components/dashboard/OfflineStatusModal";
+
+import { Slack, Mail, Calendar, FileText, Users, MessageSquare } from "lucide-react";
+
+interface ConnectedApp {
+  id: string;
+  name: string;
+  icon: typeof Slack | typeof Mail | typeof Calendar | typeof FileText | typeof Users | typeof MessageSquare;
+  color: string;
+}
 
 export interface PendingData {
   id: number;
@@ -29,20 +43,27 @@ interface Transcript {
 }
 interface FocusConfig {
   duration: number;
-  closeApps: {
-    slack: boolean;
-    gmail: boolean;
-    calendar: boolean;
-  };
+  closeApps: Record<string, boolean>;
   statusUpdates: {
     slack: string;
   };
+}
+
+interface OfflineSchedule {
+  startTime: Date;
+  endTime: Date;
+  slackSync: boolean;
+  teamsSync: boolean;
+  slackMessage: string;
+  teamsMessage: string;
+  enableDND: boolean;
 }
 
 const Dashboard = () => {
   const { toast } = useToast();
   const { call } = useApi();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [currentView, setCurrentView] = useState<"home" | "listening">("home");
   const [userStatus, setUserStatus] = useState<IStatus>("active");
   const [focusModeAppType, setFocusModeAppType] = useState<"offline" | "DND" | null>(null);
@@ -63,6 +84,16 @@ const Dashboard = () => {
   const [focusModeActivationLoading, setFocusModeActivationLoading] = useState(false);
   const [showFocusConfig, setShowFocusConfig] = useState(false);
   const [focusConfig, setFocusConfig] = useState<FocusConfig | null>(null);
+  const [showCatchUpModal, setShowCatchUpModal] = useState(false);
+  const [focusStartTime, setFocusStartTime] = useState<number | null>(null);
+  const [awayStartTime, setAwayStartTime] = useState<number | null>(null);
+  const [vacationSchedule, setVacationSchedule] = useState<VacationSchedule | null>(null);
+  const [vacationStartTime, setVacationStartTime] = useState<number | null>(null);
+  const [showVacationModal, setShowVacationModal] = useState(false);
+  const [offlineSchedule, setOfflineSchedule] = useState<OfflineSchedule | null>(null);
+  const [offlineStartTime, setOfflineStartTime] = useState<number | null>(null);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
+
   const [calendarData, setCalendarData] = useState<CalenderData>({
     today: [],
     upcoming: [],
@@ -256,6 +287,17 @@ const Dashboard = () => {
           };
         }, [pendingData, getBrief]);
 
+  // Mock connected apps - in real app this would come from user's integrations
+  const connectedApps: ConnectedApp[] = [
+    { id: "slack", name: "Slack", icon: Slack, color: "text-purple-400" },
+    { id: "gmail", name: "Gmail", icon: Mail, color: "text-blue-400" },
+    { id: "calendar", name: "Calendar", icon: Calendar, color: "text-green-400" },
+    { id: "notion", name: "Notion", icon: FileText, color: "text-gray-400" },
+    { id: "jira", name: "Jira", icon: Users, color: "text-blue-500" },
+  ];
+  
+  console.log("Dashboard connectedApps:", connectedApps);
+
   const openBriefDetails = useCallback((briefId: number) => {
     navigate(`/dashboard/briefs/${briefId}`);
   }, [navigate]);
@@ -300,6 +342,13 @@ const Dashboard = () => {
 
     setFocusModeExitLoading(false);
   }, [call, fetchDashboardData, getRecentBriefs, toast]);
+  // const handleExitFocusMode = useCallback(() => {
+  //   // Start generating brief and show catch-up modal
+  //   setUserStatus("active");
+  //   setFocusConfig(null);
+  //   setFocusStartTime(null);
+  //   setShowCatchUpModal(true);
+  // }, []);
 
   const handleConfirmExitFocus = useCallback(() => {
     setUserStatus("active");
@@ -329,39 +378,41 @@ const Dashboard = () => {
   
   const handleStartFocusMode = useCallback(
     async (
-      focusTime: number,
-      options: {
-        updateStatus?: boolean;
-        closeApps?: boolean;
-        monitorNotifications?: boolean;
-        enableDnd?: boolean;
-      } = {}
+      // focusTime: number,
+      // options: {
+      //   updateStatus?: boolean;
+      //   closeApps?: boolean;
+      //   monitorNotifications?: boolean;
+      //   enableDnd?: boolean;
+      // } = {}
     ) => {
-      setFocusModeActivationLoading(true);
+      setShowFocusConfig(true);
+      // setFocusModeActivationLoading(true);
 
-      const response = await call("post", "/focus-mode", {
-        body: { ...options, focusDuration: focusTime },
-        showToast: true,
-        toastTitle: "Focus Mode Activation Failed",
-        toastDescription:
-          "Focus mode activation failed. please try again sometime later.",
-        toastVariant: "destructive",
-        returnOnFailure: false,
-      });
-      if (response) {
-        setUserStatus("focus");
-        setFocusTime(focusTime * 60);
-        setFocusModeActivationLoading(false);
-        setShowFocusConfig(false);
+      // const response = await call("post", "/focus-mode", {
+      //   body: { ...options, focusDuration: focusTime },
+      //   showToast: true,
+      //   toastTitle: "Focus Mode Activation Failed",
+      //   toastDescription:
+      //     "Focus mode activation failed. please try again sometime later.",
+      //   toastVariant: "destructive",
+      //   returnOnFailure: false,
+      // });
+      // if (response) {
+      //   setUserStatus("focus");
+      //   setFocusTime(focusTime * 60);
+      //   setFocusModeActivationLoading(false);
+      //   setShowFocusConfig(false);
 
-        toast({
-          title: "Focus Mode Started",
-          description:
-            "Slack status set to 'focusing', Gmail status set to 'monitoring'",
-        });
-      }
+      //   toast({
+      //     title: "Focus Mode Started",
+      //     description:
+      //       "Slack status set to 'focusing', Gmail status set to 'monitoring'",
+      //   });
+      // }
     },
-    [toast, call]
+    // [toast, call]
+    []
   );
 
   const handleStartFocusModeWithConfig = useCallback(async (config: FocusConfig) => {
@@ -380,20 +431,21 @@ const Dashboard = () => {
 
     setFocusConfig(config);
     setUserStatus("focus");
-    setFocusTime(config?.duration * 60);
+    // setFocusTime(config?.duration * 60);
+    setFocusStartTime(Date.now());
     
     // Simulate closing apps and updating status
     const actionsText = [];
-    if (config.closeApps.slack) actionsText.push("Slack closed");
-    if (config.closeApps.gmail) actionsText.push("Gmail closed");
-    if (config.closeApps.calendar) actionsText.push("Calendar closed");
-    
-    toast({
-      title: "Focus Mode Started",
-      description: `${config.duration} minute focus session started. ${actionsText.length > 0 ? actionsText.join(', ') + '. ' : ''}Slack status updated.`
+    Object.entries(config.closeApps).forEach(([appId, shouldClose]) => {
+      if (shouldClose) {
+        const app = connectedApps.find(a => a.id === appId);
+        if (app) {
+          actionsText.push(`${app.name} closed`);
+        }
+      }
     });
-  }, [toast, call]);
-  
+  }, [connectedApps, call]);
+
   const handleSignOffForDay = useCallback(async() => {
     const response = await call("post", "/sign-off", {
       showToast: true,
@@ -410,9 +462,23 @@ const Dashboard = () => {
     
     toast({
       title: "Signing Off",
-      description: "Brief-me will monitor but won't send notifications"
+      description: "You've signed off for today"
     });
-  }, [toast, call]);
+  }, [toast]);
+
+  // const handleStartFocusMode = useCallback(() => {
+  //   console.log("Focus mode triggered - opening config modal");
+  //   setShowFocusConfig(true);
+  // }, []);
+  
+  //   const handleSignOffForDay = useCallback(() => {
+  //   setUserStatus("away");
+  //   setAwayStartTime(Date.now());
+  //   toast({
+  //     title: "Signing Off",
+  //     description: "You've signed off for today"
+  //   });
+  // }, [toast]);
 
   const handleSignBackOn = useCallback(async() => {
     const response = await call("post", "/sign-back-on", {
@@ -428,11 +494,177 @@ const Dashboard = () => {
     }
     setUserStatus("active");
     getRecentBriefs();
+    setAwayStartTime(null);
     toast({
       title: "Welcome Back",
       description: "You're now back online and monitoring"
     });
   }, [toast, call, getRecentBriefs]);
+
+  const handleStatusChange = useCallback((newStatus: "active" | "away" | "focus" | "vacation" | "offline") => {
+    if (newStatus === "away" && userStatus !== "away") {
+      setAwayStartTime(Date.now());
+    } else if (newStatus !== "away" && userStatus === "away") {
+      setAwayStartTime(null);
+    }
+    
+    if (newStatus === "vacation" && userStatus !== "vacation") {
+      setVacationStartTime(Date.now());
+    } else if (newStatus !== "vacation" && userStatus === "vacation") {
+      setVacationStartTime(null);
+    }
+
+    if (newStatus === "offline" && userStatus !== "offline") {
+      // Don't set status immediately, open modal instead
+      setShowOfflineModal(true);
+      return;
+    } else if (newStatus !== "offline" && userStatus === "offline") {
+      setOfflineStartTime(null);
+      setOfflineSchedule(null);
+    }
+    
+    setUserStatus(newStatus);
+  }, [userStatus]);
+
+  const handleSaveVacationSchedule = useCallback((schedule: VacationSchedule) => {
+    setVacationSchedule(schedule);
+    
+    // If the vacation starts now or in the past, activate immediately
+    if (schedule.startDate <= new Date()) {
+      setUserStatus("vacation");
+      setVacationStartTime(schedule.startDate.getTime());
+    }
+    
+    toast({
+      title: "Vacation Scheduled",
+      description: `Vacation period set from ${schedule.startDate.toLocaleDateString()} to ${schedule.endDate.toLocaleDateString()}`
+    });
+  }, [toast]);
+
+  const handleEndVacationNow = useCallback(() => {
+    setUserStatus("active");
+    setVacationStartTime(null);
+    setVacationSchedule(null);
+    
+    toast({
+      title: "Vacation Ended",
+      description: "You're now back online and monitoring"
+    });
+  }, [toast]);
+
+  const handleSaveOfflineSchedule = useCallback((schedule: OfflineSchedule) => {
+    setOfflineSchedule(schedule);
+    setUserStatus("offline");
+    setOfflineStartTime(schedule.startTime.getTime());
+    
+    toast({
+      title: "Now Offline",
+      description: `Offline until ${schedule.endTime.toLocaleString()}`
+    });
+  }, [toast]);
+
+  const handleEndOfflineNow = useCallback(() => {
+    setUserStatus("active");
+    setOfflineStartTime(null);
+    setOfflineSchedule(null);
+    
+    toast({
+      title: "Back Online",
+      description: "You're now back online and monitoring"
+    });
+  }, [toast]);
+
+  const handleExtendOffline = useCallback((newEndTime: Date) => {
+    if (offlineSchedule) {
+      setOfflineSchedule(prev => prev ? { ...prev, endTime: newEndTime } : null);
+    }
+  }, [offlineSchedule]);
+
+  const handleOpenVacationModal = useCallback(() => {
+    setShowVacationModal(true);
+  }, []);
+
+  // Check if scheduled vacation should become active
+  useEffect(() => {
+    if (vacationSchedule && !vacationSchedule.isActive && userStatus !== "vacation") {
+      const now = new Date();
+      if (now >= vacationSchedule.startDate && now <= vacationSchedule.endDate) {
+        setUserStatus("vacation");
+        setVacationStartTime(vacationSchedule.startDate.getTime());
+        setVacationSchedule(prev => prev ? { ...prev, isActive: true } : null);
+      }
+    }
+    
+    // Check if active vacation should end
+    if (vacationSchedule && vacationSchedule.isActive && userStatus === "vacation") {
+      const now = new Date();
+      if (now > vacationSchedule.endDate) {
+        setUserStatus("active");
+        setVacationStartTime(null);
+        
+        // Show catch-up brief if enabled
+        if (vacationSchedule.deliverCatchUpBrief) {
+          setShowCatchUpModal(true);
+        }
+        
+        setVacationSchedule(null);
+        toast({
+          title: "Welcome Back",
+          description: "Your vacation has ended. You're now back online and monitoring"
+        });
+      }
+    }
+  }, [vacationSchedule, userStatus, toast, setShowCatchUpModal]);
+
+  // Polling to check vacation schedule every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Force a re-render to check dates if vacation is scheduled
+      if (vacationSchedule) {
+        const now = new Date();
+        // The effect above will handle the actual logic
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [vacationSchedule]);
+
+  // Check if scheduled offline should end
+  useEffect(() => {
+    if (offlineSchedule && userStatus === "offline") {
+      const now = new Date();
+      if (now > offlineSchedule.endTime) {
+        handleEndOfflineNow();
+      }
+    }
+  }, [offlineSchedule, userStatus, handleEndOfflineNow]);
+
+  // Polling to check offline schedule every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (offlineSchedule && userStatus === "offline") {
+        const now = new Date();
+        // The effect above will handle the actual logic
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [offlineSchedule, userStatus]);
+
+  const handleGenerateBrief = useCallback(() => {
+    // This would typically trigger the creation of a new brief
+    console.log("Generating new brief...");
+  }, []);
+
+  const handleGenerateCatchUpBrief = useCallback((timeDescription: string) => {
+    setShowCatchUpModal(false);
+    console.log("Generating catch-up brief for:", timeDescription);
+    
+    toast({
+      title: "Brief Generated",
+      description: "Your catch-up brief has been created successfully"
+    });
+  }, [toast]);
 
   if (loading) {
     return <FancyLoader />
@@ -440,24 +672,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-
-      {/* Focus Mode Timer Header */}
-      {/* Away/Offline Timer Header */}
-      {/* Vacation/Out of Office Timer Header */}
-      {(userStatus === "focus" || userStatus === "app focus" || userStatus === "vacation" || userStatus === "away") && (
-        <StatusTimer 
-          status={userStatus}
-          focusModeAppType={focusModeAppType}
-          onExitFocusMode={handleExitFocusMode}
-          focusTime={focusTime}
-          briefSchedules={briefSchedules}
-          userSchedule={userSchedule}
-          focusModeExitLoading={focusModeExitLoading}
-          onToggleCatchMeUp={handleToggleCatchMeUp}
-          onSignBackOn={handleSignBackOn}
-        />
-      )}
-
       {/* Main Content */}
       <div className="flex-1">
         {currentView === "home" && (
@@ -478,6 +692,19 @@ const Dashboard = () => {
             onExitFocusMode={handleExitFocusMode}
             onSignOffForDay={handleSignOffForDay}
             fetchDashboardData={fetchDashboardData}
+            userStatus={userStatus}
+            focusConfig={focusConfig}
+            focusStartTime={focusStartTime}
+            awayStartTime={awayStartTime}
+            vacationStartTime={vacationStartTime}
+            onStatusChange={handleStatusChange}
+            onSignBackOn={handleSignBackOn}
+            onOpenVacationModal={handleOpenVacationModal}
+            onEndVacationNow={handleEndVacationNow}
+            offlineSchedule={offlineSchedule}
+            offlineStartTime={offlineStartTime}
+            onEndOfflineNow={handleEndOfflineNow}
+            onExtendOffline={handleExtendOffline}
           />
         )}
         {currentView === "listening" && <ListeningScreen />}
@@ -507,6 +734,40 @@ const Dashboard = () => {
         isOpen={showFocusConfig}
         onClose={handleFocusModalClose}
         onStartFocus={handleStartFocusModeWithConfig}
+        connectedApps={connectedApps}
+      />
+      
+      {/* Import and add the CatchMeUp modal */}
+      <Dialog open={showCatchUpModal} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Generate Catch-Up Brief</DialogTitle>
+            <DialogDescription>
+              You've exited focus mode. Generate a brief to catch up on what you missed.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Button onClick={() => handleGenerateCatchUpBrief("focus session")} className="w-full">
+              Generate Catch-Up Brief
+            </Button>
+            <Button variant="outline" onClick={() => setShowCatchUpModal(false)} className="w-full">
+              Skip for Now
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <VacationStatusModal
+        isOpen={showVacationModal}
+        onClose={() => setShowVacationModal(false)}
+        onSave={handleSaveVacationSchedule}
+        currentVacation={vacationSchedule}
+      />
+
+      <OfflineStatusModal
+        isOpen={showOfflineModal}
+        onClose={() => setShowOfflineModal(false)}
+        onSchedule={handleSaveOfflineSchedule}
       />
     </div>
   );

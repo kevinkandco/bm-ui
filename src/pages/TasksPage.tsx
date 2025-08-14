@@ -11,10 +11,30 @@ import { ActionItem } from '@/components/dashboard/types';
 import { useApi } from '@/hooks/useApi';
 import Pagination from '@/components/dashboard/Pagination';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileBottomNav from '@/components/dashboard/MobileBottomNav';
+import MobileHeader from '@/components/dashboard/MobileHeader';
+
+// interface ActionItem {
+//   id: string;
+//   title: string;
+//   source: 'slack' | 'gmail';
+//   sender: string;
+//   isVip: boolean;
+//   priorityPerson?: string; // Name or initials of flagged person
+//   triggerKeyword?: string; // Matched trigger keyword
+//   urgency?: 'critical' | 'high' | 'medium' | 'low';
+//   isNew: boolean;
+//   createdAt: string;
+//   threadUrl: string;
+//   completed: boolean;
+//   lastActivity: string;
+// }
 
 const TasksPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<string | null>(null);
   const [showCompleted, setShowCompleted] = useState(false);
@@ -119,48 +139,48 @@ const TasksPage = () => {
     setIsModalOpen(true);
   }, []);
 
-  const handleMarkDone = useCallback(async (selectedItem: ActionItem) => {
-    const response = await call("post", `/action-item/update`, {
-      body: {
-        id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
-        platform: selectedItem?.platform,
-        status: true
-      },
-        showToast: true,
-        toastTitle: "Failed to Mark Done",
-        toastDescription: "Something went wrong. Please try again.",
-        returnOnFailure: false,
-    });
+  // const handleMarkDone = useCallback(async (selectedItem: ActionItem) => {
+  //   const response = await call("post", `/action-item/update`, {
+  //     body: {
+  //       id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
+  //       platform: selectedItem?.platform,
+  //       status: true
+  //     },
+  //       showToast: true,
+  //       toastTitle: "Failed to Mark Done",
+  //       toastDescription: "Something went wrong. Please try again.",
+  //       returnOnFailure: false,
+  //   });
 
-    if (!response && !response.data) return;
+  //   if (!response && !response.data) return;
 
-    await getActionItems(pagination.currentPage);
+  //   await getActionItems(pagination.currentPage);
     
-    // Toast with undo option
-    toast({
-      title: "Action Item Completed",
-      description: `"${selectedItem?.title}" marked as done`,
-      action: <Button size="sm" variant="outline" onClick={async () => {
-            const response = await call("post", `/action-item/update`, {
-            body: {
-              id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
-              platform: selectedItem?.platform,
-              status: false
-            },
-              showToast: true,
-              toastTitle: "Failed to Mark Done",
-              toastDescription: "Something went wrong. Please try again.",
-              returnOnFailure: false,
-          });
+  //   // Toast with undo option
+  //   toast({
+  //     title: "Action Item Completed",
+  //     description: `"${selectedItem?.title}" marked as done`,
+  //     action: <Button size="sm" variant="outline" onClick={async () => {
+  //           const response = await call("post", `/action-item/update`, {
+  //           body: {
+  //             id: selectedItem?.id?.replace(`${selectedItem?.platform}-`, ''),
+  //             platform: selectedItem?.platform,
+  //             status: false
+  //           },
+  //             showToast: true,
+  //             toastTitle: "Failed to Mark Done",
+  //             toastDescription: "Something went wrong. Please try again.",
+  //             returnOnFailure: false,
+  //         });
 
-          if (!response && !response.data) return;
+  //         if (!response && !response.data) return;
 
-          await getActionItems(pagination.currentPage);
-      }}>
-          Undo
-        </Button>
-    });
-  }, [call, toast, getActionItems, pagination]);
+  //         await getActionItems(pagination.currentPage);
+  //     }}>
+  //         Undo
+  //       </Button>
+  //   });
+  // }, [call, toast, getActionItems, pagination]);
 
   const handleToggleCompleted = () => {
     setShowCompleted(!showCompleted);
@@ -188,26 +208,26 @@ const TasksPage = () => {
     return result;
   }, [])
 
-  const handleMarkAllDone = useCallback(async () => {
-    const body = groupTaskIdsByPlatform(actionItems);
+  // const handleMarkAllDone = useCallback(async () => {
+  //   const body = groupTaskIdsByPlatform(actionItems);
 
-    const response = await call("post", `/action-item/mark-all`, {
-        body,
-        showToast: true,
-        toastTitle: "Failed to Mark Done",
-        toastDescription: "Something went wrong. Please try again.",
-        returnOnFailure: false,
-    });
+  //   const response = await call("post", `/action-item/mark-all`, {
+  //       body,
+  //       showToast: true,
+  //       toastTitle: "Failed to Mark Done",
+  //       toastDescription: "Something went wrong. Please try again.",
+  //       returnOnFailure: false,
+  //   });
 
-    if (!response && !response.data) return;
+  //   if (!response && !response.data) return;
 
-    await getActionItems(pagination.currentPage);
+  //   await getActionItems(pagination.currentPage);
     
-    toast({
-      title: "All Items Completed",
-      description: "All action items marked as done"
-    });
-  }, [toast, actionItems, groupTaskIdsByPlatform, call, pagination, getActionItems]);
+  //   toast({
+  //     title: "All Items Completed",
+  //     description: "All action items marked as done"
+  //   });
+  // }, [toast, actionItems, groupTaskIdsByPlatform, call, pagination, getActionItems]);
 
   const handleUpdatePriority = useCallback(async (selectedItem: ActionItem, newUrgency: 'high' | 'medium' | 'low') => {
     const itemId = selectedItem?.id?.replace(`${selectedItem?.platform}-`, '') || '';
@@ -237,6 +257,14 @@ const TasksPage = () => {
       description: `Priority set to ${newUrgency}`
     });
   }, [toast, call]);
+
+  const handleMarkDone = useCallback((itemId: string) => {
+    setActionItems(prev => prev.filter(item => item.id !== itemId));
+  }, []);
+
+  const handleMarkAllDone = useCallback(() => {
+    setActionItems([]);
+  }, []);
 
   const handleUpdateTag = useCallback(async (selectedItem: ActionItem, newTag: 'critical' | 'decision' | 'approval' | 'heads-up') => {
     const itemId = selectedItem?.id?.replace(`${selectedItem?.platform}-`, '') || '';
@@ -365,7 +393,9 @@ const TasksPage = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-6">
+    <div className={`min-h-screen ${isMobile ? 'pb-24' : 'px-4 py-6'}`}>
+      {isMobile && <MobileHeader />}
+      <div className={!isMobile ? 'px-4 py-6' : 'px-4 pb-6'}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -530,6 +560,10 @@ const TasksPage = () => {
         updateAsanaLink={updateAsanaLink}
         onMarkDone={handleMarkDone}
       />
+
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
+      </div>
     </div>
   );
 };

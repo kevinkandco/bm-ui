@@ -16,7 +16,7 @@ interface MenuBarContainerProps {
   integrations?: Integration[];
 }
 
-type StatusType = "active" | "offline" | "dnd";
+type StatusType = "active" | "away" | "focus" | "vacation";
 
 const MenuBarContainer = ({ 
   onGetBriefedNow, 

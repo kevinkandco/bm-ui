@@ -58,13 +58,13 @@ const UpdateScheduleModal = ({ open, onClose }: UpdateScheduleModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-background/80 backdrop-blur-xl border border-white/10">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto bg-brand-600 backdrop-blur-xl border border-white/8">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center">
-            <Calendar className="mr-2 h-5 w-5 text-blue-400" />
+          <DialogTitle className="text-text-primary flex items-center">
+            <Calendar className="mr-2 h-5 w-5 text-brand-300" />
             Update Brief Schedule
           </DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogDescription className="text-text-secondary">
             Customize when you receive your briefings
           </DialogDescription>
         </DialogHeader>
@@ -78,22 +78,22 @@ const UpdateScheduleModal = ({ open, onClose }: UpdateScheduleModalProps) => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="auto" id="auto" />
-              <Label htmlFor="auto" className="text-white">Use AI-recommended schedule</Label>
+              <Label htmlFor="auto" className="text-text-primary">Use AI-recommended schedule</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="custom" id="custom" />
-              <Label htmlFor="custom" className="text-white">Set custom schedule</Label>
+              <Label htmlFor="custom" className="text-text-primary">Set custom schedule</Label>
             </div>
           </RadioGroup>
           
           {scheduleType === "custom" && (
             <div className="space-y-4 pt-2">
-              <div className="bg-white/10 rounded-lg border border-white/10 p-4">
-                <h4 className="text-sm font-medium text-white mb-3">Days</h4>
+              <div className="bg-brand-500 rounded-lg border border-white/8 p-4">
+                 <h4 className="text-sm font-medium text-text-primary mb-3">Days</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(days).map(([day, isActive]) => (
                     <div key={day} className="flex items-center justify-between">
-                      <Label htmlFor={`day-${day}`} className="text-white capitalize">
+                      <Label htmlFor={`day-${day}`} className="text-text-primary capitalize">
                         {day}
                       </Label>
                       <Switch 
@@ -106,13 +106,13 @@ const UpdateScheduleModal = ({ open, onClose }: UpdateScheduleModalProps) => {
                 </div>
               </div>
               
-              <div className="bg-white/10 rounded-lg border border-white/10 p-4">
-                <h4 className="text-sm font-medium text-white mb-3">Times</h4>
+              <div className="bg-brand-500 rounded-lg border border-white/8 p-4">
+                 <h4 className="text-sm font-medium text-text-primary mb-3">Times</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="time-morning" className="text-white">Morning Brief</Label>
-                      <p className="text-xs text-white/60">Delivered at 8:00 AM</p>
+                      <Label htmlFor="time-morning" className="text-text-primary">Morning Brief</Label>
+                       <p className="text-xs text-text-secondary">Delivered at 8:00 AM</p>
                     </div>
                     <Switch 
                       id="time-morning"
@@ -121,12 +121,12 @@ const UpdateScheduleModal = ({ open, onClose }: UpdateScheduleModalProps) => {
                     />
                   </div>
                   
-                  <Separator className="bg-white/10" />
+                   <Separator className="bg-white/8" />
                   
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="time-midday" className="text-white">Midday Brief</Label>
-                      <p className="text-xs text-white/60">Delivered at 12:30 PM</p>
+                      <Label htmlFor="time-midday" className="text-text-primary">Midday Brief</Label>
+                       <p className="text-xs text-text-secondary">Delivered at 12:30 PM</p>
                     </div>
                     <Switch 
                       id="time-midday"
@@ -135,12 +135,12 @@ const UpdateScheduleModal = ({ open, onClose }: UpdateScheduleModalProps) => {
                     />
                   </div>
                   
-                  <Separator className="bg-white/10" />
+                  <Separator className="bg-white/8" />
                   
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="time-evening" className="text-white">Evening Brief</Label>
-                      <p className="text-xs text-white/60">Delivered at 6:00 PM</p>
+                      <Label htmlFor="time-evening" className="text-text-primary">Evening Brief</Label>
+                       <p className="text-xs text-text-secondary">Delivered at 6:00 PM</p>
                     </div>
                     <Switch 
                       id="time-evening"
@@ -155,10 +155,10 @@ const UpdateScheduleModal = ({ open, onClose }: UpdateScheduleModalProps) => {
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white">
+          <Button variant="outline" onClick={onClose} className="rounded-full border-white/12 text-text-secondary hover:bg-white/8 hover:text-text-primary">
             <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
-          <Button onClick={handleSaveSchedule} className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button onClick={handleSaveSchedule} className="rounded-full bg-brand-300 text-background hover:bg-brand-300/90">
             <Clock className="mr-2 h-4 w-4" /> Save Schedule
           </Button>
         </DialogFooter>

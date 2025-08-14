@@ -20,10 +20,14 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
+import MobileHeader from "@/components/dashboard/MobileHeader";
 
 const BriefsList = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<string>("");
@@ -181,153 +185,89 @@ const BriefsList = () => {
   );
 
   return (
-    <DashboardLayout
-      currentPage="briefs"
-      sidebarOpen={sidebarOpen}
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="min-h-screen bg-surface px-4 py-6">
-        <Breadcrumb className="mb-4">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() => navigate("/dashboard")}
-                className="cursor-pointer"
-              >
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Briefs</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <>
+      <DashboardLayout 
+        currentPage="briefs" 
+        sidebarOpen={sidebarOpen} 
+        onToggleSidebar={handleToggleSidebar}
+      >
+        <div className={`min-h-screen bg-surface ${isMobile ? 'pb-24' : 'px-4 py-6'}`}>
+          {isMobile && <MobileHeader />}
+          <div className={!isMobile ? 'px-4 py-6' : 'px-4 pb-6'}>
+          <Breadcrumb className="mb-4">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink 
+                  onClick={() => navigate("/dashboard")} 
+                  className="cursor-pointer"
+                >
+                  Dashboard
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Briefs</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
-            All Briefs
-          </h1>
-          <p className="text-text-secondary">
-            Search and view your brief history
-          </p>
-        </div>
-
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
-            <Input
-              placeholder="Search briefs..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
-            />
+          <div className="mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">All Briefs</h1>
+            <p className="text-text-secondary">Search and view your brief history</p>
           </div>
-        </div>
-
-        {/* Briefs List */}
-        <div className="glass-card rounded-2xl overflow-hidden">
-          <div className="p-4 md:p-6">
-            <div className="space-y-1">
-              {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <BriefItemSkeleton key={i} />
-                ))
-              ) : filteredBriefs?.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-text-secondary">
-                    No briefs found matching your search.
-                  </p>
-                </div>
-              ) : (
-                filteredBriefs?.map((brief, index) => {
-                  const {
-                    id,
-                    title,
-                    status,
-                    summaryTime,
-                    start_at,
-                    ended_at,
-                    emailCount,
-                    slackMessageCount,
-                    error,
-                  } = brief;
-
-                  const timeRange =
-                    start_at && ended_at
-                      ? `Time Range: ${start_at} - ${ended_at}`
-                      : "";
-                  const isClickable =
-                    status === "success" || status === "failed";
-
-                  return (
+          
+          {/* Search */}
+          <div className="mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-secondary" />
+              <Input
+                placeholder="Search briefs..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 rounded-xl bg-surface-overlay border-border-subtle"
+              />
+            </div>
+          </div>
+          
+          {/* Briefs List */}
+          <div className="glass-card rounded-2xl overflow-hidden">
+            <div className="p-4 md:p-6">
+              <div className="space-y-1">
+                {filteredBriefs.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-text-secondary">No briefs found matching your search.</p>
+                  </div>
+                ) : (
+                  filteredBriefs.map((brief) => (
                     <React.Fragment key={brief.id}>
-                      <div
+                      <div 
                         className="flex items-center justify-between p-4 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
-                        onClick={
-                          isClickable ? () => handleOpenBrief(id) : undefined
-                        }
+                        onClick={() => handleOpenBrief(brief.id)}
                       >
                         <div className="flex items-center flex-1">
                           <Archive className="h-5 w-5 text-accent-primary mr-3 flex-shrink-0" />
-
-                          <div className="flex justify-between w-full flex-col sm:flex-row gap-5 sm:gap-0">
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center">
-                                <h3 className="font-medium text-text-primary truncate">
-                                  {title}
-                                </h3>
-                                {!brief?.read_at && (
-                                  <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
-                                )}
-                              </div>
-                              <p className="text-sm text-text-secondary">
-                                {summaryTime}
-                              </p>
-                              {timeRange && (
-                                <p className="text-xs text-text-secondary mt-1">
-                                  {timeRange}
-                                </p>
-                              )}
-                              <p className="text-xs text-text-secondary mt-1">{`${
-                                emailCount ? `${emailCount} emails` : "0 email"
-                              }, ${
-                                slackMessageCount
-                                  ? `${slackMessageCount} slack messages`
-                                  : "0 slack messages"
-                              }`}</p>
-                            </div>
-                            <div>
-                              {status !== "failed" && status !== "success" && (
-                                <span className="text-sm text-text-secondary border px-2 py-1 rounded-md border-yellow-500 text-yellow-500">
-                                  Generating summary
-                                </span>
-                              )}
-                              {status === "failed" && (
-                                <span title={error}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleClick(error || "");
-                                  }}
-                                  className="text-sm text-text-secondary border px-2 py-1 rounded-md border-red-500 text-red-500"
-                                >
-                                  Failed to generate the summary
-                                </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center">
+                              <h3 className="font-medium text-text-primary truncate">{brief.title}</h3>
+                              {brief.unread && (
+                                <span className="ml-2 h-2 w-2 bg-accent-primary rounded-full flex-shrink-0"></span>
                               )}
                             </div>
+                            <p className="text-sm text-text-secondary">{brief.date}</p>
+                            <p className="text-xs text-text-secondary mt-1">Time Range: {brief.timeRange}</p>
+                            <p className="text-xs text-text-secondary mt-1">{brief.summary}</p>
                           </div>
-                          {/* <p className="text-sm text-text-secondary">{brief.date}</p> */}
                         </div>
                       </div>
-                      {index + 1 !== briefs.length && (
+                      {brief.id !== filteredBriefs[filteredBriefs.length - 1].id && 
                         <Separator className="bg-border-subtle my-1" />
-                      )}
+                      }
                     </React.Fragment>
-                  );
-                })
-              )}
+                  ))
+                )}
+              </div>
             </div>
+          </div>
           </div>
         </div>
         {pagination.totalPages > 1 && (
@@ -338,8 +278,11 @@ const BriefsList = () => {
           />
         )}
         <ViewErrorMessage open={open} onClose={handleClose} message={message} />
-      </div>
-    </DashboardLayout>
+      </DashboardLayout>
+      
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
+    </>
   );
 };
 

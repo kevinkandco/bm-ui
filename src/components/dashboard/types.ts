@@ -1,4 +1,4 @@
-export type IStatus = "active" | "away" | "focus" | "app focus" | "vacation";
+export type IStatus = "active" | "away" | "focus" | "app focus" | "vacation" | "offline";
 
 export interface BriefSchedules {
   id: string;

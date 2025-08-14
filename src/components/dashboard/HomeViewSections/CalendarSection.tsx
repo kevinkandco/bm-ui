@@ -46,15 +46,17 @@ import {
 } from "@/components/ui/collapsible";
 import { convertToMeetings } from "@/lib/utils";
 
-interface CalenderSectionProps {
+interface CalendarSectionProps {
   calendarData: CalenderData;
   onViewAllSchedule: (isPast: boolean) => void;
+  onMeetingClick?: (meeting: Meeting) => void;
 }
 
 const CalendarSection = ({
   calendarData,
   onViewAllSchedule,
-}: CalenderSectionProps) => {
+  onMeetingClick
+}: CalendarSectionProps) => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [upcomingMeetings, setUpcomingMeetings] = useState<Meeting[]>([]);
 
@@ -197,28 +199,27 @@ const CalendarSection = ({
   return (
     <TooltipProvider>
       <div className="w-full space-y-4">
-        {/* Upcoming header */}
-        <h3 className="text-sm font-medium text-text-primary">Upcoming</h3>
-
-        {/* Next Meeting Card - Reverted to original version with outline */}
+        {/* Header with increased padding */}
+        <div className="pt-6 pb-4">
+          <h3 className="text-sm font-medium" style={{color: 'var(--text-primary)'}}>Today's Schedule</h3>
+          <p className="text-xs mt-1" style={{color: 'var(--text-secondary)'}}>Next 2 meetings</p>
+        </div>
+        
+        {/* Next Meeting Card - Updated to match style guide */}
         {nextMeeting ? (
-          <Card
-            className="w-full rounded-xl border border-border-subtle cursor-pointer hover:shadow-md transition-shadow"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)",
-            }}
-            onClick={() => openMeetingDetails(nextMeeting)}
+          <Card 
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--brand-600)] cursor-pointer transition-all hover:bg-white/[0.04] shadow-none"
+            onClick={() => onMeetingClick ? onMeetingClick(nextMeeting) : openMeetingDetails(nextMeeting)}
           >
             <CardContent className="p-4">
-              <div className="bg-surface-overlay/50 rounded-xl p-4">
+              <div className="space-y-3">
                 {/* Header with time and chips */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h4 className="text-sm font-medium text-text-primary mb-1 break-all">
+                    <h4 className="text-sm font-medium mb-1" style={{color: 'var(--text-primary)'}}>
                       {nextMeeting.title}
                     </h4>
-                    <div className="flex items-center gap-2 text-xs text-text-secondary">
+                    <div className="flex items-center gap-2 text-xs" style={{color: 'var(--text-muted)'}}>
                       <Clock className="w-3 h-3" />
                       {nextMeeting.time} • {nextMeeting.duration}
                     </div>
@@ -228,8 +229,8 @@ const CalendarSection = ({
                   <div className="flex items-center gap-2">
                     {nextMeeting.isRecording && (
                       <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                        <span className="text-xs text-red-400">REC</span>
+                        <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
+                         <span className="text-xs text-error">REC</span>
                       </div>
                     )}
 
@@ -242,11 +243,11 @@ const CalendarSection = ({
                           }}
                           variant={nextMeeting.hasProxy ? "default" : "outline"}
                           size="sm"
-                          className={`h-6 px-2 text-xs rounded-full ${
-                            nextMeeting.hasProxy
-                              ? "bg-green-600 text-white hover:bg-green-700"
-                              : "border-text-secondary text-text-secondary hover:border-green-600 hover:text-green-600"
-                          }`}
+                           className={`h-6 px-3 text-xs rounded-full ${
+                             nextMeeting.hasProxy 
+                               ? "bg-success text-background hover:bg-success/90" 
+                               : "border-white/12 text-text-secondary hover:border-success hover:text-success"
+                           }`}
                         >
                           {nextMeeting.hasProxy ? "Proxy On" : "Send Proxy"}
                         </Button>
@@ -316,10 +317,10 @@ const CalendarSection = ({
                   >
                     <Button
                       size="sm"
-                      className={`h-7 px-3 text-xs rounded-l-lg rounded-r-none ${
-                        nextMeeting.hasProxy
-                          ? "bg-surface text-text-secondary hover:bg-surface"
-                          : "bg-accent-primary text-white hover:bg-accent-primary/90"
+                      className={`h-7 px-3 text-xs rounded-l-full ${
+                        nextMeeting.hasProxy 
+                          ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
+                          : "bg-brand-300 text-background hover:bg-brand-300/90"
                       }`}
                       disabled={nextMeeting.hasProxy}
                     >
@@ -330,23 +331,20 @@ const CalendarSection = ({
                       <DropdownMenuTrigger asChild>
                         <Button
                           size="sm"
-                          className={`h-7 w-6 px-0 rounded-r-lg rounded-l-none border-l border-l-white/20 ${
-                            nextMeeting.hasProxy
-                              ? "bg-surface text-text-secondary hover:bg-surface"
-                              : "bg-accent-primary text-white hover:bg-accent-primary/90"
+                          className={`h-7 w-6 px-0 rounded-r-full border-l border-l-white/20 ${
+                            nextMeeting.hasProxy 
+                              ? "bg-brand-500 text-text-secondary hover:bg-brand-500" 
+                              : "bg-brand-300 text-background hover:bg-brand-300/90"
                           }`}
                         >
                           <ChevronDown className="w-3 h-3" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="bg-surface border-border-subtle"
-                      >
-                        <DropdownMenuItem
-                          onClick={() => toggleProxy(nextMeeting.id)}
-                          className="text-text-primary hover:bg-white/5"
-                        >
+                       <DropdownMenuContent align="end" className="bg-brand-600 border-white/8">
+                         <DropdownMenuItem 
+                           onClick={() => toggleProxy(nextMeeting.id)}
+                           className="text-text-primary hover:bg-white/8"
+                         >
                           Send Proxy Instead
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -375,184 +373,70 @@ const CalendarSection = ({
         )}
 
         {/* Schedule section with header above */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-text-primary">Schedule</h3>
-          <Card
-            className="w-full rounded-xl shadow-none border-0"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(31, 36, 40, 0.4) 0%, rgba(43, 49, 54, 0.4) 100%)",
-              boxShadow: "none",
-            }}
-          >
+        <div className="space-y-3 pt-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium" style={{color: 'var(--text-primary)'}}>More today</h3>
+            <Button variant="ghost" size="sm" className="text-xs" style={{color: 'var(--text-secondary)'}}>
+              View all ({allMeetings.length})
+            </Button>
+          </div>
+          <Card className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--brand-600)] shadow-none">
             <CardContent className="p-4">
               <h3 className="text-sm font-medium text-white-text/80 px-1 mb-2">
                 Today's Schedule
               </h3>
               <div className="space-y-0">
-                {!(allMeetings.length > 0) ? (
-                  <div className="w-full">
-                    <div className="text-center py-6">
-                      <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
-                      <p className="text-sm text-text-secondary">
-                        No meetings for today
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  allMeetings.map((meeting, index) => {
-                    const isPast = meeting.minutesUntil < 0;
-                    const isNext = meeting.id === nextMeeting?.id;
-
-                    return (
-                      <div key={meeting.id} className="relative">
-                        {/* Timeline connector */}
-                        {index > 0 && (
-                          <div
-                            className={`absolute left-16 top-0 w-0.5 h-4 ${
-                              allMeetings[index - 1].minutesUntil < 0
-                                ? "bg-red-500"
-                                : "bg-border-subtle"
-                            }`}
-                          />
-                        )}
-
-                        <div
-                          className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors ${
-                            isNext ? "opacity-100" : "opacity-80"
-                          }`}
-                          onClick={() => openMeetingDetails(meeting)}
-                        >
-                          {/* Time */}
-                          <div className="text-sm text-text-secondary min-w-[100px] font-mono">
-                            {meeting.time}
-                          </div>
-
-                          {/* Title */}
-                          <div className="flex-1">
-                            <span
-                              className={`text-sm ${
-                                isPast
-                                  ? "text-text-secondary"
-                                  : "text-text-primary"
-                              }`}
-                            >
-                              {meeting.title}
-                            </span>
-                          </div>
-
-                          {/* Status indicator */}
-                          <div className="flex items-center gap-2">
-                            {meeting.hasProxy && (
-                              <div className="w-2 h-2 bg-green-500 rounded-full" />
-                            )}
-                            {meeting.isRecording && (
-                              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Timeline indicator line - red line shows current time */}
-                        {meeting.minutesUntil < 0 &&
-                          allMeetings[index + 1]?.minutesUntil >= 0 && (
-                            <div className="absolute left-0 right-0 top-full">
-                              <div className="h-0.5 bg-red-500 w-full" />
-                            </div>
-                          )}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-              <Separator className="my-3 bg-white-text/10" />
-
-              {
-                <div className="pt-2">
-                  <Collapsible
-                    open={upcomingOpen}
-                    onOpenChange={setUpcomingOpen}
-                  >
-                    <CollapsibleTrigger className="flex items-center justify-between w-full text-left">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-medium text-white-text/80 px-1">
-                          Upcoming
-                        </h3>
-                      </div>
-                      <ChevronDown
-                        className={`h-4 w-4 text-white-text/60 transition-transform duration-200 ${
-                          upcomingOpen ? "transform rotate-180" : ""
+                {allMeetings.map((meeting, index) => {
+                  const isPast = meeting.minutesUntil < 0;
+                  const isNext = meeting.id === nextMeeting?.id;
+                  
+                  return (
+                    <div key={meeting.id} className="relative">
+                      {/* Timeline connector */}
+                      {index > 0 && (
+                        <div className={`absolute left-16 top-0 w-0.5 h-4 ${
+                          allMeetings[index - 1].minutesUntil < 0 ? 'bg-error' : 'bg-white/8'
+                        }`} />
+                      )}
+                      
+                      <div 
+                        className={`flex items-center gap-4 py-3 cursor-pointer hover:bg-white/8 rounded-lg transition-colors ${
+                          isNext ? 'opacity-100' : 'opacity-80'
                         }`}
-                      />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-2 pt-2">
-                      <div className="space-y-0">
-                        {upcomingMeetings.map((meeting, index) => {
-                          return (
-                            <div key={meeting.id} className="relative">
-                              <div
-                                className={
-                                  "flex items-center gap-4 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors opacity-100"
-                                }
-                                onClick={() => openMeetingDetails(meeting)}
-                              >
-                                {/* Time */}
-                                <div className="text-sm text-text-secondary min-w-[100px] font-mono">
-                                  {meeting.date} {meeting.time}
-                                </div>
-
-                                {/* Title */}
-                                <div className="flex-1">
-                                  <span className={"text-sm text-text-primary"}>
-                                    {meeting.title}
-                                  </span>
-                                </div>
-
-                                {/* Status indicator */}
-                                <div className="flex items-center gap-2">
-                                  {meeting.hasProxy && (
-                                    <div className="w-2 h-2 bg-green-500 rounded-full" />
-                                  )}
-                                  {meeting.isRecording && (
-                                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                        <div className="flex items-center justify-end w-full">
-                          <Button
-                            onClick={() => onViewAllSchedule(false)}
-                            variant="ghost"
-                            size="sm"
-                            className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
-                          >
-                            View all
-                            <ArrowRight className="w-3 h-3 ml-1" />
-                          </Button>
+                        onClick={() => onMeetingClick ? onMeetingClick(meeting) : openMeetingDetails(meeting)}
+                      >
+                        {/* Time */}
+                        <div className="text-sm text-text-secondary min-w-[100px] font-mono">
+                          {meeting.time}
                         </div>
+                        
+                        {/* Title */}
+                        <div className="flex-1">
+                          <span className={`text-sm ${isPast ? 'text-text-secondary' : 'text-text-primary'}`}>
+                            {meeting.title}
+                          </span>
+                        </div>
+                        
+                         {/* Status indicator */}
+                         <div className="flex items-center gap-2">
+                           {meeting.hasProxy && (
+                             <div className="w-2 h-2 bg-success rounded-full" />
+                           )}
+                           {meeting.isRecording && (
+                             <div className="w-2 h-2 bg-error rounded-full animate-pulse" />
+                           )}
+                         </div>
                       </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                  <Separator className="mt-2 my-3 bg-white-text/10" />
-                </div>
-              }
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between w-full">
-                  <h3 className="text-sm font-medium text-white-text/80 px-1">
-                    Past Schedule
-                  </h3>
-                  <Button
-                    onClick={() => onViewAllSchedule(true)}
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs text-white-text/60 hover:text-white-text hover:bg-white/10 h-auto p-2 rounded-lg"
-                  >
-                    View all
-                    <ArrowRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </div>
+                      
+                      {/* Timeline indicator line - red line shows current time */}
+                       {meeting.minutesUntil < 0 && allMeetings[index + 1]?.minutesUntil >= 0 && (
+                         <div className="absolute left-0 right-0 top-full">
+                           <div className="h-0.5 bg-error w-full" />
+                         </div>
+                       )}
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

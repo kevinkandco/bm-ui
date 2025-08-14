@@ -130,9 +130,10 @@ export function useOnboardingState() {
       ? (JSON.parse(storedData) as UserData)
       : defaultUserData;
   });
-  // The sign-in step is no longer counted in the total steps
-  const totalSteps = 9;
-
+  
+  // Updated to include interrupt rules step
+  const totalSteps = 10;
+  
   // This function maps the UI step (1-based) to the actual progress step (0-based)
   // where step 1 is the FeaturesWalkthroughStep (after sign in)
   const getProgressStep = useCallback((uiStep: number) => {

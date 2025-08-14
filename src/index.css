@@ -3,27 +3,37 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* New Podia Color System */
-    --surface: #0A0F19;  /* Dark Navy */
-    --surface-raised: #131B2B;  /* Deep Blue */
-    --surface-overlay: rgba(19, 27, 43, 0.95);  /* Deep Blue with opacity */
-    --glow-highlight: rgba(46, 226, 173, 0.1);
-    --glow-line: rgba(46, 226, 173, 0.2);
-    --accent-primary: #2EE2AD;  /* Primary Teal */
-    --accent-secondary: #3DE48D;  /* Accent Green */
-    --text-primary: #FFFFFF;  /* White Text */
-    --text-secondary: #B3B8C1;  /* Light Gray Text */
-    --text-muted: rgba(179, 184, 193, 0.7);
-    --border-subtle: rgba(179, 184, 193, 0.2);
+    /* Brief Me Brand Colors - Style Guide */
+    --brand-900: #0E1214;  /* App background */
+    --brand-800: #10191E;  /* Sidebar bg */
+    --brand-700: #1C1E21;  /* Panels, cards */
+    --brand-600: #172D32;  /* Primary card bg */
+    --brand-500: #1E3E46;  /* Subtle accent bg */
+    --brand-300: #206C6B;  /* Primary accent (brand green-teal) */
+    --brand-200: #1B5862;  /* Buttons */
+
+    /* Text Colors */
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.78);
+    --text-muted: rgba(255, 255, 255, 0.56);
+
+    /* Border */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    
+    /* Legacy surface colors for compatibility */
+    --surface: var(--brand-900);
+    --surface-raised: var(--brand-700);
+    --surface-overlay: rgba(28, 30, 33, 0.95);
+    --accent-primary: var(--brand-300);
     
     /* Standard radius */
-    --radius: 16px;
+    --radius: 12px;
 
-    /* Updated shadcn variables for Podia theme */
+    /* Updated shadcn variables for Brief Me theme */
     --background: 218 42% 8%;     /* Dark Navy */
     --foreground: 0 0% 100%;      /* White */
     --card: 218 42% 11%;          /* Deep Blue */
@@ -43,117 +53,68 @@
     --border: 221 12% 50%;        /* Light Gray border */
     --input: 221 12% 50%;         /* Light Gray */
     --ring: 162 84% 55%;          /* Primary Teal */
-    
-    /* Accent colors with opacity for hover states */
-    --accent-primary-hover: rgba(46, 226, 173, 0.2);
-    --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
   }
 
   .dark {
     /* Same as root for dark mode */
-    --surface: #0A0F19;
-    --surface-raised: #131B2B;
-    --surface-overlay: rgba(19, 27, 43, 0.85);
-    --glow-highlight: rgba(46, 226, 173, 0.05);
-    --glow-line: rgba(46, 226, 173, 0.15);
-    --accent-primary: #2EE2AD;
-    --accent-secondary: #3DE48D;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B3B8C1;
-    --text-muted: rgba(179, 184, 193, 0.5);
-    --border-subtle: rgba(179, 184, 193, 0.08);
-    
-    --accent-primary-hover: rgba(46, 226, 173, 0.2);
-    --accent-primary-hover-light: rgba(46, 226, 173, 0.1);
+    --brand-900: #0E1214;
+    --brand-800: #10191E;
+    --brand-700: #1C1E21;
+    --brand-600: #172D32;
+    --brand-500: #1E3E46;
+    --brand-300: #206C6B;
+    --brand-200: #1B5862;
 
-    /* Update shadcn variables to match */
-    --background: 218 42% 8%;
-    --foreground: 0 0% 100%;
-    --card: 218 42% 11%;
-    --card-foreground: 0 0% 100%;
-    --popover: 218 42% 11%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 162 84% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 218 42% 11%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 218 42% 18%;
-    --muted-foreground: 221 12% 73%;
-    --accent: 162 84% 55%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 221 12% 25%;
-    --input: 221 12% 25%;
-    --ring: 162 84% 55%;
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.78);
+    --text-muted: rgba(255, 255, 255, 0.56);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    
+    --surface: var(--brand-900);
+    --surface-raised: var(--brand-700);
+    --surface-overlay: rgba(28, 30, 33, 0.95);
+    --accent-primary: var(--brand-300);
   }
 
   body {
-    @apply font-inter;
+    @apply font-outfit;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background: 
-      radial-gradient(
-        circle at top left,
-        #2A8A5F 0%,
-        #1E646E 30%,
-        #000000 70%
-      ),
-      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.12'%3E%3Cpath d='M30 0c16.569 0 30 13.431 30 30s-13.431 30-30 30S0 46.569 0 30 13.431 0 30 0zm0 6c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24S43.255 6 30 6zm0 6c9.941 0 18 8.059 18 18s-8.059 18-18 18-18-8.059-18-18 8.059-18 18-18zm0 6c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    background-attachment: fixed;
+    background: var(--brand-900);
     color: var(--text-primary);
     min-height: 100vh;
+    letter-spacing: -0.01em;
   }
 
   .style-anchor a {
     color: "#2EE2AD";
     text-decoration: underline;
   }
+  
+  /* Global borders & dividers */
+  *,
+  *::before,
+  *::after { border-color: var(--border-subtle); }
+  
+  hr, .divider { border-color: var(--border-subtle) !important; }
 }
 
 @layer utilities {
-  /* Podia specific utilities */
-  .podia-heading {
-    @apply text-heading text-white-text font-semibold;
-  }
-  
-  .podia-subheading {
-    @apply text-subheading text-white-text font-normal;
-  }
-  
-  .podia-body {
-    @apply text-body text-white-text font-normal;
-  }
-  
-  .podia-secondary {
-    @apply text-secondary text-light-gray-text font-normal;
-  }
-  
-  /* Glass effect utilities - updated for new palette */
+  /* Glass effect utilities - updated for Brief Me */
   .glass-panel {
-    background: var(--surface-overlay);
+    background: var(--brand-600);
     backdrop-filter: blur(16px);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
   }
   
   .glow-text {
-    text-shadow: 0 0 10px rgba(46, 226, 173, 0.4);
+    text-shadow: 0 0 10px var(--brand-300);
   }
   
   .glow-border {
-    box-shadow: 0 0 15px rgba(46, 226, 173, 0.4);
-    border: 1px solid var(--accent-primary);
-  }
-  
-  .glow-line {
-    height: 1px;
-    background: linear-gradient(
-      to right, 
-      rgba(46, 226, 173, 0),
-      var(--glow-line),
-      rgba(46, 226, 173, 0)
-    );
+    box-shadow: 0 0 15px var(--brand-300);
+    border: 1px solid var(--brand-300);
   }
 
   /* Shadow utilities */
@@ -162,94 +123,36 @@
   }
 
   .shadow-glow {
-    box-shadow: 0 0 20px rgba(46, 226, 173, 0.4);
-  }
-
-  /* Text gradient with new colors */
-  .text-gradient-teal {
-    @apply bg-gradient-to-r bg-clip-text text-transparent from-primary-teal to-accent-green;
+    box-shadow: 0 0 20px var(--brand-300);
   }
   
   /* Voice listening animation */
   .voice-ripple {
     @apply animate-ping;
-    background: radial-gradient(circle, rgba(46, 226, 173, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--brand-300) 0%, transparent 70%);
   }
   
   /* Microphone gradient */
   .mic-gradient {
-    background: radial-gradient(circle, rgba(46, 226, 173, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--brand-300) 0%, transparent 70%);
   }
 }
 
-@layer components {
-  /* Podia Button Components */
-  .podia-button-primary {
-    @apply bg-primary-teal text-white-text font-medium text-button
-           rounded-podia-button px-4 py-2.5 transition-all duration-200
-           hover:bg-accent-green focus:outline-none focus:ring-2 focus:ring-primary-teal/50
-           active:scale-95 shadow-podia-button;
-  }
-  
-  .podia-chip-secondary {
-    @apply bg-deep-blue text-white-text font-normal text-chip
-           rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
-           hover:bg-opacity-90 border border-transparent;
-  }
-  
-  .podia-chip-outline {
-    @apply bg-transparent text-light-gray-text font-normal text-chip
-           rounded-podia-chip px-3.5 py-1.5 transition-all duration-200
-           border border-light-gray-text/40 hover:border-light-gray-text/60;
-  }
-  
-  /* Podia Cards */
-  .podia-card {
-    @apply bg-dark-navy rounded-podia-card p-4 transition-all duration-300;
-  }
-  
-  /* Podia Input/Message Bar */
-  .podia-input {
-    @apply bg-deep-blue border border-border-subtle rounded-xl px-4 py-3
-           text-white-text placeholder:text-light-gray-text placeholder:text-secondary
-           focus:outline-none focus:ring-1 focus:ring-primary-teal focus:border-primary-teal
-           transition-all duration-200;
-  }
-  
-  /* Voice Input Button */
-  .podia-voice-button {
-    @apply w-12 h-12 rounded-full bg-primary-teal text-white-text
-           flex items-center justify-center transition-all duration-200
-           hover:bg-accent-green active:scale-95 shadow-podia-button;
-  }
-  
-  .podia-voice-button.active {
-    @apply bg-primary-teal animate-pulse;
-  }
-  
-  /* Icon Container */
-  .podia-icon-container {
-    @apply w-10 h-10 rounded-full bg-dark-navy flex items-center justify-center;
-  }
-  
-  .podia-icon-container .icon {
-    @apply text-primary-teal w-5 h-5;
-  }
-  
-  /* Glass Card Component - updated for Podia theme */
+@layer components {  
+  /* Glass Card Component - updated for Brief Me theme */
   .glass-card {
-    @apply rounded-xl border backdrop-blur-md shadow-subtle transition-all duration-300 ease-out overflow-hidden;
-    background: linear-gradient(to bottom, var(--surface-raised), var(--surface));
+    @apply rounded-xl border backdrop-blur-md shadow-none transition-all duration-300 ease-out overflow-hidden;
+    background: var(--brand-600);
     border-color: var(--border-subtle);
   }
   
   .glass-card:hover {
-    @apply shadow-lg;
-    border-color: rgba(46, 226, 173, 0.2);
+    @apply shadow-none;
+    border-color: var(--border-subtle);
   }
 }
 
-/* Animation keyframes - keep existing ones and add voice ripple */
+/* Animation keyframes */
 @keyframes voice-ripple {
   0% {
     transform: scale(1);

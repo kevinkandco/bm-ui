@@ -1,40 +1,81 @@
-
-import React from "react";
-import { Mail, MessageSquare } from "lucide-react";
+import React, { useState } from "react";
+import { Mail, MessageSquare, ChevronDown, ChevronRight, Calendar, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import { cn } from "@/lib/utils";
 interface LatestBriefSectionProps {
   onClick: () => void;
+  isSelected?: boolean;
 }
+const LatestBriefSection = ({
+  onClick,
+  isSelected
+}: LatestBriefSectionProps) => {
+  const [isUpcomingExpanded, setIsUpcomingExpanded] = useState(false);
+  const upcomingBriefs = [{
+    id: 1,
+    title: "Daily Brief",
+    scheduledTime: "Tomorrow at 7:30 AM",
+    isComingSoon: true
+  }, {
+    id: 2,
+    title: "Evening Summary",
+    scheduledTime: "Tomorrow at 6:00 PM",
+    isComingSoon: true
+  }];
+  return <div className="space-y-4">
+      <div 
+        className={cn(
+          "p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--brand-600)] hover:bg-white/[0.04] transition-colors cursor-pointer",
+          isSelected && "bg-white/[0.04]"
+        )} 
+        onClick={onClick}
+      >
+        <div className="space-y-3">
+          <h2 className="text-xl font-semibold leading-7" style={{color: 'var(--text-primary)'}}>
+            Latest Brief
+          </h2>
+          <div className="flex items-center gap-1 text-xs" style={{color: 'var(--text-muted)'}}>
+            <span>Monday @7:30am PT</span>
+            <span>•</span>
+            <span>12 messages</span>
+            <span>•</span>
+            <span>3 actions</span>
+          </div>
+          <Button size="sm" className="bg-gradient-to-r from-[#1B5862] to-[#277F64] text-white">
+            View Brief
+          </Button>
+        </div>
+      </div>
 
-const LatestBriefSection = ({ onClick }: LatestBriefSectionProps) => {
-  return (
-    <div className="p-6 hover:bg-surface-raised/30 transition-colors cursor-pointer" onClick={onClick}>
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-text-primary text-lg font-medium">Latest Brief</h2>
-        <span className="text-sm text-text-secondary">Today, 8:00 AM</span>
-      </div>
-      <div className="mb-4">
-        <p className="text-xs text-text-secondary mb-1">Time Range: 5:00 AM - 8:00 AM</p>
-        <p className="text-text-secondary text-sm">Quick summary of your morning updates</p>
-      </div>
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="flex items-center gap-2 flex-1">
-          <Mail className="h-5 w-5 text-accent-primary" />
-          <span className="text-sm font-medium text-text-primary">5 emails reviewed</span>
+      {/* Upcoming Briefs Section */}
+      <div className="space-y-2">
+        <div 
+          onClick={() => setIsUpcomingExpanded(!isUpcomingExpanded)} 
+          className="flex items-center justify-between cursor-pointer hover:bg-white/[0.04] rounded-xl p-3 transition-colors"
+        >
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium" style={{color: 'var(--text-primary)'}}>
+              Upcoming
+            </h3>
+            <div className="space-y-1">
+              <div className="flex items-center gap-1 text-xs" style={{color: 'var(--text-secondary)'}}>
+                <span>Tomorrow 7:30 AM</span>
+                <span>•</span>
+                <span>Daily Brief</span>
+              </div>
+              <div className="flex items-center gap-1 text-xs" style={{color: 'var(--text-secondary)'}}>
+                <span>Tomorrow 6:00 PM</span>
+                <span>•</span>
+                <span>Evening Summary</span>
+              </div>
+            </div>
+          </div>
+          <Button variant="ghost" size="sm" style={{color: 'var(--text-secondary)'}}>
+            View all
+          </Button>
         </div>
-        
-        <div className="flex items-center gap-2 flex-1">
-          <MessageSquare className="h-5 w-5 text-accent-primary" />
-          <span className="text-sm font-medium text-text-primary">12 Slack messages</span>
-        </div>
-        
-        <Button variant="outline" size="sm" className="ml-auto border-border-subtle text-text-primary hover:bg-surface-raised/30 hover:text-accent-primary">
-          View Full Brief
-        </Button>
+
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default React.memo(LatestBriefSection);

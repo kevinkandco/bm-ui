@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift, Download } from "lucide-react";
+import { Settings, User, Bell, Clock, Shield, Zap, AudioLines, LogOut, Save, Brain,Calendar, Gift, Download, CreditCard, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import Voices from "@/components/settings/modal/Voices";
@@ -11,6 +13,8 @@ import IntegrationsSection from "@/components/settings/IntegrationsSection";
 import FeedbackTrainingSection from "@/components/settings/FeedbackTrainingSection";
 import BriefConfigurationSection from "@/components/settings/BriefConfigurationSection";
 import ReferralProgramSection from "@/components/settings/ReferralProgramSection";
+import InterruptRulesSection from "@/components/settings/InterruptRulesSection";
+import BillingSection from "@/components/settings/BillingSection";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,12 +24,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import ProfileSettings from "@/components/settings/ProfileSettings";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MobileBottomNav from "@/components/dashboard/MobileBottomNav";
+import MobileHeader from "@/components/dashboard/MobileHeader";
 
 const SettingsPage = () => {
   const { toast } = useToast();
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [searchParams] = useSearchParams();
   const { call } = useApi();
@@ -52,6 +60,12 @@ const SettingsPage = () => {
       icon: Zap,
       name: "Integrations",
       active: activeSection === "integrations"
+    },
+    {
+      id: "billing",
+      icon: CreditCard,
+      name: "Billing & Usage",
+      active: activeSection === "billing"
     },
     {
       id: "brief-config",
@@ -155,6 +169,8 @@ const SettingsPage = () => {
     switch (activeSection) {
       case "integrations":
         return <IntegrationsSection />;
+      case "billing":
+        return <BillingSection />;
       case "brief-config":
         return <BriefConfigurationSection />;
       case "feedback":
@@ -180,66 +196,74 @@ const SettingsPage = () => {
   };
 
   return (
-    <DashboardLayout 
-      currentPage="settings" 
-      sidebarOpen={sidebarOpen} 
-      onToggleSidebar={handleToggleSidebar}
-    >
-      <div className="container p-4 md:p-6 max-w-7xl mx-auto">
-        <Breadcrumb className="mb-4">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink 
-                onClick={() => navigate("/dashboard")} 
-                className="cursor-pointer"
-              >
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Settings</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <>
+      <DashboardLayout 
+        currentPage="settings" 
+        sidebarOpen={sidebarOpen} 
+        onToggleSidebar={handleToggleSidebar}
+      >
+        <div className="min-h-screen bg-surface">
+          {isMobile && <MobileHeader />}
+          <div className={`container max-w-7xl mx-auto ${isMobile ? 'p-4 pb-24' : 'p-4 md:p-6'}`}>
+          <Breadcrumb className="mb-4">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink 
+                  onClick={() => navigate("/dashboard")} 
+                  className="cursor-pointer"
+                >
+                  Dashboard
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Settings</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary flex items-center">
-            <Settings className="mr-3 h-6 w-6" />
-            Settings
-          </h1>
-          <p className="text-text-secondary mt-1">Manage your account and preferences</p>
-        </div>
-        
-        <div className="glass-card rounded-3xl overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-4">
-            <div className="p-6 border-r border-border-subtle">
-              <h2 className="text-lg font-medium text-text-primary mb-4">Categories</h2>
-              <div className="space-y-1">
-                {settingCategories.map((category) => (
-                  <button 
-                    key={category.id}
-                    onClick={() => handleClick(category.id)}
-                    className={`w-full flex items-center p-3 rounded-xl transition-all ${
-                      category.active
-                        ? 'bg-white/10 text-white' 
-                        : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
-                    }`}
-                  >
-                    <category.icon className="h-5 w-5 mr-3" />
-                    <span>{category.name}</span>
-                  </button>
-                ))}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-text-primary flex items-center">
+              <Settings className="mr-3 h-6 w-6" />
+              Settings
+            </h1>
+            <p className="text-text-secondary mt-1">Manage your account and preferences</p>
+          </div>
+          
+          <div className="glass-card rounded-3xl overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-4">
+              <div className="p-6 border-r border-border-subtle">
+                <h2 className="text-lg font-medium text-text-primary mb-4">Categories</h2>
+                <div className="space-y-1">
+                  {settingCategories.map((category) => (
+                    <button 
+                      key={category.id}
+                      onClick={() => setActiveSection(category.id)}
+                      className={`w-full flex items-center p-3 rounded-xl transition-all ${
+                        category.active 
+                          ? 'bg-white/10 text-white' 
+                          : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
+                      }`}
+                    >
+                      <category.icon className="h-5 w-5 mr-3" />
+                      <span>{category.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="md:col-span-3 p-6">
+                {renderContent()}
               </div>
             </div>
-            
-            <div className="md:col-span-3 p-6">
-              {renderContent()}
-            </div>
+          </div>
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+      </DashboardLayout>
+      
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
+    </>
   );
 };
 
