@@ -78,6 +78,7 @@ import {
   Priorities,
   PriorityPeople,
   Summary,
+  UserIntegrations,
 } from "./types";
 import useAuthStore from "@/store/useAuthStore";
 import ListeningScreen from "./ListeningScreen";
@@ -101,6 +102,7 @@ import FocusTimer from "./FocusTimer";
 import AwayTimer from "./AwayTimer";
 import VacationTimer from "./VacationTimer";
 import { OfflineTimer } from "./OfflineTimer";
+import IntegrationsList from "./HomeViewSections/IntegrationsList";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -129,6 +131,7 @@ interface HomeViewProps {
   briefsLoading: boolean;
   upcomingBrief: Summary | null;
   calendarData: CalenderData;
+  userintegrations: UserIntegrations[];
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (
     briefId: number,
@@ -173,6 +176,7 @@ const HomeView = ({
   briefsLoading,
   upcomingBrief,
   calendarData,
+  userintegrations,
   onOpenBrief,
   onViewTranscript,
   onStartFocusMode,
@@ -1497,9 +1501,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             {/* Right: Integration Icons, Get Brief button, Avatar */}
             <div className="flex items-center gap-3">
               {/* Integration Status Icons */}
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2"> */}
                 {/* Slack Integration */}
-                <Popover>
+                {/* <Popover>
                   <PopoverTrigger asChild>
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
                       <div className="w-4 h-4 bg-purple-500 rounded-sm flex items-center justify-center">
@@ -1527,10 +1531,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </div>
                     </div>
                   </PopoverContent>
-                </Popover>
+                </Popover> */}
 
                 {/* Google Integration */}
-                <Popover>
+                {/* <Popover>
                   <PopoverTrigger asChild>
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
                       <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
@@ -1558,10 +1562,10 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </div>
                     </div>
                   </PopoverContent>
-                </Popover>
+                </Popover> */}
 
                 {/* Calendar Integration */}
-                <Popover>
+                {/* <Popover>
                   <PopoverTrigger asChild>
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
                       <Calendar className="w-4 h-4 text-white" />
@@ -1581,9 +1585,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       </div>
                     </div>
                   </PopoverContent>
-                </Popover>
-              </div>
-
+                </Popover> */}
+              {/* </div> */}
+                  <IntegrationsList userintegrations={userintegrations} />
               {/* Get Brief Button / End Focus Mode Button */}
               <Button 
                 onClick={userStatus === "focus" ? onExitFocusMode : onToggleCatchMeUp} 
@@ -1955,7 +1959,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             
                             {/* Past Briefs Section */}
                             <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => {
-                              navigate('/briefs');
+                              navigate('briefs');
                             }}>
                               <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
                               <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">

@@ -245,3 +245,10 @@ export interface Meeting {
   preparationPoints?: string[];
   suggestedAgenda?: string[];
 }
+
+export interface UserIntegrations {
+  name: string;
+  count: number;
+  emails: string[];
+  status: string;
+}

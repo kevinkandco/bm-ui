@@ -10,7 +10,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus, UserIntegrations } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
@@ -93,6 +93,7 @@ const Dashboard = () => {
   const [offlineSchedule, setOfflineSchedule] = useState<OfflineSchedule | null>(null);
   const [offlineStartTime, setOfflineStartTime] = useState<number | null>(null);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
+  const [userintegrations, setUserIntegrations] = useState<UserIntegrations[]>([]);
 
   const [calendarData, setCalendarData] = useState<CalenderData>({
     today: [],
@@ -132,6 +133,7 @@ const Dashboard = () => {
         ...(Array.isArray(response?.slackPriorityPeople) ? response.slackPriorityPeople : []),
         ...(Array.isArray(response?.googlePriorityPeople) ? response.googlePriorityPeople : []),
       ];
+      setUserIntegrations(response?.user_integrations || []);
       setPriorities((prev) => {
         return {
           ...prev,
@@ -683,6 +685,7 @@ const Dashboard = () => {
             briefsLoading={briefsLoading}
             upcomingBrief={upcomingBrief}
             calendarData={calendarData}
+            userintegrations={userintegrations}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onStartFocusMode={handleStartFocusMode}
