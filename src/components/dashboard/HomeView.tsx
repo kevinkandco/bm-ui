@@ -1486,7 +1486,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <X className="h-4 w-4" />
                 </Button>
               )}
-              <ChevronDown className="h-4 w-4 text-light-gray-text" />
+              {/* <ChevronDown className="h-4 w-4 text-light-gray-text" /> */}
             </div>
 
             {/* Center: Status Message */}

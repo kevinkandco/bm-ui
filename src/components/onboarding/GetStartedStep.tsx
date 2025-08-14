@@ -6,6 +6,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { useApi } from "@/hooks/useApi";
 import { useState } from "react";
 import AddToHomeScreenModal from "./AddToHomeScreenModal";
+import { useNavigate } from "react-router-dom";
 
 interface GetStartedStepProps {
   onNext: () => void;
@@ -26,6 +27,7 @@ const GetStartedStep = ({
 }: GetStartedStepProps) => {
   const { theme } = useTheme();
   const { call } = useApi();
+  const navigate = useNavigate()
   const [isHomeScreenModalOpen, setIsHomeScreenModalOpen] = useState(false);
 
   // Format time string to readable format (e.g., "09:00" to "9:00 AM")
@@ -117,8 +119,9 @@ const GetStartedStep = ({
     });
   
     if (!response) return;
-  
-    onNext();
+    
+    navigate("/dashboard");
+    // onNext();
   };
   return <div className="space-y-4 sm:space-y-6">
       <ProgressIndicator currentStep={10} totalSteps={10} />
