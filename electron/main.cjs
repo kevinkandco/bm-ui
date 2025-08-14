@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, screen } = require("electron");
 const { default: Store } = require("electron-store");
 const path = require("path");
 
@@ -8,6 +8,7 @@ let mainWindow;
 // IPC handler for token
 ipcMain.handle("get-token", () => store.get("token"));
 
+// ====== MAIN WINDOW ======
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
@@ -19,6 +20,35 @@ function createWindow() {
     },
   });
   mainWindow.loadFile(path.join(__dirname, "..", "appLogin.html"));
+}
+
+// ====== MINI BAR WINDOW ======
+function createBarWindow() {
+  const { width } = screen.getPrimaryDisplay().workAreaSize;
+
+  barWindow = new BrowserWindow({
+    x: Math.round(width / 2 - 275), // center for 550px width
+    y: 20,
+    width: 550,
+    height: 350,
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    resizable: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.cjs"),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  const htmlPath = path.join(__dirname, "..", "floatingBar.html");
+  barWindow.loadFile(htmlPath);
+
+  barWindow.on("closed", () => {
+    barWindow = null;
+  });
 }
 
 if (!app.isDefaultProtocolClient("electron-fiddle")) {
@@ -55,6 +85,7 @@ if (!app.requestSingleInstanceLock()) {
 // First instance — app startup
 app.whenReady().then(() => {
   createWindow();
+  createBarWindow();
   console.log("🚀 Startup args:", process.argv);
   handleDeepLink(process.argv);
 });

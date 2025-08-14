@@ -321,8 +321,18 @@
          }
 
          // event listeners
-         toggleBtn.addEventListener('click', e => { e.stopPropagation(); toggleCollapsed(); });
-         toggleWindow.addEventListener('click', e => { e.stopPropagation(); toggleCollapsed(); });
+         toggleBtn.addEventListener('click', e => { 
+            e.stopPropagation();
+            toggleCollapsed();
+           briefMePanel.classList.remove('show');
+
+          });
+
+         toggleWindow.addEventListener('click', e => { 
+            e.stopPropagation();
+            toggleCollapsed();
+            briefMePanel.classList.remove('show');
+          });
 
          // arrow opens panel
          arrowBtn.addEventListener('click', e => {
