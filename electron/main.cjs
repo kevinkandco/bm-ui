@@ -69,6 +69,13 @@ app.on("second-instance", (event, argv) => {
   handleDeepLink(argv);
 });
 
+// macOS deep link handling
+app.on("open-url", (event, url) => {
+  event.preventDefault();
+  console.log("🔗 macOS deep link:", url);
+  handleDeepLink([url]); 
+});
+
 ipcMain.on("redirect-to-web-login", () => {
 
    //   for local
