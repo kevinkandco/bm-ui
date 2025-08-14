@@ -15,6 +15,7 @@ import StatusTimer from "@/components/dashboard/StatusTimer";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 import VacationStatusModal, { VacationSchedule } from "@/components/dashboard/VacationStatusModal";
+import { OfflineStatusModal } from "@/components/dashboard/OfflineStatusModal";
 
 import { Slack, Mail, Calendar, FileText, Users, MessageSquare } from "lucide-react";
 
@@ -33,12 +34,22 @@ interface FocusConfig {
   };
 }
 
+interface OfflineSchedule {
+  startTime: Date;
+  endTime: Date;
+  slackSync: boolean;
+  teamsSync: boolean;
+  slackMessage: string;
+  teamsMessage: string;
+  enableDND: boolean;
+}
+
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [currentView, setCurrentView] = useState<"home" | "listening">("home");
-  const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation">("active");
+  const [userStatus, setUserStatus] = useState<"active" | "away" | "focus" | "vacation" | "offline">("active");
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [selectedBriefId, setSelectedBriefId] = useState<number | null>(null);
@@ -52,6 +63,9 @@ const Dashboard = () => {
   const [vacationSchedule, setVacationSchedule] = useState<VacationSchedule | null>(null);
   const [vacationStartTime, setVacationStartTime] = useState<number | null>(null);
   const [showVacationModal, setShowVacationModal] = useState(false);
+  const [offlineSchedule, setOfflineSchedule] = useState<OfflineSchedule | null>(null);
+  const [offlineStartTime, setOfflineStartTime] = useState<number | null>(null);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
 
   // Mock connected apps - in real app this would come from user's integrations
   const connectedApps: ConnectedApp[] = [
@@ -160,7 +174,7 @@ const Dashboard = () => {
     });
   }, [toast]);
 
-  const handleStatusChange = useCallback((newStatus: "active" | "away" | "focus" | "vacation") => {
+  const handleStatusChange = useCallback((newStatus: "active" | "away" | "focus" | "vacation" | "offline") => {
     if (newStatus === "away" && userStatus !== "away") {
       setAwayStartTime(Date.now());
     } else if (newStatus !== "away" && userStatus === "away") {
@@ -171,6 +185,15 @@ const Dashboard = () => {
       setVacationStartTime(Date.now());
     } else if (newStatus !== "vacation" && userStatus === "vacation") {
       setVacationStartTime(null);
+    }
+
+    if (newStatus === "offline" && userStatus !== "offline") {
+      // Don't set status immediately, open modal instead
+      setShowOfflineModal(true);
+      return;
+    } else if (newStatus !== "offline" && userStatus === "offline") {
+      setOfflineStartTime(null);
+      setOfflineSchedule(null);
     }
     
     setUserStatus(newStatus);
@@ -201,6 +224,34 @@ const Dashboard = () => {
       description: "You're now back online and monitoring"
     });
   }, [toast]);
+
+  const handleSaveOfflineSchedule = useCallback((schedule: OfflineSchedule) => {
+    setOfflineSchedule(schedule);
+    setUserStatus("offline");
+    setOfflineStartTime(schedule.startTime.getTime());
+    
+    toast({
+      title: "Now Offline",
+      description: `Offline until ${schedule.endTime.toLocaleString()}`
+    });
+  }, [toast]);
+
+  const handleEndOfflineNow = useCallback(() => {
+    setUserStatus("active");
+    setOfflineStartTime(null);
+    setOfflineSchedule(null);
+    
+    toast({
+      title: "Back Online",
+      description: "You're now back online and monitoring"
+    });
+  }, [toast]);
+
+  const handleExtendOffline = useCallback((newEndTime: Date) => {
+    if (offlineSchedule) {
+      setOfflineSchedule(prev => prev ? { ...prev, endTime: newEndTime } : null);
+    }
+  }, [offlineSchedule]);
 
   const handleOpenVacationModal = useCallback(() => {
     setShowVacationModal(true);
@@ -251,6 +302,28 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, [vacationSchedule]);
 
+  // Check if scheduled offline should end
+  React.useEffect(() => {
+    if (offlineSchedule && userStatus === "offline") {
+      const now = new Date();
+      if (now > offlineSchedule.endTime) {
+        handleEndOfflineNow();
+      }
+    }
+  }, [offlineSchedule, userStatus, handleEndOfflineNow]);
+
+  // Polling to check offline schedule every minute
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (offlineSchedule && userStatus === "offline") {
+        const now = new Date();
+        // The effect above will handle the actual logic
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [offlineSchedule, userStatus]);
+
   const handleGenerateBrief = useCallback(() => {
     // This would typically trigger the creation of a new brief
     console.log("Generating new brief...");
@@ -289,6 +362,10 @@ const Dashboard = () => {
             onSignBackOn={handleSignBackOn}
             onOpenVacationModal={handleOpenVacationModal}
             onEndVacationNow={handleEndVacationNow}
+            offlineSchedule={offlineSchedule}
+            offlineStartTime={offlineStartTime}
+            onEndOfflineNow={handleEndOfflineNow}
+            onExtendOffline={handleExtendOffline}
           />
         )}
         {currentView === "listening" && <ListeningScreen />}
@@ -340,6 +417,12 @@ const Dashboard = () => {
         onClose={() => setShowVacationModal(false)}
         onSave={handleSaveVacationSchedule}
         currentVacation={vacationSchedule}
+      />
+
+      <OfflineStatusModal
+        isOpen={showOfflineModal}
+        onClose={() => setShowOfflineModal(false)}
+        onSchedule={handleSaveOfflineSchedule}
       />
     </div>
   );

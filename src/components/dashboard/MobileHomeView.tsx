@@ -9,8 +9,8 @@ interface MobileHomeViewProps {
   onOpenBrief: (briefId: number) => void;
   onStartFocusMode?: () => void;
   onBriefMe?: () => void;
-  userStatus?: 'active' | 'away' | 'focus' | 'vacation';
-  onStatusChange?: (status: 'active' | 'away' | 'focus' | 'vacation') => void;
+  userStatus?: 'active' | 'away' | 'focus' | 'vacation' | 'offline';
+  onStatusChange?: (status: 'active' | 'away' | 'focus' | 'vacation' | 'offline') => void;
 }
 const MobileHomeView = ({
   onPlayBrief,
@@ -55,7 +55,7 @@ const MobileHomeView = ({
         return 'bg-gray-400';
     }
   };
-  const getUserStatusDotColor = (status: 'active' | 'away' | 'focus' | 'vacation') => {
+  const getUserStatusDotColor = (status: 'active' | 'away' | 'focus' | 'vacation' | 'offline') => {
     switch (status) {
       case 'active':
         return 'bg-green-500';
@@ -65,6 +65,8 @@ const MobileHomeView = ({
         return 'bg-blue-500';
       case 'vacation':
         return 'bg-gray-500';
+      case 'offline':
+        return 'bg-red-500';
       default:
         return 'bg-green-500';
     }
@@ -86,6 +88,8 @@ const MobileHomeView = ({
         return "Stay in the flow — I'll handle what can wait.";
       case 'vacation':
         return "Switch off and make the most of your time away — I've got this.";
+      case 'offline':
+        return "Taking some time offline — I'll keep everything organized for you.";
       default:
         return "I'm here with you — let's make the most of today.";
     }
@@ -148,7 +152,7 @@ const MobileHomeView = ({
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${getUserStatusDotColor(userStatus)}`} />
             <span className="text-xs text-text-secondary capitalize">
-              {userStatus === 'vacation' ? 'OOO' : userStatus === 'focus' ? 'Focus' : userStatus === 'away' ? 'Offline' : 'Active'}
+              {userStatus === 'vacation' ? 'OOO' : userStatus === 'focus' ? 'Focus' : userStatus === 'away' ? 'Away' : userStatus === 'offline' ? 'Offline' : 'Active'}
             </span>
           </div>
           <div className="flex items-center gap-1 text-xs text-text-muted">

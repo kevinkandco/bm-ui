@@ -7,14 +7,14 @@ import { cn } from '@/lib/utils';
 interface MobileBottomNavProps {
   className?: string;
   onShowStatusModal?: () => void;
-  userStatus?: 'active' | 'away' | 'focus' | 'vacation';
+  userStatus?: 'active' | 'away' | 'focus' | 'vacation' | 'offline';
 }
 
 const MobileBottomNav = ({ className, onShowStatusModal, userStatus = 'active' }: MobileBottomNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const getUserStatusDotColor = (status: 'active' | 'away' | 'focus' | 'vacation') => {
+  const getUserStatusDotColor = (status: 'active' | 'away' | 'focus' | 'vacation' | 'offline') => {
     switch (status) {
       case 'active':
         return 'bg-green-500';
@@ -24,6 +24,8 @@ const MobileBottomNav = ({ className, onShowStatusModal, userStatus = 'active' }
         return 'bg-blue-500';
       case 'vacation':
         return 'bg-gray-500';
+      case 'offline':
+        return 'bg-red-500';
       default:
         return 'bg-green-500';
     }

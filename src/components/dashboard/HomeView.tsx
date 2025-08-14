@@ -41,6 +41,7 @@ import CalendarPage from "../../pages/CalendarPage";
 import FocusTimer from "./FocusTimer";
 import AwayTimer from "./AwayTimer";
 import VacationTimer from "./VacationTimer";
+import { OfflineTimer } from "./OfflineTimer";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -69,16 +70,28 @@ interface HomeViewProps {
   onOpenBriefModal: () => void;
   onStartFocusMode: () => void;
   onSignOffForDay: () => void;
-  userStatus?: "active" | "away" | "focus" | "vacation";
+  userStatus?: "active" | "away" | "focus" | "vacation" | "offline";
   focusConfig?: any;
   focusStartTime?: number | null;
   awayStartTime?: number | null;
   vacationStartTime?: number | null;
-  onStatusChange?: (status: "active" | "away" | "focus" | "vacation") => void;
+  offlineStartTime?: number | null;
+  offlineSchedule?: {
+    startTime: Date;
+    endTime: Date;
+    slackSync: boolean;
+    teamsSync: boolean;
+    slackMessage: string;
+    teamsMessage: string;
+    enableDND: boolean;
+  } | null;
+  onStatusChange?: (status: "active" | "away" | "focus" | "vacation" | "offline") => void;
   onExitFocusMode?: () => void;
   onSignBackOn?: () => void;
   onOpenVacationModal?: () => void;
   onEndVacationNow?: () => void;
+  onEndOfflineNow?: () => void;
+  onExtendOffline?: (newEndTime: Date) => void;
 }
 const HomeView = ({
   onOpenBrief,
@@ -93,11 +106,15 @@ const HomeView = ({
   focusStartTime,
   awayStartTime,
   vacationStartTime,
+  offlineStartTime,
+  offlineSchedule,
   onStatusChange,
   onExitFocusMode,
   onSignBackOn,
   onOpenVacationModal,
-  onEndVacationNow
+  onEndVacationNow,
+  onEndOfflineNow,
+  onExtendOffline
 }: HomeViewProps) => {
   // Format delivery text to condensed format: "HH:MM Range: DD/MM HH:MM to DD/MM HH:MM"
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
@@ -994,7 +1011,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors">
-                      <div className={`w-2 h-2 rounded-full ${userStatus === "active" ? "bg-green-500" : userStatus === "away" ? "bg-yellow-500" : userStatus === "focus" ? "bg-blue-500" : userStatus === "vacation" ? "bg-gray-500" : "bg-green-500"}`} />
+                      <div className={`w-2 h-2 rounded-full ${userStatus === "active" ? "bg-green-500" : userStatus === "away" ? "bg-yellow-500" : userStatus === "focus" ? "bg-blue-500" : userStatus === "vacation" ? "bg-gray-500" : userStatus === "offline" ? "bg-red-500" : "bg-green-500"}`} />
                       <span className="text-sm text-text-secondary capitalize">{userStatus}</span>
                       <ChevronDown className="w-3 h-3 text-text-secondary" />
                     </div>
@@ -1004,8 +1021,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                       <div className="w-2 h-2 rounded-full bg-green-500" />
                       Active
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onStatusChange?.("away")} className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                    <DropdownMenuItem onClick={() => onStatusChange?.("offline")} className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-gray-500" />
                       Offline
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onStartFocusMode()} className="flex items-center gap-2">
@@ -1037,6 +1054,16 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   <VacationTimer 
                     startTime={vacationStartTime} 
                     onEndVacation={onEndVacationNow || (() => {})}
+                  />
+                )}
+
+                {/* Offline Timer */}
+                {userStatus === "offline" && offlineSchedule && offlineStartTime && (
+                  <OfflineTimer
+                    startTime={new Date(offlineStartTime)}
+                    endTime={offlineSchedule.endTime}
+                    onExtend={onExtendOffline || (() => {})}
+                    onEndNow={onEndOfflineNow || (() => {})}
                   />
                 )}
               </div>
