@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-import HomeView from "@/components/dashboard/HomeView";
+import { RefactoredHomeView } from "@/components/dashboard/RefactoredHomeView";
 import ListeningScreen from "@/components/dashboard/ListeningScreen";
 import NewBriefModal from "@/components/dashboard/NewBriefModal";
 import TranscriptView from "@/components/dashboard/TranscriptView";
@@ -344,7 +344,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1">
         {currentView === "home" && (
-          <HomeView
+          <RefactoredHomeView
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onToggleFocusMode={handleToggleFocusMode}
