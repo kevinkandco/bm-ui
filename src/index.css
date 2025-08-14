@@ -24,6 +24,9 @@
     /* Border */
     --border-subtle: rgba(255, 255, 255, 0.08);
     
+    /* Blue gradient for menu bar style */
+    --gradient-menu-bar: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+    
     /* Legacy surface colors for compatibility */
     --surface: var(--brand-900);
     --surface-raised: var(--brand-700);
@@ -69,6 +72,9 @@
     --text-secondary: rgba(255, 255, 255, 0.78);
     --text-muted: rgba(255, 255, 255, 0.56);
     --border-subtle: rgba(255, 255, 255, 0.08);
+    
+    /* Blue gradient for menu bar style */
+    --gradient-menu-bar: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
     
     --surface: var(--brand-900);
     --surface-raised: var(--brand-700);

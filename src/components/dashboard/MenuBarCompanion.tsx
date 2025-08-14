@@ -71,10 +71,12 @@ const MenuBarCompanion = ({
       {/* macOS-style popover */}
       <div className="relative">
         {/* Arrow */}
-        <div className="absolute -top-2 right-6 w-4 h-4 bg-[var(--brand-800)] backdrop-blur-xl rotate-45 border-l border-t border-[var(--border-subtle)]" />
+        <div className="absolute -top-2 right-6 w-4 h-4 rotate-45 border-l border-t border-[var(--border-subtle)]" 
+             style={{ background: 'var(--gradient-menu-bar)' }} />
         
         {/* Main popover */}
-        <div className="w-80 bg-[var(--brand-800)] backdrop-blur-xl rounded-xl border border-[var(--border-subtle)] shadow-2xl overflow-hidden">
+        <div className="w-80 backdrop-blur-xl rounded-xl border border-[var(--border-subtle)] shadow-2xl overflow-hidden"
+             style={{ background: 'var(--gradient-menu-bar)' }}>
           {/* Header with Greeting */}
           <div className="p-6 pb-4">
             <div className="flex items-center justify-between mb-4">
