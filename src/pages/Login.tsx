@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTheme } from "@/hooks/use-theme";
@@ -11,17 +11,35 @@ import { REDIRECT_URL } from "@/config";
 const Login = () => {
   // const [signingIn, setSigningIn] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { theme } = useTheme();
   const isMobile = useIsMobile();
+  const appLogin = searchParams.get("login_from_app");
 
   const handleSignIn = (provider: 'google' | 'slack') => {
     try {
-      const url = provider === "google" ? `${REDIRECT_URL}/google/auth?redirectURL=dashboard` : `${REDIRECT_URL}/auth/redirect/${provider}?redirectURL=dashboard`;
+      let url = provider === "google" ? `${REDIRECT_URL}/google/auth?redirectURL=dashboard` : `${REDIRECT_URL}/auth/redirect/${provider}?redirectURL=dashboard`;
+      
+      if (appLogin) {
+        url += `&login_from_app=true`;
+      }
+
       window.open(url, "_self");
     } catch (error) {
       console.log(error);
     }
   };
+
+  // useEffect(() => {
+  //     const token = localStorage.getItem("token");
+
+  //    if (window?.electronAPI && window?.electronAPI?.isElectron()) {
+  //       if (!token) {
+  //         window.location.href = "appLogin.html"
+  //       }
+  //    }
+
+  // }, [appLogin]);
 
   const handleBack = () => {
     navigate("/");

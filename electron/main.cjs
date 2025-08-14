@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 
 let mainWindow;
@@ -9,11 +9,11 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
-      nodeIntegration: true,  // allow require in renderer
-    contextIsolation: false // disable isolation
-    }
+      nodeIntegration: true, // allow require in renderer
+      contextIsolation: false, // disable isolation
+    },
   });
-  mainWindow.loadFile(path.join(__dirname, '..' , "appLogin.html"));
+  mainWindow.loadFile(path.join(__dirname, "..", "appLogin.html"));
 }
 
 if (!app.isDefaultProtocolClient("electron-fiddle")) {
@@ -22,7 +22,7 @@ if (!app.isDefaultProtocolClient("electron-fiddle")) {
 
 // Deep link handler
 function handleDeepLink(argv) {
-  const deepLink = argv.find(arg => arg.startsWith("electron-fiddle://"));
+  const deepLink = argv.find((arg) => arg.startsWith("electron-fiddle://"));
   if (!deepLink) return;
 
   try {
@@ -60,6 +60,15 @@ app.on("second-instance", (event, argv) => {
     mainWindow.focus();
   }
   handleDeepLink(argv);
+});
+
+ipcMain.on("redirect-to-web-login", () => {
+
+   //   for local
+  shell.openExternal(`http://localhost:8080/app-login?appLogin=${true}`);
+
+   //   for live
+//   shell.openExternal(`https://hey.brief-me.app/app-login?appLogin=${true}`);
 });
 
 module.exports = { createWindow };

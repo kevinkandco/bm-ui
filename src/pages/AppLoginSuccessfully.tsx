@@ -1,69 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTheme } from "@/hooks/use-theme";
-import FancyLoader from "@/components/settings/modal/FancyLoader";
-import { useApi } from "@/hooks/useApi";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { ArrowLeft } from "lucide-react";
+import { REDIRECT_URL } from "@/config";
 
 const Login = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { call } = useApi();
   const { theme } = useTheme();
-
-  const [loading, setLoading] = useState(true);
-
-  const processingStoreToken = useCallback((token) => {
-    localStorage.setItem("token", token);
-
-    const url = new URL(window.location.href);
-    url.searchParams.delete("token");
-    url.searchParams.delete("provider");
-    window.history.replaceState({}, document.title, url.pathname + url.search);
-  }, []);
+  const isMobile = useIsMobile();
+  const [isElectron, setIsElectron] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    const token = searchParams.get("token");
 
-    // if user not logged in,
-    const tokenFromUrl = searchParams.get("token");
-    const isAppLogin = searchParams.get("appLogin");
-
-    if (tokenFromUrl) {
-      processingStoreToken(tokenFromUrl);
+    if (token) {
+      window.location.href = `electron-fiddle://auth?access_token=${token}`;
     }
+  }, [searchParams]);
 
-    // if user already logged in, 
-    let token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login?login_from_app=true");
-    } else {
-      try {
-        if (isAppLogin && token) {
-          setLoading(true);
-          call("post", `/electron/login`, {
-            body: { token },
-          }).then((response) => {
-            console.log("App login response:", response?.data);
-            if (response?.data) {
-              let token = response?.data;
-              navigate("/app-login-successful?token=" + token);
-            }
-          });
-          setLoading(false);
-        }
-      } catch (error) {
-        setLoading(false);
-        console.error("Error processing token:", error);
-      }
-    }
-
-    setLoading(false);
-  }, [searchParams, processingStoreToken]);
-
-  if (loading) {
-    return <FancyLoader />;
-  }
+  const handleBack = () => {
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-surface">
@@ -83,6 +44,18 @@ const Login = () => {
           } opacity-60`}
         ></div>
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-texture"></div>
+      </div>
+
+      {/* Back button */}
+      <div className="absolute top-4 left-4 z-20">
+        <Button
+          variant="back"
+          onClick={handleBack}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Button>
       </div>
 
       {/* Glass card */}
@@ -116,14 +89,14 @@ const Login = () => {
             </div>
 
             <div className="space-y-3 sm:space-y-4 text-center mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-4xl font-semibold text-text-primary tracking-tighter leading-tight">
+                Logged in! 
+              </h1>
               <div className="inline-flex items-center justify-center px-3 py-1 rounded-full">
                 <span className="text-gradient-blue font-medium text-lg sm:text-xl">
-                  Welcome back
+                  You should be logged in on your app and can now close this window.
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-semibold text-text-primary tracking-tighter leading-tight">
-                Login From Brief-me App
-              </h1>
             </div>
 
             <div className="space-y-4 w-full"></div>

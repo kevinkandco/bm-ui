@@ -1,21 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Deep Link Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief-me App Login</title>
+    <script>
+        // Redirect to React login if not in Electron
+        if (!window.electronAPI) {
+            window.location.href = window.location.origin;
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            background: black;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Star background */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: transparent;
+            overflow: hidden;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Vortex animated background */
+        .vortex {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 200%;
+            width: 200%;
+            background: conic-gradient(from 0deg,
+                    rgba(46, 226, 173, 0.4),
+                    rgba(0, 0, 0, 0.8),
+                    rgba(46, 226, 173, 0.4),
+                    rgba(0, 0, 0, 0.8));
+            animation: vortex-spin 10s infinite linear;
+            filter: blur(80px);
+            z-index: -1;
+        }
+
+        @keyframes vortex-spin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(1.2);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        /* Button styling */
+        .btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(90deg, #2EE2AD, #1EC89D);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(46, 226, 173, 0.4);
+        }
+
+        .btn:hover:not(:disabled) {
+            background: linear-gradient(90deg, #1EC89D, #2EE2AD);
+            box-shadow: 0 0 30px rgba(46, 226, 173, 0.7);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Waiting animation */
+        .waiting::after {
+            content: "...";
+            animation: dots 1.5s infinite steps(4, end);
+            position: relative;
+            left: 5px;
+        }
+
+        @keyframes dots {
+            0% {
+                content: "";
+            }
+
+            25% {
+                content: ".";
+            }
+
+            50% {
+                content: "..";
+            }
+
+            75% {
+                content: "...";
+            }
+
+            100% {
+                content: "";
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Electron Deep Link Test</h1>
-    <div id="token-display"></div>
+    <div class="stars" id="stars"></div>
+    <div class="vortex"></div>
+
+    <button id="login" type="button" class="btn">
+        Login
+    </button>
 
     <script>
-        console.log(123)
-        window.electronAPI.onAuthSuccess((token) => {
-        console.log("Token received:", token);
-        // window.location.href = "http://localhost:8080"
-        localStorage.setItem("token", token)
+        const token = localStorage.getItem("token");
+        
+        if (token) {
+            window.location.href = "http://localhost:8080";
+        }
+    
+    </script>
+    <script>
+        // Create stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 30; i++) {
+            const star = document.createElement('div');
+            const size = Math.random() * 3 + 1;
+            star.classList.add('star');
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 3}s`;
+            starsContainer.appendChild(star);
+        }
+
+        let loginBtn = document.getElementById('login');
+        loginBtn.addEventListener('click', () => {
+            loginBtn.innerText = "Waiting for login";
+            loginBtn.classList.add("waiting");
+            loginBtn.disabled = true; // disable button
+            window.electronAPI.redirectToWebLogin();
         });
     </script>
 </body>

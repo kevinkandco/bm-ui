@@ -42,6 +42,7 @@ const MacPage = lazyImport(() => import("./pages/MacPage"));
 const BriefDetail = lazyImport(() => import("./pages/BriefDetail"));
 const NotFound = lazyImport(() => import("./pages/NotFound"));
 const AppLogin = lazyImport(() => import("./pages/AppLogin"));
+const AppLoginSuccess = lazyImport(() => import("./pages/AppLoginSuccessfully"));
 // Admin Pages
 const AdminLogin = lazyImport(() => import("./pages/admin/Login"));
 const DashboardAdmin = lazyImport(() => import("./pages/admin/Dashboard"));
@@ -150,7 +151,8 @@ const App = () => {
                         <Route path="/admin/invoices" element={<InvoicesAdmin />} />
                     </Route>
                     <Route path="/mac" element={<MacRouteGuard />} />
-                    <Route path="/app-login-successfully" element={<AppLogin />} />
+                    <Route path="/app-login" element={<AppLogin />} />
+                    <Route path="/app-login-successful" element={<AppLoginSuccess />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
