@@ -13,4 +13,6 @@ window.electronAPI = {
   getToken: () => ipcRenderer.invoke("get-token"),
 
   deleteToken: () => ipcRenderer.invoke("delete-token"),
+
+  closeSlack: () => ipcRenderer.invoke("close-slack"),
 };

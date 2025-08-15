@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, shell, screen } = require("electron");
 const { default: Store } = require("electron-store");
 const path = require("path");
+const killSlack = require("./killSlack.cjs");
+const { exec } = require("child_process");
 
 let store = new Store();
 let mainWindow;
@@ -38,8 +40,8 @@ function createBarWindow() {
     resizable: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
-      contextIsolation: true,
-      nodeIntegration: false,
+      nodeIntegration: true, // allow require in renderer
+      contextIsolation: false, // disable isolation
     },
   });
 
@@ -113,6 +115,16 @@ ipcMain.handle("delete-token", () => {
   store.delete("token");
   console.log("🗑 Token deleted");
 });
+
+ipcMain.handle("close-slack", async () => {
+  const msg = await new Promise((res) => {
+    exec(killSlack(), (err, _out, stderr) => {
+      res(err ? `Failed: ${stderr || err.message}` : "Slack closed.");
+    });
+  });
+  return msg;
+});
+
 
 ipcMain.on("redirect-to-web-login", () => {
 

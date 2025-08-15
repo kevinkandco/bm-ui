@@ -262,12 +262,146 @@
       </div>
    </div>
 
+   <script src="./js/helper.js"></script>
    <script>
       // ipc guard for electron
       let ipcRenderer;
       try { ipcRenderer = require('electron').ipcRenderer; } catch (e) { ipcRenderer = undefined; }
 
-      document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', async () => {
+
+         const getUserFromToken = async (token) => {
+            try {
+               const res = await fetch(`${BASE_URL}/electron/user`, {
+                  method: "POST",
+                  credentials: "include",
+                  headers: {
+                     "Content-Type": "application/json",
+                     Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({ token }),
+               });
+
+               if (!res.ok) {
+                  const msg = await res.text();
+                  throw new Error(`API ${res.status}: ${msg}`);
+               } 
+
+               return await res.json();
+            } catch (err) {
+               console.error(err, "Error");
+            }
+         }
+
+         // 👈 FOUCS MODE ON APIS
+         async function foucsMode(status) {
+
+         // OFFLINE
+            if (status === "Offline") {
+               try {
+                  const response = await fetch(`${BASE_URL}/focus-mode`, {
+                     method: "POST",
+                     headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json", // 👈 VERY IMPORTANT
+                     },
+                     body: JSON.stringify({ type: "App", foucsType: "Offline" }), // 👈 convert to JSON string
+                  });
+
+                  if (!response.ok) {
+                     alert("Failed to update focus mode");
+                  }
+               } catch (err) {
+                  alert(JSON.stringify(err));
+               }
+            }
+
+            // DND
+            if (status === "DND") {
+               try {
+                  const response = await fetch(`${BASE_URL}/focus-mode`, {
+                     method: "POST",
+                     headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                     },
+                     body: JSON.stringify({ type: "App", foucsType: "DND" }),
+                  });
+
+                  if (!response.ok) {
+                     alert("Failed to update focus mode");
+                  }
+               } catch (err) {
+                  alert(JSON.stringify(err));
+               }
+            }
+
+            // ACTIVE
+            if (status === "Active") {
+               try {
+                  const response = await fetch(`${BASE_URL}/exit-focus-mode`, {
+                     method: "GET",
+                     headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                     },
+                  });
+
+                  if (!response.ok) {
+                     alert("please set status to offline.");
+                  }
+               } catch (err) {
+                  alert(JSON.stringify(err));
+               }
+            }
+        
+         }
+
+         async function postSlackStatus(status) {
+
+            if (status == "DND") {
+               await window.electronAPI?.closeSlack();
+               return;
+            }
+            let payload = {
+               status: status.toLowerCase(),
+               user_id: userData?.data?.id,
+            };
+
+            try {
+               const response = await fetch(`${BASE_URL}/electron/slack-status/update`, {
+                  method: "POST",
+                  headers: {
+                     Authorization: `Bearer ${token}`,
+                     "Content-Type": "application/json", // 👈 VERY IMPORTANT
+                  },
+                  body: JSON.stringify(payload), // 👈 convert to JSON string
+               });
+
+               if (!response.ok) {
+                  alert("Failed to update Slack status");
+               }
+
+               console.log("Slack status updated:", status);
+            } catch (err) {
+               alert(JSON.stringify(err));
+               console.error(err.message);
+            }
+         }
+                  
+         // Get token from electron instance
+         const token = await window.electronAPI.getToken();
+         
+         if (!token) {
+            console.error("No token available. Cannot update status.");
+            return;
+         }
+
+         const userData = await getUserFromToken(token);
+
+         console.log(token, "token");
+         console.log(userData, "user");
+         
          // DOM refs
          const bar = document.getElementById('bar');
          const toggleBtn = document.getElementById('toggleBtn');
@@ -289,6 +423,8 @@
 
          // set status updates UI and notifies main
          function setStatus(status) {
+            console.log("This is status => :",status);
+            
             const idx = statuses.indexOf(status);
             if (idx !== -1) currentIndex = idx;
 
@@ -303,6 +439,8 @@
 
             // send to main if available
             if (ipcRenderer) ipcRenderer.send('status-changed', status);
+            foucsMode(status);
+            postSlackStatus(status);
          }
 
          // cycle through statuses: Active -> Offline -> DND -> Active
@@ -321,18 +459,18 @@
          }
 
          // event listeners
-         toggleBtn.addEventListener('click', e => { 
-            e.stopPropagation();
-            toggleCollapsed();
-           briefMePanel.classList.remove('show');
-
-          });
-
-         toggleWindow.addEventListener('click', e => { 
+         toggleBtn.addEventListener('click', e => {
             e.stopPropagation();
             toggleCollapsed();
             briefMePanel.classList.remove('show');
-          });
+
+         });
+
+         toggleWindow.addEventListener('click', e => {
+            e.stopPropagation();
+            toggleCollapsed();
+            briefMePanel.classList.remove('show');
+         });
 
          // arrow opens panel
          arrowBtn.addEventListener('click', e => {
@@ -382,6 +520,7 @@
          // init UI
          setStatus(statuses[currentIndex]);
       });
+      
    </script>
 </body>
 
