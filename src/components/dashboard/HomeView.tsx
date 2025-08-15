@@ -62,7 +62,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+import { capitalizeFirstLetter, cn } from "@/lib/utils";
 import { DashboardCard } from "@/components/ui/dashboard-card";
 
 // Import components
@@ -72,6 +72,7 @@ import {
   UpcomingMeetingsSection,
 } from "./HomeViewSections/SidebarSections";
 import {
+  ActionItem,
   CalendarEvent,
   CalenderData,
   IStatus,
@@ -132,6 +133,9 @@ interface HomeViewProps {
   upcomingBrief: Summary | null;
   calendarData: CalenderData;
   userintegrations: UserIntegrations[];
+  allBriefs: Summary[];
+  followUps: ActionItem[];
+  setFollowUps: (followUps: ActionItem[]) => void;
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (
     briefId: number,
@@ -177,6 +181,9 @@ const HomeView = ({
   upcomingBrief,
   calendarData,
   userintegrations,
+  allBriefs,
+  followUps,
+  setFollowUps,
   onOpenBrief,
   onViewTranscript,
   onStartFocusMode,
@@ -843,103 +850,103 @@ const HomeView = ({
   }, [onStatusChange, onStartFocusMode]);
   
   // Sample data - expanded to include more briefs for "view all"
-  const allBriefs = [{
-    id: 1,
-    name: "Morning Brief",
-    timeCreated: "Today, 8:00 AM",
-    timeDelivered: "8:00 AM",
-    timeRange: "5:00 AM - 8:00 AM",
-    slackMessages: {
-      total: 12,
-      fromPriorityPeople: 3
-    },
-    emails: {
-      total: 5,
-      fromPriorityPeople: 2
-    },
-    actionItems: 4,
-    hasTranscript: true,
-    rating: "up",
-    // "up", "down", or null
-    minutesSaved: 17,
-    briefType: "structured" // "structured" or "ad-hoc"
-  }, {
-    id: 2,
-    name: "Evening Brief",
-    timeCreated: "Yesterday, 8:00 PM",
-    timeDelivered: "8:00 PM",
-    timeRange: "5:00 PM - 8:00 PM",
-    slackMessages: {
-      total: 8,
-      fromPriorityPeople: 1
-    },
-    emails: {
-      total: 3,
-      fromPriorityPeople: 0
-    },
-    actionItems: 2,
-    hasTranscript: true,
-    rating: "up",
-    minutesSaved: 12,
-    briefType: "structured"
-  }, {
-    id: 3,
-    name: "Midday Brief",
-    timeCreated: "Yesterday, 12:30 PM",
-    timeDelivered: "12:30 PM",
-    timeRange: "9:00 AM - 12:30 PM",
-    slackMessages: {
-      total: 15,
-      fromPriorityPeople: 4
-    },
-    emails: {
-      total: 7,
-      fromPriorityPeople: 3
-    },
-    actionItems: 6,
-    hasTranscript: true,
-    rating: null,
-    minutesSaved: 25,
-    briefType: "ad-hoc"
-  }, {
-    id: 4,
-    name: "Weekend Brief",
-    timeCreated: "2 days ago, 6:00 PM",
-    timeDelivered: "6:00 PM",
-    timeRange: "12:00 PM - 6:00 PM",
-    slackMessages: {
-      total: 5,
-      fromPriorityPeople: 1
-    },
-    emails: {
-      total: 12,
-      fromPriorityPeople: 4
-    },
-    actionItems: 3,
-    hasTranscript: true,
-    rating: "down",
-    minutesSaved: 8,
-    briefType: "structured"
-  }, {
-    id: 5,
-    name: "Friday Brief",
-    timeCreated: "3 days ago, 5:00 PM",
-    timeDelivered: "5:00 PM",
-    timeRange: "1:00 PM - 5:00 PM",
-    slackMessages: {
-      total: 22,
-      fromPriorityPeople: 8
-    },
-    emails: {
-      total: 18,
-      fromPriorityPeople: 6
-    },
-    actionItems: 9,
-    hasTranscript: true,
-    rating: "up",
-    minutesSaved: 32,
-    briefType: "structured"
-  }];
+  // const allBriefs = [{
+  //   id: 1,
+  //   name: "Morning Brief",
+  //   timeCreated: "Today, 8:00 AM",
+  //   timeDelivered: "8:00 AM",
+  //   timeRange: "5:00 AM - 8:00 AM",
+  //   slackMessages: {
+  //     total: 12,
+  //     fromPriorityPeople: 3
+  //   },
+  //   emails: {
+  //     total: 5,
+  //     fromPriorityPeople: 2
+  //   },
+  //   actionItems: 4,
+  //   hasTranscript: true,
+  //   rating: "up",
+  //   // "up", "down", or null
+  //   minutesSaved: 17,
+  //   briefType: "structured" // "structured" or "ad-hoc"
+  // }, {
+  //   id: 2,
+  //   name: "Evening Brief",
+  //   timeCreated: "Yesterday, 8:00 PM",
+  //   timeDelivered: "8:00 PM",
+  //   timeRange: "5:00 PM - 8:00 PM",
+  //   slackMessages: {
+  //     total: 8,
+  //     fromPriorityPeople: 1
+  //   },
+  //   emails: {
+  //     total: 3,
+  //     fromPriorityPeople: 0
+  //   },
+  //   actionItems: 2,
+  //   hasTranscript: true,
+  //   rating: "up",
+  //   minutesSaved: 12,
+  //   briefType: "structured"
+  // }, {
+  //   id: 3,
+  //   name: "Midday Brief",
+  //   timeCreated: "Yesterday, 12:30 PM",
+  //   timeDelivered: "12:30 PM",
+  //   timeRange: "9:00 AM - 12:30 PM",
+  //   slackMessages: {
+  //     total: 15,
+  //     fromPriorityPeople: 4
+  //   },
+  //   emails: {
+  //     total: 7,
+  //     fromPriorityPeople: 3
+  //   },
+  //   actionItems: 6,
+  //   hasTranscript: true,
+  //   rating: null,
+  //   minutesSaved: 25,
+  //   briefType: "ad-hoc"
+  // }, {
+  //   id: 4,
+  //   name: "Weekend Brief",
+  //   timeCreated: "2 days ago, 6:00 PM",
+  //   timeDelivered: "6:00 PM",
+  //   timeRange: "12:00 PM - 6:00 PM",
+  //   slackMessages: {
+  //     total: 5,
+  //     fromPriorityPeople: 1
+  //   },
+  //   emails: {
+  //     total: 12,
+  //     fromPriorityPeople: 4
+  //   },
+  //   actionItems: 3,
+  //   hasTranscript: true,
+  //   rating: "down",
+  //   minutesSaved: 8,
+  //   briefType: "structured"
+  // }, {
+  //   id: 5,
+  //   name: "Friday Brief",
+  //   timeCreated: "3 days ago, 5:00 PM",
+  //   timeDelivered: "5:00 PM",
+  //   timeRange: "1:00 PM - 5:00 PM",
+  //   slackMessages: {
+  //     total: 22,
+  //     fromPriorityPeople: 8
+  //   },
+  //   emails: {
+  //     total: 18,
+  //     fromPriorityPeople: 6
+  //   },
+  //   actionItems: 9,
+  //   hasTranscript: true,
+  //   rating: "up",
+  //   minutesSaved: 32,
+  //   briefType: "structured"
+  // }];
 
   // const recentBriefs = allBriefs.slice(0, 3); // Only show first 3 in recent
   const upcomingBriefs = [{
@@ -951,73 +958,6 @@ const HomeView = ({
     name: "Evening Brief",
     scheduledTime: "Today at 6:00 PM"
   }];
-
-  // Follow-ups state management
-  const [followUps, setFollowUps] = useState([{
-    id: 1,
-    platform: "G",
-    priority: "High",
-    message: "Review weekly performance report",
-    sender: "kevin@uprise.is",
-    time: "12:24 PM",
-    actionType: "Decision"
-  }, {
-    id: 2,
-    platform: "G",
-    priority: "High",
-    message: "Schedule follow up with Mike",
-    sender: "mike@company.com",
-    time: "11:30 AM",
-    actionType: "Action"
-  }, {
-    id: 3,
-    platform: "S",
-    priority: "High",
-    message: "Decide on new logo design direction",
-    sender: "Sara Chen",
-    time: "10:15 AM",
-    actionType: "Decision"
-  }, {
-    id: 4,
-    platform: "G",
-    priority: "Medium",
-    message: "Respond to confirm funding details",
-    sender: "investor@vc.com",
-    time: "9:45 AM",
-    actionType: "Decision"
-  }, {
-    id: 5,
-    platform: "S",
-    priority: "Medium",
-    message: "Update project timeline for Q1",
-    sender: "Project Team",
-    time: "8:30 AM",
-    actionType: "Action"
-  }, {
-    id: 6,
-    platform: "G",
-    priority: "Low",
-    message: "Review contract terms and conditions",
-    sender: "legal@company.com",
-    time: "Yesterday",
-    actionType: "Deadline"
-  }, {
-    id: 7,
-    platform: "G",
-    priority: "Low",
-    message: "Approve marketing budget allocation",
-    sender: "marketing@company.com",
-    time: "Yesterday",
-    actionType: "Decision"
-  }, {
-    id: 8,
-    platform: "S",
-    priority: "Medium",
-    message: "Finalize product roadmap priorities",
-    sender: "Product Team",
-    time: "Yesterday",
-    actionType: "Action"
-  }]);
 
   // Sample messages data from the brief
   const allMessages = [{
@@ -1247,10 +1187,11 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     item: any;
     onPriorityChange: (itemId: number, newPriority: string, oldPriority: string, itemData: any) => void;
   }) => {
+    const itemPriority = capitalizeFirstLetter(item?.priority);
     return <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" className={cn("bg-transparent text-xs px-2 py-1 rounded-full font-medium h-auto hover:bg-surface-raised/20 shadow-sm", item.priority === "High" ? "bg-orange-500/20 text-orange-400" : item.priority === "Medium" ? "bg-yellow-500/20 text-yellow-400" : "bg-green-500/20 text-green-400")}>
-            {item.priority}
+          <Button variant="ghost" className={cn("bg-transparent text-xs px-2 py-1 rounded-full font-medium h-auto hover:bg-surface-raised/20 shadow-sm", itemPriority === "High" ? "bg-orange-500/20 text-orange-400" : itemPriority === "Medium" ? "bg-yellow-500/20 text-yellow-400" : "bg-green-500/20 text-green-400")}>
+            {itemPriority}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-40 p-2 bg-surface shadow-lg" align="start">
@@ -1501,92 +1442,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             {/* Right: Integration Icons, Get Brief button, Avatar */}
             <div className="flex items-center gap-3">
               {/* Integration Status Icons */}
-              {/* <div className="flex items-center gap-2"> */}
-                {/* Slack Integration */}
-                {/* <Popover>
-                  <PopoverTrigger asChild>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
-                      <div className="w-4 h-4 bg-purple-500 rounded-sm flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-white">#</span>
-                      </div>
-                      <span className="text-sm font-medium text-white">4</span>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-0" align="end">
-                    <div className="bg-gray-900 rounded-lg overflow-hidden">
-                      <div className="p-4 border-b border-gray-700">
-                        <h3 className="text-white font-semibold">Slack</h3>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-white text-sm">workspace@company.com</span>
-                          <span className="text-gray-400 text-sm">• active</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-white text-sm">team@company.co</span>
-                          <span className="text-gray-400 text-sm">• active</span>
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover> */}
-
-                {/* Google Integration */}
-                {/* <Popover>
-                  <PopoverTrigger asChild>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
-                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-white">G</span>
-                      </div>
-                      <span className="text-sm font-medium text-white">2</span>
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-0" align="end">
-                    <div className="bg-gray-900 rounded-lg overflow-hidden">
-                      <div className="p-4 border-b border-gray-700">
-                        <h3 className="text-white font-semibold">Google</h3>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-white text-sm">kirkpatrick.kevin.j@gmail.com</span>
-                          <span className="text-gray-400 text-sm">• active</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-white text-sm">me@kevink.co</span>
-                          <span className="text-gray-400 text-sm">• active</span>
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover> */}
-
-                {/* Calendar Integration */}
-                {/* <Popover>
-                  <PopoverTrigger asChild>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full cursor-pointer transition-colors">
-                      <Calendar className="w-4 h-4 text-white" />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-0" align="end">
-                    <div className="bg-gray-900 rounded-lg overflow-hidden">
-                      <div className="p-4 border-b border-gray-700">
-                        <h3 className="text-white font-semibold">Calendar</h3>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-white text-sm">Personal Calendar</span>
-                          <span className="text-gray-400 text-sm">• syncing</span>
-                        </div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover> */}
-              {/* </div> */}
                   <IntegrationsList userintegrations={userintegrations} />
               {/* Get Brief Button / End Focus Mode Button */}
               <Button 
@@ -1786,28 +1641,28 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                           <div className="space-y-4">
                             {/* Multiple Briefs Available Today - Show Catch Up Brief if available */}
-                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => {
+                            {recentBriefs.length > 0 && recentBriefs?.map((recentBrief) => <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => {
                               setLeftRailTab('briefs');
                               setLeftPanelCollapsed(false);
-                              setSelectedBrief(recentBriefs[0].id);
+                              setSelectedBrief(recentBrief?.id);
                               setIsHomeSelected(false);
                             }}>
                               <div className="flex items-center gap-4 mb-2">
                                 {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
                                   e.stopPropagation();
-                                  handlePlayBrief(recentBriefs[0].id);
+                                  handlePlayBrief(recentBrief.id);
                                 }}>
-                                  {playingBrief === recentBriefs[0]?.id ? <Pause className="h-5 w-5 text-accent-primary" /> : <Play className="h-5 w-5 text-accent-primary" />}
+                                  {playingBrief === recentBrief?.id ? <Pause className="h-5 w-5 text-accent-primary" /> : <Play className="h-5 w-5 text-accent-primary" />}
                                 </Button>
                                 
                                 {/* Title Row: Brief title, status badge, counts */}
                                 <div className="flex items-center justify-between flex-1 min-w-0">
                                   <div className="flex items-center gap-2 min-w-0">
                                     <h3 className="text-white-text truncate font-semibold text-base">
-                                      Combined Catch Up Briefs
+                                      {recentBrief?.title}
                                     </h3>
-                                    {playingBrief === recentBriefs[0]?.id && (
+                                    {playingBrief === recentBrief?.id && (
                                       <Badge variant="secondary" className="bg-accent-primary/20 text-accent-primary border-accent-primary/40 text-xs px-2 py-0.5 font-medium">
                                         Playing
                                       </Badge>
@@ -1816,9 +1671,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   
                                   {/* Counts on the right side of title row */}
                                   <div className="flex items-center gap-4 text-sm text-light-gray-text flex-shrink-0">
-                                    <span className="whitespace-nowrap">0 Slack</span>
-                                    <span className="whitespace-nowrap">0 Email</span>
-                                    <span className="whitespace-nowrap">0 Actions</span>
+                                    <span className="whitespace-nowrap">{recentBrief?.slackMessageCount} Slack</span>
+                                    <span className="whitespace-nowrap">{recentBrief?.emailCount} Email</span>
+                                    <span className="whitespace-nowrap">{recentBrief?.actionCount} Actions</span>
                                   </div>
                                 </div>
                               </div>
@@ -1826,28 +1681,36 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               {/* Meta Row: Delivery text and generating pill */}
                               <div className="flex items-center justify-between pl-14">
                                 <p className="text-xs text-light-gray-text font-light">
-                                  13:00 Range: 09/12 10:30 to 09/12 13:30
+                                  13:00 Range: 09/12 {recentBrief?.start_at} to 09/12 {recentBrief?.ended_at}
                                 </p>
                                 
                                 {/* Generating pill aligned right with meta row */}
-                                <div className="flex items-center gap-1 text-xs bg-blue-400/10 rounded-full py-1 px-2" style={{
+                                {recentBrief?.status === 'pending' && <div className="flex items-center gap-1 text-xs bg-blue-400/10 rounded-full py-1 px-2" style={{
                                   borderColor: '#FACC14',
                                   color: '#FACC14'
                                 }}>
                                   <span className="font-medium">Generating summary</span>
-                                </div>
+                                </div>}
+
+                                {recentBrief?.status === 'failed' && <div className="flex items-center gap-1 text-xs bg-red-400/10 rounded-full py-1 px-2">
+                                  <span className="text-red-400 font-medium">Failed to generate summary</span>
+                                </div>}
+
+                                {recentBrief?.status === 'success' && <div className="flex items-center gap-1 text-xs bg-green-400/10 rounded-full py-1 px-2">
+                                  <Clock className="w-3 h-3 text-green-400" />
+                                  <span className="text-green-400 font-medium">~{Math.round(recentBrief?.savedTime?.total_saved_minutes)}min saved</span>
+                                </div>}
                               </div>
-                            </div>
+                            </div>)}
 
                             {/* Daily Combined Brief */}
-                            <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => {
+                            {/* <div className="p-4 rounded-lg hover:bg-white/[0.04] transition-colors cursor-pointer -m-1" onClick={() => {
                               setLeftRailTab('briefs');
                               setLeftPanelCollapsed(false);
                               setSelectedBrief(recentBriefs[0].id);
                               setIsHomeSelected(false);
                             }}>
                               <div className="flex items-center gap-4 mb-2">
-                                {/* Play Button */}
                                 <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full bg-accent-primary/20 hover:bg-accent-primary/30" onClick={e => {
                                   e.stopPropagation();
                                   handlePlayBrief(recentBriefs[0]?.id);
@@ -1855,7 +1718,6 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   {playingBrief === recentBriefs[0]?.id ? <Pause className="h-5 w-5 text-accent-primary" /> : <Play className="h-5 w-5 text-accent-primary" />}
                                 </Button>
                                 
-                                {/* Title Row: Brief title, status badge, counts */}
                                 <div className="flex items-center justify-between flex-1 min-w-0">
                                   <div className="flex items-center gap-2 min-w-0">
                                     <h3 className="text-white-text truncate font-semibold text-base">
@@ -1863,28 +1725,25 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                     </h3>
                                   </div>
                                   
-                                  {/* Counts on the right side of title row */}
                                   <div className="flex items-center gap-4 text-sm text-light-gray-text flex-shrink-0">
-                                    <span className="whitespace-nowrap">{recentBriefs[0]?.slackMessages?.total} Slack</span>
-                                    <span className="whitespace-nowrap">{recentBriefs[0]?.emails?.total} Email</span>
-                                    <span className="whitespace-nowrap">{recentBriefs[0]?.actionItems} Actions</span>
+                                    <span className="whitespace-nowrap">{recentBriefs[0]?.slackMessageCount} Slack</span>
+                                    <span className="whitespace-nowrap">{recentBriefs[0]?.emailCount} Email</span>
+                                    <span className="whitespace-nowrap">{recentBriefs[0]?.actionCount} Actions</span>
                                   </div>
                                 </div>
                               </div>
                               
-                              {/* Meta Row: Delivery text and time saved */}
                               <div className="flex items-center justify-between pl-14">
                                 <p className="text-xs text-light-gray-text font-light">
                                   {formatDeliveryText("Today, 7:00 AM", "5:00 PM - 7:00 AM")}
                                 </p>
                                 
-                                {/* Time saved badge aligned right with meta row */}
                                 <div className="flex items-center gap-1 text-xs bg-green-400/10 rounded-full py-1 px-2">
                                   <Clock className="w-3 h-3 text-green-400" />
                                   <span className="text-green-400 font-medium">~62min saved</span>
                                 </div>
                               </div>
-                            </div>
+                            </div> */}
                             
                             {/* Separator */}
                             <div className="border-t border-white/8" />
@@ -1959,7 +1818,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                             
                             {/* Past Briefs Section */}
                             <div className="flex items-center justify-between px-4 py-2 hover:bg-white/[0.04] transition-colors cursor-pointer" onClick={() => {
-                              navigate('briefs');
+                              handleNavigateToAllBriefs();
                             }}>
                               <h4 className="text-base font-medium text-text-primary">Past briefs</h4>
                               <div className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
@@ -2080,7 +1939,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
                                   {/* Platform Icon */}
                                   <div className="w-6 h-6 rounded-full bg-surface-raised/50 flex items-center justify-center flex-shrink-0">
-                                    <span className="text-xs font-medium text-text-primary">{item.platform}</span>
+                                    <span className="text-xs font-medium text-text-primary">{item?.platform?.charAt(0)?.toUpperCase()}</span>
                                   </div>
 
                                   {/* Priority Badge */}
@@ -2284,7 +2143,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   </div>
                   
                   <div className="space-y-4">
-                    {allBriefs.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 hover:bg-surface-raised/40 transition-colors cursor-pointer shadow-sm" onClick={() => handleBriefSelect(brief.id)}>
+                    {allBriefs?.map(brief => <div key={brief.id} className="bg-surface-raised/30 rounded-lg p-4 hover:bg-surface-raised/40 transition-colors cursor-pointer shadow-sm" onClick={() => handleBriefSelect(brief.id)}>
                         <div className="flex items-start gap-4">
                           <Button variant="ghost" size="sm" className="h-12 w-12 p-0 hover:bg-accent-primary/20 rounded-full bg-accent-primary/10 mt-1" onClick={e => {
                       e.stopPropagation();
@@ -2295,34 +2154,46 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-1">
-                              <h3 className="font-semibold text-text-primary text-base">{brief.name}</h3>
+                              <h3 className="font-semibold text-text-primary text-base">{brief.title}</h3>
                               <div className="flex items-center gap-4 text-sm text-text-secondary">
-                                <span>{brief.slackMessages.fromPriorityPeople} Slack</span>
-                                <span>{brief.emails.fromPriorityPeople} Emails</span>
-                                <span>{brief.actionItems} Actions</span>
+                                <span>{brief?.slackMessageCount} Slack</span>
+                                <span>{brief?.emailCount} Emails</span>
+                                <span>{brief?.actionCount} Actions</span>
                               </div>
                             </div>
                             
                             <div className="mb-2">
                               <p className="text-sm text-text-secondary">
-                                {formatDeliveryText(brief.timeCreated, brief.timeRange)}
+                                {/* {formatDeliveryText(brief.timeCreated, brief.timeRange)} */}
+                                Range: {brief.start_at} to {brief.ended_at}
                               </p>
                             </div>
                             
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <span className="text-xs text-text-muted">
+                                {/* <span className="text-xs text-text-muted">
                                   {brief.briefType === 'structured' ? 'Automatically generated brief' : 'Ad-hoc brief'}
-                                </span>
-                                {brief.rating && <div className="flex items-center">
-                                    {brief.rating === "up" ? <ThumbsUp className="h-3 w-3 text-green-500" /> : <ThumbsDown className="h-3 w-3 text-red-500" />}
+                                </span> */}
+                                {brief?.vote && <div className="flex items-center">
+                                    {brief.vote === "like" ? <ThumbsUp className="h-3 w-3 text-green-500" /> : <ThumbsDown className="h-3 w-3 text-red-500" />}
                                   </div>}
                               </div>
+
+                              {brief?.status === 'pending' && <div className="flex items-center gap-1 text-xs bg-blue-400/10 rounded-full py-1 px-2" style={{
+                                borderColor: '#FACC14',
+                                color: '#FACC14'
+                              }}>
+                                <span className="font-medium">Generating summary</span>
+                              </div>}
+
+                              {brief?.status === 'failed' && <div className="flex items-center gap-1 text-xs bg-red-400/10 rounded-full py-1 px-2">
+                                <span className="text-red-400 font-medium">Failed to generate summary</span>
+                              </div>}
                               
-                              <div className="flex items-center gap-1 text-sm font-medium text-green-400">
+                              {brief?.status === 'success' && <div className="flex items-center gap-1 text-sm font-medium text-green-400">
                                 <Clock className="h-4 w-4" />
-                                <span>~{brief.minutesSaved}min saved</span>
-                              </div>
+                                <span>~{Math.round(brief?.savedTime?.total_saved_minutes)}min saved</span>
+                              </div>}
                             </div>
                           </div>
                         </div>
@@ -2693,6 +2564,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
             <div className="fixed top-[80px] right-0 w-80 h-[calc(100vh-80px)] bg-surface/15 flex flex-col shadow-2xl rounded-l-xl z-50 transition-transform duration-300 ease-out border-l-2 border-l-brand-500/30">
               <div className="flex-1 overflow-hidden">
                 <ActionItemsPanel 
+                  setActionItemsCount={setActionItemsCount}
                   onToggleCollapse={() => setRightPanelCollapsed(true)} 
                   selectedMessage={selectedMessage} 
                   onCloseMessage={() => {

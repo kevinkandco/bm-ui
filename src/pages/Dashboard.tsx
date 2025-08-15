@@ -10,7 +10,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus, UserIntegrations } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus, UserIntegrations, ActionItem } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
@@ -94,6 +94,13 @@ const Dashboard = () => {
   const [offlineStartTime, setOfflineStartTime] = useState<number | null>(null);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [userintegrations, setUserIntegrations] = useState<UserIntegrations[]>([]);
+  const [followUps, setFollowUps] = useState<ActionItem[]>([]);
+  const [allBriefs, setAllBriefs] = useState<Summary[]>([]);
+  const [briefsPagination, setBriefsPagination] = useState({
+      currentPage: 1,
+      totalPages: 1,
+      itemsPerPage: 2,
+    });
 
   const [calendarData, setCalendarData] = useState<CalenderData>({
     today: [],
@@ -192,47 +199,88 @@ const Dashboard = () => {
       [call]
     );
 
-    const handleLoginSuccess = useCallback(async () => {
-      const token = await requestNotificationPermission();
+  const handleLoginSuccess = useCallback(async () => {
+    const token = await requestNotificationPermission();
 
-      if (token) {
-        await call("post", `/store-token`, {
-          body: { token },
-        });
+    if (token) {
+      await call("post", `/store-token`, {
+        body: { token },
+      });
+    }
+  }, [call]);
+
+  const getActionItems = useCallback(async () => {
+    const response = await call("get", `/action-items?par_page=4`, {
+      showToast: true,
+      toastTitle: "Failed to Action Items",
+      toastDescription: "Something went wrong getting action items.",
+      returnOnFailure: false,
+    });
+
+    if (!response && !response.data) return;
+    setFollowUps(response.data);
+    // setActionItems(data);
+  }, [call]);
+
+  const getBriefs = useCallback(
+    async (page = 1): Promise<void> => {
+      setLoading(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      const response = await call("get", `/summaries?page=${page}&per_page=8`, {
+        showToast: true,
+        toastTitle: "Failed to fetch summaries",
+        toastDescription: "Unable to load briefs. Please try again.",
+      });
+
+      if (response?.data && Array.isArray(response.data)) {
+        setAllBriefs(response.data);
+        setBriefsPagination((prev) => ({
+          ...prev,
+          currentPage: response?.meta?.current_page || 1,
+          totalPages: response?.meta?.last_page || 1,
+        }));
+      } else {
+        setAllBriefs([]);
       }
-    }, [call]);
+      setLoading(false);
+    },
+    [call]
+  );
 
-    useEffect(() => {
-        const loadData = async () => {
-            setLoading(true);
+  useEffect(() => {
+      const loadData = async () => {
+          setLoading(true);
 
-            const tokenFromUrl = searchParams.get("token");
+          const tokenFromUrl = searchParams.get("token");
 
-            if (tokenFromUrl) {
-            localStorage.setItem("token", tokenFromUrl);
+          if (tokenFromUrl) {
+          localStorage.setItem("token", tokenFromUrl);
 
-            const url = new URL(window.location.href);
-            url.searchParams.delete("token");
-            url.searchParams.delete("provider");
-            handleLoginSuccess();
-            window.history.replaceState({}, document.title, url.pathname + url.search);
-            }
+          const url = new URL(window.location.href);
+          url.searchParams.delete("token");
+          url.searchParams.delete("provider");
+          handleLoginSuccess();
+          window.history.replaceState({}, document.title, url.pathname + url.search);
+          }
 
-            try {
-            await Promise.all([
-                fetchDashboardData(),
-                getCalendarData(),
-                getRecentBriefs()
-            ]);
-            } catch (error) {
-            console.error("Failed to load data:", error);
-            } finally {
-            setLoading(false);
-            }
-        };
+          try {
+          await Promise.all([
+              fetchDashboardData(),
+              getCalendarData(),
+              getRecentBriefs(),
+              getActionItems(),
+              getBriefs(),
+          ]);
+          } catch (error) {
+          console.error("Failed to load data:", error);
+          } finally {
+          setLoading(false);
+          }
+      };
 
-        loadData();
-    }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData, handleLoginSuccess]);
+      loadData();
+  }, [searchParams, getRecentBriefs, fetchDashboardData, getCalendarData, handleLoginSuccess, getActionItems, getBriefs]);
 
   useEffect(() => {
       if (!recentBriefs) return;
@@ -686,6 +734,9 @@ const Dashboard = () => {
             upcomingBrief={upcomingBrief}
             calendarData={calendarData}
             userintegrations={userintegrations}
+            allBriefs={allBriefs}
+            followUps={followUps} 
+            setFollowUps={setFollowUps}
             onOpenBrief={openBriefDetails}
             onViewTranscript={openTranscript}
             onStartFocusMode={handleStartFocusMode}
