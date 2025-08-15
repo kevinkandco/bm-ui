@@ -210,6 +210,7 @@ const HomeView = ({
   });
     // State for new layout
   const [selectedBrief, setSelectedBrief] = useState<number | null>(null);
+  const [brief, setBrief] = useState<Summary | null>(null);
   const [showAllBriefs, setShowAllBriefs] = useState(false);
   const [selectedCalendarItem, setSelectedCalendarItem] = useState<string | null>(null);
   const [openSection, setOpenSection] = useState<'briefs' | 'calendar' | 'followups' | null>(null);
@@ -429,6 +430,26 @@ const HomeView = ({
   //   isRecording: false,
   //   minutesUntil: 135
   // }]);
+
+  const getBriefData = useCallback(async (id): Promise<void> => {
+    // setLoading(true);
+
+    const response = await call("get", `/summary/${id}/show`, {
+      showToast: true,
+      toastTitle: "Failed to fetch brief",
+      toastDescription: "Could not retrieve brief data.",
+      returnOnFailure: false,
+    });
+
+    if (response) {
+    //   const stats = transformToStats(response?.data);
+      setBrief(response?.data);
+      // setFollowUps(response?.data?.follow_ups);
+      // setMessages(response?.data?.all_messages);
+      // setSelectedFeedback(response?.data?.vote ? response?.data?.vote === "like" ? "up" : "down" : null);
+    }
+    // setLoading(false);
+  }, [call]);
 
   // Meeting handlers (from CalendarSection)
   const toggleProxy = useCallback((meetingId: number) => {
@@ -782,6 +803,7 @@ const HomeView = ({
     navigate('/dashboard');
     setIsHomeSelected(true);
     setSelectedBrief(null);
+    setBrief(null);
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setOpenSection(null);
@@ -792,6 +814,7 @@ const HomeView = ({
   const handleNavigateToAllBriefs = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null); // No specific brief selected to show "view all"
+    setBrief(null);
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setOpenSection('briefs');
@@ -803,6 +826,7 @@ const HomeView = ({
     setIsHomeSelected(false);
     setSelectedBrief(null);
     setSelectedCalendarItem(null); // No specific event selected to show "view all"
+    setBrief(null);
     setSelectedMeeting(null);
     setOpenSection('calendar');
     setLeftRailTab('calendar');
@@ -812,6 +836,7 @@ const HomeView = ({
   const handleNavigateToAllFollowUps = useCallback(() => {
     setIsHomeSelected(false);
     setSelectedBrief(null);
+    setBrief(null);
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setOpenSection('followups');
@@ -1058,6 +1083,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
   const handleBriefSelect = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
+    getBriefData(briefId);
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setIsHomeSelected(false);
@@ -1068,6 +1094,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const handleCalendarSelect = useCallback((itemId: string) => {
     setSelectedCalendarItem(itemId);
     setSelectedBrief(null);
+    setBrief(null);
     setSelectedMeeting(null);
     setIsHomeSelected(false);
     setFollowUpsFilter('all');
@@ -1076,6 +1103,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
   const handleHomeSelect = useCallback(() => {
     setIsHomeSelected(true);
     setSelectedBrief(null);
+    setBrief(null);
     setSelectedCalendarItem(null);
     setSelectedMeeting(null);
     setSelectedFollowUpId(null);
@@ -1260,6 +1288,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
 
   const handleOpenMobileBrief = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
+    getBriefData(briefId);
     setShowMobileBriefDrawer(true);
   }, []);
 
@@ -1268,8 +1297,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     const target = e.target as HTMLElement;
     if (target.closest('button')) return; // ignore clicks on controls
     setSelectedBrief(playingBrief);
+    getBriefData(playingBrief);
     setShowMobileBriefDrawer(true);
-  }, [playingBrief]);
+  }, [playingBrief, getBriefData]);
 
   function formatDate(created_at: string | Date) {
     const date = moment(created_at);
@@ -1683,6 +1713,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                               setLeftRailTab('briefs');
                               setLeftPanelCollapsed(false);
                               setSelectedBrief(recentBrief?.id);
+                              getBriefData(recentBrief?.id);
                               setIsHomeSelected(false);
                             }}>
                               <div className="flex items-center gap-4 mb-2">
@@ -2252,7 +2283,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                   {/* Header */}
                   <div>
                     <div className="text-sm text-text-secondary mb-1">Scheduled | 8/4/2025 at 7:00 AM</div>
-                    <h2 className="text-2xl font-bold text-text-primary mb-1">Morning Brief</h2>
+                    <h2 className="text-2xl font-bold text-text-primary mb-1">{brief?.title || "Morning Brief"}</h2>
                     <p className="text-sm text-text-secondary">Summarizing 5PM on 8/3/25 to 7AM 8/4/25</p>
                   </div>
 
@@ -2264,7 +2295,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           {playingBrief === selectedBrief ? <Pause className="h-6 w-6 text-accent-primary" /> : <Play className="h-6 w-6 text-accent-primary" />}
                         </button>
                         <div>
-                          <div className="text-sm text-text-secondary">3 mins summarizing: 3 Slack | 28 Emails | 4 Actions</div>
+                          <div className="text-sm text-text-secondary">3 mins summarizing: {brief?.slackMessageCount} Slack | {brief?.emailCount} Emails | {brief?.actionCount} Actions</div>
                         </div>
                       </div>
                       
@@ -2278,7 +2309,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                           <div className="text-xs text-text-secondary">Focus Gained</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-text-primary">~66</div>
+                          <div className="text-2xl font-bold text-text-primary">~{Math.round(brief?.savedTime?.total_saved_minutes || 0)}</div>
                           <div className="text-xs text-text-secondary">Time Saved</div>
                         </div>
                       </div>
