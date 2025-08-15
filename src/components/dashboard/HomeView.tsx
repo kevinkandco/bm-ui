@@ -107,6 +107,7 @@ import VacationTimer from "./VacationTimer";
 import { OfflineTimer } from "./OfflineTimer";
 import IntegrationsList from "./HomeViewSections/IntegrationsList";
 import moment from "moment";
+import { useApi } from "@/hooks/useApi";
 
 interface HomeViewProps {
   status: IStatus;
@@ -199,6 +200,7 @@ const HomeView = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user } = useAuthStore();
+  const { call } = useApi();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSlackModalOpen, setSlackModalOpen] = useState(false);
   const [actionItemsCount, setActionItemsCount] = useState<number>(0);
@@ -1166,6 +1168,36 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     // You could also filter them out of the followUps array if needed
   };
 
+  const handleOpenInPlatform = (item: any) => {
+    const platform = item.platform === 'gmail' ? 'Gmail' : 'Slack';
+    window.open(item?.redirect_link, '_blank');
+    toast({
+      description: `Opening ${platform} in new tab`
+    });
+  };
+
+  const handleAddToAsana = async (item: any) => {
+    const response = await call("post", `/tasks/asana`, {
+      body: {
+        task_id: item?.id,
+        platform: item?.platform,
+        title: item?.title,
+        notes: item?.message,
+      },
+      showToast: true,
+      toastTitle: "Add to Asana Failed",
+      toastDescription: `Failed to add ${item.title} to Asana`,
+      returnOnFailure: false,
+    });
+
+    if (!response) return;
+
+    toast({
+      description: "Added to Asana",
+      variant: "default"
+    });
+  };
+
     // Priority badge component
   const PriorityBadge = ({
     item,
@@ -1977,13 +2009,13 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                         </Button>
                                       </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                         <DropdownMenuItem>
+                                         <DropdownMenuItem onClick={() => handleOpenInPlatform(item)}>
                                            <Mail className="h-4 w-4 mr-2" />
                                            Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Gmail' : item.platform === 'T' ? 'Teams' : item.platform === 'D' ? 'Discord' : 'App'}
                                          </DropdownMenuItem>
-                                         <DropdownMenuItem>
+                                         <DropdownMenuItem onClick={() => item?.task_url ? window.open(item?.task_url, '_blank') : handleAddToAsana(item)}>
                                            <Kanban className="h-4 w-4 mr-2" />
-                                           Add to Asana
+                                           {item?.task_url ? "Open in Asana" :"Add to Asana"}
                                          </DropdownMenuItem>
                                        </DropdownMenuContent>
                                     </DropdownMenu>

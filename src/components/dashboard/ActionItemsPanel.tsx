@@ -637,12 +637,28 @@ const ActionItemsPanel = ({
 
     const handleOpenInPlatform = () => {
       const platform = selectedFollowUp.platform === 'G' ? 'Gmail' : 'Slack';
+      window.open(selectedFollowUp?.redirect_link, '_blank');
       toast({
         description: `Opening ${platform} in new tab`
       });
     };
 
-    const handleAddToAsana = () => {
+    const handleAddToAsana = async () => {
+      const response = await call("post", `/tasks/asana`, {
+        body: {
+          task_id: selectedFollowUp?.id,
+          platform: selectedFollowUp?.platform,
+          title: selectedFollowUp?.title,
+          notes: selectedFollowUp?.message,
+        },
+        showToast: true,
+        toastTitle: "Add to Asana Failed",
+        toastDescription: `Failed to add ${selectedFollowUp.title} to Asana`,
+        returnOnFailure: false,
+      });
+
+      if (!response) return;
+
       toast({
         description: "Added to Asana",
         variant: "default"
@@ -695,11 +711,11 @@ const ActionItemsPanel = ({
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={handleAddToAsana}
+                onClick={selectedFollowUp?.task_url ? () => window.open(selectedFollowUp?.task_url, '_blank') :handleAddToAsana}
                 className="text-sm"
               >
                 <Plus className="h-4 w-4 mr-1" />
-                Add to Asana
+                {selectedFollowUp?.task_url ? "Open in Asana" : "Add to Asana"}
               </Button>
               <Button 
                 variant="outline" 
