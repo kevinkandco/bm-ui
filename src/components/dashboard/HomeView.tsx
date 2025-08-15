@@ -2334,12 +2334,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                       </span>
                                       
                                       <div className="flex items-center gap-1">
-                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                        <Button onClick={(e) => {e.stopPropagation(); if (item.task_url) window.open(item.task_url, '_blank'); else handleAddToAsana(item);}} variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
                                           <Kanban className="h-2.5 w-2.5" />
-                                          Add to Asana
+                                          {item.task_url ? "Open in Asana" : "Add to Asana"}
                                         </Button>
-                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
-                                          {item.platform === "S" ? <>
+                                        <Button onClick={(e) => {e.stopPropagation(); handleOpenInPlatform(item);}} variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          {item.platform === "slack" ? <>
                                               <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
                                                 <span className="text-[8px] font-bold text-white">#</span>
                                               </div>
@@ -2542,12 +2542,12 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                       </span>
                                       
                                       <div className="flex items-center gap-1">
-                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                        <Button onClick={(e) => {e.stopPropagation(); if (item.task_url) window.open(item.task_url, '_blank'); else handleAddToAsana(item);}} variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
                                           <Kanban className="h-2.5 w-2.5" />
-                                          Add to Asana
+                                          {item.task_url ? "Open in Asana" : "Add to Asana"}
                                         </Button>
-                                        <Button variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
-                                          {item.platform === "S" ? <>
+                                        <Button onClick={(e) => {e.stopPropagation(); handleOpenInPlatform(item);}} variant="outline" size="sm" className="bg-surface-raised/20 text-text-primary hover:bg-surface-raised/40 rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 h-6 shadow-sm">
+                                          {item.platform === "slack" ? <>
                                               <div className="w-2.5 h-2.5 bg-purple-600 rounded-sm flex items-center justify-center">
                                                 <span className="text-[8px] font-bold text-white">#</span>
                                               </div>
