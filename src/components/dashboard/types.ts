@@ -197,6 +197,40 @@ export interface ActionItem {
   time?: string;
 }
 
+export interface FollowUp {
+  id: number;
+  title: string;
+  message: string;
+  platform: string;
+  redirect_link: string;
+  task_url: null;
+  priority: string;
+  tag: string;
+  status: boolean;
+  vote: boolean;
+  created_at: string;
+  slack_data: Slackdata;
+  gmail_data: Gmaildata;
+}
+
+interface Gmaildata {
+  id: number;
+  subject: string;
+  from: string;
+  snippet: string;
+  received_at: string;
+}
+
+interface Slackdata {
+  id: number;
+  name: null;
+  email: null;
+  text: string;
+  sender: string;
+  sent_at: string;
+  created_at: string;
+}
+
 export interface CalendarEvent {
   id: number;
   title: string;

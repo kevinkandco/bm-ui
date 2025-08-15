@@ -10,7 +10,7 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus, UserIntegrations, ActionItem } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus, UserIntegrations, ActionItem, FollowUp } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
@@ -94,7 +94,7 @@ const Dashboard = () => {
   const [offlineStartTime, setOfflineStartTime] = useState<number | null>(null);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [userintegrations, setUserIntegrations] = useState<UserIntegrations[]>([]);
-  const [followUps, setFollowUps] = useState<ActionItem[]>([]);
+  const [followUps, setFollowUps] = useState<FollowUp[]>([]);
   const [allBriefs, setAllBriefs] = useState<Summary[]>([]);
   const [briefsPagination, setBriefsPagination] = useState({
       currentPage: 1,

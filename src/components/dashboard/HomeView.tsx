@@ -75,6 +75,7 @@ import {
   ActionItem,
   CalendarEvent,
   CalenderData,
+  FollowUp,
   IStatus,
   Priorities,
   PriorityPeople,
@@ -104,6 +105,7 @@ import AwayTimer from "./AwayTimer";
 import VacationTimer from "./VacationTimer";
 import { OfflineTimer } from "./OfflineTimer";
 import IntegrationsList from "./HomeViewSections/IntegrationsList";
+import moment from "moment";
 
 // Meeting interface from CalendarSection
 interface Meeting {
@@ -134,8 +136,8 @@ interface HomeViewProps {
   calendarData: CalenderData;
   userintegrations: UserIntegrations[];
   allBriefs: Summary[];
-  followUps: ActionItem[];
-  setFollowUps: (followUps: ActionItem[]) => void;
+  followUps: FollowUp[];
+  setFollowUps: (followUps: FollowUp[]) => void;
   onOpenBrief: (briefId: number) => void;
   onViewTranscript: (
     briefId: number,
@@ -1251,6 +1253,25 @@ That's your brief for this morning. I've organized your follow-ups in priority o
     setSelectedBrief(playingBrief);
     setShowMobileBriefDrawer(true);
   }, [playingBrief]);
+
+  function formatDate(created_at: string | Date) {
+    const date = moment(created_at);
+    const today = moment();
+
+    if (date.isSame(today, "day")) {
+      return date.format("h:mm A");
+    }
+
+    if (date.isSame(today.clone().subtract(1, "day"), "day")) {
+      return "Yesterday";
+    }
+
+    if (date.isSame(today, "week")) {
+      return date.format("dddd");
+    }
+
+    return date.format("DD MMMM YYYY");
+  }
 
     // Breadcrumb rendering function
   const renderBreadcrumbs = () => {
@@ -2471,8 +2492,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 </div>
                                 
                                 {/* Platform Icon */}
-                                <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${item.platform === 'S' ? 'bg-purple-600' : item.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
-                                  {item.platform}
+                                <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${item.platform === 'slack' ? 'bg-purple-600' : item.platform === 'gmail' ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                                  {item.platform?.charAt(0)?.toUpperCase()}
                                 </div>
                                 
                                 {/* Main Content */}
@@ -2487,14 +2508,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                         {item.message}
                                       </h3>
                                       <p className="text-xs text-text-secondary font-light">
-                                        From: {item.sender}
+                                        From: {item?.platform === 'gmail' ? item.gmail_data?.from : item.slack_data?.sender}
                                       </p>
                                     </div>
                                     
                                     {/* Time and Actions */}
                                     <div className="flex items-center gap-3 flex-shrink-0">
                                       <span className="text-xs text-text-secondary">
-                                        {item.time}
+                                        {formatDate(item.created_at)}
                                       </span>
                                       
                                       <div className="flex items-center gap-1">
