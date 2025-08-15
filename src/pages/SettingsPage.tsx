@@ -118,13 +118,13 @@ const SettingsPage = () => {
           toastVariant: "destructive",
         });
         if (response) {
+          if (window?.electronAPI) {      
+             window?.electronAPI?.deleteToken();
+           }
           toast({
             title: "Logged out",
             description: "You have been successfully logged out.",
           });
-          if (window?.electronAPI) {      
-             window?.electronAPI?.deleteToken();
-           }
           logout();
           gotoLogin();
           return;
