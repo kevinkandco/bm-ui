@@ -122,11 +122,11 @@ const SettingsPage = () => {
             title: "Logged out",
             description: "You have been successfully logged out.",
           });
+          if (window?.electronAPI) {      
+             window?.electronAPI?.deleteToken();
+           }
           logout();
           gotoLogin();
-           if (window?.electronAPI) {      
-              window?.electronAPI?.deleteToken();
-            }
           return;
         }
     }

@@ -31,8 +31,13 @@ const Login = () => {
   };
 
   useEffect(() => {
+    
      if (window?.electronAPI && window?.electronAPI?.isElectron()) {
-          window.location.href = "appLogin.html"
+      const token = localStorage.getItem("token");
+
+        if (!token) {
+          window.location.href = "appLogin.html";
+        }
      }
 
   }, [appLogin]);

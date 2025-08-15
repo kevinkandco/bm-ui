@@ -108,7 +108,13 @@ const App = () => {
     });
 
     if (window?.electronAPI && window?.electronAPI?.isElectron()) {
+      const token = localStorage.getItem("token");
+
+      console.log(window.electronAPI.getToken(), "window.electronAPI.getToken()");
+      
+      if (!token) {
         window.location.href = "appLogin.html";
+      }
     }
   
   }, []);
