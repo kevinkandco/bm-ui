@@ -69,9 +69,9 @@ function handleDeepLink(argv) {
 
     if (mainWindow) {
       mainWindow.webContents.send("auth-success", token);
-      // mainWindow.loadURL(`https://hey.brief-me.app?token=${token}`);
+      mainWindow.loadURL(`https://hey.brief-me.app?token=${token}`);
 
-      mainWindow.loadURL(`http://localhost:8080?token=${token}`);
+      // mainWindow.loadURL(`http://localhost:8080?token=${token}`);
     }
   } catch (err) {
     console.error("❌ Invalid deep link:", err);
@@ -117,10 +117,10 @@ ipcMain.handle("delete-token", () => {
 ipcMain.on("redirect-to-web-login", () => {
 
    //   for local
-   shell.openExternal(`http://localhost:8080/app-login?appLogin=${true}`);
+  //  shell.openExternal(`http://localhost:8080/app-login?appLogin=${true}`);
 
    //   for live
-  // shell.openExternal(`https://hey.brief-me.app/app-login?appLogin=${true}`);
+  shell.openExternal(`https://hey.brief-me.app/app-login?appLogin=${true}`);
 });
 
 module.exports = { createWindow };
