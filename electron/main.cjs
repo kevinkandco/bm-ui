@@ -11,8 +11,8 @@ ipcMain.handle("get-token", () => store.get("token"));
 // ====== MAIN WINDOW ======
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1600,
-    height: 600,
+    width: 1500,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
       nodeIntegration: true, // allow require in renderer
