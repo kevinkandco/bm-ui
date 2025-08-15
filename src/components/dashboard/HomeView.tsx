@@ -729,7 +729,7 @@ const HomeView = ({
   }, []);
 
   // Process meetings for display
-  const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 0);
+  const hasUpcomingMeetings = meetings.some(m => m.minutesUntil > 0);
   const nextMeeting = meetings.find(m => m.minutesUntil < 120);
   const upcomingMeetings = meetings.filter(m => m.minutesUntil > 0).slice(0, 2);
   const remainingMeetings = meetings.filter(m => m.minutesUntil < 0);
@@ -1499,9 +1499,9 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="p-0 h-auto">
                     <Avatar className="h-9 w-9 hover:shadow-md transition-all cursor-pointer">
-                      <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="Alex Johnson" />
+                      <AvatarImage src={user?.profile_path} alt="Alex Johnson" />
                       <AvatarFallback className="bg-accent-primary/20 text-accent-primary font-medium">
-                        AJ
+                        {user?.name?.split(" ")?.map(w => w[0].toUpperCase())?.join("")?.slice(0, 2)}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -1873,12 +1873,18 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                         <h2 className="text-lg font-semibold text-text-primary tracking-tight">Today's schedule</h2>
                         <DashboardCard className="bg-surface-raised/20 shadow-sm">
                         <TooltipProvider>
-                          {!hasUpcomingMeetings ? <div className="text-center py-6">
-                              <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
-                              <p className="text-sm text-text-secondary">No meetings soon</p>
-                            </div> : <div className="space-y-2">
+                          {
+                          // !hasUpcomingMeetings ? 
+                          //   <div className="text-center py-6">
+                          //     <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+                          //     <p className="text-sm text-text-secondary">No meetings soon</p>
+                          //   </div> : 
+                            <div className="space-y-2">
                               {/* Next 2 meetings expanded */}
-                              {upcomingMeetings.map((meeting, index) => <div key={meeting.id}>
+                              {upcomingMeetings?.length <= 0 ? <div className="text-center py-6">
+                                  <Calendar className="w-8 h-8 mx-auto mb-3 text-text-secondary" />
+                                  <p className="text-sm text-text-secondary">No meetings soon</p>
+                                </div> : upcomingMeetings.map((meeting, index) => <div key={meeting.id}>
                                   <div className="py-1.5 px-2 cursor-pointer transition-colors hover:bg-white/[0.04] rounded-md border-l-2 border-transparent hover:border-l-accent-primary/30" onClick={() => openMeetingDetails(meeting)}>
                                     <div className="flex items-center justify-between gap-3">
                                       {/* Time column - more compact */}
