@@ -76,6 +76,7 @@ import {
   CalendarEvent,
   CalenderData,
   FollowUp,
+  IMeeting,
   IStatus,
   Priorities,
   PriorityPeople,
@@ -107,25 +108,6 @@ import { OfflineTimer } from "./OfflineTimer";
 import IntegrationsList from "./HomeViewSections/IntegrationsList";
 import moment from "moment";
 
-// Meeting interface from CalendarSection
-interface Meeting {
-  id: string;
-  title: string;
-  time: string;
-  duration: string;
-  attendees: Array<{
-    name: string;
-    email: string;
-  }>;
-  briefing: string;
-  aiSummary: string;
-  hasProxy: boolean;
-  hasNotes: boolean;
-  proxyNotes?: string;
-  summaryReady: boolean;
-  isRecording: boolean;
-  minutesUntil: number;
-}
 interface HomeViewProps {
   status: IStatus;
   priorities: Priorities | null;
@@ -133,6 +115,8 @@ interface HomeViewProps {
   totalBriefs: number;
   briefsLoading: boolean;
   upcomingBrief: Summary | null;
+  meetings: IMeeting[] | null;
+  setMeetings: (meetings: IMeeting[]) => void;
   calendarData: CalenderData;
   userintegrations: UserIntegrations[];
   allBriefs: Summary[];
@@ -181,6 +165,8 @@ const HomeView = ({
   totalBriefs,
   briefsLoading,
   upcomingBrief,
+  meetings,
+  setMeetings,
   calendarData,
   userintegrations,
   allBriefs,
@@ -241,7 +227,7 @@ const HomeView = ({
   const [selectedTranscript, setSelectedTranscript] = useState<any>(null);
   const [selectedFollowUpId, setSelectedFollowUpId] = useState<number | null>(null);
   const [selectedMessageId, setSelectedMessageId] = useState<number | null>(null);
-  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
+  const [selectedMeeting, setSelectedMeeting] = useState<IMeeting | null>(null);
   const [checkedFollowUps, setCheckedFollowUps] = useState<Set<number>>(new Set());
   const [checkedMessages, setCheckedMessages] = useState<Set<number>>(new Set());
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -266,7 +252,6 @@ const HomeView = ({
   const [fullPlayingBrief, setFullPlayingBrief] = useState<Summary | null>(
     recentBriefs?.[0] || null
   );
-  
   // Sample action items for mobile with proper typing
   const [actionItems] = useState<
     Array<{
@@ -356,100 +341,100 @@ const HomeView = ({
     },
   ]);
 
-  // Schedule state (from CalendarSection)
-  const [meetings, setMeetings] = useState<Meeting[]>([{
-    id: "0",
-    title: "internal project meeting",
-    time: "9:00 AM",
-    duration: "2 hours",
-    attendees: [{
-      name: "Project Team",
-      email: "team@company.com"
-    }],
-    briefing: "Internal project meeting with the team",
-    aiSummary: "Regular project sync to discuss progress and next steps.",
-    hasProxy: false,
-    hasNotes: false,
-    summaryReady: false,
-    isRecording: false,
-    minutesUntil: -180 // Past event
-  }, {
-    id: "1.5",
-    title: "demo with steve",
-    time: "1:00 PM",
-    duration: "1 hour",
-    attendees: [{
-      name: "Steve Wilson",
-      email: "steve@company.com"
-    }],
-    briefing: "Product demo with Steve Wilson",
-    aiSummary: "Demo session to showcase new features and gather feedback.",
-    hasProxy: true,
-    hasNotes: false,
-    summaryReady: false,
-    isRecording: false,
-    minutesUntil: -60 // Past event
-  }, {
-    id: "1",
-    title: "Test demo",
-    time: "2:00 PM",
-    duration: "1 hour",
-    attendees: [{
-      name: "Kevin Kirkpatrick",
-      email: "kirkpatrick.kevin.j@gmail.com"
-    }, {
-      name: "Kevin Kirkpatrick",
-      email: "kevin@uprise.is"
-    }],
-    briefing: "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
-    aiSummary: "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
-    hasProxy: true,
-    hasNotes: true,
-    proxyNotes: "Focus on practicality and personalization features",
-    summaryReady: false,
-    isRecording: true,
-    minutesUntil: 45
-  }, {
-    id: "2",
-    title: "external demo",
-    time: "3:00 PM",
-    duration: "30 min",
-    attendees: [{
-      name: "External Client",
-      email: "client@company.com"
-    }],
-    briefing: "External client demonstration meeting",
-    aiSummary: "Client demonstration focusing on key product features and capabilities.",
-    hasProxy: true,
-    hasNotes: false,
-    summaryReady: false,
-    isRecording: false,
-    minutesUntil: 105
-  }, {
-    id: "3",
-    title: "design review",
-    time: "3:30 PM",
-    duration: "45 min",
-    attendees: [{
-      name: "Design Team",
-      email: "design@company.com"
-    }],
-    briefing: "Design review session with the design team",
-    aiSummary: "Review of latest design mockups and user interface updates.",
-    hasProxy: true,
-    hasNotes: false,
-    summaryReady: false,
-    isRecording: false,
-    minutesUntil: 135
-  }]);
+  // // Schedule state (from CalendarSection)
+  // const [meetings, setMeetings] = useState<Meeting[]>([{
+  //   id: "0",
+  //   title: "internal project meeting",
+  //   time: "9:00 AM",
+  //   duration: "2 hours",
+  //   attendees: [{
+  //     name: "Project Team",
+  //     email: "team@company.com"
+  //   }],
+  //   briefing: "Internal project meeting with the team",
+  //   aiSummary: "Regular project sync to discuss progress and next steps.",
+  //   hasProxy: false,
+  //   hasNotes: false,
+  //   summaryReady: false,
+  //   isRecording: false,
+  //   minutesUntil: -180 // Past event
+  // }, {
+  //   id: "1.5",
+  //   title: "demo with steve",
+  //   time: "1:00 PM",
+  //   duration: "1 hour",
+  //   attendees: [{
+  //     name: "Steve Wilson",
+  //     email: "steve@company.com"
+  //   }],
+  //   briefing: "Product demo with Steve Wilson",
+  //   aiSummary: "Demo session to showcase new features and gather feedback.",
+  //   hasProxy: true,
+  //   hasNotes: false,
+  //   summaryReady: false,
+  //   isRecording: false,
+  //   minutesUntil: -60 // Past event
+  // }, {
+  //   id: "1",
+  //   title: "Test demo",
+  //   time: "2:00 PM",
+  //   duration: "1 hour",
+  //   attendees: [{
+  //     name: "Kevin Kirkpatrick",
+  //     email: "kirkpatrick.kevin.j@gmail.com"
+  //   }, {
+  //     name: "Kevin Kirkpatrick",
+  //     email: "kevin@uprise.is"
+  //   }],
+  //   briefing: "Test demo with Kevin Kirkpatrick (kevin@uprise.is) and kirkpatrick.kevin.j@gmail.com is likely an internal meeting or a product demonstration. Given the participants, it may involve reviewing or testing a tool, feature, or concept.",
+  //   aiSummary: "Product demonstration with Kevin focusing on AI-driven scheduling tools and user-friendly solutions. Kevin has experience with AI assistants and structured content delivery.",
+  //   hasProxy: true,
+  //   hasNotes: true,
+  //   proxyNotes: "Focus on practicality and personalization features",
+  //   summaryReady: false,
+  //   isRecording: true,
+  //   minutesUntil: 45
+  // }, {
+  //   id: "2",
+  //   title: "external demo",
+  //   time: "3:00 PM",
+  //   duration: "30 min",
+  //   attendees: [{
+  //     name: "External Client",
+  //     email: "client@company.com"
+  //   }],
+  //   briefing: "External client demonstration meeting",
+  //   aiSummary: "Client demonstration focusing on key product features and capabilities.",
+  //   hasProxy: true,
+  //   hasNotes: false,
+  //   summaryReady: false,
+  //   isRecording: false,
+  //   minutesUntil: 105
+  // }, {
+  //   id: "3",
+  //   title: "design review",
+  //   time: "3:30 PM",
+  //   duration: "45 min",
+  //   attendees: [{
+  //     name: "Design Team",
+  //     email: "design@company.com"
+  //   }],
+  //   briefing: "Design review session with the design team",
+  //   aiSummary: "Review of latest design mockups and user interface updates.",
+  //   hasProxy: true,
+  //   hasNotes: false,
+  //   summaryReady: false,
+  //   isRecording: false,
+  //   minutesUntil: 135
+  // }]);
 
   // Meeting handlers (from CalendarSection)
-  const toggleProxy = useCallback((meetingId: string) => {
+  const toggleProxy = useCallback((meetingId: number) => {
     setMeetings(prev => prev.map(meeting => meeting.id === meetingId ? {
       ...meeting,
       hasProxy: !meeting.hasProxy
     } : meeting));
-  }, []);
+  }, [setMeetings]);
 
   // Format delivery text to condensed format: "HH:MM Range: DD/MM HH:MM to DD/MM HH:MM"
   const formatDeliveryText = (timeCreated: string, timeRange: string) => {
@@ -584,7 +569,7 @@ const HomeView = ({
     setShowSchedulingModal(true);
   }, []);
   
-  const openInstructionsDrawer = useCallback((meeting: Meeting) => {
+  const openInstructionsDrawer = useCallback((meeting: IMeeting) => {
     setSelectedMeeting(meeting);
     setTempNotes(meeting.proxyNotes || "");
     setShowInstructionsDrawer(true);
@@ -714,9 +699,9 @@ const HomeView = ({
     setShowInstructionsDrawer(false);
     setSelectedMeeting(null);
     setTempNotes("");
-  }, [selectedMeeting, tempNotes]);
+  }, [selectedMeeting, tempNotes, setMeetings]);
 
-  const openMeetingDetails = useCallback((meeting: Meeting) => {
+  const openMeetingDetails = useCallback((meeting: IMeeting) => {
     const meetingWithDetails = {
       ...meeting,
       context: {
@@ -731,7 +716,7 @@ const HomeView = ({
     handleMeetingClick(meetingWithDetails);
   }, []);
 
-  const getAttendanceText = useCallback((meeting: Meeting, userJoining: boolean = false) => {
+  const getAttendanceText = useCallback((meeting: IMeeting, userJoining: boolean = false) => {
     if (meeting.hasProxy && userJoining) {
       return "1 + Proxy attending";
     } else if (meeting.hasProxy) {
@@ -742,10 +727,10 @@ const HomeView = ({
   }, []);
 
   // Process meetings for display
-  const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 120);
+  const hasUpcomingMeetings = meetings.some(m => m.minutesUntil < 0);
   const nextMeeting = meetings.find(m => m.minutesUntil < 120);
-  const upcomingMeetings = meetings.filter(m => m.minutesUntil < 120).slice(0, 2);
-  const remainingMeetings = meetings.filter(m => m.minutesUntil < 120).slice(2);
+  const upcomingMeetings = meetings.filter(m => m.minutesUntil > 0).slice(0, 2);
+  const remainingMeetings = meetings.filter(m => m.minutesUntil < 0);
 
   // Get all meetings for schedule (sorted by time)
   const allMeetings = [...meetings].sort((a, b) => {
@@ -951,15 +936,15 @@ const HomeView = ({
   // }];
 
   // const recentBriefs = allBriefs.slice(0, 3); // Only show first 3 in recent
-  const upcomingBriefs = [{
-    id: 'upcoming-1',
-    name: "Midday Brief",
-    scheduledTime: "Today at 12:30 PM"
-  }, {
-    id: 'upcoming-2',
-    name: "Evening Brief",
-    scheduledTime: "Today at 6:00 PM"
-  }];
+  // const upcomingBriefs = [{
+  //   id: 'upcoming-1',
+  //   name: "Midday Brief",
+  //   scheduledTime: "Today at 12:30 PM"
+  // }, {
+  //   id: 'upcoming-2',
+  //   name: "Evening Brief",
+  //   scheduledTime: "Today at 6:00 PM"
+  // }];
 
   // Sample messages data from the brief
   const allMessages = [{
@@ -1029,8 +1014,8 @@ const HomeView = ({
       const brief = allBriefs.find(b => b.id === briefId);
       setSelectedTranscript({
         id: briefId,
-        title: brief?.name || "Morning Brief",
-        timeRange: brief?.timeRange || "5:00 AM - 8:00 AM",
+        title: brief?.title || "Morning Brief",
+        timeRange: brief?.start_at + " - " + brief?.ended_at || "5:00 AM - 8:00 AM",
         transcript: `Welcome to your Morning Brief for August 4th, 2025. I've analyzed your messages from 5:00 PM yesterday to 7:00 AM this morning.
 
 Here's what happened overnight:
@@ -1067,7 +1052,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
       setRightPanelCollapsed(false);
       console.log('Playing brief, new playingBrief should be:', briefId);
     }
-  }, [playingBrief, recentBriefs]);
+  }, [playingBrief, allBriefs]);
 
   const handleBriefSelect = useCallback((briefId: number) => {
     setSelectedBrief(briefId);
@@ -1330,7 +1315,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage className="text-text-primary">
-                    {allBriefs.find(b => b.id === selectedBrief)?.name || 'Brief'}
+                    {allBriefs.find(b => b.id === selectedBrief)?.title || 'Brief'}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </>}
@@ -1971,16 +1956,16 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                   {/* Message Content */}
                                   <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold text-text-primary line-clamp-1 mb-1">
-                                      {item.message}
+                                      {item.title}
                                     </p>
                                     <p className="text-xs text-text-secondary truncate">
-                                      From {item.sender}
+                                      From {item.platform === 'slack' ? item?.slack_data?.sender : item.platform === "gmail" ? item?.gmail_data?.from : "unknown"}
                                     </p>
                                   </div>
 
                                   {/* Time */}
                                   <div className="flex-shrink-0 text-right">
-                                    <span className="text-xs text-text-secondary">{item.time}</span>
+                                    <span className="text-xs text-text-secondary">{formatDate(item.created_at)}</span>
                                   </div>
 
                                   {/* Action Menu */}
@@ -1994,7 +1979,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                         <DropdownMenuContent align="end">
                                          <DropdownMenuItem>
                                            <Mail className="h-4 w-4 mr-2" />
-                                           Open in {item.platform === 'S' ? 'Slack' : item.platform === 'E' ? 'Email' : item.platform === 'T' ? 'Teams' : item.platform === 'D' ? 'Discord' : 'App'}
+                                           Open in {item.platform === 'slack' ? 'Slack' : item.platform === 'gmail' ? 'Gmail' : item.platform === 'T' ? 'Teams' : item.platform === 'D' ? 'Discord' : 'App'}
                                          </DropdownMenuItem>
                                          <DropdownMenuItem>
                                            <Kanban className="h-4 w-4 mr-2" />
@@ -2284,8 +2269,8 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                 </div>
                                 
                                 {/* Platform Icon */}
-                                <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${item.platform === 'S' ? 'bg-purple-600' : item.platform === 'G' ? 'bg-blue-600' : 'bg-gray-600'}`}>
-                                  {item.platform}
+                                <div className={`w-6 h-6 rounded-sm flex items-center justify-center text-white text-xs font-bold flex-shrink-0 ${item.platform === 'slack' ? 'bg-purple-600' : item.platform === 'gmail' ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                                  {item.platform.charAt(0).toUpperCase()}
                                 </div>
                                 
                                 {/* Main Content */}
@@ -2300,14 +2285,14 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                         {item.message}
                                       </h3>
                                       <p className="text-xs text-text-secondary font-light">
-                                        From: {item.sender}
+                                        From: {item.platform === "slack" ? item?.slack_data?.sender : item?.gmail_data?.from}
                                       </p>
                                     </div>
                                     
                                     {/* Time and Actions */}
                                     <div className="flex items-center gap-3 flex-shrink-0">
                                       <span className="text-xs text-text-secondary">
-                                        {item.time}
+                                        {formatDate(item.created_at)}
                                       </span>
                                       
                                       <div className="flex items-center gap-1">
@@ -2334,7 +2319,7 @@ That's your brief for this morning. I've organized your follow-ups in priority o
                                       priority: item.priority,
                                       type: item.actionType,
                                       description: item.message,
-                                      sender: item.sender,
+                                      sender: item.platform === "slack" ? item?.slack_data?.sender : item?.gmail_data?.from,
                                       from: "Hover <help@hover.com>",
                                       subject: "Urgent: Launch Materials Review Needed",
                                       fullMessage: "Your Hover domain 'uprise.holdings' expired yesterday. The renewal price is $74.74 with auto-renew currently off. Please renew soon.",

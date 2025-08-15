@@ -280,6 +280,22 @@ export interface Meeting {
   suggestedAgenda?: string[];
 }
 
+export type IMeeting = {
+  id: number;
+  title: string;
+  time: string;
+  duration: string;
+  attendees: { name: string; email: string }[];
+  briefing: string;
+  aiSummary: string;
+  hasProxy: boolean;
+  hasNotes: boolean;
+  proxyNotes?: string;
+  summaryReady: boolean;
+  isRecording: boolean;
+  minutesUntil: number;
+};
+
 export interface UserIntegrations {
   name: string;
   count: number;

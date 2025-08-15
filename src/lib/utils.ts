@@ -1,4 +1,4 @@
-import { CalendarEvent, Meeting, PriorityItems, Stats, Summary } from "@/components/dashboard/types";
+import { CalendarEvent, IMeeting, Meeting, PriorityItems, Stats, Summary } from "@/components/dashboard/types";
 import { clsx, type ClassValue } from "clsx"
 import moment from "moment";
 import { twMerge } from "tailwind-merge"
@@ -220,4 +220,37 @@ export function convertToMeetings(calendarItems: CalendarEvent[] = []): Meeting[
       minutesUntil,
     };
   });
+}
+
+export function transformBackendData(data: any): IMeeting[] {
+  const today = new Date();
+
+  const transformEvent = (event: any): IMeeting => {
+    const eventDateTime = new Date(`${event.date} ${event.start_time}`);
+    const diffMinutes = Math.round((eventDateTime.getTime() - today.getTime()) / 60000);
+
+    return {
+      id: event.id,
+      title: event.title || "Untitled Meeting",
+      time: event.start_time,
+      duration: event.duration,
+      attendees: event.attendees.map((a: any) => ({
+        name: a.name || "Unknown",
+        email: a.email || ""
+      })),
+      briefing: event.description || "No briefing provided",
+      aiSummary: "Summary not yet generated.",
+      hasProxy: !!event.proxy_note,
+      hasNotes: false,
+      proxyNotes: event.proxy_note || undefined,
+      summaryReady: false,
+      isRecording: false,
+      minutesUntil: diffMinutes
+    };
+  };
+
+  return [
+    ...data.past.map(transformEvent),
+    ...data.future.map(transformEvent)
+  ];
 }

@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import ActionItemModal from './ActionItemModal';
 import { useApi } from '@/hooks/useApi';
+import { FollowUp } from './types';
 // import { ActionItem } from './types';
 
 interface ActionItem {
@@ -29,7 +30,7 @@ interface ActionItemsPanelProps {
   onCloseMessage?: () => void;
   selectedTranscript?: any;
   onCloseTranscript?: () => void;
-  selectedFollowUp?: any;
+  selectedFollowUp?: FollowUp;
   onCloseFollowUp?: () => void;
   onMarkFollowUpDone?: (followUpId: number) => void;
 }
@@ -619,10 +620,10 @@ const ActionItemsPanel = ({
 
     // Mock detailed data - in a real app this would come from the API
     const mockDetails = {
-      title: selectedFollowUp.platform === 'G' ? "Workspace cancellation" : selectedFollowUp.message,
+      title: selectedFollowUp?.title,
       timestamp: selectedFollowUp.time,
-      from: selectedFollowUp.platform === 'G' ? "The Google Workspace Team" : selectedFollowUp.sender,
-      subject: selectedFollowUp.platform === 'G' ? "Urgent: Launch Materials Review Needed" : selectedFollowUp.message,
+      from: selectedFollowUp.platform === 'slack' ? selectedFollowUp?.slack_data?.sender : selectedFollowUp?.gmail_data?.from,
+      subject: selectedFollowUp.message,
       fullMessage: selectedFollowUp.platform === 'G' 
         ? "Your Google Workspace Business Starter subscription was suspended on Jul 28, 2025 and will be canceled on or after Sep 26, 2025 unless you reactivate. Sign in to the Admin console (Billing > Subscriptions) before Sep 26 to keep service; you'll receive a confirmation email within 48 hours after reactivation. Account: kevin@pathnine.co (domain: pathnine.co)."
         : "Hi team, I wanted to follow up on the project timeline we discussed yesterday. We need to finalize the design mockups by end of week to stay on track.",

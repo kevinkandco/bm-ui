@@ -5,32 +5,14 @@ import { DashboardCard } from "@/components/ui/dashboard-card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-
-interface Meeting {
-  id: string;
-  title: string;
-  time: string;
-  duration: string;
-  attendees: Array<{
-    name: string;
-    email: string;
-  }>;
-  briefing: string;
-  aiSummary: string;
-  hasProxy: boolean;
-  hasNotes: boolean;
-  proxyNotes?: string;
-  summaryReady: boolean;
-  isRecording: boolean;
-  minutesUntil: number;
-}
+import { IMeeting } from "@/components/dashboard/types";
 
 interface CalendarPageProps {
-  meetings: Meeting[];
+  meetings: IMeeting[];
   onToggleProxy: (meetingId: string) => void;
-  onOpenInstructionsDrawer: (meeting: Meeting) => void;
-  onOpenMeetingDetails: (meeting: Meeting) => void;
-  getAttendanceText: (meeting: Meeting, userJoining?: boolean) => string;
+  onOpenInstructionsDrawer: (meeting: IMeeting) => void;
+  onOpenMeetingDetails: (meeting: IMeeting) => void;
+  getAttendanceText: (meeting: IMeeting, userJoining?: boolean) => string;
 }
 
 const CalendarPage = ({ 

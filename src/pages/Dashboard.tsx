@@ -10,11 +10,11 @@ import EndFocusModal from "@/components/dashboard/EndFocusModal";
 import StatusTimer from "@/components/dashboard/StatusTimer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus, UserIntegrations, ActionItem, FollowUp } from "@/components/dashboard/types";
+import { BriefSchedules, UserSchedule, PriorityPeople, Summary, Priorities, CalendarEvent, CalenderData, IStatus, UserIntegrations, ActionItem, FollowUp, IMeeting } from "@/components/dashboard/types";
 import SignOff from "@/components/dashboard/SignOff";
 import { useApi } from "@/hooks/useApi";
 import BriefMeModal from "@/components/dashboard/BriefMeModal";
-import { enrichBriefsWithStats, transformToStats } from "@/lib/utils";
+import { enrichBriefsWithStats, transformBackendData, transformToStats } from "@/lib/utils";
 import FocusModeConfig from "@/components/dashboard/FocusModeConfig";
 import FancyLoader from "@/components/settings/modal/FancyLoader";
 import FocusMode from "@/components/dashboard/FocusMode";
@@ -106,6 +106,7 @@ const Dashboard = () => {
     today: [],
     upcoming: [],
   });
+  const [meetings, setMeetings] = useState<IMeeting[]>([]);
   const [priorities, setPriorities] = useState<Priorities>({
     priorityPeople: [],
     priorityChannels: [],
@@ -166,6 +167,8 @@ const Dashboard = () => {
       today: response.data.today,
       upcoming: response.data.upcoming
     });
+    const data = transformBackendData(response.data?.today);
+    setMeetings(data);
     // setBriefsLoading(false);
   }, [call]);
 
@@ -732,6 +735,8 @@ const Dashboard = () => {
             totalBriefs={totalBriefs}
             briefsLoading={briefsLoading}
             upcomingBrief={upcomingBrief}
+            meetings={meetings}
+            setMeetings={setMeetings}
             calendarData={calendarData}
             userintegrations={userintegrations}
             allBriefs={allBriefs}
