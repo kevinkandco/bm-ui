@@ -155,14 +155,12 @@
     </button>
 
     <script>
-        window.electronAPI.getToken().then(token => console.log("Stored token 123455:", token));
+        window.electronAPI.getToken().then(eleToken => {
+            console.log( "this token from electron confige => :" + eleToken);            
+            
+            if (eleToken) window.location.href = `https://hey.brief-me.app/dashboard?token=${eleToken}`;
 
-        window.electronAPI.getToken().then(token => {
-            console.log( "this token from electron confige => :" + token);
-            
-            if (token) window.location.href = `https://hey.brief-me.app/dashboard`;
-            
-            // if (token) window.location.href = `http://localhost:8080/dashboard`;
+            // if (eleToken) window.location.href = `http://localhost:8080/dashboard?token=${eleToken}`;
 
         });
     </script>

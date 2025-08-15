@@ -31,13 +31,19 @@ const Login = () => {
   };
 
   useEffect(() => {
-    
-     if (window?.electronAPI && window?.electronAPI?.isElectron()) {
-      const token = localStorage.getItem("token");
 
-        if (!token) {
-          window.location.href = "appLogin.html";
-        }
+     if (window?.electronAPI && window?.electronAPI?.isElectron()) {
+       const token = localStorage.getItem("token");
+
+       window.electronAPI.getToken().then((eleToken) => {
+         console.log(eleToken, "eleToken");
+         console.log(token, "token");
+          if (!token) {
+            window.location.href = "appLogin.html";
+          } else if (!eleToken) {
+            window.location.href = "appLogin.html";
+          }
+       });
      }
 
   }, [appLogin]);

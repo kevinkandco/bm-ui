@@ -110,11 +110,16 @@ const App = () => {
     if (window?.electronAPI && window?.electronAPI?.isElectron()) {
       const token = localStorage.getItem("token");
 
-      console.log(window.electronAPI.getToken(), "window.electronAPI.getToken()");
-      
-      if (!token) {
-        window.location.href = "appLogin.html";
-      }
+      window.electronAPI.getToken().then((eleToken) => {
+        console.log(eleToken, "eleToken");
+         console.log(token, "token");
+          if (!token) {
+            window.location.href = "appLogin.html";
+          } else if (!eleToken) {
+            window.location.href = "appLogin.html";
+          }
+      });
+
     }
   
   }, []);
