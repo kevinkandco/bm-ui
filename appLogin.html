@@ -158,7 +158,9 @@
         window.electronAPI.getToken().then(token => console.log("Stored token 123455:", token));
 
         window.electronAPI.getToken().then(token => {
-            if (token) window.location.href = `https://hey.brief-me.app?token=${token}`;
+            if (token) window.location.href = `https://hey.brief-me.app/dashboard`;
+
+            // if (token) window.location.href = `http://localhost:8080?token=${token}`;
         });
     </script>
 
