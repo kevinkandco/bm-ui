@@ -11,7 +11,7 @@ ipcMain.handle("get-token", () => store.get("token"));
 // ====== MAIN WINDOW ======
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1600,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
@@ -65,11 +65,13 @@ function handleDeepLink(argv) {
     const token = urlObj.searchParams.get("access_token");
 
     store.set("token", token)
-    console.log("✅ Received token:", token);
+    console.log("✅ Received token => :", token);
 
     if (mainWindow) {
       mainWindow.webContents.send("auth-success", token);
-      mainWindow.loadURL(`https://hey.brief-me.app?token=${token}`);
+      // mainWindow.loadURL(`https://hey.brief-me.app?token=${token}`);
+
+      mainWindow.loadURL(`http://localhost:8080?token=${token}`);
     }
   } catch (err) {
     console.error("❌ Invalid deep link:", err);
@@ -107,13 +109,18 @@ app.on("open-url", (event, url) => {
   handleDeepLink([url]); 
 });
 
+ipcMain.handle("delete-token", () => {
+  store.delete("token");
+  console.log("🗑 Token deleted");
+});
+
 ipcMain.on("redirect-to-web-login", () => {
 
    //   for local
-  // shell.openExternal(`http://localhost:8080/app-login?appLogin=${true}`);
+   shell.openExternal(`http://localhost:8080/app-login?appLogin=${true}`);
 
    //   for live
-  shell.openExternal(`https://hey.brief-me.app/app-login?appLogin=${true}`);
+  // shell.openExternal(`https://hey.brief-me.app/app-login?appLogin=${true}`);
 });
 
 module.exports = { createWindow };

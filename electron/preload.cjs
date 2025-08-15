@@ -10,6 +10,7 @@ window.electronAPI = {
 
   redirectToWebLogin: () => ipcRenderer.send("redirect-to-web-login"),
 
-   getToken: () => ipcRenderer.invoke("get-token"), 
-};
+  getToken: () => ipcRenderer.invoke("get-token"),
 
+  deleteToken: () => ipcRenderer.invoke("delete-token"),
+};

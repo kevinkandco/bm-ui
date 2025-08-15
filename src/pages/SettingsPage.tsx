@@ -124,6 +124,9 @@ const SettingsPage = () => {
           });
           logout();
           gotoLogin();
+           if (window?.electronAPI) {      
+              window?.electronAPI?.deleteToken();
+            }
           return;
         }
     }
