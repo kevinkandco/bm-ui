@@ -21,5 +21,21 @@ export default defineConfig(({ mode }) => ({
   },
    define: {
     'process.env': {}
-  }
+  },
+   build: {
+    chunkSizeWarningLimit: 1000, // just raises limit to 1MB
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("react")) return "react-vendor";
+            if (id.includes("lodash")) return "lodash-vendor";
+            if (id.includes("axios")) return "axios-vendor";
+            return "vendor";
+          }
+        },
+      },
+    },
+  },
 }));
+
